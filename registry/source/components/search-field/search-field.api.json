@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "itemId": "search-field",
+  "entryExport": "SearchField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>, excluding type, value, defaultValue, and native onChange",
+  "exports": [
+    { "kind": "component", "name": "SearchField" },
+    { "kind": "type", "name": "SearchFieldProps" },
+    { "kind": "type", "name": "SearchFieldStatus" }
+  ],
+  "props": [
+    { "name": "value", "required": false, "type": "string; controlled" },
+    { "name": "defaultValue", "required": false, "default": "", "type": "string; uncontrolled" },
+    { "name": "onChange", "required": false, "type": "(value: string) => void" },
+    {
+      "name": "clearLabel",
+      "required": false,
+      "default": "localized Clear search",
+      "type": "string"
+    },
+    {
+      "name": "submitLabel",
+      "required": false,
+      "type": "string; renders a native submit button when supplied"
+    },
+    { "name": "resultsId", "required": false, "type": "string; merged into aria-controls" },
+    {
+      "name": "status",
+      "required": false,
+      "default": "{ state: idle }",
+      "type": "SearchFieldStatus"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "inputClassName", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "A real search input owns editing, IME composition, validation, Enter submission, form serialization, and reset.",
+    "clear": "The clear button is non-submit, unavailable during composition, updates the same controlled or uncontrolled value contract, and restores input focus.",
+    "results": "resultsId associates the input with consumer-rendered results; explicit localized loading, results, empty, and error messages are programmatically described.",
+    "field": "ID, label, description, error, required, and invalid relationships are inherited from Field unless explicitly supplied."
+  }
+}

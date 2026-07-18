@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-slider",
+  "entryExport": "RangeSlider",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "Mergora SliderBase props specialized for ordered multi-thumb React Aria Slider values",
+  "exports": [
+    { "kind": "component", "name": "RangeSlider" },
+    { "kind": "type", "name": "RangeSliderProps" },
+    { "kind": "type", "name": "RangeSliderValues" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "value", "required": false, "type": "[number, number, ...number[]]" },
+    { "name": "defaultValue", "required": false, "type": "[number, number, ...number[]]" },
+    {
+      "name": "onChange",
+      "required": false,
+      "type": "(value: [number, number, ...number[]]) => void"
+    },
+    {
+      "name": "onChangeEnd",
+      "required": false,
+      "type": "(value: [number, number, ...number[]]) => void"
+    },
+    { "name": "minValue", "required": false, "default": 0, "type": "number" },
+    { "name": "maxValue", "required": false, "default": 100, "type": "number" },
+    { "name": "step", "required": false, "default": 1, "type": "positive number" },
+    {
+      "name": "orientation",
+      "required": false,
+      "default": "horizontal",
+      "type": "horizontal | vertical"
+    },
+    {
+      "name": "thumbLabels",
+      "required": false,
+      "type": "readonly [string, string, ...string[]]"
+    },
+    { "name": "names", "required": false, "type": "readonly [string, string, ...string[]]" },
+    {
+      "name": "collisionBehavior",
+      "required": false,
+      "default": "clamp",
+      "type": "clamp"
+    },
+    { "name": "marks", "required": false, "type": "readonly SliderMark[]" },
+    { "name": "formatOptions", "required": false, "type": "Intl.NumberFormatOptions" },
+    { "name": "form", "required": false, "type": "string" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnlyMessage", "required": false, "type": "localized string" },
+    { "name": "invalid", "required": false, "default": false, "type": "boolean" },
+    { "name": "showOutput", "required": false, "default": true, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "order": "Values are non-decreasing. A thumb may meet its neighbor, but React Aria clamps it before crossing and thumb indices never swap.",
+    "naming": "Every thumb has a distinct accessible label; optional form names must also be non-empty, distinct, and count-aligned.",
+    "field": "Field names the slider group while thumbLabels identify each adjustable boundary."
+  }
+}

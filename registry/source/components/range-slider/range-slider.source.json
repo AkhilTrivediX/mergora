@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "../slider/index.js", "./range-slider.css", "react"],
+  "entryPath": "registry/source/components/range-slider/range-slider.tsx",
+  "id": "range-slider",
+  "itemDependencies": ["provider", "slider"],
+  "outputRole": "component"
+}

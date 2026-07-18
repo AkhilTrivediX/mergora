@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slider",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "ProductionWorkbench"
+    },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "KeyboardAndCollision" },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndCollision"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndCollision"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A slider always has a value; workflow-level required disclosure belongs to the surrounding Field."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to the workflow that supplies the slider domain or value."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A native range control always has a numeric value."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "ProductionWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Slider values are discrete committed numbers rather than partially edited text."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success feedback belongs to a persistent workflow status."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning feedback belongs to a persistent Field description or workflow status."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Changing a slider value does not itself perform a destructive action."
+      }
+    }
+  ]
+}

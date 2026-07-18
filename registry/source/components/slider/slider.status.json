@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slider",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete keyboard, track press, pointer drag, touch cancellation, and boundary fixtures in every supported engine.",
+    "Verify native form submission, reset, disabled omission, read-only success, and external form association.",
+    "Record horizontal, vertical, RTL, narrow, zoom, forced-colors, and coarse-pointer geometry.",
+    "Complete localized unit, currency, percent, and non-Latin value-text fixtures.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

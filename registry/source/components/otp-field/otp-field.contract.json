@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "otp-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, autofill-compatibility, authentication, security, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "one native input type=text with autocomplete=one-time-code by default",
+    "naming": "One persistent visible Field label, native label, aria-label, or aria-labelledby names the complete code; visual groups are hidden from accessibility APIs.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "The browser owns editing, selection, undo, composition, and caret movement; normalization occurs only after native change or composition completion.",
+    "pointer": "The single visible native input is the only pointer-editing target.",
+    "touch": "The default numeric input mode and at least 44 CSS pixel control height support mobile entry without replacing the native keyboard.",
+    "speech": "The one visible full-field label remains the only voice target rather than exposing per-character slots.",
+    "switchAccess": "One real input is one switch target with no roving focus or proxy controls."
+  },
+  "formBehavior": "Native name, value, form, required, disabled, autocomplete, pattern, validation, submission, and reset remain authoritative. Uncontrolled reset restores the normalized default; controlled value remains consumer-owned.",
+  "states": {
+    "attributes": [
+      "data-character-set",
+      "data-complete",
+      "data-composing",
+      "data-disabled",
+      "data-empty",
+      "data-invalid",
+      "data-readonly"
+    ],
+    "synchronization": "Normalized input value, complete state, grouping description, Field relationships, and controlled or uncontrolled ownership remain explicit and synchronized."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=otp-field]",
+    "attributes": [
+      "data-character-set",
+      "data-complete",
+      "data-disabled",
+      "data-empty",
+      "data-invalid",
+      "data-readonly"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Completion, invalidity, and grouping never rely on color alone.",
+    "forcedColors": "Uses system colors, visible borders, decorative group lines, and explicit focus indicators.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The single input, grouping guides, labels, descriptions, and errors reflow without horizontal page overflow."
+  },
+  "internationalization": {
+    "consumerStrings": ["field-label", "field-description", "field-error", "groupingLabel"],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Composition is retained in the real native input and normalized only on composition end; no composition key is treated as a navigation command.",
+    "serialization": "Accepted machine characters are NFKC-normalized, filtered to the selected ASCII character set, bounded to the group total, and submitted without visual separators. Paste event text is read only for this bounded insertion and is never logged, persisted, or transmitted by the component."
+  },
+  "consumerResponsibilities": [
+    "Provide one persistent visible label and explain where the one-time code was sent without exposing private destination details unnecessarily.",
+    "Keep autocomplete=one-time-code unless the specific authentication protocol requires a documented alternative.",
+    "Do not auto-submit, move focus, or verify merely because the declared character count is reached.",
+    "Never use one-time-code transcription as a memory, arithmetic, puzzle, or other cognitive-function test.",
+    "Provide expiry, resend, rate-limit, recovery, and server-error behavior in the owning authentication workflow.",
+    "Localize grouping and all consumer-authored authentication text."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "single-input-field-association",
+      "paste-normalization",
+      "composition-and-caret",
+      "one-time-code-autocomplete",
+      "mobile-input-hints",
+      "native-validation-submission-reset",
+      "controlled-uncontrolled",
+      "narrow-rtl-forced-colors",
+      "axe",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "ios-and-android-one-time-code-autofill",
+      "paste-and-mobile-keyboard",
+      "keyboard-and-switch-entry",
+      "nvda-firefox",
+      "voiceover-safari",
+      "speech-input"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Browser and platform support for one-time-code autofill varies and requires current device evidence before promotion.",
+    "The component normalizes to ASCII numeric or alphanumeric machine characters and does not implement protocol-specific alphabets.",
+    "Completion is only a bounded callback and does not prove that a code is authentic, current, or accepted by a server.",
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, current mobile autofill sessions, or current manual assistive-technology sessions."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slider",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "slider",
+    "stableAttributes": [
+      "data-slot",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid",
+      "data-orientation",
+      "data-has-marks"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "slider-readonly-status",
+      "element": "span",
+      "purpose": "Adds a localized description when a browser does not expose aria-readonly on its native range accessibility node.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "slider-output",
+      "element": "output",
+      "purpose": "Displays the locale-formatted current value.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-track",
+      "element": "div",
+      "purpose": "Provides the measurable pointer and touch interaction surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-rail",
+      "element": "div",
+      "purpose": "Draws the available value domain.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-fill",
+      "element": "div",
+      "purpose": "Draws the selected interval from the minimum to the thumb.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-thumb",
+      "element": "div containing a visually hidden input type=range",
+      "purpose": "Provides the focus, keyboard, pointer, touch, value, and form semantics.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-marks",
+      "element": "div",
+      "purpose": "Displays non-interactive, step-aligned visual tick labels.",
+      "stability": "documented"
+    }
+  ]
+}

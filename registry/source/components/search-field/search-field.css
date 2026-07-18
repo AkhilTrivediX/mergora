@@ -1,0 +1,161 @@
+.mrg-search-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-search-field [data-slot="search-field-control"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: flex;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+  padding-inline-start: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-search-field [data-slot="search-field-control"]:focus-within {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-search-field[data-invalid="true"] [data-slot="search-field-control"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-search-field[data-disabled="true"] [data-slot="search-field-control"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-search-field-input {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  flex: 1 1 auto;
+  font: inherit;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: 0 var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-search-field-input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.mrg-search-field-input::placeholder {
+  color: var(--mrg-semantic-color-foreground-muted);
+  opacity: 1;
+}
+
+.mrg-search-field-clear,
+.mrg-search-field-submit {
+  align-self: stretch;
+  border: 0;
+  border-radius: calc(
+    var(--mrg-semantic-radius-control) - var(--mrg-semantic-border-width-default)
+  );
+  flex: 0 0 auto;
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-search-field-clear {
+  background: transparent;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-size: 1.25em;
+  inline-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-search-field-submit {
+  background: var(--mrg-semantic-color-action-background);
+  color: var(--mrg-semantic-color-action-foreground);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-search-field-clear:hover:not(:disabled) {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-search-field-submit:hover:not(:disabled) {
+  background: var(--mrg-semantic-color-action-background-hover);
+}
+
+.mrg-search-field-clear:focus-visible,
+.mrg-search-field-submit:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+}
+
+.mrg-search-field-clear:disabled,
+.mrg-search-field-submit:disabled,
+.mrg-search-field-input:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-search-field[data-empty="true"] .mrg-search-field-clear {
+  visibility: hidden;
+}
+
+.mrg-search-field [data-slot="search-field-status"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-search-field [data-slot="search-field-status"][data-status="error"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+@media (pointer: coarse) {
+  .mrg-search-field [data-slot="search-field-control"],
+  .mrg-search-field-input,
+  .mrg-search-field-clear,
+  .mrg-search-field-submit {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+
+  .mrg-search-field-clear {
+    inline-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-search-field [data-slot="search-field-control"] {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-search-field[data-disabled="true"] [data-slot="search-field-control"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-search-field[data-invalid="true"] [data-slot="search-field-control"] {
+    border-style: double;
+  }
+
+  .mrg-search-field-clear,
+  .mrg-search-field-submit {
+    forced-color-adjust: auto;
+  }
+}

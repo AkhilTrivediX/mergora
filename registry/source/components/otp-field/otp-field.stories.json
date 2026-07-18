@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "otp-field",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "EntryWorkbench" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "EntryWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "EntryWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "EntryWorkbench"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateRail" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateRail" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateRail" },
+    { "id": "required", "applicability": { "status": "applicable" }, "story": "EntryWorkbench" },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Code delivery and verification loading belong to the owning authentication workflow and are not synthesized by this input."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateRail" },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "EntryWorkbench" },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledOwnership"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Reaching the local character count is only input completeness; authentication success requires server-owned verification."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Expiry and attempt warnings belong to the authentication workflow and require server-owned truth."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateRail" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The field performs no destructive authentication or account action."
+      }
+    }
+  ]
+}

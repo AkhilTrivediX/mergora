@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./otp-field.css", "react"],
+  "entryPath": "registry/source/components/otp-field/otp-field.tsx",
+  "id": "otp-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

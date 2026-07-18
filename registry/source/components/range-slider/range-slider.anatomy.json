@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-slider",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "range-slider",
+    "stableAttributes": [
+      "data-slot",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid",
+      "data-orientation",
+      "data-has-marks",
+      "data-collision-behavior"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "slider-readonly-status",
+      "element": "span",
+      "purpose": "Adds a localized description to every thumb when a browser does not expose aria-readonly on its native range accessibility node.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "slider-output",
+      "element": "output",
+      "purpose": "Displays all current values using locale formatting.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-track",
+      "element": "div",
+      "purpose": "Provides the shared measurable pointer and touch surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-rail",
+      "element": "div",
+      "purpose": "Draws the complete available value domain.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-fill",
+      "element": "div",
+      "purpose": "Draws the selected interval between the first and last thumb.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-thumb",
+      "element": "div containing one visually hidden input type=range per value",
+      "purpose": "Provides each ordered value's distinct name, focus, keyboard, pointer, touch, and form semantics.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-marks",
+      "element": "div",
+      "purpose": "Displays non-interactive, step-aligned visual tick labels.",
+      "stability": "documented"
+    }
+  ]
+}
