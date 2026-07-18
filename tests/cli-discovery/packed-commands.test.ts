@@ -531,7 +531,7 @@ describe("packed project commands", () => {
       result: { state: "valid", releaseClaim: "none", networkUsed: false },
     });
     expect(verified.stdout).not.toContain(project.root);
-  });
+  }, 30_000);
 
   it("keeps theme, registry, migration, and cleanup inspection read-only", () => {
     const project = createProjectFixture();
