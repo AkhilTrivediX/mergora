@@ -1,25 +1,25 @@
 # P3 security and data-loss audit
 
 - Review date: 2026-07-18
-- Reviewed checkpoint: `385f4aa`
+- Reviewed checkpoint: `12a39f1`
 - Scope: CLI transactions, Semantic Sync, registry acquisition, Contracts, migrations, offline
   artifacts, generated release protocol, and clean-consumer evidence
-- Result: open release blockers; P3 is not approved
+- Result: no open S0/S1 finding; three S2 lifecycle findings remain and P3 is not approved
 
 This was a read-only review of the implemented P3 surface against the normative transaction,
 provenance, registry, and update requirements. It found no S0 issue. The adversarial test tranche
 closed the concrete shadcn dependency/path, redirect, immutable-digest, line-ending, unequal-overlap,
-and transaction fault-point defects discovered during implementation. The following findings remain
-open and prevent a P3 exit claim.
+transaction-validation, initialization-recovery, and release-bundle defects discovered during
+implementation. Findings marked open or partial below still prevent a P3 exit claim.
 
-| ID         | Severity | Finding                                                                                                                       | Disposition                                                                                                                          |
-| ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| SEC-P3-001 | S1       | Semantic Update advertises parse, type/import, token, config, and Contract validation labels that are not executed as gates.  | Open. Add staged-overlay and post-commit validators to the shared transaction engine; derive plan labels only from registered gates. |
-| SEC-P3-002 | S1       | Initialization is not journaled through the durable source transaction/recovery protocol and can be interrupted mid-sequence. | Open. Normalize initialization onto the shared transaction lifecycle and parameterize the fault matrix over it.                      |
-| SEC-P3-003 | S2       | Enrolled registries, verified cache, vendor snapshots, GitHub mirrors, and npm mirrors do not feed one immutable resolver.    | Open. Implement one bounded acquisition API and route search/view/add/update/audit through it.                                       |
-| SEC-P3-004 | S2       | CLI help/parser behavior and the public JSON result-envelope schema have status, warning, flag, and exit-code drift.          | Open. Generate the command table, help, parser constraints, and result schemas from one contract and validate every packed command.  |
-| SEC-P3-005 | S2       | Package/hybrid provenance, explicit registry moves, runtime Contract Audit, and executable shadcn/mode migrations are absent. | Open. Complete these only through immutable inputs and the shared transaction engine.                                                |
-| SEC-P3-006 | S2       | The stable release builder omits required search/schema/Contract/Passport/SBOM/archive/mirror bytes.                          | Open. Expand checksum coverage and the cross-document verifier before enabling release output.                                       |
+| ID         | Severity | Finding                                                                                                                                                       | Disposition                                                                                                                                                                    |
+| ---------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| SEC-P3-001 | S1       | Semantic Update advertised parse, type/import, token, config, and Contract validation labels that were not executed as gates.                                 | Closed at `12a39f1`. Registered staged/post-commit validators now execute, fail before writes or roll back exactly, and cannot be bypassed during recovery.                    |
+| SEC-P3-002 | S1       | Initialization was not journaled through the durable source transaction/recovery protocol and could be interrupted mid-sequence.                              | Closed at `12a39f1`. First-run/repeat init now stages, backs up, journals, commits manifest last, rolls back, and recovers through the shared engine.                          |
+| SEC-P3-003 | S2       | Enrolled registries, verified cache, vendor snapshots, GitHub mirrors, and npm mirrors do not yet feed every real consumer through one immutable resolver.    | Partial. The bounded acquisition primitive and adversarial cache/vendor/canonical/mirror tests exist; discovery/add/update/audit routing remains open.                         |
+| SEC-P3-004 | S2       | Some documented CLI flags/mode transitions remain unimplemented even though parser/help/envelope/error behavior now derives from one strict command contract. | Partial. Packed JSON envelopes and stable exit normalization pass; implement or explicitly disposition `--ui-version`, `--mode`, and `--no-format`.                            |
+| SEC-P3-005 | S2       | Package/hybrid provenance, explicit registry moves, an official browser Contract Audit host, and executable shadcn/mode migrations remain absent.             | Partial. Trusted host runtime adapters now execute bounded reviewed harness IDs, but no default browser harness or remaining provenance/migration lifecycle is claimed.        |
+| SEC-P3-006 | S2       | The stable release builder omitted required search/schema/Contract/Passport/SBOM/archive/mirror bytes.                                                        | Closed at `12a39f1`. The builder and verifier bind exact embedded bytes, all required schemas/evidence, search, mirror manifest, portable release bundle, SBOM, and checksums. |
 
 ## Closed findings and evidence
 
@@ -35,12 +35,22 @@ open and prevent a P3 exit claim.
 - Cleanup rejects links, unknown inventory, credential-shaped artifacts, portable collisions,
   oversized inputs, active transactions/conflicts, referenced bases, and stale/tampered plans in
   [`../../tests/cli-clean/`](../../tests/cli-clean/).
-- The aggregate local gate passes 21 package typechecks and 715 tests with one Windows-specific
-  junction case skipped when the platform cannot create the required filesystem primitive.
+- Registered transaction validators and exact rollback/recovery evidence are covered by
+  [`../../tests/cli-transactions/transaction-validation.test.ts`](../../tests/cli-transactions/transaction-validation.test.ts)
+  and the Semantic Update validation suites.
+- Durable initialization and first-run recovery are covered by
+  [`../../tests/cli-discovery/init-transaction.test.ts`](../../tests/cli-discovery/init-transaction.test.ts)
+  plus the shared transaction/fault suites.
+- Release inventory, coherent rehash/tamper, required-schema, mirror, and static-bundle checks are
+  covered by
+  [`../../tests/generation/release-protocol.test.ts`](../../tests/generation/release-protocol.test.ts).
+- The `12a39f1` checkpoint passed 183 focused tests, five numeric browser tests, root/package
+  typechecks, 487-artifact drift verification, and pinned shadcn validation. Linux aggregate evidence
+  is running in draft PR #2.
 
 ## Approval rule
 
-P3 remains gate-failed until every S1 finding above is fixed and regression-tested, all remaining S2
-findings needed by the P3 exit scenario are closed, and the full packed lifecycle proves
+No S0/S1 finding remains at this checkpoint. P3 remains gate-failed until all remaining S2 findings
+needed by the P3 exit scenario are closed and the full packed lifecycle proves
 customize/update/conflict/resolve/audit/rollback/recover/remove/offline behavior without workspace
 knowledge. This document records evidence; it is not a security certification.

@@ -14,14 +14,15 @@ None.
 
 ## Implementation gates, not external blockers
 
-- The current P3 checkpoint is `385f4aa` on `feature/foundation` in draft PR [#2](https://github.com/AkhilTrivediX/mergora/pull/2); merge and protected-main evidence remain open.
-- The lockfile, seven packed tarballs, four clean consumers, build, and local root aggregate pass. Linux CI will re-run when this checkpoint is pushed.
+- The current P3 checkpoint is `12a39f1` on `feature/foundation` in draft PR [#2](https://github.com/AkhilTrivediX/mergora/pull/2); merge and protected-main evidence remain open.
+- The clean dependency-output reproduction, 183 focused tests, numeric browser matrix, generation,
+  shadcn validation, and root/package typechecks pass. Linux aggregate run `29652787085` is pending.
 - GitHub Discussions, environments, security settings, labels, main protection, and release-tag immutability are configured. Pages deployment and required CI contexts remain unexercised.
 - The approved unscoped package map is verified from authenticated read-only checks. Availability and legal/confusion review remain time-bound pre-publication gates.
 - Exact unreleased package tarballs and generated registry artifacts now exist and pass P1 consumers,
   including the read/plan-only MCP runtime. No public npm package, deployed production site/registry,
   or release exists yet.
-- Two S1 and four S2 P3 findings remain open in
+- No S0/S1 P3 finding remains; three S2 lifecycle findings remain open in
   [`../quality/P3_SECURITY_DATA_LOSS_AUDIT.md`](../quality/P3_SECURITY_DATA_LOSS_AUDIT.md). These are
   implementation gates, not external blockers.
 
