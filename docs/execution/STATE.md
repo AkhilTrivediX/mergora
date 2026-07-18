@@ -1,64 +1,91 @@
 # Execution state
 
-- Updated: 2026-07-18T13:29:15Z
-- Implementation commit: `fa198fbfa3ae03c228fa0881d401c648c815e0e6`
-- Branch: `codex/foundation`
-- Pull request: draft [#1](https://github.com/AkhilTrivediX/mergora/pull/1); Linux quality and security checks in progress
-- Active phase: P2 source foundation complete but unreleased; P3 Semantic Sync and audit work active
-- Phase result: in-progress
+- Updated: 2026-07-18T15:32:00Z
+- Implementation commit: `385f4aa92444bbb6dac5f1a9f0e14a7c38a50a3e`
+- Branch: `feature/foundation`
+- Pull request: draft [#2](https://github.com/AkhilTrivediX/mergora/pull/2); used as passive Linux/security evidence, not a review bottleneck
+- Active phase: P3 registry/CLI/provenance/safe synchronization in progress
+- Phase result: gate-failed until the open validation, acquisition, and complete-lifecycle findings close
 
 ## Completed since previous update
 
-- Replaced the public blueprint root with an equivalent plan-free root, kept `PLANS/` local and ignored, and established the public repository hygiene boundary on `codex/foundation`.
-- Implemented the reproducible 22-project monorepo, governance, pinned toolchain, schemas, catalog, generators, and quality infrastructure on the feature branch.
-- Implemented 330 canonical DTCG tokens, 12 theme/density contexts, 120 contrast checks, self-hosted fonts, deterministic CSS/TypeScript/Tailwind/design-tool outputs, and 14 token compiler/contract tests.
-- Rebuilt the pinned Commit Mono subset reproducibly after Firefox exposed the upstream-invalid `maxp.maxZones=0` value. The repair normalizes it to one glyph zone, is byte-deterministic across rebuilds, and is recorded by source/output digest.
-- Implemented 19 Draft 2020-12 public schemas with runtime validation, deterministic registry/package/docs outputs, collision/import/drift defenses, and generation tests.
-- Implemented concrete semantic, axe, ARIA, geometry, visual, Playwright, maturity, and manual-evidence harness adapters with fail-closed tests.
-- Implemented canonical Button, Dialog, Combobox, and Experimental Data Grid tracer sources with contracts, docs, stories, unit/SSR/browser tests, approved React Aria/TanStack behavior boundaries, and generated UI/native/shadcn/source/API surfaces.
-- Implemented the bounded packed CLI `add` tracer and deterministic CSS Base/Local/Remote merge fixture. Consumer source payloads rewrite relative TypeScript imports portably while package output retains ESM `.js` specifiers from the same canonical source.
-- Passed the post-generation exact-tarball consumer matrix twice: an intentional evidence refresh followed by a clean deterministic comparison. Next 16 and Vite 8 both pass package and source modes with frozen offline reinstall, dependency-tree audit, strict typechecking, and production builds; source mode installs a seven-item closure with 29 owned files.
-- Passed the strict P1 Playwright suite in Chromium, Firefox, and WebKit: 32 browser checks passed with four explicit forced-colors policy skips; the focused accessibility lane passed 10 with two policy skips and the visual lane passed 16 with two policy skips.
-- Replaced the P0 CI placeholder note with real branch jobs for the cross-browser and exact-tarball consumer matrices. Local YAML parsing and pinned-Action verification remain green.
-- Replaced the fixed four-source generator boundary with fail-closed deterministic discovery of canonical source manifests, including entry-import drift, cross-item dependency, companion, path, and cycle validation. Generation and drift checks now verify 468 deterministic artifacts, including the generated public package map.
-- Completed source-present-unreleased implementations, contracts, records, generated outputs, and focused automation for every P2.A-P2.F family: context/infrastructure, intrinsic layout, typography/content, actions/selection, form composition/simple controls, overlays, disclosure/navigation, and feedback/status.
-- Passed the production family browser lanes: context 6/6, layout 6/6, advanced layout 10/10, typography/content 7/7, actions/selection 12/12, form controls 45/45 across Chromium/Firefox/WebKit, overlays 16/16, disclosure/navigation 8/8, and feedback/status 14/14.
-- Completed the P3.2-P3.4 local foundation for discovery, deterministic plans, transactional add/remove/adopt/recover, manifest-last provenance, content-addressed bases, conservative ownership, project locks, hostile-path refusal, fault injection, and byte-preserving recovery. The transaction suite passes 39/39 and the combined discovery/fixture/transaction suite passes 115/115.
-- Passed the full workspace check: root/static verification, 468-artifact drift verification, formatting and lint, 21/21 Turbo typechecks, and 62 Vitest files with 501/501 tests.
-- Resolved npm authentication for read-only verification, selected the approved unscoped package map, migrated public package references, and retained only redacted evidence. Exact-name availability and publish authority remain mandatory release-time rechecks.
+- Preserved the plan-free public history and confirmed that `PLANS/` and `.codex-runs/` are ignored,
+  untracked, absent from the staged checkpoint, and absent from live public history.
+- Renamed the working branch to `feature/foundation`; the obsolete `codex/*` remote branch and PR were
+  removed/replaced. Work continues without waiting for human PR review.
+- Expanded the deterministic generator to 469 artifacts and retained 75 honest
+  `source-present-unreleased` catalog entries without Stable or release claims.
+- Implemented the native release protocol planner/verifier. Its generated output is correctly
+  `blocked-unreleased`: 75 source definitions are present, 103 are missing, and no stable bytes are
+  emitted.
+- Implemented executable consumer Contracts plus deterministic static Contract Audit. Browser,
+  keyboard, accessibility, and responsive modes report unavailable evidence rather than fabricated
+  passes.
+- Implemented transactional rollback, project creation, expanded configuration v1, pinned
+  `shadcn@4.13.0` schema/CLI validation, offline local vendoring, DTCG theme operations, compiled
+  migrations, and strict read-only cleanup with exact category selection.
+- Implemented Semantic Sync Base/Local/Remote classification; JSON/JSONC, CSS, DTCG, text, binary,
+  deletion, keep-region, and conservative structured TS/TSX/JS/JSX adapters; immutable release
+  validation; authoritative-tree-preserving conflict packets; exact-target resolution; and
+  provenance advancement through the transaction engine.
+- Implemented external registry list/inspect/enroll/remove/verify with bounded fetches, HTTPS and
+  localhost policy, redirect/auth stripping, exact identity acceptance, shadcn/native metadata
+  validation, portable-path enforcement, and transactional configuration writes.
+- Implemented the `mergora-mcp` core with 20 deterministic read/plan tools, three resources, bounded
+  NDJSON transport, strict inputs, redacted errors, and no apply/force/consent capability.
+- Stabilized Dialog focus cleanup and geometry tests across repeated WebKit runs without suppressing
+  live in-page warnings.
+- Expanded the exact-tarball consumer matrix to all seven public artifacts. Next and Vite pass source
+  and package modes, packed CLI execution, packed MCP capability smoke, frozen offline reinstall,
+  dependency-tree audit, strict typecheck, and production builds. One evidence refresh plus two clean
+  comparisons matched.
+- Completed an adversarial P3 tranche: 42 malicious registry cases, 14 transaction lifecycle cases,
+  immutable-tamper coverage, retained unequal-overlap/line-ending corpora, and strict cleanup
+  inventory/tamper tests.
+- Passed `pnpm check`: static/workspace/link/schema/generation/shadcn/lint/format gates, 21/21 package
+  typechecks, and 715 tests with one platform-specific skip.
+- Completed a read-only P3 security/data-loss audit. No S0 issue was found; two S1 and four S2
+  release-blocking findings are recorded in
+  [`../quality/P3_SECURITY_DATA_LOSS_AUDIT.md`](../quality/P3_SECURITY_DATA_LOSS_AUDIT.md).
 
 ## Next atomic batch
 
-Observe draft PR #1, fix any Linux-only quality or security failures without weakening policy, and bind the exact successful contexts into branch protection. In parallel, continue with P3.5 Semantic Sync, P3.6 audit/migration/vendor work, P3.7 integrity evidence, and the still-open P2 manual/Passport/parity/dogfood promotion gates.
+1. Add registered staged-overlay and post-commit validators to the shared transaction engine, and
+   derive Semantic Update validation labels only from validators that actually execute.
+2. Normalize initialization onto the durable transaction/recovery lifecycle and extend the complete
+   fault matrix to it.
+3. Build one immutable acquisition abstraction for network/cache/vendor/mirror inputs and connect it
+   to discovery, add, update, and audit without weakening identity, size, origin, or offline policy.
+4. Reconcile the CLI command/flag/status/exit table with the public JSON schemas and validate every
+   packed command envelope.
+5. Continue catalog work only in parallel-safe tranches; the P4/P5 audit found 91 required Stable
+   entries with no canonical source, plus incomplete Combobox and Data Grid tracers.
 
 ## Active failures
 
-| ID      | Severity | Reproduction command                                               | Owner/path                  | Next action                                                                                          |
-| ------- | -------- | ------------------------------------------------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| P0-F004 | S2 gate  | Inspect draft PR #1 checks and live required-status contexts       | GitHub settings / `.github` | Fix Linux-only failures, then enable strict exact contexts without weakening CI.                     |
-| P1-F001 | S2 gate  | Run generation and packed/browser matrices from protected Linux CI | P1 generators and CI        | Bind local deterministic evidence to an immutable commit and confirm Linux normalization.            |
-| P2-F001 | S2 gate  | Inspect P2 item status and promotion deltas                        | P2 source families          | Finish manual/parity/update evidence, Passports, dogfooding, and Stable promotion for every P2 item. |
-| P3-F001 | S2 gate  | Inspect P3.5-P3.7 requirement deltas                               | CLI/sync/audit              | Complete Semantic Sync, audit/migration/vendor flows, integrity campaign, and clean-consumer gate.   |
+| ID      | Severity | Reproduction/evidence                                     | Owner/path                         | Next action                                                                 |
+| ------- | -------- | --------------------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
+| P0-F004 | S2 gate  | Draft PR #2 checks after pushing `385f4aa`                | GitHub workflows/rules             | Observe passive Linux/security evidence and fix real failures.              |
+| P2-F001 | S2 gate  | Inspect generated maturity blockers for 75 source entries | source families/Passports/evidence | Complete manual/parity/update/dogfood evidence before Stable promotion.     |
+| P3-F001 | S1 gate  | `P3_SECURITY_DATA_LOSS_AUDIT.md` SEC-P3-001/002           | transaction/update/configuration   | Execute real validators and journal initialization through shared recovery. |
+| P3-F002 | S2 gate  | Audit SEC-P3-003 through SEC-P3-006                       | resolver/contracts/release/CLI     | Close acquisition, schema, runtime-audit, migration, and release gaps.      |
+| P4-F001 | S2 gate  | Compare required P4/P5 catalog with canonical sources     | component families                 | Implement dependency-ordered collection, numeric, and specialist tranches.  |
 
 ## External blockers
 
-None. `EXT-NPM-AUTH-001` was resolved on 2026-07-18 when authenticated read-only checks selected the approved unscoped map. Initial publication, exact-name availability, and publish-authority revalidation remain later release gates rather than current authentication blockers.
+None. npm authentication is available for later read-only and publication checks. Exact package-name
+availability, publish authority, trusted-publishing setup, and public deployment remain release-time
+gates, not reasons to pause independent implementation.
 
 ## Latest evidence
 
-| Gate                       | Command/run                                                               | Commit    | Result                                                                                                                           | Artifact                                             |
-| -------------------------- | ------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Workspace aggregate        | `corepack pnpm@11.14.0 check`                                             | `fa198fb` | pass: static/root gates, lint/format, 21/21 Turbo typechecks, 62 files and 501/501 Vitest tests                                  | root command contract                                |
-| Token generation           | `pnpm generate`; `pnpm exec vitest run tests/tokens`                      | `fa198fb` | pass: 330 tokens, 12 contexts, 120 contrast checks, 14 tests                                                                     | `packages/tokens/src/generated/`                     |
-| Font reproducibility       | `rebuild_commit_mono.py ... --verify-manifest` twice                      | `fa198fb` | pass: identical 43,756-byte WOFF2, SHA-256 `d3544274…8984278ba`, valid one-zone `maxp`                                           | `assets/fonts/`                                      |
-| Deterministic generation   | `pnpm generate`; `pnpm generated:check`; generation/identity tests        | `fa198fb` | pass: 468 deterministic artifacts and 25/25 generation/package-identity tests                                                    | `registry/generated/`, `content/generated/`          |
-| P2 source-family browsers  | focused production family Playwright configurations                       | `fa198fb` | pass: 6 context, 6 layout, 10 advanced, 7 typography, 12 actions, 45 forms, 16 overlays, 8 disclosure, and 14 feedback scenarios | `tests/components/`                                  |
-| P3 transactions/provenance | focused and combined CLI Vitest suites                                    | `fa198fb` | pass: 39/39 transaction tests; 115/115 discovery, fixture, and transaction tests                                                 | `docs/quality/P3_TRANSACTION_PROVENANCE.md`          |
-| Browser contracts          | `pnpm test:browser`                                                       | `fa198fb` | pass: 32 passed, 4 explicit forced-colors policy skips across Chromium/Firefox/WebKit                                            | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Accessibility browser lane | `pnpm test:a11y`                                                          | `fa198fb` | pass: 10 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Visual determinism lane    | `pnpm test:visual`                                                        | `fa198fb` | pass: 16 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Packed external consumers  | evidence refresh with `--write-evidence`, then clean `pnpm test:consumer` | `fa198fb` | pass twice: Next/Vite × package/source; 7-item/29-file source closure; offline reinstall, audit, typecheck, and builds           | `tests/packed-consumers/evidence.json`               |
-| Consumer/pack probes       | `verify-workspace.mjs --gate consumer`; `--gate pack`                     | `fa198fb` | pass: concrete runner, matrix, deterministic evidence contract, and root wiring                                                  | `docs/quality/P1_PACKED_CONSUMERS.md`                |
-| Draft pull request         | GitHub PR #1                                                              | `fa198fb` | open as draft; Foundation quality/build, CodeQL, and dependency review are running                                               | https://github.com/AkhilTrivediX/mergora/pull/1      |
-| Live repository controls   | GitHub API probes                                                         | `fa198fb` | pass for existing controls; exact successful CI contexts pending PR #1                                                           | repository settings                                  |
-| npm package identity       | authenticated read-only checks and package-map verification               | `fa198fb` | pass: approved unscoped map selected and auth available; exact-name/publish authority recheck remains                            | `config/public-packages.json`, `PACKAGE_IDENTITY.md` |
+| Gate                    | Command/run                                                         | Commit       | Result                                                                                           |
+| ----------------------- | ------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------ |
+| Workspace aggregate     | `pnpm check`                                                        | `385f4aa`    | pass: 469 artifacts, shadcn CLI, lint/format, 21/21 typechecks, 715 pass and one platform skip   |
+| Exact packed consumers  | refresh plus two `node scripts/verify-p1-consumers.mjs` compares    | `385f4aa`    | pass: seven tarballs, Next/Vite × source/package, offline reinstall/build, MCP `20/3/false`      |
+| Semantic Sync           | `pnpm exec vitest run tests/cli-semantic-sync tests/merge-fixtures` | `385f4aa`    | pass: deterministic update, conflicts, exact resolution, structured adapters, immutable tamper   |
+| Adversarial P3 security | `pnpm exec vitest run tests/cli-security`                           | `385f4aa`    | pass: 65 cases across registry, transaction lifecycle, immutable update, and retained corpora    |
+| Cleanup                 | `pnpm exec vitest run tests/cli-clean`                              | `385f4aa`    | pass: 11 cases and one platform skip; explicit, bounded, journaled, fail-closed                  |
+| Packed command contract | `pnpm exec vitest run tests/cli-discovery/packed-commands.test.ts`  | `385f4aa`    | pass: 16 executable command/consent/output cases                                                 |
+| Browser stability       | WebKit suite repeated three times                                   | `385f4aa`    | pass: 30 checks and six explicit policy skips; no teardown warning failures                      |
+| Public repository       | GitHub draft PR #2                                                  | pending push | branch checkpoint will trigger Linux quality, CodeQL, dependency review, and consumer/browser CI |

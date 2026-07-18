@@ -1,8 +1,8 @@
 # P1 packed external consumers
 
 This proof is the P1 distribution boundary for `P1-024`. It packs the exact unreleased CLI,
-executable contracts, Semantic Sync registry runtime, UI, tokens, and schema workspaces, then
-installs the same six tarballs into fresh projects created under the operating system's temporary
+executable contracts, plan-only MCP server, Semantic Sync registry runtime, UI, tokens, and schema
+workspaces, then installs the same seven tarballs into fresh projects created under the operating system's temporary
 directory, outside the Mergora monorepo. No consumer dependency uses `workspace:`, `catalog:`,
 `link:`, or a monorepo path.
 
@@ -54,6 +54,9 @@ appearing in `package.json`. Both modes also install the exact `mergora-contract
 the packed CLI audit runtime; the runner verifies its declaration/runtime entry points and both
 versioned schemas. The exact `mergora-registry` tarball supplies the CLI's deterministic Semantic
 Sync adapters; its runtime and declaration entry points are verified independently of the workspace.
+The exact `mergora-mcp` tarball is imported from each frozen external consumer and must expose 20
+tools, three resources, and `applyCapability: false`; this proves that its public runtime remains
+read/plan-only without relying on workspace resolution.
 
 ## Fail-closed checks
 
@@ -67,8 +70,9 @@ For each project the runner:
 5. resolves every Mergora package inside the external project's own `node_modules`;
 6. rejects local dependency protocols, install lifecycle scripts, monorepo paths, or missing public
    exports/assets;
-7. runs strict TypeScript and a production framework build; and
-8. inspects the output for Button, Dialog, Combobox, semantic-token CSS, and the non-root base path.
+7. imports the packed MCP runtime and verifies its exact non-applying capability surface;
+8. runs strict TypeScript and a production framework build; and
+9. inspects the output for Button, Dialog, Combobox, semantic-token CSS, and the non-root base path.
 
 The runner always validates its temporary root before recursive cleanup. Logs substitute
 `<workspace>` and `<temporary>` for absolute paths, and the evidence file contains no timestamp,
@@ -77,8 +81,8 @@ host path, or platform-specific temporary directory.
 ## Evidence boundary and limitations
 
 The tracked evidence binds the raw SHA-256 digest and filename of each exact tarball to four passing
-consumer records. The current record was refreshed by one complete clean run and then matched by an
-immediate second complete run. `publicationStatus` remains `unreleased`; this P1 evidence is not npm
+consumer records. The current record was refreshed by one complete clean run and then matched by two
+complete comparison runs. `publicationStatus` remains `unreleased`; this P1 evidence is not npm
 publication, provenance, or a Stable-maturity claim.
 
 The proof covers fresh source/package installation, offline reproducibility from the seeded store,
