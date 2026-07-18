@@ -206,6 +206,7 @@ const SHA256 = /^sha256:[0-9a-f]{64}$/u;
 const STABLE_SEMVER = /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/u;
 const RELEASE_COMMIT = /^[0-9a-f]{40}$/u;
 const WINDOWS_RESERVED = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/iu;
+const INTERNAL_PROTOCOL_PREFIX = "r/v1/" as const;
 
 function containsControlCharacter(value: string): boolean {
   return [...value].some((character) => {
@@ -311,6 +312,28 @@ function assertPortableReleasePath(path: string): void {
   }
 }
 
+function protocolRelativeArtifactPath(path: string): string {
+  assertPortableReleasePath(path);
+  if (
+    !path.startsWith(INTERNAL_PROTOCOL_PREFIX) ||
+    path.length === INTERNAL_PROTOCOL_PREFIX.length
+  ) {
+    fail(`artifact path ${JSON.stringify(path)} is outside the internal r/v1 protocol root.`);
+  }
+  return path.slice(INTERNAL_PROTOCOL_PREFIX.length);
+}
+
+function internalArtifactPathFromUrl(url: string, origin: string, context: string): string {
+  assertImmutableHttpsUrl(url, context, origin);
+  const relative = url.slice(`${origin}/`.length);
+  if (relative === "r/v1" || relative.startsWith(INTERNAL_PROTOCOL_PREFIX)) {
+    fail(`${context} repeats the r/v1 protocol prefix after the registry origin.`);
+  }
+  const path = `${INTERNAL_PROTOCOL_PREFIX}${relative}`;
+  assertPortableReleasePath(path);
+  return path;
+}
+
 function assertEvidenceReference(
   reference: ReleaseEvidenceReference,
   context: string,
@@ -354,13 +377,11 @@ function evidencePointer(
 }
 
 function evidenceArtifactPath(reference: ReleaseEvidenceReference, origin: string): string {
-  const prefix = `${origin}/`;
-  if (!reference.artifact.startsWith(prefix)) {
-    fail(`evidence artifact ${reference.id} is outside the official origin.`);
-  }
-  const path = reference.artifact.slice(prefix.length);
-  assertPortableReleasePath(path);
-  return path;
+  return internalArtifactPathFromUrl(
+    reference.artifact,
+    origin,
+    `evidence artifact ${reference.id}`,
+  );
 }
 
 function validationFailure(
@@ -502,7 +523,7 @@ function makeArtifact(
 }
 
 function artifactUrl(origin: string, path: string): string {
-  return `${origin}/${path}`;
+  return `${origin}/${protocolRelativeArtifactPath(path)}`;
 }
 
 function makeEvidenceArtifact(
@@ -574,7 +595,7 @@ function assertReleaseInput(input: StableReleaseProtocolInput): void {
     input.registry.origin,
   );
   assertEvidenceReference(input.sbom, "release SBOM", input.registry.origin);
-  const releaseEvidenceRoot = `${input.registry.origin}/r/v1/releases/${input.uiVersion}`;
+  const releaseEvidenceRoot = `${input.registry.origin}/releases/${input.uiVersion}`;
   if (input.releaseGate.qualitySummary.artifact !== `${releaseEvidenceRoot}/quality.json`) {
     fail("quality evidence must use its canonical immutable release path.");
   }
@@ -732,7 +753,10 @@ export function buildStableReleaseProtocolBundle(
       payload.passport.version !== input.uiVersion ||
       payload.links.passport !== item.passport.artifact ||
       item.passport.artifact !==
-        `${input.registry.origin}/r/v1/passports/${input.uiVersion}/${payload.itemId}.json`
+        artifactUrl(
+          input.registry.origin,
+          `r/v1/passports/${input.uiVersion}/${payload.itemId}.json`,
+        )
     ) {
       fail(`item ${payload.itemId} Passport identity, version, or URL is inconsistent.`);
     }
@@ -741,7 +765,10 @@ export function buildStableReleaseProtocolBundle(
       payload.contract.id !== item.contract.id ||
       payload.links.contract !== item.contract.artifact ||
       item.contract.artifact !==
-        `${input.registry.origin}/r/v1/contracts/${payload.contract.version}/${payload.itemId}.json`
+        artifactUrl(
+          input.registry.origin,
+          `r/v1/contracts/${payload.contract.version}/${payload.itemId}.json`,
+        )
     ) {
       fail(`item ${payload.itemId} Contract identity, version, or URL is inconsistent.`);
     }
@@ -1123,7 +1150,19 @@ export function verifyStableReleaseProtocolBundle(
   ) {
     fail("catalog or manifest release identity structure is inconsistent with the bundle.");
   }
-  const origin = (registry as Record<string, unknown>).origin as string;
+  const registryRecord = registry as Record<string, unknown>;
+  const origin = registryRecord.origin as string;
+  if (origin.endsWith("/")) fail("catalog registry origin must not end with a slash.");
+  assertImmutableHttpsUrl(origin, "catalog registry origin");
+  if (
+    registryRecord.id !== bundle.registryId ||
+    registryRecord.trust !== "official" ||
+    typeof registryRecord.identityDigest !== "string" ||
+    registryRecord.identityDigest !==
+      officialRegistryIdentityDigest({ id: bundle.registryId, origin })
+  ) {
+    fail("catalog registry identity digest does not bind its exact id, origin, and trust.");
+  }
   const manifestArtifact = byPath.get(
     `r/v1/releases/${bundle.uiVersion}/manifest.json`.toLocaleLowerCase("en-US"),
   )!;
@@ -1191,9 +1230,10 @@ export function verifyStableReleaseProtocolBundle(
       links === null ||
       typeof links !== "object" ||
       Array.isArray(links) ||
-      (payloadReference as Record<string, unknown>).artifact !== `${origin}/${artifact.path}` ||
+      (payloadReference as Record<string, unknown>).artifact !==
+        artifactUrl(origin, artifact.path) ||
       (payloadReference as Record<string, unknown>).digest !== artifact.digest ||
-      (links as Record<string, unknown>).payload !== `${origin}/${artifact.path}`
+      (links as Record<string, unknown>).payload !== artifactUrl(origin, artifact.path)
     ) {
       fail(`item ${id} has inconsistent catalog or manifest payload provenance.`);
     }
@@ -1213,11 +1253,15 @@ export function verifyStableReleaseProtocolBundle(
       const record = reference as Record<string, unknown>;
       const artifactUrlValue = record.artifact;
       const evidenceIdentity = identity as Record<string, unknown>;
-      if (typeof artifactUrlValue !== "string" || !artifactUrlValue.startsWith(`${origin}/`)) {
+      if (typeof artifactUrlValue !== "string") {
         fail(`item ${id} ${evidenceKind} artifact is outside the canonical origin.`);
       }
       const evidenceArtifact = byPath.get(
-        artifactUrlValue.slice(`${origin}/`.length).toLocaleLowerCase("en-US"),
+        internalArtifactPathFromUrl(
+          artifactUrlValue,
+          origin,
+          `item ${id} ${evidenceKind} artifact`,
+        ).toLocaleLowerCase("en-US"),
       );
       if (
         evidenceArtifact === undefined ||
@@ -1245,9 +1289,10 @@ export function verifyStableReleaseProtocolBundle(
       Array.isArray(latestManifest) ||
       latest.itemId !== id ||
       latest.resolvedVersion !== bundle.uiVersion ||
-      (latestPayload as Record<string, unknown>).url !== `${origin}/${artifact.path}` ||
+      (latestPayload as Record<string, unknown>).url !== artifactUrl(origin, artifact.path) ||
       (latestPayload as Record<string, unknown>).digest !== artifact.digest ||
-      (latestManifest as Record<string, unknown>).url !== `${origin}/${manifestArtifact.path}` ||
+      (latestManifest as Record<string, unknown>).url !==
+        artifactUrl(origin, manifestArtifact.path) ||
       (latestManifest as Record<string, unknown>).digest !== manifestArtifact.digest
     ) {
       fail(`item ${id} latest alias is not bound to the immutable payload and manifest.`);
@@ -1300,10 +1345,14 @@ export function verifyStableReleaseProtocolBundle(
       fail("release manifest contains a non-object artifact reference.");
     }
     const reference = rawReference as Record<string, unknown>;
-    if (typeof reference.url !== "string" || !reference.url.startsWith(`${origin}/`)) {
+    if (typeof reference.url !== "string") {
       fail("release manifest artifact URL is outside the canonical origin.");
     }
-    const path = reference.url.slice(`${origin}/`.length);
+    const path = internalArtifactPathFromUrl(
+      reference.url,
+      origin,
+      "release manifest artifact URL",
+    );
     const artifact = byPath.get(path.toLocaleLowerCase("en-US"));
     if (
       artifact === undefined ||

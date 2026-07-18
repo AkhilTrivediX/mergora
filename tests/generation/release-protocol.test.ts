@@ -17,8 +17,13 @@ import {
   type StableReleaseProtocolInput,
 } from "../../tooling/registry-builder/src/index.ts";
 
-const ORIGIN = "https://registry.example.test";
+const ORIGIN = "https://registry.example.test/r/v1";
 const VERSION = "1.0.0";
+
+function publicRegistryUrl(internalPath: string): string {
+  expect(internalPath).toMatch(/^r\/v1\//u);
+  return `${ORIGIN}/${internalPath.slice("r/v1/".length)}`;
+}
 
 const validate: ReleaseProtocolValidator = (kind, value) => {
   const result = validateSchemaDocument(kind, value);
@@ -33,7 +38,7 @@ function evidence(id: string, path: string): ReleaseEvidenceReference {
   });
   return {
     id,
-    artifact: `${ORIGIN}/${path}`,
+    artifact: publicRegistryUrl(path),
     digest: releaseArtifactDigest(content),
     content,
   };
@@ -56,8 +61,8 @@ function payload(id: string, dependencies: readonly string[] = []): ReleaseItemP
       docs: `${ORIGIN}/docs/${id}`,
       source: `${ORIGIN}/source/${id}`,
       changelog: `${ORIGIN}/changelog/${id}`,
-      passport: `${ORIGIN}/r/v1/passports/${VERSION}/${id}.json`,
-      contract: `${ORIGIN}/r/v1/contracts/${VERSION}/${id}.json`,
+      passport: `${ORIGIN}/passports/${VERSION}/${id}.json`,
+      contract: `${ORIGIN}/contracts/${VERSION}/${id}.json`,
     },
     compatibility: {
       cli: ">=1.0.0 <2.0.0",
@@ -212,12 +217,24 @@ describe("native registry release protocol v1", () => {
     );
     const manifest = json.get("r/v1/releases/1.0.0/manifest.json") as {
       dependencyGraphDigest: string;
-      items: Record<string, { payload: { artifact: string; digest: string } }>;
+      items: Record<
+        string,
+        {
+          payload: { artifact: string; digest: string };
+          passport: { artifact: string };
+          contract: { artifact: string };
+        }
+      >;
       artifacts: { name: string; url: string; digest: string; bytes: number }[];
     };
     const catalog = json.get("r/v1/catalog.json") as {
+      registry: { origin: string };
       dependencyGraphDigest: string;
-      items: { id: string; links: { payload: string }; registryDependencies: string[] }[];
+      items: {
+        id: string;
+        links: { payload: string; passport: string; contract: string; source: string };
+        registryDependencies: string[];
+      }[];
     };
     const buttonArtifact = bundle.artifacts.find(
       ({ path }) => path === "r/v1/releases/1.0.0/items/button.json",
@@ -229,12 +246,50 @@ describe("native registry release protocol v1", () => {
     const manifestArtifact = bundle.artifacts.find(
       ({ path }) => path === "r/v1/releases/1.0.0/manifest.json",
     )!;
+    const mirror = json.get("r/v1/releases/1.0.0/mirror-manifest.json") as {
+      canonicalOrigin: string;
+      artifacts: { path: string; url: string }[];
+    };
+    const buttonCatalog = catalog.items.find(({ id }) => id === "button")!;
 
+    expect(catalog.registry.origin).toBe(ORIGIN);
     expect(manifest.dependencyGraphDigest).toBe(bundle.dependencyGraphDigest);
     expect(catalog.dependencyGraphDigest).toBe(bundle.dependencyGraphDigest);
     expect(manifest.items.button?.payload.digest).toBe(buttonArtifact.digest);
     expect(latest.payload.digest).toBe(buttonArtifact.digest);
     expect(latest.releaseManifest.digest).toBe(manifestArtifact.digest);
+    expect(latest.payload.url).toBe(`${ORIGIN}/releases/1.0.0/items/button.json`);
+    expect(latest.releaseManifest.url).toBe(`${ORIGIN}/releases/1.0.0/manifest.json`);
+    expect(manifest.items.button?.payload.artifact).toBe(
+      `${ORIGIN}/releases/1.0.0/items/button.json`,
+    );
+    expect(manifest.items.button?.passport.artifact).toBe(`${ORIGIN}/passports/1.0.0/button.json`);
+    expect(manifest.items.button?.contract.artifact).toBe(`${ORIGIN}/contracts/1.0.0/button.json`);
+    expect(buttonCatalog.links).toMatchObject({
+      payload: `${ORIGIN}/releases/1.0.0/items/button.json`,
+      passport: `${ORIGIN}/passports/1.0.0/button.json`,
+      contract: `${ORIGIN}/contracts/1.0.0/button.json`,
+      source: `${ORIGIN}/source/button`,
+    });
+    expect(mirror.canonicalOrigin).toBe(ORIGIN);
+    expect(mirror.artifacts).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: "r/v1/catalog.json",
+          url: `${ORIGIN}/catalog.json`,
+        }),
+        expect.objectContaining({
+          path: "r/v1/items/button/latest.json",
+          url: `${ORIGIN}/items/button/latest.json`,
+        }),
+      ]),
+    );
+    expect(publicRegistryUrl("r/v1/releases/1.0.0/mirror-manifest.json")).toBe(
+      `${ORIGIN}/releases/1.0.0/mirror-manifest.json`,
+    );
+    expect(bundle.artifacts.map(({ content }) => content).join("\n")).not.toContain(
+      `${ORIGIN}/r/v1/`,
+    );
     expect(catalog.items.find(({ id }) => id === "dialog")?.registryDependencies).toEqual([
       "mergora:button",
     ]);
@@ -255,7 +310,7 @@ describe("native registry release protocol v1", () => {
     for (const reference of manifest.artifacts) {
       const artifact = bundle.artifacts.find(({ path }) => path === reference.name)!;
       expect(reference).toMatchObject({
-        url: `${ORIGIN}/${reference.name}`,
+        url: publicRegistryUrl(reference.name),
         digest: artifact.digest,
         bytes: Buffer.byteLength(artifact.content, "utf8"),
       });
@@ -347,6 +402,21 @@ describe("native registry release protocol v1", () => {
       ),
     ).toThrow(/content must be canonical release bytes matching its digest/u);
 
+    const doubledProtocolPrefix = releaseInput([item("button")]);
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...doubledProtocolPrefix,
+          schemas: doubledProtocolPrefix.schemas.map((schema, index) =>
+            index === 0
+              ? { ...schema, artifact: `${ORIGIN}/r/v1/schemas/catalog-v1.schema.json` }
+              : schema,
+          ),
+        },
+        validate,
+      ),
+    ).toThrow(/repeats the r\/v1 protocol prefix/u);
+
     const missingSchema = releaseInput([item("button")]);
     expect(() =>
       buildStableReleaseProtocolBundle(
@@ -405,6 +475,17 @@ describe("native registry release protocol v1", () => {
     };
 
     const bundle = buildStableReleaseProtocolBundle(releaseInput(), validate);
+    const badRegistryOrigin = rewriteJsonArtifact(bundle, "r/v1/catalog.json", (document) => ({
+      ...document,
+      registry: {
+        ...(document.registry as Record<string, unknown>),
+        origin: "https://rewritten.example.test/r/v1",
+      },
+    }));
+    expect(() => verifyStableReleaseProtocolBundle(badRegistryOrigin, validate)).toThrow(
+      /registry identity digest does not bind/u,
+    );
+
     const badSearch = rewriteJsonArtifact(bundle, "r/v1/search-index.json", (document) => ({
       ...document,
       items: (document.items as Record<string, unknown>[]).map((row, index) =>
@@ -461,7 +542,7 @@ describe("native registry release protocol v1", () => {
       artifact.path.endsWith("items/dialog.json"),
     )!;
     latestDocument.payload = {
-      url: `${ORIGIN}/${dialog.path}`,
+      url: publicRegistryUrl(dialog.path),
       digest: dialog.digest,
     };
     const latestContent = canonicalJsonFile(latestDocument);

@@ -37,7 +37,21 @@ import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 import { transportResponse } from "./helpers.ts";
 
 const ORIGIN = OFFICIAL_REGISTRY_ORIGIN;
+const MIRROR_ORIGIN = "https://mirror.example.test/r/v1";
 const temporaryDirectories: string[] = [];
+
+function protocolRelativePath(internalPath: string): string {
+  if (!internalPath.startsWith("r/v1/")) throw new Error(`Invalid internal path: ${internalPath}`);
+  return internalPath.slice("r/v1/".length);
+}
+
+function internalPath(protocolRelative: string): string {
+  return `r/v1/${protocolRelative}`;
+}
+
+function publicRegistryUrl(internalPathValue: string, origin = ORIGIN): string {
+  return `${origin}/${protocolRelativePath(internalPathValue)}`;
+}
 
 const registry: AcquisitionRegistryIdentity = {
   id: "official",
@@ -66,7 +80,7 @@ function evidence(id: string, path: string): ReleaseEvidenceReference {
   });
   return {
     id,
-    artifact: `${ORIGIN}/${path}`,
+    artifact: publicRegistryUrl(path),
     digest: releaseArtifactDigest(content),
     content,
   };
@@ -108,7 +122,7 @@ function payload(
       targetRole: "component",
       mediaType: "text/typescript-jsx",
       bytes: Buffer.byteLength(content),
-      ...(sourceUrl ? { sourceUrl: `${ORIGIN}/${sourcePath}` } : { content }),
+      ...(sourceUrl ? { sourceUrl: publicRegistryUrl(sourcePath) } : { content }),
       digest: releaseArtifactDigest(content),
       executable: false,
       transformPipeline: [{ adapter: unsupportedTransform ? "alias-rewrite" : "none", version }],
@@ -144,8 +158,8 @@ function payload(
         docs: `${ORIGIN}/docs/${id}`,
         source: `${ORIGIN}/source/${id}`,
         changelog: `${ORIGIN}/changelog/${id}`,
-        passport: `${ORIGIN}/r/v1/passports/${version}/${id}.json`,
-        contract: `${ORIGIN}/r/v1/contracts/${version}/${id}.json`,
+        passport: `${ORIGIN}/passports/${version}/${id}.json`,
+        contract: `${ORIGIN}/contracts/${version}/${id}.json`,
       },
       compatibility: compatibility(),
       files,
@@ -247,7 +261,7 @@ function nativeFixture(
     items: [dialog.item, button.item],
   };
   const bundle = buildStableReleaseProtocolBundle(input, validate);
-  const bytesByPath = new Map(
+  const bytesByPath = new Map<string, Buffer>(
     bundle.artifacts.map((artifact) => [artifact.path, Buffer.from(artifact.content)]),
   );
   for (const [path, bytes] of [...button.sourceFiles, ...dialog.sourceFiles])
@@ -261,7 +275,7 @@ function nativeFixture(
   const dialogFiles = dialogDocument.files as Record<string, unknown>[];
   const dialogSource = Buffer.from(String(dialogFiles[0]!.content), "utf8");
   delete dialogFiles[0]!.content;
-  dialogFiles[0]!.sourceUrl = `${ORIGIN}/${dialogSourcePath}`;
+  dialogFiles[0]!.sourceUrl = publicRegistryUrl(dialogSourcePath);
   const { payloadDigest: ignoredDialogDigest, ...unsignedDialog } = dialogDocument;
   void ignoredDialogDigest;
   dialogDocument.payloadDigest = sha256(canonicalJson(unsignedDialog));
@@ -314,12 +328,12 @@ function nativeFixture(
       release: version,
       itemIds: ["dialog"],
       catalog: {
-        path: catalog.path,
+        path: protocolRelativePath(catalog.path),
         digest: catalog.digest,
         bytes: Buffer.byteLength(catalog.content),
       },
       manifest: {
-        path: manifest.path,
+        path: protocolRelativePath(manifest.path),
         digest: sha256(manifestBytes),
         bytes: manifestBytes.byteLength,
       },
@@ -328,8 +342,8 @@ function nativeFixture(
   };
 }
 
-function pathFromUrl(url: string, origin = ORIGIN): string {
-  return url.slice(`${origin}/`.length);
+function pathFromUrl(url: string, origin: string = ORIGIN): string {
+  return internalPath(url.slice(`${origin}/`.length));
 }
 
 function fixtureTransport(
@@ -346,9 +360,7 @@ function fixtureTransport(
         contentLength: 0,
       });
     }
-    const path = canonical
-      ? pathFromUrl(request.url)
-      : new URL(request.url).pathname.replace(/^\//u, "");
+    const path = canonical ? pathFromUrl(request.url) : pathFromUrl(request.url, MIRROR_ORIGIN);
     const bytes = fixture.bytesByPath.get(path);
     if (bytes === undefined) {
       return transportResponse(request, Buffer.alloc(0), { status: 404, contentLength: 0 });
@@ -396,7 +408,8 @@ function mutateItemFixture(
   document.payloadDigest = sha256(canonicalJson(unsignedItem));
   const itemBytes = Buffer.from(canonicalJsonFile(document));
   const itemDigest = sha256(itemBytes);
-  const manifestPath = fixture.options.manifest.path;
+  const manifestRequestPath = fixture.options.manifest.path;
+  const manifestPath = internalPath(manifestRequestPath);
   const manifest = JSON.parse(fixture.bytesByPath.get(manifestPath)!.toString("utf8")) as Record<
     string,
     unknown
@@ -420,7 +433,7 @@ function mutateItemFixture(
     options: {
       ...fixture.options,
       manifest: {
-        path: manifestPath,
+        path: manifestRequestPath,
         digest: sha256(manifestBytes),
         bytes: manifestBytes.byteLength,
       },
@@ -456,6 +469,23 @@ describe("native release acquisition routing", () => {
     expect(release.registry.identityDigest).toBe(registry.identityDigest);
     expect(callbacks).toEqual(["catalog", "release-manifest", "item", "item"]);
     expect(release.catalog[0]?.latestStableVersion).toBe("1.0.0");
+    expect(calls).toEqual(
+      expect.arrayContaining([
+        `${ORIGIN}/catalog.json`,
+        `${ORIGIN}/releases/1.0.0/manifest.json`,
+        `${ORIGIN}/releases/1.0.0/items/button.json`,
+        `${ORIGIN}/releases/1.0.0/items/dialog.json`,
+        `${ORIGIN}/releases/1.0.0/files/dialog.tsx`,
+      ]),
+    );
+    expect(calls.every((url) => !url.includes("/r/v1/r/v1/"))).toBe(true);
+    expect(release.items.find(({ itemId }) => itemId === "button")?.payloadUrl).toBe(
+      `${ORIGIN}/releases/1.0.0/items/button.json`,
+    );
+    expect(release.catalog.find(({ id }) => id === "button")?.links).toMatchObject({
+      passport: `${ORIGIN}/passports/1.0.0/button.json`,
+      contract: `${ORIGIN}/contracts/1.0.0/button.json`,
+    });
 
     const search = searchRegistry("pressable", { acquiredRelease: release });
     expect(search.items[0]).toMatchObject({
@@ -528,17 +558,29 @@ describe("native release acquisition routing", () => {
     const target = project();
     const fixture = nativeFixture();
     let transports = 0;
+    const vendorPaths: string[] = [];
     const release = await resolveNativeRegistryRelease({
       ...fixture.options,
       projectRoot: target.root,
       offline: true,
-      vendor: (request) => fixture.bytesByPath.get(request.path) ?? null,
+      vendor: (request) => {
+        vendorPaths.push(request.path);
+        return fixture.bytesByPath.get(internalPath(request.path)) ?? null;
+      },
       transport: async () => {
         transports += 1;
         throw new Error("network forbidden");
       },
     });
     expect(transports).toBe(0);
+    expect(vendorPaths).toEqual(
+      expect.arrayContaining([
+        "catalog.json",
+        "releases/1.0.0/manifest.json",
+        "releases/1.0.0/items/button.json",
+      ]),
+    );
+    expect(vendorPaths.every((path) => !path.startsWith("r/v1/"))).toBe(true);
     expect(release.source).toBe("vendor");
     expect(
       planAcquiredSourceAdd({
@@ -576,12 +618,13 @@ describe("native release acquisition routing", () => {
     const release = await resolveNativeRegistryRelease({
       ...fixture.options,
       projectRoot: target.root,
-      mirrorOrigins: ["https://mirror.example.test"],
+      mirrorOrigins: [MIRROR_ORIGIN],
       transport: fixtureTransport(fixture, calls, false),
     });
     expect(release.source).toBe("mirror");
     expect(release.artifactSources).toEqual(["mirror"]);
-    expect(calls.some((url) => url.startsWith("https://mirror.example.test/"))).toBe(true);
+    expect(calls).toContain(`${MIRROR_ORIGIN}/catalog.json`);
+    expect(calls.every((url) => !url.includes("/r/v1/r/v1/"))).toBe(true);
   });
 
   it("rejects ambiguous source suffixes and preserves exact acquired compatibility", async () => {
@@ -674,12 +717,21 @@ describe("native release acquisition routing", () => {
         contract.version = "2.0.0";
       },
     },
+    {
+      label: "version-looking source URL outside the immutable files subtree",
+      expected: "REGISTRY_URL_INVALID",
+      mutate: (document: Record<string, unknown>) => {
+        const files = document.files as { sourceUrl?: string }[];
+        files[0]!.sourceUrl = `${ORIGIN}/archive/1.0.0/files/dialog.tsx`;
+      },
+      itemId: "dialog",
+    },
   ])(
     "rejects coherently rehashed $label before caching or live writes",
-    async ({ expected, mutate }) => {
+    async ({ expected, mutate, itemId = "button" }) => {
       const target = project();
       const manifestBefore = readFileSync(resolve(target.root, ".mergora/manifest.json"));
-      const tampered = mutateItemFixture(nativeFixture(), "button", mutate);
+      const tampered = mutateItemFixture(nativeFixture(), itemId, mutate);
       await expect(acquire(tampered, target.root)).rejects.toMatchObject({ code: expected });
       expect(readFileSync(resolve(target.root, ".mergora/manifest.json"))).toEqual(manifestBefore);
       expect(existsSync(resolve(target.root, "src/components/mergora/button/button.tsx"))).toBe(
@@ -715,7 +767,7 @@ describe("native release acquisition routing", () => {
         vendor: (request) =>
           request.path.endsWith("/items/button.json")
             ? null
-            : (fixture.bytesByPath.get(request.path) ?? null),
+            : (fixture.bytesByPath.get(internalPath(request.path)) ?? null),
         transport: async () => {
           transports += 1;
           throw new Error("offline network leak");
@@ -745,7 +797,8 @@ describe("native release acquisition routing", () => {
       const target = project();
       const fixture = nativeFixture();
       const manifestBefore = readFileSync(resolve(target.root, ".mergora/manifest.json"));
-      const manifestPath = fixture.options.manifest.path;
+      const manifestRequestPath = fixture.options.manifest.path;
+      const manifestPath = internalPath(manifestRequestPath);
       const manifest = JSON.parse(
         fixture.bytesByPath.get(manifestPath)!.toString("utf8"),
       ) as Record<string, unknown>;
@@ -769,7 +822,7 @@ describe("native release acquisition routing", () => {
         options: {
           ...fixture.options,
           manifest: {
-            path: manifestPath,
+            path: manifestRequestPath,
             digest: sha256(manifestBytes),
             bytes: manifestBytes.byteLength,
           },
@@ -785,6 +838,42 @@ describe("native release acquisition routing", () => {
       );
     },
   );
+
+  it("rejects a coherently rehashed artifact name that disagrees with its public URL", async () => {
+    const target = project();
+    const fixture = nativeFixture();
+    const manifestRequestPath = fixture.options.manifest.path;
+    const manifestPath = internalPath(manifestRequestPath);
+    const manifest = JSON.parse(fixture.bytesByPath.get(manifestPath)!.toString("utf8")) as Record<
+      string,
+      unknown
+    >;
+    const artifacts = manifest.artifacts as { name: string; url: string }[];
+    const payload = artifacts.find(({ url }) => url.endsWith("/releases/1.0.0/items/dialog.json"))!;
+    payload.name = "r/v1/releases/1.0.0/items/not-dialog.json";
+    const { manifestDigest: ignoredManifestDigest, ...unsignedManifest } = manifest;
+    void ignoredManifestDigest;
+    manifest.manifestDigest = sha256(canonicalJson(unsignedManifest));
+    const manifestBytes = Buffer.from(canonicalJsonFile(manifest));
+    const bytesByPath = new Map(fixture.bytesByPath);
+    bytesByPath.set(manifestPath, manifestBytes);
+    const tampered: NativeFixture = {
+      ...fixture,
+      bytesByPath,
+      options: {
+        ...fixture.options,
+        manifest: {
+          path: manifestRequestPath,
+          digest: sha256(manifestBytes),
+          bytes: manifestBytes.byteLength,
+        },
+      },
+    };
+
+    await expect(acquire(tampered, target.root)).rejects.toMatchObject({
+      code: "REGISTRY_RELEASE_IDENTITY_INVALID",
+    });
+  });
 
   it("routes acquired immutable payload digests through add and Semantic Sync update", async () => {
     const target = project();
@@ -914,7 +1003,7 @@ describe("native release acquisition routing", () => {
       options: {
         ...fixture.options,
         manifest: {
-          path: manifestPath,
+          path: protocolRelativePath(manifestPath),
           digest: sha256(manifestBytes),
           bytes: manifestBytes.byteLength,
         },

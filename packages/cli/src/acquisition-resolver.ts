@@ -97,6 +97,7 @@ type Digest = `sha256:${string}`;
 export type NativeRegistryDocumentKind = "catalog" | "release-manifest" | "item";
 
 export interface NativeReleaseArtifactReference {
+  /** Protocol-origin-relative path, for example `catalog.json` or `releases/1.0.0/manifest.json`. */
   readonly path: string;
   readonly digest: Digest;
   readonly bytes?: number | undefined;
@@ -441,8 +442,18 @@ function pathFromImmutableUrl(url: string, origin: string, label: string): strin
     throw resolverError(`${label} leaves the selected registry origin.`, "REGISTRY_URL_INVALID");
   }
   const path = url.slice(normalized.length + 1);
-  if (path.length === 0) {
-    throw resolverError(`${label} has no immutable artifact path.`, "REGISTRY_URL_INVALID");
+  if (
+    path.length === 0 ||
+    path === "r/v1" ||
+    path.startsWith("r/v1/") ||
+    path.includes("\\") ||
+    path.includes("//") ||
+    path.split("/").some((segment) => segment === "" || segment === "." || segment === "..")
+  ) {
+    throw resolverError(
+      `${label} is not a portable protocol-relative artifact path.`,
+      "REGISTRY_URL_INVALID",
+    );
   }
   return path;
 }
@@ -975,10 +986,21 @@ function parseManifest(
       mediaType: text(source.mediaType, `${label}.mediaType`, { max: 120 }),
       bytes: byteCount(source.bytes, `${label}.bytes`, 1_073_741_824),
     };
+    const internalPath = `r/v1/${pathFromImmutableUrl(
+      artifact.url,
+      registry.origin,
+      `${label}.url`,
+    )}`;
     if (artifactNames.has(artifact.name) || artifactsByUrl.has(artifact.url)) {
       throw resolverError(
         "Native release artifacts repeat a name or URL.",
         "REGISTRY_DOCUMENT_SCHEMA_INVALID",
+      );
+    }
+    if (artifact.name !== internalPath) {
+      throw resolverError(
+        `${label} name does not match its public protocol URL.`,
+        "REGISTRY_RELEASE_IDENTITY_INVALID",
       );
     }
     artifactNames.add(artifact.name);
@@ -1249,7 +1271,7 @@ function parsePayload(
     } else {
       sourceUrl = immutableUrl(file.sourceUrl, `${label}.sourceUrl`, registry.origin);
       const sourcePath = pathFromImmutableUrl(sourceUrl, registry.origin, `${label}.sourceUrl`);
-      if (!sourcePath.split("/").includes(release)) {
+      if (!sourcePath.startsWith(`releases/${release}/files/`)) {
         throw resolverError(
           `${label} source URL is not tied to release ${release}.`,
           "REGISTRY_URL_INVALID",
@@ -1307,8 +1329,8 @@ function parsePayload(
     contract.id !== manifestItem.contract.id ||
     passport.id !== manifestItem.passport.id ||
     passport.version !== release ||
-    passportPath !== `r/v1/passports/${release}/${catalogItem.id}.json` ||
-    contractPath !== `r/v1/contracts/${contract.version}/${catalogItem.id}.json`
+    passportPath !== `passports/${release}/${catalogItem.id}.json` ||
+    contractPath !== `contracts/${contract.version}/${catalogItem.id}.json`
   ) {
     throw resolverError(
       `Native item ${catalogItem.id} evidence identity disagrees with its release manifest.`,
@@ -1439,16 +1461,13 @@ export async function resolveNativeRegistryRelease(
     64 * 1024 * 1024,
     "Operation byte limit",
   );
-  if (!options.catalog.path.endsWith("catalog.json")) {
+  if (options.catalog.path !== "catalog.json") {
     throw resolverError(
       "Native catalog reference must identify catalog.json.",
       "REGISTRY_ARTIFACT_PATH_UNSAFE",
     );
   }
-  if (
-    !options.manifest.path.endsWith("/manifest.json") ||
-    !options.manifest.path.split("/").includes(options.release)
-  ) {
+  if (options.manifest.path !== `releases/${options.release}/manifest.json`) {
     throw resolverError(
       "Native manifest reference is not tied to the explicit release.",
       "REGISTRY_RELEASE_IDENTITY_INVALID",
@@ -1604,7 +1623,7 @@ export async function resolveNativeRegistryRelease(
       options.registry.origin,
       `Native item ${itemId} payload URL`,
     );
-    if (!payloadPath.split("/").includes(options.release)) {
+    if (payloadPath !== `releases/${options.release}/items/${itemId}.json`) {
       throw resolverError(
         `Native item ${itemId} payload URL is not tied to release ${options.release}.`,
         "REGISTRY_URL_INVALID",
