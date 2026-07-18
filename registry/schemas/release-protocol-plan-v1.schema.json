@@ -62,12 +62,36 @@
     "endpointTemplates": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["catalog", "releaseManifest", "item", "latestAlias", "checksums"],
+      "required": [
+        "catalog",
+        "searchIndex",
+        "schema",
+        "releaseManifest",
+        "item",
+        "latestAlias",
+        "passport",
+        "contract",
+        "mirrorManifest",
+        "releaseBundle",
+        "sbom",
+        "checksums"
+      ],
       "properties": {
         "catalog": { "const": "r/v1/catalog.json" },
+        "searchIndex": { "const": "r/v1/search-index.json" },
+        "schema": { "const": "r/v1/schemas/<schema-name>-v1.schema.json" },
         "releaseManifest": { "const": "r/v1/releases/<ui-version>/manifest.json" },
         "item": { "const": "r/v1/releases/<ui-version>/items/<item-id>.json" },
         "latestAlias": { "const": "r/v1/items/<item-id>/latest.json" },
+        "passport": { "const": "r/v1/passports/<ui-version>/<item-id>.json" },
+        "contract": { "const": "r/v1/contracts/<contract-version>/<item-id>.json" },
+        "mirrorManifest": {
+          "const": "r/v1/releases/<ui-version>/mirror-manifest.json"
+        },
+        "releaseBundle": {
+          "const": "r/v1/releases/<ui-version>/release-bundle.json"
+        },
+        "sbom": { "const": "r/v1/releases/<ui-version>/sbom.json" },
         "checksums": { "const": "r/v1/releases/<ui-version>/SHA256SUMS" }
       }
     },

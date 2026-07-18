@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "currency-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "NumberField with Intl currency formatting and one canonical hidden form control",
+    "naming": "A persistent visible label identifies both the amount and its explicit currency context.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement root; inputRef reaches the editable HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "Locale-aware currency editing and numeric step commands inherit the NumberField contract.",
+    "pointer": "Stepper and optional scrub controls inherit the NumberField boundary and cancellation behavior.",
+    "touch": "Coarse-pointer controls preserve at least a 44 CSS pixel preferred target.",
+    "speech": "The visible amount label and localized control names remain available for voice targeting.",
+    "switchAccess": "Every value-changing affordance is a real focusable input or button."
+  },
+  "formBehavior": "The hidden successful value is a canonical major-unit number without symbol or localized separators; the currency code remains explicit component configuration and must be submitted separately when the receiving workflow requires it.",
+  "states": {
+    "attributes": [
+      "data-currency",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-required"
+    ],
+    "synchronization": "Visible localized currency text, numeric state, validation, step controls, and hidden major-unit serialization share one NumberField engine."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=currency-field]",
+    "attributes": ["data-currency", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Currency text scrolls within the input while labels and messages wrap without clipping."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "incrementLabel",
+      "decrementLabel",
+      "scrubLabel"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The editable input retains NumberField composition handling and does not commit partial IME text.",
+    "serialization": "Intl localizes the visible currency text; the JavaScript and form value remain canonical major units and the required currency code remains explicit."
+  },
+  "consumerResponsibilities": [
+    "Supply the correct currency code from trusted workflow data and submit that code separately if the backend amount contract requires it.",
+    "Use allowNegative only when the domain supports credits, refunds, or signed balances.",
+    "Choose an explicit precision when business rules differ from Intl currency minor-unit defaults.",
+    "Do not infer the canonical amount from the localized visible string."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "locale-currency-parsing-formatting",
+      "major-unit-serialization",
+      "negative-accounting",
+      "ime-and-caret",
+      "form-submission-reset",
+      "mobile-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-ime-editing",
+      "mobile-virtual-keyboard",
+      "nvda-firefox",
+      "voiceover-safari",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The component does not perform exchange, rounding-ledger, taxation, or currency conversion logic.",
+    "Source-present-unreleased records do not include immutable generated artifacts, package parity, or current manual assistive-technology sessions."
+  ]
+}

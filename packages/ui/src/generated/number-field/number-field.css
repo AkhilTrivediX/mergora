@@ -1,0 +1,167 @@
+/* Generated from registry/source/components/number-field/number-field.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-number-field {
+    box-sizing: border-box;
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .mrg-number-field-group {
+    align-items: stretch;
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    box-sizing: border-box;
+    display: flex;
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-density-control-height);
+    min-inline-size: 0;
+    overflow: clip;
+  }
+
+  .mrg-number-field-group:focus-within {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-number-field[data-invalid] .mrg-number-field-group {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-number-field[data-disabled] .mrg-number-field-group {
+    background: var(--mrg-semantic-color-background-surface);
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+
+  .mrg-number-field-input {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    box-sizing: border-box;
+    color: inherit;
+    flex: 1 1 auto;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    inline-size: 100%;
+    line-height: var(--mrg-semantic-font-line-height-body);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    min-inline-size: 0;
+    outline: 0;
+    padding-block: var(--mrg-semantic-space-inline-sm);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    text-align: end;
+    unicode-bidi: plaintext;
+  }
+
+  .mrg-number-field-input::placeholder {
+    color: var(--mrg-semantic-color-foreground-muted);
+    opacity: 1;
+  }
+
+  .mrg-number-field-stepper,
+  .mrg-number-field-scrub {
+    align-items: center;
+    appearance: none;
+    background: var(--mrg-semantic-color-background-surface);
+    border: 0;
+    color: inherit;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font: inherit;
+    inline-size: var(--mrg-semantic-size-target-minimum);
+    justify-content: center;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: 0;
+  }
+
+  .mrg-number-field-stepper[data-slot="number-field-decrement"],
+  .mrg-number-field-scrub {
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+  }
+
+  .mrg-number-field-stepper[data-slot="number-field-increment"] {
+    border-inline-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+  }
+
+  .mrg-number-field-stepper:not([data-disabled]):hover,
+  .mrg-number-field-scrub:not(:disabled):hover {
+    background: var(--mrg-semantic-color-background-surface-sunken);
+  }
+
+  .mrg-number-field-stepper[data-pressed],
+  .mrg-number-field-scrub:active {
+    background: var(--mrg-semantic-color-action-background);
+    color: var(--mrg-semantic-color-action-foreground);
+  }
+
+  .mrg-number-field-stepper[data-focus-visible],
+  .mrg-number-field-scrub:focus-visible {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+    position: relative;
+    z-index: 1;
+  }
+
+  .mrg-number-field-stepper[data-disabled],
+  .mrg-number-field-scrub:disabled {
+    color: var(--mrg-semantic-color-foreground-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-number-field-scrub {
+    cursor: ew-resize;
+    touch-action: none;
+  }
+
+  .mrg-number-field[data-readonly] .mrg-number-field-stepper,
+  .mrg-number-field[data-readonly] .mrg-number-field-scrub {
+    display: none;
+  }
+
+  @media (pointer: coarse) {
+    .mrg-number-field-group,
+    .mrg-number-field-input,
+    .mrg-number-field-stepper,
+    .mrg-number-field-scrub {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+
+    .mrg-number-field-stepper,
+    .mrg-number-field-scrub {
+      inline-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-number-field-group {
+      background: Field;
+      border-color: FieldText;
+      color: FieldText;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-number-field[data-disabled] .mrg-number-field-group,
+    .mrg-number-field-stepper[data-disabled],
+    .mrg-number-field-scrub:disabled {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .mrg-number-field[data-invalid] .mrg-number-field-group {
+      border-style: double;
+    }
+
+    .mrg-number-field-stepper,
+    .mrg-number-field-scrub {
+      background: ButtonFace;
+      border-color: ButtonText;
+      color: ButtonText;
+    }
+  }
+}

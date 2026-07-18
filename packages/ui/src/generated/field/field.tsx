@@ -32,6 +32,7 @@ export interface FieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "childr
 
 export interface FieldControlState {
   readonly controlId: string;
+  readonly labelId: string;
   readonly descriptionId: string | undefined;
   readonly describedBy: string | undefined;
   readonly errorMessageId: string | undefined;
@@ -111,6 +112,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
     throw new RangeError("Mergora Field controlId must not be empty or whitespace-only.");
   }
   const idStem = controlId ?? `mrg-field-${generatedId.replaceAll(":", "")}`;
+  const labelId = `${idStem}-label`;
   const hasDescription = hasAccessibleContent(description);
   const hasError = hasAccessibleContent(error);
   const descriptionId = hasDescription ? `${idStem}-description` : undefined;
@@ -131,6 +133,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   }, [directControlCount, label]);
   const context: FieldControlState = {
     controlId: idStem,
+    labelId,
     descriptionId,
     describedBy: mergeFieldIdRefs(descriptionId, errorId),
     errorMessageId: errorId,
@@ -149,7 +152,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
         data-slot="field"
         ref={ref}
       >
-        <label data-slot="field-label" htmlFor={idStem}>
+        <label data-slot="field-label" htmlFor={idStem} id={labelId}>
           <span>{label}</span>
           {required ? (
             <span aria-hidden="true" data-slot="field-required-indicator">

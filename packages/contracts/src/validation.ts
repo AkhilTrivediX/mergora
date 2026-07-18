@@ -8,7 +8,12 @@ import {
   type ContractAssertionV1,
   type ContractDefinitionV1,
   type JsonValue,
+  type RuntimeAuditMode,
 } from "./model.js";
+import {
+  isCanonicalRuntimeAuditContextV1,
+  runtimeContextHasModeEvidenceV1,
+} from "./runtime-harness.js";
 
 export interface ContractValidationIssue {
   readonly code: string;
@@ -73,6 +78,19 @@ function isCatalogId(value: unknown): value is string {
   return typeof value === "string" && value.length <= 128 && catalogIdPattern.test(value);
 }
 
+function isOrderedCatalogIdList(
+  value: unknown,
+  maximum = Number.MAX_SAFE_INTEGER,
+): value is string[] {
+  return (
+    Array.isArray(value) &&
+    value.length <= maximum &&
+    value.every(isCatalogId) &&
+    new Set(value).size === value.length &&
+    [...value].sort(compareText).every((entry, index) => entry === value[index])
+  );
+}
+
 function isNonEmptyText(value: unknown, maximum = 1_024): value is string {
   return typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
 }
@@ -120,6 +138,7 @@ const expectedEvidenceType = {
   responsive: "responsive-geometry",
   static: "static-source",
 } as const;
+const runtimeModes = AUDIT_MODES.filter((mode): mode is RuntimeAuditMode => mode !== "static");
 
 function assertionIssues(value: unknown, path: string): readonly ContractValidationIssue[] {
   const issues: ContractValidationIssue[] = [];
@@ -377,9 +396,13 @@ export function validateContractDefinitionV1(
       );
     }
   }
-  if (!Array.isArray(value.assertions) || value.assertions.length === 0) {
+  if (
+    !Array.isArray(value.assertions) ||
+    value.assertions.length === 0 ||
+    value.assertions.length > 256
+  ) {
     issues.push(
-      issue("contract.assertions", "assertions", "A contract needs at least one assertion."),
+      issue("contract.assertions", "assertions", "A contract needs from 1 through 256 assertions."),
     );
   } else {
     value.assertions.forEach((assertion, index) => {
@@ -426,6 +449,27 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
       issues: [issue("report.type", "$", "Audit report must be an object.")],
     };
   }
+  issues.push(
+    ...unknownKeyIssues(
+      value,
+      [
+        "schemaVersion",
+        "reportVersion",
+        "projectRoot",
+        "state",
+        "recommendedExitCode",
+        "requestedModes",
+        "scope",
+        "capabilities",
+        "limitations",
+        "results",
+        "summary",
+        "networkUsed",
+        "conformanceClaim",
+      ],
+      "$",
+    ),
+  );
   if (value.schemaVersion !== 1 || value.reportVersion !== "1.0.0") {
     issues.push(issue("report.version", "schemaVersion", "Audit report must use v1."));
   }
@@ -482,6 +526,7 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
   ) {
     issues.push(issue("report.scope", "scope", "Report scope is invalid."));
   } else {
+    issues.push(...unknownKeyIssues(value.scope, ["changedOnly", "itemIds"], "scope"));
     const itemIds = value.scope.itemIds;
     if (
       itemIds.some(
@@ -503,6 +548,8 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
   }
 
   let requestedCapabilityUnavailable = false;
+  const registeredHarnessesByMode = new Map<string, ReadonlySet<string>>();
+  const requiredHarnessesByMode = new Map<string, ReadonlySet<string>>();
   if (!Array.isArray(value.capabilities) || value.capabilities.length !== AUDIT_MODES.length) {
     issues.push(
       issue("report.capabilities", "capabilities", "Report must describe every audit capability."),
@@ -515,6 +562,9 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
         typeof capability.requested !== "boolean" ||
         typeof capability.available !== "boolean" ||
         !(capability.adapter === null || isNonEmptyText(capability.adapter, 128)) ||
+        !isOrderedCatalogIdList(capability.registeredHarnessIds, 64) ||
+        !isOrderedCatalogIdList(capability.requiredHarnessIds, 256) ||
+        !isOrderedCatalogIdList(capability.missingHarnessIds, 256) ||
         !(capability.limitation === null || isNonEmptyText(capability.limitation))
       ) {
         issues.push(
@@ -525,6 +575,22 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
           ),
         );
       } else {
+        issues.push(
+          ...unknownKeyIssues(
+            capability,
+            [
+              "mode",
+              "requested",
+              "available",
+              "adapter",
+              "registeredHarnessIds",
+              "requiredHarnessIds",
+              "missingHarnessIds",
+              "limitation",
+            ],
+            `capabilities[${String(index)}]`,
+          ),
+        );
         if (capability.requested !== modes.includes(String(capability.mode))) {
           issues.push(
             issue(
@@ -534,6 +600,43 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
             ),
           );
         }
+        const registered = capability.registeredHarnessIds;
+        const required = capability.requiredHarnessIds;
+        const reportedMissing = capability.missingHarnessIds as string[];
+        const missing = required.filter((id) => !registered.includes(id));
+        const expectedAvailable =
+          capability.mode === "static" ||
+          (missing.length === 0 && (required.length > 0 || registered.length > 0));
+        const expectedAdapter =
+          capability.mode === "static"
+            ? capability.adapter
+            : registered.length === 1
+              ? registered[0]
+              : null;
+        if (
+          missing.length !== reportedMissing.length ||
+          missing.some((id, missingIndex) => id !== reportedMissing[missingIndex]) ||
+          capability.available !== expectedAvailable ||
+          capability.adapter !== expectedAdapter ||
+          (capability.available
+            ? capability.limitation !== null
+            : capability.limitation === null) ||
+          (capability.mode === "static" &&
+            (capability.adapter === null ||
+              registered.length > 0 ||
+              required.length > 0 ||
+              reportedMissing.length > 0))
+        ) {
+          issues.push(
+            issue(
+              "report.capability-state",
+              `capabilities[${String(index)}]`,
+              "Capability availability does not match its exact adapter state.",
+            ),
+          );
+        }
+        registeredHarnessesByMode.set(String(capability.mode), new Set(registered));
+        requiredHarnessesByMode.set(String(capability.mode), new Set(required));
         if (capability.requested && !capability.available) requestedCapabilityUnavailable = true;
       }
     });
@@ -570,6 +673,31 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
         continue;
       }
       const result = rawResult as unknown as AuditAssertionResultV1;
+      issues.push(
+        ...unknownKeyIssues(
+          rawResult,
+          [
+            "assertionId",
+            "contractId",
+            "contractVersion",
+            "payloadDigest",
+            "registryId",
+            "itemId",
+            "mode",
+            "evidenceType",
+            "harnessId",
+            "target",
+            "expectedBehavior",
+            "actualBehavior",
+            "severity",
+            "remediationUrl",
+            "state",
+            "failure",
+            "context",
+          ],
+          `results[${String(index)}]`,
+        ),
+      );
       if (
         !isCatalogId(result.assertionId) ||
         !isCatalogId(result.contractId) ||
@@ -614,6 +742,7 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
         isRecord(result.failure) &&
         result.failure.classification in AUDIT_FAILURE_GUIDANCE &&
         typeof result.failure.code === "string" &&
+        result.failure.code.length <= 128 &&
         /^[A-Z][A-Z0-9_]*$/u.test(result.failure.code);
       if (result.failure !== null && !failureValid) {
         issues.push(
@@ -621,6 +750,15 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
             "report.failure-classification",
             `results[${String(index)}].failure`,
             "Failure classification is unsupported.",
+          ),
+        );
+      }
+      if (failureValid) {
+        issues.push(
+          ...unknownKeyIssues(
+            result.failure as unknown as Record<string, unknown>,
+            ["classification", "code"],
+            `results[${String(index)}].failure`,
           ),
         );
       }
@@ -648,11 +786,87 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
             "Result target path must be project-relative.",
           ),
         );
+      } else {
+        issues.push(
+          ...unknownKeyIssues(
+            result.target as unknown as Record<string, unknown>,
+            ["logicalPath", "projectPath"],
+            `results[${String(index)}].target`,
+          ),
+        );
+      }
+      if (result.mode === "static") {
+        if (result.harnessId !== null || result.context !== null) {
+          issues.push(
+            issue(
+              "report.static-context",
+              `results[${String(index)}].context`,
+              "Static audit results cannot claim runtime harness evidence.",
+            ),
+          );
+        }
+      } else if (runtimeModes.includes(result.mode as RuntimeAuditMode)) {
+        const harnessIdValid = isCatalogId(result.harnessId);
+        const contextValid =
+          result.context !== null && isCanonicalRuntimeAuditContextV1(result.context);
+        if (!harnessIdValid) {
+          issues.push(
+            issue(
+              "report.harness-id",
+              `results[${String(index)}].harnessId`,
+              "Runtime audit results must identify the selected reviewed harness.",
+            ),
+          );
+        }
+        if (
+          (result.state === "not-run" && result.context !== null) ||
+          (result.state !== "not-run" && !contextValid) ||
+          (contextValid &&
+            result.state !== "not-applicable" &&
+            !runtimeContextHasModeEvidenceV1(result.mode as RuntimeAuditMode, result.context!))
+        ) {
+          issues.push(
+            issue(
+              "report.runtime-context",
+              `results[${String(index)}].context`,
+              "Runtime result context must be canonical, bounded, and mode-relevant when executed.",
+            ),
+          );
+        }
+        if (harnessIdValid) {
+          const required = requiredHarnessesByMode.get(result.mode);
+          const registered = registeredHarnessesByMode.get(result.mode);
+          if (required !== undefined && !required.has(result.harnessId)) {
+            issues.push(
+              issue(
+                "report.harness-required",
+                `results[${String(index)}].harnessId`,
+                "Runtime result harness is absent from capability requirements.",
+              ),
+            );
+          }
+          if (
+            result.context !== null &&
+            registered !== undefined &&
+            !registered.has(result.harnessId)
+          ) {
+            issues.push(
+              issue(
+                "report.harness-unregistered",
+                `results[${String(index)}].harnessId`,
+                "Executed runtime evidence must come from a registered trusted harness.",
+              ),
+            );
+          }
+        }
       }
       results.push(result);
     }
     const keys = results.map(resultSortKey);
     const sorted = [...keys].sort(compareText);
+    if (new Set(keys).size !== keys.length) {
+      issues.push(issue("report.result-duplicate", "results", "Audit result ids must be unique."));
+    }
     if (sorted.some((entry, index) => entry !== keys[index])) {
       issues.push(issue("report.result-order", "results", "Audit results must be deterministic."));
     }
@@ -670,6 +884,10 @@ export function validateAuditReportV1(value: unknown): ContractValidationResult<
     Object.entries(observedSummary).some(([key, count]) => summary[key] !== count)
   ) {
     issues.push(issue("report.summary", "summary", "Report summary does not match results."));
+  } else {
+    issues.push(
+      ...unknownKeyIssues(value.summary, ["pass", "fail", "notApplicable", "notRun"], "summary"),
+    );
   }
 
   const hasAdapterError = results.some(

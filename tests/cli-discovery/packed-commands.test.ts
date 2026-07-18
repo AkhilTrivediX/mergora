@@ -1,6 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -36,6 +36,16 @@ function json(result: CommandResult): Record<string, unknown> {
   const validation = validateSchemaDocument("result-envelope", envelope);
   expect(validation.errors, JSON.stringify(validation.errors, null, 2)).toEqual([]);
   return envelope;
+}
+
+function transactionIds(root: string): readonly string[] {
+  const directory = resolve(root, ".mergora/transactions");
+  return existsSync(directory)
+    ? readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map(({ name }) => name)
+        .sort((left, right) => left.localeCompare(right, "en-US"))
+    : [];
 }
 
 beforeAll(() => {
@@ -247,6 +257,7 @@ describe("packed project commands", () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
     expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const transactionsBefore = transactionIds(project.root);
     const result = command([
       "add",
       "button",
@@ -261,13 +272,14 @@ describe("packed project commands", () => {
       errors: [{ code: "CONSENT_REQUIRED" }],
     });
     expect(existsSync(resolve(project.root, "src/components/button"))).toBe(false);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 
   it("reports a missing-source adoption as a conflict even when the plan has no writes", () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
     expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const transactionsBefore = transactionIds(project.root);
     const manifestPath = resolve(project.root, ".mergora/manifest.json");
     const manifestBefore = readFileSync(manifestPath);
 
@@ -291,7 +303,7 @@ describe("packed project commands", () => {
       errors: [{ code: "OPERATION_CONFLICT" }],
     });
     expect(readFileSync(manifestPath)).toEqual(manifestBefore);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
     expect(existsSync(resolve(project.root, ".mergora/bases"))).toBe(false);
   });
 
@@ -525,6 +537,7 @@ describe("packed project commands", () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
     expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const transactionsBefore = transactionIds(project.root);
 
     const theme = command(["theme", "list", "--cwd", project.root, "--json"]);
     const registries = command(["registry", "list", "--cwd", project.root, "--json"]);
@@ -540,7 +553,7 @@ describe("packed project commands", () => {
       status: "report",
       result: { command: "clean", selectedCategories: [], writesRequired: false },
     });
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 
   it("requires exact cleanup selection and consent before deleting a verified cache entry", () => {
@@ -608,6 +621,7 @@ describe("packed project commands", () => {
     expect(existsSync(resolve(project.root, ".mergora"))).toBe(false);
 
     expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const transactionsBefore = transactionIds(project.root);
     const reserved = command([
       "add",
       "button",
@@ -620,7 +634,7 @@ describe("packed project commands", () => {
     ]);
     expect(reserved.status).toBe(5);
     expect(json(reserved)).toMatchObject({ errors: [{ code: "SOURCE_TARGET_RESERVED" }] });
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
 
     const config = command([
       "info",

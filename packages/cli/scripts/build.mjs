@@ -14,18 +14,66 @@ import { fileURLToPath } from "node:url";
 const packageDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceDirectory = resolve(packageDirectory, "../..");
 const outputDirectory = resolve(packageDirectory, "dist");
+const typeScriptExecutable = resolve(packageDirectory, "node_modules/typescript/bin/tsc");
+const runtimeWorkspaceDependencies = [
+  {
+    directory: resolve(workspaceDirectory, "packages/contracts"),
+    name: "mergora-contracts",
+  },
+  {
+    directory: resolve(workspaceDirectory, "packages/registry"),
+    name: "mergora-registry",
+  },
+];
+
+const cliManifest = JSON.parse(readFileSync(resolve(packageDirectory, "package.json"), "utf8"));
+const declaredRuntimeWorkspaceDependencies = Object.entries(cliManifest.dependencies ?? {})
+  .filter(([, version]) => typeof version === "string" && version.startsWith("workspace:"))
+  .map(([name]) => name)
+  .sort((left, right) => left.localeCompare(right, "en-US"));
+const configuredRuntimeWorkspaceDependencies = runtimeWorkspaceDependencies
+  .map(({ name }) => name)
+  .sort((left, right) => left.localeCompare(right, "en-US"));
+if (
+  JSON.stringify(configuredRuntimeWorkspaceDependencies) !==
+  JSON.stringify(declaredRuntimeWorkspaceDependencies)
+) {
+  throw new Error(
+    "CLI runtime workspace dependency builds do not match the package manifest dependencies.",
+  );
+}
+
+function compileTypeScriptPackage({ directory, name }) {
+  const manifest = JSON.parse(readFileSync(resolve(directory, "package.json"), "utf8"));
+  if (manifest.name !== name || manifest.scripts?.build !== "tsc -p tsconfig.json") {
+    throw new Error(`CLI runtime workspace dependency ${name} has an unexpected build contract.`);
+  }
+  const result = spawnSync(process.execPath, [typeScriptExecutable, "-p", "tsconfig.json"], {
+    cwd: directory,
+    encoding: "utf8",
+    stdio: "inherit",
+    shell: false,
+  });
+  if (result.error !== undefined) throw result.error;
+  if (result.status !== 0) process.exit(result.status ?? 1);
+}
+
+for (const dependency of runtimeWorkspaceDependencies) {
+  compileTypeScriptPackage(dependency);
+}
+
 if (!outputDirectory.startsWith(`${packageDirectory}${sep}`)) {
   throw new Error("Refusing to clean a CLI output directory outside the package.");
 }
 rmSync(outputDirectory, { recursive: true, force: true });
 
-const tscExecutable = resolve(packageDirectory, "node_modules/typescript/bin/tsc");
-const typeScript = spawnSync(process.execPath, [tscExecutable, "-p", "tsconfig.json"], {
+const typeScript = spawnSync(process.execPath, [typeScriptExecutable, "-p", "tsconfig.json"], {
   cwd: packageDirectory,
   encoding: "utf8",
   stdio: "inherit",
   shell: false,
 });
+if (typeScript.error !== undefined) throw typeScript.error;
 if (typeScript.status !== 0) process.exit(typeScript.status ?? 1);
 
 const generatedDirectory = resolve(workspaceDirectory, "registry/generated");

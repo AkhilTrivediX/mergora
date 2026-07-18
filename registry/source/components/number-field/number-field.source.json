@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "../field/index.js",
+    "../provider/index.js",
+    "./number-field.css",
+    "react",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/NumberField"
+  ],
+  "entryPath": "registry/source/components/number-field/number-field.tsx",
+  "id": "number-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "currency-field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "currency-field",
+    "stableAttributes": [
+      "data-slot",
+      "data-currency",
+      "data-format-style",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-required"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "number-field-group",
+      "element": "div",
+      "purpose": "Shared numeric control group.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-input",
+      "element": "input",
+      "purpose": "Locale-aware currency spinbutton editing surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-decrement",
+      "element": "button",
+      "purpose": "Optional localized decrement control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-increment",
+      "element": "button",
+      "purpose": "Optional localized increment control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-scrub",
+      "element": "button",
+      "purpose": "Optional pointer-drag and keyboard step control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "implicit-form-value",
+      "element": "input type=hidden",
+      "purpose": "Canonical major-unit form value supplied by React Aria.",
+      "stability": "behavioral"
+    }
+  ]
+}

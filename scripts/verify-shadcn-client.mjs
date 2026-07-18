@@ -17,6 +17,7 @@ const shadcnRoot = resolve(root, "node_modules", "shadcn", "dist");
 const shadcnCli = resolve(shadcnRoot, "index.js");
 const shadcnSchemas = resolve(shadcnRoot, "schema", "index.js");
 const generatedDirectory = resolve(root, "registry", "generated", "shadcn");
+const sourcePlanPath = resolve(root, "registry", "generated", "source-transform-plan.json");
 const itemId = "center";
 const clientVersion = "4.13.0";
 const maxOutputBytes = 2 * 1024 * 1024;
@@ -102,10 +103,35 @@ if (!existsSync(shadcnCli) || !existsSync(shadcnSchemas)) {
 }
 const registry = readJson(resolve(generatedDirectory, "registry.json"));
 const item = readJson(resolve(generatedDirectory, `${itemId}.json`));
+const sourcePlan = readJson(sourcePlanPath);
 const schemas = await import(pathToFileURL(shadcnSchemas).href);
 const parsedRegistry = schemas.registrySchema.parse(registry);
 const parsedItem = schemas.registryItemSchema.parse(item);
-if (parsedRegistry.items.length !== 75 || parsedItem.name !== itemId) {
+if (
+  !sourcePlan ||
+  typeof sourcePlan !== "object" ||
+  !Array.isArray(sourcePlan.items) ||
+  sourcePlan.items.some(
+    (entry) =>
+      !entry ||
+      typeof entry !== "object" ||
+      typeof entry.id !== "string" ||
+      typeof entry.implementationStatus !== "string" ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(entry.id),
+  )
+) {
+  fail("the generated canonical source inventory is malformed.");
+}
+const expectedItemIds = sourcePlan.items
+  .filter(({ implementationStatus }) => implementationStatus === "source-present-unreleased")
+  .map(({ id }) => id)
+  .sort();
+const parsedItemIds = parsedRegistry.items.map(({ name }) => name).sort();
+if (
+  new Set(expectedItemIds).size !== expectedItemIds.length ||
+  JSON.stringify(parsedItemIds) !== JSON.stringify(expectedItemIds) ||
+  parsedItem.name !== itemId
+) {
   fail("the pinned runtime schemas returned an unexpected registry inventory.");
 }
 

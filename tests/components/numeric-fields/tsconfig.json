@@ -1,0 +1,35 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/currency-field/**/*.ts",
+    "../../../registry/source/components/currency-field/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/field/**/*.ts",
+    "../../../registry/source/components/field/**/*.tsx",
+    "../../../registry/source/components/form/**/*.ts",
+    "../../../registry/source/components/form/**/*.tsx",
+    "../../../registry/source/components/number-field/**/*.ts",
+    "../../../registry/source/components/number-field/**/*.tsx",
+    "../../../registry/source/components/percentage-field/**/*.ts",
+    "../../../registry/source/components/percentage-field/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../apps/storybook/src/P4NumericFields.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

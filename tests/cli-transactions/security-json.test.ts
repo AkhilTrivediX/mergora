@@ -3,6 +3,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readdirSync,
   rmSync,
   symlinkSync,
   unlinkSync,
@@ -32,6 +33,16 @@ function fixture() {
   temporaryDirectories.push(project.root);
   applyInit({ projectRoot: project.root });
   return project;
+}
+
+function transactionIds(root: string): readonly string[] {
+  const directory = resolve(root, ".mergora/transactions");
+  return existsSync(directory)
+    ? readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map(({ name }) => name)
+        .sort((left, right) => left.localeCompare(right, "en-US"))
+    : [];
 }
 
 afterEach(() => {
@@ -123,6 +134,7 @@ describe("canonical JSON and private runtime data", () => {
 describe("transaction security boundaries", () => {
   it("uses an exclusive lock and never breaks an unclassified lock implicitly", () => {
     const project = fixture();
+    const transactionsBefore = transactionIds(project.root);
     const lockPath = resolve(project.root, ".mergora/.lock");
     const lock = '{"schemaVersion":1,"transactionId":"foreign","pid":1}\n';
     writeFileSync(lockPath, lock);
@@ -130,7 +142,7 @@ describe("transaction security boundaries", () => {
     const plan = planSourceAdd(options);
     expect(() => applySourceAdd(options, plan.planDigest)).toThrow(/holds the project lock/u);
     expect(readFileSync(lockPath, "utf8")).toBe(lock);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 
   it("rejects registry traversal, Windows device targets, portable collisions, and URL secrets", () => {
@@ -205,6 +217,7 @@ describe("transaction security boundaries", () => {
 
   it("refuses a source-parent junction introduced after planning without writing through it", () => {
     const project = fixture();
+    const transactionsBefore = transactionIds(project.root);
     const outside = resolve(project.root, "outside-target");
     const junction = resolve(project.root, "src/components");
     mkdirSync(outside);
@@ -214,7 +227,7 @@ describe("transaction security boundaries", () => {
     try {
       expect(() => applySourceAdd(options, plan.planDigest)).toThrow(/symbolic link|unsafe/u);
       expect(existsSync(resolve(outside, "mergora/button/button.tsx"))).toBe(false);
-      expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+      expect(transactionIds(project.root)).toEqual(transactionsBefore);
     } finally {
       unlinkSync(junction);
     }
@@ -222,6 +235,7 @@ describe("transaction security boundaries", () => {
 
   it("rejects duplicate dependency objects before creating a transaction", () => {
     const project = fixture();
+    const transactionsBefore = transactionIds(project.root);
     writeFileSync(
       resolve(project.root, "package.json"),
       `{
@@ -238,6 +252,6 @@ describe("transaction security boundaries", () => {
         registryDirectory,
       }),
     ).toThrow(/repeats top-level field/u);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 });

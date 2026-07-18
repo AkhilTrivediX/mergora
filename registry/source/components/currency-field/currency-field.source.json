@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../number-field/number-field.js",
+    "../provider/index.js",
+    "./currency-field.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/currency-field/currency-field.tsx",
+  "id": "currency-field",
+  "itemDependencies": ["number-field", "provider"],
+  "outputRole": "component"
+}

@@ -28,6 +28,16 @@ function fixture() {
   return project;
 }
 
+function transactionIds(root: string): readonly string[] {
+  const directory = resolve(root, ".mergora/transactions");
+  return existsSync(directory)
+    ? readdirSync(directory, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map(({ name }) => name)
+        .sort((left, right) => left.localeCompare(right, "en-US"))
+    : [];
+}
+
 function fileSnapshot(root: string): Readonly<Record<string, string>> {
   const result: Record<string, string> = {};
   const visit = (directory: string): void => {
@@ -124,6 +134,7 @@ describe("Mergora MCP capability boundary", () => {
 describe("Mergora MCP read and plan tools", () => {
   it("keeps search and registry inspection read-only, with registry network disabled by default", async () => {
     const project = fixture();
+    const transactionsBefore = transactionIds(project.root);
     const before = fileSnapshot(project.root);
     const fetchSpy = vi.spyOn(globalThis, "fetch");
     const server = createMergoraMcpServer();
@@ -142,11 +153,12 @@ describe("Mergora MCP read and plan tools", () => {
     expect(inspection.network).toBe("forbidden");
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(fileSnapshot(project.root)).toEqual(before);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 
   it("returns the exact shared CLI plan and leaves all bytes unchanged", async () => {
     const project = fixture();
+    const transactionsBefore = transactionIds(project.root);
     const direct = planSourceAdd({ projectRoot: project.root, itemIds: ["button"] });
     const before = fileSnapshot(project.root);
     const server = createMergoraMcpServer();
@@ -160,7 +172,7 @@ describe("Mergora MCP read and plan tools", () => {
 
     expect(fromMcp).toEqual(direct);
     expect(fileSnapshot(project.root)).toEqual(before);
-    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
 
   it("lists and exports themes without changing project bytes", async () => {

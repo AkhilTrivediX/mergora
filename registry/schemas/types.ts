@@ -296,7 +296,21 @@ export interface ReleaseProtocolPlanV1 {
     readonly sourceItemIds: readonly CatalogId[];
   };
   readonly endpointTemplates: Readonly<
-    Record<"catalog" | "releaseManifest" | "item" | "latestAlias" | "checksums", string>
+    Record<
+      | "catalog"
+      | "searchIndex"
+      | "schema"
+      | "releaseManifest"
+      | "item"
+      | "latestAlias"
+      | "passport"
+      | "contract"
+      | "mirrorManifest"
+      | "releaseBundle"
+      | "sbom"
+      | "checksums",
+      string
+    >
   >;
   readonly emittedReleaseArtifacts: readonly [];
   readonly blockers: readonly ReleaseProtocolBlocker[];

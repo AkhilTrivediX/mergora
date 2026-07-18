@@ -96,7 +96,13 @@ function onlyTransactionRecord(root: string): {
   const directory = resolve(root, ".mergora/transactions");
   const ids = readdirSync(directory, { withFileTypes: true })
     .filter((entry) => entry.isDirectory())
-    .map(({ name }) => name);
+    .map(({ name }) => name)
+    .filter((id) => {
+      const plan = JSON.parse(readFileSync(resolve(directory, id, "plan.json"), "utf8")) as {
+        readonly command?: unknown;
+      };
+      return plan.command === "update";
+    });
   expect(ids).toHaveLength(1);
   return JSON.parse(
     readFileSync(resolve(directory, ids[0]!, "transaction.json"), "utf8"),

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "number-field",
+  "entryExport": "NumberField",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React Aria NumberField props with Mergora Field integration",
+  "exports": [
+    { "kind": "component", "name": "NumberField" },
+    { "kind": "component", "name": "NumericFieldBase" },
+    { "kind": "function", "name": "numericStepPrecision" },
+    { "kind": "function", "name": "resolveNumberFormatOptions" },
+    { "kind": "function", "name": "stepNumericValue" },
+    { "kind": "type", "name": "NumberFieldProps" },
+    { "kind": "type", "name": "NumericFieldBaseProps" },
+    { "kind": "type", "name": "NumericFieldKind" },
+    { "kind": "type", "name": "StepNumericValueOptions" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "value", "required": false, "type": "number; NaN represents empty" },
+    { "name": "defaultValue", "required": false, "type": "number; NaN represents empty" },
+    { "name": "onChange", "required": false, "type": "(value: number) => void" },
+    { "name": "minValue", "required": false, "type": "number" },
+    { "name": "maxValue", "required": false, "type": "number" },
+    { "name": "step", "required": false, "type": "positive number" },
+    { "name": "precision", "required": false, "type": "integer from 0 through 15" },
+    { "name": "formatOptions", "required": false, "type": "Intl.NumberFormatOptions" },
+    { "name": "allowWheel", "required": false, "default": false, "type": "boolean" },
+    { "name": "showStepper", "required": false, "default": true, "type": "boolean" },
+    { "name": "scrub", "required": false, "default": false, "type": "boolean" },
+    { "name": "scrubSensitivity", "required": false, "default": 8, "type": "CSS pixels per step" }
+  ],
+  "compositionPolicy": {
+    "field": "Field owns the integrated label, control ID, description, error, required, and invalid relationships.",
+    "value": "Public values and hidden form values are canonical JavaScript numbers; only visible editing and formatting are localized.",
+    "focus": "Focused text remains user-authored until commit; blur validates instead of silently clamping or snapping."
+  }
+}

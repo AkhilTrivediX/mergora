@@ -4,6 +4,20 @@ import { canonicalJson, canonicalJsonFile } from "./canonical.ts";
 
 export type ReleaseSha256 = `sha256:${string}`;
 
+export const STABLE_RELEASE_SCHEMA_PATHS = [
+  "r/v1/schemas/catalog-v1.schema.json",
+  "r/v1/schemas/config-v1.schema.json",
+  "r/v1/schemas/contract-v1.schema.json",
+  "r/v1/schemas/item-v1.schema.json",
+  "r/v1/schemas/latest-alias-v1.schema.json",
+  "r/v1/schemas/manifest-v1.schema.json",
+  "r/v1/schemas/passport-v1.schema.json",
+  "r/v1/schemas/plan-v1.schema.json",
+  "r/v1/schemas/release-manifest-v1.schema.json",
+  "r/v1/schemas/result-envelope-v1.schema.json",
+  "r/v1/schemas/transaction-v1.schema.json",
+] as const;
+
 export interface ReleaseEvidenceReference {
   readonly id: string;
   readonly artifact: string;
@@ -157,7 +171,21 @@ export interface BlockedReleaseProtocolPlan {
     readonly sourceItemIds: readonly string[];
   };
   readonly endpointTemplates: Readonly<
-    Record<"catalog" | "releaseManifest" | "item" | "latestAlias" | "checksums", string>
+    Record<
+      | "catalog"
+      | "searchIndex"
+      | "schema"
+      | "releaseManifest"
+      | "item"
+      | "latestAlias"
+      | "passport"
+      | "contract"
+      | "mirrorManifest"
+      | "releaseBundle"
+      | "sbom"
+      | "checksums",
+      string
+    >
   >;
   readonly emittedReleaseArtifacts: readonly [];
   readonly blockers: readonly [
@@ -569,6 +597,13 @@ function assertReleaseInput(input: StableReleaseProtocolInput): void {
       fail(`public schema ${String(index)} must use the canonical schema endpoint.`);
     }
   });
+  const schemaPaths = new Set(
+    input.schemas.map((schema) => evidenceArtifactPath(schema, input.registry.origin)),
+  );
+  const missingSchema = STABLE_RELEASE_SCHEMA_PATHS.find((path) => !schemaPaths.has(path));
+  if (missingSchema !== undefined) {
+    fail(`stable release is missing required public schema ${missingSchema}.`);
+  }
   assertUniqueCanonical(
     [
       input.releaseGate.qualitySummary.artifact,
@@ -627,9 +662,16 @@ export function buildBlockedReleaseProtocolPlan(input: {
     },
     endpointTemplates: {
       catalog: "r/v1/catalog.json",
+      searchIndex: "r/v1/search-index.json",
+      schema: "r/v1/schemas/<schema-name>-v1.schema.json",
       releaseManifest: "r/v1/releases/<ui-version>/manifest.json",
       item: "r/v1/releases/<ui-version>/items/<item-id>.json",
       latestAlias: "r/v1/items/<item-id>/latest.json",
+      passport: "r/v1/passports/<ui-version>/<item-id>.json",
+      contract: "r/v1/contracts/<contract-version>/<item-id>.json",
+      mirrorManifest: "r/v1/releases/<ui-version>/mirror-manifest.json",
+      releaseBundle: "r/v1/releases/<ui-version>/release-bundle.json",
+      sbom: "r/v1/releases/<ui-version>/sbom.json",
       checksums: "r/v1/releases/<ui-version>/SHA256SUMS",
     },
     emittedReleaseArtifacts: [],

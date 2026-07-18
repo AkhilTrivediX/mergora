@@ -73,10 +73,21 @@ describe("public executable Contract v1", () => {
     };
     const definitionSchema = JSON.parse(
       readFileSync(resolve(packageRoot, "schemas/executable-contract-v1.schema.json"), "utf8"),
-    ) as { readonly $id: string; readonly $schema: string };
+    ) as {
+      readonly $id: string;
+      readonly $schema: string;
+      readonly properties: { readonly assertions: { readonly maxItems: number } };
+    };
     const reportSchema = JSON.parse(
       readFileSync(resolve(packageRoot, "schemas/audit-report-v1.schema.json"), "utf8"),
-    ) as { readonly $id: string; readonly $schema: string };
+    ) as {
+      readonly $id: string;
+      readonly $schema: string;
+      readonly $defs: {
+        readonly capability: { readonly required: readonly string[] };
+        readonly result: { readonly required: readonly string[] };
+      };
+    };
 
     for (const subpath of [
       "./schemas/executable-contract-v1.json",
@@ -87,7 +98,14 @@ describe("public executable Contract v1", () => {
     }
     expect(definitionSchema.$schema).toBe("https://json-schema.org/draft/2020-12/schema");
     expect(definitionSchema.$id).toMatch(/executable-contract-v1\.schema\.json$/u);
+    expect(definitionSchema.properties.assertions.maxItems).toBe(256);
     expect(reportSchema.$id).toMatch(/audit-report-v1\.schema\.json$/u);
+    expect(reportSchema.$defs.capability.required).toEqual(
+      expect.arrayContaining(["registeredHarnessIds", "requiredHarnessIds", "missingHarnessIds"]),
+    );
+    expect(reportSchema.$defs.result.required).toEqual(
+      expect.arrayContaining(["harnessId", "context"]),
+    );
   });
 
   it("rejects misleading claim boundaries and nondeterministic assertion order", () => {

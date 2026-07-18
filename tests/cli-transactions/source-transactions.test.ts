@@ -284,7 +284,16 @@ describe("transactional source ownership", () => {
           ),
       ),
     ).toBe(true);
-    const ids = readdirSync(resolve(project.root, ".mergora/transactions"));
+    const transactionDirectory = resolve(project.root, ".mergora/transactions");
+    const ids = readdirSync(transactionDirectory, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map(({ name }) => name)
+      .filter((id) => {
+        const transactionPlan = jsonFile(resolve(transactionDirectory, id, "plan.json")) as {
+          command?: unknown;
+        };
+        return transactionPlan.command === "add";
+      });
     expect(ids).toHaveLength(1);
     expect((transactionFiles(project.root, ids[0]!).record as { state: string }).state).toBe(
       "rolled-back",

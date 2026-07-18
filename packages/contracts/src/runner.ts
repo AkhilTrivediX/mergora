@@ -12,9 +12,14 @@ import {
   type ContractDefinitionV1,
   type JsonValue,
   type RunContractAuditOptions,
+  type RuntimeAuditMode,
+  type RuntimeContractAssertionV1,
+  type RuntimeHarnessInvocationV1,
   type StaticAuditTargetAdapter,
   type StaticTargetSnapshot,
+  type TrustedRuntimeHarnessAdapterV1,
 } from "./model.js";
+import { normalizeRuntimeHarnessOutcomeV1 } from "./runtime-harness.js";
 import { canonicalAuditJson, parseContractDefinitionV1 } from "./validation.js";
 
 const STATIC_LIMITATIONS = [
@@ -30,6 +35,31 @@ const CAPABILITY_LIMITATIONS = {
   static: null,
 } as const;
 
+const MAX_TRUSTED_RUNTIME_ADAPTERS = 64;
+const MAX_REQUIRED_HARNESSES_PER_MODE = 256;
+const MAX_CONTRACT_DEFINITIONS = 1_024;
+const DEFAULT_RUNTIME_TIMEOUT_MS = 10_000;
+const catalogIdPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
+const runtimeModes = AUDIT_MODES.filter((mode): mode is RuntimeAuditMode => mode !== "static");
+
+interface TrustedAdapterRegistry {
+  readonly byId: ReadonlyMap<string, RegisteredTrustedRuntimeAdapter>;
+  readonly byMode: ReadonlyMap<RuntimeAuditMode, readonly string[]>;
+}
+
+interface RegisteredTrustedRuntimeAdapter {
+  readonly harnessId: string;
+  readonly modes: readonly RuntimeAuditMode[];
+  run(input: RuntimeHarnessInvocationV1): unknown | Promise<unknown>;
+}
+
+class RuntimeHarnessTimeoutError extends Error {
+  public constructor() {
+    super("The trusted runtime harness exceeded its host-controlled timeout.");
+    this.name = "RuntimeHarnessTimeoutError";
+  }
+}
+
 function compareText(left: string, right: string): number {
   return left < right ? -1 : left > right ? 1 : 0;
 }
@@ -41,6 +71,75 @@ function requestedModes(input: readonly AuditMode[] | undefined): readonly Audit
     throw new TypeError("At least one supported audit mode is required.");
   }
   return unique;
+}
+
+function runtimeTimeoutMs(input: number | undefined): number {
+  const timeout = input ?? DEFAULT_RUNTIME_TIMEOUT_MS;
+  if (!Number.isSafeInteger(timeout) || timeout < 10 || timeout > 120_000) {
+    throw new TypeError("Runtime audit timeout must be an integer from 10 through 120000 ms.");
+  }
+  return timeout;
+}
+
+function trustedAdapterRegistry(
+  input: readonly TrustedRuntimeHarnessAdapterV1[] | undefined,
+): TrustedAdapterRegistry {
+  const adapters = input ?? [];
+  if (adapters.length > MAX_TRUSTED_RUNTIME_ADAPTERS) {
+    throw new TypeError("Trusted runtime adapter count exceeds the supported limit.");
+  }
+  const byId = new Map<string, RegisteredTrustedRuntimeAdapter>();
+  const byMode = new Map<RuntimeAuditMode, string[]>(
+    runtimeModes.map((mode) => [mode, []] as const),
+  );
+  for (const adapter of adapters) {
+    if (
+      adapter === null ||
+      typeof adapter !== "object" ||
+      typeof adapter.harnessId !== "string" ||
+      adapter.harnessId.length > 128 ||
+      !catalogIdPattern.test(adapter.harnessId) ||
+      typeof adapter.run !== "function" ||
+      !Array.isArray(adapter.modes) ||
+      adapter.modes.length === 0 ||
+      adapter.modes.length > runtimeModes.length ||
+      adapter.modes.some((mode) => !runtimeModes.includes(mode)) ||
+      new Set(adapter.modes).size !== adapter.modes.length ||
+      [...adapter.modes].sort(compareText).some((mode, index) => mode !== adapter.modes[index])
+    ) {
+      throw new TypeError("Trusted runtime adapter registration is invalid.");
+    }
+    if (byId.has(adapter.harnessId)) {
+      throw new TypeError(`Duplicate trusted runtime adapter ${adapter.harnessId}.`);
+    }
+    const run = adapter.run.bind(adapter);
+    byId.set(adapter.harnessId, {
+      harnessId: adapter.harnessId,
+      modes: [...adapter.modes],
+      run,
+    });
+    for (const mode of adapter.modes) byMode.get(mode)!.push(adapter.harnessId);
+  }
+  for (const ids of byMode.values()) ids.sort(compareText);
+  return { byId, byMode };
+}
+
+async function boundedRuntimeExecution(
+  adapter: RegisteredTrustedRuntimeAdapter,
+  invocation: RuntimeHarnessInvocationV1,
+  timeoutMs: number,
+): Promise<unknown> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      Promise.resolve().then(() => adapter.run(invocation)),
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => reject(new RuntimeHarnessTimeoutError()), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
 }
 
 function decodePointerSegment(value: string): string | null {
@@ -92,6 +191,7 @@ function failure(
     itemId: contract.itemId,
     mode: assertion.mode,
     evidenceType: assertion.evidenceType,
+    harnessId: assertion.mode === "static" ? null : assertion.adapter.harnessId,
     target: {
       logicalPath: assertion.target.logicalPath,
       projectPath: snapshot.projectPath,
@@ -102,6 +202,7 @@ function failure(
     remediationUrl: assertion.remediationUrl,
     state,
     failure: { classification, code },
+    context: null,
   };
 }
 
@@ -120,6 +221,7 @@ function passed(
     itemId: contract.itemId,
     mode: assertion.mode,
     evidenceType: assertion.evidenceType,
+    harnessId: null,
     target: { logicalPath: assertion.target.logicalPath, projectPath },
     expectedBehavior: assertion.expectedBehavior,
     actualBehavior,
@@ -127,6 +229,7 @@ function passed(
     remediationUrl: assertion.remediationUrl,
     state: "pass",
     failure: null,
+    context: null,
   };
 }
 
@@ -277,6 +380,93 @@ function unavailableRuntimeResult(
   );
 }
 
+async function runRuntimeAssertion(
+  contract: ContractDefinitionV1,
+  assertion: RuntimeContractAssertionV1,
+  adapters: TrustedAdapterRegistry,
+  timeoutMs: number,
+): Promise<AuditAssertionResultV1> {
+  const adapter = adapters.byId.get(assertion.adapter.harnessId);
+  if (adapter === undefined || !adapter.modes.includes(assertion.mode)) {
+    return unavailableRuntimeResult(contract, assertion);
+  }
+  const invocation: RuntimeHarnessInvocationV1 = {
+    harnessId: assertion.adapter.harnessId,
+    contract: {
+      contractId: contract.contractId,
+      contractVersion: contract.contractVersion,
+      payloadDigest: contract.payloadDigest,
+      registryId: contract.registryId,
+      itemId: contract.itemId,
+    },
+    assertion: {
+      assertionId: assertion.id,
+      mode: assertion.mode,
+      evidenceType: assertion.evidenceType,
+      target: { ...assertion.target },
+      expectedBehavior: assertion.expectedBehavior,
+      severity: assertion.severity,
+      remediationUrl: assertion.remediationUrl,
+    },
+  };
+  let rawOutcome: unknown;
+  try {
+    rawOutcome = await boundedRuntimeExecution(adapter, invocation, timeoutMs);
+  } catch (error) {
+    const timedOut = error instanceof RuntimeHarnessTimeoutError;
+    return failure(
+      assertion,
+      contract,
+      { projectPath: null },
+      "adapter-error",
+      timedOut ? "AUDIT_HARNESS_TIMEOUT" : "AUDIT_HARNESS_FAILED",
+      timedOut
+        ? "The trusted runtime harness exceeded its host-controlled time limit."
+        : "The trusted runtime harness failed without recording an assertion result.",
+      "not-run",
+    );
+  }
+  let outcome;
+  try {
+    outcome = normalizeRuntimeHarnessOutcomeV1(rawOutcome, assertion.mode);
+  } catch {
+    return failure(
+      assertion,
+      contract,
+      { projectPath: null },
+      "adapter-error",
+      "AUDIT_HARNESS_RESULT_INVALID",
+      "The trusted runtime harness returned malformed or unbounded evidence.",
+      "not-run",
+    );
+  }
+  return {
+    assertionId: assertion.id,
+    contractId: contract.contractId,
+    contractVersion: contract.contractVersion,
+    payloadDigest: contract.payloadDigest,
+    registryId: contract.registryId,
+    itemId: contract.itemId,
+    mode: assertion.mode,
+    evidenceType: assertion.evidenceType,
+    harnessId: assertion.adapter.harnessId,
+    target: {
+      logicalPath: assertion.target.logicalPath,
+      projectPath: outcome.projectPath,
+    },
+    expectedBehavior: assertion.expectedBehavior,
+    actualBehavior: outcome.actualBehavior,
+    severity: assertion.severity,
+    remediationUrl: assertion.remediationUrl,
+    state: outcome.state,
+    failure:
+      outcome.state === "fail"
+        ? { classification: "assertion-failed", code: outcome.failureCode! }
+        : null,
+    context: outcome.context,
+  };
+}
+
 function summarize(results: readonly AuditAssertionResultV1[]): AuditReportV1["summary"] {
   return {
     pass: results.filter(({ state }) => state === "pass").length,
@@ -319,12 +509,50 @@ export async function runContractAuditV1(
   options: RunContractAuditOptions = {},
 ): Promise<AuditReportV1> {
   const modes = requestedModes(options.requestedModes);
-  const validated = definitions.map((definition) => parseContractDefinitionV1(definition));
+  const adapters = trustedAdapterRegistry(options.trustedRuntimeAdapters);
+  const timeoutMs = runtimeTimeoutMs(options.runtimeTimeoutMs);
+  if (
+    targetAdapter === null ||
+    typeof targetAdapter !== "object" ||
+    typeof targetAdapter.id !== "string" ||
+    targetAdapter.id.length > 128 ||
+    !catalogIdPattern.test(targetAdapter.id) ||
+    typeof targetAdapter.readTarget !== "function"
+  ) {
+    throw new TypeError("Static audit target adapter registration is invalid.");
+  }
+  const staticAdapter: StaticAuditTargetAdapter = {
+    id: targetAdapter.id,
+    readTarget: targetAdapter.readTarget.bind(targetAdapter),
+  };
+  if (definitions.length > MAX_CONTRACT_DEFINITIONS) {
+    throw new TypeError("Contract definition count exceeds the supported audit limit.");
+  }
+  const validated = definitions.map((definition) => {
+    const parsed = parseContractDefinitionV1(definition);
+    return parseContractDefinitionV1(JSON.parse(canonicalAuditJson(parsed)) as unknown);
+  });
   const definitionKeys = new Set<string>();
   for (const definition of validated) {
     const key = `${definition.registryId}:${definition.itemId}:${definition.contractId}`;
     if (definitionKeys.has(key)) throw new TypeError(`Duplicate contract definition ${key}.`);
     definitionKeys.add(key);
+  }
+  const requiredHarnessesByMode = new Map<RuntimeAuditMode, readonly string[]>();
+  for (const mode of runtimeModes) {
+    const ids = [
+      ...new Set(
+        validated.flatMap((contract) =>
+          contract.assertions.flatMap((assertion) =>
+            assertion.mode === mode ? [assertion.adapter.harnessId] : [],
+          ),
+        ),
+      ),
+    ].sort(compareText);
+    if (ids.length > MAX_REQUIRED_HARNESSES_PER_MODE) {
+      throw new TypeError(`Required ${mode} harness count exceeds the supported limit.`);
+    }
+    requiredHarnessesByMode.set(mode, ids);
   }
 
   const results: AuditAssertionResultV1[] = [];
@@ -338,20 +566,34 @@ export async function runContractAuditV1(
       if (!modes.includes(assertion.mode)) continue;
       results.push(
         assertion.mode === "static"
-          ? await runStaticAssertion(contract, assertion, targetAdapter)
-          : unavailableRuntimeResult(contract, assertion),
+          ? await runStaticAssertion(contract, assertion, staticAdapter)
+          : await runRuntimeAssertion(contract, assertion, adapters, timeoutMs),
       );
     }
   }
   results.sort((left, right) => compareText(resultKey(left), resultKey(right)));
 
-  const capabilities: readonly AuditCapabilityV1[] = AUDIT_MODES.map((mode) => ({
-    mode,
-    requested: modes.includes(mode),
-    available: mode === "static",
-    adapter: mode === "static" ? targetAdapter.id : null,
-    limitation: CAPABILITY_LIMITATIONS[mode],
-  }));
+  const capabilities: readonly AuditCapabilityV1[] = AUDIT_MODES.map((mode) => {
+    const requiredHarnessIds = mode === "static" ? [] : requiredHarnessesByMode.get(mode)!;
+    const registeredHarnessIds = mode === "static" ? [] : adapters.byMode.get(mode);
+    const registered = registeredHarnessIds ?? [];
+    const availableSet = new Set(registered);
+    const missingHarnessIds = requiredHarnessIds.filter((id) => !availableSet.has(id));
+    const available =
+      mode === "static" ||
+      (missingHarnessIds.length === 0 && (requiredHarnessIds.length > 0 || registered.length > 0));
+    return {
+      mode,
+      requested: modes.includes(mode),
+      available,
+      adapter:
+        mode === "static" ? staticAdapter.id : registered.length === 1 ? registered[0]! : null,
+      registeredHarnessIds: registered,
+      requiredHarnessIds,
+      missingHarnessIds,
+      limitation: available ? null : CAPABILITY_LIMITATIONS[mode],
+    };
+  });
   const overall = reportState(results, capabilities);
   const limitations = [
     ...STATIC_LIMITATIONS,

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "number-field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "number-field",
+    "stableAttributes": [
+      "data-slot",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-required",
+      "data-has-stepper",
+      "data-has-scrub"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "number-field-group",
+      "element": "div",
+      "purpose": "Groups the editable input and optional step or scrub controls.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-input",
+      "element": "input",
+      "purpose": "Locale-aware spinbutton editing surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-decrement",
+      "element": "button",
+      "purpose": "Optional localized decrement control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-increment",
+      "element": "button",
+      "purpose": "Optional localized increment control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-scrub",
+      "element": "button",
+      "purpose": "Optional pointer-drag and keyboard step control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "implicit-form-value",
+      "element": "input type=hidden",
+      "purpose": "Canonical, non-localized successful form value supplied by React Aria.",
+      "stability": "behavioral"
+    }
+  ]
+}

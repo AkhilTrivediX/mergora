@@ -4,8 +4,11 @@ import {
   type AuditReportV1,
   type ContractDefinitionV1,
   type RunContractAuditOptions,
+  type RuntimeHarnessInvocationV1,
+  type RuntimeHarnessOutcomeV1,
   type StaticAuditTargetAdapter,
   type StaticTargetSnapshot,
+  type TrustedRuntimeHarnessAdapterV1,
 } from "mergora-contracts";
 
 export type ContractResultState = "pass" | "fail" | "blocked-upstream" | "not-applicable";
@@ -419,5 +422,8 @@ export type {
   AuditReportV1,
   ContractDefinitionV1,
   RunContractAuditOptions,
+  RuntimeHarnessInvocationV1,
+  RuntimeHarnessOutcomeV1,
   StaticAuditTargetAdapter,
+  TrustedRuntimeHarnessAdapterV1,
 };

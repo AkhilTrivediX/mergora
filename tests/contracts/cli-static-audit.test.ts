@@ -177,6 +177,77 @@ describe("CLI static Contract Audit", () => {
     });
   });
 
+  it("accepts trusted runtime adapters programmatically while the default remains unavailable", async () => {
+    const fixture = createProject();
+    const button = fixture.definitions.find(({ itemId }) => itemId === "button");
+    if (button === undefined) throw new Error("Expected the button definition fixture.");
+    const runtimeDefinition = defineContractV1({
+      ...button,
+      assertions: [
+        {
+          id: "browser-state",
+          mode: "browser",
+          evidenceType: "browser-behavior",
+          target: { kind: "owned-file", logicalPath: "ui/button.tsx" },
+          expectedBehavior: "The browser exposes the enabled button state.",
+          severity: "S1",
+          remediationUrl: "https://example.com/button-browser",
+          adapter: { kind: "harness", version: "1.0.0", harnessId: "button-browser" },
+        },
+        ...button.assertions,
+      ],
+    });
+
+    const unavailable = await auditProject(fixture.root, {
+      items: ["button"],
+      definitions: [runtimeDefinition],
+      requestedModes: ["browser"],
+    });
+    expect(unavailable).toMatchObject({ state: "incomplete", recommendedExitCode: 7 });
+    expect(unavailable.results[0]).toMatchObject({ state: "not-run", context: null });
+
+    const executed = await auditProject(fixture.root, {
+      items: ["button"],
+      definitions: [runtimeDefinition],
+      requestedModes: ["browser"],
+      trustedRuntimeAdapters: [
+        {
+          harnessId: "button-browser",
+          modes: ["browser"],
+          run: () => ({
+            state: "pass",
+            actualBehavior: "The rendered button remained enabled.",
+            projectPath: "src/components/button.tsx",
+            failureCode: null,
+            context: {
+              role: "button",
+              name: "Save",
+              states: [{ name: "disabled", value: false }],
+              keyboard: [],
+              focus: [],
+              announcements: [],
+              axe: [],
+              geometry: [],
+            },
+          }),
+        },
+      ],
+    });
+    expect(executed).toMatchObject({ state: "pass", recommendedExitCode: 0 });
+    expect(executed.results[0]).toMatchObject({
+      state: "pass",
+      harnessId: "button-browser",
+      context: { role: "button", name: "Save" },
+    });
+    expect(executed.capabilities.find(({ mode }) => mode === "browser")).toMatchObject({
+      available: true,
+      registeredHarnessIds: ["button-browser"],
+      requiredHarnessIds: ["button-browser"],
+      missingHarnessIds: [],
+    });
+    expect(JSON.stringify(executed)).not.toContain(fixture.root);
+  });
+
   it("rejects stale Contract bindings as registry integrity failures", async () => {
     const fixture = createProject();
     const stale = { ...fixture.definitions[0]!, payloadDigest: `sha256:${"f".repeat(64)}` };

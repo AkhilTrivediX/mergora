@@ -127,6 +127,11 @@
       "import": "./dist/generated/copy-button/copy-button.js"
     },
     "./copy-button.css": "./dist/generated/copy-button/copy-button.css",
+    "./currency-field": {
+      "types": "./dist/generated/currency-field/currency-field.d.ts",
+      "import": "./dist/generated/currency-field/currency-field.js"
+    },
+    "./currency-field.css": "./dist/generated/currency-field/currency-field.css",
     "./data-grid": {
       "types": "./dist/generated/data-grid/index.d.ts",
       "import": "./dist/generated/data-grid/index.js"
@@ -237,11 +242,21 @@
       "import": "./dist/generated/native-select/native-select.js"
     },
     "./native-select.css": "./dist/generated/native-select/native-select.css",
+    "./number-field": {
+      "types": "./dist/generated/number-field/number-field.d.ts",
+      "import": "./dist/generated/number-field/number-field.js"
+    },
+    "./number-field.css": "./dist/generated/number-field/number-field.css",
     "./pagination": {
       "types": "./dist/generated/pagination/pagination.d.ts",
       "import": "./dist/generated/pagination/pagination.js"
     },
     "./pagination.css": "./dist/generated/pagination/pagination.css",
+    "./percentage-field": {
+      "types": "./dist/generated/percentage-field/percentage-field.d.ts",
+      "import": "./dist/generated/percentage-field/percentage-field.js"
+    },
+    "./percentage-field.css": "./dist/generated/percentage-field/percentage-field.css",
     "./popover": {
       "types": "./dist/generated/popover/index.d.ts",
       "import": "./dist/generated/popover/index.js"

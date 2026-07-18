@@ -1,25 +1,16 @@
-import { randomBytes } from "node:crypto";
-import {
-  closeSync,
-  existsSync,
-  fsyncSync,
-  mkdirSync,
-  openSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  unlinkSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, resolve } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 import {
   assertNoSymlinkAncestors,
   assertPortableRelativePath,
+  canonicalJson,
+  CLI_VERSION,
   CliError,
   sha256,
   validatedProjectRoot,
 } from "./contracts.js";
+import { PUBLIC_UI_PACKAGE } from "./generated-public-package-map.js";
 import { OFFICIAL_REGISTRY_ORIGIN } from "./registry-data.js";
 import {
   inspectProject,
@@ -27,7 +18,17 @@ import {
   type PackageManager,
   type ProjectInspection,
 } from "./project-inspector.js";
-import { PUBLIC_UI_PACKAGE } from "./generated-public-package-map.js";
+import {
+  executeTransaction,
+  finalizeOperationPlan,
+  type OperationPlan,
+  type OperationPlanFile,
+  type TransactionFaultInjector,
+  type TransactionMutation,
+  type TransactionValidationContext,
+  type TransactionValidationResult,
+  type TransactionValidator,
+} from "./transaction-engine.js";
 
 export const CONFIG_SCHEMA = `${OFFICIAL_REGISTRY_ORIGIN}/schemas/config-v1.schema.json` as const;
 export const MANIFEST_SCHEMA =
@@ -112,6 +113,8 @@ export interface InitOptions {
   readonly globalCss?: string | undefined;
   readonly aliasPrefix?: string | undefined;
   readonly packageManager?: PackageManager | undefined;
+  /** Deterministic interruption seam used by transaction fault-convergence tests. */
+  readonly faultInjector?: TransactionFaultInjector | undefined;
 }
 
 export interface PlannedEdit {
@@ -149,6 +152,7 @@ interface InternalEdit extends PlannedEdit {
 
 interface InternalInitPlan {
   readonly publicPlan: InitPlan;
+  readonly operationPlan: OperationPlan;
   readonly root: string;
   readonly edits: readonly InternalEdit[];
 }
@@ -739,6 +743,65 @@ function editFor(root: string, target: string, content: string, reason: string):
   };
 }
 
+function initOperation(edit: InternalEdit): OperationPlanFile {
+  return {
+    operation:
+      edit.action === "create" ? "add" : edit.action === "update" ? "fast-forward" : "no-op",
+    target: edit.target,
+    owner: "official:init",
+    base: edit.beforeDigest,
+    local: edit.beforeDigest,
+    remote: edit.afterDigest,
+    proposed: edit.afterDigest,
+    mediaType: edit.target.endsWith(".json") ? "application/json" : "text/plain",
+    risk: "ordinary",
+    reason: edit.reason,
+  };
+}
+
+function validateInitConfig(context: TransactionValidationContext): TransactionValidationResult {
+  const bytes = context.readFile("mergora.json");
+  if (bytes === null) {
+    return {
+      state: "fail",
+      summary: "The initialized project configuration is missing.",
+      issues: [
+        {
+          code: "CONFIG_MISSING",
+          target: "mergora.json",
+          message: "The transaction view has no mergora.json file.",
+        },
+      ],
+    };
+  }
+  try {
+    validateMergoraConfig(JSON.parse(bytes.toString("utf8")) as unknown);
+    return {
+      state: "pass",
+      summary: `mergora.json is valid during ${context.phase} validation.`,
+    };
+  } catch (error) {
+    return {
+      state: "fail",
+      summary: "The initialized project configuration is invalid.",
+      issues: [
+        {
+          code: error instanceof CliError ? error.code : "CONFIG_INVALID_JSON",
+          target: "mergora.json",
+          message: error instanceof Error ? error.message : "Configuration validation failed.",
+        },
+      ],
+    };
+  }
+}
+
+const INIT_CONFIG_VALIDATOR: TransactionValidator = {
+  id: "init-config-v1",
+  label: "project-configured",
+  validateStagedOverlay: validateInitConfig,
+  validatePostCommit: validateInitConfig,
+};
+
 function compatibleOverrides(config: MergoraConfig, options: InitOptions): void {
   const conflicts: readonly [unknown, unknown, string][] = [
     [options.framework, config.project.framework, "framework"],
@@ -794,6 +857,7 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
   assertNoSymlinkAncestors(root, ".mergora/manifest.json");
   const manifestPath = resolve(root, ".mergora/manifest.json");
   let manifestEdit: InternalEdit;
+  let manifestPreconditionDigest: `sha256:${string}` | null;
   if (existsSync(manifestPath)) {
     const value = jsonObject(readFileSync(manifestPath, "utf8"), ".mergora/manifest.json");
     if (value.$schema !== MANIFEST_SCHEMA || value.schemaVersion !== 1) {
@@ -803,6 +867,7 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
         target: ".mergora/manifest.json",
       });
     }
+    manifestPreconditionDigest = sha256(canonicalJson(value));
     manifestEdit = editFor(
       root,
       ".mergora/manifest.json",
@@ -816,6 +881,7 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
       manifestText(configText),
       "Create the portable empty provenance manifest.",
     );
+    manifestPreconditionDigest = null;
   }
   assertNoSymlinkAncestors(root, ".gitignore");
   const gitignorePath = resolve(root, ".gitignore");
@@ -849,39 +915,38 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     writesRequired: edits.some(({ action }) => action !== "no-op"),
     planDigest: sha256(JSON.stringify(semantic)),
   };
-  return { publicPlan, root, edits };
+  const operationPlan = finalizeOperationPlan({
+    schemaVersion: 1,
+    command: "init",
+    cliVersion: CLI_VERSION,
+    projectRoot: ".",
+    configDigest: sha256(canonicalJson(config)),
+    manifestPreconditionDigest,
+    registries: [],
+    items: [],
+    fileOperations: edits.map(initOperation),
+    dependencyChanges: [],
+    structuredPatches: [],
+    migrations: [],
+    contractChanges: [],
+    warnings: inspection.warnings,
+    consentRequirements: [],
+    conflicts: [],
+    estimatedBytes: {
+      download: 0,
+      write: edits.reduce(
+        (total, edit) => total + (edit.action === "no-op" ? 0 : edit.byteLength),
+        0,
+      ),
+    },
+    validationSuite: ["schema", "digest", "path", "collision", "ownership", "project-configured"],
+    rollbackAvailable: true,
+  });
+  return { publicPlan, operationPlan, root, edits };
 }
 
 export function planInit(options: InitOptions): InitPlan {
   return internalInitPlan(options).publicPlan;
-}
-
-function writeAtomic(path: string, content: string, _operation: string): void {
-  mkdirSync(dirname(path), { recursive: true });
-  let temporary = "";
-  let descriptor: number | null = null;
-  try {
-    for (let attempt = 0; attempt < 4; attempt += 1) {
-      temporary = `${path}.mergora-${randomBytes(16).toString("hex")}.tmp`;
-      try {
-        descriptor = openSync(temporary, "wx", 0o600);
-        break;
-      } catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "EEXIST" || attempt === 3) throw error;
-      }
-    }
-    if (descriptor === null) throw new Error("Unable to create an exclusive temporary file.");
-    writeFileSync(descriptor, content, { encoding: "utf8" });
-    fsyncSync(descriptor);
-    const completedDescriptor = descriptor;
-    descriptor = null;
-    closeSync(completedDescriptor);
-    renameSync(temporary, path);
-    temporary = "";
-  } finally {
-    if (descriptor !== null) closeSync(descriptor);
-    if (temporary !== "" && existsSync(temporary)) unlinkSync(temporary);
-  }
 }
 
 export function applyInit(options: InitOptions, expectedPlanDigest?: string): InitPlan {
@@ -892,38 +957,25 @@ export function applyInit(options: InitOptions, expectedPlanDigest?: string): In
       exitCode: 8,
     });
   }
-  const changed = plan.edits.filter(
-    (edit): edit is InternalEdit & { readonly content: string } => edit.content !== null,
+  const mutations: TransactionMutation[] = plan.edits.flatMap((edit) =>
+    edit.content === null
+      ? []
+      : [
+          {
+            target: edit.target,
+            content: Buffer.from(edit.content, "utf8"),
+            beforeDigest: edit.beforeDigest,
+            ...(edit.target === ".mergora/manifest.json" ? { manifest: true as const } : {}),
+          },
+        ],
   );
-  for (const edit of changed) {
-    assertNoSymlinkAncestors(plan.root, edit.target);
-    const path = resolve(plan.root, edit.target);
-    const current = existsSync(path) ? readFileSync(path, "utf8") : null;
-    const digest = current === null ? null : sha256(current);
-    if (digest !== edit.beforeDigest) {
-      throw new CliError(`Initialization target ${edit.target} changed after planning.`, {
-        code: "PLAN_TARGET_STALE",
-        exitCode: 8,
-        target: edit.target,
-      });
-    }
-  }
-  const applied: { readonly edit: InternalEdit; readonly before: string | null }[] = [];
-  try {
-    for (const edit of changed) {
-      assertNoSymlinkAncestors(plan.root, edit.target);
-      const path = resolve(plan.root, edit.target);
-      const before = existsSync(path) ? readFileSync(path, "utf8") : null;
-      writeAtomic(path, edit.content, `mergora-init-${plan.publicPlan.planDigest.slice(-12)}`);
-      applied.push({ edit, before });
-    }
-  } catch (error) {
-    for (const { edit, before } of [...applied].reverse()) {
-      const path = resolve(plan.root, edit.target);
-      if (before === null) rmSync(path, { force: true });
-      else writeAtomic(path, before, "mergora-init-rollback");
-    }
-    throw error;
-  }
+  executeTransaction({
+    root: plan.root,
+    plan: plan.operationPlan,
+    mutations,
+    commandArguments: [],
+    faultInjector: options.faultInjector,
+    validators: [INIT_CONFIG_VALIDATOR],
+  });
   return plan.publicPlan;
 }

@@ -103,13 +103,44 @@
     "capability": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mode", "requested", "available", "adapter", "limitation"],
+      "required": [
+        "mode",
+        "requested",
+        "available",
+        "adapter",
+        "registeredHarnessIds",
+        "requiredHarnessIds",
+        "missingHarnessIds",
+        "limitation"
+      ],
       "properties": {
         "mode": { "$ref": "#/$defs/mode" },
         "requested": { "type": "boolean" },
         "available": { "type": "boolean" },
-        "adapter": { "type": ["string", "null"] },
-        "limitation": { "type": ["string", "null"] }
+        "adapter": {
+          "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 128 }, { "type": "null" }]
+        },
+        "registeredHarnessIds": {
+          "type": "array",
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/catalogId" }
+        },
+        "requiredHarnessIds": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/catalogId" }
+        },
+        "missingHarnessIds": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/catalogId" }
+        },
+        "limitation": {
+          "oneOf": [{ "$ref": "#/$defs/nonEmptyText" }, { "type": "null" }]
+        }
       }
     },
     "failure": {
@@ -128,6 +159,128 @@
         "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$", "maxLength": 128 }
       }
     },
+    "runtimeContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "name",
+        "states",
+        "keyboard",
+        "focus",
+        "announcements",
+        "axe",
+        "geometry"
+      ],
+      "properties": {
+        "role": {
+          "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 128 }, { "type": "null" }]
+        },
+        "name": {
+          "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 512 }, { "type": "null" }]
+        },
+        "states": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "value"],
+            "properties": {
+              "name": { "$ref": "#/$defs/catalogId" },
+              "value": {
+                "oneOf": [
+                  { "type": "boolean" },
+                  { "type": "null" },
+                  { "type": "number", "minimum": -1000000000, "maximum": 1000000000 },
+                  { "type": "string", "minLength": 1, "maxLength": 512 }
+                ]
+              }
+            }
+          }
+        },
+        "keyboard": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["key", "action", "outcome"],
+            "properties": {
+              "key": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "action": { "type": "string", "minLength": 1, "maxLength": 256 },
+              "outcome": { "type": "string", "minLength": 1, "maxLength": 512 }
+            }
+          }
+        },
+        "focus": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["step", "target", "visible", "occluded"],
+            "properties": {
+              "step": { "$ref": "#/$defs/catalogId" },
+              "target": {
+                "oneOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 512 },
+                  { "type": "null" }
+                ]
+              },
+              "visible": { "type": ["boolean", "null"] },
+              "occluded": { "type": ["boolean", "null"] }
+            }
+          }
+        },
+        "announcements": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["text", "politeness"],
+            "properties": {
+              "text": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "politeness": { "enum": ["assertive", "off", "polite"] }
+            }
+          }
+        },
+        "axe": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["ruleId", "impact", "nodeCount"],
+            "properties": {
+              "ruleId": { "$ref": "#/$defs/catalogId" },
+              "impact": {
+                "oneOf": [
+                  { "enum": ["critical", "minor", "moderate", "serious"] },
+                  { "type": "null" }
+                ]
+              },
+              "nodeCount": { "type": "integer", "minimum": 0, "maximum": 100000 }
+            }
+          }
+        },
+        "geometry": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["metric", "value", "unit"],
+            "properties": {
+              "metric": { "$ref": "#/$defs/catalogId" },
+              "value": { "type": "number", "minimum": -1000000000, "maximum": 1000000000 },
+              "unit": { "enum": ["count", "px", "ratio"] }
+            }
+          }
+        }
+      }
+    },
     "result": {
       "type": "object",
       "additionalProperties": false,
@@ -140,13 +293,15 @@
         "itemId",
         "mode",
         "evidenceType",
+        "harnessId",
         "target",
         "expectedBehavior",
         "actualBehavior",
         "severity",
         "remediationUrl",
         "state",
-        "failure"
+        "failure",
+        "context"
       ],
       "properties": {
         "assertionId": { "$ref": "#/$defs/catalogId" },
@@ -157,6 +312,9 @@
         "itemId": { "$ref": "#/$defs/catalogId" },
         "mode": { "$ref": "#/$defs/mode" },
         "evidenceType": { "$ref": "#/$defs/evidenceType" },
+        "harnessId": {
+          "oneOf": [{ "$ref": "#/$defs/catalogId" }, { "type": "null" }]
+        },
         "target": {
           "type": "object",
           "additionalProperties": false,
@@ -173,8 +331,37 @@
         "severity": { "enum": ["S0", "S1", "S2", "S3"] },
         "remediationUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
         "state": { "enum": ["pass", "fail", "not-applicable", "not-run"] },
-        "failure": { "oneOf": [{ "$ref": "#/$defs/failure" }, { "type": "null" }] }
-      }
+        "failure": { "oneOf": [{ "$ref": "#/$defs/failure" }, { "type": "null" }] },
+        "context": {
+          "oneOf": [{ "$ref": "#/$defs/runtimeContext" }, { "type": "null" }]
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "static" } }, "required": ["mode"] },
+          "then": {
+            "properties": { "harnessId": { "const": null }, "context": { "const": null } }
+          },
+          "else": {
+            "properties": {
+              "harnessId": { "$ref": "#/$defs/catalogId" },
+              "context": {
+                "oneOf": [{ "$ref": "#/$defs/runtimeContext" }, { "type": "null" }]
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "state": { "const": "not-run" } },
+                  "required": ["state"]
+                },
+                "then": { "properties": { "context": { "const": null } } },
+                "else": { "properties": { "context": { "$ref": "#/$defs/runtimeContext" } } }
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 }

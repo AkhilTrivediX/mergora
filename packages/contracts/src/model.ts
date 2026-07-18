@@ -3,6 +3,7 @@ export const AUDIT_REPORT_SCHEMA_VERSION = 1 as const;
 
 export const AUDIT_MODES = ["a11y", "browser", "keyboard", "responsive", "static"] as const;
 export type AuditMode = (typeof AUDIT_MODES)[number];
+export type RuntimeAuditMode = Exclude<AuditMode, "static">;
 
 export const AUDIT_EVIDENCE_TYPES = [
   "accessibility-tree",
@@ -130,6 +131,53 @@ export interface AuditTargetV1 {
   readonly projectPath: string | null;
 }
 
+export interface AuditStateObservationV1 {
+  readonly name: string;
+  readonly value: JsonPrimitive;
+}
+
+export interface AuditKeyboardObservationV1 {
+  readonly key: string;
+  readonly action: string;
+  readonly outcome: string;
+}
+
+export interface AuditFocusObservationV1 {
+  readonly step: string;
+  readonly target: string | null;
+  readonly visible: boolean | null;
+  readonly occluded: boolean | null;
+}
+
+export interface AuditAnnouncementObservationV1 {
+  readonly text: string;
+  readonly politeness: "assertive" | "off" | "polite";
+}
+
+export interface AuditAxeObservationV1 {
+  readonly ruleId: string;
+  readonly impact: "critical" | "minor" | "moderate" | "serious" | null;
+  readonly nodeCount: number;
+}
+
+export interface AuditGeometryObservationV1 {
+  readonly metric: string;
+  readonly value: number;
+  readonly unit: "count" | "px" | "ratio";
+}
+
+/** Bounded, serializable observations returned by a trusted host harness. */
+export interface AuditRuntimeContextV1 {
+  readonly role: string | null;
+  readonly name: string | null;
+  readonly states: readonly AuditStateObservationV1[];
+  readonly keyboard: readonly AuditKeyboardObservationV1[];
+  readonly focus: readonly AuditFocusObservationV1[];
+  readonly announcements: readonly AuditAnnouncementObservationV1[];
+  readonly axe: readonly AuditAxeObservationV1[];
+  readonly geometry: readonly AuditGeometryObservationV1[];
+}
+
 export interface AuditAssertionResultV1 {
   readonly assertionId: string;
   readonly contractId: string;
@@ -139,6 +187,7 @@ export interface AuditAssertionResultV1 {
   readonly itemId: string;
   readonly mode: AuditMode;
   readonly evidenceType: AuditEvidenceType;
+  readonly harnessId: string | null;
   readonly target: AuditTargetV1;
   readonly expectedBehavior: string;
   readonly actualBehavior: string;
@@ -146,6 +195,7 @@ export interface AuditAssertionResultV1 {
   readonly remediationUrl: string;
   readonly state: AuditAssertionState;
   readonly failure: AuditFailureV1 | null;
+  readonly context: AuditRuntimeContextV1 | null;
 }
 
 export interface AuditCapabilityV1 {
@@ -153,6 +203,9 @@ export interface AuditCapabilityV1 {
   readonly requested: boolean;
   readonly available: boolean;
   readonly adapter: string | null;
+  readonly registeredHarnessIds: readonly string[];
+  readonly requiredHarnessIds: readonly string[];
+  readonly missingHarnessIds: readonly string[];
   readonly limitation: string | null;
 }
 
@@ -212,7 +265,52 @@ export interface StaticAuditTargetAdapter {
   }): StaticTargetSnapshot | Promise<StaticTargetSnapshot>;
 }
 
+export interface RuntimeHarnessContractV1 {
+  readonly contractId: string;
+  readonly contractVersion: string;
+  readonly payloadDigest: string;
+  readonly registryId: string;
+  readonly itemId: string;
+}
+
+export interface RuntimeHarnessAssertionV1 {
+  readonly assertionId: string;
+  readonly mode: RuntimeAuditMode;
+  readonly evidenceType: Exclude<AuditEvidenceType, "static-source">;
+  readonly target: OwnedFileTargetV1;
+  readonly expectedBehavior: string;
+  readonly severity: AuditSeverity;
+  readonly remediationUrl: string;
+}
+
+export interface RuntimeHarnessInvocationV1 {
+  readonly harnessId: string;
+  readonly contract: RuntimeHarnessContractV1;
+  readonly assertion: RuntimeHarnessAssertionV1;
+}
+
+export interface RuntimeHarnessOutcomeV1 {
+  readonly state: "fail" | "not-applicable" | "pass";
+  readonly actualBehavior: string;
+  readonly projectPath: string | null;
+  readonly failureCode: string | null;
+  readonly context: AuditRuntimeContextV1;
+}
+
+/**
+ * Host code registers reviewed adapters. Executable Contract JSON can only
+ * select one by `harnessId`; it cannot provide this function or its runtime.
+ */
+export interface TrustedRuntimeHarnessAdapterV1 {
+  readonly harnessId: string;
+  readonly modes: readonly RuntimeAuditMode[];
+  run(input: RuntimeHarnessInvocationV1): unknown | Promise<unknown>;
+}
+
 export interface RunContractAuditOptions {
   readonly requestedModes?: readonly AuditMode[];
   readonly changedOnly?: boolean;
+  readonly trustedRuntimeAdapters?: readonly TrustedRuntimeHarnessAdapterV1[];
+  /** Host-controlled wall-clock limit for one runtime assertion. */
+  readonly runtimeTimeoutMs?: number;
 }

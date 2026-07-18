@@ -1,0 +1,5 @@
+@layer mergora.components {
+  .mrg-currency-field .mrg-number-field-input {
+    letter-spacing: 0.01em;
+  }
+}

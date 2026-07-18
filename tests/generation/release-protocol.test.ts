@@ -7,6 +7,7 @@ import {
   canonicalJsonFile,
   officialRegistryIdentityDigest,
   releaseArtifactDigest,
+  STABLE_RELEASE_SCHEMA_PATHS,
   verifyStableReleaseProtocolBundle,
   type ReleaseEvidenceReference,
   type ReleaseItemPayloadInput,
@@ -131,7 +132,9 @@ function releaseInput(
       state: "pass",
       evidence: evidence("packed-consumers", `r/v1/releases/${VERSION}/consumers.json`),
     },
-    schemas: [evidence("catalog-schema", "r/v1/schemas/catalog-v1.schema.json")],
+    schemas: STABLE_RELEASE_SCHEMA_PATHS.map((path) =>
+      evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path),
+    ),
     sbom: evidence("release-sbom", `r/v1/releases/${VERSION}/sbom.json`),
     items,
   };
@@ -235,18 +238,20 @@ describe("native registry release protocol v1", () => {
     expect(catalog.items.find(({ id }) => id === "dialog")?.registryDependencies).toEqual([
       "mergora:button",
     ]);
-    expect(manifest.artifacts.map(({ name }) => name)).toEqual([
-      "r/v1/contracts/1.0.0/button.json",
-      "r/v1/contracts/1.0.0/dialog.json",
-      "r/v1/passports/1.0.0/button.json",
-      "r/v1/passports/1.0.0/dialog.json",
-      "r/v1/releases/1.0.0/consumers.json",
-      "r/v1/releases/1.0.0/items/button.json",
-      "r/v1/releases/1.0.0/items/dialog.json",
-      "r/v1/releases/1.0.0/quality.json",
-      "r/v1/releases/1.0.0/sbom.json",
-      "r/v1/schemas/catalog-v1.schema.json",
-    ]);
+    expect(manifest.artifacts.map(({ name }) => name)).toEqual(
+      [
+        "r/v1/contracts/1.0.0/button.json",
+        "r/v1/contracts/1.0.0/dialog.json",
+        "r/v1/passports/1.0.0/button.json",
+        "r/v1/passports/1.0.0/dialog.json",
+        "r/v1/releases/1.0.0/consumers.json",
+        "r/v1/releases/1.0.0/items/button.json",
+        "r/v1/releases/1.0.0/items/dialog.json",
+        "r/v1/releases/1.0.0/quality.json",
+        "r/v1/releases/1.0.0/sbom.json",
+        ...STABLE_RELEASE_SCHEMA_PATHS,
+      ].sort((left, right) => left.localeCompare(right, "en-US")),
+    );
     for (const reference of manifest.artifacts) {
       const artifact = bundle.artifacts.find(({ path }) => path === reference.name)!;
       expect(reference).toMatchObject({
@@ -341,6 +346,14 @@ describe("native registry release protocol v1", () => {
         validate,
       ),
     ).toThrow(/content must be canonical release bytes matching its digest/u);
+
+    const missingSchema = releaseInput([item("button")]);
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        { ...missingSchema, schemas: missingSchema.schemas.slice(1) },
+        validate,
+      ),
+    ).toThrow(/missing required public schema/u);
   });
 
   it("rejects coherently rehashed mirror and static-bundle omissions", () => {
@@ -510,6 +523,20 @@ describe("native registry release protocol v1", () => {
       inventory: { catalogDefinitions: 178, sourceItems: 2, itemsWithoutSource: 176 },
     });
     expect(plan.inventory.sourceItemIds).toEqual(["button", "dialog"]);
+    expect(plan.endpointTemplates).toEqual({
+      catalog: "r/v1/catalog.json",
+      searchIndex: "r/v1/search-index.json",
+      schema: "r/v1/schemas/<schema-name>-v1.schema.json",
+      releaseManifest: "r/v1/releases/<ui-version>/manifest.json",
+      item: "r/v1/releases/<ui-version>/items/<item-id>.json",
+      latestAlias: "r/v1/items/<item-id>/latest.json",
+      passport: "r/v1/passports/<ui-version>/<item-id>.json",
+      contract: "r/v1/contracts/<contract-version>/<item-id>.json",
+      mirrorManifest: "r/v1/releases/<ui-version>/mirror-manifest.json",
+      releaseBundle: "r/v1/releases/<ui-version>/release-bundle.json",
+      sbom: "r/v1/releases/<ui-version>/sbom.json",
+      checksums: "r/v1/releases/<ui-version>/SHA256SUMS",
+    });
     expect(plan.blockers).toContain("quality-evidence-missing");
     expect(plan.blockers).toContain("catalog-implementation-incomplete");
     expect(JSON.stringify(plan)).not.toMatch(/"(?:state|maturity)":"pass|stable"/u);

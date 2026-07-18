@@ -1274,7 +1274,18 @@ function assertPreconditions(
 
 function assertGlobalPreconditions(root: string, plan: OperationPlan): void {
   const config = canonicalProjectJsonDigest(root, "mergora.json");
-  if (config !== plan.configDigest) {
+  const initializesMissingConfig =
+    plan.command === "init" &&
+    config === null &&
+    plan.fileOperations.some(
+      (operation) =>
+        operation.target === "mergora.json" &&
+        operation.operation === "add" &&
+        operation.base === null &&
+        operation.local === null &&
+        operation.proposed !== null,
+    );
+  if (config !== plan.configDigest && !initializesMissingConfig) {
     throw new CliError("mergora.json changed after operation planning.", {
       code: "PLAN_CONFIG_STALE",
       exitCode: 8,
@@ -2744,9 +2755,15 @@ export function planRecovery(options: RecoveryOptions): RecoveryPlan {
   const recordBytes = readProjectBytes(options.root, recordPath(options.root, id));
   if (recordBytes === null) {
     assertOrphanTransactionIsPreMutation(options.root, id);
-    const config = canonicalProjectJsonDigest(options.root, "mergora.json");
-    if (config === null)
-      throw new CliError("mergora.json is missing.", { code: "CONFIG_MISSING", exitCode: 3 });
+    const config =
+      canonicalProjectJsonDigest(options.root, "mergora.json") ??
+      sha256(
+        canonicalJson({
+          schemaVersion: 1,
+          state: "missing",
+          target: "mergora.json",
+        }),
+      );
     const plan = finalizeOperationPlan({
       schemaVersion: 1,
       command: "recover",
@@ -2813,9 +2830,20 @@ export function planRecovery(options: RecoveryOptions): RecoveryPlan {
     risk: "review-required",
     reason: `${action} interrupted transaction ${id} using recorded digests and backups.`,
   }));
-  const config = canonicalProjectJsonDigest(options.root, "mergora.json");
-  if (config === null)
+  let config = canonicalProjectJsonDigest(options.root, "mergora.json");
+  if (
+    config === null &&
+    originalPlan.command === "init" &&
+    record.preconditions.liveTargets["mergora.json"] === null
+  ) {
+    // First-run init records the proposed canonical config digest in its plan while
+    // the exact missing pre-state remains authoritative in liveTargets. Recovery
+    // can therefore plan an exact rollback before mergora.json has been committed.
+    config = originalPlan.configDigest;
+  }
+  if (config === null) {
     throw new CliError("mergora.json is missing.", { code: "CONFIG_MISSING", exitCode: 3 });
+  }
   const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "recover",

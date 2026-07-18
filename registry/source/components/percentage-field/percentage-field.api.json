@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "percentage-field",
+  "entryExport": "PercentageField",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "NumberFieldProps with a documented fractional percentage scale",
+  "exports": [
+    { "kind": "component", "name": "PercentageField" },
+    { "kind": "type", "name": "PercentageFieldFormatOptions" },
+    { "kind": "type", "name": "PercentageFieldProps" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "value", "required": false, "type": "canonical fraction; 0.125 displays as 12.5%" },
+    { "name": "defaultValue", "required": false, "type": "canonical fraction" },
+    { "name": "minValue", "required": false, "default": 0, "type": "canonical fraction" },
+    { "name": "maxValue", "required": false, "default": 1, "type": "canonical fraction" },
+    { "name": "step", "required": false, "default": 0.01, "type": "canonical fraction" },
+    {
+      "name": "precision",
+      "required": false,
+      "default": 2,
+      "type": "maximum displayed percentage fraction digits"
+    },
+    { "name": "formatOptions", "required": false, "type": "non-style Intl.NumberFormatOptions" }
+  ],
+  "compositionPolicy": {
+    "scale": "The canonical value is always a fraction: 1 is 100%, 0.125 is 12.5%, and -0.2 is -20% when permitted by bounds.",
+    "value": "JavaScript and hidden form values use the fraction; only the visible percentage is localized and scaled by Intl.",
+    "bounds": "The 0-to-1 default range is a convenience and can be explicitly extended for growth, variance, or signed-rate domains."
+  }
+}

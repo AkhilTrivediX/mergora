@@ -10,6 +10,7 @@ import {
   type ContractDefinitionV1,
   type StaticAuditTargetAdapter,
   type StaticTargetSnapshot,
+  type TrustedRuntimeHarnessAdapterV1,
 } from "mergora-contracts";
 
 import {
@@ -55,6 +56,10 @@ export interface AuditProjectOptions {
   readonly contractDirectory?: string;
   /** Programmatic safety limit; this is intentionally not a registry-controlled option. */
   readonly maxTargetBytes?: number;
+  /** Trusted host code only; Contract JSON can select but never define these adapters. */
+  readonly trustedRuntimeAdapters?: readonly TrustedRuntimeHarnessAdapterV1[];
+  /** Host-controlled wall-clock limit for each configured runtime assertion. */
+  readonly runtimeTimeoutMs?: number;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -417,9 +422,9 @@ function createProjectTargetAdapter(
 }
 
 /**
- * Runs deterministic local Contract checks. Only the static adapter is
- * implemented in this tranche; requested runtime modes are returned as
- * unavailable evidence, never implicit skips or fabricated passes.
+ * Runs deterministic local Contract checks. Runtime modes execute only through
+ * explicitly supplied trusted host adapters; the CLI default supplies none, so
+ * unavailable runtime evidence remains not-run rather than an implicit pass.
  */
 export async function auditProject(
   projectRoot: string,
@@ -436,6 +441,12 @@ export async function auditProject(
     {
       ...(options.requestedModes === undefined ? {} : { requestedModes: options.requestedModes }),
       changedOnly: options.changed ?? false,
+      ...(options.trustedRuntimeAdapters === undefined
+        ? {}
+        : { trustedRuntimeAdapters: options.trustedRuntimeAdapters }),
+      ...(options.runtimeTimeoutMs === undefined
+        ? {}
+        : { runtimeTimeoutMs: options.runtimeTimeoutMs }),
     },
   );
 }
