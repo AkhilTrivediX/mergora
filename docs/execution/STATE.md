@@ -1,8 +1,9 @@
 # Execution state
 
-- Updated: 2026-07-18T13:21:22Z
-- Commit: `45032853c02d1951432f2ea54b33961fa8ab1c2d` plus verified P1/P2/P3 working-tree implementation
+- Updated: 2026-07-18T13:29:15Z
+- Implementation commit: `fa198fbfa3ae03c228fa0881d401c648c815e0e6`
 - Branch: `codex/foundation`
+- Pull request: draft [#1](https://github.com/AkhilTrivediX/mergora/pull/1); Linux quality and security checks in progress
 - Active phase: P2 source foundation complete but unreleased; P3 Semantic Sync and audit work active
 - Phase result: in-progress
 
@@ -28,17 +29,16 @@
 
 ## Next atomic batch
 
-Commit and push the coherent foundation batch, open the draft pull request, exercise Linux PR CI, and require the exact successful contexts on `main`. Continue with P3.5 Semantic Sync, P3.6 audit/migration/vendor work, P3.7 integrity evidence, and the still-open P2 manual/Passport/parity/dogfood promotion gates.
+Observe draft PR #1, fix any Linux-only quality or security failures without weakening policy, and bind the exact successful contexts into branch protection. In parallel, continue with P3.5 Semantic Sync, P3.6 audit/migration/vendor work, P3.7 integrity evidence, and the still-open P2 manual/Passport/parity/dogfood promotion gates.
 
 ## Active failures
 
-| ID      | Severity | Reproduction command                                                    | Owner/path                  | Next action                                                                                          |
-| ------- | -------- | ----------------------------------------------------------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| P0-F003 | S2 gate  | `git status --short`; inspect the staged public tree                    | `codex/foundation`          | Commit the reviewed coherent foundation batch after active owned paths freeze.                       |
-| P0-F004 | S2 gate  | Inspect the first pull-request checks and live required-status contexts | GitHub settings / `.github` | Push the draft PR, fix Linux-only failures, then enable strict exact contexts without weakening CI.  |
-| P1-F001 | S2 gate  | Run generation and packed/browser matrices from protected Linux CI      | P1 generators and CI        | Bind local deterministic evidence to an immutable commit and confirm Linux normalization.            |
-| P2-F001 | S2 gate  | Inspect P2 item status and promotion deltas                             | P2 source families          | Finish manual/parity/update evidence, Passports, dogfooding, and Stable promotion for every P2 item. |
-| P3-F001 | S2 gate  | Inspect P3.5-P3.7 requirement deltas                                    | CLI/sync/audit              | Complete Semantic Sync, audit/migration/vendor flows, integrity campaign, and clean-consumer gate.   |
+| ID      | Severity | Reproduction command                                               | Owner/path                  | Next action                                                                                          |
+| ------- | -------- | ------------------------------------------------------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| P0-F004 | S2 gate  | Inspect draft PR #1 checks and live required-status contexts       | GitHub settings / `.github` | Fix Linux-only failures, then enable strict exact contexts without weakening CI.                     |
+| P1-F001 | S2 gate  | Run generation and packed/browser matrices from protected Linux CI | P1 generators and CI        | Bind local deterministic evidence to an immutable commit and confirm Linux normalization.            |
+| P2-F001 | S2 gate  | Inspect P2 item status and promotion deltas                        | P2 source families          | Finish manual/parity/update evidence, Passports, dogfooding, and Stable promotion for every P2 item. |
+| P3-F001 | S2 gate  | Inspect P3.5-P3.7 requirement deltas                               | CLI/sync/audit              | Complete Semantic Sync, audit/migration/vendor flows, integrity campaign, and clean-consumer gate.   |
 
 ## External blockers
 
@@ -46,18 +46,19 @@ None. `EXT-NPM-AUTH-001` was resolved on 2026-07-18 when authenticated read-only
 
 ## Latest evidence
 
-| Gate                       | Command/run                                                               | Commit        | Result                                                                                                                           | Artifact                                             |
-| -------------------------- | ------------------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Workspace aggregate        | `corepack pnpm@11.14.0 check`                                             | `uncommitted` | pass: static/root gates, lint/format, 21/21 Turbo typechecks, 62 files and 501/501 Vitest tests                                  | root command contract                                |
-| Token generation           | `pnpm generate`; `pnpm exec vitest run tests/tokens`                      | `uncommitted` | pass: 330 tokens, 12 contexts, 120 contrast checks, 14 tests                                                                     | `packages/tokens/src/generated/`                     |
-| Font reproducibility       | `rebuild_commit_mono.py ... --verify-manifest` twice                      | `uncommitted` | pass: identical 43,756-byte WOFF2, SHA-256 `d3544274…8984278ba`, valid one-zone `maxp`                                           | `assets/fonts/`                                      |
-| Deterministic generation   | `pnpm generate`; `pnpm generated:check`; generation/identity tests        | `uncommitted` | pass: 468 deterministic artifacts and 25/25 generation/package-identity tests                                                    | `registry/generated/`, `content/generated/`          |
-| P2 source-family browsers  | focused production family Playwright configurations                       | `uncommitted` | pass: 6 context, 6 layout, 10 advanced, 7 typography, 12 actions, 45 forms, 16 overlays, 8 disclosure, and 14 feedback scenarios | `tests/components/`                                  |
-| P3 transactions/provenance | focused and combined CLI Vitest suites                                    | `uncommitted` | pass: 39/39 transaction tests; 115/115 discovery, fixture, and transaction tests                                                 | `docs/quality/P3_TRANSACTION_PROVENANCE.md`          |
-| Browser contracts          | `pnpm test:browser`                                                       | `uncommitted` | pass: 32 passed, 4 explicit forced-colors policy skips across Chromium/Firefox/WebKit                                            | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Accessibility browser lane | `pnpm test:a11y`                                                          | `uncommitted` | pass: 10 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Visual determinism lane    | `pnpm test:visual`                                                        | `uncommitted` | pass: 16 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
-| Packed external consumers  | evidence refresh with `--write-evidence`, then clean `pnpm test:consumer` | `uncommitted` | pass twice: Next/Vite × package/source; 7-item/29-file source closure; offline reinstall, audit, typecheck, and builds           | `tests/packed-consumers/evidence.json`               |
-| Consumer/pack probes       | `verify-workspace.mjs --gate consumer`; `--gate pack`                     | `uncommitted` | pass: concrete runner, matrix, deterministic evidence contract, and root wiring                                                  | `docs/quality/P1_PACKED_CONSUMERS.md`                |
-| Live repository controls   | GitHub API probes                                                         | `4503285`     | pass for existing controls; exact CI contexts pending first PR                                                                   | repository settings                                  |
-| npm package identity       | authenticated read-only checks and package-map verification               | `uncommitted` | pass: approved unscoped map selected and auth available; exact-name/publish authority recheck remains                            | `config/public-packages.json`, `PACKAGE_IDENTITY.md` |
+| Gate                       | Command/run                                                               | Commit    | Result                                                                                                                           | Artifact                                             |
+| -------------------------- | ------------------------------------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Workspace aggregate        | `corepack pnpm@11.14.0 check`                                             | `fa198fb` | pass: static/root gates, lint/format, 21/21 Turbo typechecks, 62 files and 501/501 Vitest tests                                  | root command contract                                |
+| Token generation           | `pnpm generate`; `pnpm exec vitest run tests/tokens`                      | `fa198fb` | pass: 330 tokens, 12 contexts, 120 contrast checks, 14 tests                                                                     | `packages/tokens/src/generated/`                     |
+| Font reproducibility       | `rebuild_commit_mono.py ... --verify-manifest` twice                      | `fa198fb` | pass: identical 43,756-byte WOFF2, SHA-256 `d3544274…8984278ba`, valid one-zone `maxp`                                           | `assets/fonts/`                                      |
+| Deterministic generation   | `pnpm generate`; `pnpm generated:check`; generation/identity tests        | `fa198fb` | pass: 468 deterministic artifacts and 25/25 generation/package-identity tests                                                    | `registry/generated/`, `content/generated/`          |
+| P2 source-family browsers  | focused production family Playwright configurations                       | `fa198fb` | pass: 6 context, 6 layout, 10 advanced, 7 typography, 12 actions, 45 forms, 16 overlays, 8 disclosure, and 14 feedback scenarios | `tests/components/`                                  |
+| P3 transactions/provenance | focused and combined CLI Vitest suites                                    | `fa198fb` | pass: 39/39 transaction tests; 115/115 discovery, fixture, and transaction tests                                                 | `docs/quality/P3_TRANSACTION_PROVENANCE.md`          |
+| Browser contracts          | `pnpm test:browser`                                                       | `fa198fb` | pass: 32 passed, 4 explicit forced-colors policy skips across Chromium/Firefox/WebKit                                            | `docs/quality/BROWSER_EVIDENCE.md`                   |
+| Accessibility browser lane | `pnpm test:a11y`                                                          | `fa198fb` | pass: 10 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
+| Visual determinism lane    | `pnpm test:visual`                                                        | `fa198fb` | pass: 16 passed, 2 explicit policy skips                                                                                         | `docs/quality/BROWSER_EVIDENCE.md`                   |
+| Packed external consumers  | evidence refresh with `--write-evidence`, then clean `pnpm test:consumer` | `fa198fb` | pass twice: Next/Vite × package/source; 7-item/29-file source closure; offline reinstall, audit, typecheck, and builds           | `tests/packed-consumers/evidence.json`               |
+| Consumer/pack probes       | `verify-workspace.mjs --gate consumer`; `--gate pack`                     | `fa198fb` | pass: concrete runner, matrix, deterministic evidence contract, and root wiring                                                  | `docs/quality/P1_PACKED_CONSUMERS.md`                |
+| Draft pull request         | GitHub PR #1                                                              | `fa198fb` | open as draft; Foundation quality/build, CodeQL, and dependency review are running                                               | https://github.com/AkhilTrivediX/mergora/pull/1      |
+| Live repository controls   | GitHub API probes                                                         | `fa198fb` | pass for existing controls; exact successful CI contexts pending PR #1                                                           | repository settings                                  |
+| npm package identity       | authenticated read-only checks and package-map verification               | `fa198fb` | pass: approved unscoped map selected and auth available; exact-name/publish authority recheck remains                            | `config/public-packages.json`, `PACKAGE_IDENTITY.md` |

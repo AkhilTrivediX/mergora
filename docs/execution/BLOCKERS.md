@@ -14,8 +14,8 @@ None.
 
 ## Implementation gates, not external blockers
 
-- The public default branch contains the immutable blueprint commit; the reviewed scaffold still needs its feature-branch commit and pull request.
-- The scaffold, lockfile, frozen install, build, and local root aggregate pass, but clean-clone and CI evidence do not yet reference the foundation commit.
+- The reviewed scaffold is public at implementation commit `fa198fb` in draft PR [#1](https://github.com/AkhilTrivediX/mergora/pull/1); merge and protected-main evidence remain open.
+- The scaffold, lockfile, frozen install, build, and local root aggregate pass. Clean-clone and Linux CI checks for the foundation commit are currently running.
 - GitHub Discussions, environments, security settings, labels, main protection, and release-tag immutability are configured. Pages deployment and required CI contexts remain unexercised.
 - The approved unscoped package map is verified from authenticated read-only checks. Availability and legal/confusion review remain time-bound pre-publication gates.
 - Exact unreleased package tarballs and generated registry artifacts now exist and pass P1 consumers; no public npm package, deployed production site/registry, or release exists yet.
