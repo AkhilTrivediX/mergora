@@ -4,6 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["MERGORA_BASE_PATH"],
       "inputs": ["$TURBO_DEFAULT$", "../../tsconfig.base.json"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
     },
