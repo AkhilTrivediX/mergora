@@ -1,0 +1,8 @@
+export function createDialogPolicy() {
+  const policyVersion = 2;
+
+  // mergora:keep-start project-dialog-policy
+  // Product policy: destructive work cannot close accidentally.
+  return { closeOnEscape: false };
+  // mergora:keep-end project-dialog-policy
+}

@@ -219,3 +219,105 @@ if (JSON.stringify(payloadIds) !== JSON.stringify(advertisedSourceIds)) {
   );
 }
 writeFileSync(resolve(registryOutput, "catalog.json"), catalogRaw, "utf8");
+
+const schemaSource = resolve(workspaceDirectory, "registry/schemas");
+const schemaOutput = resolve(outputDirectory, "schemas");
+const schemaEntries = readdirSync(schemaSource, { withFileTypes: true });
+const schemaNames = schemaEntries
+  .filter((entry) => entry.name.endsWith(".json"))
+  .map((entry) => {
+    if (
+      !entry.isFile() ||
+      entry.isSymbolicLink() ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*-v1\.schema\.json$/u.test(entry.name)
+    ) {
+      throw new Error(`Registry schema entry ${JSON.stringify(entry.name)} is unsafe.`);
+    }
+    return entry.name;
+  })
+  .sort((left, right) => left.localeCompare(right, "en-US"));
+if (schemaNames.length === 0 || schemaNames.length > 128) {
+  throw new Error("Registry schema count is outside the supported bound.");
+}
+mkdirSync(schemaOutput, { recursive: true });
+const schemaIds = new Set();
+for (const name of schemaNames) {
+  const path = resolve(schemaSource, name);
+  if (lstatSync(path).isSymbolicLink() || statSync(path).size > 4 * 1024 * 1024) {
+    throw new Error(`Registry schema ${name} is unsafe or oversized.`);
+  }
+  const raw = readFileSync(path, "utf8");
+  const schema = JSON.parse(raw);
+  if (
+    schema === null ||
+    Array.isArray(schema) ||
+    typeof schema !== "object" ||
+    schema.$schema !== "https://json-schema.org/draft/2020-12/schema" ||
+    typeof schema.$id !== "string" ||
+    !schema.$id.startsWith("https://akhiltrivedix.github.io/mergora/r/v1/schemas/") ||
+    schemaIds.has(schema.$id)
+  ) {
+    throw new Error(`Registry schema ${name} failed identity validation.`);
+  }
+  schemaIds.add(schema.$id);
+  writeFileSync(resolve(schemaOutput, name), raw, "utf8");
+}
+
+const themeSource = resolve(workspaceDirectory, "registry/source/tokens/themes");
+const themeOutput = resolve(outputDirectory, "themes");
+const themeEntries = readdirSync(themeSource, { withFileTypes: true });
+const themeNames = themeEntries
+  .map((entry) => {
+    if (
+      !entry.isFile() ||
+      entry.isSymbolicLink() ||
+      !/^[a-z0-9]+(?:-[a-z0-9]+)*\.tokens\.json$/u.test(entry.name)
+    ) {
+      throw new Error(`Bundled theme entry ${JSON.stringify(entry.name)} is unsafe.`);
+    }
+    return entry.name;
+  })
+  .sort((left, right) => left.localeCompare(right, "en-US"));
+if (themeNames.length === 0 || themeNames.length > 64) {
+  throw new Error("Bundled theme count is outside the supported bound.");
+}
+mkdirSync(themeOutput, { recursive: true });
+for (const name of themeNames) {
+  const path = resolve(themeSource, name);
+  if (lstatSync(path).isSymbolicLink() || statSync(path).size > 2 * 1024 * 1024) {
+    throw new Error(`Bundled theme ${name} is unsafe or oversized.`);
+  }
+  const raw = readFileSync(path, "utf8");
+  const value = JSON.parse(raw);
+  if (
+    value === null ||
+    Array.isArray(value) ||
+    typeof value !== "object" ||
+    value.$schema !== "https://www.designtokens.org/schemas/2025.10/format.json"
+  ) {
+    throw new Error(`Bundled theme ${name} failed DTCG identity validation.`);
+  }
+  writeFileSync(resolve(themeOutput, name), raw, "utf8");
+}
+
+const canonicalThemeBase = resolve(
+  workspaceDirectory,
+  "packages/tokens/src/generated/canonical.dtcg.json",
+);
+if (
+  lstatSync(canonicalThemeBase).isSymbolicLink() ||
+  statSync(canonicalThemeBase).size > 2 * 1024 * 1024
+) {
+  throw new Error("Bundled canonical theme base is unsafe or oversized.");
+}
+const canonicalThemeRaw = readFileSync(canonicalThemeBase, "utf8");
+const canonicalTheme = JSON.parse(canonicalThemeRaw);
+if (
+  canonicalTheme === null ||
+  Array.isArray(canonicalTheme) ||
+  typeof canonicalTheme !== "object" ||
+  canonicalTheme.$schema !== "https://www.designtokens.org/schemas/2025.10/format.json"
+) {
+  throw new Error("Bundled canonical theme base failed DTCG identity validation.");
+}
+writeFileSync(resolve(themeOutput, "canonical.dtcg.json"), canonicalThemeRaw, "utf8");

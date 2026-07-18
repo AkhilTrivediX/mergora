@@ -5,28 +5,49 @@
       "file": "mergora-0.0.0.tgz",
       "name": "mergora",
       "role": "cli",
-      "sha256": "7af6463aa0bfe0881f63074432cff76906c2e7f7979e8ddac66bbce613aab9e3",
+      "sha256": "5cca87aec6934899aa05dbcf718258f6bd06e0fdc98edd97ccbee9e4179131a9",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-contracts-0.0.0.tgz",
+      "name": "mergora-contracts",
+      "role": "contracts",
+      "sha256": "0f42da0cdba28aaa4d741eb6722b2dafa1b9368d023b0b223809700bb1faaaca",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-mcp-0.0.0.tgz",
+      "name": "mergora-mcp",
+      "role": "mcp",
+      "sha256": "554bb5971136d02cc5dd9601670784b772f7d73c74520a5541da043a65f23415",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-registry-0.0.0.tgz",
+      "name": "mergora-registry",
+      "role": "registry",
+      "sha256": "84c57522aa39785fb0d0ce83ae506b13f90768dc9152497132d965230d417703",
       "version": "0.0.0"
     },
     {
       "file": "mergora-schema-0.0.0.tgz",
       "name": "mergora-schema",
       "role": "schema",
-      "sha256": "617ad0636b65076009319e5d7dda78c2be04d9039c094b5ab0f84370b6b86443",
+      "sha256": "1987d79a43d9e0a2861cec73f8b0101256fef7ea0d5ffbb190783bb81d785c8e",
       "version": "0.0.0"
     },
     {
       "file": "mergora-tokens-0.0.0.tgz",
       "name": "mergora-tokens",
       "role": "tokens",
-      "sha256": "ebd34dc3e0e919ddf694dc838bd6cbc5d5cd80f39165d04a5914917e88e29c0e",
+      "sha256": "d50129da5cf4c2f56f4925bd1e0b1b0ff1ba02e779147053eb04156a07ec620b",
       "version": "0.0.0"
     },
     {
       "file": "mergora-ui-0.0.0.tgz",
       "name": "mergora-ui",
       "role": "ui",
-      "sha256": "d080a107a81c5538e1b2e075b9c2f87a4b2eb989b180024c30d8d4ccec044108",
+      "sha256": "48152dd980351088f3a5d83ac5de42552e4a6cba564ead85356efd1740dc4ed5",
       "version": "0.0.0"
     }
   ],
@@ -37,6 +58,7 @@
         "frozen-offline-reinstall",
         "no-workspace-resolution",
         "packed-cli-executed",
+        "packed-mcp-read-plan-only",
         "production-base-path",
         "production-build",
         "public-subpaths-and-types"
@@ -54,6 +76,7 @@
         "frozen-offline-reinstall",
         "no-workspace-resolution",
         "packed-cli-executed",
+        "packed-mcp-read-plan-only",
         "production-base-path",
         "production-build",
         "public-subpaths-and-types"
@@ -66,7 +89,7 @@
       "sourceInstall": {
         "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox --root . --target src/components --yes --non-interactive --json",
         "files": 29,
-        "sourceTreeSha256": "98599f4610156ee3d4429d918b0e8dc9d0919d782bc9e88139f4dc86d0c7236e"
+        "sourceTreeSha256": "251614f10c465a8b955dfbb7677d97dc163b6b21a01433acf3b40c9c04c2de61"
       }
     },
     {
@@ -75,6 +98,7 @@
         "frozen-offline-reinstall",
         "no-workspace-resolution",
         "packed-cli-executed",
+        "packed-mcp-read-plan-only",
         "production-base-path",
         "production-build",
         "public-subpaths-and-types"
@@ -92,6 +116,7 @@
         "frozen-offline-reinstall",
         "no-workspace-resolution",
         "packed-cli-executed",
+        "packed-mcp-read-plan-only",
         "production-base-path",
         "production-build",
         "public-subpaths-and-types"
@@ -104,7 +129,7 @@
       "sourceInstall": {
         "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox --root . --target src/components --yes --non-interactive --json",
         "files": 29,
-        "sourceTreeSha256": "98599f4610156ee3d4429d918b0e8dc9d0919d782bc9e88139f4dc86d0c7236e"
+        "sourceTreeSha256": "251614f10c465a8b955dfbb7677d97dc163b6b21a01433acf3b40c9c04c2de61"
       }
     }
   ],

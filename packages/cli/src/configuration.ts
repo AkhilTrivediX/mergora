@@ -33,6 +33,14 @@ export const CONFIG_SCHEMA = `${OFFICIAL_REGISTRY_ORIGIN}/schemas/config-v1.sche
 export const MANIFEST_SCHEMA =
   `${OFFICIAL_REGISTRY_ORIGIN}/schemas/manifest-v1.schema.json` as const;
 
+export interface MergoraRegistryConfig {
+  readonly protocol: "mergora-v1" | "shadcn-v1";
+  readonly origin: string;
+  readonly trust: "official" | "enrolled" | "local-development";
+  readonly authEnvironmentVariable?: string | undefined;
+  readonly identityDigest?: `sha256:${string}` | undefined;
+}
+
 export interface MergoraConfig {
   readonly $schema: typeof CONFIG_SCHEMA;
   readonly schemaVersion: 1;
@@ -44,8 +52,8 @@ export interface MergoraConfig {
     readonly tsconfig: "tsconfig.json";
   };
   readonly distribution: {
-    readonly defaultMode: "source";
-    readonly packageName: typeof PUBLIC_UI_PACKAGE;
+    readonly defaultMode: "source" | "package" | "hybrid";
+    readonly packageName: string;
   };
   readonly targets: {
     readonly components: string;
@@ -68,32 +76,32 @@ export interface MergoraConfig {
   readonly styling: {
     readonly engine: "tailwind-v4";
     readonly globalCss: string;
-    readonly tokenPreset: "workbench";
-    readonly colorMode: "system";
-    readonly density: "comfortable";
-    readonly direction: "auto";
-    readonly packageCssStrategy: "source-directive";
+    readonly tokenPreset: string;
+    readonly colorMode: "system" | "light" | "dark";
+    readonly density: "comfortable" | "compact" | "touch";
+    readonly direction: "ltr" | "rtl" | "auto";
+    readonly packageCssStrategy: "source-directive" | "precompiled";
   };
-  readonly registries: {
-    readonly official: {
+  readonly registries: Readonly<Record<string, MergoraRegistryConfig>> & {
+    readonly official: MergoraRegistryConfig & {
       readonly protocol: "mergora-v1";
       readonly origin: typeof OFFICIAL_REGISTRY_ORIGIN;
       readonly trust: "official";
     };
   };
   readonly policy: {
-    readonly allowExternalRegistries: false;
-    readonly allowPrereleases: false;
+    readonly allowExternalRegistries: boolean;
+    readonly allowPrereleases: boolean;
     readonly dependencyProtocols: readonly ["registry-semver"];
-    readonly requireLicenses: true;
-    readonly retainSuccessfulTransactions: 10;
-    readonly maxRegistryItemBytes: 2_097_152;
-    readonly maxOperationBytes: 52_428_800;
+    readonly requireLicenses: boolean;
+    readonly retainSuccessfulTransactions: number;
+    readonly maxRegistryItemBytes: number;
+    readonly maxOperationBytes: number;
   };
   readonly formatting: {
-    readonly strategy: "project";
-    readonly fallback: "mergora";
-    readonly lineEndings: "preserve-existing";
+    readonly strategy: "project" | "mergora" | "none";
+    readonly fallback: "mergora" | "none";
+    readonly lineEndings: "preserve-existing" | "lf";
   };
 }
 
@@ -202,6 +210,37 @@ function recordField(
   return record;
 }
 
+function objectField(parent: Record<string, unknown>, key: string): Record<string, unknown> {
+  const value = parent[key];
+  if (value === null || Array.isArray(value) || typeof value !== "object") {
+    throw new CliError(`mergora.json ${key} must be an object.`, {
+      code: "CONFIG_SCHEMA_INVALID",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+  return value as Record<string, unknown>;
+}
+
+function allowedKeys(
+  value: Record<string, unknown>,
+  required: readonly string[],
+  optional: readonly string[],
+  label: string,
+): void {
+  const allowed = new Set([...required, ...optional]);
+  if (
+    required.some((key) => !Object.hasOwn(value, key)) ||
+    Object.keys(value).some((key) => !allowed.has(key))
+  ) {
+    throw new CliError(`${label} has missing or unknown fields.`, {
+      code: "CONFIG_SCHEMA_INVALID",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+}
+
 function stringField(record: Record<string, unknown>, key: string): string {
   const value = record[key];
   if (typeof value !== "string") {
@@ -265,15 +304,18 @@ export function validateMergoraConfig(value: unknown): MergoraConfig {
   const sourceRoot = stringField(project, "sourceRoot");
   assertPortableRelativePath(sourceRoot, "Configured source root");
   const distribution = recordField(root, "distribution", ["defaultMode", "packageName"]);
-  if (distribution.defaultMode !== "source" || distribution.packageName !== PUBLIC_UI_PACKAGE) {
-    throw new CliError(
-      "This CLI tranche supports the explicit source distribution defaults only.",
-      {
-        code: "CONFIG_DISTRIBUTION_UNSUPPORTED",
-        exitCode: 7,
-        target: "mergora.json",
-      },
-    );
+  if (
+    !(["source", "package", "hybrid"] as const).includes(
+      distribution.defaultMode as "source" | "package" | "hybrid",
+    ) ||
+    typeof distribution.packageName !== "string" ||
+    !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u.test(distribution.packageName)
+  ) {
+    throw new CliError("mergora.json distribution settings are invalid.", {
+      code: "CONFIG_DISTRIBUTION_INVALID",
+      exitCode: 3,
+      target: "mergora.json",
+    });
   }
   const targets = recordField(root, "targets", [
     "components",
@@ -333,19 +375,135 @@ export function validateMergoraConfig(value: unknown): MergoraConfig {
   assertPortableRelativePath(stringField(styling, "globalCss"), "Configured global CSS");
   if (
     styling.engine !== "tailwind-v4" ||
-    styling.tokenPreset !== "workbench" ||
-    styling.colorMode !== "system" ||
-    styling.density !== "comfortable" ||
-    styling.direction !== "auto" ||
-    styling.packageCssStrategy !== "source-directive"
+    typeof styling.tokenPreset !== "string" ||
+    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(styling.tokenPreset) ||
+    !(["system", "light", "dark"] as const).includes(
+      styling.colorMode as "system" | "light" | "dark",
+    ) ||
+    !(["comfortable", "compact", "touch"] as const).includes(
+      styling.density as "comfortable" | "compact" | "touch",
+    ) ||
+    !(["ltr", "rtl", "auto"] as const).includes(styling.direction as "ltr" | "rtl" | "auto") ||
+    !(["source-directive", "precompiled"] as const).includes(
+      styling.packageCssStrategy as "source-directive" | "precompiled",
+    )
   ) {
-    throw new CliError("mergora.json styling values are unsupported by this schema tranche.", {
-      code: "CONFIG_STYLING_UNSUPPORTED",
-      exitCode: 7,
+    throw new CliError("mergora.json styling values are invalid for schema v1.", {
+      code: "CONFIG_STYLING_INVALID",
+      exitCode: 3,
       target: "mergora.json",
     });
   }
-  const registries = recordField(root, "registries", ["official"]);
+  const registries = objectField(root, "registries");
+  const registryIds = Object.keys(registries);
+  if (
+    registryIds.length < 1 ||
+    registryIds.length > 32 ||
+    registryIds.some((id) => !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(id)) ||
+    !Object.hasOwn(registries, "official")
+  ) {
+    throw new CliError("mergora.json registries must include 1-32 portable identities.", {
+      code: "CONFIG_REGISTRY_INVALID",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+  for (const id of registryIds) {
+    const registry = objectField(registries, id);
+    allowedKeys(
+      registry,
+      ["protocol", "origin", "trust"],
+      ["authEnvironmentVariable", "identityDigest"],
+      `mergora.json registry ${id}`,
+    );
+    if (registry.protocol !== "mergora-v1" && registry.protocol !== "shadcn-v1") {
+      throw new CliError(`Registry ${id} has an unsupported protocol.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    if (typeof registry.origin !== "string") {
+      throw new CliError(`Registry ${id} origin must be a URL.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    let origin: URL;
+    try {
+      origin = new URL(registry.origin);
+    } catch {
+      throw new CliError(`Registry ${id} origin must be a valid absolute URL.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    const localHttp =
+      origin.protocol === "http:" &&
+      (origin.hostname === "localhost" || origin.hostname === "127.0.0.1");
+    if (
+      (origin.protocol !== "https:" && !localHttp) ||
+      origin.username !== "" ||
+      origin.password !== "" ||
+      origin.search !== "" ||
+      origin.hash !== ""
+    ) {
+      throw new CliError(`Registry ${id} origin violates the transport or credential policy.`, {
+        code: "CONFIG_REGISTRY_SECURITY_INVALID",
+        exitCode: 5,
+        target: "mergora.json",
+      });
+    }
+    if (
+      registry.trust !== "official" &&
+      registry.trust !== "enrolled" &&
+      registry.trust !== "local-development"
+    ) {
+      throw new CliError(`Registry ${id} trust tier is invalid.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    if (localHttp !== (registry.trust === "local-development")) {
+      throw new CliError(`Registry ${id} localhost transport and trust tier do not agree.`, {
+        code: "CONFIG_REGISTRY_SECURITY_INVALID",
+        exitCode: 5,
+        target: "mergora.json",
+      });
+    }
+    if (
+      registry.authEnvironmentVariable !== undefined &&
+      (typeof registry.authEnvironmentVariable !== "string" ||
+        !/^[A-Z_][A-Z0-9_]*$/u.test(registry.authEnvironmentVariable))
+    ) {
+      throw new CliError(`Registry ${id} auth environment variable name is invalid.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    if (
+      registry.identityDigest !== undefined &&
+      (typeof registry.identityDigest !== "string" ||
+        !/^sha256:[a-f0-9]{64}$/u.test(registry.identityDigest))
+    ) {
+      throw new CliError(`Registry ${id} identity digest is invalid.`, {
+        code: "CONFIG_REGISTRY_INVALID",
+        exitCode: 3,
+        target: "mergora.json",
+      });
+    }
+    if (id !== "official" && registry.identityDigest === undefined) {
+      throw new CliError(`Registry ${id} must pin its accepted identity digest.`, {
+        code: "CONFIG_REGISTRY_IDENTITY_REQUIRED",
+        exitCode: 5,
+        target: "mergora.json",
+      });
+    }
+  }
   const official = recordField(registries, "official", ["protocol", "origin", "trust"]);
   if (
     official.protocol !== "mergora-v1" ||
@@ -368,29 +526,46 @@ export function validateMergoraConfig(value: unknown): MergoraConfig {
     "maxOperationBytes",
   ]);
   if (
-    policy.allowExternalRegistries !== false ||
-    policy.allowPrereleases !== false ||
+    typeof policy.allowExternalRegistries !== "boolean" ||
+    typeof policy.allowPrereleases !== "boolean" ||
     JSON.stringify(policy.dependencyProtocols) !== JSON.stringify(["registry-semver"]) ||
-    policy.requireLicenses !== true ||
-    policy.retainSuccessfulTransactions !== 10 ||
-    policy.maxRegistryItemBytes !== 2_097_152 ||
-    policy.maxOperationBytes !== 52_428_800
+    typeof policy.requireLicenses !== "boolean" ||
+    !Number.isInteger(policy.retainSuccessfulTransactions) ||
+    (policy.retainSuccessfulTransactions as number) < 0 ||
+    (policy.retainSuccessfulTransactions as number) > 100 ||
+    !Number.isInteger(policy.maxRegistryItemBytes) ||
+    (policy.maxRegistryItemBytes as number) < 1 ||
+    (policy.maxRegistryItemBytes as number) > 52_428_800 ||
+    !Number.isInteger(policy.maxOperationBytes) ||
+    (policy.maxOperationBytes as number) < 1 ||
+    (policy.maxOperationBytes as number) > 1_073_741_824
   ) {
-    throw new CliError("mergora.json policy values are outside the supported v1 profile.", {
-      code: "CONFIG_POLICY_UNSUPPORTED",
-      exitCode: 7,
+    throw new CliError("mergora.json policy values are invalid for schema v1.", {
+      code: "CONFIG_POLICY_INVALID",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+  if (registryIds.length > 1 && policy.allowExternalRegistries !== true) {
+    throw new CliError("External registries require policy.allowExternalRegistries=true.", {
+      code: "CONFIG_REGISTRY_POLICY_REQUIRED",
+      exitCode: 5,
       target: "mergora.json",
     });
   }
   const formatting = recordField(root, "formatting", ["strategy", "fallback", "lineEndings"]);
   if (
-    formatting.strategy !== "project" ||
-    formatting.fallback !== "mergora" ||
-    formatting.lineEndings !== "preserve-existing"
+    !(["project", "mergora", "none"] as const).includes(
+      formatting.strategy as "project" | "mergora" | "none",
+    ) ||
+    !(["mergora", "none"] as const).includes(formatting.fallback as "mergora" | "none") ||
+    !(["preserve-existing", "lf"] as const).includes(
+      formatting.lineEndings as "preserve-existing" | "lf",
+    )
   ) {
-    throw new CliError("mergora.json formatting values are outside the supported v1 profile.", {
-      code: "CONFIG_FORMATTING_UNSUPPORTED",
-      exitCode: 7,
+    throw new CliError("mergora.json formatting values are invalid for schema v1.", {
+      code: "CONFIG_FORMATTING_INVALID",
+      exitCode: 3,
       target: "mergora.json",
     });
   }

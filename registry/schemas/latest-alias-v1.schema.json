@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/latest-alias-v1.schema.json",
+  "title": "Mergora mutable latest-item alias v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "protocolVersion",
+    "registryId",
+    "itemId",
+    "resolvedVersion",
+    "releaseManifest",
+    "payload"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "protocolVersion": { "const": "mergora-v1" },
+    "registryId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "itemId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "resolvedVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "releaseManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "digest"],
+      "properties": {
+        "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+        "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "digest"],
+      "properties": {
+        "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+        "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    }
+  }
+}

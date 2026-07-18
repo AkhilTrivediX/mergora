@@ -1,5 +1,7 @@
 export const CLI_NODE_RANGE = ">=22.14.0" as const;
 
+export { auditProject, auditProjectExitCode, type AuditProjectOptions } from "./audit.js";
+
 export {
   installP1Source,
   planP1SourceInstall,
@@ -54,6 +56,21 @@ export {
 } from "./project-inspector.js";
 
 export {
+  applyProjectCreate,
+  planProjectCreate,
+  PROJECT_CREATE_IGNORED_OS_METADATA,
+  PROJECT_CREATE_PUBLICATION_STATUS,
+  PROJECT_CREATE_TEMPLATE_VERSION,
+  type ProjectCreateFaultPoint,
+  type ProjectCreateOptions,
+  type ProjectCreatePlan,
+  type ProjectCreatePlannedFile,
+  type ProjectCreatePreset,
+  type ProjectCreateResult,
+  type ProjectCreateTemplate,
+} from "./project-create.js";
+
+export {
   DOCUMENTATION_ORIGIN,
   itemDocsUrl,
   listSourceItemIds,
@@ -88,7 +105,9 @@ export {
   finalizeOperationPlan,
   listIncompleteTransactions,
   planRecovery,
+  planRollback,
   recoverTransaction,
+  rollbackTransaction,
   TransactionInterruption,
   type ExecuteTransactionOptions,
   type OperationPlan,
@@ -100,6 +119,9 @@ export {
   type RecoveryOptions,
   type RecoveryPlan,
   type RecoveryResult,
+  type RollbackOptions,
+  type RollbackPlan,
+  type RollbackResult,
   type TransactionFaultInjector,
   type TransactionFaultPoint,
   type TransactionMutation,
@@ -116,6 +138,57 @@ export {
   type PackageDependencyChange,
   type PackageDependencyPlan,
 } from "./package-editor.js";
+
+export {
+  applyVendor,
+  planVendor,
+  verifyVendor,
+  type VendorArtifactReference,
+  type VendorItemReference,
+  type VendorManifestV1,
+  type VendorOptions,
+  type VendorPlan,
+  type VendorResult,
+  type VendorVerificationResult,
+  type VendorVerifyOptions,
+} from "./vendor.js";
+
+export {
+  applySemanticResolution,
+  applySemanticResolveChoice,
+  applySemanticUpdate,
+  diffSemanticSource,
+  immutableUpdateItemDigest,
+  immutableUpdateRegistryIdentityDigest,
+  immutableUpdateReleaseDigest,
+  listSemanticResolutions,
+  planSemanticResolveApply,
+  planSemanticResolveChoice,
+  planSemanticUpdate,
+  readImmutableUpdateRelease,
+  type ImmutableUpdateFile,
+  type ImmutableUpdateItem,
+  type ImmutableUpdateRegistry,
+  type ImmutableUpdateRelease,
+  type SemanticResolutionList,
+  type SemanticResolveApplyOptions,
+  type SemanticResolveApplyResult,
+  type SemanticResolveChoice,
+  type SemanticResolveChoiceOptions,
+  type SemanticResolveChoicePlan,
+  type SemanticSourceDiff,
+  type SemanticSourceDiffFile,
+  type SemanticSourceDiffOptions,
+  type SemanticUpdateCommittedResult,
+  type SemanticUpdateConflictResult,
+  type SemanticUpdateOptions,
+  type SemanticUpdateResult,
+} from "./semantic-update.js";
+
+export * from "./registry-management.js";
+export * from "./theme.js";
+export * from "./migrate.js";
+export * from "./clean.js";
 
 export {
   CLI_VERSION,

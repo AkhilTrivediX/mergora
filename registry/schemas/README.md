@@ -6,17 +6,19 @@ security-critical records with `additionalProperties: false`.
 
 ## Coverage
 
-The v1 source covers configuration, registry index and item payloads, catalog and component
-metadata, compatibility, manifests and operation plans, conflicts, transactions and durable
-journals, CLI result envelopes, release and offline-vendor manifests, themes, evidence,
-Quality Passports, and accessibility acceptance contracts. `types.ts` exposes the matching
-TypeScript vocabulary, while `schema-registry.ts` provides the runtime schema catalog.
+The v1 source covers configuration, registry index and item payloads, mutable latest aliases,
+catalog and component metadata, compatibility, manifests and operation plans, conflicts,
+transactions and durable journals, CLI result envelopes, release and offline-vendor manifests,
+the honest blocked release-protocol plan, themes, evidence, Quality Passports, and accessibility
+acceptance contracts. `types.ts` exposes the matching TypeScript vocabulary, while
+`schema-registry.ts` provides the runtime schema catalog.
 
 `validateSchemaDocument` negotiates `schemaVersion` before reading a record, evaluates the
 draft-2020-12 keywords used by these schemas, and returns stable JSON-pointer errors. A newer
 version is rejected with an explicit upgrade message rather than being interpreted as v1.
 `canonicalJson` sorts object keys recursively for deterministic records and digest inputs; it
-does not calculate or claim a digest.
+does not calculate or claim a digest. The release builder owns digest calculation and verifies
+the schema-valid documents again after assembling their cross-document references.
 
 ## Security invariants
 

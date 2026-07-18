@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/audit-report-v1.schema.json",
+  "title": "Mergora Contract Audit report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "reportVersion",
+    "projectRoot",
+    "state",
+    "recommendedExitCode",
+    "requestedModes",
+    "scope",
+    "capabilities",
+    "limitations",
+    "results",
+    "summary",
+    "networkUsed",
+    "conformanceClaim"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "reportVersion": { "const": "1.0.0" },
+    "projectRoot": { "const": "." },
+    "state": { "enum": ["pass", "fail", "incomplete", "not-applicable"] },
+    "recommendedExitCode": { "enum": [0, 1, 7, 10] },
+    "requestedModes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/mode" }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changedOnly", "itemIds"],
+      "properties": {
+        "changedOnly": { "type": "boolean" },
+        "itemIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/qualifiedItemId" }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/capability" }
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/nonEmptyText" }
+    },
+    "results": { "type": "array", "items": { "$ref": "#/$defs/result" } },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass", "fail", "notApplicable", "notRun"],
+      "properties": {
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "notApplicable": { "type": "integer", "minimum": 0 },
+        "notRun": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "networkUsed": { "const": false },
+    "conformanceClaim": { "const": "automated-evidence-only" }
+  },
+  "$defs": {
+    "catalogId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "qualifiedItemId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*:[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "nonEmptyText": { "type": "string", "minLength": 1, "maxLength": 1024 },
+    "projectPath": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*(?:/[A-Za-z0-9][A-Za-z0-9._-]*)*$",
+      "maxLength": 512
+    },
+    "mode": { "enum": ["a11y", "browser", "keyboard", "responsive", "static"] },
+    "evidenceType": {
+      "enum": [
+        "accessibility-tree",
+        "browser-behavior",
+        "keyboard-behavior",
+        "responsive-geometry",
+        "static-source"
+      ]
+    },
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "requested", "available", "adapter", "limitation"],
+      "properties": {
+        "mode": { "$ref": "#/$defs/mode" },
+        "requested": { "type": "boolean" },
+        "available": { "type": "boolean" },
+        "adapter": { "type": ["string", "null"] },
+        "limitation": { "type": ["string", "null"] }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["classification", "code"],
+      "properties": {
+        "classification": {
+          "enum": [
+            "adapter-error",
+            "assertion-failed",
+            "capability-unavailable",
+            "target-unavailable"
+          ]
+        },
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$", "maxLength": 128 }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assertionId",
+        "contractId",
+        "contractVersion",
+        "payloadDigest",
+        "registryId",
+        "itemId",
+        "mode",
+        "evidenceType",
+        "target",
+        "expectedBehavior",
+        "actualBehavior",
+        "severity",
+        "remediationUrl",
+        "state",
+        "failure"
+      ],
+      "properties": {
+        "assertionId": { "$ref": "#/$defs/catalogId" },
+        "contractId": { "$ref": "#/$defs/catalogId" },
+        "contractVersion": { "$ref": "#/$defs/semver" },
+        "payloadDigest": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "registryId": { "$ref": "#/$defs/catalogId" },
+        "itemId": { "$ref": "#/$defs/catalogId" },
+        "mode": { "$ref": "#/$defs/mode" },
+        "evidenceType": { "$ref": "#/$defs/evidenceType" },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["logicalPath", "projectPath"],
+          "properties": {
+            "logicalPath": { "$ref": "#/$defs/projectPath" },
+            "projectPath": {
+              "oneOf": [{ "$ref": "#/$defs/projectPath" }, { "type": "null" }]
+            }
+          }
+        },
+        "expectedBehavior": { "$ref": "#/$defs/nonEmptyText" },
+        "actualBehavior": { "$ref": "#/$defs/nonEmptyText" },
+        "severity": { "enum": ["S0", "S1", "S2", "S3"] },
+        "remediationUrl": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "state": { "enum": ["pass", "fail", "not-applicable", "not-run"] },
+        "failure": { "oneOf": [{ "$ref": "#/$defs/failure" }, { "type": "null" }] }
+      }
+    }
+  }
+}

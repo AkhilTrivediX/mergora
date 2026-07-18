@@ -4,11 +4,22 @@ This package orchestrates one-way planning-data generation from the canonical ca
 draft-2020-12 schema registry, and `config/public-packages.json`. It delegates source,
 package, documentation, and Passport projections to their dedicated internal builders.
 
-Current catalog definitions are intentionally pre-implementation. Generated files therefore
-contain planning metadata only: no registry release, source payload, package export, API,
-contract, digest, release commit, timestamp, passing test, manual evidence, or published
-Stable maturity is emitted. Quality Passport skeletons are non-publishable blocked records,
-not Quality Passports.
+The checked-in generation graph remains an unreleased planning surface. It emits canonical
+source/package projections plus `registry/generated/release-protocol/plan.json`, which records
+the exact release-protocol endpoints and current blockers while emitting zero publishable
+release artifacts. It does not invent a registry identity, version, commit, passing evidence,
+manual evidence, or published Stable maturity. Quality Passport skeletons are non-publishable
+blocked records, not Quality Passports.
+
+`buildStableReleaseProtocolBundle` is the separate fail-closed publication boundary. It accepts
+only an explicitly passing release gate and packed-consumer record, a digest-bound official
+identity, stable version and commit, complete stable-item quality evidence, and embedded source
+bytes whose lengths and digests verify. It then schema-validates and deterministically emits the
+native catalog, immutable item payloads, immutable release manifest, mutable latest aliases,
+response cache/security metadata, and a complete `SHA256SUMS`. Verification rechecks every
+digest and cross-document reference. Supplying a precomputed item payload digest, unverified
+source URL, inconsistent identity, missing dependency, cycle, alias collision, or incomplete
+Stable evidence fails before output.
 
 ## Commands
 
@@ -24,8 +35,9 @@ no writes and fails on missing, changed, or unexpected output.
 
 Output is canonical compact JSON with recursively sorted keys, NFKC-normalized strings, UTF-8
 text, LF endings, and a final newline. Inputs or outputs containing case/Unicode path
-collisions, absolute/traversal/device/reserved paths, timestamps, machine paths, secrets,
-release identity, digest fields, passing evidence, or Stable claims fail closed.
+collisions, absolute/traversal/device/reserved paths, timestamps, machine paths, secrets, or
+unsupported release claims fail closed. Cryptographic fields are permitted only across the
+explicit release-bundle boundary; the ordinary planning graph rejects them.
 
 ## Root integration required
 
@@ -46,7 +58,8 @@ verification and before formatting/type/test gates. Add `registry/generated/` an
 builder and must not be reformatted independently. No lockfile change or new runtime package
 is required for this graph.
 
-Button, Dialog, Combobox, and Data Grid have explicit missing-source extension points in the
-source-transform plan. A future vertical slice supplies validated canonical source descriptors
-to `buildSourceTransformPlan`; until the catalog model itself records real implementation and
-evidence state, those descriptors remain blocked and emit no files.
+The source-transform plan discovers every validated canonical source descriptor and the blocked
+release-protocol plan inventories that source coverage dynamically. Source presence is still
+reported as `source-present-unreleased`: it does not become a release, published maturity, or
+quality claim until the complete catalog, immutable release identity, evidence, and public-origin
+gates are supplied to the separate release boundary.

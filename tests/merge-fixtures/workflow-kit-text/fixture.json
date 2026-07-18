@@ -1,0 +1,6 @@
+{
+  "id": "workflow-kit-text",
+  "mediaType": "text/plain",
+  "expectedStatus": "semantic-merge",
+  "formatting": "preserve-local-line-endings"
+}

@@ -1,9 +1,10 @@
 # P1 packed external consumers
 
-This proof is the P1 distribution boundary for `P1-024`. It packs the exact unreleased CLI, UI,
-tokens, and schema workspaces, then installs the same four tarballs into fresh projects created under
-the operating system's temporary directory, outside the Mergora monorepo. No consumer dependency
-uses `workspace:`, `catalog:`, `link:`, or a monorepo path.
+This proof is the P1 distribution boundary for `P1-024`. It packs the exact unreleased CLI,
+executable contracts, Semantic Sync registry runtime, UI, tokens, and schema workspaces, then
+installs the same six tarballs into fresh projects created under the operating system's temporary
+directory, outside the Mergora monorepo. No consumer dependency uses `workspace:`, `catalog:`,
+`link:`, or a monorepo path.
 
 Run the complete matrix with Node 24.12.0 and Corepack:
 
@@ -49,7 +50,10 @@ three-template assumption.
 Package mode imports `mergora-ui/button`, `mergora-ui/dialog`, and
 `mergora-ui/combobox`, including their public CSS subpaths. Both modes import runtime token and
 schema APIs so those packed artifacts participate in typechecking and bundling rather than merely
-appearing in `package.json`.
+appearing in `package.json`. Both modes also install the exact `mergora-contracts` tarball used by
+the packed CLI audit runtime; the runner verifies its declaration/runtime entry points and both
+versioned schemas. The exact `mergora-registry` tarball supplies the CLI's deterministic Semantic
+Sync adapters; its runtime and declaration entry points are verified independently of the workspace.
 
 ## Fail-closed checks
 

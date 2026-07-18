@@ -16,12 +16,14 @@ export type SchemaKind =
   | "config"
   | "conflict"
   | "evidence"
+  | "latest-alias"
   | "manifest"
   | "operation-plan"
   | "quality-passport"
   | "registry-index"
   | "registry-item"
   | "release-manifest"
+  | "release-protocol-plan"
   | "result-envelope"
   | "theme"
   | "transaction-journal"
@@ -245,6 +247,59 @@ export interface RegistryItemV1 {
   readonly examples: readonly ProjectRelativePath[];
   readonly importPaths: readonly string[];
   readonly payloadDigest: Sha256;
+}
+
+export interface LatestAliasV1 {
+  readonly schemaVersion: 1;
+  readonly protocolVersion: "mergora-v1";
+  readonly registryId: CatalogId;
+  readonly itemId: CatalogId;
+  readonly resolvedVersion: Semver;
+  readonly releaseManifest: {
+    readonly url: string;
+    readonly digest: Sha256;
+  };
+  readonly payload: {
+    readonly url: string;
+    readonly digest: Sha256;
+  };
+}
+
+export type ReleaseProtocolBlocker =
+  | "release-identity-missing"
+  | "release-version-missing"
+  | "release-commit-missing"
+  | "release-artifacts-missing"
+  | "quality-evidence-missing"
+  | "manual-assistive-technology-evidence-missing"
+  | "packed-consumer-evidence-missing"
+  | "catalog-implementation-incomplete"
+  | "public-origin-not-deployed";
+
+export interface ReleaseProtocolPlanV1 {
+  readonly schemaVersion: 1;
+  readonly artifactKind: "release-protocol-plan";
+  readonly generated: {
+    readonly by: "@mergora-internal/registry-builder";
+    readonly editPolicy: "do-not-edit";
+  };
+  readonly protocolVersion: "mergora-v1";
+  readonly publicationStatus: "blocked-unreleased";
+  readonly publishable: false;
+  readonly schemaContracts: Readonly<
+    Record<"catalog" | "item" | "releaseManifest" | "latestAlias", string>
+  >;
+  readonly inventory: {
+    readonly catalogDefinitions: number;
+    readonly sourceItems: number;
+    readonly itemsWithoutSource: number;
+    readonly sourceItemIds: readonly CatalogId[];
+  };
+  readonly endpointTemplates: Readonly<
+    Record<"catalog" | "releaseManifest" | "item" | "latestAlias" | "checksums", string>
+  >;
+  readonly emittedReleaseArtifacts: readonly [];
+  readonly blockers: readonly ReleaseProtocolBlocker[];
 }
 
 export interface RegistryItemFile {

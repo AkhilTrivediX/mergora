@@ -7,8 +7,16 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
       "import": "./dist/index.js"
+    }
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      }
     }
   },
   "files": [
@@ -20,9 +28,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "postcss": "catalog:"
-  },
-  "devDependencies": {
+    "postcss": "catalog:",
     "typescript": "catalog:"
   }
 }

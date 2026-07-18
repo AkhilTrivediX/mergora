@@ -1,0 +1,7 @@
+{
+  "id": "data-grid-jsonc",
+  "mediaType": "application/jsonc",
+  "expectedStatus": "semantic-merge",
+  "preserves": ["/dataGrid/density", "$comments"],
+  "applies": ["/dataGrid/pageSize", "/dataGrid/selectionMode"]
+}

@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, rmSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
+import { defineContractV1 } from "../../packages/contracts/src/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -59,6 +61,7 @@ describe("packed command parser and output contract", () => {
     expect(help.stdout).toContain("search");
     expect(help.stdout).toContain("doctor");
     expect(help.stdout).toContain("recover");
+    expect(help.stdout).toContain("clean");
     expect(version).toMatchObject({ status: 0, stdout: "0.0.0\n", stderr: "" });
   });
 
@@ -280,6 +283,302 @@ describe("packed project commands", () => {
     expect(readFileSync(manifestPath)).toEqual(manifestBefore);
     expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
     expect(existsSync(resolve(project.root, ".mergora/bases"))).toBe(false);
+  });
+
+  it("plans and applies a completed transaction rollback without implicit consent", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const added = command([
+      "add",
+      "button",
+      "--cwd",
+      project.root,
+      "--no-install",
+      "--yes",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(added.status).toBe(0);
+    const transactionId = (json(added).result as { transaction: { transactionId: string } })
+      .transaction.transactionId;
+    const source = resolve(project.root, "src/components/mergora/button/button.tsx");
+    expect(existsSync(source)).toBe(true);
+
+    const planned = command([
+      "rollback",
+      transactionId,
+      "--cwd",
+      project.root,
+      "--no-install",
+      "--plan",
+      "--json",
+    ]);
+    expect(planned.status).toBe(0);
+    expect(json(planned)).toMatchObject({
+      status: "planned",
+      result: { transactionId, plan: { command: "rollback", conflicts: [] } },
+    });
+
+    const missingConsent = command([
+      "rollback",
+      transactionId,
+      "--cwd",
+      project.root,
+      "--no-install",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(missingConsent.status).toBe(12);
+    expect(existsSync(source)).toBe(true);
+
+    const rolledBack = command([
+      "rollback",
+      transactionId,
+      "--cwd",
+      project.root,
+      "--no-install",
+      "--yes",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(rolledBack.status, `${rolledBack.stdout}\n${rolledBack.stderr}`).toBe(0);
+    expect(json(rolledBack)).toMatchObject({
+      status: "committed",
+      result: { rollbackOf: transactionId, transaction: { state: "committed" } },
+    });
+    expect(existsSync(source)).toBe(false);
+  });
+
+  it("preserves Contract Audit reports while returning stable evidence exit codes", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    expect(
+      command([
+        "add",
+        "button",
+        "--cwd",
+        project.root,
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+      ]).status,
+    ).toBe(0);
+    const manifest = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as {
+      items: Record<
+        string,
+        {
+          contractVersion: string;
+          payload: { digest: `sha256:${string}` };
+          files: readonly { logicalPath: string; target: string }[];
+        }
+      >;
+    };
+    const item = manifest.items["official:button"]!;
+    const source = item.files.find(({ target }) => target.endsWith("button.tsx"))!;
+    const definition = defineContractV1({
+      schemaVersion: 1,
+      contractVersion: item.contractVersion,
+      contractId: "button-packed-contract",
+      registryId: "official",
+      itemId: "button",
+      payloadDigest: item.payload.digest,
+      conformanceClaim: "automated-evidence-only",
+      limitations: [],
+      assertions: [
+        {
+          id: "button-export",
+          mode: "static",
+          evidenceType: "static-source",
+          target: { kind: "owned-file", logicalPath: source.logicalPath },
+          expectedBehavior: "Button source exports the public component.",
+          severity: "S1",
+          remediationUrl: "https://akhiltrivedix.github.io/mergora/components/button",
+          adapter: { kind: "text-includes", version: "1.0.0", value: "export const Button" },
+        },
+      ],
+    });
+    mkdirSync(resolve(project.root, ".mergora/contracts"), { recursive: true });
+    writeFileSync(
+      resolve(project.root, ".mergora/contracts/official--button.json"),
+      `${JSON.stringify(definition, null, 2)}\n`,
+    );
+
+    const passing = command(["audit", "button", "--static", "--cwd", project.root, "--json"]);
+    expect(passing.status).toBe(0);
+    expect(json(passing)).toMatchObject({
+      ok: true,
+      status: "pass",
+      exitCode: 0,
+      result: { state: "pass", recommendedExitCode: 0 },
+    });
+
+    writeFileSync(resolve(project.root, source.target), "export const localReplacement = 1;\n");
+    const failing = command(["audit", "button", "--static", "--cwd", project.root, "--json"]);
+    expect(failing.status).toBe(10);
+    expect(json(failing)).toMatchObject({
+      ok: false,
+      status: "fail",
+      exitCode: 10,
+      result: { state: "fail", recommendedExitCode: 10 },
+      errors: [],
+    });
+
+    const unavailable = command(["audit", "button", "--browser", "--cwd", project.root, "--json"]);
+    expect(unavailable.status).toBe(7);
+    expect(json(unavailable)).toMatchObject({
+      ok: false,
+      status: "incomplete",
+      exitCode: 7,
+      result: { state: "incomplete", recommendedExitCode: 7 },
+    });
+  });
+
+  it("plans, applies, and verifies a packed offline vendor snapshot", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    expect(
+      command([
+        "add",
+        "button",
+        "--cwd",
+        project.root,
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+      ]).status,
+    ).toBe(0);
+
+    const planned = command(["vendor", "button", "--cwd", project.root, "--plan", "--json"]);
+    expect(planned.status, `${planned.stdout}\n${planned.stderr}`).toBe(0);
+    expect(json(planned)).toMatchObject({
+      status: "planned",
+      result: {
+        command: "vendor",
+        vendor: { provenanceState: "unreleased-local", networkUsed: false },
+      },
+    });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+
+    const missingConsent = command([
+      "vendor",
+      "button",
+      "--cwd",
+      project.root,
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(missingConsent.status).toBe(12);
+    expect(json(missingConsent)).toMatchObject({
+      errors: [{ code: "CONSENT_REQUIRED" }],
+    });
+
+    const applied = command([
+      "vendor",
+      "button",
+      "--cwd",
+      project.root,
+      "--yes",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(applied.status, `${applied.stdout}\n${applied.stderr}`).toBe(0);
+    expect(json(applied)).toMatchObject({
+      status: "committed",
+      result: {
+        mode: "offline-vendor",
+        items: ["official:button"],
+        verification: {
+          state: "valid",
+          provenanceState: "unreleased-local",
+          releaseClaim: "none",
+          networkUsed: false,
+          writePerformed: false,
+        },
+      },
+    });
+
+    const verified = command(["vendor", "verify", "--cwd", project.root, "--json"]);
+    expect(verified.status, `${verified.stdout}\n${verified.stderr}`).toBe(0);
+    expect(json(verified)).toMatchObject({
+      status: "valid",
+      result: { state: "valid", releaseClaim: "none", networkUsed: false },
+    });
+    expect(verified.stdout).not.toContain(project.root);
+  });
+
+  it("keeps theme, registry, migration, and cleanup inspection read-only", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+
+    const theme = command(["theme", "list", "--cwd", project.root, "--json"]);
+    const registries = command(["registry", "list", "--cwd", project.root, "--json"]);
+    const migration = command(["migrate", "config", "--cwd", project.root, "--plan", "--json"]);
+    const cleanup = command(["clean", "--cwd", project.root, "--json"]);
+
+    expect(theme.status).toBe(0);
+    expect(registries.status).toBe(0);
+    expect(migration.status).toBe(0);
+    expect(cleanup.status).toBe(0);
+    expect(json(migration)).toMatchObject({ status: "no-op", result: { command: "migrate" } });
+    expect(json(cleanup)).toMatchObject({
+      status: "report",
+      result: { command: "clean", selectedCategories: [], writesRequired: false },
+    });
+    expect(existsSync(resolve(project.root, ".mergora/transactions"))).toBe(false);
+  });
+
+  it("requires exact cleanup selection and consent before deleting a verified cache entry", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const entryDirectory = resolve(project.root, ".mergora/cache/entries/official-button");
+    const artifact = Buffer.from("immutable cache artifact\n");
+    const digest = `sha256:${createHash("sha256").update(artifact).digest("hex")}`;
+    mkdirSync(entryDirectory, { recursive: true });
+    writeFileSync(resolve(entryDirectory, "artifact"), artifact);
+    writeFileSync(
+      resolve(entryDirectory, "cache-entry.json"),
+      `${JSON.stringify({ schemaVersion: 1, artifactKind: "mergora-verified-cache-entry", key: "official-button", artifact: "artifact", digest, bytes: artifact.byteLength })}\n`,
+    );
+
+    const planned = command(["clean", "--cache", "--cwd", project.root, "--plan", "--json"]);
+    expect(planned.status).toBe(0);
+    expect(json(planned)).toMatchObject({
+      status: "planned",
+      result: { command: "clean", selectedCategories: ["cache"], writesRequired: true },
+    });
+    expect(existsSync(entryDirectory)).toBe(true);
+
+    const refused = command([
+      "clean",
+      "--cache",
+      "--cwd",
+      project.root,
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(refused.status).toBe(12);
+    expect(json(refused)).toMatchObject({ errors: [{ code: "CONSENT_REQUIRED" }] });
+    expect(existsSync(entryDirectory)).toBe(true);
+
+    const applied = command([
+      "clean",
+      "--cache",
+      "--cwd",
+      project.root,
+      "--yes",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(applied.status, `${applied.stdout}\n${applied.stderr}`).toBe(0);
+    expect(json(applied)).toMatchObject({ status: "cleaned", result: { status: "cleaned" } });
+    expect(existsSync(entryDirectory)).toBe(false);
   });
 
   it("rejects unsafe target and config paths before writing", () => {

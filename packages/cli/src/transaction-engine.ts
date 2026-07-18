@@ -95,7 +95,10 @@ export interface OperationPlan {
     | "resolve"
     | "doctor-fix"
     | "theme-apply"
-    | "migrate";
+    | "migrate"
+    | "vendor"
+    | "registry-enroll"
+    | "registry-remove";
   readonly cliVersion: string;
   readonly projectRoot: ".";
   readonly configDigest: `sha256:${string}`;
@@ -805,6 +808,7 @@ function managerInvocation(
   manager: PackageManager,
   root: string,
   offline: boolean,
+  mode: "update-lockfile" | "frozen" = "update-lockfile",
 ): PackageManagerInvocation {
   if (manager === "pnpm") {
     return {
@@ -812,7 +816,7 @@ function managerInvocation(
       arguments: [
         "install",
         "--ignore-scripts",
-        "--no-frozen-lockfile",
+        mode === "frozen" ? "--frozen-lockfile" : "--no-frozen-lockfile",
         ...(offline ? ["--offline"] : []),
       ],
       cwd: root,
@@ -821,20 +825,34 @@ function managerInvocation(
   if (manager === "npm") {
     return {
       executable: "npm",
-      arguments: ["install", "--ignore-scripts", ...(offline ? ["--offline"] : [])],
+      arguments: [
+        mode === "frozen" ? "ci" : "install",
+        "--ignore-scripts",
+        ...(offline ? ["--offline"] : []),
+      ],
       cwd: root,
     };
   }
   if (manager === "yarn") {
     return {
       executable: "yarn",
-      arguments: ["install", "--mode=skip-builds", ...(offline ? ["--immutable-cache"] : [])],
+      arguments: [
+        "install",
+        ...(mode === "frozen" ? ["--immutable"] : []),
+        "--mode=skip-builds",
+        ...(offline ? ["--immutable-cache"] : []),
+      ],
       cwd: root,
     };
   }
   return {
     executable: "bun",
-    arguments: ["install", "--ignore-scripts", ...(offline ? ["--offline"] : [])],
+    arguments: [
+      "install",
+      "--ignore-scripts",
+      ...(mode === "frozen" ? ["--frozen-lockfile"] : []),
+      ...(offline ? ["--offline"] : []),
+    ],
     cwd: root,
   };
 }
@@ -1332,7 +1350,7 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
   }
 }
 
-function incompleteTransactionIds(root: string): readonly string[] {
+function transactionDirectoryIds(root: string): readonly string[] {
   const relative = ".mergora/transactions";
   assertNoSymlinkAncestors(root, relative);
   const directory = resolve(root, relative);
@@ -1350,11 +1368,19 @@ function incompleteTransactionIds(root: string): readonly string[] {
     if (!TRANSACTION_ID_PATTERN.test(entry.name)) continue;
     assertNoSymlinkAncestors(root, `${relative}/${entry.name}`);
     if (!entry.isDirectory()) continue;
-    if (readProjectBytes(root, recordPath(root, entry.name)) === null) continue;
-    const record = readTransactionRecord(root, entry.name);
-    if (!TERMINAL_STATES.has(record.state)) result.push(entry.name);
+    result.push(entry.name);
   }
   return result.sort((left, right) => left.localeCompare(right, "en-US"));
+}
+
+function incompleteTransactionIds(root: string): readonly string[] {
+  const result: string[] = [];
+  for (const id of transactionDirectoryIds(root)) {
+    if (readProjectBytes(root, recordPath(root, id)) === null) continue;
+    const record = readTransactionRecord(root, id);
+    if (!TERMINAL_STATES.has(record.state)) result.push(id);
+  }
+  return result;
 }
 
 function assertNoIncompleteTransactions(root: string): void {
@@ -1461,7 +1487,7 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
   const mutableTargets: string[] = [];
   if (options.packageManagerRequired === true && options.noInstall !== true) {
     const lockfile = lockfileForManager(options.root, options.packageManager);
-    if (lockfile !== null) {
+    if (lockfile !== null && !options.mutations.some(({ target }) => target === lockfile)) {
       preconditions[lockfile] = digestOrNull(readProjectBytes(options.root, lockfile));
       mutableTargets.push(lockfile);
     }
@@ -1532,7 +1558,10 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
         redactedArguments: redactArguments(options.commandArguments ?? []),
       },
       packageManager: {
-        name: options.packageManagerRequired === true ? (options.packageManager ?? "none") : "none",
+        name:
+          options.packageManagerRequired === true && options.noInstall !== true
+            ? (options.packageManager ?? "none")
+            : "none",
         invoked: false,
         exitCode: null,
       },
@@ -1688,7 +1717,12 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
       writeTransactionRecord(options.root, record);
       appendJournal(options.root, journal, "committing", "dependencies-complete");
       invokeFault(options, "package-manager-start", id);
-      const invocation = managerInvocation(manager, options.root, options.offline === true);
+      const invocation = managerInvocation(
+        manager,
+        options.root,
+        options.offline === true,
+        options.plan.command === "rollback" ? "frozen" : "update-lockfile",
+      );
       const runner = options.packageManagerRunner ?? defaultPackageManagerRunner;
       let result: ReturnType<PackageManagerRunner>;
       try {
@@ -1999,6 +2033,32 @@ function readTransactionRecord(root: string, id: string): TransactionRecord {
     invalidTransactionRecord(id);
   }
   return record as unknown as TransactionRecord;
+}
+
+function readRecordedPlan(root: string, record: TransactionRecord): OperationPlan {
+  const bytes = readProjectBytes(root, record.plan.path);
+  let plan: OperationPlan;
+  try {
+    plan = JSON.parse(bytes?.toString("utf8") ?? "null") as OperationPlan;
+    assertPlanDigest(plan);
+  } catch {
+    throw new CliError(`Transaction ${record.transactionId} plan is missing or corrupt.`, {
+      code: "TRANSACTION_PLAN_INVALID",
+      exitCode: 8,
+      target: record.plan.path,
+    });
+  }
+  if (plan.planDigest !== record.plan.digest) {
+    throw new CliError(
+      `Transaction ${record.transactionId} plan digest does not match its record.`,
+      {
+        code: "TRANSACTION_PLAN_INVALID",
+        exitCode: 8,
+        target: record.plan.path,
+      },
+    );
+  }
+  return plan;
 }
 
 function readTransactionJournal(root: string, id: string): TransactionJournal {
@@ -2330,25 +2390,7 @@ export function planRecovery(options: RecoveryOptions): RecoveryPlan {
     return { transactionId: id, action: "rollback", plan, orphan: true };
   }
   const record = readTransactionRecord(options.root, id);
-  const originalPlanBytes = readProjectBytes(options.root, record.plan.path);
-  let originalPlan: OperationPlan;
-  try {
-    originalPlan = JSON.parse(originalPlanBytes?.toString("utf8") ?? "null") as OperationPlan;
-    assertPlanDigest(originalPlan);
-  } catch {
-    throw new CliError(`Transaction ${id} plan is missing or corrupt.`, {
-      code: "TRANSACTION_PLAN_INVALID",
-      exitCode: 8,
-      target: record.plan.path,
-    });
-  }
-  if (originalPlan.planDigest !== record.plan.digest) {
-    throw new CliError(`Transaction ${id} plan digest does not match its record.`, {
-      code: "TRANSACTION_PLAN_INVALID",
-      exitCode: 8,
-      target: record.plan.path,
-    });
-  }
+  const originalPlan = readRecordedPlan(options.root, record);
   const classification = recoveryClassification(options.root, record);
   if (classification.ambiguous.length > 0) {
     throw new CliError(
@@ -2582,6 +2624,7 @@ export function recoverTransaction(
           record.packageManager.name,
           options.root,
           options.offline === true,
+          record.command.name === "rollback" ? "frozen" : "update-lockfile",
         );
         record.packageManager.invoked = true;
         record.packageManager.exitCode = null;
@@ -2656,6 +2699,286 @@ export function recoverTransaction(
       }
     }
   }
+}
+
+export interface RollbackOptions {
+  readonly root: string;
+  readonly transactionId?: string | undefined;
+  readonly last?: boolean | undefined;
+  readonly noInstall?: boolean | undefined;
+  readonly offline?: boolean | undefined;
+  readonly packageManagerRunner?: PackageManagerRunner | undefined;
+  readonly commandArguments?: readonly string[] | undefined;
+}
+
+export interface RollbackPlan {
+  readonly transactionId: string;
+  readonly packageManager: PackageManager | "none";
+  readonly installInvocation: PackageManagerInvocation | null;
+  readonly plan: OperationPlan;
+}
+
+export interface RollbackResult {
+  readonly rollbackOf: string;
+  readonly transaction: TransactionResult;
+  readonly installInvocation: PackageManagerInvocation | null;
+}
+
+function committedTransactionIds(root: string): readonly string[] {
+  const result: string[] = [];
+  for (const id of transactionDirectoryIds(root)) {
+    if (readProjectBytes(root, recordPath(root, id)) === null) continue;
+    if (readTransactionRecord(root, id).state === "committed") result.push(id);
+  }
+  return result;
+}
+
+function selectRollbackTransaction(options: RollbackOptions): string {
+  if (options.transactionId !== undefined && options.last === true) {
+    throw new CliError("Select either a transaction ID or --last, not both.", {
+      code: "COMMAND_USAGE_INVALID",
+      exitCode: 2,
+    });
+  }
+  const committed = committedTransactionIds(options.root);
+  if (options.transactionId !== undefined) {
+    if (!TRANSACTION_ID_PATTERN.test(options.transactionId)) {
+      throw new CliError("Rollback transaction ID is invalid.", {
+        code: "COMMAND_USAGE_INVALID",
+        exitCode: 2,
+      });
+    }
+    if (!committed.includes(options.transactionId)) {
+      throw new CliError(`Transaction ${options.transactionId} is not available for rollback.`, {
+        code: "TRANSACTION_ROLLBACK_UNAVAILABLE",
+        exitCode: 8,
+        target: portableTransactionRoot(options.transactionId),
+      });
+    }
+    return options.transactionId;
+  }
+  if (options.last !== true) {
+    throw new CliError("Rollback requires a transaction ID or --last.", {
+      code: "TRANSACTION_ROLLBACK_SELECTION_REQUIRED",
+      exitCode: 8,
+    });
+  }
+  const latest = committed.at(-1);
+  if (latest === undefined) {
+    throw new CliError("No committed transaction is available for rollback.", {
+      code: "TRANSACTION_ROLLBACK_UNAVAILABLE",
+      exitCode: 8,
+    });
+  }
+  const sortableTime = latest.slice(0, latest.lastIndexOf("-"));
+  if (committed.filter((id) => id.startsWith(`${sortableTime}-`)).length !== 1) {
+    throw new CliError("The most recent committed transaction is ambiguous; select its ID.", {
+      code: "TRANSACTION_ROLLBACK_SELECTION_REQUIRED",
+      exitCode: 8,
+      target: ".mergora/transactions",
+    });
+  }
+  return latest;
+}
+
+function transactionBackupBytes(
+  root: string,
+  record: TransactionRecord,
+  target: string,
+): Buffer | null {
+  const backup = record.backups.find((entry) => entry.target === target);
+  if (backup === undefined) {
+    throw new CliError(`Transaction backup metadata for ${target} is missing.`, {
+      code: "TRANSACTION_BACKUP_INVALID",
+      exitCode: 8,
+      target: portableTransactionRoot(record.transactionId),
+    });
+  }
+  const expected = record.preconditions.liveTargets[target] ?? null;
+  if (backup.digest !== expected) {
+    throw new CliError(`Transaction backup metadata for ${target} is inconsistent.`, {
+      code: "TRANSACTION_BACKUP_INVALID",
+      exitCode: 8,
+      target: backup.backupPath,
+    });
+  }
+  if (backup.digest === null) return null;
+  const bytes = readProjectBytes(root, backup.backupPath);
+  if (bytes === null || sha256(bytes) !== backup.digest) {
+    throw new CliError(`Transaction backup for ${target} is missing or corrupt.`, {
+      code: "TRANSACTION_BACKUP_INVALID",
+      exitCode: 8,
+      target: backup.backupPath,
+    });
+  }
+  return bytes;
+}
+
+export function planRollback(options: RollbackOptions): RollbackPlan {
+  assertNoIncompleteTransactions(options.root);
+  const id = selectRollbackTransaction(options);
+  const record = readTransactionRecord(options.root, id);
+  if (record.state !== "committed") {
+    throw new CliError(`Transaction ${id} is not committed and cannot be rolled back.`, {
+      code: "TRANSACTION_ROLLBACK_UNAVAILABLE",
+      exitCode: 8,
+      target: portableTransactionRoot(id),
+    });
+  }
+  const originalPlan = readRecordedPlan(options.root, record);
+  const originalFiles = new Map(originalPlan.fileOperations.map((file) => [file.target, file]));
+  const conflicts: OperationPlan["conflicts"][number][] = [];
+  let writeBytes = 0;
+  const fileOperations = [...record.staged]
+    .sort((left, right) => left.target.localeCompare(right.target, "en-US"))
+    .map((staged): OperationPlanFile => {
+      if (staged.operation === "write" && staged.digest === null) {
+        throw new CliError(`Transaction ${id} has an unknown post-state for ${staged.target}.`, {
+          code: "TRANSACTION_ROLLBACK_UNAVAILABLE",
+          exitCode: 8,
+          target: staged.target,
+        });
+      }
+      const current = digestOrNull(readProjectBytes(options.root, staged.target));
+      const before = record.preconditions.liveTargets[staged.target] ?? null;
+      const backup = transactionBackupBytes(options.root, record, staged.target);
+      writeBytes += backup?.byteLength ?? 0;
+      const stale = current !== staged.digest;
+      if (stale) {
+        conflicts.push({
+          target: staged.target,
+          kind: "ownership",
+          reason: `Live bytes changed after transaction ${id}; rollback cannot overwrite them.`,
+        });
+      }
+      const original = originalFiles.get(staged.target);
+      return {
+        operation: stale ? "conflict" : before === null ? "delete" : "fast-forward",
+        target: staged.target,
+        owner: original?.owner ?? "official:rollback",
+        base: staged.digest,
+        local: current,
+        remote: before,
+        proposed: before,
+        mediaType: original?.mediaType ?? "application/octet-stream",
+        risk: stale ? "conflict" : before === null ? "destructive" : "review-required",
+        reason: stale
+          ? `Live bytes no longer match the recorded post-state of transaction ${id}.`
+          : `Restore the byte-identical pre-state recorded by transaction ${id}.`,
+      };
+    });
+  const config = canonicalProjectJsonDigest(options.root, "mergora.json");
+  if (config === null) {
+    throw new CliError("mergora.json is missing.", { code: "CONFIG_MISSING", exitCode: 3 });
+  }
+  const packageManager = record.packageManager.name;
+  const installInvocation =
+    packageManager === "none"
+      ? null
+      : managerInvocation(packageManager, options.root, options.offline === true, "frozen");
+  const plan = finalizeOperationPlan({
+    schemaVersion: 1,
+    command: "rollback",
+    cliVersion: originalPlan.cliVersion,
+    projectRoot: ".",
+    configDigest: config,
+    manifestPreconditionDigest: canonicalProjectJsonDigest(options.root, ".mergora/manifest.json"),
+    registries: originalPlan.registries,
+    items: originalPlan.items.map((item) => ({
+      ...item,
+      requested: `rollback:${id}`,
+      fromVersion: item.toVersion,
+      toVersion: item.fromVersion,
+    })),
+    fileOperations,
+    dependencyChanges: originalPlan.dependencyChanges.map((change) => ({
+      ...change,
+      operation:
+        change.operation === "add" ? "remove" : change.operation === "remove" ? "add" : "change",
+      from: change.to,
+      to: change.from,
+    })),
+    structuredPatches: originalPlan.structuredPatches.map((patch) => ({
+      ...patch,
+      operation:
+        patch.operation === "add"
+          ? "remove"
+          : patch.operation === "remove"
+            ? "add"
+            : patch.operation,
+    })),
+    migrations: [],
+    contractChanges: [],
+    warnings: [
+      `Rollback restores only targets recorded by transaction ${id}; unrelated files are out of scope.`,
+      ...(installInvocation === null
+        ? []
+        : options.noInstall === true
+          ? [
+              `Dependency cache restoration is skipped; run ${installInvocation.executable} ${installInvocation.arguments.join(" ")}.`,
+            ]
+          : [
+              `After authoritative files are restored, run ${installInvocation.executable} ${installInvocation.arguments.join(" ")} with fixed arguments.`,
+            ]),
+    ],
+    consentRequirements: [
+      {
+        id: "rollback-transaction",
+        flag: "--yes",
+        reason: `Rollback restores the exact pre-state of completed transaction ${id}.`,
+      },
+    ],
+    conflicts,
+    estimatedBytes: { download: 0, write: writeBytes },
+    validationSuite: ["schema", "digest", "path", "collision", "ownership", "dependency"],
+    rollbackAvailable: true,
+  });
+  return { transactionId: id, packageManager, installInvocation, plan };
+}
+
+export function rollbackTransaction(
+  options: RollbackOptions,
+  expectedPlanDigest?: string,
+): RollbackResult {
+  const planned = planRollback(options);
+  if (expectedPlanDigest !== undefined && expectedPlanDigest !== planned.plan.planDigest) {
+    throw new CliError("Rollback plan changed before apply; review a fresh plan.", {
+      code: "PLAN_PRECONDITION_STALE",
+      exitCode: 8,
+    });
+  }
+  if (planned.plan.conflicts.length > 0) {
+    throw new CliError(planned.plan.conflicts[0]!.reason, {
+      code: "TRANSACTION_ROLLBACK_STALE",
+      exitCode: 8,
+      target: planned.plan.conflicts[0]!.target,
+    });
+  }
+  const original = readTransactionRecord(options.root, planned.transactionId);
+  const mutations: TransactionMutation[] = [...original.staged]
+    .sort((left, right) => left.target.localeCompare(right.target, "en-US"))
+    .map((staged) => ({
+      target: staged.target,
+      content: transactionBackupBytes(options.root, original, staged.target),
+      beforeDigest: staged.digest,
+      manifest: staged.target === ".mergora/manifest.json",
+    }));
+  const transaction = executeTransaction({
+    root: options.root,
+    plan: planned.plan,
+    mutations,
+    packageManager: planned.packageManager === "none" ? undefined : planned.packageManager,
+    packageManagerRequired: planned.packageManager !== "none",
+    noInstall: options.noInstall,
+    offline: options.offline,
+    packageManagerRunner: options.packageManagerRunner,
+    commandArguments: options.commandArguments,
+  });
+  return {
+    rollbackOf: planned.transactionId,
+    transaction,
+    installInvocation: planned.installInvocation,
+  };
 }
 
 export function listIncompleteTransactions(root: string): readonly string[] {

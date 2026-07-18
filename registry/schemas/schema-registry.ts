@@ -6,12 +6,14 @@ import componentMetadataSchemaJson from "./component-metadata-v1.schema.json" wi
 import configSchemaJson from "./config-v1.schema.json" with { type: "json" };
 import conflictSchemaJson from "./conflict-v1.schema.json" with { type: "json" };
 import evidenceSchemaJson from "./evidence-v1.schema.json" with { type: "json" };
+import latestAliasSchemaJson from "./latest-alias-v1.schema.json" with { type: "json" };
 import manifestSchemaJson from "./manifest-v1.schema.json" with { type: "json" };
 import operationPlanSchemaJson from "./operation-plan-v1.schema.json" with { type: "json" };
 import qualityPassportSchemaJson from "./quality-passport-v1.schema.json" with { type: "json" };
 import registryIndexSchemaJson from "./registry-index-v1.schema.json" with { type: "json" };
 import registryItemSchemaJson from "./registry-item-v1.schema.json" with { type: "json" };
 import releaseManifestSchemaJson from "./release-manifest-v1.schema.json" with { type: "json" };
+import releaseProtocolPlanSchemaJson from "./release-protocol-plan-v1.schema.json" with { type: "json" };
 import resultEnvelopeSchemaJson from "./result-envelope-v1.schema.json" with { type: "json" };
 import themeSchemaJson from "./theme-v1.schema.json" with { type: "json" };
 import transactionJournalSchemaJson from "./transaction-journal-v1.schema.json" with { type: "json" };
@@ -36,12 +38,14 @@ export const SCHEMA_REGISTRY: Readonly<Record<SchemaKind, JsonSchema>> = {
   config: configSchemaJson as JsonSchema,
   conflict: conflictSchemaJson as JsonSchema,
   evidence: evidenceSchemaJson as JsonSchema,
+  "latest-alias": latestAliasSchemaJson as JsonSchema,
   manifest: manifestSchemaJson as JsonSchema,
   "operation-plan": operationPlanSchemaJson as JsonSchema,
   "quality-passport": qualityPassportSchemaJson as JsonSchema,
   "registry-index": registryIndexSchemaJson as JsonSchema,
   "registry-item": registryItemSchemaJson as JsonSchema,
   "release-manifest": releaseManifestSchemaJson as JsonSchema,
+  "release-protocol-plan": releaseProtocolPlanSchemaJson as JsonSchema,
   "result-envelope": resultEnvelopeSchemaJson as JsonSchema,
   theme: themeSchemaJson as JsonSchema,
   "transaction-journal": transactionJournalSchemaJson as JsonSchema,
@@ -59,12 +63,14 @@ export const EXPECTED_SCHEMA_VERSION: Readonly<Record<SchemaKind, 1 | "1.0.0">> 
   config: 1,
   conflict: 1,
   evidence: 1,
+  "latest-alias": 1,
   manifest: 1,
   "operation-plan": 1,
   "quality-passport": 1,
   "registry-index": 1,
   "registry-item": 1,
   "release-manifest": 1,
+  "release-protocol-plan": 1,
   "result-envelope": 1,
   theme: 1,
   "transaction-journal": 1,

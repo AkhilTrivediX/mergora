@@ -320,7 +320,15 @@ export function DialogRootImplementation({
   useEffect(
     () => () => {
       if (!openRef.current || typeof queueMicrotask === "undefined") return;
-      queueMicrotask(restoreFocus);
+      queueMicrotask(() => {
+        if (
+          typeof document !== "undefined" &&
+          (document.visibilityState === "hidden" || document.body?.isConnected !== true)
+        ) {
+          return;
+        }
+        restoreFocus();
+      });
     },
     [restoreFocus],
   );

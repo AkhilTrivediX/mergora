@@ -43,17 +43,17 @@ function collectReferences(value: unknown, output: string[] = []): readonly stri
 describe("the JSON Schema source", () => {
   it("contains parseable, uniquely identified draft 2020-12 documents", () => {
     const files = readdirSync(schemaDirectory).filter((name) => name.endsWith(".schema.json"));
-    expect(files).toHaveLength(19);
+    expect(files).toHaveLength(21);
     const documents = files.map((name) =>
       JSON.parse(readFileSync(join(schemaDirectory, name), "utf8")),
     ) as { readonly $id?: string; readonly $schema?: string }[];
-    expect(new Set(documents.map((document) => document.$id)).size).toBe(19);
+    expect(new Set(documents.map((document) => document.$id)).size).toBe(21);
     expect(
       documents.every(
         (document) => document.$schema === "https://json-schema.org/draft/2020-12/schema",
       ),
     ).toBe(true);
-    expect(ALL_SCHEMAS).toHaveLength(19);
+    expect(ALL_SCHEMAS).toHaveLength(21);
   });
 
   it("keeps every critical document root closed to unknown fields", () => {
@@ -104,6 +104,26 @@ describe("schema negotiation and valid documents", () => {
     ["evidence", "evidence-not-tested.json"],
     ["transaction-journal", "transaction-journal.json"],
   ];
+
+  it("accepts a digest-bound latest alias fixture", () => {
+    const result = validateSchemaDocument("latest-alias", {
+      schemaVersion: 1,
+      protocolVersion: "mergora-v1",
+      registryId: "mergora",
+      itemId: "button",
+      resolvedVersion: "1.0.0",
+      releaseManifest: {
+        url: "https://example.test/r/v1/releases/1.0.0/manifest.json",
+        digest: `sha256:${"1".repeat(64)}`,
+      },
+      payload: {
+        url: "https://example.test/r/v1/releases/1.0.0/items/button.json",
+        digest: `sha256:${"2".repeat(64)}`,
+      },
+    });
+    expect(formatValidationErrors(result.errors)).toBe("");
+    expect(result.ok).toBe(true);
+  });
 
   it.each(validFixtures)("accepts the %s fixture", (kind, name) => {
     const result = validateSchemaDocument(kind, fixture("valid", name));

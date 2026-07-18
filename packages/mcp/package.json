@@ -2,7 +2,7 @@
   "name": "mergora-mcp",
   "version": "0.0.0",
   "private": true,
-  "description": "Private scaffold for the Mergora MCP integration",
+  "description": "Deterministic read-only and plan-only MCP core for Mergora projects",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -22,7 +22,11 @@
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
+  "dependencies": {
+    "mergora": "workspace:*"
+  },
   "devDependencies": {
+    "@types/node": "catalog:",
     "typescript": "catalog:"
   }
 }

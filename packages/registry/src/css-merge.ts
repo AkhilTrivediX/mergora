@@ -1,4 +1,4 @@
-import { parse, type Declaration, type Root, type Rule } from "postcss";
+import { parse, type AtRule, type Declaration, type Root, type Rule } from "postcss";
 
 export type CssMergeStatus =
   "no-op" | "fast-forward" | "keep-local" | "semantic-merge" | "conflict";
@@ -7,10 +7,13 @@ export interface CssMergeConflict {
   readonly semanticKey: string;
   readonly reason:
     | "ambiguous-semantic-key"
+    | "cascade-order-change"
+    | "comment-change"
     | "concurrent-edit"
     | "missing-local-container"
     | "parse-error"
-    | "unsupported-declaration-container";
+    | "unsupported-declaration-container"
+    | "unsupported-structure-change";
   readonly base: string | null;
   readonly local: string | null;
   readonly remote: string | null;
@@ -137,6 +140,46 @@ function parseRoot(label: "base" | "local" | "remote", css: string): Root | CssM
   }
 }
 
+function arraysEqual(left: readonly string[], right: readonly string[]): boolean {
+  return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function commentFingerprint(root: Root): string[] {
+  const comments: string[] = [];
+  root.walkComments((comment) => {
+    const parent = comment.parent;
+    const context =
+      parent?.type === "rule"
+        ? ruleKey(parent as Rule)
+        : parent?.type === "atrule"
+          ? `@${(parent as AtRule).name.toLocaleLowerCase("en-US")} ${normalizeWhitespace((parent as AtRule).params)}`
+          : "$root";
+    const siblingIndex = parent?.nodes?.indexOf(comment) ?? -1;
+    comments.push(`${context}|index:${String(siblingIndex)}|${comment.text}`);
+  });
+  return comments;
+}
+
+function ruleOrder(root: Root): string[] {
+  const rules: string[] = [];
+  root.walkRules((rule) => {
+    rules.push(ruleKey(rule));
+  });
+  return rules;
+}
+
+function unmodeledAtRules(root: Root): string[] {
+  const atRules: string[] = [];
+  root.walkAtRules((atRule) => {
+    if (atRule.nodes === undefined || atRule.nodes.length === 0) {
+      atRules.push(
+        `@${atRule.name.toLocaleLowerCase("en-US")} ${normalizeWhitespace(atRule.params)}`,
+      );
+    }
+  });
+  return atRules;
+}
+
 function finishTrivial(
   status: Exclude<CssMergeStatus, "semantic-merge" | "conflict">,
   content: string,
@@ -145,10 +188,10 @@ function finishTrivial(
 }
 
 /**
- * P1's bounded Semantic Sync tracer. It performs a loss-minimizing three-way
- * merge over unambiguous CSS declarations and refuses structural ambiguity.
- * The complete transaction, conflict-bundle, and multi-media updater is a
- * later phase; callers must not write when this function returns `conflict`.
+ * Performs a loss-minimizing three-way merge over unambiguous CSS declarations
+ * and refuses structural ambiguity. The byte-oriented Semantic Sync dispatcher
+ * owns input limits and conflict-bundle integration; callers must never write
+ * when this function returns `conflict`.
  */
 export function mergeCssDeclarationsThreeWay(input: {
   readonly base: string;
@@ -174,6 +217,78 @@ export function mergeCssDeclarationsThreeWay(input: {
   if (input.local === input.remote) return finishTrivial("no-op", input.local);
   if (input.local === input.base) return finishTrivial("fast-forward", input.remote);
   if (input.remote === input.base) return finishTrivial("keep-local", input.local);
+
+  const baseComments = commentFingerprint(baseRoot);
+  const localComments = commentFingerprint(localRoot);
+  const remoteComments = commentFingerprint(remoteRoot);
+  if (
+    (!arraysEqual(baseComments, localComments) || !arraysEqual(baseComments, remoteComments)) &&
+    !arraysEqual(localComments, remoteComments)
+  ) {
+    return {
+      status: "conflict",
+      content: null,
+      conflicts: [
+        conflict(
+          "$comments",
+          "comment-change",
+          baseComments.join("\n"),
+          localComments.join("\n"),
+          remoteComments.join("\n"),
+        ),
+      ],
+      appliedRemoteKeys: [],
+      preservedLocalKeys: [],
+    };
+  }
+
+  const baseOrder = ruleOrder(baseRoot);
+  const localOrder = ruleOrder(localRoot);
+  const remoteOrder = ruleOrder(remoteRoot);
+  if (
+    (!arraysEqual(baseOrder, localOrder) || !arraysEqual(baseOrder, remoteOrder)) &&
+    !arraysEqual(localOrder, remoteOrder)
+  ) {
+    return {
+      status: "conflict",
+      content: null,
+      conflicts: [
+        conflict(
+          "$cascade-order",
+          "cascade-order-change",
+          baseOrder.join("\n"),
+          localOrder.join("\n"),
+          remoteOrder.join("\n"),
+        ),
+      ],
+      appliedRemoteKeys: [],
+      preservedLocalKeys: [],
+    };
+  }
+
+  const baseUnmodeled = unmodeledAtRules(baseRoot);
+  const localUnmodeled = unmodeledAtRules(localRoot);
+  const remoteUnmodeled = unmodeledAtRules(remoteRoot);
+  if (
+    (!arraysEqual(baseUnmodeled, localUnmodeled) || !arraysEqual(baseUnmodeled, remoteUnmodeled)) &&
+    !arraysEqual(localUnmodeled, remoteUnmodeled)
+  ) {
+    return {
+      status: "conflict",
+      content: null,
+      conflicts: [
+        conflict(
+          "$at-rules",
+          "unsupported-structure-change",
+          baseUnmodeled.join("\n"),
+          localUnmodeled.join("\n"),
+          remoteUnmodeled.join("\n"),
+        ),
+      ],
+      appliedRemoteKeys: [],
+      preservedLocalKeys: [],
+    };
+  }
 
   const baseIndex = buildIndex(baseRoot);
   const localIndex = buildIndex(localRoot);

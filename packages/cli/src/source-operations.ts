@@ -59,9 +59,9 @@ import {
 
 const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
 const REQUESTED_VERSION = "=0.0.0-unreleased" as const;
-const MANIFEST_PATH = ".mergora/manifest.json" as const;
+export const MANIFEST_PATH = ".mergora/manifest.json" as const;
 
-interface ManifestFile {
+export interface ManifestFile {
   readonly logicalPath: string;
   readonly target: string;
   readonly role: "component" | "hook" | "lib" | "system" | "kit" | "style" | "token";
@@ -72,7 +72,7 @@ interface ManifestFile {
   readonly tombstone?: boolean | undefined;
 }
 
-interface ManifestPatch {
+export interface ManifestPatch {
   readonly id: string;
   readonly adapter:
     | "css-import"
@@ -86,7 +86,7 @@ interface ManifestPatch {
   readonly ownedValueDigest: `sha256:${string}`;
 }
 
-interface ManifestItem {
+export interface ManifestItem {
   readonly registry: "official";
   readonly itemId: string;
   readonly kind: "component" | "system" | "hook" | "utility" | "kit" | "theme" | "contract";
@@ -117,7 +117,7 @@ interface ManifestItem {
   readonly lastMigration: string | null;
 }
 
-interface ProvenanceManifest {
+export interface ProvenanceManifest {
   readonly $schema: string;
   readonly schemaVersion: 1;
   readonly projectId: `sha256:${string}`;
@@ -208,7 +208,7 @@ function exactKeys(value: Record<string, unknown>, keys: readonly string[], labe
   }
 }
 
-function readManifest(root: string): {
+export function readManifest(root: string): {
   readonly value: ProvenanceManifest;
   readonly bytes: Buffer;
 } {
@@ -296,7 +296,7 @@ function readManifest(root: string): {
   return { value: manifest as unknown as ProvenanceManifest, bytes };
 }
 
-function readProjectFile(root: string, target: string): Buffer | null {
+export function readProjectFile(root: string, target: string): Buffer | null {
   assertPortableRelativePath(target, "Project target");
   assertNoSymlinkAncestors(root, target);
   const path = resolve(root, ...target.split("/"));
@@ -357,7 +357,7 @@ function sortedRecord<T>(record: Readonly<Record<string, T>>): Record<string, T>
   );
 }
 
-function normalizedManifest(manifest: ProvenanceManifest): ProvenanceManifest {
+export function normalizedManifest(manifest: ProvenanceManifest): ProvenanceManifest {
   const items = Object.fromEntries(
     Object.entries(manifest.items)
       .sort(([left], [right]) => left.localeCompare(right, "en-US"))
@@ -398,15 +398,15 @@ function normalizedManifest(manifest: ProvenanceManifest): ProvenanceManifest {
   };
 }
 
-function manifestBytes(manifest: ProvenanceManifest): Buffer {
+export function manifestBytes(manifest: ProvenanceManifest): Buffer {
   return Buffer.from(`${JSON.stringify(normalizedManifest(manifest), null, 2)}\n`);
 }
 
-function digestOrNull(bytes: Uint8Array | null): `sha256:${string}` | null {
+export function digestOrNull(bytes: Uint8Array | null): `sha256:${string}` | null {
   return bytes === null ? null : sha256(bytes);
 }
 
-function basePath(digest: `sha256:${string}`): string {
+export function basePath(digest: `sha256:${string}`): string {
   const hexadecimal = digest.slice("sha256:".length);
   return `.mergora/bases/sha256/${hexadecimal.slice(0, 2)}/${hexadecimal.slice(2)}.blob`;
 }

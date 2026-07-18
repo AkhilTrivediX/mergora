@@ -64,11 +64,17 @@ function readJson(path) {
 const publicPackages = readJson(join(workspaceRoot, "config", "public-packages.json"));
 const selectedPackages = {
   cli: publicPackages.cli.package,
+  contracts: publicPackages.public.contracts,
+  mcp: publicPackages.public.mcp,
+  registry: publicPackages.public.registry,
   schema: publicPackages.public.schema,
   tokens: publicPackages.public.tokens,
   ui: publicPackages.public.ui,
 };
 const packageDefinitions = [
+  { directory: "packages/contracts", name: selectedPackages.contracts, role: "contracts" },
+  { directory: "packages/mcp", name: selectedPackages.mcp, role: "mcp" },
+  { directory: "packages/registry", name: selectedPackages.registry, role: "registry" },
   { directory: "packages/cli", name: selectedPackages.cli, role: "cli" },
   { directory: "packages/schema", name: selectedPackages.schema, role: "schema" },
   { directory: "packages/tokens", name: selectedPackages.tokens, role: "tokens" },
@@ -277,6 +283,9 @@ function validatePackageSources() {
     publicPackages.selectionStatus === "verified" &&
       publicPackages.selectionTier === "approved-unscoped" &&
       selectedPackages.cli === "mergora" &&
+      selectedPackages.contracts === "mergora-contracts" &&
+      selectedPackages.mcp === "mergora-mcp" &&
+      selectedPackages.registry === "mergora-registry" &&
       selectedPackages.ui === "mergora-ui" &&
       selectedPackages.tokens === "mergora-tokens" &&
       selectedPackages.schema === "mergora-schema",
@@ -317,7 +326,7 @@ function buildAndPack(artifactDirectory, temporaryRoot) {
   pnpm("generated artifact drift", ["generated:check"], workspaceRoot, temporaryRoot);
   validatePackageSources();
   pnpm(
-    "CLI/UI/tokens/schema build",
+    "CLI/contracts/MCP/registry/UI/tokens/schema build",
     [...packageDefinitions.flatMap(({ name }) => ["--filter", name]), "build"],
     workspaceRoot,
     temporaryRoot,
@@ -359,12 +368,19 @@ function artifactFor(artifacts, packageName) {
   return artifact;
 }
 
+function exactTarballDependencies(artifacts) {
+  return Object.fromEntries(
+    packageDefinitions.map(({ name }) => [
+      name,
+      `file:../../artifacts/${artifactFor(artifacts, name).file}`,
+    ]),
+  );
+}
+
 function consumerPackageJson(consumer, matrix, artifacts) {
+  const exactTarballs = exactTarballDependencies(artifacts);
   const dependencies = {
-    [selectedPackages.schema]: `file:../../artifacts/${artifactFor(artifacts, selectedPackages.schema).file}`,
-    [selectedPackages.tokens]: `file:../../artifacts/${artifactFor(artifacts, selectedPackages.tokens).file}`,
-    [selectedPackages.ui]: `file:../../artifacts/${artifactFor(artifacts, selectedPackages.ui).file}`,
-    [selectedPackages.cli]: `file:../../artifacts/${artifactFor(artifacts, selectedPackages.cli).file}`,
+    ...exactTarballs,
     react: matrix.versions.react,
     "react-dom": matrix.versions["react-dom"],
     tailwindcss: matrix.versions.tailwindcss,
@@ -409,6 +425,7 @@ function createConsumer(consumer, matrix, artifacts, consumersDirectory) {
     canonicalJson(consumerPackageJson(consumer, matrix, artifacts)),
     "utf8",
   );
+  const overrides = exactTarballDependencies(artifacts);
   writeFileSync(
     join(consumerDirectory, ".npmrc"),
     [
@@ -434,6 +451,11 @@ function createConsumer(consumer, matrix, artifacts, consumersDirectory) {
       "allowBuilds:",
       "  esbuild: true",
       "  sharp: true",
+      "",
+      "overrides:",
+      ...Object.entries(overrides)
+        .sort(([left], [right]) => left.localeCompare(right, "en-US"))
+        .map(([name, value]) => `  ${JSON.stringify(name)}: ${JSON.stringify(value)}`),
       "",
     ].join("\n"),
     "utf8",
@@ -587,6 +609,35 @@ function auditInstalledPackages(consumerDirectory, temporaryRoot) {
     "Packed token CSS is missing.",
   );
   assert(
+    existsSync(join(expectedPackagePaths[selectedPackages.contracts], "dist", "index.js")) &&
+      existsSync(join(expectedPackagePaths[selectedPackages.contracts], "dist", "index.d.ts")) &&
+      existsSync(
+        join(
+          expectedPackagePaths[selectedPackages.contracts],
+          "schemas",
+          "executable-contract-v1.schema.json",
+        ),
+      ) &&
+      existsSync(
+        join(
+          expectedPackagePaths[selectedPackages.contracts],
+          "schemas",
+          "audit-report-v1.schema.json",
+        ),
+      ),
+    "Packed executable-contract runtime or schemas are missing.",
+  );
+  assert(
+    existsSync(join(expectedPackagePaths[selectedPackages.registry], "dist", "index.js")) &&
+      existsSync(join(expectedPackagePaths[selectedPackages.registry], "dist", "index.d.ts")),
+    "Packed Semantic Sync registry runtime or declarations are missing.",
+  );
+  assert(
+    existsSync(join(expectedPackagePaths[selectedPackages.mcp], "dist", "index.js")) &&
+      existsSync(join(expectedPackagePaths[selectedPackages.mcp], "dist", "index.d.ts")),
+    "Packed MCP runtime or declarations are missing.",
+  );
+  assert(
     existsSync(
       join(
         expectedPackagePaths[selectedPackages.schema],
@@ -608,11 +659,18 @@ function auditInstalledPackages(consumerDirectory, temporaryRoot) {
     assert(!lockfile.includes(marker), "Consumer lockfile contains the monorepo path.");
   }
   const packageJson = readJson(join(consumerDirectory, "package.json"));
+  const workspaceSettings = readFileSync(join(consumerDirectory, "pnpm-workspace.yaml"), "utf8");
   for (const { name } of packageDefinitions) {
     assert(
       packageJson.dependencies[name].startsWith("file:../../artifacts/") &&
         packageJson.dependencies[name].endsWith(".tgz"),
       `Consumer ${name} dependency is not the relative packed tarball.`,
+    );
+    assert(
+      workspaceSettings.includes(
+        `  ${JSON.stringify(name)}: ${JSON.stringify(packageJson.dependencies[name])}`,
+      ),
+      `Consumer ${name} transitive override is not the same exact tarball.`,
     );
   }
   const reactManifest = readJson(join(nodeModules, "react", "package.json"));
@@ -727,6 +785,19 @@ function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, tempora
     temporaryRoot,
   );
   auditInstalledPackages(consumerDirectory, temporaryRoot);
+  const mcpSmoke = pnpm(
+    `${consumer.id} packed MCP smoke`,
+    [
+      "exec",
+      "node",
+      "--input-type=module",
+      "--eval",
+      'import { createMergoraMcpServer } from "mergora-mcp"; const server = createMergoraMcpServer(); process.stdout.write(`${server.listTools().length}/${server.listResources().length}/${String(server.applyCapability)}`);',
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  ).trim();
+  assert(mcpSmoke === "20/3/false", `${consumer.id} packed MCP capability surface drifted.`);
   pnpm(`${consumer.id} typecheck`, ["run", "typecheck"], consumerDirectory, temporaryRoot);
   pnpm(`${consumer.id} production build`, ["run", "build"], consumerDirectory, temporaryRoot);
   verifyProductionOutput(consumer, consumerDirectory);
@@ -737,6 +808,7 @@ function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, tempora
       "frozen-offline-reinstall",
       "no-workspace-resolution",
       "packed-cli-executed",
+      "packed-mcp-read-plan-only",
       "production-base-path",
       "production-build",
       "public-subpaths-and-types",

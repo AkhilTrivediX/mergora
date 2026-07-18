@@ -2,17 +2,30 @@
   "name": "mergora-contracts",
   "version": "0.0.0",
   "private": true,
-  "description": "Private scaffold for Mergora quality contracts",
+  "description": "Versioned declarative Mergora quality contracts and deterministic audit runtime",
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
       "import": "./dist/index.js"
+    },
+    "./schemas/executable-contract-v1.json": "./schemas/executable-contract-v1.schema.json",
+    "./schemas/audit-report-v1.json": "./schemas/audit-report-v1.schema.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./schemas/executable-contract-v1.json": "./schemas/executable-contract-v1.schema.json",
+      "./schemas/audit-report-v1.json": "./schemas/audit-report-v1.schema.json"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "schemas"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

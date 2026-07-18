@@ -9,6 +9,7 @@ import {
   type GeneratorCatalogDefinition,
   type GeneratorSchemaContracts,
 } from "./model.ts";
+import { buildBlockedReleaseProtocolPlan } from "./release-protocol.ts";
 import {
   buildChangelogInputs,
   buildShadcnRegistry,
@@ -31,6 +32,10 @@ interface SchemaModule {
     Record<string, { readonly $id?: string; readonly $schema?: string }>
   >;
   readonly aggregateEvidenceState: (context: string, state: string) => string;
+  readonly validateSchemaDocument: (
+    kind: string,
+    value: unknown,
+  ) => { readonly ok: boolean; readonly errors: readonly unknown[] };
 }
 
 interface SourceSnapshotSource extends PayloadCanonicalSource {
@@ -281,6 +286,19 @@ export async function createGenerationSnapshot(
 
   const source = sourceModule.createSourceTransformationSnapshot(workspaceRoot, definitions);
   const registry = buildRegistryPlans(definitions, schemaContracts, source.sources);
+  const releaseProtocolPlan = buildBlockedReleaseProtocolPlan({
+    catalogDefinitions: definitions.length,
+    sourceItemIds: source.sources.map((item) => item.id),
+    schemaContracts: {
+      catalog: schemaContracts.registryIndex,
+      item: schemaContracts.registryItem,
+      releaseManifest: schemaId(schemaModule.SCHEMA_REGISTRY, "release-manifest"),
+      latestAlias: schemaId(schemaModule.SCHEMA_REGISTRY, "latest-alias"),
+    },
+  });
+  if (!schemaModule.validateSchemaDocument("release-protocol-plan", releaseProtocolPlan).ok) {
+    throw new Error("Blocked release-protocol plan does not satisfy its versioned schema.");
+  }
   const packageExports = packageModule.buildPackageExportPlan(
     definitions,
     packageMap,
@@ -296,6 +314,7 @@ export async function createGenerationSnapshot(
   const artifactValues: readonly (readonly [string, unknown])[] = [
     ["registry/generated/catalog.json", registry.catalog],
     ["registry/generated/index-plan.json", registry.index],
+    ["registry/generated/release-protocol/plan.json", releaseProtocolPlan],
     ["registry/generated/package-export-plan.json", packageExports],
     ["registry/generated/passport-skeletons.json", passports],
     ["registry/generated/source-transform-plan.json", source.plan],

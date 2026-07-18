@@ -41,7 +41,10 @@
         "doctor-fix",
         "theme-apply",
         "migrate",
-        "adopt"
+        "adopt",
+        "vendor",
+        "registry-enroll",
+        "registry-remove"
       ]
     },
     "cliVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },

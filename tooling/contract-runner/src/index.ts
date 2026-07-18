@@ -1,3 +1,13 @@
+import {
+  runContractAuditV1,
+  type AuditMode,
+  type AuditReportV1,
+  type ContractDefinitionV1,
+  type RunContractAuditOptions,
+  type StaticAuditTargetAdapter,
+  type StaticTargetSnapshot,
+} from "mergora-contracts";
+
 export type ContractResultState = "pass" | "fail" | "blocked-upstream" | "not-applicable";
 export type ContractAggregateState = "satisfied" | "failed" | "blocked" | "not-applicable";
 
@@ -353,3 +363,61 @@ export async function runContractSuite<TContext>(
     results,
   };
 }
+
+export interface MemoryStaticAuditTarget {
+  readonly registryId: string;
+  readonly itemId: string;
+  readonly logicalPath: string;
+  readonly projectPath: string;
+  readonly content?: string;
+  readonly state?: "present" | "missing";
+}
+
+/**
+ * A deterministic adapter for contract fixtures and embedders that already
+ * hold transformed source in memory. Missing mappings are reported explicitly;
+ * they are never converted into skipped or passing assertions.
+ */
+export function createMemoryStaticAuditAdapter(
+  targets: readonly MemoryStaticAuditTarget[],
+): StaticAuditTargetAdapter {
+  const entries = new Map<string, MemoryStaticAuditTarget>();
+  for (const target of targets) {
+    const key = `${target.registryId}\u0000${target.itemId}\u0000${target.logicalPath}`;
+    if (entries.has(key)) throw new TypeError(`Duplicate static audit target ${key}.`);
+    entries.set(key, target);
+  }
+  return {
+    id: "memory-static-v1",
+    readTarget({ registryId, itemId, logicalPath }): StaticTargetSnapshot {
+      const target = entries.get(`${registryId}\u0000${itemId}\u0000${logicalPath}`);
+      if (target === undefined) {
+        return { state: "unavailable", projectPath: null, reason: "target-unmapped" };
+      }
+      if (target.state === "missing") {
+        return { state: "missing", projectPath: target.projectPath };
+      }
+      return {
+        state: "present",
+        projectPath: target.projectPath,
+        content: target.content ?? "",
+      };
+    },
+  };
+}
+
+export function runDeclarativeContractAudit(
+  definitions: readonly ContractDefinitionV1[],
+  targetAdapter: StaticAuditTargetAdapter,
+  options: RunContractAuditOptions = {},
+): Promise<AuditReportV1> {
+  return runContractAuditV1(definitions, targetAdapter, options);
+}
+
+export type {
+  AuditMode,
+  AuditReportV1,
+  ContractDefinitionV1,
+  RunContractAuditOptions,
+  StaticAuditTargetAdapter,
+};

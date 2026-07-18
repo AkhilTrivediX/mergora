@@ -28,10 +28,15 @@
     "node": ">=22.14.0"
   },
   "scripts": {
+    "prebuild": "corepack pnpm@11.14.0 --filter mergora-contracts build && corepack pnpm@11.14.0 --filter mergora-registry build",
     "build": "node scripts/build.mjs",
     "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
     "prepack": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "mergora-contracts": "workspace:*",
+    "mergora-registry": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:",

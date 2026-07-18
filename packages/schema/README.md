@@ -1,6 +1,6 @@
 # `mergora-schema`
 
-Versioned JSON Schemas, TypeScript contracts, and bounded side-effect-free validators for Mergora registry, CLI, transaction, evidence, and release documents.
+Versioned JSON Schemas, TypeScript contracts, and bounded side-effect-free validators for Mergora registry, CLI, transaction, evidence, latest-alias, and release documents.
 
 The canonical files live in `registry/schemas`. This package compiles that directory directly so npm, registry, CLI, and documentation consumers share one source. JSON schemas are available through subpaths such as `mergora-schema/schemas/config-v1.schema.json`.
 

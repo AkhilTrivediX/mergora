@@ -11,10 +11,13 @@ test("@browser 320px reflow and 200% text keep gated targets visible", async ({ 
       html { font-size: 200%; }
       * { line-height: 1.5 !important; letter-spacing: 0.12em !important; word-spacing: 0.16em !important; }
       p { margin-block-end: 2em !important; }
-    `,
+  `,
   });
   const primaryButton = page.getByRole("button", { name: "Run evidence check" });
   await primaryButton.focus();
+  await primaryButton.scrollIntoViewIfNeeded();
+  await expect(primaryButton).toBeFocused();
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
 
   const geometry = await runGeometryContract(createPlaywrightGeometryAdapter(), {
     page,

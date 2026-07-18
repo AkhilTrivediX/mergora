@@ -1,0 +1,12 @@
+{
+  // Consumer-visible Data Grid defaults stay documented here.
+  "dataGrid": {
+    "pageSize": 50,
+    "density": "compact",
+    "columns": {
+      "status": true,
+      "owner": true,
+    },
+    "selectionMode": "multiple",
+  },
+}

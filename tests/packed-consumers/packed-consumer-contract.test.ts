@@ -124,6 +124,9 @@ describe("P1 packed consumer proof", () => {
     expect(evidence.publicationStatus).toBe("unreleased");
     expect(evidence.artifacts.map(({ name }) => name)).toEqual(
       [
+        packageMap.public.contracts,
+        packageMap.public.mcp,
+        packageMap.public.registry,
         packageMap.public.schema,
         packageMap.public.tokens,
         packageMap.public.ui,

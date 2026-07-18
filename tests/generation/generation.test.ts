@@ -161,6 +161,13 @@ describe("deterministic generation graph", () => {
         visibleStatus: string | null;
       }[];
     };
+    const releaseProtocol = byPath.get("registry/generated/release-protocol/plan.json") as {
+      publicationStatus: string;
+      publishable: boolean;
+      emittedReleaseArtifacts: unknown[];
+      inventory: { sourceItems: number; itemsWithoutSource: number; sourceItemIds: string[] };
+      blockers: string[];
+    };
 
     expect(catalog.publicationStatus).toBe("blocked-unreleased");
     expect(catalog.inventory).toEqual({
@@ -187,6 +194,18 @@ describe("deterministic generation graph", () => {
       index.items.filter((item) => item.sourcePayload !== null).map((item) => item.id),
     ).toEqual(source.sources.map((item) => item.id));
     expect(index.items.find((item) => item.id === "data-grid")?.visibleStatus).toBe("experimental");
+    expect(releaseProtocol).toMatchObject({
+      publicationStatus: "blocked-unreleased",
+      publishable: false,
+      emittedReleaseArtifacts: [],
+      inventory: {
+        sourceItems: source.sources.length,
+        itemsWithoutSource: 178 - source.sources.length,
+      },
+    });
+    expect(releaseProtocol.inventory.sourceItemIds).toEqual(source.sources.map((item) => item.id));
+    expect(releaseProtocol.blockers).toContain("release-identity-missing");
+    expect(releaseProtocol.blockers).toContain("quality-evidence-missing");
   });
 
   it("generates source, package, docs, API, contract, story, and Passport associations", async () => {
