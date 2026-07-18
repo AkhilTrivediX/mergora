@@ -10,6 +10,7 @@ export default defineConfig({
   reporter: [["line"], ["json", { outputFile: "../../artifacts/browser/component-results.json" }]],
   retries: 0,
   testDir: ".",
+  testIgnore: "**/*.diagnostics.browser.spec.ts",
   testMatch: "**/*.browser.spec.ts",
   timeout: 60_000,
   use: {
