@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "product": "Mergora",
+  "selectionStatus": "provisional",
+  "selectedAt": "2026-07-18",
+  "selectionReason": "Preferred names returned npm E404 during the public availability check, but npm authentication is unavailable so scope control and publish authority cannot yet be verified.",
+  "blockerId": "EXT-NPM-AUTH-001",
+  "repository": "https://github.com/AkhilTrivediX/mergora",
+  "cli": {
+    "package": "mergora",
+    "bin": "mergora"
+  },
+  "public": {
+    "ui": "@mergora/ui",
+    "tokens": "@mergora/tokens",
+    "schema": "@mergora/schema",
+    "registry": "@mergora/registry",
+    "contracts": "@mergora/contracts",
+    "mcp": "@mergora/mcp"
+  },
+  "fallbackOrder": [
+    "@akhiltrivedix/mergora-*",
+    "mergora-*"
+  ],
+  "availabilityEvidence": {
+    "checkedAt": "2026-07-18",
+    "registry": "https://registry.npmjs.org/",
+    "preferredPackageLookups": "all-e404",
+    "fallbackPackageLookups": "all-e404",
+    "authenticatedOwner": null
+  }
+}
