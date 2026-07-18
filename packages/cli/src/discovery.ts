@@ -13,6 +13,7 @@ import {
 } from "./contracts.js";
 import { mergoraConfigAliasPrefix, readMergoraConfig } from "./configuration.js";
 import { inspectProject, type ProjectInspectionOptions } from "./project-inspector.js";
+import type { AcquiredNativeRegistryRelease } from "./acquisition-resolver.js";
 import {
   DOCUMENTATION_ORIGIN,
   itemDocsUrl,
@@ -31,6 +32,17 @@ export interface SearchOptions extends RegistryDataOptions {
   readonly maturity?: string | undefined;
   readonly tag?: string | undefined;
   readonly limit?: number | undefined;
+  /** Explicitly acquired and verified native release; bundled fixtures remain the default. */
+  readonly acquiredRelease?: AcquiredNativeRegistryRelease | undefined;
+}
+
+export interface SearchCatalogRecord extends Omit<
+  CatalogRecord,
+  "qualityTier" | "latestStableVersion" | "riskClass"
+> {
+  readonly qualityTier: "complete" | "partial" | "not-supplied" | null;
+  readonly latestStableVersion: string | null;
+  readonly riskClass: number | null;
 }
 
 export interface SearchResult {
@@ -39,7 +51,7 @@ export interface SearchResult {
   readonly total: number;
   readonly limit: number;
   readonly categories: readonly { readonly id: string; readonly count: number }[];
-  readonly items: readonly CatalogRecord[];
+  readonly items: readonly SearchCatalogRecord[];
 }
 
 function normalizedQuery(value: string): string {
@@ -59,7 +71,7 @@ function normalizedQuery(value: string): string {
   return query;
 }
 
-function categoryCounts(items: readonly CatalogRecord[]) {
+function categoryCounts(items: readonly SearchCatalogRecord[]) {
   const counts = new Map<string, number>();
   for (const item of items) counts.set(item.category, (counts.get(item.category) ?? 0) + 1);
   return [...counts.entries()]
@@ -67,7 +79,11 @@ function categoryCounts(items: readonly CatalogRecord[]) {
     .map(([id, count]) => ({ id, count }));
 }
 
-function searchScore(item: CatalogRecord, query: string, aliasTarget: string | undefined): number {
+function searchScore(
+  item: SearchCatalogRecord,
+  query: string,
+  aliasTarget: string | undefined,
+): number {
   if (aliasTarget === item.id) return 0;
   if (item.id === query) return 0;
   if (item.title.toLocaleLowerCase("en-US") === query) return 1;
@@ -83,6 +99,32 @@ function searchScore(item: CatalogRecord, query: string, aliasTarget: string | u
   return Number.POSITIVE_INFINITY;
 }
 
+function acquiredCatalog(release: AcquiredNativeRegistryRelease): readonly SearchCatalogRecord[] {
+  const payloadById = new Map(release.items.map((item) => [item.itemId, item]));
+  return release.catalog.map((item) => ({
+    id: item.id,
+    title: item.displayName,
+    description: item.description,
+    kind: item.kind,
+    layer: item.kind,
+    category: item.category,
+    targetMaturity: item.maturity,
+    maturity: item.maturity,
+    riskClass: null,
+    tags: item.tags,
+    sourceAvailable: true,
+    implementationStatus: "released",
+    docsUrl: item.links.docs,
+    dependencyCount: item.registryDependencies.length,
+    qualityTier: item.quality.tier,
+    latestStableVersion: item.latestStableVersion,
+    installModes: {
+      source: true,
+      package: (payloadById.get(item.id)?.importPaths.length ?? 0) > 0,
+    },
+  }));
+}
+
 export function searchRegistry(queryInput = "", options: SearchOptions = {}): SearchResult {
   const query = normalizedQuery(queryInput);
   const limit = options.limit ?? 20;
@@ -92,8 +134,16 @@ export function searchRegistry(queryInput = "", options: SearchOptions = {}): Se
       exitCode: 2,
     });
   }
-  const catalog = loadCatalog(options);
-  const aliasTarget = query === "" ? undefined : registryAliases()[query];
+  const catalog =
+    options.acquiredRelease === undefined
+      ? (loadCatalog(options) as readonly SearchCatalogRecord[])
+      : acquiredCatalog(options.acquiredRelease);
+  const aliasTarget =
+    query === ""
+      ? undefined
+      : options.acquiredRelease === undefined
+        ? registryAliases()[query]
+        : options.acquiredRelease.aliases[query];
   let filtered = catalog.filter(
     (item) =>
       (options.kind === undefined || item.kind === options.kind || item.layer === options.kind) &&
@@ -106,7 +156,9 @@ export function searchRegistry(queryInput = "", options: SearchOptions = {}): Se
       .filter(({ sourceAvailable }) => sourceAvailable)
       .sort(
         (left, right) =>
-          left.riskClass - right.riskClass || left.id.localeCompare(right.id, "en-US"),
+          (left.riskClass ?? Number.MAX_SAFE_INTEGER) -
+            (right.riskClass ?? Number.MAX_SAFE_INTEGER) ||
+          left.id.localeCompare(right.id, "en-US"),
       );
   } else {
     filtered = filtered
@@ -131,6 +183,8 @@ export function searchRegistry(queryInput = "", options: SearchOptions = {}): Se
 export interface ViewOptions extends RegistryDataOptions {
   readonly files?: boolean | undefined;
   readonly source?: string | undefined;
+  /** Explicitly acquired and verified native release; bundled fixtures remain the default. */
+  readonly acquiredRelease?: AcquiredNativeRegistryRelease | undefined;
 }
 
 export interface ItemView {
@@ -153,17 +207,12 @@ export interface ItemView {
     readonly mediaType: string;
   }[];
   readonly requestedSource: { readonly logicalPath: string; readonly content: string } | null;
-  readonly compatibility: {
-    readonly node: ">=22.14.0";
-    readonly typescript: "6.0.x";
-    readonly react: "18.3.x || 19.x";
-    readonly tailwind: ">=4.3.0 <5";
-  };
-  readonly license: "MIT";
-  readonly passport: "unreleased-not-attested";
-  readonly contract: "draft-unreleased" | "not-supplied";
+  readonly compatibility: Readonly<Record<string, unknown>>;
+  readonly license: string;
+  readonly passport: "unreleased-not-attested" | "verified-release-reference";
+  readonly contract: "draft-unreleased" | "not-supplied" | "verified-release-reference";
   readonly docsUrl: string;
-  readonly immutableDigest: null;
+  readonly immutableDigest: `sha256:${string}` | null;
   readonly blockers: readonly string[];
 }
 
@@ -181,6 +230,94 @@ export function viewRegistryItems(
     throw new CliError("--source requires exactly one viewed item.", {
       code: "VIEW_SOURCE_ITEM_COUNT",
       exitCode: 2,
+    });
+  }
+  if (options.acquiredRelease !== undefined) {
+    const release = options.acquiredRelease;
+    const catalogById = new Map(release.catalog.map((item) => [item.id, item]));
+    const payloadById = new Map(release.items.map((item) => [item.itemId, item]));
+    return requested.map((request) => {
+      const id = release.aliases[request] ?? request;
+      const catalogItem = catalogById.get(id);
+      if (catalogItem === undefined) {
+        throw new CliError(`Catalog item ${JSON.stringify(request)} was not found.`, {
+          code: "ITEM_NOT_FOUND",
+          exitCode: 7,
+        });
+      }
+      const payload = payloadById.get(id);
+      if (payload === undefined) {
+        throw new CliError(
+          `Item ${id} was not included in the explicitly acquired dependency closure.`,
+          { code: "REGISTRY_ITEM_NOT_ACQUIRED", exitCode: 4, target: id },
+        );
+      }
+      let requestedSource: { readonly logicalPath: string; readonly content: string } | null = null;
+      if (options.source !== undefined) {
+        assertPortableRelativePath(options.source, "Logical source path");
+        const exact = payload.files.find(({ logicalPath }) => logicalPath === options.source);
+        const suffixMatches = payload.files.filter(({ logicalPath }) =>
+          logicalPath.endsWith(`/${options.source}`),
+        );
+        if (exact === undefined && suffixMatches.length > 1) {
+          throw new CliError(
+            `Logical source path ${JSON.stringify(options.source)} is ambiguous; use its exact logical path.`,
+            { code: "ITEM_SOURCE_PATH_AMBIGUOUS", exitCode: 2 },
+          );
+        }
+        const file = exact ?? suffixMatches[0];
+        if (file === undefined) {
+          throw new CliError(
+            `Logical source path ${JSON.stringify(options.source)} was not found.`,
+            {
+              code: "ITEM_SOURCE_PATH_NOT_FOUND",
+              exitCode: 2,
+            },
+          );
+        }
+        if (file.encoding !== "utf8") {
+          throw new CliError(
+            "Binary upstream source is available by digest but cannot be printed as text.",
+            {
+              code: "ITEM_SOURCE_BINARY_UNSUPPORTED",
+              exitCode: 7,
+              target: file.logicalPath,
+            },
+          );
+        }
+        requestedSource = { logicalPath: file.logicalPath, content: file.content };
+      }
+      return {
+        id,
+        requestedAs: request,
+        title: payload.title,
+        description: payload.description,
+        category: catalogItem.category,
+        kind: payload.kind,
+        maturity: payload.maturity,
+        targetMaturity: catalogItem.maturity,
+        sourceAvailable: true,
+        packageAvailable: payload.importPaths.length > 0,
+        registryDependencies: payload.registryDependencies,
+        runtimeDependencies: payload.dependencies.runtime,
+        files:
+          options.files === true || options.source !== undefined
+            ? payload.files.map(({ logicalPath, targetRole, mediaType }) => ({
+                logicalPath,
+                targetPath: logicalPath,
+                targetRole,
+                mediaType,
+              }))
+            : [],
+        requestedSource,
+        compatibility: payload.compatibility,
+        license: payload.license,
+        passport: "verified-release-reference",
+        contract: "verified-release-reference",
+        docsUrl: catalogItem.links.docs,
+        immutableDigest: payload.payloadDigest,
+        blockers: [],
+      };
     });
   }
   const catalog = loadCatalog(options);
@@ -204,12 +341,20 @@ export function viewRegistryItems(
         });
       }
       assertPortableRelativePath(options.source, "Logical source path");
-      const file = source.files.find(
+      const exact = source.files.find(
         ({ logicalPath, targetPath }) =>
-          logicalPath === options.source ||
-          targetPath === options.source ||
-          logicalPath.endsWith(`/${options.source}`),
+          logicalPath === options.source || targetPath === options.source,
       );
+      const suffixMatches = source.files.filter(({ logicalPath }) =>
+        logicalPath.endsWith(`/${options.source}`),
+      );
+      if (exact === undefined && suffixMatches.length > 1) {
+        throw new CliError(
+          `Logical source path ${JSON.stringify(options.source)} is ambiguous; use its exact logical path.`,
+          { code: "ITEM_SOURCE_PATH_AMBIGUOUS", exitCode: 2 },
+        );
+      }
+      const file = exact ?? suffixMatches[0];
       if (file === undefined) {
         throw new CliError(`Logical source path ${JSON.stringify(options.source)} was not found.`, {
           code: "ITEM_SOURCE_PATH_NOT_FOUND",

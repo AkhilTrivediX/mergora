@@ -23,6 +23,10 @@ import {
   readMergoraConfig,
   type MergoraConfig,
 } from "./configuration.js";
+import type {
+  AcquiredNativeRegistryItem,
+  AcquiredNativeRegistryRelease,
+} from "./acquisition-resolver.js";
 import {
   compatibleDependencyRange,
   planPackageDependencies,
@@ -58,7 +62,6 @@ import {
 } from "./transaction-engine.js";
 
 const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
-const REQUESTED_VERSION = "=0.0.0-unreleased" as const;
 export const MANIFEST_PATH = ".mergora/manifest.json" as const;
 
 export interface ManifestFile {
@@ -153,6 +156,10 @@ export interface SourceOperationOptions extends RegistryDataOptions {
   readonly commandArguments?: readonly string[] | undefined;
 }
 
+export interface AcquiredSourceOperationOptions extends SourceOperationOptions {
+  readonly acquiredRelease: AcquiredNativeRegistryRelease;
+}
+
 export interface SourceRemoveOptions extends SourceOperationOptions {
   readonly keepFiles?: boolean | undefined;
 }
@@ -183,6 +190,13 @@ interface InternalSourcePlan {
   readonly requestedItems: readonly string[];
   readonly transitiveItems: readonly string[];
   readonly retainedFiles: readonly string[];
+}
+
+interface AcquiredSourceContext {
+  readonly release: AcquiredNativeRegistryRelease;
+  readonly sources: readonly SourceItemRecord[];
+  readonly sourceById: ReadonlyMap<string, SourceItemRecord>;
+  readonly itemById: ReadonlyMap<string, AcquiredNativeRegistryItem>;
 }
 
 function objectValue(value: unknown, label: string): Record<string, unknown> {
@@ -419,26 +433,150 @@ function payloadUrl(itemId: string): string {
   return `${OFFICIAL_REGISTRY_ORIGIN}/releases/${UNRELEASED_VERSION}/items/${itemId}.json`;
 }
 
+function acquiredSourceContext(release: AcquiredNativeRegistryRelease): AcquiredSourceContext {
+  if (release.registry.id !== "official") {
+    throw new CliError(
+      "Source ownership currently supports acquired releases in the official namespace only.",
+      { code: "SOURCE_REGISTRY_NAMESPACE_UNSUPPORTED", exitCode: 7 },
+    );
+  }
+  const items = release.items.map((item): SourceItemRecord => {
+    if (
+      item.structuredPatches.length > 0 ||
+      item.migrations.length > 0 ||
+      Object.keys(item.dependencies.development).length > 0
+    ) {
+      throw new CliError(
+        `Acquired item ${item.itemId} requires a declarative patch, migration, or development-dependency adapter that source add does not yet implement.`,
+        { code: "SOURCE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
+      );
+    }
+    const files = item.files.map((file): SourceFileRecord => {
+      if (
+        file.encoding !== "utf8" ||
+        file.targetRole === "contract" ||
+        file.targetRole === "example" ||
+        file.transformPipeline.some(({ adapter }) => adapter !== "none" && adapter !== "target-map")
+      ) {
+        throw new CliError(
+          `Acquired file ${file.logicalPath} needs an unsupported binary, role, or transform adapter.`,
+          { code: "SOURCE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: file.logicalPath },
+        );
+      }
+      const bytes = Buffer.from(file.content, "utf8");
+      if (bytes.byteLength !== file.bytes || sha256(bytes) !== file.digest) {
+        throw new CliError(`Acquired file ${file.logicalPath} changed after verification.`, {
+          code: "REGISTRY_ITEM_DIGEST_INVALID",
+          exitCode: 5,
+          target: file.logicalPath,
+        });
+      }
+      return {
+        content: file.content,
+        executable: false,
+        logicalPath: file.logicalPath,
+        mediaType: file.mediaType,
+        targetPath: file.logicalPath,
+        targetRole: file.targetRole,
+      };
+    });
+    const installDependencies = Object.fromEntries(
+      Object.entries(item.dependencies.runtime).filter(
+        ([name]) => name !== "react" && name !== "react-dom",
+      ),
+    );
+    return {
+      itemId: item.itemId,
+      title: item.title,
+      description: item.description,
+      kind: item.kind,
+      visibleStatus: item.maturity,
+      implementationStatus: "released",
+      files,
+      registryDependencies: item.registryDependencies.map((dependency) =>
+        dependency.slice("official:".length),
+      ),
+      runtimeDependencies: item.dependencies.runtime,
+      installDependencies,
+      blockers: [],
+      packageImport: item.importPaths[0] ?? null,
+      packageStyleImport: null,
+      associations: { contract: item.contract.id, passport: item.passport.id },
+      payloadDigest: item.payloadDigest,
+    };
+  });
+  return {
+    release,
+    sources: items,
+    sourceById: new Map(items.map((item) => [item.itemId, item])),
+    itemById: new Map(release.items.map((item) => [item.itemId, item])),
+  };
+}
+
+function acquiredAlias(input: string, context: AcquiredSourceContext): string {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(input)) {
+    throw new CliError(`Item reference ${JSON.stringify(input)} is invalid.`, {
+      code: "ITEM_REFERENCE_INVALID",
+      exitCode: 2,
+    });
+  }
+  return context.release.aliases[input] ?? input;
+}
+
+function acquiredClosure(
+  requested: readonly string[],
+  context: AcquiredSourceContext,
+): readonly SourceItemRecord[] {
+  const result: SourceItemRecord[] = [];
+  const visited = new Set<string>();
+  const active = new Set<string>();
+  const visit = (input: string): void => {
+    const id = acquiredAlias(input, context);
+    if (active.has(id)) {
+      throw new CliError(`Acquired source dependency cycle includes ${id}.`, {
+        code: "ITEM_DEPENDENCY_CYCLE",
+        exitCode: 5,
+      });
+    }
+    if (visited.has(id)) return;
+    const item = context.sourceById.get(id);
+    if (item === undefined) {
+      throw new CliError(
+        `Acquired release did not include source item ${JSON.stringify(input)} in its verified closure.`,
+        { code: "REGISTRY_ITEM_NOT_ACQUIRED", exitCode: 4, target: id },
+      );
+    }
+    active.add(id);
+    item.registryDependencies.forEach(visit);
+    active.delete(id);
+    visited.add(id);
+    result.push(item);
+  };
+  [...new Set(requested)].sort((left, right) => left.localeCompare(right, "en-US")).forEach(visit);
+  return result;
+}
+
+function assertSourceRoot(value: string): string {
+  const segments = assertPortableRelativePath(value, "Source target root");
+  if (
+    segments.some((segment) => {
+      const portable = segment.normalize("NFC").toLocaleLowerCase("en-US");
+      return portable === ".mergora" || portable === "node_modules";
+    })
+  ) {
+    throw new CliError(
+      "Source targets cannot overlap Mergora transaction/provenance data or dependency caches.",
+      { code: "SOURCE_TARGET_RESERVED", exitCode: 5, target: value },
+    );
+  }
+  return value;
+}
+
 function itemRoot(
   item: SourceItemRecord,
   config: MergoraConfig,
   targetDirectory: string | undefined,
 ): string {
-  const assertSourceRoot = (value: string): string => {
-    const segments = assertPortableRelativePath(value, "Source target root");
-    if (
-      segments.some((segment) => {
-        const portable = segment.normalize("NFC").toLocaleLowerCase("en-US");
-        return portable === ".mergora" || portable === "node_modules";
-      })
-    ) {
-      throw new CliError(
-        "Source targets cannot overlap Mergora transaction/provenance data or dependency caches.",
-        { code: "SOURCE_TARGET_RESERVED", exitCode: 5, target: value },
-      );
-    }
-    return value;
-  };
   if (targetDirectory !== undefined) {
     return assertSourceRoot(targetDirectory);
   }
@@ -451,35 +589,112 @@ function mapFiles(
   item: SourceItemRecord,
   config: MergoraConfig,
   targetDirectory: string | undefined,
+  acquired?: AcquiredSourceContext | undefined,
 ): readonly MappedSourceFile[] {
   const root = itemRoot(item, config, targetDirectory);
-  return item.files
+  const mapped = item.files
     .map((source) => {
-      const filename = source.targetPath.split("/").at(-1)!;
-      const target = `${root}/${item.itemId}/${filename}`;
-      assertPortableRelativePath(target, "Rendered source target");
       const bytes = Buffer.from(source.content);
-      const logicalRoot = item.kind === "system" ? "systems" : "ui";
-      const role =
-        source.targetRole === "style" ? "style" : item.kind === "system" ? "system" : "component";
+      const role = (
+        ["component", "hook", "lib", "system", "kit", "style", "token"] as const
+      ).includes(source.targetRole as never)
+        ? (source.targetRole as ManifestFile["role"])
+        : item.kind === "system"
+          ? "system"
+          : "component";
+      const acquiredRoot =
+        targetDirectory ??
+        (role === "hook"
+          ? config.targets.hooks
+          : role === "lib"
+            ? config.targets.lib
+            : role === "system"
+              ? config.targets.systems
+              : role === "kit"
+                ? config.targets.kits
+                : role === "style"
+                  ? config.targets.styles
+                  : role === "token"
+                    ? config.targets.tokens
+                    : config.targets.components);
+      const sourceSegments = source.logicalPath.split("/");
+      const relativeSegments =
+        acquired !== undefined && sourceSegments[1] === item.itemId
+          ? sourceSegments.slice(2)
+          : acquired !== undefined
+            ? sourceSegments.slice(1)
+            : [source.targetPath.split("/").at(-1)!];
+      if (relativeSegments.length === 0) {
+        throw new CliError(`Acquired file ${source.logicalPath} has no target-relative path.`, {
+          code: "SOURCE_ACQUIRED_TARGET_INVALID",
+          exitCode: 5,
+          target: source.logicalPath,
+        });
+      }
+      const target = `${
+        acquired === undefined ? root : assertSourceRoot(acquiredRoot)
+      }/${item.itemId}/${relativeSegments.join("/")}`;
+      assertPortableRelativePath(target, "Rendered source target");
+      const logicalRoot =
+        role === "system"
+          ? "systems"
+          : role === "hook"
+            ? "hooks"
+            : role === "lib"
+              ? "lib"
+              : role === "kit"
+                ? "kits"
+                : role === "token"
+                  ? "tokens"
+                  : "ui";
       return {
         source,
         target,
-        logicalPath: `${logicalRoot}/${item.itemId}/${filename}`,
+        logicalPath:
+          acquired === undefined
+            ? `${logicalRoot}/${item.itemId}/${relativeSegments.at(-1)!}`
+            : source.logicalPath,
         role,
         bytes,
         digest: sha256(bytes),
       } satisfies MappedSourceFile;
     })
     .sort((left, right) => left.target.localeCompare(right.target, "en-US"));
+  const targets = new Set<string>();
+  for (const file of mapped) {
+    const key = file.target.normalize("NFC").toLocaleLowerCase("en-US");
+    if (targets.has(key)) {
+      throw new CliError(`Source item ${item.itemId} maps more than one file to ${file.target}.`, {
+        code: "SOURCE_TARGET_COLLISION",
+        exitCode: 5,
+        target: file.target,
+      });
+    }
+    targets.add(key);
+  }
+  return mapped;
 }
 
-function transformContext(config: MergoraConfig, targetDirectory?: string | undefined) {
+function transformContext(
+  config: MergoraConfig,
+  targetDirectory?: string | undefined,
+  acquired = false,
+) {
   const targets = {
     ...config.targets,
     ...(targetDirectory === undefined
       ? {}
-      : { components: targetDirectory, systems: targetDirectory }),
+      : acquired
+        ? {
+            components: targetDirectory,
+            hooks: targetDirectory,
+            lib: targetDirectory,
+            systems: targetDirectory,
+            kits: targetDirectory,
+            styles: targetDirectory,
+            tokens: targetDirectory,
+          }
+        : { components: targetDirectory, systems: targetDirectory }),
   };
   return {
     targets: sortedRecord(targets),
@@ -500,16 +715,26 @@ function manifestItem(
   direct: boolean,
   installedDigests?: Readonly<Record<string, `sha256:${string}`>>,
   targetDirectory?: string | undefined,
+  acquired?: AcquiredSourceContext | undefined,
 ): ManifestItem {
-  const context = transformContext(config, targetDirectory);
-  const kind = source.kind === "system" ? "system" : "component";
+  const context = transformContext(config, targetDirectory, acquired !== undefined);
+  const acquiredItem = acquired?.itemById.get(source.itemId);
+  const kind = (
+    ["component", "system", "hook", "utility", "kit", "theme", "contract"] as const
+  ).includes(source.kind as never)
+    ? (source.kind as ManifestItem["kind"])
+    : "component";
+  const resolved = acquired?.release.release ?? UNRELEASED_VERSION;
   return {
     registry: "official",
     itemId: source.itemId,
     kind,
-    requested: REQUESTED_VERSION,
-    resolved: UNRELEASED_VERSION,
-    payload: { url: payloadUrl(source.itemId), digest: source.payloadDigest },
+    requested: `=${resolved}`,
+    resolved,
+    payload: {
+      url: acquiredItem?.payloadUrl ?? payloadUrl(source.itemId),
+      digest: source.payloadDigest,
+    },
     mode: "source",
     direct,
     transformContextDigest: sha256(canonicalJson(context)),
@@ -531,7 +756,7 @@ function manifestItem(
       development: {},
     },
     structuredPatches: [],
-    contractVersion: UNRELEASED_VERSION,
+    contractVersion: acquiredItem?.contract.version ?? UNRELEASED_VERSION,
     lastMigration: null,
   };
 }
@@ -582,8 +807,36 @@ function rebuildSharedTargets(manifest: ProvenanceManifest): void {
   manifest.dependencyOwners = dependencyOwners(manifest.items);
 }
 
-function registryPlan(items: readonly SourceItemRecord[]): OperationPlan["registries"] {
+function registryPlan(
+  items: readonly SourceItemRecord[],
+  acquired?: AcquiredSourceContext | undefined,
+): OperationPlan["registries"] {
   if (items.length === 0) return [];
+  if (acquired !== undefined) {
+    const evidenceTiers = acquired.release.items.map(
+      (item) =>
+        acquired.release.catalog.find(({ id }) => id === item.itemId)?.quality.tier ??
+        "not-supplied",
+    );
+    const evidenceTier: OperationPlan["registries"][number]["evidenceTier"] = evidenceTiers.every(
+      (tier) => tier === "complete",
+    )
+      ? "complete"
+      : evidenceTiers.some((tier) => tier === "complete" || tier === "partial")
+        ? "partial"
+        : "not-supplied";
+    return [
+      {
+        id: acquired.release.registry.id,
+        identityDigest: acquired.release.registry.identityDigest,
+        release: acquired.release.release,
+        manifestDigest: acquired.release.manifestDigest,
+        source: acquired.release.source,
+        trust: acquired.release.registry.trust,
+        evidenceTier,
+      },
+    ];
+  }
   const identity = {
     id: "official",
     protocol: "mergora-v1",
@@ -611,14 +864,18 @@ function registryPlan(items: readonly SourceItemRecord[]): OperationPlan["regist
 
 function registryPayloads(
   items: readonly SourceItemRecord[],
+  acquired?: AcquiredSourceContext | undefined,
 ): readonly TransactionRegistryPayload[] {
   return items
-    .map((item) => ({
-      registry: "official",
-      release: UNRELEASED_VERSION,
-      url: payloadUrl(item.itemId),
-      digest: item.payloadDigest,
-    }))
+    .map((item) => {
+      const acquiredItem = acquired?.itemById.get(item.itemId);
+      return {
+        registry: acquired?.release.registry.id ?? "official",
+        release: acquired?.release.release ?? UNRELEASED_VERSION,
+        url: acquiredItem?.payloadUrl ?? payloadUrl(item.itemId),
+        digest: item.payloadDigest,
+      };
+    })
     .sort((left, right) => left.url.localeCompare(right.url, "en-US"));
 }
 
@@ -627,14 +884,16 @@ function sourcePlanItems(
   directIds: ReadonlySet<string>,
   from: Readonly<Record<string, ManifestItem>>,
   removing: ReadonlySet<string> = new Set(),
+  acquired?: AcquiredSourceContext | undefined,
 ): readonly OperationPlanItem[] {
+  const resolved = acquired?.release.release ?? UNRELEASED_VERSION;
   return items
     .map((item) => ({
       id: qualified(item.itemId),
       direct: directIds.has(item.itemId),
-      requested: REQUESTED_VERSION,
+      requested: `=${resolved}`,
       fromVersion: from[qualified(item.itemId)]?.resolved ?? null,
-      toVersion: removing.has(qualified(item.itemId)) ? null : UNRELEASED_VERSION,
+      toVersion: removing.has(qualified(item.itemId)) ? null : resolved,
       mode: "source" as const,
     }))
     .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
@@ -661,7 +920,10 @@ function readConfiguredProject(options: SourceOperationOptions) {
   return { root, config, manifest, inspection };
 }
 
-function requestedCanonicalIds(options: SourceOperationOptions): readonly string[] {
+function requestedCanonicalIds(
+  options: SourceOperationOptions,
+  acquired?: AcquiredSourceContext | undefined,
+): readonly string[] {
   if (options.itemIds.length === 0) {
     throw new CliError(
       `${options.itemIds.length === 0 ? "Operation" : "Command"} requires an item.`,
@@ -671,9 +933,13 @@ function requestedCanonicalIds(options: SourceOperationOptions): readonly string
       },
     );
   }
-  return [...new Set(options.itemIds.map((id) => resolveItemAlias(id, options)))].sort(
-    (left, right) => left.localeCompare(right, "en-US"),
-  );
+  return [
+    ...new Set(
+      options.itemIds.map((id) =>
+        acquired === undefined ? resolveItemAlias(id, options) : acquiredAlias(id, acquired),
+      ),
+    ),
+  ].sort((left, right) => left.localeCompare(right, "en-US"));
 }
 
 function mutation(
@@ -703,6 +969,7 @@ function operationPlan(
     readonly conflicts: OperationPlan["conflicts"];
     readonly mutations: readonly TransactionMutation[];
     readonly structuredPatches?: OperationPlan["structuredPatches"] | undefined;
+    readonly acquired?: AcquiredSourceContext | undefined;
   },
 ): OperationPlan {
   const files = [...context.fileOperations];
@@ -763,7 +1030,7 @@ function operationPlan(
     projectRoot: ".",
     configDigest: context.configDigest,
     manifestPreconditionDigest: context.manifestDigest,
-    registries: registryPlan(context.sources),
+    registries: registryPlan(context.sources, context.acquired),
     items: context.items,
     fileOperations: files.sort((left, right) => left.target.localeCompare(right.target, "en-US")),
     dependencyChanges: [...context.dependencyChanges].sort((left, right) =>
@@ -782,7 +1049,7 @@ function operationPlan(
     ],
     conflicts: context.conflicts,
     estimatedBytes: {
-      download: 0,
+      download: context.acquired?.release.acquiredBytes ?? 0,
       write: context.mutations.reduce(
         (total, entry) => total + (entry.content?.byteLength ?? 0),
         0,
@@ -840,11 +1107,14 @@ function validateExistingInstall(
   source: SourceItemRecord,
   config: MergoraConfig,
   targetDirectory?: string | undefined,
+  acquired?: AcquiredSourceContext | undefined,
 ): void {
-  const expectedContext = sha256(canonicalJson(transformContext(config, targetDirectory)));
+  const expectedContext = sha256(
+    canonicalJson(transformContext(config, targetDirectory, acquired !== undefined)),
+  );
   if (
     existing.payload.digest !== source.payloadDigest ||
-    existing.resolved !== UNRELEASED_VERSION ||
+    existing.resolved !== (acquired?.release.release ?? UNRELEASED_VERSION) ||
     existing.transformContextDigest !== expectedContext
   ) {
     throw new CliError(
@@ -881,13 +1151,19 @@ function dependencyRequirements(
   );
 }
 
-function addInternal(options: SourceOperationOptions): InternalSourcePlan {
+function addInternal(
+  options: SourceOperationOptions,
+  acquired?: AcquiredSourceContext | undefined,
+): InternalSourcePlan {
   if (options.targetDirectory !== undefined) {
     assertPortableRelativePath(options.targetDirectory, "Source target root");
   }
   const project = readConfiguredProject(options);
-  const requested = requestedCanonicalIds(options);
-  const sources = resolveSourceDependencyClosure(requested, options);
+  const requested = requestedCanonicalIds(options, acquired);
+  const sources =
+    acquired === undefined
+      ? resolveSourceDependencyClosure(requested, options)
+      : acquiredClosure(requested, acquired);
   const direct = new Set(requested);
   const nextManifest = cloneManifest(project.manifest.value);
   const mutations: TransactionMutation[] = [];
@@ -902,9 +1178,9 @@ function addInternal(options: SourceOperationOptions): InternalSourcePlan {
   for (const source of sources) {
     const id = qualified(source.itemId);
     const existing = nextManifest.items[id];
-    const files = mapFiles(source, project.config, options.targetDirectory);
+    const files = mapFiles(source, project.config, options.targetDirectory, acquired);
     if (existing !== undefined) {
-      validateExistingInstall(existing, source, project.config, options.targetDirectory);
+      validateExistingInstall(existing, source, project.config, options.targetDirectory, acquired);
       if (direct.has(source.itemId)) existing.direct = true;
       for (const file of existing.files) {
         const local = digestOrNull(readProjectFile(project.root, file.target));
@@ -941,6 +1217,7 @@ function addInternal(options: SourceOperationOptions): InternalSourcePlan {
       direct.has(source.itemId),
       undefined,
       options.targetDirectory,
+      acquired,
     );
     nextManifest.items[id] = entry;
     for (const file of files) {
@@ -1028,7 +1305,13 @@ function addInternal(options: SourceOperationOptions): InternalSourcePlan {
   const plan = operationPlan("add", {
     configDigest: sha256(canonicalJson(project.config)),
     manifestDigest: sha256(canonicalJson(project.manifest.value)),
-    items: sourcePlanItems(sources, direct, project.manifest.value.items),
+    items: sourcePlanItems(
+      sources,
+      direct,
+      project.manifest.value.items,
+      new Set<string>(),
+      acquired,
+    ),
     sources,
     fileOperations,
     dependencyChanges: packagePlan.changes,
@@ -1041,7 +1324,9 @@ function addInternal(options: SourceOperationOptions): InternalSourcePlan {
       operation: "add" as const,
     })),
     warnings: [
-      "The bundled source payloads are unreleased; provenance records their exact digest and provisional 0.0.0-unreleased identity without claiming Stable evidence.",
+      acquired === undefined
+        ? "The bundled source payloads are unreleased; provenance records their exact digest and provisional 0.0.0-unreleased identity without claiming Stable evidence."
+        : `The native ${acquired.release.release} release was acquired from ${acquired.release.artifactSources.join(", ")} evidence and every payload remains bound to its exact release digest.`,
       ...packageExecutionWarnings(
         options,
         project.inspection.packageManager,
@@ -1050,13 +1335,14 @@ function addInternal(options: SourceOperationOptions): InternalSourcePlan {
     ],
     conflicts,
     mutations,
+    acquired,
   });
   return {
     root: project.root,
     publicPlan: plan,
     mutations,
     observedTargets,
-    registryPayloads: registryPayloads(sources),
+    registryPayloads: registryPayloads(sources, acquired),
     packageManager: project.inspection.packageManager,
     packageManagerRequired: packagePlan.after !== packagePlan.before,
     resolvedItems: sources.map(({ itemId }) => itemId),
@@ -1510,6 +1796,21 @@ export function applySourceAdd(
   expectedPlanDigest?: string,
 ): SourceOperationResult {
   return executeSourceOperation("add", addInternal(options), options, expectedPlanDigest);
+}
+
+export function planAcquiredSourceAdd(
+  options: AcquiredSourceOperationOptions,
+): SourceOperationPlan {
+  const acquired = acquiredSourceContext(options.acquiredRelease);
+  return addInternal(options, acquired).publicPlan;
+}
+
+export function applyAcquiredSourceAdd(
+  options: AcquiredSourceOperationOptions,
+  expectedPlanDigest?: string,
+): SourceOperationResult {
+  const acquired = acquiredSourceContext(options.acquiredRelease);
+  return executeSourceOperation("add", addInternal(options, acquired), options, expectedPlanDigest);
 }
 
 export function planSourceRemove(options: SourceRemoveOptions): SourceOperationPlan {

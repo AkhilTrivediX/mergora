@@ -45,6 +45,7 @@ import {
   validateMergoraConfig,
   type MergoraConfig,
 } from "./configuration.js";
+import type { AcquiredNativeRegistryRelease } from "./acquisition-resolver.js";
 import {
   planPackageDependencies,
   readPackageDependencies,
@@ -88,6 +89,8 @@ import {
 
 const SEMVER =
   /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
+const SEMVER_RANGE =
+  /^(?!.*(?:git|https?|file|workspace|link|portal|patch|github):)[-0-9A-Za-z*<>=~^|. +]+$/u;
 const DIGEST = /^sha256:[a-f0-9]{64}$/u;
 const ITEM_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const REGISTRY_ID = ITEM_ID;
@@ -111,6 +114,8 @@ export interface ImmutableUpdateRegistry {
   readonly source: "network" | "verified-cache" | "vendor" | "mirror";
   readonly trust: "official" | "enrolled" | "local-development";
   readonly evidenceTier: "complete" | "partial" | "not-supplied";
+  /** Native protocol identities omit the synthetic snapshot's protocol field. */
+  readonly nativeIdentity?: true | undefined;
 }
 
 export interface ImmutableUpdateFile {
@@ -138,6 +143,8 @@ export interface ImmutableUpdateItem {
   };
   readonly contractVersion: string;
   readonly lastMigration: string | null;
+  /** Exact digest of the acquired native payload document, when routed from native v1. */
+  readonly acquiredPayloadDigest?: Digest | undefined;
 }
 
 export interface ImmutableUpdateRelease {
@@ -147,6 +154,8 @@ export interface ImmutableUpdateRelease {
   readonly release: string;
   readonly manifestDigest: Digest;
   readonly items: readonly ImmutableUpdateItem[];
+  /** Exact digest of the acquired native release manifest document. */
+  readonly acquiredManifestDigest?: Digest | undefined;
 }
 
 export interface SemanticUpdateOptions {
@@ -161,6 +170,10 @@ export interface SemanticUpdateOptions {
   readonly commandArguments?: readonly string[] | undefined;
   /** Deterministic tests may inject an otherwise valid fresh transaction ID. */
   readonly conflictTransactionId?: string | undefined;
+}
+
+export interface AcquiredSemanticUpdateOptions extends Omit<SemanticUpdateOptions, "release"> {
+  readonly acquiredRelease: AcquiredNativeRegistryRelease;
 }
 
 export interface SemanticUpdateCommittedResult {
@@ -1060,6 +1073,13 @@ function safeHttpsUrl(value: string, label: string): URL {
 }
 
 function updateRegistryIdentity(registry: ImmutableUpdateRegistry): unknown {
+  if (registry.nativeIdentity === true) {
+    return {
+      id: registry.id,
+      origin: registry.origin,
+      trust: registry.trust,
+    };
+  }
   return {
     id: registry.id,
     protocol: registry.protocol,
@@ -1068,13 +1088,21 @@ function updateRegistryIdentity(registry: ImmutableUpdateRegistry): unknown {
   };
 }
 
+function provenancePayloadDigest(item: ImmutableUpdateItem): Digest {
+  return item.acquiredPayloadDigest ?? item.payloadDigest;
+}
+
+function provenanceManifestDigest(release: ImmutableUpdateRelease): Digest {
+  return release.acquiredManifestDigest ?? release.manifestDigest;
+}
+
 export function immutableUpdateRegistryIdentityDigest(
   registry: Omit<ImmutableUpdateRegistry, "identityDigest" | "source" | "evidenceTier">,
 ): Digest {
   return digest(registry);
 }
 
-function updateItemPayload(item: ImmutableUpdateItem): unknown {
+function updateItemPayload(item: Omit<ImmutableUpdateItem, "payloadDigest">): unknown {
   return {
     itemId: item.itemId,
     kind: item.kind,
@@ -1092,7 +1120,7 @@ function updateItemPayload(item: ImmutableUpdateItem): unknown {
 export function immutableUpdateItemDigest(
   item: Omit<ImmutableUpdateItem, "payloadDigest">,
 ): Digest {
-  return digest(item);
+  return digest(updateItemPayload(item));
 }
 
 function updateReleaseManifest(release: ImmutableUpdateRelease): unknown {
@@ -1245,6 +1273,9 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
       exitCode: 5,
     });
   }
+  if (release.acquiredManifestDigest !== undefined) {
+    assertDigest(release.acquiredManifestDigest, "Acquired release manifest digest");
+  }
   if (release.items.length === 0 || release.items.length > 4096) {
     throw new CliError("Update release contains an invalid item count.", {
       code: "REGISTRY_PAYLOAD_INVALID",
@@ -1277,6 +1308,9 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
       );
     }
     assertDigest(item.payloadDigest, `Update payload digest for ${item.itemId}`);
+    if (item.acquiredPayloadDigest !== undefined) {
+      assertDigest(item.acquiredPayloadDigest, `Acquired payload digest for ${item.itemId}`);
+    }
     assertDigest(
       item.renderedWithTransformContextDigest,
       `Transform context digest for ${item.itemId}`,
@@ -1326,7 +1360,8 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
       for (const [name, range] of Object.entries(dependencies)) {
         if (
           !/^(?:@[a-z0-9._-]+\/)?[a-z0-9._-]+$/u.test(name) ||
-          !SEMVER.test(range) ||
+          !SEMVER_RANGE.test(range) ||
+          range !== range.trim() ||
           /[\r\n\0]/u.test(`${name}${range}`)
         ) {
           throw new CliError(`Update payload for ${item.itemId} has invalid dependencies.`, {
@@ -1407,17 +1442,23 @@ function selectedItemIds(
 function targetRoot(item: ManifestItem, file: ImmutableUpdateFile): string {
   const targets = item.transformContext.targets;
   const key =
-    item.kind === "system"
-      ? "systems"
-      : item.kind === "kit"
-        ? "kits"
-        : item.kind === "hook"
-          ? "hooks"
-          : item.kind === "utility"
-            ? "lib"
-            : item.kind === "theme" || file.role === "token"
-              ? "tokens"
-              : "components";
+    file.role === "hook"
+      ? "hooks"
+      : file.role === "lib"
+        ? "lib"
+        : file.role === "system" || item.kind === "system"
+          ? "systems"
+          : file.role === "kit" || item.kind === "kit"
+            ? "kits"
+            : file.role === "style"
+              ? "styles"
+              : file.role === "token" || item.kind === "theme"
+                ? "tokens"
+                : item.kind === "hook"
+                  ? "hooks"
+                  : item.kind === "utility"
+                    ? "lib"
+                    : "components";
   const root = targets[key];
   if (typeof root !== "string") {
     throw new CliError(`Recorded transform context lacks target mapping ${key}.`, {
@@ -1436,8 +1477,16 @@ function remoteTarget(
   existing: ManifestFile | undefined,
 ): string {
   if (existing !== undefined) return existing.target;
-  const filename = file.logicalPath.split("/").at(-1)!;
-  const target = `${targetRoot(item, file)}/${item.itemId}/${filename}`;
+  const segments = file.logicalPath.split("/");
+  const relative = segments[1] === item.itemId ? segments.slice(2) : segments.slice(1);
+  if (relative.length === 0) {
+    throw new CliError(`Remote logical path ${file.logicalPath} has no target-relative path.`, {
+      code: "UPDATE_TARGET_PATH_INVALID",
+      exitCode: 5,
+      target: file.logicalPath,
+    });
+  }
+  const target = `${targetRoot(item, file)}/${item.itemId}/${relative.join("/")}`;
   assertPortableRelativePath(target, "Rendered update target");
   return target;
 }
@@ -1641,7 +1690,7 @@ function updatedManifestItem(
     ...installed,
     kind: remote.kind,
     resolved: remote.resolved,
-    payload: { url: remote.payloadUrl, digest: remote.payloadDigest },
+    payload: { url: remote.payloadUrl, digest: provenancePayloadDigest(remote) },
     files,
     registryDependencies: [...remote.registryDependencies].sort((left, right) =>
       left.localeCompare(right, "en-US"),
@@ -1899,7 +1948,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     }
     if (
       remote.resolved === installed.resolved &&
-      remote.payloadDigest !== installed.payload.digest
+      provenancePayloadDigest(remote) !== installed.payload.digest
     ) {
       throw new CliError(
         `Release ${remote.resolved} for ${installed.itemId} has different bytes than the installed immutable payload.`,
@@ -2054,7 +2103,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     items: remoteItems.map((item) => ({
       owner: `official:${item.itemId}`,
       contractVersion: item.contractVersion,
-      payloadDigest: item.payloadDigest,
+      payloadDigest: provenancePayloadDigest(item),
       transformContextDigest: item.renderedWithTransformContextDigest,
     })),
   });
@@ -2070,7 +2119,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
         id: options.release.registry.id,
         identityDigest: options.release.registry.identityDigest,
         release: options.release.release,
-        manifestDigest: options.release.manifestDigest,
+        manifestDigest: provenanceManifestDigest(options.release),
         source: options.release.registry.source,
         trust: options.release.registry.trust,
         evidenceTier: options.release.registry.evidenceTier,
@@ -2163,7 +2212,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
         registry: options.release.registry.id,
         release: options.release.release,
         url: item.payloadUrl,
-        digest: item.payloadDigest,
+        digest: provenancePayloadDigest(item),
       }))
       .sort((left, right) => left.url.localeCompare(right.url, "en-US")),
   };
@@ -2171,6 +2220,119 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
 
 export function planSemanticUpdate(options: SemanticUpdateOptions): OperationPlan {
   return buildUpdateInternal(options).plan;
+}
+
+function semanticReleaseFromAcquisition(
+  projectRoot: string,
+  acquired: AcquiredNativeRegistryRelease,
+): ImmutableUpdateRelease {
+  if (acquired.registry.id !== "official") {
+    throw new CliError(
+      "Semantic Sync currently supports acquired releases in the official namespace only.",
+      { code: "UPDATE_REGISTRY_NAMESPACE_UNSUPPORTED", exitCode: 7 },
+    );
+  }
+  const root = validatedProjectRoot(projectRoot);
+  const manifest = readManifest(root).value;
+  const catalogById = new Map(acquired.catalog.map((item) => [item.id, item]));
+  const items = acquired.items.map((item): ImmutableUpdateItem => {
+    if (item.structuredPatches.length > 0 || item.migrations.length > 0) {
+      throw new CliError(
+        `Acquired item ${item.itemId} requires a declarative patch or migration adapter that native update routing does not yet implement.`,
+        { code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
+      );
+    }
+    const installed = manifest.items[`official:${item.itemId}`];
+    const renderedWithTransformContextDigest =
+      installed?.transformContextDigest ??
+      sha256(canonicalJson({ itemId: item.itemId, state: "not-installed" }));
+    const files = item.files.map((file): ImmutableUpdateFile => {
+      if (
+        file.targetRole === "contract" ||
+        file.targetRole === "example" ||
+        file.transformPipeline.some(({ adapter }) => adapter !== "none" && adapter !== "target-map")
+      ) {
+        throw new CliError(
+          `Acquired file ${file.logicalPath} requires an unsupported target role or transform adapter.`,
+          { code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: file.logicalPath },
+        );
+      }
+      return {
+        logicalPath: file.logicalPath,
+        role: file.targetRole,
+        mediaType: file.mediaType,
+        encoding: file.encoding,
+        content: file.content,
+        digest: file.digest,
+        executable: false,
+      };
+    });
+    const withoutDigest: Omit<ImmutableUpdateItem, "payloadDigest"> = {
+      itemId: item.itemId,
+      kind: item.kind,
+      resolved: acquired.release,
+      payloadUrl: item.payloadUrl,
+      renderedWithTransformContextDigest,
+      files,
+      registryDependencies: item.registryDependencies,
+      dependencies: item.dependencies,
+      contractVersion: item.contract.version,
+      lastMigration: null,
+      acquiredPayloadDigest: item.payloadDigest,
+    };
+    return { ...withoutDigest, payloadDigest: immutableUpdateItemDigest(withoutDigest) };
+  });
+  const evidenceTiers = acquired.items.map(
+    (item) => catalogById.get(item.itemId)?.quality.tier ?? "not-supplied",
+  );
+  const evidenceTier: ImmutableUpdateRegistry["evidenceTier"] = evidenceTiers.every(
+    (tier) => tier === "complete",
+  )
+    ? "complete"
+    : evidenceTiers.some((tier) => tier === "complete" || tier === "partial")
+      ? "partial"
+      : "not-supplied";
+  const registry: ImmutableUpdateRegistry = {
+    id: acquired.registry.id,
+    protocol: "mergora-v1",
+    origin: acquired.registry.origin,
+    identityDigest: acquired.registry.identityDigest,
+    source: acquired.source,
+    trust: acquired.registry.trust,
+    evidenceTier,
+    nativeIdentity: true,
+  };
+  const withoutManifestDigest: Omit<ImmutableUpdateRelease, "manifestDigest"> = {
+    schemaVersion: 1,
+    registry,
+    release: acquired.release,
+    items,
+    acquiredManifestDigest: acquired.manifestDigest,
+  };
+  return {
+    ...withoutManifestDigest,
+    manifestDigest: immutableUpdateReleaseDigest(withoutManifestDigest),
+  };
+}
+
+export function planAcquiredSemanticUpdate(options: AcquiredSemanticUpdateOptions): OperationPlan {
+  return planSemanticUpdate({
+    ...options,
+    release: semanticReleaseFromAcquisition(options.projectRoot, options.acquiredRelease),
+  });
+}
+
+export async function applyAcquiredSemanticUpdate(
+  options: AcquiredSemanticUpdateOptions,
+  expectedPlanDigest?: string,
+): Promise<SemanticUpdateResult> {
+  return applySemanticUpdate(
+    {
+      ...options,
+      release: semanticReleaseFromAcquisition(options.projectRoot, options.acquiredRelease),
+    },
+    expectedPlanDigest,
+  );
 }
 
 type ConflictResolution = "unresolved" | "take-local" | "take-upstream" | "manual";

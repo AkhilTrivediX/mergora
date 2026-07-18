@@ -41,6 +41,7 @@ export {
   type ItemView,
   type ProjectInfo,
   type ProjectStatus,
+  type SearchCatalogRecord,
   type SearchOptions,
   type SearchResult,
   type StatusItem,
@@ -89,9 +90,12 @@ export {
 
 export {
   applySourceAdd,
+  applyAcquiredSourceAdd,
   applySourceAdopt,
   applySourceRemove,
   planSourceAdd,
+  planAcquiredSourceAdd,
+  type AcquiredSourceOperationOptions,
   planSourceAdopt,
   planSourceRemove,
   type SourceOperationOptions,
@@ -172,7 +176,21 @@ export {
 } from "./acquisition.js";
 
 export {
+  resolveNativeRegistryRelease,
+  type AcquiredNativeCatalogItem,
+  type AcquiredNativeFile,
+  type AcquiredNativeRegistryItem,
+  type AcquiredNativeRegistryRelease,
+  type NativeRegistryDocumentKind,
+  type NativeRegistryDocumentValidationContext,
+  type NativeRegistryDocumentValidator,
+  type NativeReleaseArtifactReference,
+  type ResolveNativeRegistryReleaseOptions,
+} from "./acquisition-resolver.js";
+
+export {
   applySemanticResolution,
+  applyAcquiredSemanticUpdate,
   applySemanticResolveChoice,
   applySemanticUpdate,
   diffSemanticSource,
@@ -183,11 +201,13 @@ export {
   planSemanticResolveApply,
   planSemanticResolveChoice,
   planSemanticUpdate,
+  planAcquiredSemanticUpdate,
   readImmutableUpdateRelease,
   type ImmutableUpdateFile,
   type ImmutableUpdateItem,
   type ImmutableUpdateRegistry,
   type ImmutableUpdateRelease,
+  type AcquiredSemanticUpdateOptions,
   type SemanticResolutionList,
   type SemanticResolveApplyOptions,
   type SemanticResolveApplyResult,
