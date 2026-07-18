@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "focus-and-hidden-content",
+      "covers": ["focus-visible", "standard-contrast", "strong-contrast", "forced-colors"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["dark", "enhanced-contrast", "forced-colors"],
+    "requiresBrowserEvidence": [
+      "keyboard-modality",
+      "indicator-area",
+      "contrast",
+      "400-percent-zoom"
+    ]
+  }
+}

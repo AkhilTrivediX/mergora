@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "layer-manager",
+  "root": {
+    "element": "React context provider",
+    "ref": "none",
+    "slot": "none",
+    "stableAttributes": []
+  },
+  "parts": [
+    {
+      "element": "div or consumer element",
+      "slot": "layer-application",
+      "stableAttributes": ["data-slot", "inert"]
+    },
+    {
+      "element": "div or consumer element",
+      "slot": "layer",
+      "stableAttributes": [
+        "data-slot",
+        "data-layer-id",
+        "data-layer-index",
+        "data-layer-active",
+        "data-layer-modal",
+        "data-layer-dismissible",
+        "data-layer-top"
+      ]
+    }
+  ]
+}

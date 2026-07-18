@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert-dialog",
+  "entryExport": "AlertDialog",
+  "refTarget": "compound-part-dependent",
+  "exports": [
+    { "kind": "namespace", "name": "AlertDialog" },
+    { "kind": "component", "name": "AlertDialogAction" },
+    { "kind": "type", "name": "AlertDialogActionProps" },
+    { "kind": "component", "name": "AlertDialogCancel" },
+    { "kind": "type", "name": "AlertDialogCancelProps" },
+    { "kind": "component", "name": "AlertDialogContent" },
+    { "kind": "type", "name": "AlertDialogContentProps" },
+    { "kind": "component", "name": "AlertDialogDescription" },
+    { "kind": "type", "name": "AlertDialogDescriptionProps" },
+    { "kind": "component", "name": "AlertDialogFooter" },
+    { "kind": "type", "name": "AlertDialogFooterProps" },
+    { "kind": "component", "name": "AlertDialogHeader" },
+    { "kind": "type", "name": "AlertDialogHeaderProps" },
+    { "kind": "component", "name": "AlertDialogOverlay" },
+    { "kind": "type", "name": "AlertDialogOverlayProps" },
+    { "kind": "component", "name": "AlertDialogRoot" },
+    { "kind": "type", "name": "AlertDialogRootProps" },
+    { "kind": "component", "name": "AlertDialogTitle" },
+    { "kind": "type", "name": "AlertDialogTitleProps" },
+    { "kind": "component", "name": "AlertDialogTrigger" },
+    { "kind": "type", "name": "AlertDialogTriggerProps" }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "Alert Dialog reuses the canonical Dialog React Aria behavior core and never creates a second focus engine.",
+    "role=alertdialog, explicit-only dismissal, and leastDestructiveRef are mandatory defaults.",
+    "Action and Cancel are native button parts; the destructive action completes on normal activation, never pointer-down."
+  ]
+}

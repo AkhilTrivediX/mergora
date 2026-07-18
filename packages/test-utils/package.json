@@ -1,0 +1,30 @@
+{
+  "name": "@mergora/test-utils",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Private scaffold for consumer-facing Mergora test utilities",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@testing-library/dom": "catalog:",
+    "axe-core": "catalog:"
+  },
+  "devDependencies": {
+    "@playwright/test": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./textarea.css", "react"],
+  "entryPath": "registry/source/components/textarea/textarea.tsx",
+  "id": "textarea",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sheet",
+  "namespace": [
+    "Root",
+    "Trigger",
+    "Overlay",
+    "Content",
+    "Header",
+    "Footer",
+    "Title",
+    "Description",
+    "Close"
+  ],
+  "required": ["Root", "Trigger", "Overlay", "Content", "Title", "Close"],
+  "relationships": [
+    "Root owns side and size so Overlay and Content expose synchronized states.",
+    "Content retains dialog naming and description requirements.",
+    "Footer stays visible or scroll-reachable without obscuring focus."
+  ],
+  "behaviorOwnership": {
+    "mergora": ["logical edge", "size", "safe-area layout", "mobile adaptation", "stable slots"],
+    "dialog": ["canonical modal behavior"],
+    "reactAria": ["focus", "dismissal", "portal", "background", "restoration"]
+  }
+}

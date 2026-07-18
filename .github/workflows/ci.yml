@@ -1,0 +1,97 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: Foundation quality and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+          pnpm --version
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run fast aggregate
+        run: pnpm check
+      - name: Build every workspace project
+        env:
+          MERGORA_BASE_PATH: /mergora
+        run: pnpm build
+      - name: Verify the Pages-style static export
+        env:
+          MERGORA_BASE_PATH: /mergora
+        run: node scripts/verify-static-export.mjs
+      - name: Confirm checks and builds do not edit tracked source
+        run: git diff --exit-code
+
+  browser-contracts:
+    name: Browser, accessibility, and visual contracts
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install pinned browser engines
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Run cross-browser contracts
+        run: pnpm test:browser
+      - name: Confirm browser tests do not edit tracked source
+        run: git diff --exit-code
+
+  packed-consumers:
+    name: Packed Next and Vite consumers
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run exact-tarball clean-consumer matrix
+        run: pnpm test:consumer
+      - name: Confirm consumer verification is deterministic
+        run: git diff --exit-code

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tooltip.js"],
+  "entryPath": "registry/source/components/tooltip/index.ts",
+  "id": "tooltip",
+  "itemDependencies": ["layer-manager", "provider"],
+  "outputRole": "component"
+}

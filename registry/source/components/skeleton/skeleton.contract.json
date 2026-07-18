@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "skeleton",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "An accessibility-hidden, dimension-preserving loading placeholder with text, rectangle, and circle shapes.",
+  "semantics": [
+    "Skeleton is always aria-hidden and rejects accessible-name, live-region, role, and child-content overrides at typed and runtime boundaries.",
+    "Logical block and inline dimensions reserve the future content footprint and numeric sizes normalize to CSS pixels.",
+    "Pulse animation disappears under reduced motion and forced colors preserves a visible boundary."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "Animation is removed while static text, shape, native state, and reserved layout remain authoritative.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Text wraps, actions reflow, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

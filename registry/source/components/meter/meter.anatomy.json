@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "meter",
+  "root": {
+    "slot": "meter",
+    "element": "label containing meter",
+    "ref": "HTMLMeterElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    { "slot": "meter-label", "element": "span", "stability": "documented" },
+    { "slot": "meter-value", "element": "span", "stability": "documented" },
+    { "slot": "meter-track", "element": "meter", "stability": "documented" }
+  ]
+}

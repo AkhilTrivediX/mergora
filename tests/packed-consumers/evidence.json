@@ -1,0 +1,121 @@
+{
+  "artifactKind": "p1-packed-consumer-evidence",
+  "artifacts": [
+    {
+      "file": "mergora-0.0.0.tgz",
+      "name": "mergora",
+      "role": "cli",
+      "sha256": "7af6463aa0bfe0881f63074432cff76906c2e7f7979e8ddac66bbce613aab9e3",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-schema-0.0.0.tgz",
+      "name": "mergora-schema",
+      "role": "schema",
+      "sha256": "617ad0636b65076009319e5d7dda78c2be04d9039c094b5ab0f84370b6b86443",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-tokens-0.0.0.tgz",
+      "name": "mergora-tokens",
+      "role": "tokens",
+      "sha256": "ebd34dc3e0e919ddf694dc838bd6cbc5d5cd80f39165d04a5914917e88e29c0e",
+      "version": "0.0.0"
+    },
+    {
+      "file": "mergora-ui-0.0.0.tgz",
+      "name": "mergora-ui",
+      "role": "ui",
+      "sha256": "d080a107a81c5538e1b2e075b9c2f87a4b2eb989b180024c30d8d4ccec044108",
+      "version": "0.0.0"
+    }
+  ],
+  "consumers": [
+    {
+      "assertions": [
+        "all-mergora-inputs-are-exact-tarballs",
+        "frozen-offline-reinstall",
+        "no-workspace-resolution",
+        "packed-cli-executed",
+        "production-base-path",
+        "production-build",
+        "public-subpaths-and-types"
+      ],
+      "basePath": "/mergora-p1",
+      "framework": "next",
+      "id": "next-package",
+      "mode": "package",
+      "result": "passed",
+      "sourceInstall": null
+    },
+    {
+      "assertions": [
+        "all-mergora-inputs-are-exact-tarballs",
+        "frozen-offline-reinstall",
+        "no-workspace-resolution",
+        "packed-cli-executed",
+        "production-base-path",
+        "production-build",
+        "public-subpaths-and-types"
+      ],
+      "basePath": "/mergora-p1",
+      "framework": "next",
+      "id": "next-source",
+      "mode": "source",
+      "result": "passed",
+      "sourceInstall": {
+        "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox --root . --target src/components --yes --non-interactive --json",
+        "files": 29,
+        "sourceTreeSha256": "98599f4610156ee3d4429d918b0e8dc9d0919d782bc9e88139f4dc86d0c7236e"
+      }
+    },
+    {
+      "assertions": [
+        "all-mergora-inputs-are-exact-tarballs",
+        "frozen-offline-reinstall",
+        "no-workspace-resolution",
+        "packed-cli-executed",
+        "production-base-path",
+        "production-build",
+        "public-subpaths-and-types"
+      ],
+      "basePath": "/mergora-p1",
+      "framework": "vite",
+      "id": "vite-package",
+      "mode": "package",
+      "result": "passed",
+      "sourceInstall": null
+    },
+    {
+      "assertions": [
+        "all-mergora-inputs-are-exact-tarballs",
+        "frozen-offline-reinstall",
+        "no-workspace-resolution",
+        "packed-cli-executed",
+        "production-base-path",
+        "production-build",
+        "public-subpaths-and-types"
+      ],
+      "basePath": "/mergora-p1",
+      "framework": "vite",
+      "id": "vite-source",
+      "mode": "source",
+      "result": "passed",
+      "sourceInstall": {
+        "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox --root . --target src/components --yes --non-interactive --json",
+        "files": 29,
+        "sourceTreeSha256": "98599f4610156ee3d4429d918b0e8dc9d0919d782bc9e88139f4dc86d0c7236e"
+      }
+    }
+  ],
+  "limitations": [
+    "This P1 tracer proves fresh installation, package/source compilation, and production builds only.",
+    "Browser interaction, assistive-technology review, Semantic Sync updates, and public npm provenance remain separate gates."
+  ],
+  "publicationStatus": "unreleased",
+  "runtime": {
+    "node": "24.12.0",
+    "packageManager": "pnpm@11.14.0"
+  },
+  "schemaVersion": 1
+}

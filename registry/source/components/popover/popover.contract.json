@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "popover",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A named non-modal dialog anchored to its trigger with logical placement, collision/flip, bounded scrolling, and deterministic dismissal/restoration.",
+  "semantics": [
+    "Trigger is a native button with dialog popup relationship; Content is a named role=dialog surface.",
+    "The background remains operable and focus is not trapped; the explicit entry policy is none by default, first-interactive, content, or a contained initialFocusRef.",
+    "React Aria owns outside interaction, topmost Escape, flip/collision, and focus return; LayerManager registers the actual portal root so visual order matches dismissal order.",
+    "One Description is associated by a stable ID; Arrow is decorative."
+  ],
+  "messageKeys": [
+    {
+      "key": "popover.close",
+      "fallback": "Close popover",
+      "context": "Visible default Popover.Close text when children are omitted."
+    }
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve the floating surface boundary and trigger focus.",
+    "reducedMotion": "Entry/exit translation is removed.",
+    "rtl": "start/end and inline alignment map from explicit provider direction, not locale."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Collision padding and available-height scrolling keep the surface inside the visual viewport."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "browser-keyboard-focus",
+      "axe",
+      "collision-geometry",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,76 @@
+.mrg-badge {
+  --mrg-badge-background: var(--mrg-semantic-color-background-surface-sunken);
+  --mrg-badge-border: var(--mrg-semantic-color-border-default);
+  --mrg-badge-foreground: var(--mrg-semantic-color-foreground-primary);
+  align-items: baseline;
+  background: var(--mrg-badge-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-badge-border);
+  border-radius: var(--mrg-semantic-radius-pill);
+  color: var(--mrg-badge-foreground);
+  display: inline-flex;
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-space-inline-xs);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-badge[data-kind="count"] {
+  justify-content: center;
+  min-inline-size: var(--mrg-semantic-size-target-minimum);
+}
+
+.mrg-badge[data-variant="info"] {
+  --mrg-badge-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-badge-border: var(--mrg-semantic-color-status-info-border);
+  --mrg-badge-foreground: var(--mrg-semantic-color-status-info-foreground);
+}
+
+.mrg-badge[data-variant="success"] {
+  --mrg-badge-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-badge-border: var(--mrg-semantic-color-status-success-border);
+  --mrg-badge-foreground: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-badge[data-variant="warning"] {
+  --mrg-badge-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-badge-border: var(--mrg-semantic-color-status-warning-border);
+  --mrg-badge-foreground: var(--mrg-semantic-color-status-warning-foreground);
+}
+
+.mrg-badge[data-variant="error"] {
+  --mrg-badge-background: var(--mrg-semantic-color-status-danger-background);
+  --mrg-badge-border: var(--mrg-semantic-color-status-danger-border);
+  --mrg-badge-foreground: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+[data-slot="badge-status-label"] {
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  overflow-wrap: anywhere;
+}
+
+[data-slot="badge-label"] {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.mrg-badge[data-kind="count"] [aria-hidden="true"] {
+  white-space: nowrap;
+}
+
+.mrg-badge__sr-only {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .mrg-badge {
+    border-color: CanvasText;
+  }
+}

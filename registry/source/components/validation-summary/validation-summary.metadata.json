@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "itemId": "validation-summary",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "empty",
+    "populated",
+    "async-update",
+    "focus-summary",
+    "focus-error",
+    "narrow",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "validation-summary",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["empty", "populated", "focused"]
+    },
+    {
+      "name": "validation-summary-heading",
+      "semanticElement": "h2",
+      "refTarget": "none",
+      "states": ["visible"]
+    },
+    {
+      "name": "validation-summary-announcement",
+      "semanticElement": "p",
+      "refTarget": "none",
+      "states": ["assertive", "atomic"]
+    },
+    {
+      "name": "validation-summary-list",
+      "semanticElement": "ul",
+      "refTarget": "none",
+      "states": ["populated"]
+    },
+    {
+      "name": "validation-summary-item",
+      "semanticElement": "li with anchor",
+      "refTarget": "none",
+      "states": ["linked"]
+    }
+  ],
+  "contract": { "id": "validation-summary-accessibility", "version": "0.1.0" },
+  "passport": { "id": "validation-summary-quality-passport", "version": "0.0.0" }
+}

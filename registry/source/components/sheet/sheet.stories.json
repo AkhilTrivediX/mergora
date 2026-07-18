@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sheet",
+  "canonicalStoryFile": "apps/storybook/src/P2Overlays.stories.tsx",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    { "id": "focus-visible", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Sheet is a modal container; read-only belongs to controls within it."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid state belongs to fields or workflows rendered inside the sheet."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required is a form-control state rather than an edge-placement state."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to sheet content while the title and close path remain persistent."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An unnamed empty sheet without a visible close action is invalid usage."
+      }
+    },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "SheetEdges" },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Sheet has no partial-selection state of its own."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success is content or workflow feedback, not a sheet-container state."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require explicit content semantics and are not inferred from edge placement."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the affected task rendered inside or after the sheet."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Irreversible confirmation uses AlertDialog rather than styling a Sheet as destructive."
+      }
+    }
+  ]
+}

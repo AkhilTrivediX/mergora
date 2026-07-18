@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "meter",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "A visibly labelled native meter with validated range, thresholds, optimum, and localized value text.",
+  "semantics": [
+    "Minimum is below maximum and value, low, high, and optimum stay within range; low cannot exceed high.",
+    "The visible formatted value and aria-valuetext are identical and locale-aware.",
+    "A meaningful visible label owns the accessible name; role, generic name props, and aria value overrides are rejected at type and runtime boundaries.",
+    "Native meter semantics and a thicker visual track remain distinct from task progress."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "No semantic information depends on motion.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Text wraps, actions reflow, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

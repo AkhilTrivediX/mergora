@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "blockquote",
+  "root": {
+    "element": "figure",
+    "ref": "HTMLElement",
+    "slot": "blockquote",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "element": "blockquote",
+      "slot": "blockquote-quote",
+      "stableAttributes": ["data-slot", "data-cite"]
+    },
+    {
+      "element": "figcaption",
+      "slot": "blockquote-caption",
+      "stableAttributes": ["data-slot"]
+    },
+    {
+      "element": "cite",
+      "slot": "blockquote-source",
+      "stableAttributes": ["data-slot", "data-linked"]
+    }
+  ]
+}

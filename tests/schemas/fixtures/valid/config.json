@@ -1,0 +1,65 @@
+{
+  "$schema": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json",
+  "schemaVersion": 1,
+  "project": {
+    "framework": "next-app",
+    "language": "typescript",
+    "sourceRoot": "src",
+    "packageJson": "package.json",
+    "tsconfig": "tsconfig.json"
+  },
+  "distribution": {
+    "defaultMode": "hybrid",
+    "packageName": "mergora-ui"
+  },
+  "targets": {
+    "components": "src/components/ui",
+    "hooks": "src/hooks",
+    "lib": "src/lib",
+    "systems": "src/systems",
+    "kits": "src/kits",
+    "styles": "src/styles",
+    "tokens": "src/tokens"
+  },
+  "aliases": {
+    "components": "@/components/ui",
+    "hooks": "@/hooks",
+    "lib": "@/lib",
+    "systems": "@/systems",
+    "kits": "@/kits",
+    "styles": "@/styles",
+    "tokens": "@/tokens"
+  },
+  "styling": {
+    "engine": "tailwind-v4",
+    "globalCss": "src/app/globals.css",
+    "tokenPreset": "default",
+    "colorMode": "system",
+    "density": "comfortable",
+    "direction": "auto",
+    "packageCssStrategy": "source-directive"
+  },
+  "registries": {
+    "mergora": {
+      "protocol": "mergora-v1",
+      "origin": "https://akhiltrivedix.github.io/mergora/r/v1",
+      "trust": "official",
+      "authEnvironmentVariable": "MERGORA_REGISTRY_TOKEN",
+      "identityDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  },
+  "policy": {
+    "allowExternalRegistries": false,
+    "allowPrereleases": false,
+    "dependencyProtocols": ["registry-semver"],
+    "requireLicenses": true,
+    "retainSuccessfulTransactions": 5,
+    "maxRegistryItemBytes": 4194304,
+    "maxOperationBytes": 67108864
+  },
+  "formatting": {
+    "strategy": "project",
+    "fallback": "mergora",
+    "lineEndings": "preserve-existing"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./center.css", "react"],
+  "entryPath": "registry/source/components/center/center.tsx",
+  "id": "center",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

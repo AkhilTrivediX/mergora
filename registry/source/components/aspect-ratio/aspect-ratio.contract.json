@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "aspect-ratio",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "div",
+    "rolePolicy": "No figure, image, group, or presentation semantics are inferred from geometry.",
+    "contentPolicy": "Child semantics and accessible names remain unchanged.",
+    "refTarget": "HTMLDivElement"
+  },
+  "layout": {
+    "nativeFirst": "Uses the CSS aspect-ratio property with a positive numeric value.",
+    "fallback": "A percentage block-start padding fallback is isolated under @supports not (aspect-ratio: 1).",
+    "overflow": "No overflow clipping is applied; semantic content may expand the preferred ratio."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=aspect-ratio]",
+    "attributes": ["data-ratio"]
+  },
+  "consumerResponsibilities": [
+    "Provide alt text, captions, iframe titles, controls, and other semantics required by the child content.",
+    "Add an explicit local crop treatment only when losing visual edges does not remove information.",
+    "Verify third-party embedded content independently at narrow sizes and zoom."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ratio-validation",
+      "ssr",
+      "native-layout",
+      "fallback-layout",
+      "narrow-320",
+      "zoom-400",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-embedded-content",
+      "screen-reader-content",
+      "touch-reflow",
+      "forced-colors"
+    ],
+    "recordedEvidence": []
+  }
+}

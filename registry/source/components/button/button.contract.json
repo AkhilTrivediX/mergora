@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "button",
+  "contractStatus": "p1-input-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "button",
+    "navigation": "not-supported-use-link",
+    "roleOverride": "consumer-native-prop-with-consumer-responsibility",
+    "refTarget": "HTMLButtonElement"
+  },
+  "naming": {
+    "acceptedSources": ["visible-text", "aria-label", "aria-labelledby"],
+    "iconOnlyPolicy": "An inspectably unnamed icon-only button emits an actionable development diagnostic.",
+    "guardLimit": "Custom child components, non-hidden SVG descendants, and title fallbacks whose browser accessibility output cannot be established from source are not claimed as named or unnamed.",
+    "pendingPolicy": "pendingLabel replaces the visible label when supplied; it also becomes the direct name when aria-label was used, and temporarily replaces aria-labelledby so visible label-in-name is preserved. Otherwise the original visible label and name source remain."
+  },
+  "interaction": {
+    "keyboard": [
+      {
+        "key": "Enter",
+        "behavior": "Native button activation; pending cancels the synthesized click before onClick."
+      },
+      {
+        "key": "Space",
+        "behavior": "Native button activation; pending cancels the synthesized click before onClick."
+      },
+      { "key": "Tab", "behavior": "Native sequential focus navigation." },
+      { "key": "Shift+Tab", "behavior": "Native reverse sequential focus navigation." }
+    ],
+    "pointer": "Native click activation completes on release; pending cancels click default and propagation.",
+    "touch": "Coarse-pointer styling raises the minimum target to 44 CSS pixels.",
+    "speech": "Visible label remains part of the accessible name; icon-only usage requires an explicit name.",
+    "switch": "The native button remains a single sequential focus target."
+  },
+  "states": {
+    "disabled": {
+      "attributes": ["disabled", "data-disabled"],
+      "behavior": "Uses native disabled focus and activation behavior."
+    },
+    "pending": {
+      "attributes": ["aria-busy", "aria-disabled", "data-pending"],
+      "behavior": "Remains focusable, prevents activation, and displays pendingLabel or the original label."
+    }
+  },
+  "stableSelectors": {
+    "root": "[data-slot=button]",
+    "attributes": ["data-variant", "data-size", "data-pending", "data-disabled"]
+  },
+  "preferences": {
+    "dark": "Uses theme-resolved semantic tokens.",
+    "enhancedContrast": "Uses theme-resolved semantic tokens.",
+    "forcedColors": "Uses system colors, a visible border, and a system-color focus outline.",
+    "reducedMotion": "Stops the pending rotation while retaining shape, label, and aria-busy cues."
+  },
+  "responsive": {
+    "intrinsic": "Content wraps and block size grows without clipping text.",
+    "logicalProperties": true,
+    "minimumPointerTargetCssPx": 24,
+    "minimumCoarsePointerTargetCssPx": 44
+  },
+  "internationalization": {
+    "builtInMessages": [],
+    "consumerStrings": ["children", "aria-label", "pendingLabel"],
+    "directions": ["ltr", "rtl"],
+    "temporalBehavior": false
+  },
+  "consumerResponsibilities": [
+    "Supply a meaningful accessible name in every state.",
+    "Localize visible labels, aria-label, aria-labelledby targets, and pendingLabel.",
+    "Use type=submit only when native form submission is intended.",
+    "Do not combine pending with disabled when pending focus retention is required.",
+    "Revalidate contrast and focus visibility after overriding semantic tokens or component CSS."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "browser-keyboard-pointer",
+      "axe",
+      "aria-snapshot",
+      "responsive-geometry",
+      "visual-modes",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-forced-colors", "nvda-firefox", "voiceover-safari"],
+    "recordedEvidence": []
+  }
+}

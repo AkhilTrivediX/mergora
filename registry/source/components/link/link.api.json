@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "link",
+  "entryExport": "Link",
+  "refTarget": "HTMLAnchorElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "Link"
+    },
+    {
+      "kind": "type",
+      "name": "LinkProps"
+    },
+    {
+      "kind": "type",
+      "name": "LinkCurrent"
+    }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "href is required and disabled-link semantics are absent from the public type.",
+    "External links receive noopener and noreferrer while preserving consumer rel tokens.",
+    "Current state has text weight and decoration in addition to color."
+  ]
+}

@@ -1,0 +1,49 @@
+/* Generated from registry/source/components/container/container.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-container {
+  --mrg-container-gutter: var(--mrg-semantic-space-inline-lg);
+  --mrg-container-max-inline-size: var(--mrg-semantic-container-content);
+  box-sizing: border-box;
+  inline-size: 100%;
+  margin-inline: auto;
+  max-inline-size: var(--mrg-container-max-inline-size);
+  min-inline-size: 0;
+  padding-inline: var(--mrg-container-gutter);
+}
+
+.mrg-container[data-width="prose"] {
+  --mrg-container-max-inline-size: var(--mrg-semantic-container-prose);
+}
+
+.mrg-container[data-width="wide"] {
+  --mrg-container-max-inline-size: var(--mrg-semantic-container-wide);
+}
+
+.mrg-container[data-width="full"] {
+  --mrg-container-max-inline-size: none;
+}
+
+.mrg-container[data-gutter="none"] {
+  --mrg-container-gutter: 0px;
+}
+
+.mrg-container[data-gutter="compact"] {
+  --mrg-container-gutter: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-container[data-gutter="spacious"] {
+  --mrg-container-gutter: var(--mrg-semantic-density-panel-padding);
+}
+
+.mrg-container[data-safe-area="true"] {
+  padding-inline-end: max(var(--mrg-container-gutter), env(safe-area-inset-right));
+  padding-inline-start: max(var(--mrg-container-gutter), env(safe-area-inset-left));
+}
+
+.mrg-container[data-safe-area="true"]:dir(rtl) {
+  padding-inline-end: max(var(--mrg-container-gutter), env(safe-area-inset-left));
+  padding-inline-start: max(var(--mrg-container-gutter), env(safe-area-inset-right));
+}
+
+.mrg-container[data-query-container="true"] {
+  container-type: inline-size;
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "itemId": "switch",
+  "root": {
+    "element": "button role switch",
+    "ref": "HTMLButtonElement",
+    "slot": "switch",
+    "stableAttributes": [
+      "data-slot",
+      "data-state",
+      "role",
+      "aria-checked",
+      "disabled",
+      "form",
+      "type"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "switch-track",
+      "element": "span aria-hidden",
+      "purpose": "Visual state track and thumb.",
+      "stability": "documented"
+    },
+    {
+      "slot": "switch-label",
+      "element": "span",
+      "purpose": "Visible setting name.",
+      "stability": "documented"
+    },
+    {
+      "slot": "switch-state-label",
+      "element": "span aria-hidden",
+      "purpose": "Visible localized on or off text without duplicating aria-checked speech.",
+      "stability": "documented"
+    },
+    {
+      "slot": "switch-form-value",
+      "element": "input type hidden",
+      "purpose": "Explicit on or off successful control when named.",
+      "stability": "documented"
+    }
+  ]
+}

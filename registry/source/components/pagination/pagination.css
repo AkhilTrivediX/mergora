@@ -1,0 +1,67 @@
+.mrg-pagination {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+[data-slot="pagination-list"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+[data-slot="pagination-link"],
+[data-slot="pagination-current"],
+[data-slot="pagination-disabled"],
+[data-slot="pagination-ellipsis"] {
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+[data-slot="pagination-link"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  text-underline-offset: 0.2em;
+}
+
+[data-slot="pagination-current"] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+[data-slot="pagination-disabled"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+[data-slot="pagination-link"]:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-pagination__sr-only {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  [data-slot="pagination-current"] {
+    border-color: Highlight;
+  }
+
+  [data-slot="pagination-link"]:focus-visible {
+    outline-color: Highlight;
+  }
+}

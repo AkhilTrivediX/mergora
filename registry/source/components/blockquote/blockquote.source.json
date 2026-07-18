@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./blockquote.css", "react"],
+  "entryPath": "registry/source/components/blockquote/blockquote.tsx",
+  "id": "blockquote",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

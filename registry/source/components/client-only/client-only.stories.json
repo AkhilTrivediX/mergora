@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "client-only",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "portal-and-client-boundary",
+      "covers": ["server-fallback", "first-hydration-fallback", "client-ready", "layout-stability"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": [],
+    "requiresBrowserEvidence": [
+      "no-javascript",
+      "hydration",
+      "screen-reader-fallback",
+      "focus-order"
+    ]
+  }
+}

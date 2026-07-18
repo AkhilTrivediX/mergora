@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "presence",
+  "entryExport": "Presence",
+  "refTarget": "HTMLElement through child",
+  "nativeProps": "none; attributes merge into one concrete child",
+  "exports": [
+    { "kind": "component", "name": "Presence" },
+    { "kind": "function", "name": "nextPresenceState" },
+    { "kind": "function", "name": "normalizePresenceExitDeadline" },
+    { "kind": "function", "name": "presenceEndEventReachesDeadline" },
+    { "kind": "type", "name": "PresenceProps" },
+    { "kind": "type", "name": "PresenceRenderState" },
+    { "kind": "type", "name": "PresenceState" }
+  ],
+  "props": [
+    { "name": "present", "required": true, "type": "boolean" },
+    { "name": "children", "required": true, "type": "ReactElement | render function" },
+    { "default": 240, "name": "exitDurationMs", "required": false, "type": "number" },
+    { "default": false, "name": "initialEnter", "required": false, "type": "boolean" },
+    {
+      "default": "provider preference",
+      "name": "reducedMotion",
+      "required": false,
+      "type": "boolean"
+    }
+  ],
+  "compositionPolicy": {
+    "initialVisibility": "Present server content starts entered and visible unless initialEnter is explicitly requested.",
+    "exit": "The declared deadline is authoritative; earlier transition or animation events are ignored and the timeout guarantees completion.",
+    "interruption": "Returning present to true while exiting cancels unmount and re-enters."
+  }
+}

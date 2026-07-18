@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/evidence-v1.schema.json",
+  "title": "Mergora context-specific evidence record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "evidenceId",
+    "context",
+    "state",
+    "aggregateState",
+    "summary",
+    "references"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "$ref": "common-v1.schema.json#/$defs/schemaVersion"
+    },
+    "evidenceId": {
+      "$ref": "common-v1.schema.json#/$defs/catalogId"
+    },
+    "context": {
+      "$ref": "common-v1.schema.json#/$defs/evidenceContext"
+    },
+    "state": {
+      "type": "string"
+    },
+    "aggregateState": {
+      "$ref": "common-v1.schema.json#/$defs/aggregateEvidenceState"
+    },
+    "summary": {
+      "$ref": "common-v1.schema.json#/$defs/nonEmptyString"
+    },
+    "sourceDigest": {
+      "$ref": "common-v1.schema.json#/$defs/sha256"
+    },
+    "performedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "common-v1.schema.json#/$defs/evidenceReference"
+      },
+      "maxItems": 256
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "context": { "const": "measurement" } },
+        "required": ["context"]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "$ref": "common-v1.schema.json#/$defs/measurementEvidenceState"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "context": { "const": "passport" } },
+        "required": ["context"]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "$ref": "common-v1.schema.json#/$defs/passportEvidenceState"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "context": { "const": "contract" } },
+        "required": ["context"]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "$ref": "common-v1.schema.json#/$defs/contractEvidenceState"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "context": { "const": "release-gate" } },
+        "required": ["context"]
+      },
+      "then": {
+        "properties": {
+          "state": {
+            "$ref": "common-v1.schema.json#/$defs/releaseGateState"
+          }
+        }
+      }
+    }
+  ]
+}

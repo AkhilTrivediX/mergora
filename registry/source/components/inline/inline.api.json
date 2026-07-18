@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline",
+  "entryExport": "Inline",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "Inline" },
+    { "kind": "type", "name": "InlineProps" },
+    { "kind": "type", "name": "InlineGap" },
+    { "kind": "type", "name": "InlineAlign" },
+    { "kind": "type", "name": "InlineJustify" }
+  ],
+  "props": [
+    { "default": "sm", "name": "gap", "required": false, "type": "none | xs | sm | md | lg" },
+    {
+      "default": "center",
+      "name": "align",
+      "required": false,
+      "type": "stretch | start | center | end | baseline"
+    },
+    {
+      "default": "start",
+      "name": "justify",
+      "required": false,
+      "type": "start | center | end | between"
+    }
+  ],
+  "compositionPolicy": {
+    "wrapping": "Always wraps; nowrap is intentionally excluded because it would invalidate the overflow-safe default.",
+    "semantics": "Always a neutral div; use a semantic parent for lists, toolbars, or navigation."
+  }
+}

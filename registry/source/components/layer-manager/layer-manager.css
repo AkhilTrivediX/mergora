@@ -1,0 +1,23 @@
+@layer mergora.components {
+  [data-slot="layer-application"] {
+    min-inline-size: 0;
+  }
+
+  [data-layer-id][data-layer-index] {
+    --mrg-layer-index: 0;
+    z-index: calc(
+      var(--mrg-component-layer-stack-base, var(--mrg-semantic-layer-modal)) +
+        var(--mrg-layer-index)
+    ) !important;
+  }
+
+  [data-slot="layer"] {
+    position: relative;
+  }
+
+  @media (forced-colors: active) {
+    [data-layer-id] {
+      forced-color-adjust: auto;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+.next
+.turbo
+coverage
+content/generated
+dist
+node_modules
+out
+playwright-report
+registry/generated
+storybook-static
+PLANS
+pnpm-lock.yaml
+tests/**/crlf/**

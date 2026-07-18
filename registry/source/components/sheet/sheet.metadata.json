@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sheet",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "closed",
+    "open",
+    "start",
+    "end",
+    "top",
+    "bottom",
+    "sm",
+    "md",
+    "lg",
+    "full",
+    "long-content"
+  ],
+  "slots": [
+    {
+      "name": "sheet-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state"]
+    },
+    {
+      "name": "sheet-overlay",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["data-side", "data-size", "data-state"]
+    },
+    {
+      "name": "sheet-content",
+      "semanticElement": "section role=dialog",
+      "refTarget": "HTMLElement",
+      "states": ["data-side", "data-size", "data-state"]
+    },
+    {
+      "name": "sheet-title",
+      "semanticElement": "heading",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "sheet-description",
+      "semanticElement": "p",
+      "refTarget": "HTMLParagraphElement",
+      "states": []
+    },
+    {
+      "name": "sheet-close",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state"]
+    }
+  ],
+  "contract": { "id": "sheet-accessibility", "version": "0.1.0" },
+  "passport": { "id": "sheet-quality-passport", "version": "0.0.0" }
+}

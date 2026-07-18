@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "itemId": "blockquote",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["quote-only", "attribution", "citation-link", "long-content", "rtl"],
+  "slots": [
+    {
+      "name": "blockquote",
+      "semanticElement": "figure",
+      "refTarget": "HTMLElement",
+      "states": []
+    },
+    {
+      "name": "blockquote-quote",
+      "semanticElement": "blockquote",
+      "refTarget": "internal",
+      "states": ["cite"]
+    },
+    {
+      "name": "blockquote-caption",
+      "semanticElement": "figcaption",
+      "refTarget": "internal",
+      "states": []
+    },
+    {
+      "name": "blockquote-source",
+      "semanticElement": "cite",
+      "refTarget": "internal",
+      "states": ["linked"]
+    }
+  ],
+  "contract": {
+    "id": "blockquote-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "blockquote-quality-passport",
+    "version": "0.0.0"
+  }
+}

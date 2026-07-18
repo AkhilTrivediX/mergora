@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "container",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and subpath exports.",
+    "Record browser geometry at 320 CSS pixels and 400% zoom for every width and gutter.",
+    "Record LTR/RTL safe-area behavior on a physical mobile viewport.",
+    "Pass packed Next.js and Vite consumers plus package/source parity.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Complete current manual keyboard, forced-colors, and mobile safe-area evidence.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

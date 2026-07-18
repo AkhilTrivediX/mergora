@@ -1,0 +1,51 @@
+.mrg-stack {
+  --mrg-stack-gap: var(--mrg-semantic-space-stack-md);
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: var(--mrg-stack-gap);
+  min-inline-size: 0;
+}
+
+.mrg-stack > * {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-stack[data-gap="none"] {
+  --mrg-stack-gap: 0px;
+}
+
+.mrg-stack[data-gap="xs"] {
+  --mrg-stack-gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-stack[data-gap="sm"] {
+  --mrg-stack-gap: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-stack[data-gap="lg"] {
+  --mrg-stack-gap: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-stack[data-align="start"] {
+  align-items: flex-start;
+}
+
+.mrg-stack[data-align="center"] {
+  align-items: center;
+}
+
+.mrg-stack[data-align="end"] {
+  align-items: flex-end;
+}
+
+.mrg-stack:is(ul, ol) {
+  margin-block: 0;
+  padding-inline-start: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-stack:is(ul, ol)[data-list-style="none"] {
+  list-style: none;
+  padding-inline-start: 0;
+}

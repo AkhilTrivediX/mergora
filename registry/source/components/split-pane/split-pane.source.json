@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../provider/index.js",
+    "../resizable/resizable.js",
+    "./split-pane.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/split-pane/split-pane.tsx",
+  "id": "split-pane",
+  "itemDependencies": ["provider", "resizable"],
+  "outputRole": "component"
+}

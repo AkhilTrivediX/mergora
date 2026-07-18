@@ -1,0 +1,40 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/field/**/*.ts",
+    "../../../registry/source/components/field/**/*.tsx",
+    "../../../registry/source/components/fieldset/**/*.ts",
+    "../../../registry/source/components/fieldset/**/*.tsx",
+    "../../../registry/source/components/form/**/*.ts",
+    "../../../registry/source/components/form/**/*.tsx",
+    "../../../registry/source/components/validation-summary/**/*.ts",
+    "../../../registry/source/components/validation-summary/**/*.tsx",
+    "../../../registry/source/components/input/**/*.ts",
+    "../../../registry/source/components/input/**/*.tsx",
+    "../../../registry/source/components/textarea/**/*.ts",
+    "../../../registry/source/components/textarea/**/*.tsx",
+    "../../../registry/source/components/native-select/**/*.ts",
+    "../../../registry/source/components/native-select/**/*.tsx",
+    "../../../registry/source/components/checkbox/**/*.ts",
+    "../../../registry/source/components/checkbox/**/*.tsx",
+    "../../../registry/source/components/checkbox-group/**/*.ts",
+    "../../../registry/source/components/checkbox-group/**/*.tsx",
+    "../../../registry/source/components/radio-group/**/*.ts",
+    "../../../registry/source/components/radio-group/**/*.tsx",
+    "../../../registry/source/components/switch/**/*.ts",
+    "../../../registry/source/components/switch/**/*.tsx",
+    "../../../apps/storybook/src/P2FormControls.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

@@ -1,0 +1,28 @@
+@layer mergora.components {
+  [data-focus-ring="true"]:focus-visible {
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-semantic-color-background-canvas);
+  }
+
+  [data-focus-ring="true"][data-focus-ring-contrast="strong"]:focus-visible {
+    box-shadow:
+      0 0 0 var(--mrg-component-focus-indicator-width) var(--mrg-semantic-color-background-canvas),
+      0 0 0 calc(var(--mrg-component-focus-indicator-width) * 2)
+        var(--mrg-component-focus-indicator-color);
+    outline-color: transparent;
+    outline-offset: calc(var(--mrg-component-focus-indicator-width) * 2);
+  }
+
+  @media (forced-colors: active) {
+    [data-focus-ring="true"]:focus-visible,
+    [data-focus-ring="true"][data-focus-ring-contrast="strong"]:focus-visible {
+      box-shadow: none;
+      outline: 3px solid Highlight;
+      outline-offset: 3px;
+      forced-color-adjust: auto;
+    }
+  }
+}

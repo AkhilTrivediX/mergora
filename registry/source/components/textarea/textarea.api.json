@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "textarea",
+  "entryExport": "Textarea",
+  "refTarget": "HTMLTextAreaElement",
+  "nativeProps": "React.TextareaHTMLAttributes<HTMLTextAreaElement>",
+  "exports": [
+    { "kind": "component", "name": "Textarea" },
+    { "kind": "function", "name": "countTextareaGraphemes" },
+    { "kind": "function", "name": "formatTextareaCount" },
+    { "kind": "type", "name": "TextareaProps" }
+  ],
+  "props": [
+    { "name": "autoGrow", "required": false, "default": false, "type": "boolean" },
+    { "name": "maxRows", "required": false, "default": 8, "type": "number" },
+    { "name": "showCount", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "maxGraphemes",
+      "required": false,
+      "type": "number; mutually exclusive with native maxLength"
+    },
+    {
+      "name": "graphemeLimitMessage",
+      "required": false,
+      "default": "textarea.graphemeLimit provider key with English fallback",
+      "type": "string"
+    },
+    {
+      "name": "formatCount",
+      "required": false,
+      "type": "(current, maximum) => string; overrides provider-backed count text"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" }
+  ],
+  "compositionPolicy": {
+    "limits": "Native maxLength remains authoritative for UTF-16 code units. The type and runtime make maxGraphemes mutually exclusive; it uses Intl.Segmenter, synchronized ARIA/native validity, and no truncation of composition, paste, undo, or dictation.",
+    "autogrow": "Visual block size is capped at maxRows, responds to width and font changes, and clears when disabled without altering the value or submission.",
+    "count": "Default text uses textarea.count and textarea.countWithMaximum provider keys. It counts grapheme clusters with maxGraphemes and UTF-16 code units with maxLength or no grapheme limit."
+  }
+}

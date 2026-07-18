@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./client-only.css", "react"],
+  "entryPath": "registry/source/components/client-only/client-only.tsx",
+  "id": "client-only",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

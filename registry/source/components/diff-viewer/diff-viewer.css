@@ -1,0 +1,145 @@
+.mrg-diff-viewer {
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  border-radius: var(--mrg-semantic-radius-panel);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.mrg-diff-viewer [data-slot="diff-toolbar"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-surface);
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  padding: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-diff-viewer [data-slot="diff-summary"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  margin-inline-end: auto;
+}
+.mrg-diff-viewer [data-slot="diff-copy"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-diff-viewer
+  :is([data-slot="diff-copy"], [data-slot="diff-scroll"], [data-slot="diff-line"]):focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+}
+.mrg-diff-viewer [data-slot="diff-scroll"] {
+  max-block-size: 34rem;
+  max-inline-size: 100%;
+  overflow: auto;
+}
+.mrg-diff-viewer table {
+  border-collapse: collapse;
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-code);
+  inline-size: 100%;
+  min-inline-size: 34rem;
+}
+.mrg-diff-viewer th,
+.mrg-diff-viewer td {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+  text-align: start;
+}
+.mrg-diff-viewer thead th {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  font-family: var(--mrg-semantic-font-family-prose);
+  position: sticky;
+  inset-block-start: 0;
+}
+.mrg-diff-viewer [data-slot="diff-marker"] {
+  inline-size: 3rem;
+  text-align: center;
+}
+.mrg-diff-viewer :is([data-slot="diff-old-line"], [data-slot="diff-new-line"]) {
+  color: var(--mrg-semantic-color-foreground-muted);
+  inline-size: 4rem;
+  text-align: end;
+}
+.mrg-diff-viewer [data-kind="added"] {
+  background: var(--mrg-semantic-color-diff-added-background);
+  color: var(--mrg-semantic-color-diff-added-foreground);
+}
+.mrg-diff-viewer [data-kind="removed"] {
+  background: var(--mrg-semantic-color-diff-removed-background);
+  color: var(--mrg-semantic-color-diff-removed-foreground);
+}
+.mrg-diff-viewer [data-kind="changed"] {
+  background: var(--mrg-semantic-color-diff-changed-background);
+  color: var(--mrg-semantic-color-diff-changed-foreground);
+}
+.mrg-diff-viewer [data-active="true"] {
+  outline: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-selection-border);
+  outline-offset: calc(var(--mrg-semantic-border-width-strong) * -1);
+}
+.mrg-diff-viewer code {
+  color: inherit;
+  font: inherit;
+}
+.mrg-diff-viewer[data-wrap="true"] code {
+  overflow-wrap: anywhere;
+  white-space: break-spaces;
+}
+.mrg-diff-viewer[data-wrap="false"] code {
+  white-space: pre;
+}
+.mrg-diff-viewer [data-slot="diff-empty"] {
+  margin: 0;
+  padding: var(--mrg-semantic-density-panel-padding);
+}
+.mrg-diff-sr-only {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+@media (forced-colors: active) {
+  .mrg-diff-viewer {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+  .mrg-diff-viewer [data-slot="diff-toolbar"],
+  .mrg-diff-viewer thead th {
+    background: Canvas;
+    border-color: CanvasText;
+  }
+  .mrg-diff-viewer [data-kind] {
+    background: Canvas;
+    color: CanvasText;
+  }
+  .mrg-diff-viewer [data-kind="added"] [data-slot="diff-marker"]::after {
+    content: " added";
+  }
+  .mrg-diff-viewer [data-kind="removed"] [data-slot="diff-marker"]::after {
+    content: " removed";
+  }
+  .mrg-diff-viewer [data-kind="changed"] [data-slot="diff-marker"]::after {
+    content: " changed";
+  }
+  .mrg-diff-viewer [data-active="true"] {
+    outline-color: Highlight;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mrg-diff-viewer * {
+    scroll-behavior: auto;
+  }
+}

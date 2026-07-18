@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "code-block",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "code-block",
+    "stableAttributes": ["data-slot", "data-wrap"]
+  },
+  "parts": [
+    {
+      "element": "button",
+      "slot": "code-block-copy",
+      "stableAttributes": ["data-slot", "data-copy-status"]
+    },
+    {
+      "element": "pre",
+      "slot": "code-block-scroll",
+      "stableAttributes": ["data-slot", "data-focus"]
+    },
+    {
+      "element": "span",
+      "slot": "code-block-line",
+      "stableAttributes": ["data-slot", "data-highlighted"]
+    }
+  ]
+}

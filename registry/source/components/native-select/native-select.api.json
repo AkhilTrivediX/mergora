@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "native-select",
+  "entryExport": "NativeSelect",
+  "refTarget": "HTMLSelectElement",
+  "nativeProps": "React.SelectHTMLAttributes<HTMLSelectElement>",
+  "exports": [
+    { "kind": "component", "name": "NativeSelect" },
+    { "kind": "type", "name": "NativeSelectProps" }
+  ],
+  "props": [
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "multiple", "required": false, "default": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" }
+  ],
+  "compositionPolicy": {
+    "popup": "The browser owns the desktop and mobile picker; no custom listbox or proxy input is rendered.",
+    "serialization": "Native single and repeated multiple select FormData semantics remain authoritative."
+  }
+}

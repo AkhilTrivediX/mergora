@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "spinner",
+  "root": {
+    "slot": "spinner",
+    "element": "span aria-hidden",
+    "ref": "HTMLSpanElement",
+    "stableAttributes": ["data-slot", "data-size"]
+  },
+  "parts": [
+    {
+      "slot": "busy-region",
+      "element": "named div role=region aria-busy with no live descendants",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "pending",
+    "destructive"
+  ],
+  "slots": [
+    {
+      "name": "button",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["disabled", "pending", "size", "variant"]
+    },
+    {
+      "name": "button-label",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["pending-label"]
+    },
+    {
+      "name": "button-pending-indicator",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["pending"]
+    }
+  ],
+  "contract": { "id": "button-accessibility", "version": "0.1.0" },
+  "passport": { "id": "button-quality-passport", "version": "0.0.0" }
+}

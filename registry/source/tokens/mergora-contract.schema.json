@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Mergora token compiler contract",
+  "type": "object",
+  "required": [
+    "contractVersion",
+    "dtcgVersion",
+    "cssVariablePrefix",
+    "defaultContext",
+    "requiredContexts",
+    "semanticColorGroups",
+    "requiredTokenPrefixes",
+    "brandAnchors",
+    "contrastPairs",
+    "tailwindTheme",
+    "forcedSystemColors",
+    "componentImpacts"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "contractVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "dtcgVersion": { "const": "2025.10" },
+    "cssVariablePrefix": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "defaultContext": {
+      "type": "object",
+      "required": ["theme", "density"],
+      "additionalProperties": false,
+      "properties": {
+        "theme": { "type": "string" },
+        "density": { "type": "string" }
+      }
+    },
+    "requiredContexts": {
+      "type": "object",
+      "required": ["theme", "density"],
+      "additionalProperties": false,
+      "properties": {
+        "theme": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+        "density": { "type": "array", "minItems": 2, "items": { "type": "string" } }
+      }
+    },
+    "semanticColorGroups": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "requiredTokenPrefixes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "brandAnchors": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "components"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "type": "string" },
+          "components": {
+            "type": "array",
+            "prefixItems": [
+              { "type": "number", "minimum": 0, "maximum": 1 },
+              { "type": "number", "minimum": 0 },
+              { "type": "number", "minimum": 0, "maximum": 360 }
+            ],
+            "minItems": 3,
+            "maxItems": 3
+          }
+        }
+      }
+    },
+    "contrastPairs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "foreground", "background", "minimum", "kind"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "foreground": { "type": "string" },
+          "background": { "type": "string" },
+          "minimum": { "enum": [3, 4.5, 7] },
+          "kind": { "enum": ["text", "ui", "focus"] }
+        }
+      }
+    },
+    "tailwindTheme": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "forcedSystemColors": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "componentImpacts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

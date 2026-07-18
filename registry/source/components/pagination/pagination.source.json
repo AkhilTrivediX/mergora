@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./pagination.css", "react"],
+  "entryPath": "registry/source/components/pagination/pagination.tsx",
+  "id": "pagination",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

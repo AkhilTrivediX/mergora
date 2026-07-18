@@ -1,0 +1,47 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/action-menu/**/*.ts",
+    "../../../registry/source/components/action-menu/**/*.tsx",
+    "../../../registry/source/components/button/**/*.ts",
+    "../../../registry/source/components/button/**/*.tsx",
+    "../../../registry/source/components/button-group/**/*.ts",
+    "../../../registry/source/components/button-group/**/*.tsx",
+    "../../../registry/source/components/copy-button/**/*.ts",
+    "../../../registry/source/components/copy-button/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/icon-button/**/*.ts",
+    "../../../registry/source/components/icon-button/**/*.tsx",
+    "../../../registry/source/components/layer-manager/**/*.ts",
+    "../../../registry/source/components/layer-manager/**/*.tsx",
+    "../../../registry/source/components/link/**/*.ts",
+    "../../../registry/source/components/link/**/*.tsx",
+    "../../../registry/source/components/portal/**/*.ts",
+    "../../../registry/source/components/portal/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/segmented-control/**/*.ts",
+    "../../../registry/source/components/segmented-control/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../registry/source/components/toggle/**/*.ts",
+    "../../../registry/source/components/toggle/**/*.tsx",
+    "../../../registry/source/components/toggle-group/**/*.ts",
+    "../../../registry/source/components/toggle-group/**/*.tsx",
+    "../../../apps/storybook/src/P2ActionsSelection.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

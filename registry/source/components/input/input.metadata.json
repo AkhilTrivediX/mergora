@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "itemId": "input",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "invalid",
+    "required",
+    "autofill",
+    "mobile-input",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "input-root",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["disabled", "invalid"]
+    },
+    {
+      "name": "input",
+      "semanticElement": "input",
+      "refTarget": "HTMLInputElement",
+      "states": ["type", "required", "invalid", "disabled", "autofill"]
+    },
+    {
+      "name": "input-start-adornment",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "none",
+      "states": ["present"]
+    },
+    {
+      "name": "input-end-adornment",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "none",
+      "states": ["present"]
+    }
+  ],
+  "contract": { "id": "input-accessibility", "version": "0.1.0" },
+  "passport": { "id": "input-quality-passport", "version": "0.0.0" }
+}

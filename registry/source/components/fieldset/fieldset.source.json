@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "./fieldset.css", "react"],
+  "entryPath": "registry/source/components/fieldset/fieldset.tsx",
+  "id": "fieldset",
+  "itemDependencies": ["field"],
+  "outputRole": "component"
+}

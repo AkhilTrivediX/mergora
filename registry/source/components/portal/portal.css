@@ -1,0 +1,5 @@
+@layer mergora.components {
+  .mrg-portal-context {
+    display: contents;
+  }
+}

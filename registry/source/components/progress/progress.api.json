@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "progress",
+  "entryExport": "Progress",
+  "refTarget": "HTMLProgressElement",
+  "exports": [
+    { "kind": "component", "name": "Progress" },
+    { "kind": "type", "name": "ProgressProps" }
+  ],
+  "controlledState": ["value"],
+  "nativePolicy": [
+    "A visible label wraps one native progress element; omitting value creates native indeterminate semantics.",
+    "Determinate values are finite and bounded by a positive maximum; visible and aria-valuetext formatting share one localized string.",
+    "Role, generic accessible-name props, and aria value overrides are rejected at type and runtime boundaries because the visible label and native progress model own them.",
+    "Indeterminate motion is optional decoration and disappears under reduced motion."
+  ]
+}

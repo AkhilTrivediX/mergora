@@ -1,0 +1,44 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/resolver.json",
+  "name": "Mergora Living Workbench",
+  "version": "2025.10",
+  "description": "Orthogonal theme and density resolution for the Mergora token contract.",
+  "sets": {
+    "foundation": {
+      "description": "Primitive values followed by semantic and component aliases.",
+      "sources": [{ "$ref": "primitives.tokens.json" }, { "$ref": "semantics.tokens.json" }]
+    }
+  },
+  "modifiers": {
+    "theme": {
+      "description": "Explicit color themes and forced-color fallback intent.",
+      "contexts": {
+        "light": [{ "$ref": "themes/light.tokens.json" }],
+        "dark": [{ "$ref": "themes/dark.tokens.json" }],
+        "enhanced-contrast": [
+          { "$ref": "themes/light.tokens.json" },
+          { "$ref": "themes/enhanced-contrast.tokens.json" }
+        ],
+        "forced-colors": [
+          { "$ref": "themes/light.tokens.json" },
+          { "$ref": "themes/forced-colors.tokens.json" }
+        ]
+      },
+      "default": "light"
+    },
+    "density": {
+      "description": "Control and layout density independent from color theme.",
+      "contexts": {
+        "comfortable": [{ "$ref": "density/comfortable.tokens.json" }],
+        "compact": [{ "$ref": "density/compact.tokens.json" }],
+        "touch": [{ "$ref": "density/touch.tokens.json" }]
+      },
+      "default": "comfortable"
+    }
+  },
+  "resolutionOrder": [
+    { "$ref": "#/sets/foundation" },
+    { "$ref": "#/modifiers/theme" },
+    { "$ref": "#/modifiers/density" }
+  ]
+}

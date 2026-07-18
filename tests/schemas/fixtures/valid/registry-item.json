@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "registryId": "mergora",
+  "itemId": "button",
+  "kind": "component",
+  "version": "1.0.0",
+  "lastChangedVersion": "1.0.0",
+  "maturity": "stable",
+  "license": "MIT",
+  "title": "Button",
+  "description": "A test-only payload fixture; it makes no quality or accessibility claim.",
+  "links": {
+    "docs": "https://example.test/docs/button",
+    "source": "https://example.test/source/button",
+    "changelog": "https://example.test/changelog/button",
+    "passport": "https://example.test/releases/1.0.0/button/passport.json",
+    "contract": "https://example.test/releases/1.0.0/button/contract.json"
+  },
+  "compatibility": {
+    "cli": ">=1.0.0 <2.0.0",
+    "node": ">=24.0.0 <25.0.0",
+    "react": ">=19.0.0 <20.0.0",
+    "typescript": ">=5.9.0 <8.0.0",
+    "tailwind": ">=4.0.0 <5.0.0",
+    "frameworks": { "next": ">=15.0.0 <17.0.0" },
+    "packageManagers": { "pnpm": ">=10.0.0 <12.0.0" },
+    "browserCapabilities": ["css-custom-properties"]
+  },
+  "files": [
+    {
+      "logicalPath": "ui/button.tsx",
+      "targetRole": "component",
+      "mediaType": "text/typescript-jsx",
+      "bytes": 32,
+      "content": "export const Button = 'fixture';",
+      "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "executable": false,
+      "transformPipeline": [{ "adapter": "none", "version": "1.0.0" }]
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": {
+    "runtime": { "react": "^19.0.0" },
+    "development": {}
+  },
+  "structuredPatches": [],
+  "migrations": [],
+  "contract": { "id": "button-contract", "version": "1.0.0" },
+  "passport": { "id": "button-passport", "version": "1.0.0" },
+  "examples": ["examples/button-basic.tsx"],
+  "importPaths": ["mergora-ui/button"],
+  "payloadDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+}

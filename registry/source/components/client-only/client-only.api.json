@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "client-only",
+  "entryExport": "ClientOnly",
+  "refTarget": "none",
+  "nativeProps": "none",
+  "exports": [
+    { "kind": "component", "name": "ClientOnly" },
+    { "kind": "type", "name": "ClientOnlyProps" }
+  ],
+  "props": [
+    { "name": "children", "required": true, "type": "ReactNode" },
+    { "name": "fallback", "required": true, "type": "ReactNode" }
+  ],
+  "compositionPolicy": {
+    "hydration": "Server output and the first client render use the same fallback markup.",
+    "accessibility": "The consumer supplies an accurate, non-empty fallback and does not move focus when content replaces it.",
+    "scope": "Use only for genuinely browser-dependent content, never to conceal an SSR defect."
+  }
+}

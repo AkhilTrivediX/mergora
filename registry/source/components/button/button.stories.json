@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "Default"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "Default"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "Disabled"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Native buttons do not expose a read-only state; use disabled or pending according to the interaction contract."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation state belongs to the owning field or form, not to a standalone action button."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The native required attribute does not apply to button elements."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "Pending"
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An unnamed empty button is invalid usage and receives a development diagnostic rather than a supported state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "Default"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Button has no partial data model; pending represents an in-flight activation."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Action outcome belongs in persistent workflow feedback; Button does not encode success as a control state."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require adjacent explanatory content and are not represented by a color-only Button variant."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the workflow or field that failed; Button does not hold an error state."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "dark-theme",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "enhanced-contrast",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "VariantRail"
+    },
+    {
+      "id": "icon-only-named",
+      "applicability": { "status": "applicable" },
+      "story": "IconOnlyNamed"
+    },
+    {
+      "id": "long-localized-label",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowLongLabel"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "Pending"
+    },
+    {
+      "id": "rtl",
+      "applicability": { "status": "applicable" },
+      "story": "RightToLeft"
+    },
+    {
+      "id": "size-maximum",
+      "applicability": { "status": "applicable" },
+      "story": "SizeRail"
+    },
+    {
+      "id": "size-minimum",
+      "applicability": { "status": "applicable" },
+      "story": "SizeRail"
+    },
+    {
+      "id": "touch-target",
+      "applicability": { "status": "applicable" },
+      "story": "SizeRail"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../button/button-state.js",
+    "../provider/index.js",
+    "./copy-button.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/copy-button/copy-button.tsx",
+  "id": "copy-button",
+  "itemDependencies": ["button", "provider"],
+  "outputRole": "component"
+}

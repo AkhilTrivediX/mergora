@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scroll-area",
+  "root": {
+    "element": "div; role=region only when focusable=true",
+    "ref": "HTMLDivElement",
+    "slot": "scroll-area",
+    "stableAttributes": [
+      "data-slot",
+      "data-orientation",
+      "data-size",
+      "data-focusable",
+      "data-contain-overscroll",
+      "data-scroll-padding"
+    ]
+  },
+  "parts": []
+}

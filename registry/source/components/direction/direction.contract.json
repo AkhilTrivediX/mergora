@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "direction",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "provider": "Context-only and semantically transparent.",
+    "boundary": "A neutral div writes native dir and the identical context value.",
+    "default": "ltr is deterministic when no provider exists."
+  },
+  "direction": {
+    "nesting": "The nearest provider wins and outer direction resumes after the subtree.",
+    "portal": "React context follows portals; Portal additionally writes native dir on its DOM boundary.",
+    "logicalSides": "start resolves to left in LTR and right in RTL; end is the inverse.",
+    "css": "Consumers use logical properties unless a physical coordinate is semantically required."
+  },
+  "consumerResponsibilities": [
+    "Use Direction.Boundary or a native dir attribute whenever the DOM bidi algorithm must change.",
+    "Isolate mixed-direction user content with dir=auto or bdi.",
+    "Mirror only spatial icons and document whether arrow keys are spatial or logical."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "nested-context",
+      "native-dir",
+      "logical-side-map",
+      "ssr",
+      "hydration",
+      "portal-context",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["rtl-reading-order", "rtl-keyboard", "mixed-direction", "screen-reader", "zoom-400"],
+    "recordedEvidence": []
+  }
+}

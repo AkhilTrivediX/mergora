@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./dialog.js", "./model.js"],
+  "entryPath": "registry/source/components/dialog/index.ts",
+  "id": "dialog",
+  "itemDependencies": ["layer-manager", "provider"],
+  "outputRole": "component"
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "segmented-control",
+  "entryExport": "SegmentedControl",
+  "refTarget": "HTMLFieldSetElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "SegmentedControl"
+    },
+    {
+      "kind": "component",
+      "name": "SegmentedControlItem"
+    },
+    {
+      "kind": "namespace",
+      "name": "SegmentedControlParts"
+    },
+    {
+      "kind": "type",
+      "name": "SegmentedControlProps"
+    },
+    {
+      "kind": "type",
+      "name": "SegmentedControlItemProps"
+    },
+    {
+      "kind": "function",
+      "name": "resolveSegmentedIndex"
+    }
+  ],
+  "controlledState": ["value"],
+  "nativePolicy": [
+    "The fieldset and legend provide native group naming.",
+    "Home, End, and arrows move and select while skipping disabled options.",
+    "The horizontal scroller preserves touch and keyboard access at narrow widths."
+  ]
+}

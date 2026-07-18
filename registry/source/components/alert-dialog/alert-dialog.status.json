@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert-dialog",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify all derived surfaces and package/source parity.",
+    "Bind destructive, focus, dismissal, nested-layer, viewport, locale, preference, and packed-consumer automation to the candidate digest.",
+    "Complete Risk Class 2 manual keyboard, touch, speech, switch, forced-colors, NVDA/Firefox, and VoiceOver/Safari sessions.",
+    "Add Semantic Sync and public Passport evidence."
+  ]
+}

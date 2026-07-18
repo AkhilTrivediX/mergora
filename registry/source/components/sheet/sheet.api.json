@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sheet",
+  "entryExport": "Sheet",
+  "refTarget": "compound-part-dependent",
+  "exports": [
+    { "kind": "namespace", "name": "Sheet" },
+    { "kind": "component", "name": "SheetClose" },
+    { "kind": "type", "name": "SheetCloseProps" },
+    { "kind": "component", "name": "SheetContent" },
+    { "kind": "type", "name": "SheetContentProps" },
+    { "kind": "component", "name": "SheetDescription" },
+    { "kind": "type", "name": "SheetDescriptionProps" },
+    { "kind": "component", "name": "SheetFooter" },
+    { "kind": "type", "name": "SheetFooterProps" },
+    { "kind": "component", "name": "SheetHeader" },
+    { "kind": "type", "name": "SheetHeaderProps" },
+    { "kind": "component", "name": "SheetOverlay" },
+    { "kind": "type", "name": "SheetOverlayProps" },
+    { "kind": "component", "name": "SheetRoot" },
+    { "kind": "type", "name": "SheetRootProps" },
+    { "kind": "type", "name": "SheetSide" },
+    { "kind": "type", "name": "SheetSize" },
+    { "kind": "component", "name": "SheetTitle" },
+    { "kind": "type", "name": "SheetTitleProps" },
+    { "kind": "component", "name": "SheetTrigger" },
+    { "kind": "type", "name": "SheetTriggerProps" }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "Sheet reuses the canonical modal Dialog behavior and shared layer record.",
+    "start/end are logical sides resolved by native direction; top/bottom remain physical block edges.",
+    "Size is bounded by the visual viewport, safe areas, and narrow mobile adaptation."
+  ]
+}

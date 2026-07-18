@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "itemId": "code-block",
+  "entryExport": "CodeBlock",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "CodeBlock"
+    },
+    {
+      "kind": "type",
+      "name": "CodeBlockProps"
+    },
+    {
+      "kind": "type",
+      "name": "CodeBlockStatus"
+    },
+    {
+      "kind": "value",
+      "name": "codeBlockLines"
+    },
+    {
+      "kind": "value",
+      "name": "writeCodeBlockClipboard"
+    }
+  ],
+  "props": [
+    {
+      "name": "code",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "label",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "filename",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "language",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "highlightedLines",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "showLineNumbers",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "wrap",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "renderLine",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copiedLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyErrorLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "onCopyComplete",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline; copy completion is announced in a concise status node.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

@@ -1,0 +1,14 @@
+/* Generated from registry/source/components/form/form.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-form {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-lg);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-form[data-layout="compact"] {
+  gap: var(--mrg-semantic-space-stack-sm);
+}

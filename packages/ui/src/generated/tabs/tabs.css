@@ -1,0 +1,93 @@
+/* Generated from registry/source/components/tabs/tabs.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-tabs {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-lg);
+  min-inline-size: 0;
+}
+
+.mrg-tabs__list {
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow: auto hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.mrg-tabs[data-orientation="vertical"] {
+  align-items: start;
+  grid-template-columns: minmax(8rem, min(35%, 14rem)) minmax(0, 1fr);
+}
+
+.mrg-tabs[data-orientation="vertical"] .mrg-tabs__list {
+  flex-direction: column;
+  max-block-size: min(70vh, 32rem);
+  overflow: hidden auto;
+}
+
+.mrg-tabs__tab {
+  align-items: center;
+  border-block-end: var(--mrg-semantic-border-width-strong) solid transparent;
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: none;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: max(
+    var(--mrg-semantic-density-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mrg-tabs[data-orientation="vertical"] .mrg-tabs__tab {
+  border-block-end: 0;
+  border-inline-end: var(--mrg-semantic-border-width-strong) solid transparent;
+  inline-size: 100%;
+  white-space: normal;
+}
+
+.mrg-tabs__tab[data-selected] {
+  border-color: var(--mrg-semantic-color-border-interactive);
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-tabs__tab[data-focus-visible] {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+}
+
+.mrg-tabs__tab[data-disabled] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-tabs__panels,
+.mrg-tabs__panel {
+  min-inline-size: 0;
+}
+
+.mrg-tabs__panel {
+  outline: none;
+}
+
+.mrg-tabs__panel[data-focus-visible] {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+@media (forced-colors: active) {
+  .mrg-tabs__tab[data-selected] {
+    border-color: Highlight;
+  }
+
+  .mrg-tabs__tab[data-focus-visible],
+  .mrg-tabs__panel[data-focus-visible] {
+    outline-color: Highlight;
+  }
+}

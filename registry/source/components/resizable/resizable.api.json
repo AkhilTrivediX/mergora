@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "resizable",
+  "entryExport": "Resizable",
+  "refTarget": "Root=HTMLDivElement; Handle=focusable separator HTMLDivElement; panels=HTMLDivElement",
+  "exports": [
+    { "kind": "namespace", "name": "Resizable" },
+    { "kind": "component", "name": "ResizableRoot" },
+    { "kind": "component", "name": "ResizablePrimary" },
+    { "kind": "component", "name": "ResizableHandle" },
+    { "kind": "component", "name": "ResizableSecondary" },
+    { "kind": "function", "name": "clampResizableValue" },
+    { "kind": "function", "name": "formatResizableValue" },
+    { "kind": "type", "name": "ResizableChangeDetails" },
+    { "kind": "type", "name": "ResizableChangeReason" },
+    { "kind": "type", "name": "ResizableHandleProps" },
+    { "kind": "type", "name": "ResizableMessages" },
+    { "kind": "type", "name": "ResizableOrientation" },
+    { "kind": "type", "name": "ResizablePrimaryProps" },
+    { "kind": "type", "name": "ResizableRootProps" },
+    { "kind": "type", "name": "ResizableSecondaryProps" }
+  ],
+  "rootProps": [
+    {
+      "default": "uncontrolled",
+      "name": "value/defaultValue/onValueChange",
+      "required": false,
+      "type": "number percentage and callback"
+    },
+    {
+      "default": "none",
+      "name": "onValueCommit",
+      "required": false,
+      "type": "commit callback after discrete or completed pointer change"
+    },
+    { "default": "10/90", "name": "min/max", "required": false, "type": "number percentages" },
+    { "default": 5, "name": "step", "required": false, "type": "positive number" },
+    {
+      "default": "horizontal",
+      "name": "orientation",
+      "required": false,
+      "type": "horizontal | vertical"
+    },
+    { "default": false, "name": "collapsible", "required": false, "type": "boolean" },
+    { "default": 0, "name": "collapsedValue", "required": false, "type": "number below min" },
+    {
+      "default": "provider locale or en-US",
+      "name": "locale",
+      "required": false,
+      "type": "BCP 47 locale"
+    },
+    {
+      "default": "provider stable-key defaults",
+      "name": "messages/formatValue",
+      "required": false,
+      "type": "localization overrides"
+    }
+  ],
+  "handlePolicy": {
+    "accessibleName": "aria-label or aria-labelledby is required by the Handle type.",
+    "controls": "The separator and its 44-pixel decrement/increment/collapse controls are rendered as siblings, never nested interactive content."
+  }
+}

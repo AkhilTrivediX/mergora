@@ -1,0 +1,13 @@
+{
+  "declaredImports": [
+    "../checkbox/index.js",
+    "../field/index.js",
+    "../provider/index.js",
+    "./checkbox-group.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/checkbox-group/checkbox-group.tsx",
+  "id": "checkbox-group",
+  "itemDependencies": ["checkbox", "field", "provider"],
+  "outputRole": "component"
+}

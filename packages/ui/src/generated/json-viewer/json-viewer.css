@@ -1,0 +1,148 @@
+/* Generated from registry/source/components/json-viewer/json-viewer.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-json-viewer {
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  border-radius: var(--mrg-semantic-radius-panel);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.mrg-json-viewer [data-slot="json-toolbar"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-surface);
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  padding: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-json-viewer [data-slot="json-toolbar"] > * {
+  min-inline-size: 0;
+}
+.mrg-json-viewer [data-slot="json-active-path"] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  border-radius: var(--mrg-semantic-radius-status);
+  font-family: var(--mrg-semantic-font-family-machine);
+  margin-inline-end: auto;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-space-inline-xs) var(--mrg-semantic-space-inline-sm);
+}
+.mrg-json-viewer :is([data-slot="json-copy-path"], [data-slot="json-copy-value"]) {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-json-viewer [data-slot="json-tree"] {
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-code);
+  line-height: var(--mrg-semantic-font-line-height-code);
+  max-block-size: 34rem;
+  overflow: auto;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-json-viewer [data-slot="json-tree-item"] {
+  align-items: baseline;
+  column-gap: var(--mrg-semantic-space-inline-xs);
+  cursor: default;
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto minmax(0, 2fr);
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline-end: var(--mrg-semantic-space-inline-sm);
+  padding-inline-start: calc(
+    (var(--mrg-json-level) - 1) * var(--mrg-semantic-space-inline-lg) +
+      var(--mrg-semantic-space-inline-sm)
+  );
+}
+.mrg-json-viewer [data-slot="json-tree-item"]:hover {
+  background: var(--mrg-semantic-color-background-surface);
+}
+.mrg-json-viewer [data-slot="json-tree-item"][aria-selected="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+  color: var(--mrg-semantic-color-selection-foreground);
+  outline: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-selection-border);
+  outline-offset: calc(var(--mrg-semantic-border-width-default) * -1);
+}
+.mrg-json-viewer :is(button, [data-slot="json-tree-item"]):focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+}
+.mrg-json-viewer [data-slot="json-disclosure"] {
+  text-align: center;
+}
+.mrg-json-viewer [data-slot="json-key"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: block;
+  font-weight: var(--mrg-semantic-font-weight-code);
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
+}
+.mrg-json-viewer [data-slot="json-value"] {
+  color: var(--mrg-semantic-color-brand-violet);
+  display: block;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  white-space: break-spaces;
+  word-break: break-word;
+}
+.mrg-json-viewer
+  [data-slot="json-tree-item"][aria-selected="true"]
+  :is([data-slot="json-key"], [data-slot="json-value"]) {
+  color: inherit;
+}
+.mrg-json-viewer [data-type="boolean"] [data-slot="json-value"],
+.mrg-json-viewer [data-type="number"] [data-slot="json-value"] {
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+.mrg-json-viewer [data-type="null"] [data-slot="json-value"] {
+  font-style: italic;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+.mrg-json-sr-only {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+@media (forced-colors: active) {
+  .mrg-json-viewer {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+  .mrg-json-viewer [data-slot="json-toolbar"],
+  .mrg-json-viewer [data-slot="json-active-path"] {
+    background: Canvas;
+    border-color: CanvasText;
+  }
+  .mrg-json-viewer [data-slot="json-tree-item"] {
+    color: CanvasText;
+  }
+  .mrg-json-viewer [data-slot="json-tree-item"][aria-selected="true"] {
+    background: Highlight;
+    color: HighlightText;
+    outline-color: Highlight;
+  }
+  .mrg-json-viewer :is(button, [data-slot="json-tree-item"]):focus-visible {
+    outline-color: Highlight;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mrg-json-viewer * {
+    scroll-behavior: auto;
+  }
+}

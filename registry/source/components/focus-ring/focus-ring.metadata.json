@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "base",
+    "responsive-reflow",
+    "locale-direction",
+    "user-preferences",
+    "long-content",
+    "interaction"
+  ],
+  "slots": [
+    {
+      "name": "focus-ring",
+      "semanticElement": "consumer element retaining its own data-slot",
+      "refTarget": "HTMLElement",
+      "states": ["focus-visible", "standard", "strong"]
+    }
+  ],
+  "contract": { "id": "focus-ring-accessibility", "version": "0.1.0" },
+  "passport": { "id": "focus-ring-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "json-viewer",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "json-viewer",
+    "stableAttributes": ["data-slot", "data-virtualized"]
+  },
+  "parts": [
+    {
+      "element": "div role=tree",
+      "slot": "json-tree",
+      "stableAttributes": ["data-slot"]
+    },
+    {
+      "element": "div role=treeitem",
+      "slot": "json-tree-item",
+      "stableAttributes": ["data-slot", "data-expanded", "data-selected", "data-type", "data-path"]
+    },
+    {
+      "element": "button",
+      "slot": "json-copy-path",
+      "stableAttributes": ["data-slot", "data-copy-status"]
+    },
+    {
+      "element": "button",
+      "slot": "json-copy-value",
+      "stableAttributes": ["data-slot", "data-copy-status"]
+    }
+  ]
+}

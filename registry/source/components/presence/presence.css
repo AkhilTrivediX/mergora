@@ -1,0 +1,18 @@
+@layer mergora.components {
+  [data-presence="entering"],
+  [data-presence="entered"] {
+    opacity: 1;
+  }
+
+  [data-presence="exiting"] {
+    opacity: 0;
+    transition: opacity var(--mrg-semantic-motion-duration-overlay)
+      var(--mrg-semantic-motion-easing-exit);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-presence] {
+      transition-duration: 1ms;
+    }
+  }
+}

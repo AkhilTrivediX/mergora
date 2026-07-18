@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./alert-dialog.js"],
+  "entryPath": "registry/source/components/alert-dialog/index.ts",
+  "id": "alert-dialog",
+  "itemDependencies": ["dialog"],
+  "outputRole": "component"
+}

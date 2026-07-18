@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "icon-button",
+  "root": {
+    "slot": "icon-button",
+    "element": "button",
+    "ref": "HTMLButtonElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "icon-button-icon",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "icon-button-pending-indicator",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
+}

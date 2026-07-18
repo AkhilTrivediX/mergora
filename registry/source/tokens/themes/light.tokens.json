@@ -1,0 +1,127 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Light-first Living Workbench semantic color mapping.",
+  "semantic": {
+    "color": {
+      "background": {
+        "$type": "color",
+        "canvas": { "$value": "{primitive.color.neutral.0}" },
+        "surface": { "$value": "{primitive.color.neutral.50}" },
+        "surfaceRaised": { "$value": "{primitive.color.neutral.25}" },
+        "surfaceSunken": { "$value": "{primitive.color.neutral.100}" },
+        "inverse": { "$value": "{primitive.color.neutral.800}" }
+      },
+      "foreground": {
+        "$type": "color",
+        "primary": { "$value": "{primitive.color.neutral.800}" },
+        "muted": { "$value": "{primitive.color.neutral.500}" },
+        "inverse": { "$value": "{primitive.color.neutral.0}" },
+        "disabled": { "$value": "{primitive.color.neutral.600}" }
+      },
+      "border": {
+        "$type": "color",
+        "default": { "$value": "{primitive.color.neutral.200}" },
+        "strong": { "$value": "{primitive.color.neutral.400}" },
+        "interactive": { "$value": "{primitive.color.neutral.500}" },
+        "disabled": { "$value": "{primitive.color.neutral.300}" }
+      },
+      "brand": {
+        "$type": "color",
+        "living": { "$value": "{primitive.color.green.500}" },
+        "action": { "$value": "{primitive.color.green.700}" },
+        "violet": { "$value": "{primitive.color.violet.700}" }
+      },
+      "action": {
+        "$type": "color",
+        "background": { "$value": "{primitive.color.green.700}" },
+        "backgroundHover": { "$value": "{primitive.color.green.800}" },
+        "backgroundPressed": { "$value": "{primitive.color.green.900}" },
+        "foreground": { "$value": "{primitive.color.neutral.0}" },
+        "border": { "$value": "{primitive.color.green.800}" }
+      },
+      "accent": {
+        "$type": "color",
+        "background": { "$value": "{primitive.color.violet.700}" },
+        "backgroundSubtle": { "$value": "{primitive.color.violet.50}" },
+        "foreground": { "$value": "{primitive.color.neutral.0}" },
+        "foregroundOnSubtle": { "$value": "{primitive.color.violet.700}" },
+        "border": { "$value": "{primitive.color.violet.600}" }
+      },
+      "selection": {
+        "$type": "color",
+        "background": { "$value": "{primitive.color.green.100}" },
+        "foreground": { "$value": "{primitive.color.green.900}" },
+        "border": { "$value": "{primitive.color.green.700}" }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": { "$value": "{primitive.color.violet.700}" },
+        "ringOnAction": { "$value": "{primitive.color.neutral.0}" }
+      },
+      "status": {
+        "success": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.green.50}" },
+          "foreground": { "$value": "{primitive.color.green.900}" },
+          "border": { "$value": "{primitive.color.green.700}" }
+        },
+        "warning": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.amber.50}" },
+          "foreground": { "$value": "{primitive.color.amber.900}" },
+          "border": { "$value": "{primitive.color.amber.700}" }
+        },
+        "danger": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.red.50}" },
+          "foreground": { "$value": "{primitive.color.red.900}" },
+          "border": { "$value": "{primitive.color.red.700}" }
+        },
+        "info": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.blue.50}" },
+          "foreground": { "$value": "{primitive.color.blue.900}" },
+          "border": { "$value": "{primitive.color.blue.700}" }
+        }
+      },
+      "diff": {
+        "added": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.green.50}" },
+          "foreground": { "$value": "{primitive.color.green.900}" },
+          "marker": { "$value": "{primitive.color.green.700}" }
+        },
+        "removed": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.red.50}" },
+          "foreground": { "$value": "{primitive.color.red.900}" },
+          "marker": { "$value": "{primitive.color.red.700}" }
+        },
+        "changed": {
+          "$type": "color",
+          "background": { "$value": "{primitive.color.violet.50}" },
+          "foreground": { "$value": "{primitive.color.violet.700}" },
+          "marker": { "$value": "{primitive.color.violet.600}" }
+        }
+      },
+      "overlay": {
+        "$type": "color",
+        "scrim": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.12, 0.018, 150],
+            "alpha": 0.56
+          }
+        }
+      },
+      "code": {
+        "$type": "color",
+        "background": { "$value": "{primitive.color.neutral.800}" },
+        "foreground": { "$value": "{primitive.color.neutral.50}" },
+        "comment": { "$value": "{primitive.color.neutral.300}" },
+        "keyword": { "$value": "{primitive.color.green.300}" },
+        "literal": { "$value": "{primitive.color.violet.300}" }
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "copy-button",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source, package, registry, documentation, and public subpath outputs.",
+    "Bind strict type, unit, SSR, schema, browser, axe, keyboard, focus, RTL, forced-colors, reduced-motion, and narrow-width results to the candidate digest.",
+    "Complete manual keyboard-only, speech, switch, touch, Windows forced-colors, NVDA/Firefox, and VoiceOver/Safari sessions for the candidate.",
+    "Pass packed Next.js and Vite package/source consumers plus package/source behavioral parity.",
+    "Add Semantic Sync clean, customized, conflict, rollback, removal, and cross-item dependency fixtures.",
+    "Review long localization, 200% text, 400% zoom, 320 CSS pixels, dark, enhanced contrast, and preference behavior.",
+    "Publish an approved Quality Passport and dogfood the generated artifact on the public site."
+  ]
+}

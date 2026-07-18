@@ -1,0 +1,3693 @@
+{
+  "artifacts": {
+    "canonical": {
+      "path": "canonical.dtcg.json",
+      "sha256": "c81e8c8bd5b013ef7437537c1c1067cabf190fca380345856b90f85b4a3074d0"
+    },
+    "resolved": {
+      "dark-comfortable": "46486b51df1b8c653f10a65d78e4d0ff16d0c9a1441e497a53aa73dd079150c1",
+      "dark-compact": "db2e78ef17a9e9432fcb32b097f466e8f00ef1bdaff58c3e2faab007dcd7e302",
+      "dark-touch": "8faefe2dfa48332fefe7e8972ae91221629a9d1f72ab4b0c5929bafbf0f36dd7",
+      "enhanced-contrast-comfortable": "04f33ab08a80bdc0ccd18922f8531de1d03e2c37f65a3749b34a88612c95f360",
+      "enhanced-contrast-compact": "b711d57c639987101e801c3af5e6716572a9e511855d285ed28c658e91b1411d",
+      "enhanced-contrast-touch": "3b8d49f1902c6af433fc57506a9dc79683a234b932b2abab39b63c89ca298467",
+      "forced-colors-comfortable": "431fffa0ebca28216af1f91f5654cd3afe1afa7fb95a254c56022b3710bfcce6",
+      "forced-colors-compact": "6682f5fbb8e8d3a9083f5b2d5ef00babd51155bdb8356d49d43152d8b480ab6f",
+      "forced-colors-touch": "ca92c4d39cf04cdaac5e6d1d81ec4b4e1bd6afe11ca710539c773358b51d001a",
+      "light-comfortable": "4be5b88b9dda47702e842f90f9a96fc2648d7a8ba9f7e60d37cff556763e4d5c",
+      "light-compact": "d9dc3bc839b5308573b9f16a8d3667e936e25671ede8d67affbc059eb2b2f137",
+      "light-touch": "b9de87c993bbadb64bfcdec2b27bfe26a4529607aea2e2f0b7dd1e99e89a3996"
+    },
+    "resolver": {
+      "path": "mergora.resolver.json",
+      "sha256": "95f24cb64e3e657d7c908455781adbb178766e458fb386519b25d0f8cf78efd9"
+    },
+    "schema": {
+      "path": "schema.json",
+      "sha256": "37f2426576596166d6b6f080378f5745e41f63744947ecf329bd55260e5ff566"
+    },
+    "sources": {
+      "density/comfortable.tokens.json": "8b464a4f33c7969de631e5ca72dabdd057eb3b104a216498496fa6c2c6c5f308",
+      "density/compact.tokens.json": "bdcb529460d24b015dd9694b017157c5e29598c6a96de423f95b8d9f2bf37a19",
+      "density/touch.tokens.json": "41c92ca922077e3fcb9fdd90ad0c6301036554b4940d8ad7ecec209c4316a0b6",
+      "primitives.tokens.json": "36ca6fd9b8c955f40fb97634e51a0a9b67b344ca0ac20dcde55ec32f7a041842",
+      "semantics.tokens.json": "6c5c9e77a4c346f94145cc2e92b48070faef270c475fa02e2fc82550f761848d",
+      "themes/dark.tokens.json": "c3adef67dc99584cc24f1bb88fe9373e17e4c5dbf81f2e9f4d0aef5ea5a942b0",
+      "themes/enhanced-contrast.tokens.json": "c608b6b3d65595acee7a7395ae0e942f0fa979124ca4269f222fd3f9693a63f8",
+      "themes/forced-colors.tokens.json": "f6ea65f5e8fe4617f7c9be71e7234b0294b29363ff4e288b7c5a4a26049143d4",
+      "themes/light.tokens.json": "7dfef9d35ab24846d1b01de7cbc3154f7c00da72e2e394a274229847f66d625a"
+    }
+  },
+  "brandAnchors": {
+    "actionGreen": {
+      "components": [0.42, 0.13, 150],
+      "path": "primitive.color.green.700"
+    },
+    "canvas": {
+      "components": [1, 0, 0],
+      "path": "primitive.color.neutral.0"
+    },
+    "deepViolet": {
+      "components": [0.33, 0.135, 292],
+      "path": "primitive.color.violet.700"
+    },
+    "ink": {
+      "components": [0.18, 0.018, 150],
+      "path": "primitive.color.neutral.800"
+    },
+    "line": {
+      "components": [0.875, 0.01, 150],
+      "path": "primitive.color.neutral.200"
+    },
+    "livingGreen": {
+      "components": [0.6, 0.158, 150],
+      "path": "primitive.color.green.500"
+    },
+    "mutedInk": {
+      "components": [0.47, 0.018, 150],
+      "path": "primitive.color.neutral.500"
+    },
+    "surface": {
+      "components": [0.97, 0.006, 150],
+      "path": "primitive.color.neutral.50"
+    }
+  },
+  "componentImpacts": {
+    "component.badge": ["Badge", "Status"],
+    "component.button": ["Button"],
+    "component.code": ["CodeBlock", "CommandOutput"],
+    "component.dataGrid": ["DataGrid", "TreeGrid"],
+    "component.dialog": ["Dialog", "AlertDialog", "Sheet"],
+    "component.field": ["Field", "Combobox", "Select", "TagsInput"],
+    "component.focusIndicator": ["All interactive components"]
+  },
+  "contexts": {
+    "default": {
+      "density": "comfortable",
+      "theme": "light"
+    },
+    "density": ["comfortable", "compact", "touch"],
+    "theme": ["light", "dark", "enhanced-contrast", "forced-colors"]
+  },
+  "contractVersion": "1.0.0",
+  "contrastEvidence": [
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 18.74,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 6.77,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.22,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 6.22,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.inverse",
+      "foreground": "semantic.color.foreground.inverse",
+      "id": "text-inverse",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 18.74,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-default",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.87,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.action.backgroundHover",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-hover",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.action.backgroundPressed",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-pressed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.9,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.accent.background",
+      "foreground": "semantic.color.accent.foreground",
+      "id": "accent-solid",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.92,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.accent.backgroundSubtle",
+      "foreground": "semantic.color.accent.foregroundOnSubtle",
+      "id": "accent-subtle",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.78,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.selection.background",
+      "foreground": "semantic.color.selection.foreground",
+      "id": "selection",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.border.interactive",
+      "id": "interactive-border-canvas",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 6.77,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-canvas",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 12.92,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-surface",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 11.87,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.focus.ringOnAction",
+      "id": "focus-on-action",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 7.87,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.foreground",
+      "id": "success-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 13.8,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.border",
+      "id": "success-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 7.28,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.foreground",
+      "id": "warning-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.23,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.border",
+      "id": "warning-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 7.81,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.foreground",
+      "id": "danger-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.79,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.border",
+      "id": "danger-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.97,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.foreground",
+      "id": "info-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.49,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.border",
+      "id": "info-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.2,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.diff.added.background",
+      "foreground": "semantic.color.diff.added.foreground",
+      "id": "diff-added",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 13.8,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.diff.removed.background",
+      "foreground": "semantic.color.diff.removed.foreground",
+      "id": "diff-removed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.79,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.diff.changed.background",
+      "foreground": "semantic.color.diff.changed.foreground",
+      "id": "diff-changed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.78,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.foreground",
+      "id": "code-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.22,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.comment",
+      "id": "code-comment",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.41,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.keyword",
+      "id": "code-keyword",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 8.9,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.literal",
+      "id": "code-literal",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.27,
+      "systemManaged": false,
+      "theme": "light"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 18.62,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 10.18,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.22,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.41,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.inverse",
+      "foreground": "semantic.color.foreground.inverse",
+      "id": "text-inverse",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 18.62,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-default",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.87,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.action.backgroundHover",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-hover",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 16.33,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.action.backgroundPressed",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-pressed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.62,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.accent.background",
+      "foreground": "semantic.color.accent.foreground",
+      "id": "accent-solid",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.86,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.accent.backgroundSubtle",
+      "foreground": "semantic.color.accent.foregroundOnSubtle",
+      "id": "accent-subtle",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.43,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.selection.background",
+      "foreground": "semantic.color.selection.foreground",
+      "id": "selection",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.border.interactive",
+      "id": "interactive-border-canvas",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 10.18,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-canvas",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 9.62,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-surface",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.9,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.focus.ringOnAction",
+      "id": "focus-on-action",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 12.87,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.foreground",
+      "id": "success-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.border",
+      "id": "success-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 7.07,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.foreground",
+      "id": "warning-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.43,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.border",
+      "id": "warning-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.04,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.foreground",
+      "id": "danger-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.51,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.border",
+      "id": "danger-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 6.23,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.foreground",
+      "id": "info-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.49,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.border",
+      "id": "info-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 6.93,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.diff.added.background",
+      "foreground": "semantic.color.diff.added.foreground",
+      "id": "diff-added",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.diff.removed.background",
+      "foreground": "semantic.color.diff.removed.foreground",
+      "id": "diff-removed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.51,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.diff.changed.background",
+      "foreground": "semantic.color.diff.changed.foreground",
+      "id": "diff-changed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.43,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.foreground",
+      "id": "code-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 18.89,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.comment",
+      "id": "code-comment",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 10.33,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.keyword",
+      "id": "code-keyword",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.76,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.literal",
+      "id": "code-literal",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.98,
+      "systemManaged": false,
+      "theme": "dark"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 20.26,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 10.77,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 19.42,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 10.33,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.inverse",
+      "foreground": "semantic.color.foreground.inverse",
+      "id": "text-inverse",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 20.26,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-default",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.action.backgroundHover",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-hover",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.9,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.action.backgroundPressed",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-pressed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.57,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.accent.background",
+      "foreground": "semantic.color.accent.foreground",
+      "id": "accent-solid",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 16.53,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.accent.backgroundSubtle",
+      "foreground": "semantic.color.accent.foregroundOnSubtle",
+      "id": "accent-subtle",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 15.07,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.selection.background",
+      "foreground": "semantic.color.selection.foreground",
+      "id": "selection",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.border.interactive",
+      "id": "interactive-border-canvas",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 10.77,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-canvas",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 16.53,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-surface",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 15.84,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.focus.ringOnAction",
+      "id": "focus-on-action",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.foreground",
+      "id": "success-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 13.8,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.border",
+      "id": "success-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 10.25,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.foreground",
+      "id": "warning-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.23,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.border",
+      "id": "warning-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 7.81,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.foreground",
+      "id": "danger-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.79,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.border",
+      "id": "danger-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.97,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.foreground",
+      "id": "info-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.49,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.border",
+      "id": "info-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.2,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.diff.added.background",
+      "foreground": "semantic.color.diff.added.foreground",
+      "id": "diff-added",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 13.8,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.diff.removed.background",
+      "foreground": "semantic.color.diff.removed.foreground",
+      "id": "diff-removed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.79,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.diff.changed.background",
+      "foreground": "semantic.color.diff.changed.foreground",
+      "id": "diff-changed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.78,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.foreground",
+      "id": "code-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.22,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.comment",
+      "id": "code-comment",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.41,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.keyword",
+      "id": "code-keyword",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 8.9,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.literal",
+      "id": "code-literal",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.27,
+      "systemManaged": false,
+      "theme": "enhanced-contrast"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 20.26,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-canvas",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.97,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.primary",
+      "id": "text-primary-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 20.26,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.foreground.muted",
+      "id": "text-muted-surface",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.97,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.inverse",
+      "foreground": "semantic.color.foreground.inverse",
+      "id": "text-inverse",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 20.26,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-default",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.action.backgroundHover",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-hover",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.9,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.action.backgroundPressed",
+      "foreground": "semantic.color.action.foreground",
+      "id": "action-pressed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.9,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.accent.background",
+      "foreground": "semantic.color.accent.foreground",
+      "id": "accent-solid",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 16.53,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.accent.backgroundSubtle",
+      "foreground": "semantic.color.accent.foregroundOnSubtle",
+      "id": "accent-subtle",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 15.07,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.selection.background",
+      "foreground": "semantic.color.selection.foreground",
+      "id": "selection",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 12.01,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.border.interactive",
+      "id": "interactive-border-canvas",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 18.74,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.canvas",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-canvas",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 16.53,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.background.surface",
+      "foreground": "semantic.color.focus.ring",
+      "id": "focus-surface",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 16.53,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.action.background",
+      "foreground": "semantic.color.focus.ringOnAction",
+      "id": "focus-on-action",
+      "kind": "focus",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.foreground",
+      "id": "success-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.9,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.success.background",
+      "foreground": "semantic.color.status.success.border",
+      "id": "success-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 11.07,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.foreground",
+      "id": "warning-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 15.3,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.warning.background",
+      "foreground": "semantic.color.status.warning.border",
+      "id": "warning-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.39,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.foreground",
+      "id": "danger-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 16.49,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.danger.background",
+      "foreground": "semantic.color.status.danger.border",
+      "id": "danger-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 10,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.foreground",
+      "id": "info-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 15.81,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.status.info.background",
+      "foreground": "semantic.color.status.info.border",
+      "id": "info-border",
+      "kind": "ui",
+      "minimum": 3,
+      "passes": true,
+      "ratio": 8.94,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.diff.added.background",
+      "foreground": "semantic.color.diff.added.foreground",
+      "id": "diff-added",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 13.8,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.diff.removed.background",
+      "foreground": "semantic.color.diff.removed.foreground",
+      "id": "diff-removed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 14.79,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.diff.changed.background",
+      "foreground": "semantic.color.diff.changed.foreground",
+      "id": "diff-changed",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 11.78,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.foreground",
+      "id": "code-text",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 17.22,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.comment",
+      "id": "code-comment",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 9.41,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.keyword",
+      "id": "code-keyword",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 8.9,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    },
+    {
+      "background": "semantic.color.code.background",
+      "foreground": "semantic.color.code.literal",
+      "id": "code-literal",
+      "kind": "text",
+      "minimum": 4.5,
+      "passes": true,
+      "ratio": 7.27,
+      "systemManaged": true,
+      "theme": "forced-colors"
+    }
+  ],
+  "dtcgVersion": "2025.10",
+  "fontManifest": {
+    "families": [
+      {
+        "asset": "schibsted-grotesk-latin-ext-wght.woff2",
+        "bytes": 64196,
+        "coverage": ["Latin", "Latin Extended", "Vietnamese"],
+        "display": "swap",
+        "fallback": {
+          "ascentOverride": "96.0286%",
+          "descentOverride": "25.3516%",
+          "family": "Schibsted Grotesk Fallback",
+          "lineGapOverride": "0.0000%",
+          "local": "Arial",
+          "sizeAdjust": "101.6949%"
+        },
+        "family": "Schibsted Grotesk",
+        "license": "OFL-Schibsted-Grotesk.txt",
+        "licenseSha256": "3b4f3063b6ac7c1e403e2c4a5e8ef3a58190ff83ed7b15af66511858699139ce",
+        "licenseSpdx": "OFL-1.1",
+        "preload": true,
+        "sha256": "34e6c5583165b9c809e2a6a3af4f33edf3fbdf7c0de5ad9e466bd636d316e52b",
+        "source": {
+          "commit": "8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5",
+          "path": "ofl/schibstedgrotesk/SchibstedGrotesk[wght].ttf",
+          "repository": "google/fonts",
+          "sha256": "6ceeadf6be8e1fd7687011c7fa38ed0edd1abe967a0b73d97caec183552e823d"
+        },
+        "style": "normal",
+        "unicodeRange": [
+          "U+0000-024F",
+          "U+0300-036F",
+          "U+1E00-1EFF",
+          "U+2000-206F",
+          "U+2070-209F",
+          "U+20A0-20CF",
+          "U+2100-214F",
+          "U+2190-21FF",
+          "U+2200-22FF",
+          "U+2300-23FF",
+          "U+25A0-25FF",
+          "U+2600-26FF",
+          "U+FB00-FB06"
+        ],
+        "weight": "400 900"
+      },
+      {
+        "asset": "commit-mono-latin-greek-wght.woff2",
+        "bytes": 43756,
+        "coverage": ["Latin", "Latin Extended", "Greek"],
+        "display": "swap",
+        "fallback": {
+          "ascentOverride": "81.7057%",
+          "descentOverride": "18.1568%",
+          "family": "Commit Mono Fallback",
+          "lineGapOverride": "0.0000%",
+          "local": "Consolas",
+          "sizeAdjust": "110.1514%"
+        },
+        "family": "Commit Mono",
+        "license": "OFL-Commit-Mono.txt",
+        "licenseSha256": "005e08f22d472be5139dcaf876dbed7ce8f17a501cd180c3259ad2aaf27237fe",
+        "licenseSpdx": "OFL-1.1",
+        "normalization": {
+          "maxpMaxZones": {
+            "maxTwilightPoints": 0,
+            "output": 1,
+            "reason": "OpenType maxp v1 requires one or two zones; this no-twilight font needs the glyph zone only.",
+            "source": 0
+          }
+        },
+        "preload": false,
+        "sha256": "d3544274757823e0c7e48622d441c95170be7d84b6a2e59fec7bead8984278ba",
+        "source": {
+          "commit": "d407cd2bf8e01ca1db70544052fbbb9606406c3b",
+          "path": "src/fonts/fontlab/CommitMonoV143-VF.ttf",
+          "repository": "eigilnikolajsen/commit-mono",
+          "sha256": "98de9a901163a769812c3cf2f1b86d63a98a9ced6720d747aa6652688407c34f"
+        },
+        "style": "normal",
+        "unicodeRange": [
+          "U+0000-024F",
+          "U+0300-03FF",
+          "U+1E00-1FFF",
+          "U+2000-206F",
+          "U+2070-209F",
+          "U+20A0-20CF",
+          "U+2100-214F",
+          "U+2190-21FF",
+          "U+2200-22FF",
+          "U+2300-23FF",
+          "U+25A0-25FF",
+          "U+2600-26FF",
+          "U+FFFD"
+        ],
+        "weight": "200 700"
+      }
+    ],
+    "subsetter": {
+      "brotli": "1.1.0",
+      "fontTools": "4.62.1"
+    },
+    "version": 1
+  },
+  "name": "Mergora Living Workbench",
+  "tokenCount": 330,
+  "tokens": [
+    {
+      "cssVariable": "--mrg-component-badge-radius",
+      "path": "component.badge.radius",
+      "reference": "semantic.radius.status",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-component-badge-success-background",
+      "path": "component.badge.successBackground",
+      "reference": "semantic.color.status.success.background",
+      "type": "color",
+      "value": "oklch(97% 0.03 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-badge-success-foreground",
+      "path": "component.badge.successForeground",
+      "reference": "semantic.color.status.success.foreground",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-badge-warning-background",
+      "path": "component.badge.warningBackground",
+      "reference": "semantic.color.status.warning.background",
+      "type": "color",
+      "value": "oklch(97.5% 0.025 85)"
+    },
+    {
+      "cssVariable": "--mrg-component-badge-warning-foreground",
+      "path": "component.badge.warningForeground",
+      "reference": "semantic.color.status.warning.foreground",
+      "type": "color",
+      "value": "oklch(27% 0.06 55)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-background",
+      "path": "component.button.primary.background",
+      "reference": "semantic.color.action.background",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-background-hover",
+      "path": "component.button.primary.backgroundHover",
+      "reference": "semantic.color.action.backgroundHover",
+      "type": "color",
+      "value": "oklch(34% 0.11 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-border",
+      "path": "component.button.primary.border",
+      "reference": "semantic.color.action.border",
+      "type": "color",
+      "value": "oklch(34% 0.11 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-foreground",
+      "path": "component.button.primary.foreground",
+      "reference": "semantic.color.action.foreground",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-height",
+      "path": "component.button.primary.height",
+      "reference": "semantic.density.controlHeight",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-padding-inline",
+      "path": "component.button.primary.paddingInline",
+      "reference": "semantic.density.controlPaddingInline",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-component-button-primary-radius",
+      "path": "component.button.primary.radius",
+      "reference": "semantic.radius.control",
+      "type": "dimension",
+      "value": "6px"
+    },
+    {
+      "cssVariable": "--mrg-component-button-secondary-background",
+      "path": "component.button.secondary.background",
+      "reference": "semantic.color.background.surface",
+      "type": "color",
+      "value": "oklch(97% 0.006 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-secondary-border",
+      "path": "component.button.secondary.border",
+      "reference": "semantic.color.border.interactive",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-button-secondary-foreground",
+      "path": "component.button.secondary.foreground",
+      "reference": "semantic.color.foreground.primary",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-code-background",
+      "path": "component.code.background",
+      "reference": "semantic.color.code.background",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-code-font-family",
+      "path": "component.code.fontFamily",
+      "reference": "semantic.font.family.machine",
+      "type": "fontFamily",
+      "value": "\"Commit Mono\", \"Commit Mono Fallback\", ui-monospace, SFMono-Regular, Consolas, monospace"
+    },
+    {
+      "cssVariable": "--mrg-component-code-font-size",
+      "path": "component.code.fontSize",
+      "reference": "semantic.font.size.code",
+      "type": "dimension",
+      "value": "13px"
+    },
+    {
+      "cssVariable": "--mrg-component-code-foreground",
+      "path": "component.code.foreground",
+      "reference": "semantic.color.code.foreground",
+      "type": "color",
+      "value": "oklch(97% 0.006 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-code-line-height",
+      "path": "component.code.lineHeight",
+      "reference": "semantic.font.lineHeight.code",
+      "type": "number",
+      "value": "1.6"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-background",
+      "path": "component.dataGrid.background",
+      "reference": "semantic.color.background.canvas",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-foreground",
+      "path": "component.dataGrid.foreground",
+      "reference": "semantic.color.foreground.primary",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-line",
+      "path": "component.dataGrid.line",
+      "reference": "semantic.color.border.default",
+      "type": "color",
+      "value": "oklch(87.5% 0.01 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-row-height",
+      "path": "component.dataGrid.rowHeight",
+      "reference": "semantic.density.rowHeight",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-selection-background",
+      "path": "component.dataGrid.selectionBackground",
+      "reference": "semantic.color.selection.background",
+      "type": "color",
+      "value": "oklch(92% 0.06 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-selection-border",
+      "path": "component.dataGrid.selectionBorder",
+      "reference": "semantic.color.selection.border",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-data-grid-selection-foreground",
+      "path": "component.dataGrid.selectionForeground",
+      "reference": "semantic.color.selection.foreground",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-background",
+      "path": "component.dialog.background",
+      "reference": "semantic.color.background.surfaceRaised",
+      "type": "color",
+      "value": "oklch(98.5% 0.002 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-elevation",
+      "path": "component.dialog.elevation",
+      "reference": "semantic.elevation.modal",
+      "type": "shadow",
+      "value": "0px 12px 32px -8px oklch(12% 0.018 150 / 0.2)"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-foreground",
+      "path": "component.dialog.foreground",
+      "reference": "semantic.color.foreground.primary",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-layer",
+      "path": "component.dialog.layer",
+      "reference": "semantic.layer.modal",
+      "type": "number",
+      "value": "400"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-radius",
+      "path": "component.dialog.radius",
+      "reference": "semantic.radius.overlay",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-component-dialog-scrim",
+      "path": "component.dialog.scrim",
+      "reference": "semantic.color.overlay.scrim",
+      "type": "color",
+      "value": "oklch(12% 0.018 150 / 0.56)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-background",
+      "path": "component.field.background",
+      "reference": "semantic.color.background.canvas",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-border",
+      "path": "component.field.border",
+      "reference": "semantic.color.border.interactive",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-border-invalid",
+      "path": "component.field.borderInvalid",
+      "reference": "semantic.color.status.danger.border",
+      "type": "color",
+      "value": "oklch(40% 0.16 25)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-foreground",
+      "path": "component.field.foreground",
+      "reference": "semantic.color.foreground.primary",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-height",
+      "path": "component.field.height",
+      "reference": "semantic.density.controlHeight",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-component-field-placeholder",
+      "path": "component.field.placeholder",
+      "reference": "semantic.color.foreground.muted",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-component-field-radius",
+      "path": "component.field.radius",
+      "reference": "semantic.radius.control",
+      "type": "dimension",
+      "value": "6px"
+    },
+    {
+      "cssVariable": "--mrg-component-focus-indicator-color",
+      "path": "component.focusIndicator.color",
+      "reference": "semantic.color.focus.ring",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-component-focus-indicator-offset",
+      "path": "component.focusIndicator.offset",
+      "reference": "semantic.focus.offset",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-component-focus-indicator-radius",
+      "path": "component.focusIndicator.radius",
+      "reference": "semantic.focus.radius",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-component-focus-indicator-width",
+      "path": "component.focusIndicator.width",
+      "reference": "semantic.focus.width",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-border-example",
+      "path": "primitive.border.example",
+      "type": "border",
+      "value": "1px solid oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-border-width-default",
+      "path": "primitive.border.width.default",
+      "type": "dimension",
+      "value": "1px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-border-width-focus",
+      "path": "primitive.border.width.focus",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-border-width-strong",
+      "path": "primitive.border.width.strong",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-breakpoint-lg",
+      "path": "primitive.breakpoint.lg",
+      "type": "dimension",
+      "value": "1024px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-breakpoint-md",
+      "path": "primitive.breakpoint.md",
+      "type": "dimension",
+      "value": "768px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-breakpoint-sm",
+      "path": "primitive.breakpoint.sm",
+      "type": "dimension",
+      "value": "640px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-breakpoint-xl",
+      "path": "primitive.breakpoint.xl",
+      "type": "dimension",
+      "value": "1280px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-100",
+      "path": "primitive.color.amber.100",
+      "type": "color",
+      "value": "oklch(93% 0.07 85)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-300",
+      "path": "primitive.color.amber.300",
+      "type": "color",
+      "value": "oklch(80% 0.14 75)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-50",
+      "path": "primitive.color.amber.50",
+      "type": "color",
+      "value": "oklch(97.5% 0.025 85)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-500",
+      "path": "primitive.color.amber.500",
+      "type": "color",
+      "value": "oklch(65% 0.14 65)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-700",
+      "path": "primitive.color.amber.700",
+      "type": "color",
+      "value": "oklch(43% 0.1 55)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-amber-900",
+      "path": "primitive.color.amber.900",
+      "type": "color",
+      "value": "oklch(27% 0.06 55)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-100",
+      "path": "primitive.color.blue.100",
+      "type": "color",
+      "value": "oklch(92% 0.05 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-300",
+      "path": "primitive.color.blue.300",
+      "type": "color",
+      "value": "oklch(74% 0.12 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-50",
+      "path": "primitive.color.blue.50",
+      "type": "color",
+      "value": "oklch(97% 0.02 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-500",
+      "path": "primitive.color.blue.500",
+      "type": "color",
+      "value": "oklch(57% 0.16 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-700",
+      "path": "primitive.color.blue.700",
+      "type": "color",
+      "value": "oklch(40% 0.13 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-blue-900",
+      "path": "primitive.color.blue.900",
+      "type": "color",
+      "value": "oklch(25% 0.08 245)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-100",
+      "path": "primitive.color.green.100",
+      "type": "color",
+      "value": "oklch(92% 0.06 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-200",
+      "path": "primitive.color.green.200",
+      "type": "color",
+      "value": "oklch(84% 0.1 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-300",
+      "path": "primitive.color.green.300",
+      "type": "color",
+      "value": "oklch(75% 0.14 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-400",
+      "path": "primitive.color.green.400",
+      "type": "color",
+      "value": "oklch(67% 0.16 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-50",
+      "path": "primitive.color.green.50",
+      "type": "color",
+      "value": "oklch(97% 0.03 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-500",
+      "description": "Living Green brand target.",
+      "path": "primitive.color.green.500",
+      "type": "color",
+      "value": "oklch(60% 0.158 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-600",
+      "path": "primitive.color.green.600",
+      "type": "color",
+      "value": "oklch(50% 0.15 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-700",
+      "description": "Action Green brand target.",
+      "path": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-800",
+      "path": "primitive.color.green.800",
+      "type": "color",
+      "value": "oklch(34% 0.11 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-green-900",
+      "path": "primitive.color.green.900",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-0",
+      "path": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-100",
+      "path": "primitive.color.neutral.100",
+      "type": "color",
+      "value": "oklch(94% 0.008 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-200",
+      "path": "primitive.color.neutral.200",
+      "type": "color",
+      "value": "oklch(87.5% 0.01 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-25",
+      "path": "primitive.color.neutral.25",
+      "type": "color",
+      "value": "oklch(98.5% 0.002 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-300",
+      "path": "primitive.color.neutral.300",
+      "type": "color",
+      "value": "oklch(78% 0.014 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-400",
+      "path": "primitive.color.neutral.400",
+      "type": "color",
+      "value": "oklch(62% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-50",
+      "path": "primitive.color.neutral.50",
+      "type": "color",
+      "value": "oklch(97% 0.006 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-500",
+      "path": "primitive.color.neutral.500",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-600",
+      "path": "primitive.color.neutral.600",
+      "type": "color",
+      "value": "oklch(36% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-700",
+      "path": "primitive.color.neutral.700",
+      "type": "color",
+      "value": "oklch(27% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-800",
+      "path": "primitive.color.neutral.800",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-neutral-900",
+      "path": "primitive.color.neutral.900",
+      "type": "color",
+      "value": "oklch(12% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-100",
+      "path": "primitive.color.red.100",
+      "type": "color",
+      "value": "oklch(92% 0.055 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-300",
+      "path": "primitive.color.red.300",
+      "type": "color",
+      "value": "oklch(72% 0.15 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-50",
+      "path": "primitive.color.red.50",
+      "type": "color",
+      "value": "oklch(97% 0.025 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-500",
+      "path": "primitive.color.red.500",
+      "type": "color",
+      "value": "oklch(55% 0.2 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-700",
+      "path": "primitive.color.red.700",
+      "type": "color",
+      "value": "oklch(40% 0.16 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-red-900",
+      "path": "primitive.color.red.900",
+      "type": "color",
+      "value": "oklch(25% 0.09 25)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-100",
+      "path": "primitive.color.violet.100",
+      "type": "color",
+      "value": "oklch(91% 0.05 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-200",
+      "path": "primitive.color.violet.200",
+      "type": "color",
+      "value": "oklch(82% 0.09 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-300",
+      "path": "primitive.color.violet.300",
+      "type": "color",
+      "value": "oklch(72% 0.13 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-400",
+      "path": "primitive.color.violet.400",
+      "type": "color",
+      "value": "oklch(62% 0.16 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-50",
+      "path": "primitive.color.violet.50",
+      "type": "color",
+      "value": "oklch(97% 0.02 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-500",
+      "path": "primitive.color.violet.500",
+      "type": "color",
+      "value": "oklch(52% 0.17 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-600",
+      "path": "primitive.color.violet.600",
+      "type": "color",
+      "value": "oklch(42% 0.155 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-700",
+      "description": "Deep Violet brand target.",
+      "path": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-800",
+      "path": "primitive.color.violet.800",
+      "type": "color",
+      "value": "oklch(25% 0.105 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-color-violet-900",
+      "path": "primitive.color.violet.900",
+      "type": "color",
+      "value": "oklch(18% 0.075 292)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-container-content",
+      "path": "primitive.container.content",
+      "type": "dimension",
+      "value": "1120px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-container-prose",
+      "path": "primitive.container.prose",
+      "type": "dimension",
+      "value": "720px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-container-wide",
+      "path": "primitive.container.wide",
+      "type": "dimension",
+      "value": "1360px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-duration-deliberate",
+      "path": "primitive.duration.deliberate",
+      "type": "duration",
+      "value": "360ms"
+    },
+    {
+      "cssVariable": "--mrg-primitive-duration-fast",
+      "path": "primitive.duration.fast",
+      "type": "duration",
+      "value": "80ms"
+    },
+    {
+      "cssVariable": "--mrg-primitive-duration-instant",
+      "path": "primitive.duration.instant",
+      "type": "duration",
+      "value": "0ms"
+    },
+    {
+      "cssVariable": "--mrg-primitive-duration-normal",
+      "path": "primitive.duration.normal",
+      "type": "duration",
+      "value": "160ms"
+    },
+    {
+      "cssVariable": "--mrg-primitive-duration-slow",
+      "path": "primitive.duration.slow",
+      "type": "duration",
+      "value": "240ms"
+    },
+    {
+      "cssVariable": "--mrg-primitive-easing-enter",
+      "path": "primitive.easing.enter",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0, 0, 0.2, 1)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-easing-exit",
+      "path": "primitive.easing.exit",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-easing-linear",
+      "path": "primitive.easing.linear",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0, 0, 1, 1)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-easing-standard",
+      "path": "primitive.easing.standard",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-family-machine",
+      "path": "primitive.font.family.machine",
+      "type": "fontFamily",
+      "value": "\"Commit Mono\", \"Commit Mono Fallback\", ui-monospace, SFMono-Regular, Consolas, monospace"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-family-prose",
+      "path": "primitive.font.family.prose",
+      "type": "fontFamily",
+      "value": "\"Schibsted Grotesk\", \"Schibsted Grotesk Fallback\", Arial, sans-serif"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-letter-spacing-code",
+      "path": "primitive.font.letterSpacing.code",
+      "type": "dimension",
+      "value": "0.1px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-letter-spacing-normal",
+      "path": "primitive.font.letterSpacing.normal",
+      "type": "dimension",
+      "value": "0px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-letter-spacing-tight",
+      "path": "primitive.font.letterSpacing.tight",
+      "type": "dimension",
+      "value": "-0.4px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-line-height-body",
+      "path": "primitive.font.lineHeight.body",
+      "type": "number",
+      "value": "1.55"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-line-height-code",
+      "path": "primitive.font.lineHeight.code",
+      "type": "number",
+      "value": "1.6"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-line-height-heading",
+      "path": "primitive.font.lineHeight.heading",
+      "type": "number",
+      "value": "1.25"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-line-height-tight",
+      "path": "primitive.font.lineHeight.tight",
+      "type": "number",
+      "value": "1.15"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-2xl",
+      "path": "primitive.font.size.2xl",
+      "type": "dimension",
+      "value": "25px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-3xl",
+      "path": "primitive.font.size.3xl",
+      "type": "dimension",
+      "value": "32px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-4xl",
+      "path": "primitive.font.size.4xl",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-lg",
+      "path": "primitive.font.size.lg",
+      "type": "dimension",
+      "value": "17px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-md",
+      "path": "primitive.font.size.md",
+      "type": "dimension",
+      "value": "15px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-sm",
+      "path": "primitive.font.size.sm",
+      "type": "dimension",
+      "value": "13px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-xl",
+      "path": "primitive.font.size.xl",
+      "type": "dimension",
+      "value": "20px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-size-xs",
+      "path": "primitive.font.size.xs",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-typography-body",
+      "path": "primitive.font.typography.body",
+      "type": "typography",
+      "value": "400 15px/1.55 \"Schibsted Grotesk\", \"Schibsted Grotesk Fallback\", Arial, sans-serif"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-typography-code",
+      "path": "primitive.font.typography.code",
+      "type": "typography",
+      "value": "450 13px/1.6 \"Commit Mono\", \"Commit Mono Fallback\", ui-monospace, Consolas, monospace"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-typography-heading",
+      "path": "primitive.font.typography.heading",
+      "type": "typography",
+      "value": "650 32px/1.15 \"Schibsted Grotesk\", \"Schibsted Grotesk Fallback\", Arial, sans-serif"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-weight-bold",
+      "path": "primitive.font.weight.bold",
+      "type": "fontWeight",
+      "value": "750"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-weight-code",
+      "path": "primitive.font.weight.code",
+      "type": "fontWeight",
+      "value": "450"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-weight-medium",
+      "path": "primitive.font.weight.medium",
+      "type": "fontWeight",
+      "value": "550"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-weight-regular",
+      "path": "primitive.font.weight.regular",
+      "type": "fontWeight",
+      "value": "400"
+    },
+    {
+      "cssVariable": "--mrg-primitive-font-weight-semibold",
+      "path": "primitive.font.weight.semibold",
+      "type": "fontWeight",
+      "value": "650"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-base",
+      "path": "primitive.layer.base",
+      "type": "number",
+      "value": "0"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-dropdown",
+      "path": "primitive.layer.dropdown",
+      "type": "number",
+      "value": "200"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-modal",
+      "path": "primitive.layer.modal",
+      "type": "number",
+      "value": "400"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-overlay",
+      "path": "primitive.layer.overlay",
+      "type": "number",
+      "value": "300"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-raised",
+      "path": "primitive.layer.raised",
+      "type": "number",
+      "value": "10"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-sticky",
+      "path": "primitive.layer.sticky",
+      "type": "number",
+      "value": "100"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-toast",
+      "path": "primitive.layer.toast",
+      "type": "number",
+      "value": "500"
+    },
+    {
+      "cssVariable": "--mrg-primitive-layer-tooltip",
+      "path": "primitive.layer.tooltip",
+      "type": "number",
+      "value": "600"
+    },
+    {
+      "cssVariable": "--mrg-primitive-opacity-disabled",
+      "path": "primitive.opacity.disabled",
+      "type": "number",
+      "value": "0.48"
+    },
+    {
+      "cssVariable": "--mrg-primitive-opacity-muted",
+      "path": "primitive.opacity.muted",
+      "type": "number",
+      "value": "0.68"
+    },
+    {
+      "cssVariable": "--mrg-primitive-opacity-scrim",
+      "path": "primitive.opacity.scrim",
+      "type": "number",
+      "value": "0.56"
+    },
+    {
+      "cssVariable": "--mrg-primitive-opacity-solid",
+      "path": "primitive.opacity.solid",
+      "type": "number",
+      "value": "1"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-full",
+      "path": "primitive.radius.full",
+      "type": "dimension",
+      "value": "999px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-lg",
+      "path": "primitive.radius.lg",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-md",
+      "path": "primitive.radius.md",
+      "type": "dimension",
+      "value": "6px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-none",
+      "path": "primitive.radius.none",
+      "type": "dimension",
+      "value": "0px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-sm",
+      "path": "primitive.radius.sm",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-xl",
+      "path": "primitive.radius.xl",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-radius-xs",
+      "path": "primitive.radius.xs",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-shadow-lg",
+      "path": "primitive.shadow.lg",
+      "type": "shadow",
+      "value": "0px 12px 32px -8px oklch(12% 0.018 150 / 0.2)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-shadow-md",
+      "path": "primitive.shadow.md",
+      "type": "shadow",
+      "value": "0px 4px 12px -2px oklch(18% 0.018 150 / 0.12), 0px 1px 3px 0px oklch(18% 0.018 150 / 0.08)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-shadow-none",
+      "path": "primitive.shadow.none",
+      "type": "shadow",
+      "value": "0px 0px 0px 0px oklch(18% 0.018 150 / 0)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-shadow-sm",
+      "path": "primitive.shadow.sm",
+      "type": "shadow",
+      "value": "0px 1px 2px 0px oklch(18% 0.018 150 / 0.12)"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-10",
+      "path": "primitive.size.10",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-11",
+      "path": "primitive.size.11",
+      "type": "dimension",
+      "value": "44px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-12",
+      "path": "primitive.size.12",
+      "type": "dimension",
+      "value": "48px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-14",
+      "path": "primitive.size.14",
+      "type": "dimension",
+      "value": "56px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-16",
+      "path": "primitive.size.16",
+      "type": "dimension",
+      "value": "64px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-20",
+      "path": "primitive.size.20",
+      "type": "dimension",
+      "value": "80px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-24",
+      "path": "primitive.size.24",
+      "type": "dimension",
+      "value": "96px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-4",
+      "path": "primitive.size.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-5",
+      "path": "primitive.size.5",
+      "type": "dimension",
+      "value": "20px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-6",
+      "path": "primitive.size.6",
+      "type": "dimension",
+      "value": "24px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-8",
+      "path": "primitive.size.8",
+      "type": "dimension",
+      "value": "32px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-size-9",
+      "path": "primitive.size.9",
+      "type": "dimension",
+      "value": "36px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-0",
+      "path": "primitive.space.0",
+      "type": "dimension",
+      "value": "0px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-1",
+      "path": "primitive.space.1",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-10",
+      "path": "primitive.space.10",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-12",
+      "path": "primitive.space.12",
+      "type": "dimension",
+      "value": "48px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-16",
+      "path": "primitive.space.16",
+      "type": "dimension",
+      "value": "64px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-2",
+      "path": "primitive.space.2",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-20",
+      "path": "primitive.space.20",
+      "type": "dimension",
+      "value": "80px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-3",
+      "path": "primitive.space.3",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-4",
+      "path": "primitive.space.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-5",
+      "path": "primitive.space.5",
+      "type": "dimension",
+      "value": "20px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-6",
+      "path": "primitive.space.6",
+      "type": "dimension",
+      "value": "24px"
+    },
+    {
+      "cssVariable": "--mrg-primitive-space-8",
+      "path": "primitive.space.8",
+      "type": "dimension",
+      "value": "32px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-border-example",
+      "path": "semantic.border.example",
+      "reference": "primitive.border.example",
+      "type": "border",
+      "value": "1px solid oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-border-width-default",
+      "path": "semantic.border.width.default",
+      "reference": "primitive.border.width.default",
+      "type": "dimension",
+      "value": "1px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-border-width-focus",
+      "path": "semantic.border.width.focus",
+      "reference": "primitive.border.width.focus",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-border-width-strong",
+      "path": "semantic.border.width.strong",
+      "reference": "primitive.border.width.strong",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-breakpoint-lg",
+      "path": "semantic.breakpoint.lg",
+      "reference": "primitive.breakpoint.lg",
+      "type": "dimension",
+      "value": "1024px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-breakpoint-md",
+      "path": "semantic.breakpoint.md",
+      "reference": "primitive.breakpoint.md",
+      "type": "dimension",
+      "value": "768px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-breakpoint-sm",
+      "path": "semantic.breakpoint.sm",
+      "reference": "primitive.breakpoint.sm",
+      "type": "dimension",
+      "value": "640px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-breakpoint-xl",
+      "path": "semantic.breakpoint.xl",
+      "reference": "primitive.breakpoint.xl",
+      "type": "dimension",
+      "value": "1280px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-accent-background",
+      "path": "semantic.color.accent.background",
+      "reference": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-accent-background-subtle",
+      "path": "semantic.color.accent.backgroundSubtle",
+      "reference": "primitive.color.violet.50",
+      "type": "color",
+      "value": "oklch(97% 0.02 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-accent-border",
+      "path": "semantic.color.accent.border",
+      "reference": "primitive.color.violet.600",
+      "type": "color",
+      "value": "oklch(42% 0.155 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-accent-foreground",
+      "path": "semantic.color.accent.foreground",
+      "reference": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-accent-foreground-on-subtle",
+      "path": "semantic.color.accent.foregroundOnSubtle",
+      "reference": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-action-background",
+      "path": "semantic.color.action.background",
+      "reference": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-action-background-hover",
+      "path": "semantic.color.action.backgroundHover",
+      "reference": "primitive.color.green.800",
+      "type": "color",
+      "value": "oklch(34% 0.11 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-action-background-pressed",
+      "path": "semantic.color.action.backgroundPressed",
+      "reference": "primitive.color.green.900",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-action-border",
+      "path": "semantic.color.action.border",
+      "reference": "primitive.color.green.800",
+      "type": "color",
+      "value": "oklch(34% 0.11 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-action-foreground",
+      "path": "semantic.color.action.foreground",
+      "reference": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-background-canvas",
+      "path": "semantic.color.background.canvas",
+      "reference": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-background-inverse",
+      "path": "semantic.color.background.inverse",
+      "reference": "primitive.color.neutral.800",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-background-surface",
+      "path": "semantic.color.background.surface",
+      "reference": "primitive.color.neutral.50",
+      "type": "color",
+      "value": "oklch(97% 0.006 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-background-surface-raised",
+      "path": "semantic.color.background.surfaceRaised",
+      "reference": "primitive.color.neutral.25",
+      "type": "color",
+      "value": "oklch(98.5% 0.002 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-background-surface-sunken",
+      "path": "semantic.color.background.surfaceSunken",
+      "reference": "primitive.color.neutral.100",
+      "type": "color",
+      "value": "oklch(94% 0.008 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-border-default",
+      "path": "semantic.color.border.default",
+      "reference": "primitive.color.neutral.200",
+      "type": "color",
+      "value": "oklch(87.5% 0.01 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-border-disabled",
+      "path": "semantic.color.border.disabled",
+      "reference": "primitive.color.neutral.300",
+      "type": "color",
+      "value": "oklch(78% 0.014 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-border-interactive",
+      "path": "semantic.color.border.interactive",
+      "reference": "primitive.color.neutral.500",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-border-strong",
+      "path": "semantic.color.border.strong",
+      "reference": "primitive.color.neutral.400",
+      "type": "color",
+      "value": "oklch(62% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-brand-action",
+      "path": "semantic.color.brand.action",
+      "reference": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-brand-living",
+      "path": "semantic.color.brand.living",
+      "reference": "primitive.color.green.500",
+      "type": "color",
+      "value": "oklch(60% 0.158 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-brand-violet",
+      "path": "semantic.color.brand.violet",
+      "reference": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-code-background",
+      "path": "semantic.color.code.background",
+      "reference": "primitive.color.neutral.800",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-code-comment",
+      "path": "semantic.color.code.comment",
+      "reference": "primitive.color.neutral.300",
+      "type": "color",
+      "value": "oklch(78% 0.014 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-code-foreground",
+      "path": "semantic.color.code.foreground",
+      "reference": "primitive.color.neutral.50",
+      "type": "color",
+      "value": "oklch(97% 0.006 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-code-keyword",
+      "path": "semantic.color.code.keyword",
+      "reference": "primitive.color.green.300",
+      "type": "color",
+      "value": "oklch(75% 0.14 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-code-literal",
+      "path": "semantic.color.code.literal",
+      "reference": "primitive.color.violet.300",
+      "type": "color",
+      "value": "oklch(72% 0.13 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-added-background",
+      "path": "semantic.color.diff.added.background",
+      "reference": "primitive.color.green.50",
+      "type": "color",
+      "value": "oklch(97% 0.03 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-added-foreground",
+      "path": "semantic.color.diff.added.foreground",
+      "reference": "primitive.color.green.900",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-added-marker",
+      "path": "semantic.color.diff.added.marker",
+      "reference": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-changed-background",
+      "path": "semantic.color.diff.changed.background",
+      "reference": "primitive.color.violet.50",
+      "type": "color",
+      "value": "oklch(97% 0.02 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-changed-foreground",
+      "path": "semantic.color.diff.changed.foreground",
+      "reference": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-changed-marker",
+      "path": "semantic.color.diff.changed.marker",
+      "reference": "primitive.color.violet.600",
+      "type": "color",
+      "value": "oklch(42% 0.155 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-removed-background",
+      "path": "semantic.color.diff.removed.background",
+      "reference": "primitive.color.red.50",
+      "type": "color",
+      "value": "oklch(97% 0.025 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-removed-foreground",
+      "path": "semantic.color.diff.removed.foreground",
+      "reference": "primitive.color.red.900",
+      "type": "color",
+      "value": "oklch(25% 0.09 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-diff-removed-marker",
+      "path": "semantic.color.diff.removed.marker",
+      "reference": "primitive.color.red.700",
+      "type": "color",
+      "value": "oklch(40% 0.16 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-focus-ring",
+      "path": "semantic.color.focus.ring",
+      "reference": "primitive.color.violet.700",
+      "type": "color",
+      "value": "oklch(33% 0.135 292)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-focus-ring-on-action",
+      "path": "semantic.color.focus.ringOnAction",
+      "reference": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-foreground-disabled",
+      "path": "semantic.color.foreground.disabled",
+      "reference": "primitive.color.neutral.600",
+      "type": "color",
+      "value": "oklch(36% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-foreground-inverse",
+      "path": "semantic.color.foreground.inverse",
+      "reference": "primitive.color.neutral.0",
+      "type": "color",
+      "value": "oklch(100% 0 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-foreground-muted",
+      "path": "semantic.color.foreground.muted",
+      "reference": "primitive.color.neutral.500",
+      "type": "color",
+      "value": "oklch(47% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-foreground-primary",
+      "path": "semantic.color.foreground.primary",
+      "reference": "primitive.color.neutral.800",
+      "type": "color",
+      "value": "oklch(18% 0.018 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-overlay-scrim",
+      "path": "semantic.color.overlay.scrim",
+      "type": "color",
+      "value": "oklch(12% 0.018 150 / 0.56)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-selection-background",
+      "path": "semantic.color.selection.background",
+      "reference": "primitive.color.green.100",
+      "type": "color",
+      "value": "oklch(92% 0.06 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-selection-border",
+      "path": "semantic.color.selection.border",
+      "reference": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-selection-foreground",
+      "path": "semantic.color.selection.foreground",
+      "reference": "primitive.color.green.900",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-danger-background",
+      "path": "semantic.color.status.danger.background",
+      "reference": "primitive.color.red.50",
+      "type": "color",
+      "value": "oklch(97% 0.025 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-danger-border",
+      "path": "semantic.color.status.danger.border",
+      "reference": "primitive.color.red.700",
+      "type": "color",
+      "value": "oklch(40% 0.16 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-danger-foreground",
+      "path": "semantic.color.status.danger.foreground",
+      "reference": "primitive.color.red.900",
+      "type": "color",
+      "value": "oklch(25% 0.09 25)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-info-background",
+      "path": "semantic.color.status.info.background",
+      "reference": "primitive.color.blue.50",
+      "type": "color",
+      "value": "oklch(97% 0.02 245)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-info-border",
+      "path": "semantic.color.status.info.border",
+      "reference": "primitive.color.blue.700",
+      "type": "color",
+      "value": "oklch(40% 0.13 245)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-info-foreground",
+      "path": "semantic.color.status.info.foreground",
+      "reference": "primitive.color.blue.900",
+      "type": "color",
+      "value": "oklch(25% 0.08 245)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-success-background",
+      "path": "semantic.color.status.success.background",
+      "reference": "primitive.color.green.50",
+      "type": "color",
+      "value": "oklch(97% 0.03 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-success-border",
+      "path": "semantic.color.status.success.border",
+      "reference": "primitive.color.green.700",
+      "type": "color",
+      "value": "oklch(42% 0.13 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-success-foreground",
+      "path": "semantic.color.status.success.foreground",
+      "reference": "primitive.color.green.900",
+      "type": "color",
+      "value": "oklch(26% 0.09 150)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-warning-background",
+      "path": "semantic.color.status.warning.background",
+      "reference": "primitive.color.amber.50",
+      "type": "color",
+      "value": "oklch(97.5% 0.025 85)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-warning-border",
+      "path": "semantic.color.status.warning.border",
+      "reference": "primitive.color.amber.700",
+      "type": "color",
+      "value": "oklch(43% 0.1 55)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-color-status-warning-foreground",
+      "path": "semantic.color.status.warning.foreground",
+      "reference": "primitive.color.amber.900",
+      "type": "color",
+      "value": "oklch(27% 0.06 55)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-container-content",
+      "path": "semantic.container.content",
+      "reference": "primitive.container.content",
+      "type": "dimension",
+      "value": "1120px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-container-prose",
+      "path": "semantic.container.prose",
+      "reference": "primitive.container.prose",
+      "type": "dimension",
+      "value": "720px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-container-wide",
+      "path": "semantic.container.wide",
+      "reference": "primitive.container.wide",
+      "type": "dimension",
+      "value": "1360px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-density-control-gap",
+      "path": "semantic.density.controlGap",
+      "reference": "primitive.space.2",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-density-control-height",
+      "path": "semantic.density.controlHeight",
+      "reference": "primitive.size.10",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-density-control-padding-inline",
+      "path": "semantic.density.controlPaddingInline",
+      "reference": "primitive.space.3",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-density-panel-padding",
+      "path": "semantic.density.panelPadding",
+      "reference": "primitive.space.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-density-row-height",
+      "path": "semantic.density.rowHeight",
+      "reference": "primitive.size.10",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-elevation-modal",
+      "path": "semantic.elevation.modal",
+      "reference": "primitive.shadow.lg",
+      "type": "shadow",
+      "value": "0px 12px 32px -8px oklch(12% 0.018 150 / 0.2)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-elevation-none",
+      "path": "semantic.elevation.none",
+      "reference": "primitive.shadow.none",
+      "type": "shadow",
+      "value": "0px 0px 0px 0px oklch(18% 0.018 150 / 0)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-elevation-overlay",
+      "path": "semantic.elevation.overlay",
+      "reference": "primitive.shadow.md",
+      "type": "shadow",
+      "value": "0px 4px 12px -2px oklch(18% 0.018 150 / 0.12), 0px 1px 3px 0px oklch(18% 0.018 150 / 0.08)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-elevation-raised",
+      "path": "semantic.elevation.raised",
+      "reference": "primitive.shadow.sm",
+      "type": "shadow",
+      "value": "0px 1px 2px 0px oklch(18% 0.018 150 / 0.12)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-focus-offset",
+      "path": "semantic.focus.offset",
+      "reference": "primitive.space.1",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-focus-radius",
+      "path": "semantic.focus.radius",
+      "reference": "primitive.radius.lg",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-focus-width",
+      "path": "semantic.focus.width",
+      "reference": "primitive.border.width.focus",
+      "type": "dimension",
+      "value": "2px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-family-machine",
+      "path": "semantic.font.family.machine",
+      "reference": "primitive.font.family.machine",
+      "type": "fontFamily",
+      "value": "\"Commit Mono\", \"Commit Mono Fallback\", ui-monospace, SFMono-Regular, Consolas, monospace"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-family-prose",
+      "path": "semantic.font.family.prose",
+      "reference": "primitive.font.family.prose",
+      "type": "fontFamily",
+      "value": "\"Schibsted Grotesk\", \"Schibsted Grotesk Fallback\", Arial, sans-serif"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-letter-spacing-body",
+      "path": "semantic.font.letterSpacing.body",
+      "reference": "primitive.font.letterSpacing.normal",
+      "type": "dimension",
+      "value": "0px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-letter-spacing-code",
+      "path": "semantic.font.letterSpacing.code",
+      "reference": "primitive.font.letterSpacing.code",
+      "type": "dimension",
+      "value": "0.1px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-letter-spacing-heading",
+      "path": "semantic.font.letterSpacing.heading",
+      "reference": "primitive.font.letterSpacing.tight",
+      "type": "dimension",
+      "value": "-0.4px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-line-height-body",
+      "path": "semantic.font.lineHeight.body",
+      "reference": "primitive.font.lineHeight.body",
+      "type": "number",
+      "value": "1.55"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-line-height-code",
+      "path": "semantic.font.lineHeight.code",
+      "reference": "primitive.font.lineHeight.code",
+      "type": "number",
+      "value": "1.6"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-line-height-heading",
+      "path": "semantic.font.lineHeight.heading",
+      "reference": "primitive.font.lineHeight.heading",
+      "type": "number",
+      "value": "1.25"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-body",
+      "path": "semantic.font.size.body",
+      "reference": "primitive.font.size.md",
+      "type": "dimension",
+      "value": "15px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-body-large",
+      "path": "semantic.font.size.bodyLarge",
+      "reference": "primitive.font.size.lg",
+      "type": "dimension",
+      "value": "17px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-caption",
+      "path": "semantic.font.size.caption",
+      "reference": "primitive.font.size.xs",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-code",
+      "path": "semantic.font.size.code",
+      "reference": "primitive.font.size.sm",
+      "type": "dimension",
+      "value": "13px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-display",
+      "path": "semantic.font.size.display",
+      "reference": "primitive.font.size.4xl",
+      "type": "dimension",
+      "value": "40px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-heading-large",
+      "path": "semantic.font.size.headingLarge",
+      "reference": "primitive.font.size.3xl",
+      "type": "dimension",
+      "value": "32px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-heading-medium",
+      "path": "semantic.font.size.headingMedium",
+      "reference": "primitive.font.size.2xl",
+      "type": "dimension",
+      "value": "25px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-heading-small",
+      "path": "semantic.font.size.headingSmall",
+      "reference": "primitive.font.size.xl",
+      "type": "dimension",
+      "value": "20px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-size-label",
+      "path": "semantic.font.size.label",
+      "reference": "primitive.font.size.sm",
+      "type": "dimension",
+      "value": "13px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-weight-body",
+      "path": "semantic.font.weight.body",
+      "reference": "primitive.font.weight.regular",
+      "type": "fontWeight",
+      "value": "400"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-weight-code",
+      "path": "semantic.font.weight.code",
+      "reference": "primitive.font.weight.code",
+      "type": "fontWeight",
+      "value": "450"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-weight-heading",
+      "path": "semantic.font.weight.heading",
+      "reference": "primitive.font.weight.semibold",
+      "type": "fontWeight",
+      "value": "650"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-weight-label",
+      "path": "semantic.font.weight.label",
+      "reference": "primitive.font.weight.medium",
+      "type": "fontWeight",
+      "value": "550"
+    },
+    {
+      "cssVariable": "--mrg-semantic-font-weight-strong",
+      "path": "semantic.font.weight.strong",
+      "reference": "primitive.font.weight.bold",
+      "type": "fontWeight",
+      "value": "750"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-base",
+      "path": "semantic.layer.base",
+      "reference": "primitive.layer.base",
+      "type": "number",
+      "value": "0"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-dropdown",
+      "path": "semantic.layer.dropdown",
+      "reference": "primitive.layer.dropdown",
+      "type": "number",
+      "value": "200"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-modal",
+      "path": "semantic.layer.modal",
+      "reference": "primitive.layer.modal",
+      "type": "number",
+      "value": "400"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-overlay",
+      "path": "semantic.layer.overlay",
+      "reference": "primitive.layer.overlay",
+      "type": "number",
+      "value": "300"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-raised",
+      "path": "semantic.layer.raised",
+      "reference": "primitive.layer.raised",
+      "type": "number",
+      "value": "10"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-sticky",
+      "path": "semantic.layer.sticky",
+      "reference": "primitive.layer.sticky",
+      "type": "number",
+      "value": "100"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-toast",
+      "path": "semantic.layer.toast",
+      "reference": "primitive.layer.toast",
+      "type": "number",
+      "value": "500"
+    },
+    {
+      "cssVariable": "--mrg-semantic-layer-tooltip",
+      "path": "semantic.layer.tooltip",
+      "reference": "primitive.layer.tooltip",
+      "type": "number",
+      "value": "600"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-duration-deliberate",
+      "path": "semantic.motion.duration.deliberate",
+      "reference": "primitive.duration.deliberate",
+      "type": "duration",
+      "value": "360ms"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-duration-feedback",
+      "path": "semantic.motion.duration.feedback",
+      "reference": "primitive.duration.fast",
+      "type": "duration",
+      "value": "80ms"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-duration-overlay",
+      "path": "semantic.motion.duration.overlay",
+      "reference": "primitive.duration.slow",
+      "type": "duration",
+      "value": "240ms"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-duration-transition",
+      "path": "semantic.motion.duration.transition",
+      "reference": "primitive.duration.normal",
+      "type": "duration",
+      "value": "160ms"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-easing-enter",
+      "path": "semantic.motion.easing.enter",
+      "reference": "primitive.easing.enter",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0, 0, 0.2, 1)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-easing-exit",
+      "path": "semantic.motion.easing.exit",
+      "reference": "primitive.easing.exit",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0.4, 0, 1, 1)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-motion-easing-standard",
+      "path": "semantic.motion.easing.standard",
+      "reference": "primitive.easing.standard",
+      "type": "cubicBezier",
+      "value": "cubic-bezier(0.2, 0, 0, 1)"
+    },
+    {
+      "cssVariable": "--mrg-semantic-opacity-disabled",
+      "path": "semantic.opacity.disabled",
+      "reference": "primitive.opacity.disabled",
+      "type": "number",
+      "value": "0.48"
+    },
+    {
+      "cssVariable": "--mrg-semantic-opacity-muted",
+      "path": "semantic.opacity.muted",
+      "reference": "primitive.opacity.muted",
+      "type": "number",
+      "value": "0.68"
+    },
+    {
+      "cssVariable": "--mrg-semantic-opacity-scrim",
+      "path": "semantic.opacity.scrim",
+      "reference": "primitive.opacity.scrim",
+      "type": "number",
+      "value": "0.56"
+    },
+    {
+      "cssVariable": "--mrg-semantic-radius-control",
+      "path": "semantic.radius.control",
+      "reference": "primitive.radius.md",
+      "type": "dimension",
+      "value": "6px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-radius-overlay",
+      "path": "semantic.radius.overlay",
+      "reference": "primitive.radius.xl",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-radius-panel",
+      "path": "semantic.radius.panel",
+      "reference": "primitive.radius.lg",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-radius-pill",
+      "path": "semantic.radius.pill",
+      "reference": "primitive.radius.full",
+      "type": "dimension",
+      "value": "999px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-radius-status",
+      "path": "semantic.radius.status",
+      "reference": "primitive.radius.sm",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-content-default",
+      "path": "semantic.size.contentDefault",
+      "reference": "primitive.container.content",
+      "type": "dimension",
+      "value": "1120px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-content-prose",
+      "path": "semantic.size.contentProse",
+      "reference": "primitive.container.prose",
+      "type": "dimension",
+      "value": "720px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-content-wide",
+      "path": "semantic.size.contentWide",
+      "reference": "primitive.container.wide",
+      "type": "dimension",
+      "value": "1360px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-icon-lg",
+      "path": "semantic.size.iconLg",
+      "reference": "primitive.size.6",
+      "type": "dimension",
+      "value": "24px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-icon-md",
+      "path": "semantic.size.iconMd",
+      "reference": "primitive.size.5",
+      "type": "dimension",
+      "value": "20px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-icon-sm",
+      "path": "semantic.size.iconSm",
+      "reference": "primitive.size.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-target-minimum",
+      "path": "semantic.size.targetMinimum",
+      "reference": "primitive.size.6",
+      "type": "dimension",
+      "value": "24px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-size-target-preferred",
+      "path": "semantic.size.targetPreferred",
+      "reference": "primitive.size.11",
+      "type": "dimension",
+      "value": "44px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-inline-lg",
+      "path": "semantic.space.inlineLg",
+      "reference": "primitive.space.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-inline-md",
+      "path": "semantic.space.inlineMd",
+      "reference": "primitive.space.3",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-inline-sm",
+      "path": "semantic.space.inlineSm",
+      "reference": "primitive.space.2",
+      "type": "dimension",
+      "value": "8px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-inline-xs",
+      "path": "semantic.space.inlineXs",
+      "reference": "primitive.space.1",
+      "type": "dimension",
+      "value": "4px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-page",
+      "path": "semantic.space.page",
+      "reference": "primitive.space.16",
+      "type": "dimension",
+      "value": "64px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-section",
+      "path": "semantic.space.section",
+      "reference": "primitive.space.12",
+      "type": "dimension",
+      "value": "48px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-stack-lg",
+      "path": "semantic.space.stackLg",
+      "reference": "primitive.space.6",
+      "type": "dimension",
+      "value": "24px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-stack-md",
+      "path": "semantic.space.stackMd",
+      "reference": "primitive.space.4",
+      "type": "dimension",
+      "value": "16px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-stack-sm",
+      "path": "semantic.space.stackSm",
+      "reference": "primitive.space.3",
+      "type": "dimension",
+      "value": "12px"
+    },
+    {
+      "cssVariable": "--mrg-semantic-space-stack-xs",
+      "path": "semantic.space.stackXs",
+      "reference": "primitive.space.2",
+      "type": "dimension",
+      "value": "8px"
+    }
+  ]
+}

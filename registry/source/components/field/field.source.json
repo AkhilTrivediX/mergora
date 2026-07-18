@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./field.css", "react"],
+  "entryPath": "registry/source/components/field/field.tsx",
+  "id": "field",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

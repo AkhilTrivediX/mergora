@@ -1,0 +1,7 @@
+{
+  "id": "button-style-update",
+  "mediaType": "text/css",
+  "expectedStatus": "semantic-merge",
+  "localCustomization": "border-radius",
+  "independentUpstreamChanges": ["min-block-size", "touch-action"]
+}

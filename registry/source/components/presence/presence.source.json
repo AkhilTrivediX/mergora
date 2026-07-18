@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "../slot/index.js", "./presence.css", "react"],
+  "entryPath": "registry/source/components/presence/presence.tsx",
+  "id": "presence",
+  "itemDependencies": ["provider", "slot"],
+  "outputRole": "component"
+}

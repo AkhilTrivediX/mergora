@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prose",
+  "root": {
+    "element": "article | section | div",
+    "ref": "HTMLElement",
+    "slot": "prose",
+    "stableAttributes": ["data-slot", "data-measure", "data-size"]
+  },
+  "parts": []
+}

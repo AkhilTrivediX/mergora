@@ -1,0 +1,47 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/alert/**/*.ts",
+    "../../../registry/source/components/alert/**/*.tsx",
+    "../../../registry/source/components/badge/**/*.ts",
+    "../../../registry/source/components/badge/**/*.tsx",
+    "../../../registry/source/components/banner/**/*.ts",
+    "../../../registry/source/components/banner/**/*.tsx",
+    "../../../registry/source/components/callout/**/*.ts",
+    "../../../registry/source/components/callout/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/empty-state/**/*.ts",
+    "../../../registry/source/components/empty-state/**/*.tsx",
+    "../../../registry/source/components/error-state/**/*.ts",
+    "../../../registry/source/components/error-state/**/*.tsx",
+    "../../../registry/source/components/meter/**/*.ts",
+    "../../../registry/source/components/meter/**/*.tsx",
+    "../../../registry/source/components/progress/**/*.ts",
+    "../../../registry/source/components/progress/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/skeleton/**/*.ts",
+    "../../../registry/source/components/skeleton/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../registry/source/components/spinner/**/*.ts",
+    "../../../registry/source/components/spinner/**/*.tsx",
+    "../../../registry/source/components/status/**/*.ts",
+    "../../../registry/source/components/status/**/*.tsx",
+    "../../../apps/storybook/src/P2FeedbackStatus.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

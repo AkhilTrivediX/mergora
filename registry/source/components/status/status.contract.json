@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "status",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "Inline status text with visible severity and explicit off, polite, or assertive announcement policy.",
+  "semantics": [
+    "Status is non-live by default; polite and assertive modes are explicit and atomic.",
+    "Visible localized variant text, a distinct symbol, and consumer text preserve meaning without color.",
+    "Status has no interaction or focus behavior.",
+    "The status.variantLabel formatter owns punctuation and grammatical order while explicit variantLabel content is preserved exactly.",
+    "Owned role and ARIA semantics cannot be overridden at the typed or runtime boundary; empty composite content is invalid."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "No semantic information depends on motion.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Text wraps, actions reflow, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

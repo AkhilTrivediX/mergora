@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "badge",
+  "root": {
+    "slot": "badge",
+    "element": "noninteractive span",
+    "ref": "HTMLSpanElement",
+    "stableAttributes": ["data-slot", "data-kind", "data-variant", "data-overflow"]
+  },
+  "parts": [
+    { "slot": "badge-status-label", "element": "span", "stability": "documented" },
+    { "slot": "badge-label", "element": "span", "stability": "documented" }
+  ]
+}

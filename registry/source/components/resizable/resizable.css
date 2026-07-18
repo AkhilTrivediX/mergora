@@ -1,0 +1,151 @@
+.mrg-resizable {
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+  inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.mrg-resizable[data-orientation="horizontal"] {
+  flex-direction: row;
+}
+
+.mrg-resizable[data-orientation="vertical"] {
+  flex-direction: column;
+}
+
+.mrg-resizable__primary,
+.mrg-resizable__secondary {
+  box-sizing: border-box;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-resizable[data-orientation="horizontal"] > .mrg-resizable__primary {
+  flex: 0 1 var(--mrg-resizable-value);
+  inline-size: var(--mrg-resizable-value);
+}
+
+.mrg-resizable[data-orientation="vertical"] > .mrg-resizable__primary {
+  block-size: var(--mrg-resizable-value);
+  flex: 0 1 var(--mrg-resizable-value);
+}
+
+.mrg-resizable__secondary {
+  flex: 1 1 0;
+}
+
+.mrg-resizable__handle {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-surface);
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--mrg-semantic-space-inline-xs);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-resizable__handle[data-orientation="horizontal"] {
+  flex-direction: column;
+  padding-block: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-resizable__handle[data-orientation="vertical"] {
+  flex-direction: row;
+  padding-inline: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-resizable__separator {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  cursor: col-resize;
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  touch-action: none;
+}
+
+.mrg-resizable__separator[data-orientation="vertical"] {
+  cursor: row-resize;
+}
+
+.mrg-resizable__separator:focus-visible,
+.mrg-resizable__controls button:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-resizable__grip {
+  background: var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-pill);
+  block-size: var(--mrg-semantic-space-stack-lg);
+  inline-size: var(--mrg-semantic-border-width-strong);
+}
+
+.mrg-resizable__separator[data-orientation="vertical"] .mrg-resizable__grip {
+  block-size: var(--mrg-semantic-border-width-strong);
+  inline-size: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-resizable__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  justify-content: center;
+}
+
+.mrg-resizable__handle[data-orientation="horizontal"] .mrg-resizable__controls {
+  flex-direction: column;
+}
+
+.mrg-resizable__controls button {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding: 0;
+}
+
+.mrg-resizable__controls button:disabled {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-resizable[data-disabled="true"] .mrg-resizable__separator {
+  cursor: not-allowed;
+  opacity: var(--mrg-semantic-opacity-disabled);
+}
+
+@media (forced-colors: active) {
+  .mrg-resizable__separator,
+  .mrg-resizable__controls button {
+    border-color: ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-resizable__separator:focus-visible,
+  .mrg-resizable__controls button:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .mrg-resizable__grip {
+    background: ButtonText;
+  }
+}

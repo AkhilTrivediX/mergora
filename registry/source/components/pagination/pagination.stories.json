@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pagination",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Navigation destinations have no distinct read-only state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Out-of-range page and unsafe URL input is rejected rather than rendered."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Pagination is not a required form value."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The results region owns pending feedback while pagination links keep navigation semantics."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "No-results behavior belongs to the paginated collection rather than the navigator."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success does not alter navigation semantics."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to the paginated result workflow."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the paginated result workflow."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Pagination links navigate and do not perform destructive actions."
+      }
+    }
+  ]
+}

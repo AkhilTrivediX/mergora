@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tabs",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A tab can be disabled but has no distinct read-only interaction state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation belongs to panel content rather than tab selection."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tab selection is not a required form value."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Async panels expose their own progress while the tab system remains operable."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A tab system without a named tab is invalid usage rather than a presentation state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success belongs to panel content rather than tab selection."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require panel content and are not encoded by tab styling."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to panel content rather than tab selection."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Selecting a tab does not perform a destructive action."
+      }
+    }
+  ]
+}

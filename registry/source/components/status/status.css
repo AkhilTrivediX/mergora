@@ -1,0 +1,52 @@
+.mrg-status {
+  --mrg-status-color: var(--mrg-semantic-color-foreground-muted);
+  align-items: baseline;
+  color: var(--mrg-status-color);
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: var(--mrg-semantic-font-size-label);
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+}
+
+.mrg-status[data-variant="info"] {
+  --mrg-status-color: var(--mrg-semantic-color-status-info-foreground);
+}
+
+.mrg-status[data-variant="success"] {
+  --mrg-status-color: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-status[data-variant="warning"] {
+  --mrg-status-color: var(--mrg-semantic-color-status-warning-foreground);
+}
+
+.mrg-status[data-variant="error"] {
+  --mrg-status-color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+[data-slot="status-symbol"] {
+  align-items: center;
+  border: var(--mrg-semantic-border-width-default) solid currentColor;
+  border-radius: var(--mrg-semantic-radius-pill);
+  display: inline-flex;
+  flex: none;
+  font-size: var(--mrg-semantic-font-size-caption);
+  inline-size: 1.25em;
+  justify-content: center;
+  min-block-size: 1.25em;
+}
+
+[data-slot="status-variant-label"] {
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+[data-slot="status-label"] {
+  overflow-wrap: anywhere;
+}
+
+@media (forced-colors: active) {
+  [data-slot="status-symbol"] {
+    border-color: CanvasText;
+  }
+}

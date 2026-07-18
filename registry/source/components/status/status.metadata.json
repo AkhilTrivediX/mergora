@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "status",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "success", "warning", "error"],
+  "slots": [
+    {
+      "name": "status",
+      "semanticElement": "span optionally status or alert",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "status-symbol",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "status-label",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "status-accessibility", "version": "0.1.0" },
+  "passport": { "id": "status-quality-passport", "version": "0.0.0" }
+}

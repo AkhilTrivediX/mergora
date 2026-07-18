@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "grid",
+  "root": {
+    "element": "div | section | ul | ol",
+    "ref": "HTMLElement",
+    "slot": "grid",
+    "stableAttributes": [
+      "data-slot",
+      "data-element",
+      "data-columns",
+      "data-minimum",
+      "data-gap",
+      "data-align",
+      "data-list-style"
+    ]
+  },
+  "parts": []
+}

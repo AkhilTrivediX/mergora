@@ -1,0 +1,87 @@
+.mrg-input {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: flex;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-density-control-gap);
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-input:focus-within {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-input[data-invalid="true"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-input[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-input-control {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  flex: 1 1 auto;
+  font: inherit;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-input-control::placeholder {
+  color: var(--mrg-semantic-color-foreground-muted);
+  opacity: 1;
+}
+
+.mrg-input-control:disabled {
+  cursor: not-allowed;
+}
+
+.mrg-input [data-slot$="adornment"] {
+  align-items: center;
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+@media (pointer: coarse) {
+  .mrg-input,
+  .mrg-input-control {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-input {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-input[data-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-input[data-invalid="true"] {
+    border-style: double;
+  }
+}

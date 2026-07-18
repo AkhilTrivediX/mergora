@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "icon-button",
+  "entryExport": "IconButton",
+  "refTarget": "HTMLButtonElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "IconButton"
+    },
+    {
+      "kind": "type",
+      "name": "IconButtonProps"
+    },
+    {
+      "kind": "type",
+      "name": "IconButtonSize"
+    }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "The required label is the accessible name and the tooltip never substitutes for it.",
+    "Pending remains focusable, exposes busy semantics, and blocks activation.",
+    "Every size is at least 44 by 44 CSS pixels."
+  ]
+}

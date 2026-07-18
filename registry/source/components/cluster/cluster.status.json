@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "cluster",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and subpath exports.",
+    "Record action and tag wrapping at 320 CSS pixels and 400% zoom with long localized labels.",
+    "Verify orphan behavior, focus order, and logical placement in LTR and RTL browsers.",
+    "Pass packed Next.js and Vite consumers plus package/source parity.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Complete current keyboard focus-order, touch-action, and forced-colors manual evidence.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

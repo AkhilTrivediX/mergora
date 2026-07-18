@@ -1,0 +1,78 @@
+.mrg-accordion {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  inline-size: 100%;
+}
+
+.mrg-accordion__item {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+}
+
+.mrg-accordion__item:last-child {
+  border-block-end: 0;
+}
+
+.mrg-accordion__header {
+  font: inherit;
+  margin: 0;
+}
+
+.mrg-accordion__trigger {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  gap: var(--mrg-semantic-space-inline-md);
+  inline-size: 100%;
+  justify-content: space-between;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  padding: var(--mrg-semantic-space-stack-md) var(--mrg-semantic-space-inline-lg);
+  text-align: start;
+}
+
+.mrg-accordion__trigger[data-hovered] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-accordion__trigger[data-focus-visible] {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+}
+
+.mrg-accordion__trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--mrg-semantic-opacity-disabled);
+}
+
+[data-slot="accordion-trigger-indicator"] {
+  flex: none;
+  transition: transform var(--mrg-semantic-motion-duration-feedback)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-accordion__item[data-expanded] [data-slot="accordion-trigger-indicator"] {
+  transform: rotate(180deg);
+}
+
+.mrg-accordion__panel {
+  min-inline-size: 0;
+  padding: 0 var(--mrg-semantic-space-inline-lg) var(--mrg-semantic-space-stack-lg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="accordion-trigger-indicator"] {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-accordion__trigger[data-focus-visible] {
+    outline-color: Highlight;
+  }
+}

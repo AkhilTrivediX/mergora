@@ -1,0 +1,13 @@
+{
+  "declaredImports": [
+    "../direction/index.js",
+    "./tabs.css",
+    "react",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/Tabs"
+  ],
+  "entryPath": "registry/source/components/tabs/tabs.tsx",
+  "id": "tabs",
+  "itemDependencies": ["direction"],
+  "outputRole": "component"
+}

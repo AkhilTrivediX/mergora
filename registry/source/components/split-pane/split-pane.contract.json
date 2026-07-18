@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "split-pane",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "Native panel divs and optional named regions are separated by focusable ARIA separators with sibling native button alternatives.",
+    "name": "Every SplitPane.Handle requires aria-label or aria-labelledby by type.",
+    "value": "Each separator exposes the preceding panel percentage through aria-valuenow/text and references both adjacent panels through aria-controls.",
+    "landmarks": "Panels remain semantic-neutral by default; regionLabel opts a panel into a named region deliberately.",
+    "focusModel": "Separators and visible native controls use normal tab order. Narrow sequential mode removes unnecessary handles from layout and focus without reordering panels."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves among separators and their visible native controls in DOM order."
+    },
+    {
+      "key": "Arrow Left/Right",
+      "behavior": "For horizontal layouts, moves the boundary spatially by step; physical direction reverses in RTL."
+    },
+    { "key": "Arrow Up/Down", "behavior": "For vertical layouts, moves the boundary by step." },
+    {
+      "key": "Home / End",
+      "behavior": "Moves the preceding panel toward its constrained min/max while preserving the adjacent total."
+    },
+    {
+      "key": "Page Up / Page Down",
+      "behavior": "Increases/decreases the preceding panel by two steps."
+    },
+    {
+      "key": "Enter",
+      "behavior": "Collapses/restores collapseTarget when that panel index is declared collapsible."
+    }
+  ],
+  "pointerTouch": "Each separator uses pointer capture; visible 44 CSS-pixel decrement/increment and optional collapse/restore buttons provide single-pointer operations without dragging.",
+  "state": {
+    "normalization": "At least two non-negative percentages are normalized to a 100 percent total while respecting per-panel min/max and declared zero-size collapsible panels.",
+    "controlled": "value owns layout; onValueChange reports proposals and onValueCommit reports discrete or completed pointer changes.",
+    "uncontrolled": "defaultValue owns initial layout and an optional persistence adapter restores after hydration.",
+    "persistence": "The synchronous adapter is called only in an effect or on committed client interactions; read/write errors are routed to onPersistenceError and never occur during SSR.",
+    "collapse": "Collapsed panels are absent from desktop layout and accessibility exposure, but reappear in narrow sequential mode so a hidden handle cannot strand their content."
+  },
+  "responsive": {
+    "containerQuery": "stackAt=narrow switches the layout child at a 36rem root container, not a viewport breakpoint.",
+    "sequentialMode": "Panels use DOM order at full width; handles are unnecessary and hidden; all panel content remains available even if a desktop panel was collapsed.",
+    "nested": "Every Root establishes its own query container, so nested panes adapt independently."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=split-pane-root]",
+    "parts": [
+      "[data-slot=split-pane-layout]",
+      "[data-slot=split-pane-panel]",
+      "[data-slot=split-pane-handle]",
+      "[data-slot=split-pane-separator]"
+    ],
+    "attributes": [
+      "data-orientation",
+      "data-panel-count",
+      "data-disabled",
+      "data-index",
+      "data-state",
+      "data-stack-at"
+    ]
+  },
+  "consumerResponsibilities": [
+    "Render one Panel for every size index and one indexed Handle between each adjacent pair; keep DOM and visual panel order aligned.",
+    "Provide localized separator names and opt into regionLabel only when a panel is important enough to be a landmark.",
+    "Use a persistence key scoped to the application layout, validate any external storage implementation, and surface recovery UI when a saved layout matters.",
+    "Keep controlled arrays synchronized and revalidate custom constraints, CSS, focus, target sizes, localization, 320-pixel stacking, and RTL."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "normalization-property-cases",
+      "controlled-uncontrolled",
+      "persistence-failure",
+      "keyboard-map",
+      "pointer-capture-cancel",
+      "touch-controls",
+      "collapse-restore",
+      "nested",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "axe",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "screen-reader-multiple-separators",
+      "keyboard-only",
+      "touch-no-drag",
+      "speech",
+      "switch",
+      "windows-forced-colors",
+      "zoom-text-and-sequential-mode"
+    ],
+    "recordedEvidence": []
+  }
+}

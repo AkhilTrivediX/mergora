@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "stack",
+  "entryExport": "Stack",
+  "refTarget": "HTMLElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    { "kind": "component", "name": "Stack" },
+    { "kind": "type", "name": "StackProps" },
+    { "kind": "type", "name": "StackElement" },
+    { "kind": "type", "name": "StackGap" },
+    { "kind": "type", "name": "StackAlign" },
+    { "kind": "type", "name": "StackListStyle" }
+  ],
+  "props": [
+    { "default": "div", "name": "element", "required": false, "type": "div | section | ul | ol" },
+    { "default": "md", "name": "gap", "required": false, "type": "none | xs | sm | md | lg" },
+    {
+      "default": "stretch",
+      "name": "align",
+      "required": false,
+      "type": "stretch | start | center | end"
+    },
+    { "default": "preserve", "name": "listStyle", "required": false, "type": "preserve | none" }
+  ],
+  "compositionPolicy": {
+    "polymorphism": "Restricted to four native structural elements; arbitrary components and unsafe asChild cloning are not supported.",
+    "lists": "ul and ol preserve native list semantics and markers unless listStyle=none is deliberate."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "callout",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "warning"],
+  "slots": [
+    {
+      "name": "callout",
+      "semanticElement": "div or named aside",
+      "refTarget": "HTMLElement",
+      "states": []
+    },
+    {
+      "name": "callout-title",
+      "semanticElement": "h1-h6",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "callout-body",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "callout-accessibility", "version": "0.1.0" },
+  "passport": { "id": "callout-quality-passport", "version": "0.0.0" }
+}

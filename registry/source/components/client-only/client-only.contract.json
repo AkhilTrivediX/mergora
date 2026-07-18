@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "client-only",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "A React Fragment with either fallback or client content; no wrapper element is introduced.",
+    "fallback": "Required by the type contract and present in server and first-hydration markup.",
+    "replacement": "Content changes only after mount; no focus action or announcement is inferred."
+  },
+  "ssrHydration": {
+    "serverOutput": "fallback only",
+    "firstClientOutput": "fallback only",
+    "mountedOutput": "children only",
+    "moduleScopeGlobals": false
+  },
+  "consumerResponsibilities": [
+    "Provide a meaningful localized fallback with accurate busy/status semantics where applicable.",
+    "Reserve enough layout space to avoid disruptive content shift.",
+    "Do not use ClientOnly to hide a deterministic SSR or hydration defect.",
+    "Do not replace a focused fallback without an explicit focus-restoration plan."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-fallback",
+      "first-hydration-parity",
+      "mounted-replacement",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["no-javascript", "screen-reader-fallback", "focus-order", "layout-stability"],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "layer-manager",
+  "entryExport": "LayerManager",
+  "refTarget": "HTMLElement for Application and Layer",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    { "kind": "namespace", "name": "LayerManager" },
+    { "kind": "component", "name": "Layer" },
+    { "kind": "component", "name": "LayerApplication" },
+    { "kind": "component", "name": "LayerManagerProvider" },
+    { "kind": "function", "name": "createLayerManager" },
+    { "kind": "hook", "name": "useLayerManager" },
+    { "kind": "type", "name": "LayerApplicationProps" },
+    { "kind": "type", "name": "LayerDismissDetail" },
+    { "kind": "type", "name": "LayerDismissReason" },
+    { "kind": "type", "name": "LayerManagerApi" },
+    { "kind": "type", "name": "LayerManagerProviderProps" },
+    { "kind": "type", "name": "LayerManagerSnapshot" },
+    { "kind": "type", "name": "LayerProps" },
+    { "kind": "type", "name": "LayerRegistration" }
+  ],
+  "props": [
+    { "default": true, "name": "Provider.scrollLock", "required": false, "type": "boolean" },
+    { "default": true, "name": "Layer.active", "required": false, "type": "boolean" },
+    { "default": true, "name": "Layer.dismissible", "required": false, "type": "boolean" },
+    { "default": true, "name": "Layer.manageEnvironment", "required": false, "type": "boolean" },
+    { "default": false, "name": "Layer.modal", "required": false, "type": "boolean" },
+    { "default": false, "name": "Layer.asChild", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "stack": "Registration order is the deterministic portal-root visual and Escape order; asChild preserves the owning overlay slot identity.",
+    "escape": "Only the top layer is considered; a non-dismissible top layer blocks dismissal behind it.",
+    "modal": "Registered application roots outside the top environment-managed modal become inert while any such modal is active; externally managed modals remain in stack order without duplicating those effects.",
+    "scroll": "Body styles, scrollbar compensation, and scroll coordinates restore exactly after the final modal closes.",
+    "nesting": "Nested providers reuse the nearest manager so one Escape listener and one modal environment owner remain authoritative."
+  }
+}

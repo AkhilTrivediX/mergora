@@ -1,0 +1,64 @@
+/* Generated from registry/source/components/link/link.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-link {
+  align-items: baseline;
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-brand-action);
+  display: inline-flex;
+  font: inherit;
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--mrg-semantic-border-width-default);
+  text-underline-offset: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-link:hover {
+  text-decoration-thickness: var(--mrg-semantic-border-width-strong);
+}
+
+.mrg-link:active {
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-link:focus-visible {
+  border-radius: var(--mrg-semantic-radius-control);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-link[data-current="true"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration-style: double;
+}
+
+.mrg-link[data-standalone="true"] {
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-link [data-slot="link-label"] {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-link [data-slot="link-external-indicator"],
+.mrg-link [data-slot="link-download-indicator"] {
+  flex: none;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration: none;
+}
+
+@media (forced-colors: active) {
+  .mrg-link,
+  .mrg-link[data-current="true"] {
+    color: LinkText;
+  }
+
+  .mrg-link:visited {
+    color: VisitedText;
+  }
+}

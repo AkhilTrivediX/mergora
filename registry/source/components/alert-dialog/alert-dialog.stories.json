@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert-dialog",
+  "canonicalStoryFile": "apps/storybook/src/P2Overlays.stories.tsx",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A destructive decision is available or disabled and has no read-only value model."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation belongs to fields or the surrounding workflow rather than the confirmation container."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required is a form-control state, not an alert-dialog state."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An in-progress destructive operation uses persistent workflow status after the explicit decision."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A consequence-free, unnamed confirmation is invalid usage."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AlertDialog has no partial-selection state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Completion status is announced after the dialog closes rather than encoded on its surface."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The role and consequence copy already communicate the high-risk decision without a separate warning state."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A failed destructive operation requires persistent recovery feedback outside the confirmation state."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "AlertDialogDestructive"
+    }
+  ]
+}

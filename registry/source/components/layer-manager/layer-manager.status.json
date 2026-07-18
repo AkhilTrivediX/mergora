@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "layer-manager",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and subpath outputs.",
+    "Record nested overlay order, non-dismissible top layers, inert application roots, and exact Escape behavior.",
+    "Verify scroll position/style restoration, Strict Mode cleanup, focus restoration integration, and portal composition.",
+    "Pass all browser, packed-consumer, package/source parity, performance, and Semantic Sync campaigns.",
+    "Complete the full Risk Class 3 desktop/mobile AT, speech, switch, RTL, zoom, and forced-colors matrix.",
+    "Publish an approved Quality Passport and dogfood the exact generated output."
+  ]
+}

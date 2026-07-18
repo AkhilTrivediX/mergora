@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tooltip",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "closed",
+    "delayed",
+    "open",
+    "hovered",
+    "focused",
+    "disabled-adapter",
+    "flipped",
+    "long-content"
+  ],
+  "slots": [
+    {
+      "name": "tooltip-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state", "data-touch-policy"]
+    },
+    {
+      "name": "tooltip-disabled-trigger",
+      "semanticElement": "button aria-disabled=true",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state", "data-disabled-adapter"]
+    },
+    {
+      "name": "tooltip",
+      "semanticElement": "div role=tooltip",
+      "refTarget": "HTMLDivElement",
+      "states": ["data-placement", "data-state"]
+    },
+    { "name": "tooltip-content", "semanticElement": "div", "refTarget": "internal", "states": [] },
+    {
+      "name": "tooltip-arrow",
+      "semanticElement": "decorative svg",
+      "refTarget": "SVGSVGElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "tooltip-accessibility", "version": "0.1.0" },
+  "passport": { "id": "tooltip-quality-passport", "version": "0.0.0" }
+}

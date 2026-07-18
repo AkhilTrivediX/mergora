@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scroll-area",
+  "entryExport": "ScrollArea",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement> with role and tabIndex reserved by focusable",
+  "exports": [
+    { "kind": "component", "name": "ScrollArea" },
+    { "kind": "type", "name": "ScrollAreaOrientation" },
+    { "kind": "type", "name": "ScrollAreaPadding" },
+    { "kind": "type", "name": "ScrollAreaProps" },
+    { "kind": "type", "name": "ScrollAreaSize" }
+  ],
+  "props": [
+    {
+      "default": "vertical",
+      "name": "orientation",
+      "required": false,
+      "type": "vertical | horizontal | both"
+    },
+    { "default": "md", "name": "size", "required": false, "type": "sm | md | lg | viewport" },
+    { "default": "sm", "name": "scrollPadding", "required": false, "type": "none | sm | md" },
+    { "default": false, "name": "containOverscroll", "required": false, "type": "boolean" },
+    {
+      "default": false,
+      "name": "focusable",
+      "required": false,
+      "type": "boolean; true requires aria-label or aria-labelledby"
+    }
+  ],
+  "compositionPolicy": {
+    "nativeScrolling": "The browser owns scrolling, scrollbars, touch momentum, keyboard scrolling, and wheel behavior.",
+    "focus": "The root is not a tab stop by default. focusable=true is reserved for independently meaningful overflow regions and requires an accessible name."
+  }
+}

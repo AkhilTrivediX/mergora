@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./separator.css", "react"],
+  "entryPath": "registry/source/components/separator/separator.tsx",
+  "id": "separator",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

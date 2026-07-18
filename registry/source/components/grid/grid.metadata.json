@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "grid",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["auto-fit", "fixed-columns", "minimum", "gap", "align", "list", "narrow", "rtl"],
+  "slots": [
+    {
+      "name": "grid",
+      "semanticElement": "div | section | ul | ol",
+      "refTarget": "HTMLElement",
+      "states": ["element", "columns", "minimum", "gap", "align", "list-style"]
+    }
+  ],
+  "contract": { "id": "grid-accessibility", "version": "0.1.0" },
+  "passport": { "id": "grid-quality-passport", "version": "0.0.0" }
+}

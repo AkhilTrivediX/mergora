@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "container",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "container",
+    "stableAttributes": [
+      "data-slot",
+      "data-width",
+      "data-gutter",
+      "data-safe-area",
+      "data-query-container"
+    ]
+  },
+  "parts": []
+}

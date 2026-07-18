@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sr-announcer",
+  "root": {
+    "element": "React context provider",
+    "ref": "none",
+    "slot": "none",
+    "stableAttributes": []
+  },
+  "parts": [
+    {
+      "element": "div role=status",
+      "slot": "sr-announcer-polite",
+      "stableAttributes": [
+        "data-slot",
+        "data-announcement-id",
+        "data-announcement-key",
+        "aria-live",
+        "aria-atomic"
+      ]
+    },
+    {
+      "element": "div role=alert",
+      "slot": "sr-announcer-assertive",
+      "stableAttributes": [
+        "data-slot",
+        "data-announcement-id",
+        "data-announcement-key",
+        "aria-live",
+        "aria-atomic"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tabs",
+  "root": {
+    "slot": "tabs",
+    "element": "div tab system",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot", "data-activation", "data-orientation"]
+  },
+  "parts": [
+    { "slot": "tabs-list", "element": "div role=tablist", "stability": "documented" },
+    { "slot": "tabs-tab", "element": "div or link role=tab", "stability": "documented" },
+    { "slot": "tabs-panels", "element": "div", "stability": "documented" },
+    { "slot": "tabs-panel", "element": "div role=tabpanel", "stability": "documented" }
+  ]
+}

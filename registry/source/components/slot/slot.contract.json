@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "slot",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "The concrete child remains the only rendered element.",
+    "namePolicy": "Child aria-label, aria-labelledby, visible contents, and native semantic props win over slot props.",
+    "invalidComposition": "Fragments, text, arrays, and multiple children fail with a precise error."
+  },
+  "merge": {
+    "refs": "Forwarded and child refs are composed onto the same node.",
+    "events": "Child handlers execute first; preventDefault suppresses the slot handler.",
+    "className": "Slot class precedes child class without dropping either.",
+    "style": "Child style values override slot style values key by key.",
+    "contextAttributes": "Explicit Slot data attributes, dir, and lang identify and expose the composing contract; other child props remain authoritative.",
+    "dataSlot": "An explicit Slot data-slot identifies the composing contract; otherwise an explicit child slot is preserved, then slot is used."
+  },
+  "consumerResponsibilities": [
+    "Choose a child whose native semantics match the action or content.",
+    "Do not use Slot to turn a non-interactive element into an undocumented control.",
+    "Retest accessible names and keyboard behavior after replacing the child element."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ref-compose",
+      "event-order",
+      "prevent-default",
+      "class-style-merge",
+      "name-precedence",
+      "invalid-child",
+      "ssr",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-native-semantics", "desktop-screen-reader-name"],
+    "recordedEvidence": []
+  }
+}

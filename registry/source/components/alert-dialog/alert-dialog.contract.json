@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "alert-dialog",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A modal destructive confirmation with a named consequence, explicit-only dismissal, and least-destructive initial focus.",
+  "semantics": [
+    "Content uses role=alertdialog with a Title and associated consequence Description.",
+    "leastDestructiveRef must identify the contained Cancel/return action and receives initial focus.",
+    "Outside interaction and Escape do not dismiss; Action or Cancel is explicit.",
+    "The destructive Action is visually and textually distinct and activates only through normal button completion."
+  ],
+  "messageKeys": [
+    {
+      "key": "alertDialog.cancel",
+      "fallback": "Cancel",
+      "context": "Visible default AlertDialog.Cancel text when children are omitted."
+    }
+  ],
+  "preferences": {
+    "forcedColors": "A text exclamation marker supplements destructive color and system boundaries remain visible.",
+    "reducedMotion": "Inherited Dialog motion is removed.",
+    "rtl": "Action layout uses logical order and portal direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Consequence and both decisions remain readable and reachable."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "browser-keyboard-focus",
+      "axe",
+      "destructive-pointer-cancellation",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

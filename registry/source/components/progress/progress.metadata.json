@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "progress",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "loading", "populated", "partial"],
+  "slots": [
+    {
+      "name": "progress",
+      "semanticElement": "label",
+      "refTarget": "HTMLProgressElement",
+      "states": []
+    },
+    {
+      "name": "progress-label",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "progress-track",
+      "semanticElement": "progress",
+      "refTarget": "HTMLProgressElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "progress-accessibility", "version": "0.1.0" },
+  "passport": { "id": "progress-quality-passport", "version": "0.0.0" }
+}

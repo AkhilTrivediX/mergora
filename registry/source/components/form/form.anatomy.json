@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "root": {
+    "element": "form",
+    "ref": "HTMLFormElement",
+    "slot": "form",
+    "stableAttributes": ["data-slot", "data-layout"]
+  },
+  "parts": []
+}

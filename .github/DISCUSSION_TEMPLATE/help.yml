@@ -1,0 +1,26 @@
+title: "[Help] "
+labels:
+  - support
+body:
+  - type: markdown
+    attributes:
+      value: Usage questions belong here. Vulnerabilities must use private reporting.
+  - type: input
+    id: version
+    attributes:
+      label: Exact version or commit
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to accomplish?
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you tried?
+      description: Include a minimal sanitized example and environment.
+    validations:
+      required: true

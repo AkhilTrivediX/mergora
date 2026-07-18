@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sr-announcer",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and subpath outputs.",
+    "Record polite/assertive queue, deduplication, intentional repeat, interruption, and localization behavior.",
+    "Verify announcement timing with every required desktop and mobile assistive-technology pair.",
+    "Pass SSR/hydration, packed consumers, package/source parity, and Semantic Sync fixtures.",
+    "Publish an approved Risk Class 2 Quality Passport and dogfood the generated output."
+  ]
+}

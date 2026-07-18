@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "radio-group",
+  "entryExport": "RadioGroup",
+  "refTarget": "HTMLFieldSetElement",
+  "nativeProps": "React.FieldsetHTMLAttributes<HTMLFieldSetElement> with children, value, and onChange reserved",
+  "exports": [
+    { "kind": "component", "name": "RadioGroup" },
+    { "kind": "component", "name": "RadioGroupItem" },
+    { "kind": "constant", "name": "RadioGroupParts" },
+    { "kind": "function", "name": "resolveRadioGroupIndex" },
+    { "kind": "type", "name": "RadioGroupDirection" },
+    { "kind": "type", "name": "RadioGroupItemProps" },
+    { "kind": "type", "name": "RadioGroupLayout" },
+    { "kind": "type", "name": "RadioGroupProps" }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "name", "required": true, "type": "string" },
+    { "name": "value", "required": false, "type": "string" },
+    { "name": "defaultValue", "required": false, "type": "string" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "direction", "required": false, "type": "ltr | rtl; inherited when omitted" },
+    {
+      "name": "layout",
+      "required": false,
+      "default": "stacked",
+      "type": "stacked | inline | columns"
+    }
+  ],
+  "compositionPolicy": {
+    "items": "RadioGroupItem requires a RadioGroup ancestor and a non-blank unique direct-item value; plain and card variants retain one input.",
+    "keyboard": "Arrow, Home, and End move focus and selection exactly once across enabled native radios; horizontal arrows mirror in RTL.",
+    "targeting": "Item className and style target the native input; rootClassName and rootStyle target the wrapper.",
+    "form": "The group form attribute propagates to every item for external submission and reset."
+  }
+}

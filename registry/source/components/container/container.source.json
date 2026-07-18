@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./container.css", "react"],
+  "entryPath": "registry/source/components/container/container.tsx",
+  "id": "container",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

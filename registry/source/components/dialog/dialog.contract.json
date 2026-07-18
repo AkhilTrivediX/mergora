@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.2.0",
+  "itemId": "dialog",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A named modal or non-modal dialog with deterministic entry, containment, dismissal, viewport, nesting, and restoration policy.",
+  "semantics": [
+    "Modal content uses role=dialog with React Aria modal semantics; non-modal content uses role=dialog without background inerting or a focus trap.",
+    "One Title is preferred; aria-label or aria-labelledby is an explicit alternative, and one Description is associated by a stable ID.",
+    "Escape and outside interaction are owned by the topmost React Aria overlay; LayerManager registers the actual portal root so visual and dismissal order agree without competing.",
+    "A removed trigger restores to finalFocusRef when supplied."
+  ],
+  "messageKeys": [
+    {
+      "key": "dialog.close",
+      "fallback": "Close dialog",
+      "context": "Visible default text for Dialog.Close when children are omitted."
+    }
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve the surface boundary and focus indication without relying on elevation.",
+    "reducedMotion": "Entry and exit transforms are removed.",
+    "rtl": "Logical spacing and explicit direction propagate through the portal independently from locale."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Surface and close path remain available inside visual-viewport and safe-area bounds."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

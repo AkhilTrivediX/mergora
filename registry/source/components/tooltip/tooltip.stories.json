@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tooltip",
+  "canonicalStoryFile": "apps/storybook/src/P2Overlays.stories.tsx",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "TooltipPolicies" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "TooltipPolicies" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "TooltipPolicies" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "TooltipPolicies"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "TooltipPolicies" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tooltip is supplemental description and has no value model to mark read-only."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tooltip must not become the sole validation message or error channel."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required belongs to a labelled form control and cannot be carried only by a tooltip."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tooltip is not a status channel and does not expose a loading state."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Empty tooltip content supplies no accessible description and is invalid usage."
+      }
+    },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "TooltipPolicies" },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tooltip has no partial-selection or partial-data state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success requires persistent status feedback and cannot be conveyed only by tooltip text."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require persistent nearby semantics rather than hover/focus-only content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors require persistent recovery guidance and cannot be tooltip-only."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tooltip content is noninteractive and never hosts destructive decisions."
+      }
+    }
+  ]
+}

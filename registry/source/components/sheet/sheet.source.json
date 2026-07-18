@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./sheet.js"],
+  "entryPath": "registry/source/components/sheet/index.ts",
+  "id": "sheet",
+  "itemDependencies": ["dialog"],
+  "outputRole": "component"
+}

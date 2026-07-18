@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "cluster",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "div",
+    "rolePolicy": "Action, toolbar, list, and tag semantics are never inferred from visual clustering.",
+    "refTarget": "HTMLDivElement"
+  },
+  "layout": {
+    "intrinsic": "A wrapping flex row uses semantic inline gaps and zero minimum inline sizes.",
+    "orphan": "start preserves a logical leading-edge orphan; fill grows only the final child.",
+    "readingOrder": "No order property is used, so DOM, focus, and visual sequence stay aligned."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=cluster]",
+    "attributes": ["data-gap", "data-align", "data-justify", "data-orphan"]
+  },
+  "consumerResponsibilities": [
+    "Use a semantic list, fieldset, toolbar, or navigation wrapper when the clustered content requires it.",
+    "Use orphan=fill only when the final child has a safe stretching contract.",
+    "Do not use CSS order to diverge focus and reading order."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "wrapping",
+      "orphan-layout",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "focus-order",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-focus-order", "touch-actions", "forced-colors"],
+    "recordedEvidence": []
+  }
+}

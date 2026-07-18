@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tabs",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A controlled or uncontrolled tab system with explicit activation, orientation, direction, overflow, disabled-key, and URL-state policies.",
+  "semantics": [
+    "React Aria owns tablist, tab, tabpanel, selected, focus, and labelling relationships using stable string values.",
+    "Automatic activation follows focus; manual activation requires Enter or Space; Home, End, orientation arrows, disabled skipping, and RTL spatial order remain testable.",
+    "Horizontal lists scroll inline and vertical lists scroll blockwise without clipping focus at 320 CSS pixels or 400 percent zoom.",
+    "Optional href values enable a progressive-enhancement URL recipe and reject empty, data, javascript, and vbscript protocols."
+  ],
+  "preferences": {
+    "forcedColors": "System focus and selected borders remain visible without color-only state.",
+    "reducedMotion": "No selection or scrolling behavior depends on animation.",
+    "rtl": "Explicit direction controls horizontal spatial keys independently from the surrounding content locale."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "The tab list exposes native scrolling while the selected tab and focus indicator stay reachable."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

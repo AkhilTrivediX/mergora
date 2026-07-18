@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "itemId": "copy-button",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Action and selection controls do not expose a read-only state; use disabled only when interaction must be unavailable."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation ownership belongs to a field or workflow rather than this standalone action contract."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The required state does not apply to this component's current native semantics."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An empty or unnamed action is invalid usage rather than a supported presentation state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component has no partial-selection or partial-data state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require adjacent explanation and are not encoded as a standalone control state."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not expose a destructive intent; destructive workflows use Button or ActionMenu contracts."
+      }
+    }
+  ]
+}

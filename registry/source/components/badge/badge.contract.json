@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "badge",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "A strictly noninteractive category, status, or localized count badge.",
+  "semantics": [
+    "Badge always renders a span and rejects every React event handler plus href, accessKey, editable/drag state, focus, role, dangerous HTML, and generic accessible-name overrides at type and runtime boundaries.",
+    "Status mode uses badge.status to localize punctuation and severity/label order while preserving fully wrapping visible text.",
+    "Count mode exposes a localized exact accessible label even when only the visual count is capped.",
+    "Interactive use wraps Badge in a correctly named Button or Link without changing Badge semantics."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "No semantic information depends on motion.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Text wraps, actions reflow, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

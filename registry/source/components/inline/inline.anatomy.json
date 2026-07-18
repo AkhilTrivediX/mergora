@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "inline",
+    "stableAttributes": ["data-slot", "data-gap", "data-align", "data-justify"]
+  },
+  "parts": []
+}

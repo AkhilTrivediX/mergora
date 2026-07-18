@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "json-viewer",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "collapsed",
+    "expanded",
+    "controlled",
+    "selected",
+    "copy-path",
+    "copy-value",
+    "empty",
+    "keyboard",
+    "large-content",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "json-viewer",
+      "semanticElement": "div role=region",
+      "refTarget": "HTMLDivElement",
+      "states": ["virtualized=false"]
+    },
+    {
+      "name": "json-tree",
+      "semanticElement": "div role=tree",
+      "refTarget": "internal",
+      "states": []
+    },
+    {
+      "name": "json-tree-item",
+      "semanticElement": "div role=treeitem",
+      "refTarget": "internal",
+      "states": ["expanded", "selected", "type", "path"]
+    },
+    {
+      "name": "json-copy-path",
+      "semanticElement": "button",
+      "refTarget": "internal",
+      "states": ["copy-status"]
+    },
+    {
+      "name": "json-copy-value",
+      "semanticElement": "button",
+      "refTarget": "internal",
+      "states": ["copy-status"]
+    }
+  ],
+  "contract": {
+    "id": "json-viewer-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "json-viewer-quality-passport",
+    "version": "0.0.0"
+  }
+}

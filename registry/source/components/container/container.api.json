@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "container",
+  "entryExport": "Container",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "Container" },
+    { "kind": "type", "name": "ContainerProps" },
+    { "kind": "type", "name": "ContainerWidth" },
+    { "kind": "type", "name": "ContainerGutter" }
+  ],
+  "props": [
+    {
+      "default": "content",
+      "name": "width",
+      "required": false,
+      "type": "prose | content | wide | full"
+    },
+    {
+      "default": "default",
+      "name": "gutter",
+      "required": false,
+      "type": "none | compact | default | spacious"
+    },
+    { "default": true, "name": "safeArea", "required": false, "type": "boolean" },
+    { "default": false, "name": "queryContainer", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "element": "Always a semantically neutral div; consumers place it inside the appropriate landmark.",
+    "queryContainer": "Anonymous inline-size container only; no global container name is reserved."
+  }
+}

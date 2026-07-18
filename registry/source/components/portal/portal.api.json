@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "portal",
+  "entryExport": "Portal",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "Omit<React.HTMLAttributes<HTMLDivElement>, children>",
+  "exports": [
+    { "kind": "component", "name": "Portal" },
+    { "kind": "type", "name": "PortalProps" }
+  ],
+  "props": [
+    { "name": "children", "required": true, "type": "ReactNode" },
+    {
+      "default": "provider target or document.body",
+      "name": "container",
+      "required": false,
+      "type": "HTMLElement | null"
+    },
+    { "default": false, "name": "disabled", "required": false, "type": "boolean" },
+    { "default": null, "name": "fallback", "required": false, "type": "ReactNode" }
+  ],
+  "compositionPolicy": {
+    "server": "SSR and the first hydration pass render only fallback unless disabled is true.",
+    "context": "React context crosses the portal and the wrapper writes native dir/lang plus density attributes.",
+    "relationships": "Consumers keep ID references unique and mounted on both sides of an accessible relationship."
+  }
+}

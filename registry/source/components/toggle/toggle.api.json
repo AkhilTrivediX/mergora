@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toggle",
+  "entryExport": "Toggle",
+  "refTarget": "HTMLButtonElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "Toggle"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleProps"
+    }
+  ],
+  "controlledState": ["pressed"],
+  "nativePolicy": [
+    "aria-pressed, data-state, and the visual state remain synchronized.",
+    "Consumer cancellation prevents the state transition.",
+    "Pending remains focusable and prevents state changes."
+  ]
+}

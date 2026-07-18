@@ -1,0 +1,61 @@
+/* Generated from registry/source/components/inline/inline.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-inline {
+  --mrg-inline-gap: var(--mrg-semantic-space-inline-sm);
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-inline-gap);
+  justify-content: flex-start;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-inline > * {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-inline[data-gap="none"] {
+  --mrg-inline-gap: 0px;
+}
+
+.mrg-inline[data-gap="xs"] {
+  --mrg-inline-gap: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-inline[data-gap="md"] {
+  --mrg-inline-gap: var(--mrg-semantic-space-inline-md);
+}
+
+.mrg-inline[data-gap="lg"] {
+  --mrg-inline-gap: var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-inline[data-align="stretch"] {
+  align-items: stretch;
+}
+
+.mrg-inline[data-align="start"] {
+  align-items: flex-start;
+}
+
+.mrg-inline[data-align="end"] {
+  align-items: flex-end;
+}
+
+.mrg-inline[data-align="baseline"] {
+  align-items: baseline;
+}
+
+.mrg-inline[data-justify="center"] {
+  justify-content: center;
+}
+
+.mrg-inline[data-justify="end"] {
+  justify-content: flex-end;
+}
+
+.mrg-inline[data-justify="between"] {
+  justify-content: space-between;
+}

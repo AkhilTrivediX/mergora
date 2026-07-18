@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "radio-group",
+  "root": {
+    "element": "fieldset",
+    "ref": "HTMLFieldSetElement",
+    "slot": "radio-group",
+    "stableAttributes": [
+      "data-slot",
+      "data-layout",
+      "data-disabled",
+      "data-invalid",
+      "dir",
+      "disabled",
+      "aria-describedby",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "radio-group-label",
+      "element": "legend",
+      "purpose": "Native group name.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-item",
+      "element": "div",
+      "purpose": "Plain or card item without proxy controls.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-item-label-root",
+      "element": "label",
+      "purpose": "Names only the native radio without its description.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-input",
+      "element": "input type radio",
+      "purpose": "Native focus, validation, reset, and successful control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-indicator",
+      "element": "span aria-hidden",
+      "purpose": "Non-color checked cue.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-item-description",
+      "element": "span",
+      "purpose": "Description referenced by aria-describedby outside the label.",
+      "stability": "documented"
+    },
+    {
+      "slot": "radio-group-error",
+      "element": "p",
+      "purpose": "Persistent group error.",
+      "stability": "documented"
+    }
+  ]
+}

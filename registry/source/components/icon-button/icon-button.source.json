@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../button/button-state.js",
+    "../button/button.js",
+    "./icon-button.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/icon-button/icon-button.tsx",
+  "id": "icon-button",
+  "itemDependencies": ["button"],
+  "outputRole": "component"
+}

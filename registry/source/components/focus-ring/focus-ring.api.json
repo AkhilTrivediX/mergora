@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "entryExport": "FocusRing",
+  "refTarget": "HTMLElement",
+  "nativeProps": "Omit<SlotProps, data-slot>",
+  "exports": [
+    { "kind": "component", "name": "FocusRing" },
+    { "kind": "type", "name": "FocusRingProps" }
+  ],
+  "props": [
+    { "default": "standard", "name": "contrast", "required": false, "type": "standard | strong" },
+    { "name": "children", "required": true, "type": "one concrete ReactElement" }
+  ],
+  "compositionPolicy": {
+    "semantics": "The child remains the only rendered semantic element.",
+    "modality": "The CSS strategy uses focus-visible and never suppresses the browser outline without replacement.",
+    "forcedColors": "System Highlight supplies an explicit outline and shadows are removed."
+  }
+}

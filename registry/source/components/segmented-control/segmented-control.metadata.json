@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "itemId": "segmented-control",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "required",
+    "populated"
+  ],
+  "slots": [
+    {
+      "name": "segmented-control",
+      "semanticElement": "fieldset",
+      "refTarget": "HTMLFieldSetElement",
+      "states": []
+    },
+    {
+      "name": "segmented-control-label",
+      "semanticElement": "legend",
+      "refTarget": "none",
+      "states": []
+    },
+    {
+      "name": "segmented-control-scroll",
+      "semanticElement": "div",
+      "refTarget": "none",
+      "states": []
+    },
+    {
+      "name": "segmented-control-item",
+      "semanticElement": "label",
+      "refTarget": "HTMLLabelElement",
+      "states": []
+    },
+    {
+      "name": "segmented-control-input",
+      "semanticElement": "input type=radio",
+      "refTarget": "HTMLInputElement",
+      "states": []
+    },
+    {
+      "name": "segmented-control-text",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": []
+    }
+  ],
+  "contract": {
+    "id": "segmented-control-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "segmented-control-quality-passport",
+    "version": "0.0.0"
+  }
+}

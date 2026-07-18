@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "client-only",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and subpath outputs.",
+    "Record exact SSR-to-first-hydration fallback parity and no-JavaScript behavior.",
+    "Verify fallback names, status semantics, layout stability, and focus order in browsers.",
+    "Pass packed consumers, package/source parity, Semantic Sync fixtures, and manual review.",
+    "Publish an approved Quality Passport and dogfood the exact generated output."
+  ]
+}

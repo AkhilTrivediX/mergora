@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./inline.css", "react"],
+  "entryPath": "registry/source/components/inline/inline.tsx",
+  "id": "inline",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

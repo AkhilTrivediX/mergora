@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pagination",
+  "entryExport": "Pagination",
+  "refTarget": "HTMLElement nav",
+  "exports": [
+    { "kind": "component", "name": "Pagination" },
+    { "kind": "function", "name": "buildPaginationRange" },
+    { "kind": "function", "name": "isSafePaginationHref" },
+    { "kind": "type", "name": "PaginationRangeItem" },
+    { "kind": "type", "name": "PaginationPageProps" },
+    { "kind": "type", "name": "PaginationCursorProps" },
+    { "kind": "type", "name": "PaginationProps" }
+  ],
+  "controlledState": ["page or cursor label"],
+  "nativePolicy": [
+    "Navigable destinations are real links; unavailable previous and next controls are noninteractive aria-disabled text.",
+    "Page mode exposes one localized aria-current page and named ellipsis, previous, next, and page links.",
+    "Cursor mode preserves server-owned navigation while rejecting empty or executable href values."
+  ]
+}

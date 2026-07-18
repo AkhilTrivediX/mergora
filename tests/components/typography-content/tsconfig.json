@@ -1,0 +1,38 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/blockquote/**/*.ts",
+    "../../../registry/source/components/blockquote/**/*.tsx",
+    "../../../registry/source/components/code/**/*.ts",
+    "../../../registry/source/components/code/**/*.tsx",
+    "../../../registry/source/components/code-block/**/*.ts",
+    "../../../registry/source/components/code-block/**/*.tsx",
+    "../../../registry/source/components/description-list/**/*.ts",
+    "../../../registry/source/components/description-list/**/*.tsx",
+    "../../../registry/source/components/diff-viewer/**/*.ts",
+    "../../../registry/source/components/diff-viewer/**/*.tsx",
+    "../../../registry/source/components/heading/**/*.ts",
+    "../../../registry/source/components/heading/**/*.tsx",
+    "../../../registry/source/components/json-viewer/**/*.ts",
+    "../../../registry/source/components/json-viewer/**/*.tsx",
+    "../../../registry/source/components/kbd/**/*.ts",
+    "../../../registry/source/components/kbd/**/*.tsx",
+    "../../../registry/source/components/prose/**/*.ts",
+    "../../../registry/source/components/prose/**/*.tsx",
+    "../../../registry/source/components/text/**/*.ts",
+    "../../../registry/source/components/text/**/*.tsx",
+    "../../../apps/storybook/src/P2TypographyContent.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "skeleton",
+  "root": {
+    "slot": "skeleton",
+    "element": "span aria-hidden",
+    "ref": "HTMLSpanElement",
+    "stableAttributes": ["data-slot", "data-shape"]
+  },
+  "parts": []
+}

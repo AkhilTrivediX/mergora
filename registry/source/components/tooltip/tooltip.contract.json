@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tooltip",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A noninteractive description shown after grouped hover/focus delay, dismissible with Escape, hoverable, persistent while valid, collision-aware, and never essential.",
+  "semantics": [
+    "React Aria owns role=tooltip and adds/removes aria-describedby with the visible lifecycle.",
+    "Keyboard focus and pointer hover have parity; Escape dismisses the topmost tooltip, whose actual portal root shares LayerManager visual order with other overlays.",
+    "Content rejects interactive descendants in development guidance; actions use Popover.",
+    "DisabledTrigger remains focusable with aria-disabled=true and suppresses activation."
+  ],
+  "messageKeys": [],
+  "touchPolicy": "No long press is registered. Tooltip content is supplemental and the visible trigger label or nearby text remains sufficient on touch.",
+  "preferences": {
+    "forcedColors": "A system-color boundary and trigger focus remain visible.",
+    "reducedMotion": "Only an immediate state change remains.",
+    "rtl": "start/end placement maps from provider direction independently from locale."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Content wraps within 1rem viewport gutters and collision handling flips when needed."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "browser-hover-focus",
+      "describedby-lifecycle",
+      "escape",
+      "axe",
+      "touch-policy",
+      "collision-geometry",
+      "visual-preferences",
+      "packed-consumer"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

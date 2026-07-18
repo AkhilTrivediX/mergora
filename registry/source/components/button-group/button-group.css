@@ -1,0 +1,41 @@
+.mrg-button-group {
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-button-group[data-orientation="horizontal"] {
+  flex-direction: row;
+}
+
+.mrg-button-group[data-orientation="vertical"] {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.mrg-button-group[data-wrap="true"] {
+  flex-wrap: wrap;
+}
+
+.mrg-button-group[data-wrap="false"] {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.mrg-button-group[data-orientation="horizontal"] > :not(:first-child) {
+  margin-inline-start: calc(-1 * var(--mrg-semantic-border-width-default));
+}
+
+.mrg-button-group[data-orientation="vertical"] > :not(:first-child) {
+  margin-block-start: calc(-1 * var(--mrg-semantic-border-width-default));
+}
+
+@media (forced-colors: active) {
+  .mrg-button-group {
+    forced-color-adjust: auto;
+  }
+}

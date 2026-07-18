@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Private security report
+    url: https://github.com/AkhilTrivediX/mergora/security/advisories/new
+    about: Report vulnerabilities privately; do not disclose exploit details in an issue.
+  - name: Support policy
+    url: https://github.com/AkhilTrivediX/mergora/blob/main/SUPPORT.md
+    about: Choose the correct route and include a minimal sanitized reproduction.

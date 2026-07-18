@@ -1,0 +1,90 @@
+/* Generated from registry/source/components/tooltip/tooltip.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-tooltip__trigger {
+  box-sizing: border-box;
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-tooltip__trigger[data-disabled-adapter="true"] {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-tooltip__trigger[data-focus-visible] {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width) var(--mrg-semantic-color-background-canvas);
+}
+
+.mrg-tooltip {
+  box-sizing: border-box;
+  max-inline-size: min(28rem, calc(100dvi - 1rem));
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+  border-radius: var(--mrg-semantic-radius-control);
+  background: var(--mrg-semantic-color-background-inverse);
+  box-shadow: var(--mrg-semantic-elevation-overlay);
+  color: var(--mrg-semantic-color-foreground-inverse);
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  z-index: calc(
+    var(--mrg-component-layer-stack-base, var(--mrg-semantic-layer-modal)) +
+      var(--mrg-layer-index, 0)
+  );
+}
+
+.mrg-tooltip__content {
+  max-inline-size: 65ch;
+}
+
+.mrg-tooltip__arrow {
+  color: var(--mrg-semantic-color-background-inverse);
+}
+
+.mrg-tooltip[data-entering] {
+  animation: mrg-tooltip-enter var(--mrg-semantic-motion-duration-feedback)
+    var(--mrg-semantic-motion-easing-enter) both;
+}
+
+.mrg-tooltip[data-exiting] {
+  animation: mrg-tooltip-exit var(--mrg-semantic-motion-duration-feedback)
+    var(--mrg-semantic-motion-easing-exit) both;
+}
+
+@keyframes mrg-tooltip-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mrg-tooltip-exit {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-tooltip[data-entering],
+  .mrg-tooltip[data-exiting] {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-tooltip {
+    border: var(--mrg-semantic-border-width-default) solid CanvasText;
+    background: Canvas;
+    box-shadow: none;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-tooltip__arrow {
+    color: Canvas;
+    stroke: CanvasText;
+  }
+}

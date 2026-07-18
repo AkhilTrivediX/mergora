@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "badge",
+  "entryExport": "Badge",
+  "refTarget": "HTMLSpanElement",
+  "exports": [
+    { "kind": "component", "name": "Badge" },
+    { "kind": "function", "name": "assertNonInteractiveBadgeProps" },
+    { "kind": "type", "name": "BadgeProps" },
+    { "kind": "type", "name": "BadgeCategoryProps" },
+    { "kind": "type", "name": "BadgeStatusProps" },
+    { "kind": "type", "name": "BadgeCountProps" },
+    { "kind": "type", "name": "BadgeVariant" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "Badge is always a noninteractive span and rejects every React event handler plus href, accessKey, editable/drag state, focus, role, dangerous HTML, and generic accessible-name overrides at type and runtime boundaries.",
+    "Category, status, and count modes are explicit; status punctuation and severity/label order use the stable badge.status formatter key and never truncate long labels.",
+    "Count mode caps only its visual value and exposes a localized exact accessible count.",
+    "Interactive affordances wrap Badge in a correctly named Button or Link rather than changing Badge semantics."
+  ]
+}

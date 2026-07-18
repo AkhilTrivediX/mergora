@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "itemId": "checkbox-group",
+  "root": {
+    "element": "fieldset",
+    "ref": "HTMLFieldSetElement",
+    "slot": "checkbox-group",
+    "stableAttributes": [
+      "data-slot",
+      "data-layout",
+      "data-disabled",
+      "data-invalid",
+      "disabled",
+      "aria-describedby",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "checkbox-group-label",
+      "element": "legend",
+      "purpose": "Native group name.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-group-items",
+      "element": "div",
+      "purpose": "Responsive item layout.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-input",
+      "element": "input type checkbox",
+      "purpose": "One successful control per option.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-group-error",
+      "element": "p",
+      "purpose": "Persistent group constraint error.",
+      "stability": "documented"
+    }
+  ]
+}

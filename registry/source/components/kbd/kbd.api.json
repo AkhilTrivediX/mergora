@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kbd",
+  "entryExport": "Kbd",
+  "refTarget": "HTMLElement | HTMLSpanElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement | HTMLSpanElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Kbd"
+    },
+    {
+      "kind": "value",
+      "name": "KbdChord"
+    },
+    {
+      "kind": "value",
+      "name": "formatKbdKey"
+    },
+    {
+      "kind": "type",
+      "name": "KbdProps"
+    },
+    {
+      "kind": "type",
+      "name": "KbdChordProps"
+    },
+    {
+      "kind": "type",
+      "name": "KbdKey"
+    },
+    {
+      "kind": "type",
+      "name": "KbdPlatform"
+    }
+  ],
+  "props": [
+    {
+      "name": "spokenLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "keys",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "label",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "platform",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "separator",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Native kbd elements retain key semantics. Chords expose one localized spoken group label while decorative glyphs and separators are hidden from the accessibility tree.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

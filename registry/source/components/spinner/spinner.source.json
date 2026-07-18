@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "../sr-announcer/index.js", "./spinner.css", "react"],
+  "entryPath": "registry/source/components/spinner/spinner.tsx",
+  "id": "spinner",
+  "itemDependencies": ["provider", "sr-announcer"],
+  "outputRole": "component"
+}

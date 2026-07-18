@@ -1,0 +1,124 @@
+/* Generated from registry/source/components/error-state/error-state.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-error-state {
+  align-items: center;
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-panel);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mrg-semantic-space-stack-md);
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-section) var(--mrg-semantic-space-page);
+  text-align: center;
+}
+
+[data-slot="error-state-icon"] {
+  align-items: center;
+  border: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border-radius: var(--mrg-semantic-radius-pill);
+  display: inline-flex;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  inline-size: var(--mrg-semantic-size-target-preferred);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+}
+
+[data-slot="error-state-label"] {
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-transform: uppercase;
+}
+
+[data-slot="error-state-title"] {
+  font-size: var(--mrg-semantic-font-size-heading-medium);
+  margin: 0;
+}
+
+[data-slot="error-state-description"],
+[data-slot="error-state-technical-content"] {
+  max-inline-size: 62ch;
+  overflow-wrap: anywhere;
+}
+
+[data-slot="error-state-actions"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  justify-content: center;
+}
+
+[data-slot="error-state-retry"] {
+  background: var(--mrg-semantic-color-action-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-action-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-lg);
+}
+
+[data-slot="error-state-retry"]:hover,
+[data-slot="error-state-details"] summary:hover {
+  text-decoration-line: underline;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.16em;
+}
+
+[data-slot="error-state-retry"]:active {
+  text-decoration-style: double;
+  transform: translateY(var(--mrg-semantic-border-width-default));
+}
+
+[data-slot="error-state-details"] summary:active {
+  text-decoration-line: underline;
+  text-decoration-style: double;
+}
+
+[data-slot="error-state-retry"]:focus-visible,
+[data-slot="error-state-details"] summary:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+[data-slot="error-state-details"] {
+  max-inline-size: 100%;
+  text-align: start;
+}
+
+[data-slot="error-state-details"] summary {
+  cursor: pointer;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-block: var(--mrg-semantic-space-stack-sm);
+}
+
+@media (width < 24rem) {
+  .mrg-error-state {
+    padding-inline: var(--mrg-semantic-space-inline-lg);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-error-state,
+  [data-slot="error-state-icon"],
+  [data-slot="error-state-retry"] {
+    border-color: CanvasText;
+  }
+  [data-slot="error-state-retry"]:focus-visible,
+  [data-slot="error-state-details"] summary:focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="error-state-retry"]:active {
+    transform: none;
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "input",
+  "entryExport": "Input",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>",
+  "exports": [
+    { "kind": "component", "name": "Input" },
+    { "kind": "type", "name": "InputProps" }
+  ],
+  "props": [
+    { "name": "type", "required": false, "default": "text", "type": "native input type" },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "startAdornment", "required": false, "type": "ReactNode; decorative" },
+    { "name": "endAdornment", "required": false, "type": "ReactNode; decorative" }
+  ],
+  "compositionPolicy": {
+    "native": "All value, form, autocomplete, inputmode, validation, paste, and autofill behavior stays native.",
+    "field": "ID, description, error, required, and invalid state are inherited from Field unless explicitly supplied."
+  }
+}

@@ -1,0 +1,44 @@
+.mrg-skeleton {
+  animation: mrg-skeleton-pulse var(--mrg-semantic-motion-duration-deliberate)
+    var(--mrg-semantic-motion-easing-standard) infinite alternate;
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  block-size: var(--mrg-skeleton-block-size);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: block;
+  inline-size: var(--mrg-skeleton-inline-size);
+  max-inline-size: 100%;
+}
+
+.mrg-skeleton[data-shape="text"] {
+  border-radius: var(--mrg-semantic-radius-pill);
+}
+
+.mrg-skeleton[data-shape="circle"] {
+  aspect-ratio: 1;
+  border-radius: var(--mrg-semantic-radius-pill);
+  inline-size: var(--mrg-skeleton-block-size);
+}
+
+@keyframes mrg-skeleton-pulse {
+  from {
+    opacity: 0.58;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-skeleton {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-skeleton {
+    background: Canvas;
+    border-color: CanvasText;
+  }
+}

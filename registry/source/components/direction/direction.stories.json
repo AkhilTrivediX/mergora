@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "direction",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "nested-provider-and-direction",
+      "covers": ["ltr", "rtl", "nested-boundary", "logical-side-map", "mixed-direction"]
+    },
+    { "id": "portal-and-client-boundary", "covers": ["portal-context", "native-dir"] }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["rtl-logical-layout"],
+    "requiresBrowserEvidence": [
+      "rtl-reading-order",
+      "mixed-direction",
+      "portal-direction",
+      "keyboard"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "description-list",
+  "root": {
+    "element": "dl",
+    "ref": "HTMLDListElement | HTMLElement",
+    "slot": "description-list",
+    "stableAttributes": ["data-slot", "data-layout", "data-density"]
+  },
+  "parts": [
+    {
+      "element": "dt",
+      "slot": "description-term",
+      "stableAttributes": ["data-slot"]
+    },
+    {
+      "element": "dd",
+      "slot": "description-details",
+      "stableAttributes": ["data-slot"]
+    }
+  ]
+}

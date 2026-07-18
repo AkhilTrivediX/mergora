@@ -1,0 +1,14 @@
+{
+  "name": "@mergora/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal strict TypeScript configuration",
+  "type": "module",
+  "exports": {
+    "./base.json": "./base.json"
+  },
+  "scripts": {
+    "build": "node -e \"JSON.parse(require('node:fs').readFileSync('base.json','utf8'))\"",
+    "typecheck": "node -e \"JSON.parse(require('node:fs').readFileSync('base.json','utf8'))\""
+  }
+}

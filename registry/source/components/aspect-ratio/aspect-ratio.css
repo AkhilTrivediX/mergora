@@ -1,0 +1,25 @@
+.mrg-aspect-ratio {
+  align-self: start;
+  aspect-ratio: var(--mrg-aspect-ratio);
+  display: grid;
+  inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.mrg-aspect-ratio > * {
+  grid-area: 1 / 1;
+  max-inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+@supports not (aspect-ratio: 1) {
+  .mrg-aspect-ratio::before {
+    content: "";
+    display: block;
+    grid-area: 1 / 1;
+    padding-block-start: var(--mrg-aspect-ratio-fallback);
+  }
+}

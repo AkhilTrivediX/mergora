@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sticky-region",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and the public subpath export.",
+    "Record dynamic ResizeObserver measurements across zoom, text expansion, localization, and responsive content changes.",
+    "Verify focus-not-obscured geometry for first, middle, and last controls in start and end sticky modes.",
+    "Complete manual keyboard, screen-reader, speech, switch, touch, and Windows forced-colors sessions for this Risk Class 2 component.",
+    "Record page and contained scrolling, safe-area, 256-pixel height, 320 CSS pixel, 200% text, and 400% zoom evidence.",
+    "Pass SSR/hydration, no-ResizeObserver fallback, packed Next.js/Vite, and package/source parity gates.",
+    "Add Semantic Sync clean-update, customized-update, conflict, rollback, and removal fixtures.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

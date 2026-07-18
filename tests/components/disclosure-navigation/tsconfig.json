@@ -1,0 +1,35 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/accordion/**/*.ts",
+    "../../../registry/source/components/accordion/**/*.tsx",
+    "../../../registry/source/components/breadcrumb/**/*.ts",
+    "../../../registry/source/components/breadcrumb/**/*.tsx",
+    "../../../registry/source/components/collapsible/**/*.ts",
+    "../../../registry/source/components/collapsible/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/pagination/**/*.ts",
+    "../../../registry/source/components/pagination/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../registry/source/components/tabs/**/*.ts",
+    "../../../registry/source/components/tabs/**/*.tsx",
+    "../../../apps/storybook/src/P2DisclosureNavigation.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

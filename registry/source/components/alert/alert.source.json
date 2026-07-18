@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "../sr-announcer/index.js", "./alert.css", "react"],
+  "entryPath": "registry/source/components/alert/alert.tsx",
+  "id": "alert",
+  "itemDependencies": ["provider", "sr-announcer"],
+  "outputRole": "component"
+}

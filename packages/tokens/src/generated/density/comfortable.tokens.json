@@ -1,0 +1,28 @@
+{
+  "$description": "Comfortable default density for pointer and mixed-input interfaces.",
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "density": {
+      "controlGap": {
+        "$type": "dimension",
+        "$value": "{primitive.space.2}"
+      },
+      "controlHeight": {
+        "$type": "dimension",
+        "$value": "{primitive.size.10}"
+      },
+      "controlPaddingInline": {
+        "$type": "dimension",
+        "$value": "{primitive.space.3}"
+      },
+      "panelPadding": {
+        "$type": "dimension",
+        "$value": "{primitive.space.4}"
+      },
+      "rowHeight": {
+        "$type": "dimension",
+        "$value": "{primitive.size.10}"
+      }
+    }
+  }
+}

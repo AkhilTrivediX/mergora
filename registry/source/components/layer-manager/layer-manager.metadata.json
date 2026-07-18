@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "layer-manager",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "base",
+    "responsive-reflow",
+    "locale-direction",
+    "user-preferences",
+    "long-content",
+    "overlay-focus",
+    "destructive"
+  ],
+  "slots": [
+    {
+      "name": "layer-application",
+      "semanticElement": "div or consumer element",
+      "refTarget": "HTMLElement",
+      "states": ["interactive", "inert"]
+    },
+    {
+      "name": "layer",
+      "semanticElement": "div or consumer element",
+      "refTarget": "HTMLElement",
+      "states": ["active", "modal", "dismissible", "top"]
+    }
+  ],
+  "contract": { "id": "layer-manager-accessibility", "version": "0.1.0" },
+  "passport": { "id": "layer-manager-quality-passport", "version": "0.0.0" }
+}

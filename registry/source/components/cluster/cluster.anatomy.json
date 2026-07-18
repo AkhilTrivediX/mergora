@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "cluster",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "cluster",
+    "stableAttributes": ["data-slot", "data-gap", "data-align", "data-justify", "data-orphan"]
+  },
+  "parts": []
+}

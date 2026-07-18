@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sr-announcer",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "announcement-queue",
+      "covers": [
+        "polite",
+        "assertive",
+        "fifo",
+        "dedupe",
+        "intentional-repeat",
+        "localization",
+        "clear"
+      ]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["visually-hidden-live-regions"],
+    "requiresBrowserEvidence": [
+      "desktop-at",
+      "mobile-at",
+      "interruption",
+      "announcement-noise",
+      "rtl"
+    ]
+  }
+}

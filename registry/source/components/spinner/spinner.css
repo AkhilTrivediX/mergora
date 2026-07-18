@@ -1,0 +1,44 @@
+.mrg-spinner {
+  animation: mrg-spinner-rotate var(--mrg-semantic-motion-duration-deliberate) linear infinite;
+  aspect-ratio: 1;
+  border: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: var(--mrg-semantic-radius-pill);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-action-background);
+  display: inline-block;
+  inline-size: var(--mrg-semantic-size-icon-md);
+}
+
+.mrg-spinner[data-size="small"] {
+  inline-size: var(--mrg-semantic-size-icon-sm);
+}
+
+.mrg-spinner[data-size="large"] {
+  inline-size: var(--mrg-semantic-size-icon-lg);
+}
+
+.mrg-busy-region {
+  min-inline-size: 0;
+  position: relative;
+}
+
+@keyframes mrg-spinner-rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-spinner {
+    animation: none;
+    border-block-start-color: currentColor;
+    border-inline-end-style: dotted;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-spinner {
+    color: CanvasText;
+  }
+}

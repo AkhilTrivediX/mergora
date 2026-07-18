@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "pagination",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "Localized page-number and cursor navigation with real links, current state, named ellipses, safe URLs, and server-owned callbacks.",
+  "semantics": [
+    "A named nav contains a list of real links and exactly one localized aria-current page or cursor label.",
+    "Unavailable previous and next destinations render noninteractive aria-disabled text rather than anchors with disabled styling.",
+    "Page ranges validate finite integer bounds and expose named ellipses; cursor mode accepts independent previous and next destinations.",
+    "Provider keys pagination.label, pagination.previous, pagination.next, pagination.ellipsis, pagination.page, and pagination.currentPage localize copy and numbers; explicit props win."
+  ],
+  "preferences": {
+    "forcedColors": "Native links, current border, disabled text, and system focus remain distinguishable.",
+    "reducedMotion": "No navigation state depends on motion.",
+    "rtl": "Logical layout mirrors and bdi isolates localized page labels."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Navigation wraps without clipping a link, label, or focus indicator."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

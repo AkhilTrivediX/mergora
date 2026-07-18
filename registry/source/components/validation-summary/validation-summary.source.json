@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./validation-summary.css", "react"],
+  "entryPath": "registry/source/components/validation-summary/validation-summary.tsx",
+  "id": "validation-summary",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

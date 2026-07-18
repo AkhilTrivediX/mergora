@@ -1,0 +1,69 @@
+.mrg-callout {
+  --mrg-callout-background: var(--mrg-semantic-color-background-surface-sunken);
+  --mrg-callout-border: var(--mrg-semantic-color-border-default);
+  align-items: start;
+  background: var(--mrg-callout-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-callout-border);
+  border-radius: var(--mrg-semantic-radius-panel);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-md);
+  grid-template-columns: auto minmax(0, 1fr);
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-stack-lg) var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-callout[data-variant="info"] {
+  --mrg-callout-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-callout-border: var(--mrg-semantic-color-status-info-border);
+}
+
+.mrg-callout[data-variant="tip"] {
+  --mrg-callout-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-callout-border: var(--mrg-semantic-color-status-success-border);
+}
+
+.mrg-callout[data-variant="warning"] {
+  --mrg-callout-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-callout-border: var(--mrg-semantic-color-status-warning-border);
+}
+
+[data-slot="callout-icon"] {
+  align-items: center;
+  border: var(--mrg-semantic-border-width-default) solid currentColor;
+  border-radius: var(--mrg-semantic-radius-pill);
+  display: inline-flex;
+  inline-size: var(--mrg-semantic-size-target-minimum);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+}
+
+[data-slot="callout-content"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+[data-slot="callout-variant-label"] {
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-transform: uppercase;
+}
+
+[data-slot="callout-title"] {
+  font-size: var(--mrg-semantic-font-size-heading-small);
+  margin: 0;
+}
+
+[data-slot="callout-body"] {
+  overflow-wrap: anywhere;
+}
+
+@media (forced-colors: active) {
+  .mrg-callout {
+    border-color: CanvasText;
+  }
+}

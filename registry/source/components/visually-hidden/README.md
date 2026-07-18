@@ -1,0 +1,16 @@
+# Visually Hidden
+
+`VisuallyHidden` keeps localized text in the accessibility tree while removing its visual layout footprint. It never uses `display: none`, `visibility: hidden`, `hidden`, or `aria-hidden`.
+
+```tsx
+<button type="button">
+  <UploadIcon aria-hidden="true" />
+  <VisuallyHidden>Upload invoice</VisuallyHidden>
+</button>
+```
+
+Use `as="a"` with `revealOnFocus` for skip links and similar focusable content. The focus treatment restores readable geometry at the logical start edge and uses system colors under forced-colors. Choose `as="div"` only where a block container is valid; the default is `span`.
+
+Consumers own the text, the target of any skip link, and the decision that a second screen-reader-only copy will not create duplicate announcement noise.
+
+Current status is `source-present-unreleased`. Browser accessibility-tree, focus, zoom, text-spacing, RTL, forced-colors, packed-consumer, manual screen-reader, Semantic Sync, and Quality Passport evidence remain required.

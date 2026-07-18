@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tooltip",
+  "entryExport": "Tooltip",
+  "refTarget": "compound-part-dependent",
+  "exports": [
+    { "kind": "namespace", "name": "Tooltip" },
+    { "kind": "component", "name": "TooltipArrow" },
+    { "kind": "type", "name": "TooltipArrowProps" },
+    { "kind": "component", "name": "TooltipContent" },
+    { "kind": "type", "name": "TooltipContentProps" },
+    { "kind": "component", "name": "TooltipDisabledTrigger" },
+    { "kind": "type", "name": "TooltipDisabledTriggerProps" },
+    { "kind": "type", "name": "TooltipPlacement" },
+    { "kind": "component", "name": "TooltipRoot" },
+    { "kind": "type", "name": "TooltipRootProps" },
+    { "kind": "type", "name": "TooltipTouchPolicy" },
+    { "kind": "component", "name": "TooltipTrigger" },
+    { "kind": "type", "name": "TooltipTriggerProps" },
+    { "kind": "function", "name": "resolveTooltipPlacement" }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "React Aria owns hover/focus delay grouping, hover persistence, Escape dismissal, portal positioning, collision/flip, and aria-describedby lifecycle.",
+    "Tooltip content is descriptive and noninteractive; actionable content belongs in Popover.",
+    "DisabledTrigger is a documented aria-disabled focusable adapter that suppresses activation while preserving tooltip access.",
+    "Touch has no long-press-only path and tooltip text cannot be essential."
+  ]
+}

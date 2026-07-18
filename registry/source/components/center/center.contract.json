@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "center",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "div",
+    "rolePolicy": "Centering never infers dialog, region, or presentation semantics.",
+    "refTarget": "HTMLDivElement"
+  },
+  "layout": {
+    "intrinsic": "Flex centering consumes only available space and sets no fixed dimensions.",
+    "maximum": "Direct children use min(100%, semantic maximum) to remain inside narrow containers.",
+    "overflow": "Neither axis clips content; expanded text increases block size."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=center]",
+    "attributes": ["data-axis", "data-maximum", "data-text"]
+  },
+  "consumerResponsibilities": [
+    "Provide a meaningful block-size constraint only when block-axis centering is actually intended.",
+    "Do not center long prose text unless centered reading alignment is a deliberate content choice.",
+    "Keep focused descendants unobscured when combining Center with sticky or overlay content."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "intrinsic-block-growth",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-focus-visibility", "touch-reflow", "forced-colors"],
+    "recordedEvidence": []
+  }
+}

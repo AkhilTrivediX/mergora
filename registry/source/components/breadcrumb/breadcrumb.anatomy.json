@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "breadcrumb",
+  "root": {
+    "slot": "breadcrumb",
+    "element": "nav",
+    "ref": "HTMLElement",
+    "stableAttributes": ["data-slot", "data-collapsible"]
+  },
+  "parts": [
+    { "slot": "breadcrumb-list", "element": "ol", "stability": "documented" },
+    { "slot": "breadcrumb-item", "element": "li", "stability": "documented" },
+    { "slot": "breadcrumb-link", "element": "a", "stability": "documented" },
+    {
+      "slot": "breadcrumb-current",
+      "element": "span aria-current=page",
+      "stability": "documented"
+    },
+    { "slot": "breadcrumb-overflow", "element": "li with details", "stability": "documented" }
+  ]
+}

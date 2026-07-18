@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../direction/index.js", "./button-group.css", "react"],
+  "entryPath": "registry/source/components/button-group/button-group.tsx",
+  "id": "button-group",
+  "itemDependencies": ["direction"],
+  "outputRole": "component"
+}

@@ -1,0 +1,41 @@
+/* Generated self-hosted font faces. Do not edit. */
+
+@font-face {
+  font-family: "Schibsted Grotesk";
+  src: url("./fonts/schibsted-grotesk-latin-ext-wght.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  unicode-range:
+    U+0000-024F, U+0300-036F, U+1E00-1EFF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F,
+    U+2190-21FF, U+2200-22FF, U+2300-23FF, U+25A0-25FF, U+2600-26FF, U+FB00-FB06;
+}
+
+@font-face {
+  font-family: "Schibsted Grotesk Fallback";
+  src: local("Arial");
+  size-adjust: 101.6949%;
+  ascent-override: 96.0286%;
+  descent-override: 25.3516%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Commit Mono";
+  src: url("./fonts/commit-mono-latin-greek-wght.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  unicode-range:
+    U+0000-024F, U+0300-03FF, U+1E00-1FFF, U+2000-206F, U+2070-209F, U+20A0-20CF, U+2100-214F,
+    U+2190-21FF, U+2200-22FF, U+2300-23FF, U+25A0-25FF, U+2600-26FF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Commit Mono Fallback";
+  src: local("Consolas");
+  size-adjust: 110.1514%;
+  ascent-override: 81.7057%;
+  descent-override: 18.1568%;
+  line-gap-override: 0%;
+}

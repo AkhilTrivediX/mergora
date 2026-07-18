@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["gap", "align", "justify", "wrapping", "long-content", "narrow", "rtl"],
+  "slots": [
+    {
+      "name": "inline",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["gap", "align", "justify"]
+    }
+  ],
+  "contract": { "id": "inline-accessibility", "version": "0.1.0" },
+  "passport": { "id": "inline-quality-passport", "version": "0.0.0" }
+}

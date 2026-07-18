@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "code",
+  "root": {
+    "element": "code",
+    "ref": "HTMLElement",
+    "slot": "code",
+    "stableAttributes": ["data-slot", "data-wrap"]
+  },
+  "parts": []
+}

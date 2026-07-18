@@ -1,0 +1,81 @@
+.mrg-field {
+  align-items: start;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-field[data-layout="inline"] {
+  grid-template-columns: minmax(8rem, 0.4fr) minmax(0, 1fr);
+}
+
+.mrg-field [data-slot="field-label"] {
+  align-items: baseline;
+  display: flex;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-space-inline-xs);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-inline-size: 0;
+}
+
+.mrg-field [data-slot="field-label"] > span:first-child {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-field [data-slot="field-optional-label"],
+.mrg-field [data-slot="field-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-field [data-slot="field-required-indicator"],
+.mrg-field [data-slot="field-error"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-field [data-slot="field-description"],
+.mrg-field [data-slot="field-error"] {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-field [data-slot="field-control"] {
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-field[data-layout="inline"] [data-slot="field-label"] {
+  grid-column: 1;
+  grid-row: 1;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-field[data-layout="inline"] [data-slot="field-control"] {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+@media (max-width: 30rem) {
+  .mrg-field[data-layout="inline"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-field[data-layout="inline"] [data-slot="field-label"],
+  .mrg-field[data-layout="inline"] [data-slot="field-control"] {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-field [data-slot="field-required-indicator"],
+  .mrg-field [data-slot="field-error"] {
+    color: CanvasText;
+  }
+}

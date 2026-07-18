@@ -1,0 +1,109 @@
+/* Generated from registry/source/components/toggle/toggle.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-toggle {
+  align-items: center;
+  appearance: none;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-density-control-gap);
+  justify-content: center;
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-space-inline-md);
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-toggle [data-slot="toggle-label"] {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-toggle[data-state="on"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-toggle:not(:disabled):not([data-pending="true"]):hover {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-toggle[data-state="on"]:not(:disabled):not([data-pending="true"]):hover {
+  background: var(--mrg-semantic-color-selection-background);
+}
+
+.mrg-toggle:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-toggle:disabled {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-toggle[data-pending="true"] {
+  cursor: progress;
+}
+
+.mrg-toggle [data-slot="toggle-pending-indicator"] {
+  animation: mrg-toggle-pending var(--mrg-semantic-motion-duration-deliberate) linear infinite;
+  aspect-ratio: 1;
+  border: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: var(--mrg-semantic-radius-pill);
+  flex: none;
+  inline-size: var(--mrg-semantic-size-icon-sm);
+}
+
+@keyframes mrg-toggle-pending {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-toggle {
+    transition: none;
+  }
+
+  .mrg-toggle [data-slot="toggle-pending-indicator"] {
+    animation: none;
+    border-block-start-color: currentColor;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-toggle {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-toggle[data-state="on"] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-toggle:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "callout",
+  "entryExport": "Callout",
+  "refTarget": "HTMLElement div or aside",
+  "exports": [
+    { "kind": "component", "name": "Callout" },
+    { "kind": "type", "name": "CalloutProps" },
+    { "kind": "type", "name": "CalloutVariant" },
+    { "kind": "type", "name": "CalloutHeadingLevel" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "Callout is non-live explanatory content and never adds alert or status semantics.",
+    "The default root is a neutral div; landmarkLabel intentionally promotes it to a named aside.",
+    "A native heading plus visible variant text and shape prevents color-only meaning.",
+    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers."
+  ]
+}

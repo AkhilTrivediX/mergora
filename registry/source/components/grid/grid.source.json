@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./grid.css", "react"],
+  "entryPath": "registry/source/components/grid/grid.tsx",
+  "id": "grid",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

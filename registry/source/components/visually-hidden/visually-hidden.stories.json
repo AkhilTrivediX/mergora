@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "visually-hidden",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "focus-and-hidden-content",
+      "covers": ["screen-reader-only", "focus-reveal", "long-localized-text", "forced-colors"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["dark", "enhanced-contrast", "forced-colors"],
+    "requiresBrowserEvidence": [
+      "keyboard",
+      "accessibility-tree",
+      "rtl",
+      "400-percent-zoom",
+      "text-spacing"
+    ]
+  }
+}

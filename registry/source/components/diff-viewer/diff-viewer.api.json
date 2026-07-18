@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "itemId": "diff-viewer",
+  "entryExport": "DiffViewer",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "DiffViewer"
+    },
+    {
+      "kind": "value",
+      "name": "formatUnifiedDiff"
+    },
+    {
+      "kind": "type",
+      "name": "DiffViewerProps"
+    },
+    {
+      "kind": "type",
+      "name": "DiffViewerMode"
+    },
+    {
+      "kind": "type",
+      "name": "DiffLine"
+    },
+    {
+      "kind": "type",
+      "name": "DiffLineKind"
+    }
+  ],
+  "props": [
+    {
+      "name": "lines",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "label",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "mode",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "wrap",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "activeLine",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "defaultActiveLine",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "onActiveLineChange",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copiedLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyErrorLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text; one row is in the tab order and vertical/Home/End/Page keys navigate rows.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

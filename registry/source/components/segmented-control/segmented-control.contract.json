@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "segmented-control",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A named native radio group with exclusive selection, horizontal overflow, and explicit RTL keyboard behavior.",
+  "semantics": [
+    "The fieldset and legend provide native group naming.",
+    "Home, End, and arrows move and select while skipping disabled options.",
+    "The horizontal scroller preserves touch and keyboard access at narrow widths."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, state, and focus.",
+    "reducedMotion": "Feedback remains understandable when transitions and rotation are removed.",
+    "rtl": "Logical properties and the documented spatial keyboard model follow direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Wrap, reflow, or expose native scrolling without clipping controls or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

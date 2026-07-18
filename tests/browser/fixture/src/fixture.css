@@ -1,0 +1,122 @@
+:root {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-block-size: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--mrg-semantic-color-background-canvas);
+}
+
+.evidence-shell {
+  inline-size: min(100%, 72rem);
+  min-inline-size: 0;
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.evidence-shell h1,
+.evidence-shell h2,
+.evidence-shell p {
+  overflow-wrap: anywhere;
+}
+
+.evidence-shell h1 {
+  max-inline-size: 20ch;
+  margin-block: 0 0.75rem;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.evidence-intro {
+  max-inline-size: 68ch;
+  margin-block: 0 2rem;
+  color: var(--mrg-semantic-color-foreground-muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.evidence-rail {
+  display: flex;
+  min-inline-size: 0;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--mrg-semantic-color-border-default);
+}
+
+.evidence-specimen {
+  min-inline-size: min(100%, 19rem);
+  flex: 1 1 24rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--mrg-semantic-color-background-canvas);
+}
+
+.evidence-specimen h2 {
+  margin-block: 0 1rem;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.evidence-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.evidence-status {
+  min-block-size: 1.5rem;
+  margin-block: 0.75rem 0;
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.evidence-grid-specimen {
+  flex-basis: 100%;
+  min-inline-size: 0;
+}
+
+.evidence-experimental {
+  display: inline-block;
+  max-inline-size: 100%;
+  margin-block-end: 0.75rem;
+  color: var(--mrg-semantic-color-status-warning-foreground);
+  background: var(--mrg-semantic-color-status-warning-background);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--mrg-semantic-radius-compact);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 30rem) {
+  .evidence-shell {
+    padding-inline: 1rem;
+  }
+
+  .evidence-specimen {
+    min-inline-size: 100%;
+  }
+}
+
+@media (forced-colors: active) {
+  .evidence-rail {
+    background: CanvasText;
+  }
+
+  .evidence-specimen {
+    color: CanvasText;
+    background: Canvas;
+  }
+}

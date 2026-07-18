@@ -1,0 +1,89 @@
+.mrg-copy-button {
+  align-items: center;
+  appearance: none;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-density-control-gap);
+  justify-content: center;
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-space-inline-lg);
+  transition: background-color var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-copy-button [data-slot="copy-button-icon"] {
+  flex: none;
+}
+
+.mrg-copy-button [data-slot="copy-button-status"] {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-copy-button:not(:disabled):not([data-status="copying"]):hover {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-copy-button:not(:disabled):not([data-status="copying"]):active {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-copy-button:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-copy-button:disabled {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-copy-button[data-status="copying"] {
+  cursor: progress;
+}
+
+.mrg-copy-button[data-status="copied"] [data-slot="copy-button-icon"] {
+  color: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-copy-button[data-status="error"] [data-slot="copy-button-icon"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-copy-button {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-copy-button {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-copy-button[data-status="copied"] [data-slot="copy-button-icon"],
+  .mrg-copy-button[data-status="error"] [data-slot="copy-button-icon"] {
+    color: Highlight;
+  }
+
+  .mrg-copy-button:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

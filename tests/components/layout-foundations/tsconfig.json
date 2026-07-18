@@ -1,0 +1,35 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/aspect-ratio/**/*.ts",
+    "../../../registry/source/components/aspect-ratio/**/*.tsx",
+    "../../../registry/source/components/center/**/*.ts",
+    "../../../registry/source/components/center/**/*.tsx",
+    "../../../registry/source/components/cluster/**/*.ts",
+    "../../../registry/source/components/cluster/**/*.tsx",
+    "../../../registry/source/components/container/**/*.ts",
+    "../../../registry/source/components/container/**/*.tsx",
+    "../../../registry/source/components/grid/**/*.ts",
+    "../../../registry/source/components/grid/**/*.tsx",
+    "../../../registry/source/components/inline/**/*.ts",
+    "../../../registry/source/components/inline/**/*.tsx",
+    "../../../registry/source/components/separator/**/*.ts",
+    "../../../registry/source/components/separator/**/*.tsx",
+    "../../../registry/source/components/stack/**/*.ts",
+    "../../../registry/source/components/stack/**/*.tsx",
+    "../../../apps/storybook/src/P2LayoutFoundations.stories.tsx",
+    "./layout-foundations.browser.spec.ts",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

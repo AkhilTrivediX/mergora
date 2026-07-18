@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "validation-summary",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify async revision announcements and focus policies with screen readers.",
+    "Verify every link focuses the intended invalid native control.",
+    "Record narrow, zoom, long-message, and text-spacing geometry.",
+    "Complete RTL, forced-colors, keyboard, speech, switch, and touch review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual evidence and an approved Quality Passport."
+  ]
+}

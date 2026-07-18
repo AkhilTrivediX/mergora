@@ -1,0 +1,50 @@
+.mrg-validation-summary {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-family: var(--mrg-semantic-font-family-prose);
+  max-inline-size: 70ch;
+  padding: var(--mrg-semantic-space-inline-md);
+  scroll-margin-block: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-validation-summary:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-validation-summary [data-slot="validation-summary-heading"] {
+  font-size: var(--mrg-semantic-font-size-body-large);
+  margin: 0;
+}
+
+.mrg-validation-summary [data-slot="validation-summary-announcement"] {
+  margin-block: var(--mrg-semantic-space-stack-xs) 0;
+}
+
+.mrg-validation-summary [data-slot="validation-summary-list"] {
+  margin-block: var(--mrg-semantic-space-stack-sm) 0;
+  padding-inline-start: var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-validation-summary a {
+  color: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.16em;
+}
+
+.mrg-validation-summary a:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+@media (forced-colors: active) {
+  .mrg-validation-summary {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

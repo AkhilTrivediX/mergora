@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "itemId": "resizable",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "DisabledResize" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Use disabled when resizing must be unavailable; Resizable has no editable text value."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid constraints fail synchronously instead of producing a user-facing validation state."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "not-applicable", "reason": "Resizable is not a form control." }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Async loading semantics belong to panel content."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "AdvancedLayoutWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Resizable has no partial data state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to panel content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to panel content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Persistence is not owned by Resizable; panel errors remain composed content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Resizing and collapsing do not delete panel data."
+      }
+    },
+    {
+      "id": "collapsed",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "AdvancedLayoutWorkbench"
+    },
+    {
+      "id": "keyboard",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "pointer",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Resizable defines no animation or transition."
+      }
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "RightToLeft" },
+    {
+      "id": "touch",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    },
+    {
+      "id": "vertical",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledAndNestedPanes"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndTouchResize"
+    }
+  ]
+}

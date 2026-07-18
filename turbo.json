@@ -1,0 +1,75 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "../../tsconfig.base.json"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
+    },
+    "@mergora/eslint-config#build": {
+      "outputs": []
+    },
+    "@mergora/typescript-config#build": {
+      "outputs": []
+    },
+    "@mergora-internal/token-compiler#build": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../assets/fonts/**",
+        "../../packages/tokens/src/generated/**",
+        "../../registry/source/tokens/**",
+        "../../tsconfig.base.json"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "mergora-tokens#build": {
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../assets/fonts/**",
+        "../../packages/tokens/src/generated/**",
+        "../../registry/source/tokens/**",
+        "../../tsconfig.base.json"
+      ],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": ["$TURBO_DEFAULT$", "../../tsconfig.base.json"],
+      "outputs": []
+    },
+    "@mergora-internal/token-compiler#typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../assets/fonts/**",
+        "../../packages/tokens/src/generated/**",
+        "../../registry/source/tokens/**",
+        "../../tsconfig.base.json"
+      ],
+      "outputs": []
+    },
+    "mergora-tokens#typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "$TURBO_DEFAULT$",
+        "../../assets/fonts/**",
+        "../../packages/tokens/src/generated/**",
+        "../../registry/source/tokens/**",
+        "../../tsconfig.base.json"
+      ],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": ["coverage/**"]
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}

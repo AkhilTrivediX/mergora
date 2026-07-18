@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./skeleton.css", "react"],
+  "entryPath": "registry/source/components/skeleton/skeleton.tsx",
+  "id": "skeleton",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

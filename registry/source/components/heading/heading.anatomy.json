@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "heading",
+  "root": {
+    "element": "h1 | h2 | h3 | h4 | h5 | h6",
+    "ref": "HTMLHeadingElement",
+    "slot": "heading",
+    "stableAttributes": ["data-slot", "data-level", "data-size"]
+  },
+  "parts": []
+}

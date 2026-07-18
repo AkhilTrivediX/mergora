@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slot",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "focus-and-hidden-content",
+      "covers": [
+        "native-button",
+        "class-merge",
+        "style-merge",
+        "event-order",
+        "ref-compose",
+        "accessible-name"
+      ]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["forced-colors"],
+    "requiresBrowserEvidence": ["native-semantics", "keyboard", "accessible-name", "ref-target"]
+  }
+}

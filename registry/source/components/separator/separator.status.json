@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "separator",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and subpath exports.",
+    "Record native horizontal, ARIA vertical, and decorative accessibility-tree behavior in browsers.",
+    "Record forced-colors visibility, RTL placement, narrow layout, and 400% zoom geometry.",
+    "Pass packed Next.js and Vite consumers plus package/source parity.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Complete current screen-reader semantic-mode, forced-colors, and zoom manual evidence.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

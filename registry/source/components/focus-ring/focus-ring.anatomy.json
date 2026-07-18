@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "root": {
+    "element": "consumer element",
+    "ref": "HTMLElement",
+    "slot": "consumer-owned",
+    "stableAttributes": ["data-focus-ring", "data-focus-ring-contrast"]
+  },
+  "parts": []
+}

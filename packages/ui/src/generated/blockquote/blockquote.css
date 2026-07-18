@@ -1,0 +1,51 @@
+/* Generated from registry/source/components/blockquote/blockquote.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-blockquote {
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  border-radius: var(--mrg-semantic-radius-panel);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  margin: 0;
+  max-inline-size: var(--mrg-semantic-container-prose);
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-density-panel-padding);
+}
+.mrg-blockquote [data-slot="blockquote-quote"] {
+  font-size: var(--mrg-semantic-font-size-body-large);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  margin: 0;
+  text-wrap: pretty;
+}
+.mrg-blockquote [data-slot="blockquote-caption"] {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  margin-block-start: var(--mrg-semantic-space-stack-md);
+}
+.mrg-blockquote [data-slot="blockquote-attribution"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+}
+.mrg-blockquote [data-slot="blockquote-source"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+.mrg-blockquote [data-slot="blockquote-source"]::before {
+  content: "— ";
+}
+.mrg-blockquote a {
+  color: var(--mrg-semantic-color-brand-action);
+  text-underline-offset: 0.18em;
+}
+@media (forced-colors: active) {
+  .mrg-blockquote {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+  .mrg-blockquote [data-slot="blockquote-source"] {
+    color: CanvasText;
+  }
+  .mrg-blockquote a {
+    color: LinkText;
+  }
+}

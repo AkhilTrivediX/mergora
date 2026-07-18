@@ -1,0 +1,7 @@
+@layer mergora.components {
+  [data-slot="provider"] {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    color: inherit;
+  }
+}

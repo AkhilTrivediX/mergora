@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "sticky-region",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A semantic-neutral root and body surround content rendered as a consumer-selected div, header, or footer.",
+    "landmarks": "No landmark is fabricated. Consumers choose header/footer only when that landmark meaning is correct in the surrounding document.",
+    "focusModel": "StickyRegion adds no tab stop and never moves focus; focus descendants retain normal DOM order.",
+    "refTargets": "Root and Body refs target HTMLDivElement; Content ref targets its selected HTMLElement."
+  },
+  "focusNotObscured": {
+    "measurement": "ResizeObserver measures the sticky content block size after hydration and when zoom, localization, fonts, or text wrapping change it.",
+    "fallback": "estimatedSize supplies a deterministic server/no-observer scroll offset, defaulting to 44 CSS pixels.",
+    "clearance": "The occupied scroll-padding edge and focus descendants' logical scroll-margin include measured size, token offset, safe-area inset, and focus offset.",
+    "scope": "contained mode owns its scrollport; page mode applies descendant scroll margins for the nearest scrolling ancestor."
+  },
+  "responsive": {
+    "zoom": "No fixed content height is set; observer measurements follow block-size changes at text resize and zoom.",
+    "safeArea": "Physical top/bottom safe-area insets are applied to the corresponding logical block edge for supported horizontal writing modes.",
+    "shortViewport": "viewport sizing uses dynamic block units and subtracts safe-area insets."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=sticky-region-root]",
+    "parts": ["[data-slot=sticky-region-content]", "[data-slot=sticky-region-body]"],
+    "attributes": [
+      "data-position",
+      "data-offset",
+      "data-safe-area",
+      "data-contained",
+      "data-size",
+      "data-element"
+    ]
+  },
+  "consumerResponsibilities": [
+    "For block-start place Content before Body; for block-end place Content after Body so reading and visual order remain coherent.",
+    "Choose header/footer only when it is correct for the surrounding landmark structure and heading hierarchy.",
+    "Set estimatedSize close to the server-rendered sticky content when JavaScript may be delayed or unavailable.",
+    "Revalidate focus clearance after adding nested scrolling, transforms, consumer z-index, custom sticky positioning, or unsupported vertical writing modes."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "resize-observer-cleanup",
+      "start-and-end",
+      "contained-and-page",
+      "focus-not-obscured",
+      "safe-area",
+      "short-viewport",
+      "narrow-320",
+      "zoom-400",
+      "text-200",
+      "rtl",
+      "axe",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-focus-clearance",
+      "screen-reader-reading-order",
+      "touch-scroll",
+      "speech",
+      "switch",
+      "windows-forced-colors",
+      "zoom-and-text-expansion"
+    ],
+    "recordedEvidence": []
+  }
+}

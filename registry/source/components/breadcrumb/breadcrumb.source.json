@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./breadcrumb.css", "react"],
+  "entryPath": "registry/source/components/breadcrumb/breadcrumb.tsx",
+  "id": "breadcrumb",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

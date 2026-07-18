@@ -1,0 +1,36 @@
+.mrg-meter {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+[data-slot="meter-heading"] {
+  align-items: baseline;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-md);
+  justify-content: space-between;
+}
+
+[data-slot="meter-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+}
+
+[data-slot="meter-value"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-slot="meter-track"] {
+  accent-color: var(--mrg-semantic-color-status-success-foreground);
+  block-size: var(--mrg-semantic-space-stack-md);
+  inline-size: 100%;
+}
+
+@media (forced-colors: active) {
+  [data-slot="meter-track"] {
+    accent-color: Highlight;
+  }
+}

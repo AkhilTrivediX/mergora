@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "portal",
+  "root": {
+    "element": "display-contents div",
+    "ref": "HTMLDivElement",
+    "slot": "portal-context",
+    "stableAttributes": ["data-slot", "data-density", "data-direction", "dir", "lang"]
+  },
+  "parts": []
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./code.css", "react"],
+  "entryPath": "registry/source/components/code/code.tsx",
+  "id": "code",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

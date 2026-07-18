@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "checkbox",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "native input type checkbox inside a label",
+    "naming": "Visible children or an explicit ARIA name names the native checkbox.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "documented in anatomy and API records"
+  },
+  "interaction": {
+    "keyboard": "Space toggles the focused native checkbox; Tab follows native focus order.",
+    "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
+    "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
+    "speech": "Visible labels remain available for voice targeting.",
+    "switchAccess": "No duplicate proxy focus target is introduced."
+  },
+  "formBehavior": "Checked submits name=value; unchecked and disabled are omitted; indeterminate is not a submitted value; reset restores defaults.",
+  "states": {
+    "attributes": [
+      "data-state",
+      "data-disabled",
+      "data-invalid",
+      "checked",
+      "required",
+      "disabled",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ],
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=checkbox]",
+    "attributes": ["data-state", "data-disabled", "data-invalid"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic theme tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information depends on motion; Switch removes its thumb transition."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
+  },
+  "internationalization": {
+    "consumerStrings": ["children", "description", "field-error"],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",
+    "serialization": "Serialized names and values remain consumer-owned machine data and are never localized by the component."
+  },
+  "consumerResponsibilities": [
+    "Supply a meaningful visible or programmatic label.",
+    "Do not treat indeterminate as a third business value.",
+    "Use CheckboxGroup for shared minimum or maximum selection constraints."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "checked-unchecked-mixed",
+      "controlled-uncontrolled",
+      "formdata-reset",
+      "narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-space",
+      "touch-target",
+      "nvda-firefox",
+      "voiceover-safari",
+      "high-contrast"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

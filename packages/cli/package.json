@@ -1,0 +1,40 @@
+{
+  "name": "mergora",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deterministic Mergora project discovery, initialization, and bundled source CLI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
+  "type": "module",
+  "bin": {
+    "mergora": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "prepack": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

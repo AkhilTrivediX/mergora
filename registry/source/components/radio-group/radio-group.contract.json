@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "radio-group",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native fieldset, legend, and same-name radio inputs",
+    "naming": "The visible legend names the group and each native radio retains its item label.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "documented in anatomy and API records"
+  },
+  "interaction": {
+    "keyboard": "Uncancelled Arrow keys move focus and selection, Home and End select boundaries, horizontal arrows mirror in RTL, and already-prevented item events are left untouched.",
+    "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
+    "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
+    "speech": "Visible labels remain available for voice targeting.",
+    "switchAccess": "No duplicate proxy focus target is introduced."
+  },
+  "formBehavior": "The selected radio is the only successful same-name control; native required validation and reset remain intact.",
+  "states": {
+    "attributes": [
+      "data-layout",
+      "data-disabled",
+      "data-invalid",
+      "dir",
+      "disabled",
+      "aria-describedby",
+      "aria-invalid",
+      "data-state",
+      "data-variant"
+    ],
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=radio-group]",
+    "attributes": ["data-layout", "data-disabled", "data-invalid"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic theme tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information depends on motion; Switch removes its thumb transition."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
+  },
+  "internationalization": {
+    "consumerStrings": ["label", "description", "error", "item-label", "item-description"],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",
+    "serialization": "Serialized names and values remain consumer-owned machine data and are never localized by the component."
+  },
+  "consumerResponsibilities": [
+    "Supply unique item values and a meaningful group legend.",
+    "Do not render proxy controls for card variants.",
+    "Localize every group and item string."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "apg-keyboard",
+      "disabled-skip",
+      "rtl-mirroring",
+      "required-formdata-reset",
+      "narrow-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "complete-keyboard-sequence",
+      "nvda-firefox",
+      "voiceover-safari",
+      "touch",
+      "high-contrast"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

@@ -1,0 +1,23 @@
+title: "[Idea] "
+labels:
+  - idea
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and alternatives
+      description: Explain who has the problem, current workarounds, and why existing catalog surfaces do not cover it.
+    validations:
+      required: true
+  - type: textarea
+    id: quality
+    attributes:
+      label: Accessibility, responsive, localization, security, and maintenance implications
+    validations:
+      required: true

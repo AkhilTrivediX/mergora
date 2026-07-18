@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button",
+  "root": {
+    "element": "button",
+    "ref": "HTMLButtonElement",
+    "slot": "button",
+    "stableAttributes": [
+      "data-slot",
+      "data-variant",
+      "data-size",
+      "data-pending",
+      "data-disabled",
+      "disabled",
+      "aria-busy",
+      "aria-disabled"
+    ]
+  },
+  "parts": [
+    {
+      "element": "span",
+      "purpose": "Contains visible children or the visible pendingLabel.",
+      "slot": "button-label",
+      "stability": "documented"
+    },
+    {
+      "accessibility": "aria-hidden",
+      "element": "span",
+      "purpose": "Provides a non-semantic visual pending cue.",
+      "slot": "button-pending-indicator",
+      "stability": "documented"
+    }
+  ]
+}

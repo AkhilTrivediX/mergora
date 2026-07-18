@@ -1,0 +1,370 @@
+{
+  "$schema": "./mergora-contract.schema.json",
+  "contractVersion": "1.0.0",
+  "dtcgVersion": "2025.10",
+  "cssVariablePrefix": "mrg",
+  "defaultContext": { "theme": "light", "density": "comfortable" },
+  "requiredContexts": {
+    "theme": ["light", "dark", "enhanced-contrast", "forced-colors"],
+    "density": ["comfortable", "compact", "touch"]
+  },
+  "semanticColorGroups": [
+    "accent",
+    "action",
+    "background",
+    "border",
+    "brand",
+    "code",
+    "diff",
+    "focus",
+    "foreground",
+    "overlay",
+    "selection",
+    "status"
+  ],
+  "requiredTokenPrefixes": [
+    "primitive.color",
+    "primitive.font",
+    "primitive.space",
+    "primitive.size",
+    "primitive.radius",
+    "primitive.border",
+    "primitive.shadow",
+    "primitive.layer",
+    "primitive.opacity",
+    "primitive.duration",
+    "primitive.easing",
+    "primitive.breakpoint",
+    "primitive.container",
+    "semantic.color",
+    "semantic.font",
+    "semantic.space",
+    "semantic.size",
+    "semantic.radius",
+    "semantic.border",
+    "semantic.elevation",
+    "semantic.focus",
+    "semantic.layer",
+    "semantic.opacity",
+    "semantic.motion",
+    "semantic.density",
+    "semantic.breakpoint",
+    "semantic.container",
+    "component"
+  ],
+  "brandAnchors": {
+    "livingGreen": {
+      "path": "primitive.color.green.500",
+      "components": [0.6, 0.158, 150]
+    },
+    "actionGreen": {
+      "path": "primitive.color.green.700",
+      "components": [0.42, 0.13, 150]
+    },
+    "deepViolet": {
+      "path": "primitive.color.violet.700",
+      "components": [0.33, 0.135, 292]
+    },
+    "canvas": {
+      "path": "primitive.color.neutral.0",
+      "components": [1, 0, 0]
+    },
+    "surface": {
+      "path": "primitive.color.neutral.50",
+      "components": [0.97, 0.006, 150]
+    },
+    "ink": {
+      "path": "primitive.color.neutral.800",
+      "components": [0.18, 0.018, 150]
+    },
+    "mutedInk": {
+      "path": "primitive.color.neutral.500",
+      "components": [0.47, 0.018, 150]
+    },
+    "line": {
+      "path": "primitive.color.neutral.200",
+      "components": [0.875, 0.01, 150]
+    }
+  },
+  "contrastPairs": [
+    {
+      "id": "text-primary-canvas",
+      "foreground": "semantic.color.foreground.primary",
+      "background": "semantic.color.background.canvas",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "text-muted-canvas",
+      "foreground": "semantic.color.foreground.muted",
+      "background": "semantic.color.background.canvas",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "text-primary-surface",
+      "foreground": "semantic.color.foreground.primary",
+      "background": "semantic.color.background.surface",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "text-muted-surface",
+      "foreground": "semantic.color.foreground.muted",
+      "background": "semantic.color.background.surface",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "text-inverse",
+      "foreground": "semantic.color.foreground.inverse",
+      "background": "semantic.color.background.inverse",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "action-default",
+      "foreground": "semantic.color.action.foreground",
+      "background": "semantic.color.action.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "action-hover",
+      "foreground": "semantic.color.action.foreground",
+      "background": "semantic.color.action.backgroundHover",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "action-pressed",
+      "foreground": "semantic.color.action.foreground",
+      "background": "semantic.color.action.backgroundPressed",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "accent-solid",
+      "foreground": "semantic.color.accent.foreground",
+      "background": "semantic.color.accent.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "accent-subtle",
+      "foreground": "semantic.color.accent.foregroundOnSubtle",
+      "background": "semantic.color.accent.backgroundSubtle",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "selection",
+      "foreground": "semantic.color.selection.foreground",
+      "background": "semantic.color.selection.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "interactive-border-canvas",
+      "foreground": "semantic.color.border.interactive",
+      "background": "semantic.color.background.canvas",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "focus-canvas",
+      "foreground": "semantic.color.focus.ring",
+      "background": "semantic.color.background.canvas",
+      "minimum": 3,
+      "kind": "focus"
+    },
+    {
+      "id": "focus-surface",
+      "foreground": "semantic.color.focus.ring",
+      "background": "semantic.color.background.surface",
+      "minimum": 3,
+      "kind": "focus"
+    },
+    {
+      "id": "focus-on-action",
+      "foreground": "semantic.color.focus.ringOnAction",
+      "background": "semantic.color.action.background",
+      "minimum": 3,
+      "kind": "focus"
+    },
+    {
+      "id": "success-text",
+      "foreground": "semantic.color.status.success.foreground",
+      "background": "semantic.color.status.success.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "success-border",
+      "foreground": "semantic.color.status.success.border",
+      "background": "semantic.color.status.success.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "warning-text",
+      "foreground": "semantic.color.status.warning.foreground",
+      "background": "semantic.color.status.warning.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "warning-border",
+      "foreground": "semantic.color.status.warning.border",
+      "background": "semantic.color.status.warning.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "danger-text",
+      "foreground": "semantic.color.status.danger.foreground",
+      "background": "semantic.color.status.danger.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "danger-border",
+      "foreground": "semantic.color.status.danger.border",
+      "background": "semantic.color.status.danger.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "info-text",
+      "foreground": "semantic.color.status.info.foreground",
+      "background": "semantic.color.status.info.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "info-border",
+      "foreground": "semantic.color.status.info.border",
+      "background": "semantic.color.status.info.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "diff-added",
+      "foreground": "semantic.color.diff.added.foreground",
+      "background": "semantic.color.diff.added.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "diff-removed",
+      "foreground": "semantic.color.diff.removed.foreground",
+      "background": "semantic.color.diff.removed.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "diff-changed",
+      "foreground": "semantic.color.diff.changed.foreground",
+      "background": "semantic.color.diff.changed.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "code-text",
+      "foreground": "semantic.color.code.foreground",
+      "background": "semantic.color.code.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "code-comment",
+      "foreground": "semantic.color.code.comment",
+      "background": "semantic.color.code.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "code-keyword",
+      "foreground": "semantic.color.code.keyword",
+      "background": "semantic.color.code.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "code-literal",
+      "foreground": "semantic.color.code.literal",
+      "background": "semantic.color.code.background",
+      "minimum": 4.5,
+      "kind": "text"
+    }
+  ],
+  "tailwindTheme": {
+    "--font-sans": "semantic.font.family.prose",
+    "--font-mono": "semantic.font.family.machine",
+    "--color-canvas": "semantic.color.background.canvas",
+    "--color-surface": "semantic.color.background.surface",
+    "--color-surface-raised": "semantic.color.background.surfaceRaised",
+    "--color-surface-sunken": "semantic.color.background.surfaceSunken",
+    "--color-ink": "semantic.color.foreground.primary",
+    "--color-muted-ink": "semantic.color.foreground.muted",
+    "--color-line": "semantic.color.border.default",
+    "--color-line-strong": "semantic.color.border.strong",
+    "--color-living": "semantic.color.brand.living",
+    "--color-action": "semantic.color.action.background",
+    "--color-violet": "semantic.color.brand.violet",
+    "--color-selection": "semantic.color.selection.background",
+    "--color-focus": "semantic.color.focus.ring",
+    "--color-success": "semantic.color.status.success.foreground",
+    "--color-warning": "semantic.color.status.warning.foreground",
+    "--color-danger": "semantic.color.status.danger.foreground",
+    "--color-info": "semantic.color.status.info.foreground",
+    "--radius-control": "semantic.radius.control",
+    "--radius-panel": "semantic.radius.panel",
+    "--radius-overlay": "semantic.radius.overlay",
+    "--shadow-raised": "semantic.elevation.raised",
+    "--shadow-overlay": "semantic.elevation.overlay",
+    "--shadow-modal": "semantic.elevation.modal",
+    "--breakpoint-sm": "semantic.breakpoint.sm",
+    "--breakpoint-md": "semantic.breakpoint.md",
+    "--breakpoint-lg": "semantic.breakpoint.lg",
+    "--breakpoint-xl": "semantic.breakpoint.xl"
+  },
+  "forcedSystemColors": {
+    "semantic.color.status.success.background": "Canvas",
+    "semantic.color.status.success.foreground": "CanvasText",
+    "semantic.color.status.success.border": "CanvasText",
+    "semantic.color.status.warning.background": "Canvas",
+    "semantic.color.status.warning.foreground": "CanvasText",
+    "semantic.color.status.warning.border": "CanvasText",
+    "semantic.color.status.danger.background": "Canvas",
+    "semantic.color.status.danger.foreground": "CanvasText",
+    "semantic.color.status.danger.border": "CanvasText",
+    "semantic.color.status.info.background": "Canvas",
+    "semantic.color.status.info.foreground": "CanvasText",
+    "semantic.color.status.info.border": "CanvasText",
+    "semantic.color.diff.added.background": "Canvas",
+    "semantic.color.diff.added.foreground": "CanvasText",
+    "semantic.color.diff.added.marker": "Highlight",
+    "semantic.color.diff.removed.background": "Canvas",
+    "semantic.color.diff.removed.foreground": "CanvasText",
+    "semantic.color.diff.removed.marker": "Highlight",
+    "semantic.color.diff.changed.background": "Canvas",
+    "semantic.color.diff.changed.foreground": "CanvasText",
+    "semantic.color.diff.changed.marker": "Highlight",
+    "semantic.color.overlay.scrim": "CanvasText",
+    "semantic.color.code.background": "Canvas",
+    "semantic.color.code.foreground": "CanvasText",
+    "semantic.color.code.comment": "GrayText",
+    "semantic.color.code.keyword": "LinkText",
+    "semantic.color.code.literal": "LinkText"
+  },
+  "componentImpacts": {
+    "component.button": ["Button"],
+    "component.field": ["Field", "Combobox", "Select", "TagsInput"],
+    "component.dialog": ["Dialog", "AlertDialog", "Sheet"],
+    "component.dataGrid": ["DataGrid", "TreeGrid"],
+    "component.badge": ["Badge", "Status"],
+    "component.code": ["CodeBlock", "CommandOutput"],
+    "component.focusIndicator": ["All interactive components"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "empty-state",
+  "entryExport": "EmptyState",
+  "refTarget": "HTMLElement section",
+  "exports": [
+    { "kind": "component", "name": "EmptyState" },
+    { "kind": "type", "name": "EmptyStateProps" },
+    { "kind": "type", "name": "EmptyStateContext" },
+    { "kind": "type", "name": "EmptyStateHeadingLevel" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "A named section contains a caller-selected native heading, description, optional decorative icon/context, and optional explanatory body; required content rejects booleans, whitespace, empty arrays, and empty fragments.",
+    "A primary recovery action is one non-fragment React element and an optional secondary action follows the same rule.",
+    "Native recovery elements must be enabled buttons, href-bearing anchors, or action-capable inputs; custom action components retain their semantics.",
+    "The layout reflows actions at narrow width without clipping or hiding recovery paths."
+  ]
+}

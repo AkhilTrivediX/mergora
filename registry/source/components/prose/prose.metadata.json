@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prose",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["authored-html", "nested-widget-opt-out", "streaming", "long-content", "rtl"],
+  "slots": [
+    {
+      "name": "prose",
+      "semanticElement": "article | section | div",
+      "refTarget": "HTMLElement",
+      "states": ["measure", "size"]
+    }
+  ],
+  "contract": {
+    "id": "prose-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "prose-quality-passport",
+    "version": "0.0.0"
+  }
+}

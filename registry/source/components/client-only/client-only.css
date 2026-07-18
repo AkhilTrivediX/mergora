@@ -1,0 +1,3 @@
+@layer mergora.components {
+  /* ClientOnly emits no element, so this artifact intentionally defines no selector. */
+}

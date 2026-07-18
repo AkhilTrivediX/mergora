@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "itemId": "switch",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "on",
+    "off",
+    "disabled",
+    "submission",
+    "reset",
+    "reduced-motion",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "switch-root",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["disabled"]
+    },
+    {
+      "name": "switch",
+      "semanticElement": "button role switch",
+      "refTarget": "HTMLButtonElement",
+      "states": ["on", "off", "disabled"]
+    },
+    {
+      "name": "switch-track",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "none",
+      "states": ["on", "off"]
+    },
+    {
+      "name": "switch-state-label",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "none",
+      "states": ["on", "off"]
+    },
+    {
+      "name": "switch-form-value",
+      "semanticElement": "input type hidden",
+      "refTarget": "none",
+      "states": ["on-value", "off-value", "disabled"]
+    }
+  ],
+  "contract": { "id": "switch-accessibility", "version": "0.1.0" },
+  "passport": { "id": "switch-quality-passport", "version": "0.0.0" }
+}

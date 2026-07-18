@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "field",
+  "entryExport": "Field",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement> with children reserved",
+  "exports": [
+    { "kind": "component", "name": "Field" },
+    { "kind": "function", "name": "mergeFieldIdRefs" },
+    { "kind": "function", "name": "useFieldControlState" },
+    { "kind": "type", "name": "FieldControlState" },
+    { "kind": "type", "name": "FieldLayout" },
+    { "kind": "type", "name": "FieldProps" }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "error", "required": false, "type": "ReactNode" },
+    {
+      "name": "controlId",
+      "required": false,
+      "type": "string; hydration-safe generated ID by default"
+    },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "layout", "required": false, "default": "stacked", "type": "stacked | inline" },
+    { "name": "optionalLabel", "required": false, "type": "ReactNode" }
+  ],
+  "compositionPolicy": {
+    "association": "Mergora controls consume the generated label, description, error, required, and invalid state; third-party controls use the same explicit controlId.",
+    "announcements": "Persistent field errors are not assertive; submit-time focus and announcements belong to ValidationSummary."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "itemId": "resizable",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "resizable-root",
+    "stableAttributes": [
+      "data-slot",
+      "data-orientation",
+      "data-state",
+      "data-collapsible",
+      "data-disabled"
+    ]
+  },
+  "parts": [
+    {
+      "name": "Primary",
+      "element": "div",
+      "slot": "resizable-primary",
+      "ref": "HTMLDivElement",
+      "stableAttributes": ["data-slot", "data-state"]
+    },
+    {
+      "name": "Handle",
+      "element": "div role=separator plus sibling native buttons",
+      "slot": "resizable-handle/resizable-separator",
+      "ref": "HTMLDivElement separator",
+      "stableAttributes": ["data-slot", "data-orientation", "data-state"]
+    },
+    {
+      "name": "Secondary",
+      "element": "div",
+      "slot": "resizable-secondary",
+      "ref": "HTMLDivElement",
+      "stableAttributes": ["data-slot"]
+    }
+  ]
+}

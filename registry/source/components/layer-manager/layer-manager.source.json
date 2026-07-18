@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../slot/index.js", "./layer-manager.css", "react"],
+  "entryPath": "registry/source/components/layer-manager/layer-manager.tsx",
+  "id": "layer-manager",
+  "itemDependencies": ["slot"],
+  "outputRole": "component"
+}

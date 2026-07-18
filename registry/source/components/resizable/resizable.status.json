@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "resizable",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and the public subpath export.",
+    "Record pointer capture, cancellation, keyboard, 44-pixel step controls, collapse, and restore behavior in supported browsers.",
+    "Complete manual screen-reader value, keyboard-only, speech, switch, touch, and forced-colors sessions for this Risk Class 2 component.",
+    "Record controlled/uncontrolled, RTL spatial arrows, localized values, 320 CSS pixel, and 400% zoom evidence.",
+    "Pass SSR/hydration, Strict Mode cleanup, packed Next.js/Vite, and package/source parity gates.",
+    "Add Semantic Sync clean-update, customized-update, conflict, rollback, and removal fixtures.",
+    "Verify disabled, min/max, pointer cancellation, rapid controlled updates, and unmount-during-drag cases.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

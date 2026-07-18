@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button-group",
+  "root": {
+    "slot": "button-group",
+    "element": "div role=group or toolbar",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

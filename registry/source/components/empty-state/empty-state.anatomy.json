@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "empty-state",
+  "root": {
+    "slot": "empty-state",
+    "element": "section",
+    "ref": "HTMLElement",
+    "stableAttributes": ["data-slot", "data-context"]
+  },
+  "parts": [
+    { "slot": "empty-state-icon", "element": "span aria-hidden", "stability": "documented" },
+    { "slot": "empty-state-title", "element": "h1-h6", "stability": "documented" },
+    { "slot": "empty-state-description", "element": "div", "stability": "documented" },
+    { "slot": "empty-state-body", "element": "div", "stability": "documented" },
+    { "slot": "empty-state-actions", "element": "div", "stability": "documented" }
+  ]
+}

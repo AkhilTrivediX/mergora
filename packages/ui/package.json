@@ -1,0 +1,422 @@
+{
+  "name": "mergora-ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generated Mergora React components from the canonical source registry",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./accordion": {
+      "types": "./dist/generated/accordion/accordion.d.ts",
+      "import": "./dist/generated/accordion/accordion.js"
+    },
+    "./accordion.css": "./dist/generated/accordion/accordion.css",
+    "./action-menu": {
+      "types": "./dist/generated/action-menu/action-menu.d.ts",
+      "import": "./dist/generated/action-menu/action-menu.js"
+    },
+    "./action-menu.css": "./dist/generated/action-menu/action-menu.css",
+    "./alert": {
+      "types": "./dist/generated/alert/alert.d.ts",
+      "import": "./dist/generated/alert/alert.js"
+    },
+    "./alert.css": "./dist/generated/alert/alert.css",
+    "./alert-dialog": {
+      "types": "./dist/generated/alert-dialog/index.d.ts",
+      "import": "./dist/generated/alert-dialog/index.js"
+    },
+    "./alert-dialog.css": "./dist/generated/alert-dialog/alert-dialog.css",
+    "./aspect-ratio": {
+      "types": "./dist/generated/aspect-ratio/aspect-ratio.d.ts",
+      "import": "./dist/generated/aspect-ratio/aspect-ratio.js"
+    },
+    "./aspect-ratio.css": "./dist/generated/aspect-ratio/aspect-ratio.css",
+    "./badge": {
+      "types": "./dist/generated/badge/badge.d.ts",
+      "import": "./dist/generated/badge/badge.js"
+    },
+    "./badge.css": "./dist/generated/badge/badge.css",
+    "./banner": {
+      "types": "./dist/generated/banner/banner.d.ts",
+      "import": "./dist/generated/banner/banner.js"
+    },
+    "./banner.css": "./dist/generated/banner/banner.css",
+    "./blockquote": {
+      "types": "./dist/generated/blockquote/blockquote.d.ts",
+      "import": "./dist/generated/blockquote/blockquote.js"
+    },
+    "./blockquote.css": "./dist/generated/blockquote/blockquote.css",
+    "./breadcrumb": {
+      "types": "./dist/generated/breadcrumb/breadcrumb.d.ts",
+      "import": "./dist/generated/breadcrumb/breadcrumb.js"
+    },
+    "./breadcrumb.css": "./dist/generated/breadcrumb/breadcrumb.css",
+    "./button": {
+      "types": "./dist/generated/button/button.d.ts",
+      "import": "./dist/generated/button/button.js"
+    },
+    "./button.css": "./dist/generated/button/button.css",
+    "./button-group": {
+      "types": "./dist/generated/button-group/button-group.d.ts",
+      "import": "./dist/generated/button-group/button-group.js"
+    },
+    "./button-group.css": "./dist/generated/button-group/button-group.css",
+    "./callout": {
+      "types": "./dist/generated/callout/callout.d.ts",
+      "import": "./dist/generated/callout/callout.js"
+    },
+    "./callout.css": "./dist/generated/callout/callout.css",
+    "./center": {
+      "types": "./dist/generated/center/center.d.ts",
+      "import": "./dist/generated/center/center.js"
+    },
+    "./center.css": "./dist/generated/center/center.css",
+    "./checkbox": {
+      "types": "./dist/generated/checkbox/checkbox.d.ts",
+      "import": "./dist/generated/checkbox/checkbox.js"
+    },
+    "./checkbox.css": "./dist/generated/checkbox/checkbox.css",
+    "./checkbox-group": {
+      "types": "./dist/generated/checkbox-group/checkbox-group.d.ts",
+      "import": "./dist/generated/checkbox-group/checkbox-group.js"
+    },
+    "./checkbox-group.css": "./dist/generated/checkbox-group/checkbox-group.css",
+    "./client-only": {
+      "types": "./dist/generated/client-only/client-only.d.ts",
+      "import": "./dist/generated/client-only/client-only.js"
+    },
+    "./client-only.css": "./dist/generated/client-only/client-only.css",
+    "./cluster": {
+      "types": "./dist/generated/cluster/cluster.d.ts",
+      "import": "./dist/generated/cluster/cluster.js"
+    },
+    "./cluster.css": "./dist/generated/cluster/cluster.css",
+    "./code": {
+      "types": "./dist/generated/code/code.d.ts",
+      "import": "./dist/generated/code/code.js"
+    },
+    "./code.css": "./dist/generated/code/code.css",
+    "./code-block": {
+      "types": "./dist/generated/code-block/code-block.d.ts",
+      "import": "./dist/generated/code-block/code-block.js"
+    },
+    "./code-block.css": "./dist/generated/code-block/code-block.css",
+    "./collapsible": {
+      "types": "./dist/generated/collapsible/collapsible.d.ts",
+      "import": "./dist/generated/collapsible/collapsible.js"
+    },
+    "./collapsible.css": "./dist/generated/collapsible/collapsible.css",
+    "./combobox": {
+      "types": "./dist/generated/combobox/index.d.ts",
+      "import": "./dist/generated/combobox/index.js"
+    },
+    "./combobox.css": "./dist/generated/combobox/combobox.css",
+    "./container": {
+      "types": "./dist/generated/container/container.d.ts",
+      "import": "./dist/generated/container/container.js"
+    },
+    "./container.css": "./dist/generated/container/container.css",
+    "./copy-button": {
+      "types": "./dist/generated/copy-button/copy-button.d.ts",
+      "import": "./dist/generated/copy-button/copy-button.js"
+    },
+    "./copy-button.css": "./dist/generated/copy-button/copy-button.css",
+    "./data-grid": {
+      "types": "./dist/generated/data-grid/index.d.ts",
+      "import": "./dist/generated/data-grid/index.js"
+    },
+    "./data-grid.css": "./dist/generated/data-grid/data-grid.css",
+    "./description-list": {
+      "types": "./dist/generated/description-list/description-list.d.ts",
+      "import": "./dist/generated/description-list/description-list.js"
+    },
+    "./description-list.css": "./dist/generated/description-list/description-list.css",
+    "./dialog": {
+      "types": "./dist/generated/dialog/index.d.ts",
+      "import": "./dist/generated/dialog/index.js"
+    },
+    "./dialog.css": "./dist/generated/dialog/dialog.css",
+    "./diff-viewer": {
+      "types": "./dist/generated/diff-viewer/diff-viewer.d.ts",
+      "import": "./dist/generated/diff-viewer/diff-viewer.js"
+    },
+    "./diff-viewer.css": "./dist/generated/diff-viewer/diff-viewer.css",
+    "./direction": {
+      "types": "./dist/generated/direction/direction.d.ts",
+      "import": "./dist/generated/direction/direction.js"
+    },
+    "./direction.css": "./dist/generated/direction/direction.css",
+    "./empty-state": {
+      "types": "./dist/generated/empty-state/empty-state.d.ts",
+      "import": "./dist/generated/empty-state/empty-state.js"
+    },
+    "./empty-state.css": "./dist/generated/empty-state/empty-state.css",
+    "./error-state": {
+      "types": "./dist/generated/error-state/error-state.d.ts",
+      "import": "./dist/generated/error-state/error-state.js"
+    },
+    "./error-state.css": "./dist/generated/error-state/error-state.css",
+    "./field": {
+      "types": "./dist/generated/field/field.d.ts",
+      "import": "./dist/generated/field/field.js"
+    },
+    "./field.css": "./dist/generated/field/field.css",
+    "./fieldset": {
+      "types": "./dist/generated/fieldset/fieldset.d.ts",
+      "import": "./dist/generated/fieldset/fieldset.js"
+    },
+    "./fieldset.css": "./dist/generated/fieldset/fieldset.css",
+    "./focus-ring": {
+      "types": "./dist/generated/focus-ring/focus-ring.d.ts",
+      "import": "./dist/generated/focus-ring/focus-ring.js"
+    },
+    "./focus-ring.css": "./dist/generated/focus-ring/focus-ring.css",
+    "./form": {
+      "types": "./dist/generated/form/form.d.ts",
+      "import": "./dist/generated/form/form.js"
+    },
+    "./form.css": "./dist/generated/form/form.css",
+    "./grid": {
+      "types": "./dist/generated/grid/grid.d.ts",
+      "import": "./dist/generated/grid/grid.js"
+    },
+    "./grid.css": "./dist/generated/grid/grid.css",
+    "./heading": {
+      "types": "./dist/generated/heading/heading.d.ts",
+      "import": "./dist/generated/heading/heading.js"
+    },
+    "./heading.css": "./dist/generated/heading/heading.css",
+    "./icon-button": {
+      "types": "./dist/generated/icon-button/icon-button.d.ts",
+      "import": "./dist/generated/icon-button/icon-button.js"
+    },
+    "./icon-button.css": "./dist/generated/icon-button/icon-button.css",
+    "./inline": {
+      "types": "./dist/generated/inline/inline.d.ts",
+      "import": "./dist/generated/inline/inline.js"
+    },
+    "./inline.css": "./dist/generated/inline/inline.css",
+    "./input": {
+      "types": "./dist/generated/input/input.d.ts",
+      "import": "./dist/generated/input/input.js"
+    },
+    "./input.css": "./dist/generated/input/input.css",
+    "./json-viewer": {
+      "types": "./dist/generated/json-viewer/json-viewer.d.ts",
+      "import": "./dist/generated/json-viewer/json-viewer.js"
+    },
+    "./json-viewer.css": "./dist/generated/json-viewer/json-viewer.css",
+    "./kbd": {
+      "types": "./dist/generated/kbd/kbd.d.ts",
+      "import": "./dist/generated/kbd/kbd.js"
+    },
+    "./kbd.css": "./dist/generated/kbd/kbd.css",
+    "./layer-manager": {
+      "types": "./dist/generated/layer-manager/layer-manager.d.ts",
+      "import": "./dist/generated/layer-manager/layer-manager.js"
+    },
+    "./layer-manager.css": "./dist/generated/layer-manager/layer-manager.css",
+    "./link": {
+      "types": "./dist/generated/link/link.d.ts",
+      "import": "./dist/generated/link/link.js"
+    },
+    "./link.css": "./dist/generated/link/link.css",
+    "./meter": {
+      "types": "./dist/generated/meter/meter.d.ts",
+      "import": "./dist/generated/meter/meter.js"
+    },
+    "./meter.css": "./dist/generated/meter/meter.css",
+    "./native-select": {
+      "types": "./dist/generated/native-select/native-select.d.ts",
+      "import": "./dist/generated/native-select/native-select.js"
+    },
+    "./native-select.css": "./dist/generated/native-select/native-select.css",
+    "./pagination": {
+      "types": "./dist/generated/pagination/pagination.d.ts",
+      "import": "./dist/generated/pagination/pagination.js"
+    },
+    "./pagination.css": "./dist/generated/pagination/pagination.css",
+    "./popover": {
+      "types": "./dist/generated/popover/index.d.ts",
+      "import": "./dist/generated/popover/index.js"
+    },
+    "./popover.css": "./dist/generated/popover/popover.css",
+    "./portal": {
+      "types": "./dist/generated/portal/portal.d.ts",
+      "import": "./dist/generated/portal/portal.js"
+    },
+    "./portal.css": "./dist/generated/portal/portal.css",
+    "./presence": {
+      "types": "./dist/generated/presence/presence.d.ts",
+      "import": "./dist/generated/presence/presence.js"
+    },
+    "./presence.css": "./dist/generated/presence/presence.css",
+    "./progress": {
+      "types": "./dist/generated/progress/progress.d.ts",
+      "import": "./dist/generated/progress/progress.js"
+    },
+    "./progress.css": "./dist/generated/progress/progress.css",
+    "./prose": {
+      "types": "./dist/generated/prose/prose.d.ts",
+      "import": "./dist/generated/prose/prose.js"
+    },
+    "./prose.css": "./dist/generated/prose/prose.css",
+    "./provider": {
+      "types": "./dist/generated/provider/provider.d.ts",
+      "import": "./dist/generated/provider/provider.js"
+    },
+    "./provider.css": "./dist/generated/provider/provider.css",
+    "./radio-group": {
+      "types": "./dist/generated/radio-group/radio-group.d.ts",
+      "import": "./dist/generated/radio-group/radio-group.js"
+    },
+    "./radio-group.css": "./dist/generated/radio-group/radio-group.css",
+    "./resizable": {
+      "types": "./dist/generated/resizable/resizable.d.ts",
+      "import": "./dist/generated/resizable/resizable.js"
+    },
+    "./resizable.css": "./dist/generated/resizable/resizable.css",
+    "./scroll-area": {
+      "types": "./dist/generated/scroll-area/scroll-area.d.ts",
+      "import": "./dist/generated/scroll-area/scroll-area.js"
+    },
+    "./scroll-area.css": "./dist/generated/scroll-area/scroll-area.css",
+    "./segmented-control": {
+      "types": "./dist/generated/segmented-control/segmented-control.d.ts",
+      "import": "./dist/generated/segmented-control/segmented-control.js"
+    },
+    "./segmented-control.css": "./dist/generated/segmented-control/segmented-control.css",
+    "./separator": {
+      "types": "./dist/generated/separator/separator.d.ts",
+      "import": "./dist/generated/separator/separator.js"
+    },
+    "./separator.css": "./dist/generated/separator/separator.css",
+    "./sheet": {
+      "types": "./dist/generated/sheet/index.d.ts",
+      "import": "./dist/generated/sheet/index.js"
+    },
+    "./sheet.css": "./dist/generated/sheet/sheet.css",
+    "./skeleton": {
+      "types": "./dist/generated/skeleton/skeleton.d.ts",
+      "import": "./dist/generated/skeleton/skeleton.js"
+    },
+    "./skeleton.css": "./dist/generated/skeleton/skeleton.css",
+    "./slot": {
+      "types": "./dist/generated/slot/slot.d.ts",
+      "import": "./dist/generated/slot/slot.js"
+    },
+    "./slot.css": "./dist/generated/slot/slot.css",
+    "./spinner": {
+      "types": "./dist/generated/spinner/spinner.d.ts",
+      "import": "./dist/generated/spinner/spinner.js"
+    },
+    "./spinner.css": "./dist/generated/spinner/spinner.css",
+    "./split-pane": {
+      "types": "./dist/generated/split-pane/split-pane.d.ts",
+      "import": "./dist/generated/split-pane/split-pane.js"
+    },
+    "./split-pane.css": "./dist/generated/split-pane/split-pane.css",
+    "./sr-announcer": {
+      "types": "./dist/generated/sr-announcer/sr-announcer.d.ts",
+      "import": "./dist/generated/sr-announcer/sr-announcer.js"
+    },
+    "./sr-announcer.css": "./dist/generated/sr-announcer/sr-announcer.css",
+    "./stack": {
+      "types": "./dist/generated/stack/stack.d.ts",
+      "import": "./dist/generated/stack/stack.js"
+    },
+    "./stack.css": "./dist/generated/stack/stack.css",
+    "./status": {
+      "types": "./dist/generated/status/status.d.ts",
+      "import": "./dist/generated/status/status.js"
+    },
+    "./status.css": "./dist/generated/status/status.css",
+    "./sticky-region": {
+      "types": "./dist/generated/sticky-region/sticky-region.d.ts",
+      "import": "./dist/generated/sticky-region/sticky-region.js"
+    },
+    "./sticky-region.css": "./dist/generated/sticky-region/sticky-region.css",
+    "./switch": {
+      "types": "./dist/generated/switch/switch.d.ts",
+      "import": "./dist/generated/switch/switch.js"
+    },
+    "./switch.css": "./dist/generated/switch/switch.css",
+    "./tabs": {
+      "types": "./dist/generated/tabs/tabs.d.ts",
+      "import": "./dist/generated/tabs/tabs.js"
+    },
+    "./tabs.css": "./dist/generated/tabs/tabs.css",
+    "./text": {
+      "types": "./dist/generated/text/text.d.ts",
+      "import": "./dist/generated/text/text.js"
+    },
+    "./text.css": "./dist/generated/text/text.css",
+    "./textarea": {
+      "types": "./dist/generated/textarea/textarea.d.ts",
+      "import": "./dist/generated/textarea/textarea.js"
+    },
+    "./textarea.css": "./dist/generated/textarea/textarea.css",
+    "./toggle": {
+      "types": "./dist/generated/toggle/toggle.d.ts",
+      "import": "./dist/generated/toggle/toggle.js"
+    },
+    "./toggle.css": "./dist/generated/toggle/toggle.css",
+    "./toggle-group": {
+      "types": "./dist/generated/toggle-group/toggle-group.d.ts",
+      "import": "./dist/generated/toggle-group/toggle-group.js"
+    },
+    "./toggle-group.css": "./dist/generated/toggle-group/toggle-group.css",
+    "./tooltip": {
+      "types": "./dist/generated/tooltip/index.d.ts",
+      "import": "./dist/generated/tooltip/index.js"
+    },
+    "./tooltip.css": "./dist/generated/tooltip/tooltip.css",
+    "./validation-summary": {
+      "types": "./dist/generated/validation-summary/validation-summary.d.ts",
+      "import": "./dist/generated/validation-summary/validation-summary.js"
+    },
+    "./validation-summary.css": "./dist/generated/validation-summary/validation-summary.css",
+    "./visually-hidden": {
+      "types": "./dist/generated/visually-hidden/visually-hidden.d.ts",
+      "import": "./dist/generated/visually-hidden/visually-hidden.js"
+    },
+    "./visually-hidden.css": "./dist/generated/visually-hidden/visually-hidden.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.json && node ../../tooling/package-builder/src/copy-assets.ts .",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.3.0 || ^19.0.0",
+    "react-dom": "^18.3.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "catalog:",
+    "react-aria-components": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:"
+  },
+  "mergora": {
+    "generatedBy": "@mergora-internal/package-builder",
+    "editPolicy": "do-not-edit",
+    "canonicalSource": "registry/source",
+    "distributionStatus": "unreleased",
+    "publishedMaturity": null
+  }
+}

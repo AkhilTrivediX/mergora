@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sticky-region",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "sticky-region-root",
+    "stableAttributes": [
+      "data-slot",
+      "data-position",
+      "data-offset",
+      "data-safe-area",
+      "data-contained",
+      "data-size"
+    ]
+  },
+  "parts": [
+    {
+      "name": "Content",
+      "element": "div | header | footer",
+      "slot": "sticky-region-content",
+      "ref": "HTMLElement",
+      "stableAttributes": ["data-slot", "data-position", "data-element"]
+    },
+    {
+      "name": "Body",
+      "element": "div",
+      "slot": "sticky-region-body",
+      "ref": "HTMLDivElement",
+      "stableAttributes": ["data-slot", "data-position"]
+    }
+  ]
+}

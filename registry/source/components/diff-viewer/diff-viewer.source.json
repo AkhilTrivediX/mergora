@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./diff-viewer.css", "react"],
+  "entryPath": "registry/source/components/diff-viewer/diff-viewer.tsx",
+  "id": "diff-viewer",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

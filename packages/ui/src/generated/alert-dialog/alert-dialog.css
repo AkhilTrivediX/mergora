@@ -1,0 +1,25 @@
+/* Generated from registry/source/components/alert-dialog/alert-dialog.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-alert-dialog__content {
+  inline-size: min(32rem, 100%);
+}
+
+.mrg-alert-dialog__description {
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-alert-dialog__close[data-intent="destructive"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+  background: var(--mrg-semantic-color-status-danger-background);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-alert-dialog__close[data-intent="destructive"][data-hovered] {
+  box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-semantic-color-status-danger-border);
+}
+
+@media (forced-colors: active) {
+  .mrg-alert-dialog__close[data-intent="destructive"]::before {
+    content: "! ";
+  }
+}

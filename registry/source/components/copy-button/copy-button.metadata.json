@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "copy-button",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "loading",
+    "populated",
+    "success",
+    "error"
+  ],
+  "slots": [
+    {
+      "name": "copy-button",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": []
+    },
+    {
+      "name": "copy-button-icon",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": []
+    },
+    {
+      "name": "copy-button-status",
+      "semanticElement": "span aria-live=polite",
+      "refTarget": "none",
+      "states": []
+    }
+  ],
+  "contract": {
+    "id": "copy-button-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "copy-button-quality-passport",
+    "version": "0.0.0"
+  }
+}

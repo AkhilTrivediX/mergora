@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "inheritance": "highest-behavior-or-child-risk",
+  "classes": {
+    "1": {
+      "requiredManualCoverage": [
+        "keyboard-manual-visual",
+        "desktop-screen-reader-semantic-engine-a",
+        "desktop-screen-reader-semantic-engine-b"
+      ],
+      "refreshEachBehavioralReleaseCandidate": false
+    },
+    "2": {
+      "requiredManualCoverage": [
+        "keyboard-manual-visual",
+        "desktop-screen-reader-semantic-engine-a",
+        "desktop-screen-reader-semantic-engine-b",
+        "desktop-at-full",
+        "touch-screen-reader-where-applicable",
+        "forced-colors",
+        "zoom-reflow",
+        "rtl",
+        "focus-restoration"
+      ],
+      "refreshEachBehavioralReleaseCandidate": false
+    },
+    "3": {
+      "requiredManualCoverage": [
+        "keyboard-manual-visual",
+        "desktop-screen-reader-semantic-engine-a",
+        "desktop-screen-reader-semantic-engine-b",
+        "desktop-at-full",
+        "touch-screen-reader-where-applicable",
+        "forced-colors",
+        "zoom-reflow",
+        "rtl",
+        "focus-restoration",
+        "mobile-at-full",
+        "voice-control",
+        "switch-control",
+        "task-workflow",
+        "interruption-recovery",
+        "performance-scale"
+      ],
+      "refreshEachBehavioralReleaseCandidate": true
+    }
+  },
+  "manualEvidenceInvalidatingChanges": [
+    "semantic",
+    "focus",
+    "keyboard",
+    "overlay",
+    "virtualization",
+    "announcement",
+    "responsive",
+    "locale",
+    "core-dependency"
+  ]
+}

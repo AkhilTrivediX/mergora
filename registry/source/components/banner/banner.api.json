@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "banner",
+  "entryExport": "Banner",
+  "refTarget": "HTMLElement aside",
+  "exports": [
+    { "kind": "component", "name": "Banner" },
+    { "kind": "function", "name": "createBannerStoragePersistence" },
+    { "kind": "type", "name": "BannerProps" },
+    { "kind": "type", "name": "BannerScope" },
+    { "kind": "type", "name": "BannerVariant" },
+    { "kind": "type", "name": "BannerHeadingLevel" },
+    { "kind": "type", "name": "BannerPersistenceAdapter" },
+    { "kind": "type", "name": "BannerStorageLike" }
+  ],
+  "controlledState": ["dismissed"],
+  "nativePolicy": [
+    "A persistent named aside owns its accessible name and non-live semantics; role, hidden, naming, live-region, and aria-hidden overrides are rejected while safe native attributes remain available.",
+    "Controlled dismissal only proposes changes through onDismissedChange. Uncontrolled dismissal alone accepts defaults and injected persistence, and writes only after the internal state commits.",
+    "Persistence-enabled markup remains visually pending until a pre-paint layout effect resolves the synchronous adapter; adapter and observer failures are contained without crashing the banner.",
+    "The dismiss action is a 44 CSS-pixel native button and an intrinsic container query reflows embedded banners at narrow container widths without sticky or focus-obscuring behavior."
+  ]
+}

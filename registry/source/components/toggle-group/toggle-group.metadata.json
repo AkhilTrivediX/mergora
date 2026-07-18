@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toggle-group",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "populated",
+    "partial"
+  ],
+  "slots": [
+    {
+      "name": "toggle-group",
+      "semanticElement": "div role=group",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    },
+    {
+      "name": "toggle-group-item",
+      "semanticElement": "button aria-pressed",
+      "refTarget": "HTMLButtonElement",
+      "states": []
+    }
+  ],
+  "contract": {
+    "id": "toggle-group-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "toggle-group-quality-passport",
+    "version": "0.0.0"
+  }
+}

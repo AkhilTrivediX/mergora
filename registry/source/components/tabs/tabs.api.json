@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tabs",
+  "entryExport": "Tabs",
+  "refTarget": "Root/List/Tab/Panels/Panel=HTMLDivElement",
+  "exports": [
+    { "kind": "namespace", "name": "Tabs" },
+    { "kind": "component", "name": "TabsRoot" },
+    { "kind": "component", "name": "TabsList" },
+    { "kind": "component", "name": "TabsTab" },
+    { "kind": "component", "name": "TabsPanels" },
+    { "kind": "component", "name": "TabsPanel" },
+    { "kind": "function", "name": "isSafeTabHref" },
+    { "kind": "type", "name": "TabsActivationMode" },
+    { "kind": "type", "name": "TabsOrientation" },
+    { "kind": "type", "name": "TabsRootProps" },
+    { "kind": "type", "name": "TabsListProps" },
+    { "kind": "type", "name": "TabsTabProps" },
+    { "kind": "type", "name": "TabsPanelsProps" },
+    { "kind": "type", "name": "TabsPanelProps" }
+  ],
+  "controlledState": ["value"],
+  "nativePolicy": [
+    "Tab, tablist, and tabpanel relationships are owned by React Aria with stable string keys.",
+    "Automatic and manual activation, horizontal and vertical orientation, disabled keys, and RTL spatial arrows are explicit.",
+    "Optional href values support URL-state recipes but reject empty or executable protocols."
+  ]
+}

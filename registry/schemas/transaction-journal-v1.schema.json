@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/transaction-journal-v1.schema.json",
+  "title": "Mergora durable transaction journal v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "transactionId", "state", "entries"],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "transactionId": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}(?:\\.[0-9]{3})?Z-[0-9a-f]{32}$"
+    },
+    "state": {
+      "enum": [
+        "planning",
+        "awaiting-consent",
+        "staged",
+        "validated",
+        "committing",
+        "post-validating",
+        "committed",
+        "rolled-back",
+        "conflicted",
+        "abandoned"
+      ]
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "recordedAt", "state", "checkpoint", "recordDigest"],
+        "properties": {
+          "sequence": { "type": "integer", "minimum": 0 },
+          "recordedAt": { "type": "string", "format": "date-time" },
+          "state": {
+            "enum": [
+              "planning",
+              "awaiting-consent",
+              "staged",
+              "validated",
+              "committing",
+              "post-validating",
+              "committed",
+              "rolled-back",
+              "conflicted",
+              "abandoned"
+            ]
+          },
+          "checkpoint": {
+            "enum": [
+              "inspection-complete",
+              "plan-complete",
+              "consent-recorded",
+              "lock-acquired",
+              "stage-written",
+              "validation-complete",
+              "backup-written",
+              "commit-target",
+              "manifest-committed",
+              "dependencies-complete",
+              "post-validation-complete",
+              "rollback-target",
+              "finalized"
+            ]
+          },
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "preconditionDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "postconditionDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "recordDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 65536
+    }
+  }
+}

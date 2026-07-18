@@ -1,0 +1,82 @@
+.mrg-toggle-group {
+  box-sizing: border-box;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-toggle-group[data-orientation="horizontal"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.mrg-toggle-group[data-orientation="vertical"] {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.mrg-toggle-group-item {
+  align-items: center;
+  appearance: none;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  justify-content: center;
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-space-inline-md);
+}
+
+.mrg-toggle-group-item[data-state="on"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-toggle-group-item:not(:disabled):hover {
+  border-color: var(--mrg-semantic-color-selection-border);
+}
+
+.mrg-toggle-group-item:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+  position: relative;
+  z-index: 1;
+}
+
+.mrg-toggle-group-item:disabled {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+@media (forced-colors: active) {
+  .mrg-toggle-group-item {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-toggle-group-item[data-state="on"] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-toggle-group-item:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

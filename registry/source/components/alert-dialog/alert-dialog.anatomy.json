@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert-dialog",
+  "namespace": [
+    "Root",
+    "Trigger",
+    "Overlay",
+    "Content",
+    "Header",
+    "Footer",
+    "Title",
+    "Description",
+    "Cancel",
+    "Action"
+  ],
+  "required": ["Root", "Trigger", "Overlay", "Content", "Title", "Description", "Cancel", "Action"],
+  "relationships": [
+    "Content requires leastDestructiveRef pointing to Cancel.",
+    "Title names the decision and Description explains the irreversible consequence.",
+    "Cancel and Action are the only default dismissal paths."
+  ],
+  "behaviorOwnership": {
+    "mergora": ["alert semantics", "explicit policy", "least-destructive focus", "intent styling"],
+    "dialog": ["canonical modal behavior"],
+    "reactAria": ["focus containment", "background isolation", "portal", "restoration"]
+  }
+}

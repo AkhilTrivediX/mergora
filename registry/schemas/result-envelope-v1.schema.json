@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/result-envelope-v1.schema.json",
+  "title": "Mergora CLI JSON result envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "command",
+    "ok",
+    "status",
+    "exitCode",
+    "result",
+    "warnings",
+    "errors"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "command": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$", "maxLength": 80 },
+    "ok": { "type": "boolean" },
+    "status": {
+      "enum": [
+        "success",
+        "no-op",
+        "planned",
+        "conflict",
+        "invalid",
+        "unavailable",
+        "incompatible",
+        "recovery-required",
+        "failed",
+        "consent-required"
+      ]
+    },
+    "exitCode": { "type": "integer", "minimum": 0, "maximum": 12 },
+    "result": {
+      "oneOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "summary": { "type": "string", "maxLength": 4096 },
+            "plan": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+            "planDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+            "transactionId": {
+              "type": "string",
+              "pattern": "^[0-9]{8}T[0-9]{6}(?:\\.[0-9]{3})?Z-[0-9a-f]{32}$"
+            },
+            "hasDifferences": { "type": "boolean" },
+            "items": {
+              "type": "array",
+              "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+              "uniqueItems": true,
+              "maxItems": 4096
+            }
+          }
+        }
+      ]
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$", "maxLength": 120 },
+          "message": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+        }
+      },
+      "maxItems": 256
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$", "maxLength": 120 },
+          "message": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+        }
+      },
+      "maxItems": 256
+    }
+  }
+}

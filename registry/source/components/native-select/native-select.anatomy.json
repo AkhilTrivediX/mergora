@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "native-select",
+  "root": {
+    "element": "select",
+    "ref": "HTMLSelectElement",
+    "slot": "native-select",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "required",
+      "disabled",
+      "multiple",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "native-select-root",
+      "element": "span",
+      "purpose": "Visual border and indicator layout.",
+      "stability": "documented"
+    },
+    {
+      "slot": "native-select-indicator",
+      "element": "span aria-hidden",
+      "purpose": "Decorative single-select indicator.",
+      "stability": "documented"
+    }
+  ]
+}

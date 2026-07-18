@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./cluster.css", "react"],
+  "entryPath": "registry/source/components/cluster/cluster.tsx",
+  "id": "cluster",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

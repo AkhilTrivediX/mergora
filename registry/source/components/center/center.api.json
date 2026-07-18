@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "center",
+  "entryExport": "Center",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "Center" },
+    { "kind": "type", "name": "CenterProps" },
+    { "kind": "type", "name": "CenterAxis" },
+    { "kind": "type", "name": "CenterMaximum" }
+  ],
+  "props": [
+    { "default": "both", "name": "axis", "required": false, "type": "inline | block | both" },
+    { "default": "none", "name": "maximum", "required": false, "type": "none | prose | content" },
+    { "default": "start", "name": "text", "required": false, "type": "start | center" }
+  ],
+  "compositionPolicy": {
+    "blockCentering": "Uses available block size supplied by normal layout; the component never invents a fixed height.",
+    "content": "Direct children remain bounded by the available inline size even when a semantic maximum is selected."
+  }
+}

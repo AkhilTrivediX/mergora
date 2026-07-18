@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "validation-summary",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "validation-summary",
+    "stableAttributes": ["data-slot", "data-empty", "tabindex", "aria-labelledby"]
+  },
+  "parts": [
+    {
+      "slot": "validation-summary-heading",
+      "element": "h2",
+      "purpose": "Visible summary heading.",
+      "stability": "documented"
+    },
+    {
+      "slot": "validation-summary-announcement",
+      "element": "p",
+      "purpose": "Atomic assertive error count.",
+      "stability": "documented"
+    },
+    {
+      "slot": "validation-summary-list",
+      "element": "ul",
+      "purpose": "List of error links.",
+      "stability": "documented"
+    },
+    {
+      "slot": "validation-summary-item",
+      "element": "li with a",
+      "purpose": "Focuses one real invalid control.",
+      "stability": "documented"
+    }
+  ]
+}

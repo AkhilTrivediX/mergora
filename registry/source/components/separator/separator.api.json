@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "separator",
+  "entryExport": "Separator",
+  "refTarget": "HTMLElement",
+  "nativeProps": "Omit<React.HTMLAttributes<HTMLElement>, aria-hidden | aria-orientation | children | role>",
+  "exports": [
+    { "kind": "component", "name": "Separator" },
+    { "kind": "type", "name": "SeparatorProps" },
+    { "kind": "type", "name": "SeparatorOrientation" }
+  ],
+  "props": [
+    { "default": true, "name": "decorative", "required": false, "type": "boolean" },
+    {
+      "default": "horizontal",
+      "name": "orientation",
+      "required": false,
+      "type": "horizontal | vertical"
+    }
+  ],
+  "compositionPolicy": {
+    "horizontal": "Renders hr so semantic mode uses native separator semantics.",
+    "vertical": "Renders div; semantic mode adds role=separator and aria-orientation=vertical.",
+    "decorative": "Adds role=presentation and aria-hidden=true in either orientation."
+  }
+}

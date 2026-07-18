@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "portal",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "React portal with a semantically neutral display-contents context div.",
+    "context": "React context is retained and native dir, lang, direction, and density attributes are repeated at the portal boundary.",
+    "readingOrder": "Portaled content remains at its target's DOM position; consumers must not create a contradictory reading or focus sequence."
+  },
+  "ssrHydration": {
+    "server": "Non-disabled portals render only fallback; no document global is read.",
+    "firstClientRender": "Matches the server fallback exactly, then portals after the mount effect.",
+    "disabled": "Inline mode remains deterministic on server and client."
+  },
+  "consumerResponsibilities": [
+    "Provide an accessible fallback when server-visible information or status is required.",
+    "Keep aria-labelledby, aria-describedby, and control relationships mounted with globally unique IDs.",
+    "Coordinate interactive portal content through LayerManager and the owning focus primitive.",
+    "Ensure the portal target is stable and not inside an inert application root for modal content."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "hydration",
+      "custom-container",
+      "nested-portals",
+      "direction",
+      "locale",
+      "density",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["focus-order", "desktop-at-relationships", "mobile-at", "rtl", "zoom-400"],
+    "recordedEvidence": []
+  }
+}

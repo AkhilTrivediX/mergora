@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slot",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and subpath outputs.",
+    "Record ref, event, class, style, native semantic, and accessible-name parity in browsers.",
+    "Pass nested composition, packed consumers, package/source parity, and Semantic Sync fixtures.",
+    "Complete keyboard and desktop screen-reader manual review and publish a Quality Passport."
+  ]
+}

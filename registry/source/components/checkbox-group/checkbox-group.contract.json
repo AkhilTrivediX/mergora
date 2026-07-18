@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "checkbox-group",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native fieldset, legend, and same-name checkbox inputs",
+    "naming": "The visible legend names the checkbox group and each checkbox retains its item label.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "documented in anatomy and API records"
+  },
+  "interaction": {
+    "keyboard": "Tab visits enabled native checkboxes; Space toggles the focused item.",
+    "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
+    "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
+    "speech": "Visible labels remain available for voice targeting.",
+    "switchAccess": "No duplicate proxy focus target is introduced."
+  },
+  "formBehavior": "Checked enabled items submit repeated same-name values; only enabled direct successful controls satisfy minimum and maximum constraints; custom validity migrates between enabled anchors; disabled-only groups suspend constraints; reset restores defaults.",
+  "states": {
+    "attributes": [
+      "data-layout",
+      "data-disabled",
+      "data-invalid",
+      "disabled",
+      "aria-describedby",
+      "aria-invalid"
+    ],
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=checkbox-group]",
+    "attributes": ["data-layout", "data-disabled", "data-invalid"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic theme tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information depends on motion; Switch removes its thumb transition."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "checkboxGroup.minimum",
+      "checkboxGroup.maximum",
+      "label",
+      "description",
+      "error",
+      "constraintMessage",
+      "item-label"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",
+    "serialization": "Serialized names and values remain consumer-owned machine data and are never localized by the component."
+  },
+  "consumerResponsibilities": [
+    "Supply unique item values and a meaningful group label.",
+    "Keep controlled and default selections aligned with direct enabled items when they are intended to satisfy constraints.",
+    "Override provider constraint keys or explicit messages when English fallbacks are unsuitable.",
+    "Do not use required on every checkbox to mean at least one selection."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "native-group",
+      "minimum-maximum-validity",
+      "repeated-formdata",
+      "controlled-uncontrolled-reset",
+      "narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-space-tab",
+      "invalid-focus",
+      "nvda-firefox",
+      "voiceover-safari",
+      "high-contrast"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

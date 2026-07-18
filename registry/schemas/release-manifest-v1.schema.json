@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/release-manifest-v1.schema.json",
+  "title": "Mergora immutable registry release manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "registryId",
+    "uiVersion",
+    "releaseCommit",
+    "items",
+    "dependencyGraphDigest",
+    "artifacts",
+    "qualitySummary",
+    "manifestDigest"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "registryId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "uiVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "releaseCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "items": {
+      "type": "object",
+      "propertyNames": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "payload", "passport", "contract", "dependencies"],
+        "properties": {
+          "version": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "payload": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+          "passport": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+          "contract": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+          "dependencies": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+            "uniqueItems": true,
+            "maxItems": 256
+          }
+        }
+      },
+      "maxProperties": 4096
+    },
+    "dependencyGraphDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "url", "digest", "mediaType", "bytes"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1, "maxLength": 255 },
+          "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "mediaType": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "bytes": { "$ref": "common-v1.schema.json#/$defs/byteCount" }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 256
+    },
+    "qualitySummary": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+    "manifestDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+  }
+}

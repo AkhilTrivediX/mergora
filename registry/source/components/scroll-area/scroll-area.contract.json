@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "scroll-area",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "A native div scrollport with browser-owned overflow, scrollbar, wheel, touch, and keyboard behavior.",
+    "focusPolicy": "The root is not focusable by default. focusable=true creates tabIndex=0 and requires aria-label or aria-labelledby in the TypeScript API.",
+    "rolePolicy": "The inert default adds no role. Explicit focusable=true adds role=region with its required name because the independently meaningful scrollport is then a deliberate landmark and keyboard stop.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Enters the root only when focusable=true; otherwise reaches focusable descendants in DOM order."
+    },
+    {
+      "key": "Arrow keys, Page Up/Down, Home/End, Space",
+      "behavior": "Browser-native scrolling when the scrollport owns focus; Mergora does not intercept the event."
+    }
+  ],
+  "pointerTouch": "Native scrollbars, wheel/trackpad, touch panning, momentum, and pointer cancellation remain browser-owned. No custom drag surface replaces them.",
+  "layout": {
+    "overflow": "Native overflow:auto is retained and scrollbars remain visibly styled without hiding the platform affordance.",
+    "safeArea": "viewport size subtracts physical block-edge safe-area insets; scroll padding is logical.",
+    "direction": "Native inline scrolling and logical scroll padding follow the inherited ltr/rtl direction."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=scroll-area]",
+    "attributes": [
+      "data-orientation",
+      "data-size",
+      "data-focusable",
+      "data-contain-overscroll",
+      "data-scroll-padding"
+    ]
+  },
+  "consumerResponsibilities": [
+    "Use focusable=true only when the overflow region is independently meaningful and provide a concise localized name.",
+    "Keep focusable descendants in logical DOM order and ensure custom content does not suppress the native scrollbar or focus outline.",
+    "Document essential two-dimensional scrolling and provide a non-panning alternative when the relationship is not inherently two-dimensional.",
+    "Revalidate contrast and scrollbar visibility after overriding component tokens or CSS."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "native-scroll",
+      "focusable-name",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-scroll",
+      "screen-reader-labelled-scrollport",
+      "touch-and-trackpad",
+      "windows-forced-colors",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  }
+}

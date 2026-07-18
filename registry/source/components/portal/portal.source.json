@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./portal.css", "react", "react-dom"],
+  "entryPath": "registry/source/components/portal/portal.tsx",
+  "id": "portal",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

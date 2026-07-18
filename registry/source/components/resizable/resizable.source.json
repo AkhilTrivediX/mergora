@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./resizable.css", "react"],
+  "entryPath": "registry/source/components/resizable/resizable.tsx",
+  "id": "resizable",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

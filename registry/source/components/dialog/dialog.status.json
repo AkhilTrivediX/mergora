@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dialog",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, contracts, Passport, and public subpath outputs.",
+    "Bind cross-browser, axe, SSR/hydration, nested-layer, scroll, focus, RTL, locale, preference, viewport, and packed-consumer evidence to one candidate digest.",
+    "Complete required Risk Class 2 keyboard, touch, speech, switch, forced-colors, NVDA/Firefox, and VoiceOver/Safari manual sessions.",
+    "Add Semantic Sync clean, customized, conflict, rollback, removal, and dependency fixtures."
+  ]
+}

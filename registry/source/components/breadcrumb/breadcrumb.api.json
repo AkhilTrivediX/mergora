@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "breadcrumb",
+  "entryExport": "Breadcrumb",
+  "refTarget": "HTMLElement nav",
+  "exports": [
+    { "kind": "component", "name": "Breadcrumb" },
+    { "kind": "function", "name": "isSafeBreadcrumbHref" },
+    { "kind": "type", "name": "BreadcrumbItem" },
+    { "kind": "type", "name": "BreadcrumbProps" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "A named nav landmark contains an ordered hierarchy and exactly one final aria-current page.",
+    "Ancestors remain real links and executable or empty href values are rejected.",
+    "Responsive collapse keeps the first, tail, current, and hidden hierarchy available through native details disclosure."
+  ]
+}

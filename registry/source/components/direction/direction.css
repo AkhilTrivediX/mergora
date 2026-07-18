@@ -1,0 +1,6 @@
+@layer mergora.components {
+  [data-slot="direction-boundary"] {
+    box-sizing: border-box;
+    min-inline-size: 0;
+  }
+}

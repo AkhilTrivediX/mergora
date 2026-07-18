@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "callout",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "Non-live explanatory content with explicit neutral or named-landmark behavior and non-color variants.",
+  "semantics": [
+    "Callout never adds alert, status, or aria-live behavior.",
+    "The default root is a neutral div; landmarkLabel intentionally renders a named aside.",
+    "A native heading, visible variant label, distinct symbol, and body preserve structure and non-color meaning.",
+    "Role and owned ARIA overrides are rejected at both the typed and runtime boundaries; empty composite content is invalid."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "No semantic information depends on motion.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Text wraps, actions reflow, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

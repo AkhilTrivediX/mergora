@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toggle-group",
+  "root": {
+    "slot": "toggle-group",
+    "element": "div role=group",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "toggle-group-item",
+      "element": "button aria-pressed",
+      "stability": "documented"
+    }
+  ]
+}

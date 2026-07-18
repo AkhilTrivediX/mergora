@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dialog",
+  "namespace": [
+    "Root",
+    "Trigger",
+    "Overlay",
+    "Content",
+    "Header",
+    "Footer",
+    "Title",
+    "Description",
+    "Close"
+  ],
+  "required": ["Root", "Trigger", "Overlay", "Content", "Close"],
+  "relationships": [
+    "Root owns controlled or uncontrolled open state and restoration fallback.",
+    "Overlay selects modal or non-modal React Aria behavior and portal target.",
+    "Content requires Title or an explicit accessible name.",
+    "Description supplies the automatic aria-describedby target when exactly one exists."
+  ],
+  "behaviorOwnership": {
+    "mergora": [
+      "compound API",
+      "logical policy",
+      "callback reasons",
+      "message keys",
+      "stable slots",
+      "provider context"
+    ],
+    "reactAria": [
+      "dialog semantics",
+      "focus scope",
+      "portal",
+      "dismissal",
+      "collision for non-modal",
+      "scroll prevention",
+      "focus restoration"
+    ],
+    "layerManager": ["shared nesting record", "application-root environment state"]
+  }
+}

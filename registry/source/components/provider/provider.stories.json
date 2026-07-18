@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "provider",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "nested-provider-and-direction",
+      "covers": ["nested-overrides", "message-merge", "locale", "time-zone", "density", "rtl"]
+    },
+    {
+      "id": "portal-and-client-boundary",
+      "covers": ["portal-container", "portal-direction", "hydration-fallback"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": [
+      "dark",
+      "enhanced-contrast",
+      "forced-colors",
+      "reduced-motion",
+      "touch-density"
+    ],
+    "requiresBrowserEvidence": ["hydration", "rtl-portal", "nested-provider", "400-percent-zoom"]
+  }
+}

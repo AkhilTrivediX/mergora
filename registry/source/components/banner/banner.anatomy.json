@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "banner",
+  "root": {
+    "slot": "banner",
+    "element": "aside",
+    "ref": "HTMLElement",
+    "stableAttributes": [
+      "data-slot",
+      "data-scope",
+      "data-variant",
+      "data-dismissed",
+      "data-persistence-pending",
+      "data-banner-id"
+    ]
+  },
+  "parts": [
+    { "slot": "banner-layout", "element": "div", "stability": "documented" },
+    { "slot": "banner-variant-label", "element": "span", "stability": "documented" },
+    { "slot": "banner-title", "element": "h1-h6", "stability": "documented" },
+    { "slot": "banner-description", "element": "div", "stability": "documented" },
+    { "slot": "banner-actions", "element": "div", "stability": "documented" },
+    { "slot": "banner-dismiss", "element": "button", "stability": "documented" }
+  ]
+}

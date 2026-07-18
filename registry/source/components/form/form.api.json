@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "entryExport": "Form",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "React.FormHTMLAttributes<HTMLFormElement>",
+  "exports": [
+    { "kind": "component", "name": "Form" },
+    { "kind": "type", "name": "FormProps" }
+  ],
+  "props": [
+    { "name": "layout", "required": false, "default": "stacked", "type": "stacked | compact" }
+  ],
+  "compositionPolicy": {
+    "submission": "No submit interception; native URL actions and React server actions pass through.",
+    "adapters": "RHF and TanStack Form integrate through their native props and submit handlers without core dependencies."
+  }
+}

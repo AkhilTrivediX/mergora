@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "blockquote",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, virtualization, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "blockquote: figure; blockquote-quote: blockquote; blockquote-caption: figcaption; blockquote-source: cite",
+    "rolePolicy": "The quotation is a native blockquote inside a figure. Attribution and a semantic cite are grouped in figcaption; citeUrl is applied to both the quote metadata and source link.",
+    "refTarget": "HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "No managed focus model is introduced; native links or consumer descendants follow document order."
+    }
+  ],
+  "nonColor": "Meaning and structure do not depend on color.",
+  "responsive": "Logical properties, intrinsic minimums, wrapping, and component-owned overflow preserve content at 320 CSS pixels, 200% text, and 400% reflow; evidence remains unrecorded.",
+  "stableSelectors": {
+    "root": "[data-slot=blockquote]",
+    "parts": [
+      "[data-slot=blockquote-quote]",
+      "[data-slot=blockquote-caption]",
+      "[data-slot=blockquote-source]"
+    ],
+    "attributes": ["data-cite", "data-linked"]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
+    "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
+    "Consumers must provide accurate attribution and a trustworthy citation URL; the component cannot verify editorial provenance."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "copy",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-semantic-engines",
+      "keyboard-visual",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

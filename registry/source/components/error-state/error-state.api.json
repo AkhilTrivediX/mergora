@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "error-state",
+  "entryExport": "ErrorState",
+  "refTarget": "HTMLElement section",
+  "exports": [
+    { "kind": "component", "name": "ErrorState" },
+    { "kind": "type", "name": "ErrorStateProps" },
+    { "kind": "type", "name": "RecoverableErrorStateProps" },
+    { "kind": "type", "name": "UnrecoverableErrorStateProps" },
+    { "kind": "type", "name": "ErrorStateHeadingLevel" },
+    { "kind": "type", "name": "ErrorStateLiveMode" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "Recoverable state requires a native retry action; unrecoverable state makes retry props a type error and may compose explicit alternative actions.",
+    "Raw Error objects are not accepted; technical details render only from an explicit consumer-provided node behind a native details disclosure.",
+    "The visible named section is never a live region; polite/assertive modes require one concise announcement and enqueue it through the nearest ScreenReaderAnnouncer.Provider.",
+    "Retry, alternative actions, and technical details remain persistent and outside the provider-owned live roots.",
+    "The native retry button and details summary expose non-color hover, active, and focus-visible feedback, including reduced-motion and forced-colors fallbacks."
+  ]
+}

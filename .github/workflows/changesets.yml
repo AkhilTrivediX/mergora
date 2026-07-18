@@ -1,0 +1,46 @@
+name: Changesets version pull request
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: changesets-main
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Open or update version pull request
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
+        with:
+          version: pnpm version-packages
+          commit: "chore: version packages"
+          title: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# This workflow can maintain only the version pull request. npm publication is
+# deliberately absent and belongs to protected OIDC workflows.

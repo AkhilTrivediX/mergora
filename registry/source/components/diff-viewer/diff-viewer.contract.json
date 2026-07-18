@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "diff-viewer",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, virtualization, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "diff-viewer: div role=region; diff-copy: button; diff-line: tr; diff-marker: th",
+    "rolePolicy": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text; one row is in the tab order and vertical/Home/End/Page keys navigate rows.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Enters or leaves the active diff row and ordinary toolbar controls."
+    },
+    {
+      "key": "Arrow Up / Arrow Down",
+      "behavior": "Moves roving focus to the previous or next visible diff row."
+    },
+    {
+      "key": "Home / End",
+      "behavior": "Moves to the first or last diff row."
+    },
+    {
+      "key": "Page Up / Page Down",
+      "behavior": "Moves by ten rows without intercepting keys outside a focused row."
+    }
+  ],
+  "nonColor": "Added, removed, changed, and context lines use visible +, −, ~, and blank markers plus spoken labels and programmatic row names; color is supplemental.",
+  "responsive": "Logical properties, intrinsic minimums, wrapping, and component-owned overflow preserve content at 320 CSS pixels, 200% text, and 400% reflow; evidence remains unrecorded.",
+  "stableSelectors": {
+    "root": "[data-slot=diff-viewer]",
+    "parts": ["[data-slot=diff-copy]", "[data-slot=diff-line]", "[data-slot=diff-marker]"],
+    "attributes": ["data-mode", "data-wrap", "data-copy-status", "data-kind", "data-active"]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
+    "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
+    "Large inputs use bounded native scrolling and caller-controlled chunking; virtualization is not implemented or claimed and remains a measured promotion decision."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "copy",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-at-matrix",
+      "keyboard-only",
+      "touch-screen-reader",
+      "speech",
+      "switch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

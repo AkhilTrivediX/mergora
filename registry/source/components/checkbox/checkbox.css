@@ -1,0 +1,130 @@
+.mrg-checkbox {
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  position: relative;
+}
+
+.mrg-checkbox [data-slot="checkbox-label-root"] {
+  align-items: start;
+  cursor: inherit;
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-sm);
+  grid-template-columns: var(--mrg-semantic-size-target-minimum) minmax(0, 1fr);
+  min-inline-size: 0;
+}
+
+.mrg-checkbox [data-slot="checkbox-input"] {
+  appearance: none;
+  block-size: var(--mrg-semantic-size-target-minimum);
+  cursor: inherit;
+  grid-column: 1;
+  grid-row: 1;
+  inline-size: var(--mrg-semantic-size-target-minimum);
+  margin: 0;
+  opacity: 0;
+  z-index: 1;
+}
+
+.mrg-checkbox [data-slot="checkbox-indicator"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-status);
+  block-size: var(--mrg-semantic-size-target-minimum);
+  display: flex;
+  grid-column: 1;
+  grid-row: 1;
+  inline-size: var(--mrg-semantic-size-target-minimum);
+  justify-content: center;
+}
+
+.mrg-checkbox[data-state="checked"] [data-slot="checkbox-indicator"],
+.mrg-checkbox[data-state="indeterminate"] [data-slot="checkbox-indicator"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+
+.mrg-checkbox[data-state="checked"] [data-slot="checkbox-indicator"]::after {
+  border-block-end: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border-inline-end: var(--mrg-semantic-border-width-strong) solid currentColor;
+  block-size: 0.6rem;
+  content: "";
+  inline-size: 0.3rem;
+  transform: translateY(-0.08rem) rotate(45deg);
+}
+
+.mrg-checkbox[data-state="indeterminate"] [data-slot="checkbox-indicator"]::after {
+  background: currentColor;
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inline-size: 0.75rem;
+}
+
+.mrg-checkbox [data-slot="checkbox-input"]:focus-visible + [data-slot="checkbox-indicator"] {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-checkbox [data-slot="checkbox-label"] {
+  grid-column: 2;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-checkbox [data-slot="checkbox-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  margin-inline-start: calc(
+    var(--mrg-semantic-size-target-minimum) + var(--mrg-semantic-space-inline-sm)
+  );
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-checkbox[data-invalid="true"] [data-slot="checkbox-indicator"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-checkbox[data-disabled="true"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-checkbox[data-disabled="true"] [data-slot="checkbox-indicator"] {
+  border-color: var(--mrg-semantic-color-border-disabled);
+}
+
+@media (pointer: coarse) {
+  .mrg-checkbox {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+
+  .mrg-checkbox [data-slot="checkbox-label-root"] {
+    align-items: center;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-checkbox [data-slot="checkbox-indicator"] {
+    background: Field;
+    border-color: FieldText;
+  }
+
+  .mrg-checkbox[data-state="checked"] [data-slot="checkbox-indicator"],
+  .mrg-checkbox[data-state="indeterminate"] [data-slot="checkbox-indicator"] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+}

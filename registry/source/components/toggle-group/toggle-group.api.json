@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toggle-group",
+  "entryExport": "ToggleGroup",
+  "refTarget": "HTMLDivElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "ToggleGroup"
+    },
+    {
+      "kind": "component",
+      "name": "ToggleGroupItem"
+    },
+    {
+      "kind": "namespace",
+      "name": "ToggleGroupParts"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleGroupProps"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleGroupSingleProps"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleGroupMultipleProps"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleGroupItemProps"
+    },
+    {
+      "kind": "type",
+      "name": "ToggleGroupOrientation"
+    },
+    {
+      "kind": "function",
+      "name": "resolveToggleGroupIndex"
+    }
+  ],
+  "controlledState": ["value"],
+  "nativePolicy": [
+    "Roving focus supports Home, End, orientation arrows, RTL spatial arrows, wrapping, and disabled skipping.",
+    "Arrow movement never changes selection; native activation does.",
+    "Single selection cannot become empty unless allowEmpty is explicit."
+  ]
+}

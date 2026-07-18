@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kbd",
+  "root": {
+    "element": "kbd",
+    "ref": "HTMLElement | HTMLSpanElement",
+    "slot": "kbd",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "element": "span role=group",
+      "slot": "kbd-chord",
+      "stableAttributes": ["data-slot", "data-platform"]
+    }
+  ]
+}

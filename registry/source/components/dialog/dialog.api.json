@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dialog",
+  "entryExport": "Dialog",
+  "refTarget": "compound-part-dependent",
+  "exports": [
+    { "kind": "namespace", "name": "Dialog" },
+    { "kind": "component", "name": "DialogClose" },
+    { "kind": "type", "name": "DialogCloseProps" },
+    { "kind": "component", "name": "DialogContent" },
+    { "kind": "type", "name": "DialogContentProps" },
+    { "kind": "component", "name": "DialogDescription" },
+    { "kind": "type", "name": "DialogDescriptionProps" },
+    { "kind": "type", "name": "DialogDismissPolicy" },
+    { "kind": "component", "name": "DialogFooter" },
+    { "kind": "type", "name": "DialogFooterProps" },
+    { "kind": "component", "name": "DialogHeader" },
+    { "kind": "type", "name": "DialogHeaderProps" },
+    { "kind": "type", "name": "DialogInitialFocus" },
+    { "kind": "type", "name": "DialogModality" },
+    { "kind": "type", "name": "DialogOpenChangeDetails" },
+    { "kind": "type", "name": "DialogOpenChangeReason" },
+    { "kind": "component", "name": "DialogOverlay" },
+    { "kind": "type", "name": "DialogOverlayProps" },
+    { "kind": "type", "name": "DialogPartKind" },
+    { "kind": "type", "name": "DialogPlacement" },
+    { "kind": "component", "name": "DialogRoot" },
+    { "kind": "type", "name": "DialogRootProps" },
+    { "kind": "component", "name": "DialogTitle" },
+    { "kind": "type", "name": "DialogTitleProps" },
+    { "kind": "component", "name": "DialogTrigger" },
+    { "kind": "type", "name": "DialogTriggerProps" }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "React Aria owns focus containment, portal positioning, outside interaction, Escape ordering, scroll prevention, background isolation, and focus return.",
+    "LayerManager records modal and nested layer order as non-dismissible so it never installs a second Escape path.",
+    "Modal is the default; non-modal dialogs do not trap focus and remain explicitly named.",
+    "finalFocusRef is the documented fallback when the invoking trigger is removed."
+  ]
+}

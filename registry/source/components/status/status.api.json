@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "status",
+  "entryExport": "Status",
+  "refTarget": "HTMLSpanElement",
+  "exports": [
+    { "kind": "component", "name": "Status" },
+    { "kind": "type", "name": "StatusProps" },
+    { "kind": "type", "name": "StatusVariant" },
+    { "kind": "type", "name": "StatusLiveMode" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "Status is non-live by default; polite and assertive modes are explicit and atomic.",
+    "Visible localized variant text, a distinct symbol, and consumer text preserve meaning without color.",
+    "Status has no interaction or focus behavior.",
+    "The status.variantLabel formatter owns punctuation and grammatical order; an explicit variantLabel is emitted unchanged.",
+    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers."
+  ]
+}

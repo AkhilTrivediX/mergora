@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "itemId": "provider",
+  "entryExport": "MergoraProvider",
+  "refTarget": "HTMLElement",
+  "nativeProps": "Omit<React.HTMLAttributes<HTMLDivElement>, children | dir | lang>",
+  "exports": [
+    { "kind": "component", "name": "MergoraProvider" },
+    { "kind": "function", "name": "resolveMergoraMessage" },
+    { "kind": "hook", "name": "useMergoraContext" },
+    { "kind": "hook", "name": "useMergoraMessage" },
+    { "kind": "type", "name": "MergoraContextValue" },
+    { "kind": "type", "name": "MergoraDensity" },
+    { "kind": "type", "name": "MergoraMessage" },
+    { "kind": "type", "name": "MergoraMessageFormatContext" },
+    { "kind": "type", "name": "MergoraMessageScalar" },
+    { "kind": "type", "name": "MergoraMessageValue" },
+    { "kind": "type", "name": "MergoraMessages" },
+    { "kind": "type", "name": "MergoraProviderProps" },
+    { "kind": "type", "name": "MergoraReducedMotion" }
+  ],
+  "props": [
+    { "default": "inherit or en-US", "name": "locale", "required": false, "type": "string" },
+    { "default": "inherit or ltr", "name": "direction", "required": false, "type": "ltr | rtl" },
+    {
+      "default": "inherit",
+      "name": "messages",
+      "required": false,
+      "type": "Readonly<Record<string, string | formatter>>"
+    },
+    { "default": "inherit or UTC", "name": "timeZone", "required": false, "type": "string" },
+    {
+      "default": "inherit or document.body",
+      "name": "portalContainer",
+      "required": false,
+      "type": "HTMLElement | null"
+    },
+    {
+      "default": "inherit or system",
+      "name": "reducedMotion",
+      "required": false,
+      "type": "system | reduce | no-preference"
+    },
+    {
+      "default": "inherit or comfortable",
+      "name": "density",
+      "required": false,
+      "type": "compact | comfortable | touch"
+    },
+    { "default": false, "name": "asChild", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "nestedOverrides": "Only supplied values override the nearest provider; messages merge by stable key.",
+    "nativeDirection": "The provider boundary writes lang, dir, density, and preference attributes.",
+    "portalContext": "React context and portal wrapper attributes preserve locale, direction, and density."
+  }
+}
