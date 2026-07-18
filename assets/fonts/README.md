@@ -1,6 +1,6 @@
 # Self-hosted fonts
 
-Mergora ships two OFL-1.1 variable fonts from commit-pinned primary repositories. The WOFF2 files are deterministic subsets produced with fontTools 4.62.1 and Brotli 1.1.0. The source font SHA-256, output SHA-256, license SHA-256, weight axis, byte size, Unicode ranges, fallback metrics, and preload decision are machine-readable in `manifest.json`.
+Mergora ships two OFL-1.1 variable fonts from commit-pinned primary repositories. The WOFF2 rebuild toolchain is pinned to fontTools 4.62.1 and Brotli 1.2.0. The source font SHA-256, output SHA-256, license SHA-256, weight axis, byte size, Unicode ranges, fallback metrics, and preload decision are machine-readable in `manifest.json`.
 
 ## Sources and subsets
 

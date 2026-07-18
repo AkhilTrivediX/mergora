@@ -1430,7 +1430,7 @@
         },
         "family": "Schibsted Grotesk",
         "license": "OFL-Schibsted-Grotesk.txt",
-        "licenseSha256": "3b4f3063b6ac7c1e403e2c4a5e8ef3a58190ff83ed7b15af66511858699139ce",
+        "licenseSha256": "851b03806ddbd92890a59a8512a883ff231587f9bef037895efa544a0f250432",
         "licenseSpdx": "OFL-1.1",
         "preload": true,
         "sha256": "34e6c5583165b9c809e2a6a3af4f33edf3fbdf7c0de5ad9e466bd636d316e52b",
@@ -1511,7 +1511,7 @@
       }
     ],
     "subsetter": {
-      "brotli": "1.1.0",
+      "brotli": "1.2.0",
       "fontTools": "4.62.1"
     },
     "version": 1

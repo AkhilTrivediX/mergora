@@ -17,7 +17,7 @@ from fontTools.varLib.instancer import instantiateVariableFont
 
 
 FONTTOOLS_VERSION = "4.62.1"
-BROTLI_VERSION = "1.1.0"
+BROTLI_VERSION = "1.2.0"
 SOURCE_SHA256 = "98de9a901163a769812c3cf2f1b86d63a98a9ced6720d747aa6652688407c34f"
 OUTPUT_NAME = "commit-mono-latin-greek-wght.woff2"
 UNICODE_RANGES = (
