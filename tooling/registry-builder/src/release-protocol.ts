@@ -8,6 +8,8 @@ export interface ReleaseEvidenceReference {
   readonly id: string;
   readonly artifact: string;
   readonly digest: ReleaseSha256;
+  /** Exact canonical JSON bytes embedded into the release bundle. */
+  readonly content: string;
 }
 
 export interface ReleaseProtocolValidationError {
@@ -107,6 +109,8 @@ export interface StableReleaseProtocolInput {
     readonly state: "pass";
     readonly evidence: ReleaseEvidenceReference;
   };
+  readonly schemas: readonly ReleaseEvidenceReference[];
+  readonly sbom: ReleaseEvidenceReference;
   readonly items: readonly ReleaseProtocolItemInput[];
 }
 
@@ -287,6 +291,48 @@ function assertEvidenceReference(
   assertCatalogId(reference.id, `${context} id`);
   assertImmutableHttpsUrl(reference.artifact, `${context} artifact`, origin);
   assertSha256(reference.digest, `${context} digest`);
+  if (
+    !reference.content.endsWith("\n") ||
+    reference.content.includes("\r") ||
+    reference.content !== reference.content.normalize("NFKC") ||
+    reference.digest !== sha256(reference.content)
+  ) {
+    fail(`${context} content must be canonical release bytes matching its digest.`);
+  }
+  let document: unknown;
+  try {
+    document = JSON.parse(reference.content) as unknown;
+  } catch {
+    fail(`${context} content must be valid JSON.`);
+  }
+  if (
+    document === null ||
+    typeof document !== "object" ||
+    Array.isArray(document) ||
+    canonicalJsonFile(document) !== reference.content
+  ) {
+    fail(`${context} content must be a canonical JSON object.`);
+  }
+}
+
+function evidencePointer(
+  reference: ReleaseEvidenceReference,
+): Omit<ReleaseEvidenceReference, "content"> {
+  return {
+    id: reference.id,
+    artifact: reference.artifact,
+    digest: reference.digest,
+  };
+}
+
+function evidenceArtifactPath(reference: ReleaseEvidenceReference, origin: string): string {
+  const prefix = `${origin}/`;
+  if (!reference.artifact.startsWith(prefix)) {
+    fail(`evidence artifact ${reference.id} is outside the official origin.`);
+  }
+  const path = reference.artifact.slice(prefix.length);
+  assertPortableReleasePath(path);
+  return path;
 }
 
 function validationFailure(
@@ -431,6 +477,41 @@ function artifactUrl(origin: string, path: string): string {
   return `${origin}/${path}`;
 }
 
+function makeEvidenceArtifact(
+  reference: ReleaseEvidenceReference,
+  origin: string,
+): ReleaseProtocolArtifact {
+  const artifact = makeArtifact(
+    evidenceArtifactPath(reference, origin),
+    reference.content,
+    false,
+    "application/json; charset=utf-8",
+  );
+  if (artifact.digest !== reference.digest) {
+    fail(`embedded evidence ${reference.id} digest changed during artifact generation.`);
+  }
+  return artifact;
+}
+
+function manifestArtifactRecord(
+  artifact: ReleaseProtocolArtifact,
+  origin: string,
+): {
+  readonly name: string;
+  readonly url: string;
+  readonly digest: ReleaseSha256;
+  readonly mediaType: "application/json";
+  readonly bytes: number;
+} {
+  return {
+    name: artifact.path,
+    url: artifactUrl(origin, artifact.path),
+    digest: artifact.digest,
+    mediaType: "application/json",
+    bytes: Buffer.byteLength(artifact.content, "utf8"),
+  };
+}
+
 function checksumContent(artifacts: readonly ReleaseProtocolArtifact[]): string {
   return [...artifacts]
     .sort((left, right) => left.path.localeCompare(right.path, "en-US"))
@@ -463,6 +544,40 @@ function assertReleaseInput(input: StableReleaseProtocolInput): void {
     input.packedConsumers.evidence,
     "packed-consumer evidence",
     input.registry.origin,
+  );
+  assertEvidenceReference(input.sbom, "release SBOM", input.registry.origin);
+  const releaseEvidenceRoot = `${input.registry.origin}/r/v1/releases/${input.uiVersion}`;
+  if (input.releaseGate.qualitySummary.artifact !== `${releaseEvidenceRoot}/quality.json`) {
+    fail("quality evidence must use its canonical immutable release path.");
+  }
+  if (input.packedConsumers.evidence.artifact !== `${releaseEvidenceRoot}/consumers.json`) {
+    fail("packed-consumer evidence must use its canonical immutable release path.");
+  }
+  if (input.sbom.artifact !== `${releaseEvidenceRoot}/sbom.json`) {
+    fail("release SBOM must use its canonical immutable release path.");
+  }
+  if (input.schemas.length === 0 || input.schemas.length > 128) {
+    fail("a stable release must embed between 1 and 128 public schemas.");
+  }
+  input.schemas.forEach((schema, index) => {
+    assertEvidenceReference(schema, `public schema ${String(index)}`, input.registry.origin);
+    if (
+      !/^r\/v1\/schemas\/[a-z0-9][a-z0-9.-]*\.json$/u.test(
+        evidenceArtifactPath(schema, input.registry.origin),
+      )
+    ) {
+      fail(`public schema ${String(index)} must use the canonical schema endpoint.`);
+    }
+  });
+  assertUniqueCanonical(
+    [
+      input.releaseGate.qualitySummary.artifact,
+      input.packedConsumers.evidence.artifact,
+      input.sbom.artifact,
+      ...input.schemas.map(({ artifact }) => artifact),
+      ...input.items.flatMap(({ passport, contract }) => [passport.artifact, contract.artifact]),
+    ],
+    "embedded release artifact URL",
   );
   if (input.items.length === 0 || input.items.length > 256) {
     fail("a release must contain between 1 and 256 items.");
@@ -552,7 +667,6 @@ export function buildStableReleaseProtocolBundle(
   });
 
   const itemArtifacts = new Map<string, ReleaseProtocolArtifact>();
-  const payloads = new Map<string, Record<string, unknown>>();
   for (const item of orderedItems) {
     const payload = item.payload;
     assertCatalogId(payload.itemId, "item id");
@@ -574,14 +688,18 @@ export function buildStableReleaseProtocolBundle(
     if (
       payload.passport.id !== item.passport.id ||
       payload.passport.version !== input.uiVersion ||
-      payload.links.passport !== item.passport.artifact
+      payload.links.passport !== item.passport.artifact ||
+      item.passport.artifact !==
+        `${input.registry.origin}/r/v1/passports/${input.uiVersion}/${payload.itemId}.json`
     ) {
       fail(`item ${payload.itemId} Passport identity, version, or URL is inconsistent.`);
     }
+    assertStableSemver(payload.contract.version, `Contract version for ${payload.itemId}`);
     if (
       payload.contract.id !== item.contract.id ||
-      payload.contract.version !== input.uiVersion ||
-      payload.links.contract !== item.contract.artifact
+      payload.links.contract !== item.contract.artifact ||
+      item.contract.artifact !==
+        `${input.registry.origin}/r/v1/contracts/${payload.contract.version}/${payload.itemId}.json`
     ) {
       fail(`item ${payload.itemId} Contract identity, version, or URL is inconsistent.`);
     }
@@ -606,8 +724,21 @@ export function buildStableReleaseProtocolBundle(
       "application/json; charset=utf-8",
     );
     itemArtifacts.set(payload.itemId, artifact);
-    payloads.set(payload.itemId, signedPayload);
   }
+
+  const evidenceArtifacts = [
+    input.releaseGate.qualitySummary,
+    input.packedConsumers.evidence,
+    input.sbom,
+    ...input.schemas,
+    ...orderedItems.flatMap(({ passport, contract }) => [passport, contract]),
+  ]
+    .map((reference) => makeEvidenceArtifact(reference, input.registry.origin))
+    .sort((left, right) => left.path.localeCompare(right.path, "en-US"));
+  assertUniqueCanonical(
+    evidenceArtifacts.map(({ path }) => path),
+    "embedded release artifact path",
+  );
 
   const catalog = {
     schemaVersion: 1,
@@ -660,6 +791,29 @@ export function buildStableReleaseProtocolBundle(
     true,
     "application/json; charset=utf-8",
   );
+  const searchIndexArtifact = makeArtifact(
+    "r/v1/search-index.json",
+    canonicalJsonFile({
+      schemaVersion: 1,
+      protocolVersion: "mergora-v1",
+      registryId: input.registry.id,
+      uiVersion: input.uiVersion,
+      dependencyGraphDigest,
+      items: catalog.items.map((item) => ({
+        id: item.id,
+        aliases: item.aliases,
+        displayName: item.displayName,
+        description: item.description,
+        kind: item.kind,
+        category: item.category,
+        tags: item.tags,
+        keywords: item.keywords,
+        maturity: item.maturity,
+      })),
+    }),
+    true,
+    "application/json; charset=utf-8",
+  );
 
   const manifestItems = Object.fromEntries(
     orderedItems.map((item) => {
@@ -674,8 +828,8 @@ export function buildStableReleaseProtocolBundle(
             artifact: artifactUrl(input.registry.origin, artifact.path),
             digest: artifact.digest,
           },
-          passport: item.passport,
-          contract: item.contract,
+          passport: evidencePointer(item.passport),
+          contract: evidencePointer(item.contract),
           dependencies: [...payload.registryDependencies].sort(),
         },
       ];
@@ -688,17 +842,10 @@ export function buildStableReleaseProtocolBundle(
     releaseCommit: input.releaseCommit,
     items: manifestItems,
     dependencyGraphDigest,
-    artifacts: orderedItems.map((item) => {
-      const artifact = itemArtifacts.get(item.payload.itemId)!;
-      return {
-        name: `${item.payload.itemId}-payload`,
-        url: artifactUrl(input.registry.origin, artifact.path),
-        digest: artifact.digest,
-        mediaType: "application/json",
-        bytes: Buffer.byteLength(artifact.content, "utf8"),
-      };
-    }),
-    qualitySummary: input.releaseGate.qualitySummary,
+    artifacts: [...itemArtifacts.values(), ...evidenceArtifacts]
+      .sort((left, right) => left.path.localeCompare(right.path, "en-US"))
+      .map((artifact) => manifestArtifactRecord(artifact, input.registry.origin)),
+    qualitySummary: evidencePointer(input.releaseGate.qualitySummary),
   } as const;
   const manifest = {
     ...unsignedManifest,
@@ -739,12 +886,50 @@ export function buildStableReleaseProtocolBundle(
     );
   });
 
-  const jsonArtifacts = [
+  const releaseSnapshotArtifacts = [
     catalogArtifact,
+    searchIndexArtifact,
     manifestArtifact,
     ...itemArtifacts.values(),
     ...latestArtifacts,
+    ...evidenceArtifacts,
   ].sort((left, right) => left.path.localeCompare(right.path, "en-US"));
+  const mirrorArtifact = makeArtifact(
+    `r/v1/releases/${input.uiVersion}/mirror-manifest.json`,
+    canonicalJsonFile({
+      schemaVersion: 1,
+      artifactKind: "mergora-release-mirror-manifest",
+      registryId: input.registry.id,
+      uiVersion: input.uiVersion,
+      canonicalOrigin: input.registry.origin,
+      artifacts: releaseSnapshotArtifacts.map(({ path, digest }) => ({
+        path,
+        url: artifactUrl(input.registry.origin, path),
+        digest,
+      })),
+    }),
+    false,
+    "application/json; charset=utf-8",
+  );
+  const bundledArtifacts = [...releaseSnapshotArtifacts, mirrorArtifact].sort((left, right) =>
+    left.path.localeCompare(right.path, "en-US"),
+  );
+  const releaseBundleArtifact = makeArtifact(
+    `r/v1/releases/${input.uiVersion}/release-bundle.json`,
+    canonicalJsonFile({
+      schemaVersion: 1,
+      artifactKind: "mergora-static-release-bundle",
+      registryId: input.registry.id,
+      uiVersion: input.uiVersion,
+      files: bundledArtifacts.map(({ path, digest, content }) => ({ path, digest, content })),
+      sha256sums: checksumContent(bundledArtifacts),
+    }),
+    false,
+    "application/json; charset=utf-8",
+  );
+  const jsonArtifacts = [...bundledArtifacts, releaseBundleArtifact].sort((left, right) =>
+    left.path.localeCompare(right.path, "en-US"),
+  );
   const checksumArtifact = makeArtifact(
     `r/v1/releases/${input.uiVersion}/SHA256SUMS`,
     checksumContent(jsonArtifacts),
@@ -789,7 +974,9 @@ export function verifyStableReleaseProtocolBundle(
       fail(`artifact ${artifact.path} is missing the public-read CORS or nosniff policy.`);
     }
     const shouldBeMutable =
-      artifact.path === "r/v1/catalog.json" || /\/items\/[^/]+\/latest\.json$/u.test(artifact.path);
+      artifact.path === "r/v1/catalog.json" ||
+      artifact.path === "r/v1/search-index.json" ||
+      /\/items\/[^/]+\/latest\.json$/u.test(artifact.path);
     if (artifact.mutable !== shouldBeMutable) {
       fail(`artifact ${artifact.path} has an incorrect mutability classification.`);
     }
@@ -845,6 +1032,19 @@ export function verifyStableReleaseProtocolBundle(
       }
     } else if (/\/items\/[^/]+\/latest\.json$/u.test(artifact.path)) {
       validationFailure("latest-alias", document, validate);
+    } else if (
+      artifact.path === "r/v1/search-index.json" ||
+      /^r\/v1\/schemas\/[a-z0-9][a-z0-9.-]*\.json$/u.test(artifact.path) ||
+      /^r\/v1\/(?:passports|contracts)\/[0-9]+\.[0-9]+\.[0-9]+\/[a-z0-9-]+\.json$/u.test(
+        artifact.path,
+      ) ||
+      new RegExp(
+        `^r/v1/releases/${bundle.uiVersion.replaceAll(".", "\\.")}/(?:quality|consumers|sbom|mirror-manifest|release-bundle)\\.json$`,
+        "u",
+      ).test(artifact.path)
+    ) {
+      // Supplemental release artifacts are still required to be canonical JSON and
+      // are verified against manifest/bundle references below.
     } else {
       fail(`bundle contains unrecognized JSON artifact ${artifact.path}.`);
     }
@@ -955,6 +1155,37 @@ export function verifyStableReleaseProtocolBundle(
     ) {
       fail(`item ${id} has inconsistent catalog or manifest payload provenance.`);
     }
+    for (const evidenceKind of ["passport", "contract"] as const) {
+      const reference = (manifestRow as Record<string, unknown>)[evidenceKind];
+      const identity = itemDocument[evidenceKind];
+      if (
+        reference === null ||
+        typeof reference !== "object" ||
+        Array.isArray(reference) ||
+        identity === null ||
+        typeof identity !== "object" ||
+        Array.isArray(identity)
+      ) {
+        fail(`item ${id} has no ${evidenceKind} evidence binding.`);
+      }
+      const record = reference as Record<string, unknown>;
+      const artifactUrlValue = record.artifact;
+      const evidenceIdentity = identity as Record<string, unknown>;
+      if (typeof artifactUrlValue !== "string" || !artifactUrlValue.startsWith(`${origin}/`)) {
+        fail(`item ${id} ${evidenceKind} artifact is outside the canonical origin.`);
+      }
+      const evidenceArtifact = byPath.get(
+        artifactUrlValue.slice(`${origin}/`.length).toLocaleLowerCase("en-US"),
+      );
+      if (
+        evidenceArtifact === undefined ||
+        evidenceArtifact.digest !== record.digest ||
+        record.id !== evidenceIdentity.id ||
+        (links as Record<string, unknown>)[evidenceKind] !== artifactUrlValue
+      ) {
+        fail(`item ${id} ${evidenceKind} evidence bytes or identity are inconsistent.`);
+      }
+    }
     const latestPath = `r/v1/items/${id}/latest.json`;
     const latestArtifact = byPath.get(latestPath.toLocaleLowerCase("en-US"));
     const latest = parsed.get(latestPath);
@@ -988,5 +1219,115 @@ export function verifyStableReleaseProtocolBundle(
     JSON.stringify(Object.keys(manifestById).sort()) !== JSON.stringify(expectedIds)
   ) {
     fail("catalog, manifest, item payload, and latest-alias item sets disagree.");
+  }
+
+  const search = parsed.get("r/v1/search-index.json");
+  const expectedSearchItems = catalogItems.map((row) => {
+    const item = row as Record<string, unknown>;
+    return {
+      id: item.id,
+      aliases: item.aliases,
+      displayName: item.displayName,
+      description: item.description,
+      kind: item.kind,
+      category: item.category,
+      tags: item.tags,
+      keywords: item.keywords,
+      maturity: item.maturity,
+    };
+  });
+  if (
+    search === undefined ||
+    search.schemaVersion !== 1 ||
+    search.protocolVersion !== "mergora-v1" ||
+    search.registryId !== bundle.registryId ||
+    search.uiVersion !== bundle.uiVersion ||
+    search.dependencyGraphDigest !== bundle.dependencyGraphDigest ||
+    !Array.isArray(search.items) ||
+    canonicalJsonFile(search.items) !== canonicalJsonFile(expectedSearchItems)
+  ) {
+    fail("search index is missing or disagrees with the exact canonical catalog projection.");
+  }
+
+  if (!Array.isArray(manifest.artifacts)) {
+    fail("release manifest has no artifact inventory.");
+  }
+  const manifestPaths = new Set<string>();
+  for (const rawReference of manifest.artifacts) {
+    if (rawReference === null || typeof rawReference !== "object" || Array.isArray(rawReference)) {
+      fail("release manifest contains a non-object artifact reference.");
+    }
+    const reference = rawReference as Record<string, unknown>;
+    if (typeof reference.url !== "string" || !reference.url.startsWith(`${origin}/`)) {
+      fail("release manifest artifact URL is outside the canonical origin.");
+    }
+    const path = reference.url.slice(`${origin}/`.length);
+    const artifact = byPath.get(path.toLocaleLowerCase("en-US"));
+    if (
+      artifact === undefined ||
+      artifact.digest !== reference.digest ||
+      reference.bytes !== Buffer.byteLength(artifact.content, "utf8") ||
+      reference.mediaType !== "application/json" ||
+      reference.name !== path ||
+      manifestPaths.has(path)
+    ) {
+      fail(`release manifest artifact ${path} is missing, duplicated, or inconsistent.`);
+    }
+    manifestPaths.add(path);
+  }
+  const expectedManifestPaths = nonChecksum
+    .filter(
+      ({ path }) =>
+        /\/releases\/[^/]+\/items\/[^/]+\.json$/u.test(path) ||
+        /^r\/v1\/schemas\//u.test(path) ||
+        /^r\/v1\/(?:passports|contracts)\//u.test(path) ||
+        /\/releases\/[^/]+\/(?:quality|consumers|sbom)\.json$/u.test(path),
+    )
+    .map(({ path }) => path)
+    .sort();
+  if (JSON.stringify([...manifestPaths].sort()) !== JSON.stringify(expectedManifestPaths)) {
+    fail("release manifest does not exactly inventory payload, schema, evidence, and SBOM bytes.");
+  }
+
+  const mirrorPath = `r/v1/releases/${bundle.uiVersion}/mirror-manifest.json`;
+  const mirror = parsed.get(mirrorPath);
+  const mirrorSources = nonChecksum
+    .filter(({ path }) => path !== mirrorPath && !path.endsWith("/release-bundle.json"))
+    .sort((left, right) => left.path.localeCompare(right.path, "en-US"));
+  const expectedMirrorArtifacts = mirrorSources.map(({ path, digest }) => ({
+    path,
+    url: artifactUrl(origin, path),
+    digest,
+  }));
+  if (
+    mirror === undefined ||
+    mirror.artifactKind !== "mergora-release-mirror-manifest" ||
+    mirror.registryId !== bundle.registryId ||
+    mirror.uiVersion !== bundle.uiVersion ||
+    mirror.canonicalOrigin !== origin
+  ) {
+    fail("mirror manifest identity does not match the canonical release.");
+  }
+  if (canonicalJsonFile(mirror.artifacts) !== canonicalJsonFile(expectedMirrorArtifacts)) {
+    fail("mirror manifest does not exactly inventory the canonical release snapshot.");
+  }
+
+  const releaseBundlePath = `r/v1/releases/${bundle.uiVersion}/release-bundle.json`;
+  const releaseBundle = parsed.get(releaseBundlePath);
+  const bundledSources = nonChecksum
+    .filter(({ path }) => path !== releaseBundlePath)
+    .sort((left, right) => left.path.localeCompare(right.path, "en-US"));
+  if (
+    releaseBundle === undefined ||
+    releaseBundle.artifactKind !== "mergora-static-release-bundle" ||
+    releaseBundle.registryId !== bundle.registryId ||
+    releaseBundle.uiVersion !== bundle.uiVersion ||
+    canonicalJsonFile(releaseBundle.files) !==
+      canonicalJsonFile(
+        bundledSources.map(({ path, digest, content }) => ({ path, digest, content })),
+      ) ||
+    releaseBundle.sha256sums !== checksumContent(bundledSources)
+  ) {
+    fail("static release bundle does not exactly reproduce the mirrored release bytes.");
   }
 }

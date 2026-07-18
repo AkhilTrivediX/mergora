@@ -25,10 +25,16 @@ const validate: ReleaseProtocolValidator = (kind, value) => {
 };
 
 function evidence(id: string, path: string): ReleaseEvidenceReference {
+  const content = canonicalJsonFile({
+    schemaVersion: 1,
+    artifactKind: "synthetic-release-evidence-fixture",
+    id,
+  });
   return {
     id,
     artifact: `${ORIGIN}/${path}`,
-    digest: releaseArtifactDigest(`${id}-reviewed-fixture`),
+    digest: releaseArtifactDigest(content),
+    content,
   };
 }
 
@@ -125,6 +131,8 @@ function releaseInput(
       state: "pass",
       evidence: evidence("packed-consumers", `r/v1/releases/${VERSION}/consumers.json`),
     },
+    schemas: [evidence("catalog-schema", "r/v1/schemas/catalog-v1.schema.json")],
+    sbom: evidence("release-sbom", `r/v1/releases/${VERSION}/sbom.json`),
     items,
   };
 }
@@ -138,19 +146,27 @@ describe("native registry release protocol v1", () => {
     );
 
     expect(second).toEqual(first);
-    expect(first.artifacts.map((artifact) => artifact.path)).toEqual([
-      "r/v1/catalog.json",
-      "r/v1/items/button/latest.json",
-      "r/v1/items/dialog/latest.json",
-      "r/v1/releases/1.0.0/items/button.json",
-      "r/v1/releases/1.0.0/items/dialog.json",
-      "r/v1/releases/1.0.0/manifest.json",
-      "r/v1/releases/1.0.0/SHA256SUMS",
-    ]);
+    expect(first.artifacts.map((artifact) => artifact.path)).toEqual(
+      expect.arrayContaining([
+        "r/v1/catalog.json",
+        "r/v1/search-index.json",
+        "r/v1/schemas/catalog-v1.schema.json",
+        "r/v1/contracts/1.0.0/button.json",
+        "r/v1/passports/1.0.0/button.json",
+        "r/v1/items/button/latest.json",
+        "r/v1/releases/1.0.0/items/button.json",
+        "r/v1/releases/1.0.0/manifest.json",
+        "r/v1/releases/1.0.0/mirror-manifest.json",
+        "r/v1/releases/1.0.0/release-bundle.json",
+        "r/v1/releases/1.0.0/sbom.json",
+        "r/v1/releases/1.0.0/SHA256SUMS",
+      ]),
+    );
     expect(first.artifacts.filter((artifact) => artifact.mutable).map(({ path }) => path)).toEqual([
       "r/v1/catalog.json",
       "r/v1/items/button/latest.json",
       "r/v1/items/dialog/latest.json",
+      "r/v1/search-index.json",
     ]);
     expect(
       first.artifacts
@@ -194,6 +210,7 @@ describe("native registry release protocol v1", () => {
     const manifest = json.get("r/v1/releases/1.0.0/manifest.json") as {
       dependencyGraphDigest: string;
       items: Record<string, { payload: { artifact: string; digest: string } }>;
+      artifacts: { name: string; url: string; digest: string; bytes: number }[];
     };
     const catalog = json.get("r/v1/catalog.json") as {
       dependencyGraphDigest: string;
@@ -218,6 +235,26 @@ describe("native registry release protocol v1", () => {
     expect(catalog.items.find(({ id }) => id === "dialog")?.registryDependencies).toEqual([
       "mergora:button",
     ]);
+    expect(manifest.artifacts.map(({ name }) => name)).toEqual([
+      "r/v1/contracts/1.0.0/button.json",
+      "r/v1/contracts/1.0.0/dialog.json",
+      "r/v1/passports/1.0.0/button.json",
+      "r/v1/passports/1.0.0/dialog.json",
+      "r/v1/releases/1.0.0/consumers.json",
+      "r/v1/releases/1.0.0/items/button.json",
+      "r/v1/releases/1.0.0/items/dialog.json",
+      "r/v1/releases/1.0.0/quality.json",
+      "r/v1/releases/1.0.0/sbom.json",
+      "r/v1/schemas/catalog-v1.schema.json",
+    ]);
+    for (const reference of manifest.artifacts) {
+      const artifact = bundle.artifacts.find(({ path }) => path === reference.name)!;
+      expect(reference).toMatchObject({
+        url: `${ORIGIN}/${reference.name}`,
+        digest: artifact.digest,
+        bytes: Buffer.byteLength(artifact.content, "utf8"),
+      });
+    }
   });
 
   it("fails closed on unverified bytes, identities, evidence, aliases, and graphs", () => {
@@ -293,6 +330,95 @@ describe("native registry release protocol v1", () => {
         validate,
       ),
     ).toThrow(/last-changed version cannot be newer/u);
+
+    const mismatchedEvidence = releaseInput([item("button")]);
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...mismatchedEvidence,
+          sbom: { ...mismatchedEvidence.sbom, content: canonicalJsonFile({ tampered: true }) },
+        },
+        validate,
+      ),
+    ).toThrow(/content must be canonical release bytes matching its digest/u);
+  });
+
+  it("rejects coherently rehashed mirror and static-bundle omissions", () => {
+    const rewriteJsonArtifact = (
+      bundle: StableReleaseProtocolBundle,
+      path: string,
+      transform: (document: Record<string, unknown>) => Record<string, unknown>,
+    ): StableReleaseProtocolBundle => {
+      const checksumPath = `r/v1/releases/${VERSION}/SHA256SUMS`;
+      const rewritten = bundle.artifacts
+        .filter(({ path: artifactPath }) => artifactPath !== checksumPath)
+        .map((artifact) => {
+          if (artifact.path !== path) return artifact;
+          const content = canonicalJsonFile(
+            transform(JSON.parse(artifact.content) as Record<string, unknown>),
+          );
+          const digest = releaseArtifactDigest(content);
+          return {
+            ...artifact,
+            content,
+            digest,
+            headers: { ...artifact.headers, etag: `"${digest.slice("sha256:".length)}"` },
+          };
+        });
+      const originalChecksum = bundle.artifacts.find(
+        ({ path: artifactPath }) => artifactPath === checksumPath,
+      )!;
+      const checksumContent = rewritten
+        .toSorted((left, right) => left.path.localeCompare(right.path, "en-US"))
+        .map((artifact) => `${artifact.digest.slice("sha256:".length)}  ${artifact.path}`)
+        .join("\n")
+        .concat("\n");
+      const checksumDigest = releaseArtifactDigest(checksumContent);
+      return {
+        ...bundle,
+        artifacts: [
+          ...rewritten,
+          {
+            ...originalChecksum,
+            content: checksumContent,
+            digest: checksumDigest,
+            headers: {
+              ...originalChecksum.headers,
+              etag: `"${checksumDigest.slice("sha256:".length)}"`,
+            },
+          },
+        ].toSorted((left, right) => left.path.localeCompare(right.path, "en-US")),
+      };
+    };
+
+    const bundle = buildStableReleaseProtocolBundle(releaseInput(), validate);
+    const badSearch = rewriteJsonArtifact(bundle, "r/v1/search-index.json", (document) => ({
+      ...document,
+      items: (document.items as Record<string, unknown>[]).map((row, index) =>
+        index === 0 ? { ...row, displayName: "tampered search label" } : row,
+      ),
+    }));
+    expect(() => verifyStableReleaseProtocolBundle(badSearch, validate)).toThrow(
+      /exact canonical catalog projection/u,
+    );
+
+    const mirrorPath = `r/v1/releases/${VERSION}/mirror-manifest.json`;
+    const badMirror = rewriteJsonArtifact(bundle, mirrorPath, (document) => ({
+      ...document,
+      artifacts: (document.artifacts as unknown[]).slice(1),
+    }));
+    expect(() => verifyStableReleaseProtocolBundle(badMirror, validate)).toThrow(
+      /mirror manifest does not exactly inventory/u,
+    );
+
+    const releaseBundlePath = `r/v1/releases/${VERSION}/release-bundle.json`;
+    const badReleaseBundle = rewriteJsonArtifact(bundle, releaseBundlePath, (document) => ({
+      ...document,
+      files: (document.files as unknown[]).slice(1),
+    }));
+    expect(() => verifyStableReleaseProtocolBundle(badReleaseBundle, validate)).toThrow(
+      /static release bundle does not exactly reproduce/u,
+    );
   });
 
   it("detects post-generation artifact and checksum tampering", () => {

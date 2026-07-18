@@ -44,10 +44,11 @@
   },
   "dependencies": {
     "mergora-contracts": "workspace:*",
-    "mergora-registry": "workspace:*"
+    "mergora-registry": "workspace:*",
+    "postcss": "catalog:",
+    "typescript": "catalog:"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "typescript": "catalog:"
+    "@types/node": "catalog:"
   }
 }

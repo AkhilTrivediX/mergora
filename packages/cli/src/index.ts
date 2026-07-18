@@ -154,6 +154,24 @@ export {
 } from "./vendor.js";
 
 export {
+  acquireImmutableArtifact,
+  type AcquireImmutableArtifactOptions,
+  type AcquiredImmutableArtifact,
+  type AcquisitionAttempt,
+  type AcquisitionDigest,
+  type AcquisitionRegistryIdentity,
+  type AcquisitionSource,
+  type AcquisitionTransport,
+  type AcquisitionTransportRequest,
+  type AcquisitionTransportResponse,
+  type AcquisitionTrust,
+  type AcquisitionValidationContext,
+  type AcquisitionValidator,
+  type AcquisitionVendorReader,
+  type ImmutableArtifactRequest,
+} from "./acquisition.js";
+
+export {
   applySemanticResolution,
   applySemanticResolveChoice,
   applySemanticUpdate,

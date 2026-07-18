@@ -21,55 +21,58 @@
     "status": {
       "enum": [
         "success",
-        "no-op",
+        "created",
         "planned",
+        "applied",
+        "no-op",
+        "differences",
+        "no-differences",
+        "fix-planned",
+        "healthy",
+        "issues-found",
+        "pass",
+        "fail",
+        "incomplete",
+        "not-applicable",
         "conflict",
+        "conflicted",
+        "resolved",
+        "committed",
+        "rolled-back",
+        "recorded",
+        "manual-only",
+        "transaction",
+        "report",
+        "cleaned",
+        "match",
+        "mismatch",
+        "not-pinned",
+        "not-checked",
+        "verified",
+        "identity-mismatch",
+        "valid",
+        "rollback-planned",
+        "resume-planned",
+        "finalize-planned",
         "invalid",
         "unavailable",
         "incompatible",
         "recovery-required",
         "failed",
-        "consent-required"
+        "consent-required",
+        "error"
       ]
     },
     "exitCode": { "type": "integer", "minimum": 0, "maximum": 12 },
     "result": {
-      "oneOf": [
-        { "type": "null" },
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "summary": { "type": "string", "maxLength": 4096 },
-            "plan": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
-            "planDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
-            "transactionId": {
-              "type": "string",
-              "pattern": "^[0-9]{8}T[0-9]{6}(?:\\.[0-9]{3})?Z-[0-9a-f]{32}$"
-            },
-            "hasDifferences": { "type": "boolean" },
-            "items": {
-              "type": "array",
-              "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
-              "uniqueItems": true,
-              "maxItems": 4096
-            }
-          }
-        }
-      ]
+      "type": ["object", "array", "string", "number", "boolean", "null"]
     },
     "warnings": {
       "type": "array",
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["code", "message"],
-        "properties": {
-          "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$", "maxLength": 120 },
-          "message": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
-          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
-          "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
-        }
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096
       },
       "maxItems": 256
     },
@@ -82,11 +85,38 @@
         "properties": {
           "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$", "maxLength": 120 },
           "message": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "recovery": { "type": "string", "minLength": 1, "maxLength": 4096 },
           "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
-          "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+          "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+          "transactionId": {
+            "type": "string",
+            "pattern": "^[0-9]{8}T[0-9]{6}(?:\\.[0-9]{3})?Z-[0-9a-f]{32}$"
+          },
+          "reportId": { "type": "string", "pattern": "^report-[0-9a-f]{16}$" }
         }
       },
       "maxItems": 256
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "ok": { "const": true } }, "required": ["ok"] },
+      "then": {
+        "properties": {
+          "exitCode": { "const": 0 },
+          "errors": { "maxItems": 0 }
+        }
+      },
+      "else": { "properties": { "exitCode": { "minimum": 1 } } }
+    },
+    {
+      "if": { "properties": { "status": { "const": "error" } }, "required": ["status"] },
+      "then": {
+        "properties": {
+          "ok": { "const": false },
+          "errors": { "minItems": 1 }
+        }
+      }
+    }
+  ]
 }

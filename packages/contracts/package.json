@@ -8,6 +8,7 @@
   "exports": {
     ".": {
       "types": "./src/index.ts",
+      "development": "./src/index.ts",
       "import": "./dist/index.js"
     },
     "./schemas/executable-contract-v1.json": "./schemas/executable-contract-v1.schema.json",

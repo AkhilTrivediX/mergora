@@ -288,13 +288,16 @@ importers:
       mergora-registry:
         specifier: workspace:*
         version: link:../registry
+      postcss:
+        specifier: 'catalog:'
+        version: 8.5.19
+      typescript:
+        specifier: 'catalog:'
+        version: 6.0.3
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
 
   packages/contracts:
     devDependencies:

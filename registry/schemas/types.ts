@@ -635,36 +635,65 @@ export interface VendorManifestV1 {
 
 export interface ResultMessage {
   readonly code: string;
-  readonly message: string;
-  readonly target?: ProjectRelativePath;
   readonly docs?: string;
+  readonly message: string;
+  readonly recovery?: string;
+  readonly reportId?: string;
+  readonly target?: ProjectRelativePath;
+  readonly transactionId?: string;
 }
+
+export type ResultEnvelopeStatus =
+  | "success"
+  | "created"
+  | "planned"
+  | "applied"
+  | "no-op"
+  | "differences"
+  | "no-differences"
+  | "fix-planned"
+  | "healthy"
+  | "issues-found"
+  | "pass"
+  | "fail"
+  | "incomplete"
+  | "not-applicable"
+  | "conflict"
+  | "conflicted"
+  | "resolved"
+  | "committed"
+  | "rolled-back"
+  | "recorded"
+  | "manual-only"
+  | "transaction"
+  | "report"
+  | "cleaned"
+  | "match"
+  | "mismatch"
+  | "not-pinned"
+  | "not-checked"
+  | "verified"
+  | "identity-mismatch"
+  | "valid"
+  | "rollback-planned"
+  | "resume-planned"
+  | "finalize-planned"
+  | "invalid"
+  | "unavailable"
+  | "incompatible"
+  | "recovery-required"
+  | "failed"
+  | "consent-required"
+  | "error";
 
 export interface ResultEnvelopeV1 {
   readonly schemaVersion: 1;
   readonly command: string;
   readonly ok: boolean;
-  readonly status:
-    | "success"
-    | "no-op"
-    | "planned"
-    | "conflict"
-    | "invalid"
-    | "unavailable"
-    | "incompatible"
-    | "recovery-required"
-    | "failed"
-    | "consent-required";
+  readonly status: ResultEnvelopeStatus;
   readonly exitCode: number;
-  readonly result: {
-    readonly summary?: string;
-    readonly plan?: ProjectRelativePath;
-    readonly planDigest?: Sha256;
-    readonly transactionId?: string;
-    readonly hasDifferences?: boolean;
-    readonly items?: readonly QualifiedItemId[];
-  } | null;
-  readonly warnings: readonly ResultMessage[];
+  readonly result: JsonValue;
+  readonly warnings: readonly string[];
   readonly errors: readonly ResultMessage[];
 }
 

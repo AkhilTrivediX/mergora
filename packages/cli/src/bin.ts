@@ -1,5 +1,21 @@
 #!/usr/bin/env node
 
+import {
+  allowedCliFlags,
+  cliFlagKind,
+  isCliCommand,
+  isJsonResultStatus,
+  type CliCommand,
+  type CliFlag,
+} from "./command-contract.js";
+
+class CommandUsageError extends Error {
+  public constructor(message: string) {
+    super(message);
+    this.name = "CommandUsageError";
+  }
+}
+
 const HELP = `Mergora CLI
 
 Usage:
@@ -33,16 +49,20 @@ Transactional source commands:
 
 Common options:
   --cwd <path>         Explicit project root candidate (--root remains an add alias)
+  --config <path>      Explicit project-relative config (currently mergora.json)
+  --registry <id>      Select a registry where supported (currently official)
   --json               Emit one versioned JSON result envelope
   --dry-run            Resolve and emit the exact plan without writing
   --plan               Alias for a read-only exact plan
   --yes                Accept an ordinary conflict-free exact plan
   --non-interactive    Never prompt; missing consent fails safely
+  --offline            Forbid network access and require verified local evidence
+  --no-install         Skip package-manager invocation and report required work
   --package-manager <npm|pnpm|yarn|bun>
   --color <always|auto|never>  Human output only; no ANSI is emitted today
+  --verbose            Add redacted decision context without changing behavior
 
-Run "mergora <command> --help" for command options. Three-way updates and
-conflict resolution remain separate Semantic Sync work.`;
+Run "mergora <command> --help" for the exact supported option subset.`;
 
 const COMMAND_HELP: Readonly<Record<string, string>> = {
   create: `Usage: mergora create <directory> --template <next|vite>
@@ -160,83 +180,10 @@ never candidates; apply requires consent and preserves an append-only local jour
 };
 
 interface ParsedArguments {
-  readonly command: string;
+  readonly command: CliCommand;
   readonly positionals: readonly string[];
-  readonly flags: ReadonlyMap<string, readonly string[]>;
+  readonly flags: ReadonlyMap<CliFlag, readonly string[]>;
 }
-
-const VALUE_FLAGS = new Set([
-  "alias-prefix",
-  "accept-registry-identity",
-  "acknowledge",
-  "auth-env",
-  "category",
-  "color",
-  "config",
-  "cwd",
-  "format",
-  "framework",
-  "global-css",
-  "kind",
-  "limit",
-  "maturity",
-  "package-manager",
-  "preset",
-  "protocol",
-  "release-file",
-  "retain-transactions",
-  "registry",
-  "root",
-  "source",
-  "source-root",
-  "strategy",
-  "tag",
-  "target",
-  "template",
-  "take-local",
-  "take-upstream",
-  "resolved",
-  "reset",
-  "to",
-  "transaction",
-]);
-
-const BOOLEAN_FLAGS = new Set([
-  "a11y",
-  "all",
-  "all-installed",
-  "allow-insecure-localhost",
-  "allow-prerelease",
-  "apply",
-  "browser",
-  "bases",
-  "cache",
-  "changed",
-  "conflicts",
-  "dry-run",
-  "files",
-  "fix",
-  "help",
-  "json",
-  "keep-files",
-  "keyboard",
-  "last",
-  "list",
-  "local",
-  "name-only",
-  "no-install",
-  "non-interactive",
-  "offline",
-  "open",
-  "plan",
-  "responsive",
-  "static",
-  "stat",
-  "upstream",
-  "transactions",
-  "verbose",
-  "yes",
-]);
 
 function normalizeArguments(arguments_: readonly string[]): readonly string[] {
   const result: string[] = [];
@@ -254,7 +201,7 @@ function parseArguments(arguments_: readonly string[]): ParsedArguments {
   let command: string | undefined;
   let positionalOnly = false;
   const positionals: string[] = [];
-  const flags = new Map<string, string[]>();
+  const flags = new Map<CliFlag, string[]>();
   for (let index = 0; index < normalized.length; index += 1) {
     const argument = normalized[index]!;
     if (!positionalOnly && argument === "--") {
@@ -269,54 +216,61 @@ function parseArguments(arguments_: readonly string[]): ParsedArguments {
     }
     if (!positionalOnly && argument.startsWith("--")) {
       const name = argument.slice(2);
-      if (BOOLEAN_FLAGS.has(name)) {
-        const values = flags.get(name) ?? [];
+      const kind = cliFlagKind(name);
+      const flag = name as CliFlag;
+      if (kind === "boolean") {
+        const values = flags.get(flag) ?? [];
         values.push("true");
-        flags.set(name, values);
-      } else if (VALUE_FLAGS.has(name)) {
+        flags.set(flag, values);
+      } else if (kind === "value") {
         const value = normalized[index + 1];
         if (value === undefined || value.startsWith("--")) {
-          throw new Error(`--${name} requires a value.`);
+          throw new CommandUsageError(`--${name} requires a value.`);
         }
-        const values = flags.get(name) ?? [];
+        const values = flags.get(flag) ?? [];
         values.push(value);
-        flags.set(name, values);
+        flags.set(flag, values);
         index += 1;
-      } else throw new Error(`Unknown option ${JSON.stringify(argument)}.`);
+      } else throw new CommandUsageError(`Unknown option ${JSON.stringify(argument)}.`);
       continue;
     }
     if (!positionalOnly && argument.startsWith("-") && argument !== "-") {
       if (argument === "-v") {
-        if (command !== undefined) throw new Error("-v must be used without a command.");
+        if (command !== undefined)
+          throw new CommandUsageError("-v must be used without a command.");
         command = "--version";
-      } else throw new Error(`Unknown short option ${JSON.stringify(argument)}.`);
+      } else throw new CommandUsageError(`Unknown short option ${JSON.stringify(argument)}.`);
       continue;
     }
     if (command === undefined) command = argument;
     else positionals.push(argument);
   }
-  return { command: command ?? "help", positionals, flags };
+  if (command === undefined) throw new CommandUsageError("A command is required.");
+  if (!isCliCommand(command))
+    throw new CommandUsageError(`Unknown command ${JSON.stringify(command)}.`);
+  return { command, positionals, flags };
 }
 
-function hasFlag(parsed: ParsedArguments, name: string): boolean {
+function hasFlag(parsed: ParsedArguments, name: CliFlag): boolean {
   return parsed.flags.has(name);
 }
 
-function flagValue(parsed: ParsedArguments, name: string): string | undefined {
+function flagValue(parsed: ParsedArguments, name: CliFlag): string | undefined {
   const values = parsed.flags.get(name);
   if (values !== undefined && values.length > 1)
-    throw new Error(`--${name} may be provided only once.`);
+    throw new CommandUsageError(`--${name} may be provided only once.`);
   return values?.[0];
 }
 
-function flagValues(parsed: ParsedArguments, name: string): readonly string[] {
+function flagValues(parsed: ParsedArguments, name: CliFlag): readonly string[] {
   return parsed.flags.get(name) ?? [];
 }
 
-function assertAllowedFlags(parsed: ParsedArguments, allowed: readonly string[]): void {
+function assertAllowedFlags(parsed: ParsedArguments, allowed: readonly CliFlag[]): void {
   const set = new Set(allowed);
   for (const name of parsed.flags.keys()) {
-    if (!set.has(name)) throw new Error(`--${name} is not valid for ${parsed.command}.`);
+    if (!set.has(name))
+      throw new CommandUsageError(`--${name} is not valid for ${parsed.command}.`);
   }
 }
 
@@ -324,15 +278,17 @@ function projectRoot(parsed: ParsedArguments): string {
   const cwd = flagValue(parsed, "cwd");
   const legacy = flagValue(parsed, "root");
   if (cwd !== undefined && legacy !== undefined && cwd !== legacy) {
-    throw new Error("--cwd and --root must not select different project roots.");
+    throw new CommandUsageError("--cwd and --root must not select different project roots.");
   }
   const config = flagValue(parsed, "config");
   if (config !== undefined && config !== "mergora.json") {
-    throw new Error("This tranche accepts only the project-relative --config mergora.json.");
+    throw new CommandUsageError(
+      "This tranche accepts only the project-relative --config mergora.json.",
+    );
   }
   const registry = flagValue(parsed, "registry");
   if (registry !== undefined && registry !== "official") {
-    throw new Error("Only the compiled official registry is enrolled in this tranche.");
+    throw new CommandUsageError("Only the compiled official registry is enrolled in this tranche.");
   }
   return cwd ?? legacy ?? process.cwd();
 }
@@ -340,7 +296,7 @@ function projectRoot(parsed: ParsedArguments): string {
 function parseManager(value: string | undefined): "npm" | "pnpm" | "yarn" | "bun" | undefined {
   if (value === undefined) return undefined;
   if (value !== "npm" && value !== "pnpm" && value !== "yarn" && value !== "bun") {
-    throw new Error("--package-manager must be npm, pnpm, yarn, or bun.");
+    throw new CommandUsageError("--package-manager must be npm, pnpm, yarn, or bun.");
   }
   return value;
 }
@@ -355,7 +311,7 @@ function parseFramework(
     value !== "vite-react" &&
     value !== "react"
   ) {
-    throw new Error("--framework must be next-app, next-pages, vite-react, or react.");
+    throw new CommandUsageError("--framework must be next-app, next-pages, vite-react, or react.");
   }
   return value;
 }
@@ -363,7 +319,7 @@ function parseFramework(
 function colorMode(parsed: ParsedArguments): void {
   const value = flagValue(parsed, "color");
   if (value !== undefined && value !== "always" && value !== "auto" && value !== "never") {
-    throw new Error("--color must be always, auto, or never.");
+    throw new CommandUsageError("--color must be always, auto, or never.");
   }
 }
 
@@ -405,20 +361,22 @@ async function acceptedRegistryIdentity(
 
 async function requiredCreateChoice<T extends string>(
   parsed: ParsedArguments,
-  flag: string,
+  flag: CliFlag,
   choices: readonly T[],
 ): Promise<T> {
   const supplied = flagValue(parsed, flag);
   if (supplied !== undefined) {
     if (!choices.includes(supplied as T)) {
-      throw new Error(`--${flag} must be one of ${choices.join(", ")}.`);
+      throw new CommandUsageError(`--${flag} must be one of ${choices.join(", ")}.`);
     }
     return supplied as T;
   }
   const nonInteractive =
     hasFlag(parsed, "non-interactive") || !process.stdin.isTTY || process.env.CI !== undefined;
   if (nonInteractive) {
-    throw new Error(`create requires --${flag} ${choices.join("|")} in non-interactive use.`);
+    throw new CommandUsageError(
+      `create requires --${flag} ${choices.join("|")} in non-interactive use.`,
+    );
   }
   const { createInterface } = await import("node:readline/promises");
   const prompt = createInterface({ input: process.stdin, output: process.stderr });
@@ -426,7 +384,7 @@ async function requiredCreateChoice<T extends string>(
     const answer = await prompt.question(`Select ${flag} (${choices.join("/")}) [${choices[0]}]: `);
     const selected = (answer.trim() === "" ? choices[0] : answer.trim()) as T;
     if (!choices.includes(selected)) {
-      throw new Error(`${flag} must be one of ${choices.join(", ")}.`);
+      throw new CommandUsageError(`${flag} must be one of ${choices.join(", ")}.`);
     }
     return selected;
   } finally {
@@ -475,7 +433,7 @@ function recoveryStrategy(parsed: ParsedArguments): "auto" | "rollback" | "resum
   const value = flagValue(parsed, "strategy");
   if (value === undefined) return undefined;
   if (value !== "auto" && value !== "rollback" && value !== "resume") {
-    throw new Error("--strategy must be auto, rollback, or resume.");
+    throw new CommandUsageError("--strategy must be auto, rollback, or resume.");
   }
   return value;
 }
@@ -483,7 +441,7 @@ function recoveryStrategy(parsed: ParsedArguments): "auto" | "rollback" | "resum
 function registryProtocol(value: string | undefined): "mergora-v1" | "shadcn-v1" | undefined {
   if (value === undefined) return undefined;
   if (value !== "mergora-v1" && value !== "shadcn-v1") {
-    throw new Error("--protocol must be mergora-v1 or shadcn-v1.");
+    throw new CommandUsageError("--protocol must be mergora-v1 or shadcn-v1.");
   }
   return value;
 }
@@ -491,14 +449,14 @@ function registryProtocol(value: string | undefined): "mergora-v1" | "shadcn-v1"
 function immutableRelease(parsed: ParsedArguments, root: string, api: Api) {
   const releaseFile = flagValue(parsed, "release-file");
   if (releaseFile === undefined) {
-    throw new Error(
+    throw new CommandUsageError(
       `${parsed.command} requires --release-file with an explicitly acquired immutable release snapshot.`,
     );
   }
   const release = api.readImmutableUpdateRelease(root, releaseFile);
   const target = flagValue(parsed, "to");
   if (target !== undefined && target !== release.release) {
-    throw new Error("--to must exactly match the immutable release snapshot version.");
+    throw new CommandUsageError("--to must exactly match the immutable release snapshot version.");
   }
   return release;
 }
@@ -522,27 +480,21 @@ function assertConflictFree(plan: import("./transaction-engine.js").OperationPla
 }
 
 async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput> {
+  const subcommand =
+    parsed.command === "theme" || parsed.command === "registry"
+      ? parsed.positionals[0]
+      : parsed.command === "vendor"
+        ? parsed.positionals[0] === "verify"
+          ? "verify"
+          : "create"
+        : undefined;
+  assertAllowedFlags(parsed, allowedCliFlags(parsed.command, subcommand));
   colorMode(parsed);
   const root = projectRoot(parsed);
   switch (parsed.command) {
     case "create": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "no-install",
-        "non-interactive",
-        "package-manager",
-        "plan",
-        "preset",
-        "template",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length !== 1) {
-        throw new Error("create requires exactly one destination directory.");
+        throw new CommandUsageError("create requires exactly one destination directory.");
       }
       const template = await requiredCreateChoice(parsed, "template", ["next", "vite"] as const);
       const packageManager = await requiredCreateChoice(parsed, "package-manager", [
@@ -588,27 +540,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "init": {
-      assertAllowedFlags(parsed, [
-        "alias-prefix",
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "framework",
-        "global-css",
-        "help",
-        "json",
-        "non-interactive",
-        "offline",
-        "package-manager",
-        "plan",
-        "registry",
-        "source-root",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length > 0)
-        throw new Error("init does not accept positional arguments.");
+        throw new CommandUsageError("init does not accept positional arguments.");
       const options = { projectRoot: root, ...commonProjectOptions(parsed) };
       const plan = api.planInit(options);
       const readOnly = hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan");
@@ -638,20 +571,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "search": {
-      assertAllowedFlags(parsed, [
-        "category",
-        "color",
-        "help",
-        "json",
-        "kind",
-        "limit",
-        "maturity",
-        "offline",
-        "registry",
-        "tag",
-        "verbose",
-      ]);
-      if (parsed.positionals.length > 1) throw new Error("search accepts at most one query.");
+      if (parsed.positionals.length > 1)
+        throw new CommandUsageError("search accepts at most one query.");
       const limitText = flagValue(parsed, "limit");
       const result = api.searchRegistry(parsed.positionals[0] ?? "", {
         kind: flagValue(parsed, "kind"),
@@ -683,16 +604,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "view": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "files",
-        "help",
-        "json",
-        "offline",
-        "registry",
-        "source",
-        "verbose",
-      ]);
       const source = flagValue(parsed, "source");
       const result = api.viewRegistryItems(parsed.positionals, {
         files: hasFlag(parsed, "files"),
@@ -711,22 +622,11 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "docs": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "format",
-        "help",
-        "json",
-        "non-interactive",
-        "offline",
-        "open",
-        "registry",
-        "verbose",
-      ]);
       if (parsed.positionals.length !== 1)
-        throw new Error("docs requires exactly one item or topic.");
+        throw new CommandUsageError("docs requires exactly one item or topic.");
       const format = flagValue(parsed, "format") ?? "markdown";
       if (format !== "markdown" && format !== "json" && format !== "url") {
-        throw new Error("docs --format must be markdown, json, or url.");
+        throw new CommandUsageError("docs --format must be markdown, json, or url.");
       }
       const nonInteractive =
         hasFlag(parsed, "non-interactive") || !process.stdin.isTTY || process.env.CI !== undefined;
@@ -754,23 +654,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "info": {
-      assertAllowedFlags(parsed, [
-        "alias-prefix",
-        "color",
-        "config",
-        "cwd",
-        "framework",
-        "global-css",
-        "help",
-        "json",
-        "package-manager",
-        "registry",
-        "root",
-        "source-root",
-        "verbose",
-      ]);
       if (parsed.positionals.length > 0)
-        throw new Error("info does not accept positional arguments.");
+        throw new CommandUsageError("info does not accept positional arguments.");
       const result = api.projectInfo(root, commonProjectOptions(parsed));
       return {
         result,
@@ -778,9 +663,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "status": {
-      assertAllowedFlags(parsed, ["color", "config", "cwd", "help", "json", "root", "verbose"]);
       if (parsed.positionals.length > 0)
-        throw new Error("status does not accept positional arguments.");
+        throw new CommandUsageError("status does not accept positional arguments.");
       const result = api.projectStatus(root);
       if (result.manifest === "invalid") {
         throw new api.CliError("The Mergora manifest schema identity is invalid.", {
@@ -796,35 +680,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "diff": {
-      assertAllowedFlags(parsed, [
-        "all",
-        "color",
-        "config",
-        "cwd",
-        "format",
-        "help",
-        "json",
-        "local",
-        "name-only",
-        "offline",
-        "release-file",
-        "root",
-        "stat",
-        "to",
-        "upstream",
-        "verbose",
-      ]);
       if (hasFlag(parsed, "all") && parsed.positionals.length > 0) {
-        throw new Error("diff accepts either explicit items or --all, not both.");
+        throw new CommandUsageError("diff accepts either explicit items or --all, not both.");
       }
       const format = flagValue(parsed, "format");
       if (format !== undefined && !["json", "unified", "side-by-side"].includes(format)) {
-        throw new Error("diff --format must be unified, side-by-side, or json.");
+        throw new CommandUsageError("diff --format must be unified, side-by-side, or json.");
       }
       const releaseFile = flagValue(parsed, "release-file");
       const wantsUpstream = hasFlag(parsed, "upstream") || releaseFile !== undefined;
       if (hasFlag(parsed, "upstream") && releaseFile === undefined) {
-        throw new Error("diff --upstream requires --release-file.");
+        throw new CommandUsageError("diff --upstream requires --release-file.");
       }
       const result = api.diffSemanticSource({
         projectRoot: root,
@@ -841,24 +707,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "doctor": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "fix",
-        "help",
-        "json",
-        "non-interactive",
-        "offline",
-        "package-manager",
-        "plan",
-        "root",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length > 0)
-        throw new Error("doctor does not accept positional arguments.");
+        throw new CommandUsageError("doctor does not accept positional arguments.");
       if (hasFlag(parsed, "fix")) {
         const options = {
           projectRoot: root,
@@ -888,23 +738,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "audit": {
-      assertAllowedFlags(parsed, [
-        "a11y",
-        "all",
-        "browser",
-        "changed",
-        "color",
-        "config",
-        "cwd",
-        "help",
-        "json",
-        "keyboard",
-        "offline",
-        "responsive",
-        "root",
-        "static",
-        "verbose",
-      ]);
       const allModes = ["static", "browser", "a11y", "keyboard", "responsive"] as const;
       const selectedModes = hasFlag(parsed, "all")
         ? allModes
@@ -924,32 +757,12 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "update": {
-      assertAllowedFlags(parsed, [
-        "all",
-        "allow-prerelease",
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "no-install",
-        "non-interactive",
-        "offline",
-        "package-manager",
-        "plan",
-        "release-file",
-        "root",
-        "to",
-        "verbose",
-        "yes",
-      ]);
       if (hasFlag(parsed, "all") === parsed.positionals.length > 0) {
-        throw new Error("update requires explicit items or --all, but not both.");
+        throw new CommandUsageError("update requires explicit items or --all, but not both.");
       }
       const release = immutableRelease(parsed, root, api);
       if (release.release.includes("-") && !hasFlag(parsed, "allow-prerelease")) {
-        throw new Error("A prerelease target requires --allow-prerelease.");
+        throw new CommandUsageError("A prerelease target requires --allow-prerelease.");
       }
       const options = {
         projectRoot: root,
@@ -1001,24 +814,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "add": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "no-install",
-        "non-interactive",
-        "offline",
-        "package-manager",
-        "plan",
-        "registry",
-        "root",
-        "target",
-        "verbose",
-        "yes",
-      ]);
       const options = sourceCommandOptions(parsed, root);
       const plan = api.planSourceAdd(options);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
@@ -1054,24 +849,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "remove": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "keep-files",
-        "no-install",
-        "non-interactive",
-        "offline",
-        "package-manager",
-        "plan",
-        "registry",
-        "root",
-        "verbose",
-        "yes",
-      ]);
       const options = {
         ...sourceCommandOptions(parsed, root),
         keepFiles: hasFlag(parsed, "keep-files"),
@@ -1110,21 +887,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "adopt": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "config",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "non-interactive",
-        "plan",
-        "registry",
-        "root",
-        "target",
-        "verbose",
-        "yes",
-      ]);
       const options = sourceCommandOptions(parsed, root);
       const plan = api.planSourceAdopt(options);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
@@ -1160,38 +922,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "resolve": {
-      assertAllowedFlags(parsed, [
-        "apply",
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "list",
-        "no-install",
-        "non-interactive",
-        "offline",
-        "plan",
-        "reset",
-        "resolved",
-        "root",
-        "take-local",
-        "take-upstream",
-        "transaction",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length > 1) {
-        throw new Error("resolve accepts exactly one conflict transaction ID.");
+        throw new CommandUsageError("resolve accepts exactly one conflict transaction ID.");
       }
       const positionalId = parsed.positionals[0];
       const flaggedId = flagValue(parsed, "transaction");
       if (positionalId !== undefined && flaggedId !== undefined && positionalId !== flaggedId) {
-        throw new Error("The positional and --transaction conflict IDs must agree.");
+        throw new CommandUsageError("The positional and --transaction conflict IDs must agree.");
       }
       const transactionId = positionalId ?? flaggedId;
       if (transactionId === undefined) {
-        throw new Error("resolve requires a conflict transaction ID.");
+        throw new CommandUsageError("resolve requires a conflict transaction ID.");
       }
       const choices = [
         ["take-local", flagValues(parsed, "take-local")],
@@ -1201,13 +942,13 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       ] as const;
       const selectedChoices = choices.filter(([, targets]) => targets.length > 0);
       if (selectedChoices.length > 1) {
-        throw new Error("resolve accepts one choice kind per invocation.");
+        throw new CommandUsageError("resolve accepts one choice kind per invocation.");
       }
       if (hasFlag(parsed, "apply") && selectedChoices.length > 0) {
-        throw new Error("resolve --apply cannot be combined with a target choice.");
+        throw new CommandUsageError("resolve --apply cannot be combined with a target choice.");
       }
       if (hasFlag(parsed, "list") && (hasFlag(parsed, "apply") || selectedChoices.length > 0)) {
-        throw new Error("resolve --list cannot be combined with a mutation.");
+        throw new CommandUsageError("resolve --list cannot be combined with a mutation.");
       }
       if (!hasFlag(parsed, "apply") && selectedChoices.length === 0) {
         const result = api.listSemanticResolutions({ projectRoot: root, transactionId });
@@ -1281,9 +1022,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     case "theme": {
       const action = parsed.positionals[0];
       if (action === "list") {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "root", "verbose"]);
         if (parsed.positionals.length !== 1) {
-          throw new Error("theme list does not accept additional arguments.");
+          throw new CommandUsageError("theme list does not accept additional arguments.");
         }
         const result = api.listProjectThemes(root);
         return {
@@ -1297,9 +1037,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         };
       }
       if (action === "preview") {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "open", "root", "verbose"]);
         if (parsed.positionals.length !== 2) {
-          throw new Error("theme preview requires one preset ID or project-relative file.");
+          throw new CommandUsageError(
+            "theme preview requires one preset ID or project-relative file.",
+          );
         }
         const result = api.previewTheme(api.loadThemePreset(root, parsed.positionals[1]!));
         return {
@@ -1312,34 +1053,23 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         };
       }
       if (action === "export") {
-        assertAllowedFlags(parsed, ["color", "cwd", "format", "help", "json", "root", "verbose"]);
         if (parsed.positionals.length !== 2) {
-          throw new Error("theme export requires one preset ID or project-relative file.");
+          throw new CommandUsageError(
+            "theme export requires one preset ID or project-relative file.",
+          );
         }
         const format = flagValue(parsed, "format");
         if (format !== "dtcg" && format !== "css" && format !== "tailwind") {
-          throw new Error("theme export requires --format dtcg, css, or tailwind.");
+          throw new CommandUsageError("theme export requires --format dtcg, css, or tailwind.");
         }
         const result = api.exportTheme(api.loadThemePreset(root, parsed.positionals[1]!), format);
         return { result, text: result.content, raw: result.content };
       }
       if (action === "apply" || action === "import") {
-        assertAllowedFlags(parsed, [
-          "acknowledge",
-          "color",
-          "cwd",
-          "dry-run",
-          "help",
-          "json",
-          "non-interactive",
-          "plan",
-          "root",
-          "target",
-          "verbose",
-          "yes",
-        ]);
         if (parsed.positionals.length !== 2) {
-          throw new Error(`theme ${action} requires one preset ID or project-relative file.`);
+          throw new CommandUsageError(
+            `theme ${action} requires one preset ID or project-relative file.`,
+          );
         }
         const options = {
           projectRoot: root,
@@ -1388,21 +1118,9 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           text: `Theme ${result.id} ${action === "apply" ? "applied" : "imported"}; transaction ${result.transaction.transactionId ?? "no-op"}; plan ${result.planDigest}.`,
         };
       }
-      throw new Error("theme requires list, preview, export, apply, or import.");
+      throw new CommandUsageError("theme requires list, preview, export, apply, or import.");
     }
     case "migrate": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "non-interactive",
-        "plan",
-        "root",
-        "verbose",
-        "yes",
-      ]);
       const target = parsed.positionals[0];
       if (
         target !== "config" &&
@@ -1411,14 +1129,14 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         target !== "mode" &&
         target !== "id"
       ) {
-        throw new Error("migrate requires config, shadcn, framework, mode, or id.");
+        throw new CommandUsageError("migrate requires config, shadcn, framework, mode, or id.");
       }
       const requiresId = target === "framework" || target === "mode" || target === "id";
       if (
         (requiresId && parsed.positionals.length < 2) ||
         (!requiresId && parsed.positionals.length > 1)
       ) {
-        throw new Error(
+        throw new CommandUsageError(
           requiresId
             ? `migrate ${target} requires one compiled built-in migration ID.`
             : `migrate ${target} does not accept a migration ID.`,
@@ -1477,29 +1195,12 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "clean": {
-      assertAllowedFlags(parsed, [
-        "bases",
-        "cache",
-        "color",
-        "conflicts",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "non-interactive",
-        "plan",
-        "retain-transactions",
-        "root",
-        "transactions",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length !== 0) {
-        throw new Error("clean does not accept positional arguments.");
+        throw new CommandUsageError("clean does not accept positional arguments.");
       }
       const retentionInput = flagValue(parsed, "retain-transactions");
       if (retentionInput !== undefined && !/^(?:0|[1-9][0-9]{0,3})$/u.test(retentionInput)) {
-        throw new Error("--retain-transactions must be an integer from 0 to 9999.");
+        throw new CommandUsageError("--retain-transactions must be an integer from 0 to 9999.");
       }
       const options = {
         projectRoot: root,
@@ -1542,9 +1243,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     case "registry": {
       const action = parsed.positionals[0];
       if (action === "list") {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "root", "verbose"]);
         if (parsed.positionals.length !== 1) {
-          throw new Error("registry list does not accept additional arguments.");
+          throw new CommandUsageError("registry list does not accept additional arguments.");
         }
         const result = api.listRegistries(root);
         return {
@@ -1561,9 +1261,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         };
       }
       if (action === "inspect") {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "offline", "root", "verbose"]);
         if (parsed.positionals.length !== 2) {
-          throw new Error("registry inspect requires exactly one enrolled registry ID.");
+          throw new CommandUsageError(
+            "registry inspect requires exactly one enrolled registry ID.",
+          );
         }
         const result = await api.inspectRegistry({
           projectRoot: root,
@@ -1578,9 +1279,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         };
       }
       if (action === "verify") {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "offline", "root", "verbose"]);
         if (parsed.positionals.length !== 2) {
-          throw new Error("registry verify requires exactly one enrolled registry ID.");
+          throw new CommandUsageError("registry verify requires exactly one enrolled registry ID.");
         }
         const result = await api.verifyRegistry({
           projectRoot: root,
@@ -1590,30 +1290,20 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         return {
           result,
           status: result.status,
-          exitCode: result.ok ? 0 : result.status === "identity-mismatch" ? 5 : 7,
+          exitCode: result.ok
+            ? 0
+            : result.status === "identity-mismatch"
+              ? 5
+              : result.network === "forbidden"
+                ? 4
+                : 7,
           warnings: result.missingEvidence,
           text: `Registry ${result.registry.id} ${result.status}: ${String(result.checks.filter(({ state }) => state === "pass").length)} checks passed.`,
         };
       }
       if (action === "enroll") {
-        assertAllowedFlags(parsed, [
-          "accept-registry-identity",
-          "allow-insecure-localhost",
-          "auth-env",
-          "color",
-          "cwd",
-          "dry-run",
-          "help",
-          "json",
-          "non-interactive",
-          "plan",
-          "protocol",
-          "root",
-          "verbose",
-          "yes",
-        ]);
         if (parsed.positionals.length !== 3) {
-          throw new Error("registry enroll requires an ID and origin.");
+          throw new CommandUsageError("registry enroll requires an ID and origin.");
         }
         const planned = await api.planRegistryEnrollment({
           projectRoot: root,
@@ -1656,20 +1346,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         };
       }
       if (action === "remove") {
-        assertAllowedFlags(parsed, [
-          "color",
-          "cwd",
-          "dry-run",
-          "help",
-          "json",
-          "non-interactive",
-          "plan",
-          "root",
-          "verbose",
-          "yes",
-        ]);
         if (parsed.positionals.length !== 2) {
-          throw new Error("registry remove requires exactly one enrolled registry ID.");
+          throw new CommandUsageError("registry remove requires exactly one enrolled registry ID.");
         }
         const planned = api.planRegistryRemoval({
           projectRoot: root,
@@ -1705,14 +1383,13 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           text: `Removed registry ${planned.registry.id}; transaction ${result.transactionId ?? "no-op"}.`,
         };
       }
-      throw new Error("registry requires list, inspect, enroll, remove, or verify.");
+      throw new CommandUsageError("registry requires list, inspect, enroll, remove, or verify.");
     }
     case "vendor": {
       const verify = parsed.positionals[0] === "verify";
       if (verify) {
-        assertAllowedFlags(parsed, ["color", "cwd", "help", "json", "offline", "root", "verbose"]);
         if (parsed.positionals.length !== 1) {
-          throw new Error("vendor verify does not accept item arguments.");
+          throw new CommandUsageError("vendor verify does not accept item arguments.");
         }
         const result = api.verifyVendor({ projectRoot: root });
         return {
@@ -1721,20 +1398,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           text: `Vendor snapshot valid: ${String(result.items.length)} items, ${String(result.artifacts)} artifacts, ${String(result.totalBytes)} bytes; manifest ${result.manifestDigest}.`,
         };
       }
-      assertAllowedFlags(parsed, [
-        "all-installed",
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "non-interactive",
-        "offline",
-        "plan",
-        "root",
-        "verbose",
-        "yes",
-      ]);
       const options = {
         projectRoot: root,
         itemIds: parsed.positionals,
@@ -1778,24 +1441,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "rollback": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "last",
-        "no-install",
-        "non-interactive",
-        "offline",
-        "plan",
-        "root",
-        "transaction",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length > 1) {
-        throw new Error("rollback accepts at most one transaction ID.");
+        throw new CommandUsageError("rollback accepts at most one transaction ID.");
       }
       const positionalTransaction = parsed.positionals[0];
       const flaggedTransaction = flagValue(parsed, "transaction");
@@ -1804,7 +1451,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         flaggedTransaction !== undefined &&
         positionalTransaction !== flaggedTransaction
       ) {
-        throw new Error("The positional transaction ID and --transaction must agree.");
+        throw new CommandUsageError("The positional transaction ID and --transaction must agree.");
       }
       const options = {
         root,
@@ -1850,23 +1497,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "recover": {
-      assertAllowedFlags(parsed, [
-        "color",
-        "cwd",
-        "dry-run",
-        "help",
-        "json",
-        "non-interactive",
-        "offline",
-        "plan",
-        "root",
-        "strategy",
-        "transaction",
-        "verbose",
-        "yes",
-      ]);
       if (parsed.positionals.length > 0) {
-        throw new Error("recover does not accept positional arguments; use --transaction.");
+        throw new CommandUsageError(
+          "recover does not accept positional arguments; use --transaction.",
+        );
       }
       const options = {
         root,
@@ -1898,7 +1532,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     default:
-      throw new Error(`Unknown command ${JSON.stringify(parsed.command)}.`);
+      throw new CommandUsageError(`Unknown command ${JSON.stringify(parsed.command)}.`);
   }
 }
 
@@ -2075,18 +1709,26 @@ async function main(arguments_: readonly string[]): Promise<void> {
   try {
     parsed = parseArguments(arguments_);
   } catch (error) {
-    const { redactMessage } = await import("./contracts.js");
+    const contracts = await import("./contracts.js");
     const wantsJson =
       arguments_.includes("--json") || arguments_.some((entry) => entry.startsWith("--json="));
-    const message = redactMessage(
+    const message = contracts.redactMessage(
       error instanceof Error ? error.message : "Invalid command usage.",
     );
+    const known = new contracts.CliError(message, {
+      code: "COMMAND_USAGE_INVALID",
+      exitCode: 2,
+    });
+    const requestedCommand = arguments_.find((argument) => isCliCommand(argument)) ?? "unknown";
+    const envelope = contracts.errorEnvelope(requestedCommand, known);
     if (wantsJson) {
-      process.stdout.write(
-        `${JSON.stringify({ schemaVersion: 1, command: redactMessage(arguments_[0] ?? "unknown"), ok: false, status: "error", exitCode: 2, result: {}, warnings: [], errors: [{ code: "COMMAND_USAGE_INVALID", message }] })}\n`,
+      process.stdout.write(`${JSON.stringify(envelope)}\n`);
+    } else {
+      process.stderr.write(
+        `mergora: ${envelope.errors[0]?.message ?? message}\nrecovery: ${envelope.errors[0]?.recovery ?? "Review command help and retry."}\n`,
       );
-    } else process.stderr.write(`mergora: ${message}\n`);
-    process.exitCode = 2;
+    }
+    process.exitCode = envelope.exitCode;
     return;
   }
   if (hasFlag(parsed, "help")) {
@@ -2099,20 +1741,27 @@ async function main(arguments_: readonly string[]): Promise<void> {
     const asJson = hasFlag(parsed, "json") || flagValue(parsed, "format") === "json";
     const exitCode = output.exitCode ?? 0;
     if (asJson) {
+      const status = output.status ?? (exitCode === 0 ? "success" : "failed");
+      if (!isJsonResultStatus(status)) {
+        throw new api.CliError(`Unsupported JSON result status ${JSON.stringify(status)}.`, {
+          code: "INTERNAL_RESULT_STATUS_INVALID",
+          exitCode: 1,
+        });
+      }
       const envelope =
         exitCode === 0
           ? api.successEnvelope(parsed.command, output.result, {
-              status: output.status,
+              status,
               warnings: output.warnings,
             })
           : {
               schemaVersion: api.JSON_SCHEMA_VERSION,
               command: api.redactMessage(parsed.command),
               ok: false,
-              status: output.status ?? "error",
+              status,
               exitCode,
               result: output.result,
-              warnings: output.warnings ?? [],
+              warnings: (output.warnings ?? []).map(api.redactMessage),
               errors: [],
             };
       process.stdout.write(`${JSON.stringify(envelope)}\n`);
@@ -2124,14 +1773,22 @@ async function main(arguments_: readonly string[]): Promise<void> {
     const known =
       error instanceof api.CliError
         ? error
-        : new api.CliError(error instanceof Error ? error.message : "Unexpected CLI failure.", {
-            code: "COMMAND_USAGE_INVALID",
-            exitCode: error instanceof Error ? 2 : 1,
-          });
+        : error instanceof CommandUsageError
+          ? new api.CliError(error.message, {
+              code: "COMMAND_USAGE_INVALID",
+              exitCode: 2,
+            })
+          : error;
+    const envelope = api.errorEnvelope(parsed.command, known);
     if (hasFlag(parsed, "json")) {
-      process.stdout.write(`${JSON.stringify(api.errorEnvelope(parsed.command, known))}\n`);
-    } else process.stderr.write(`mergora: ${api.redactMessage(known.message)}\n`);
-    process.exitCode = known.exitCode;
+      process.stdout.write(`${JSON.stringify(envelope)}\n`);
+    } else {
+      const detail = envelope.errors[0];
+      process.stderr.write(
+        `mergora: ${detail?.message ?? "Unexpected CLI failure."}${detail?.recovery === undefined ? "" : `\nrecovery: ${detail.recovery}`}${detail?.reportId === undefined ? "" : `\nreport: ${detail.reportId}`}\n`,
+      );
+    }
+    process.exitCode = envelope.exitCode;
   }
 }
 

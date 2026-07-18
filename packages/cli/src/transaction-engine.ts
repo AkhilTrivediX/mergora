@@ -81,6 +81,19 @@ export interface OperationPlanDependencyChange {
   readonly owners: readonly string[];
 }
 
+export type TransactionValidationLabel =
+  | "schema"
+  | "digest"
+  | "path"
+  | "collision"
+  | "parse"
+  | "type-imports"
+  | "ownership"
+  | "dependency"
+  | "tokens"
+  | "accessibility-contract"
+  | "project-configured";
+
 export interface OperationPlan {
   readonly schemaVersion: 1;
   readonly command:
@@ -168,19 +181,7 @@ export interface OperationPlan {
     readonly reason: string;
   }[];
   readonly estimatedBytes: { readonly download: number; readonly write: number };
-  readonly validationSuite: readonly (
-    | "schema"
-    | "digest"
-    | "path"
-    | "collision"
-    | "parse"
-    | "type-imports"
-    | "ownership"
-    | "dependency"
-    | "tokens"
-    | "accessibility-contract"
-    | "project-configured"
-  )[];
+  readonly validationSuite: readonly TransactionValidationLabel[];
   readonly rollbackAvailable: boolean;
 }
 
@@ -239,6 +240,40 @@ export type TransactionFaultInjector = (
   point: TransactionFaultPoint,
   context: TransactionFaultContext,
 ) => void;
+
+export type TransactionValidationPhase = "staged-overlay" | "post-commit";
+
+export interface TransactionValidationIssue {
+  readonly code: string;
+  readonly target: string;
+  readonly message: string;
+}
+
+export interface TransactionValidationResult {
+  readonly state: "pass" | "fail";
+  readonly summary: string;
+  readonly issues?: readonly TransactionValidationIssue[] | undefined;
+}
+
+export interface TransactionValidationContext {
+  readonly phase: TransactionValidationPhase;
+  readonly projectRoot: string;
+  readonly plan: OperationPlan;
+  readonly mutationTargets: readonly string[];
+  /** Reads the deterministic staged overlay in phase one and authoritative files in phase two. */
+  readonly readFile: (target: string) => Buffer | null;
+}
+
+export interface TransactionValidator {
+  readonly id: string;
+  readonly label: TransactionValidationLabel;
+  readonly validateStagedOverlay: (
+    context: TransactionValidationContext,
+  ) => TransactionValidationResult;
+  readonly validatePostCommit: (
+    context: TransactionValidationContext,
+  ) => TransactionValidationResult;
+}
 
 export class TransactionInterruption extends CliError {
   public constructor(message = "The transaction was interrupted and requires recovery.") {
@@ -334,6 +369,7 @@ export interface ExecuteTransactionOptions {
   readonly packageManagerRunner?: PackageManagerRunner | undefined;
   readonly commandArguments?: readonly string[] | undefined;
   readonly faultInjector?: TransactionFaultInjector | undefined;
+  readonly validators?: readonly TransactionValidator[] | undefined;
 }
 
 export interface TransactionResult {
@@ -369,6 +405,112 @@ const TRANSACTION_STATES = new Set<TransactionState>([
   "abandoned",
 ]);
 const TRANSACTION_ID_PATTERN = /^[0-9]{8}T[0-9]{6}(?:\.[0-9]{3})?Z-[0-9a-f]{32}$/u;
+const MAX_TRANSACTION_VALIDATORS = 32;
+const MAX_VALIDATION_READS = 8192;
+const MAX_VALIDATION_FILE_BYTES = 16 * 1024 * 1024;
+const MAX_VALIDATION_TOTAL_BYTES = 128 * 1024 * 1024;
+const MAX_VALIDATION_ISSUES = 256;
+const VALIDATION_LABEL_ORDER: readonly TransactionValidationLabel[] = [
+  "schema",
+  "digest",
+  "path",
+  "collision",
+  "parse",
+  "type-imports",
+  "ownership",
+  "dependency",
+  "tokens",
+  "accessibility-contract",
+  "project-configured",
+];
+const BUILT_IN_TRANSACTION_VALIDATIONS: readonly TransactionValidationLabel[] = [
+  "schema",
+  "digest",
+  "path",
+  "collision",
+  "ownership",
+  "dependency",
+];
+const VALIDATOR_REGISTRATION_PREFIX = "validator-registration-";
+
+function validatorRegistrationId(validatorId: string): string {
+  return `${VALIDATOR_REGISTRATION_PREFIX}${validatorId}`;
+}
+
+function validatorPhaseResultId(phase: TransactionValidationPhase, validatorId: string): string {
+  return `${phase}-${validatorId}`;
+}
+
+function immutableCanonicalSnapshot<T>(value: T): T {
+  const snapshot = JSON.parse(canonicalJson(value)) as T;
+  const pending: unknown[] = [snapshot];
+  let visited = 0;
+  while (pending.length > 0) {
+    const entry = pending.pop();
+    if (entry === null || typeof entry !== "object" || Object.isFrozen(entry)) continue;
+    visited += 1;
+    if (visited > 131_072) {
+      throw new CliError("The transaction plan exceeds its deterministic object bound.", {
+        code: "TRANSACTION_PLAN_INVALID",
+        exitCode: 8,
+      });
+    }
+    pending.push(...Object.values(entry));
+    Object.freeze(entry);
+  }
+  return snapshot;
+}
+
+function immutableValidatorRegistrations(
+  validators: readonly TransactionValidator[],
+): readonly TransactionValidator[] {
+  return Object.freeze(
+    validators.map((validator) =>
+      Object.freeze({
+        id: validator.id,
+        label: validator.label,
+        validateStagedOverlay: validator.validateStagedOverlay,
+        validatePostCommit: validator.validatePostCommit,
+      }),
+    ),
+  );
+}
+
+function assertValidatorRegistrations(validators: readonly TransactionValidator[]): void {
+  if (validators.length > MAX_TRANSACTION_VALIDATORS) {
+    throw new CliError("The transaction registered too many validation callbacks.", {
+      code: "TRANSACTION_VALIDATOR_INVALID",
+      exitCode: 8,
+    });
+  }
+  const identifiers = new Set<string>();
+  for (const validator of validators) {
+    if (
+      !/^[a-z][a-z0-9-]{0,63}$/u.test(validator.id) ||
+      identifiers.has(validator.id) ||
+      !VALIDATION_LABEL_ORDER.includes(validator.label) ||
+      typeof validator.validateStagedOverlay !== "function" ||
+      typeof validator.validatePostCommit !== "function"
+    ) {
+      throw new CliError("A transaction validator registration is malformed or duplicated.", {
+        code: "TRANSACTION_VALIDATOR_INVALID",
+        exitCode: 8,
+      });
+    }
+    identifiers.add(validator.id);
+  }
+}
+
+export function validationSuiteForTransaction(
+  validators: readonly TransactionValidator[] = [],
+): readonly TransactionValidationLabel[] {
+  assertValidatorRegistrations(validators);
+  const labels = new Set<TransactionValidationLabel>([
+    ...BUILT_IN_TRANSACTION_VALIDATIONS,
+    ...validators.map(({ label }) => label),
+  ]);
+  return VALIDATION_LABEL_ORDER.filter((label) => labels.has(label));
+}
 
 const SAFE_RECORDED_FLAGS = new Set([
   "--dry-run",
@@ -459,7 +601,7 @@ function assertTargetsShareStageFilesystem(root: string, targets: readonly strin
   }
 }
 
-function readProjectBytes(root: string, target: string): Buffer | null {
+function readProjectBytes(root: string, target: string, maximumBytes?: number): Buffer | null {
   assertPortableRelativePath(target, "Transaction target");
   assertNoSymlinkAncestors(root, target);
   const path = resolve(root, ...target.split("/"));
@@ -469,6 +611,13 @@ function readProjectBytes(root: string, target: string): Buffer | null {
     throw new CliError(`Transaction target ${JSON.stringify(target)} is not a regular file.`, {
       code: "TRANSACTION_TARGET_UNSAFE",
       exitCode: 5,
+      target,
+    });
+  }
+  if (maximumBytes !== undefined && metadata.size > maximumBytes) {
+    throw new CliError(`Transaction validation target ${JSON.stringify(target)} is oversized.`, {
+      code: "TRANSACTION_VALIDATION_LIMIT_EXCEEDED",
+      exitCode: 8,
       target,
     });
   }
@@ -1152,15 +1301,204 @@ function transactionViewBytes(
   record: TransactionRecord,
   target: string,
   staged: boolean,
+  maximumBytes?: number,
 ): Buffer | null {
   if (staged) {
     const entry = record.staged.find((candidate) => candidate.target === target);
     if (entry !== undefined) {
       if (entry.operation === "delete") return null;
-      return readProjectBytes(root, entry.stagePath);
+      return readProjectBytes(root, entry.stagePath, maximumBytes);
     }
   }
-  return readProjectBytes(root, target);
+  return readProjectBytes(root, target, maximumBytes);
+}
+
+function normalizedValidationResult(
+  validator: TransactionValidator,
+  phase: TransactionValidationPhase,
+  value: TransactionValidationResult,
+): TransactionValidationResult {
+  if (
+    (value.state !== "pass" && value.state !== "fail") ||
+    typeof value.summary !== "string" ||
+    value.summary.length === 0 ||
+    value.summary.length > 2048 ||
+    value.summary.includes("\0") ||
+    (value.issues !== undefined &&
+      (!Array.isArray(value.issues) || value.issues.length > MAX_VALIDATION_ISSUES))
+  ) {
+    throw new CliError(`Validator ${validator.id} returned an invalid ${phase} result.`, {
+      code: "TRANSACTION_VALIDATOR_RESULT_INVALID",
+      exitCode: 8,
+    });
+  }
+  const issues: TransactionValidationIssue[] = [];
+  for (const issue of value.issues ?? []) {
+    if (
+      issue === null ||
+      typeof issue !== "object" ||
+      !/^[A-Z][A-Z0-9_]{0,63}$/u.test(issue.code) ||
+      typeof issue.target !== "string" ||
+      typeof issue.message !== "string" ||
+      issue.message.length === 0 ||
+      issue.message.length > 1024 ||
+      issue.message.includes("\0")
+    ) {
+      throw new CliError(`Validator ${validator.id} returned a malformed ${phase} issue.`, {
+        code: "TRANSACTION_VALIDATOR_RESULT_INVALID",
+        exitCode: 8,
+      });
+    }
+    assertPortableRelativePath(issue.target, "Transaction validation issue target", {
+      allowProjectRoot: true,
+    });
+    issues.push({
+      code: issue.code,
+      target: issue.target,
+      message: `Validator ${validator.id} reported ${issue.code} during ${phase} validation.`,
+    });
+  }
+  issues.sort(
+    (left, right) =>
+      left.target.localeCompare(right.target, "en-US") ||
+      left.code.localeCompare(right.code, "en-US") ||
+      left.message.localeCompare(right.message, "en-US"),
+  );
+  if (value.state === "pass" && issues.length > 0) {
+    throw new CliError(`Validator ${validator.id} returned issues for a passing ${phase} result.`, {
+      code: "TRANSACTION_VALIDATOR_RESULT_INVALID",
+      exitCode: 8,
+    });
+  }
+  return {
+    state: value.state,
+    summary: `Validator ${validator.id} ${value.state === "pass" ? "passed" : "failed"} ${phase} validation.`,
+    ...(issues.length === 0 ? {} : { issues }),
+  };
+}
+
+function validatorExceptionResult(
+  validator: TransactionValidator,
+  phase: TransactionValidationPhase,
+  error: unknown,
+): TransactionValidationResult {
+  if (error instanceof CliError) {
+    let target = ".";
+    if (error.target !== undefined) {
+      try {
+        assertPortableRelativePath(error.target, "Transaction validator error target", {
+          allowProjectRoot: true,
+        });
+        target = error.target;
+      } catch {
+        // An unsafe error target is replaced instead of exposing callback-controlled text.
+      }
+    }
+    return {
+      state: "fail",
+      summary: `Validator ${validator.id} rejected ${phase} validation.`,
+      issues: [
+        {
+          code: /^[A-Z][A-Z0-9_]{0,63}$/u.test(error.code) ? error.code : "VALIDATOR_REJECTED",
+          target,
+          message: `Validator ${validator.id} rejected ${phase} validation.`,
+        },
+      ],
+    };
+  }
+  return {
+    state: "fail",
+    summary: `Validator ${validator.id} raised an unexpected error.`,
+    issues: [
+      {
+        code: "VALIDATOR_EXCEPTION",
+        target: ".",
+        message: `Validator ${validator.id} did not return a ${phase} result.`,
+      },
+    ],
+  };
+}
+
+function runRegisteredValidators(input: {
+  readonly root: string;
+  readonly plan: OperationPlan;
+  readonly record: TransactionRecord;
+  readonly phase: TransactionValidationPhase;
+  readonly validators: readonly TransactionValidator[];
+}): void {
+  const cache = new Map<string, Buffer | null>();
+  let totalBytes = 0;
+  const staged = input.phase === "staged-overlay";
+  const readFile = (target: string): Buffer | null => {
+    assertPortableRelativePath(target, "Transaction validator read target");
+    if (!cache.has(target)) {
+      if (cache.size >= MAX_VALIDATION_READS) {
+        throw new CliError("Transaction validation exceeded its deterministic read bound.", {
+          code: "TRANSACTION_VALIDATION_LIMIT_EXCEEDED",
+          exitCode: 8,
+          target,
+        });
+      }
+      const bytes = transactionViewBytes(
+        input.root,
+        input.record,
+        target,
+        staged,
+        MAX_VALIDATION_FILE_BYTES,
+      );
+      totalBytes += bytes?.byteLength ?? 0;
+      if (totalBytes > MAX_VALIDATION_TOTAL_BYTES) {
+        throw new CliError("Transaction validation exceeded its deterministic byte bound.", {
+          code: "TRANSACTION_VALIDATION_LIMIT_EXCEEDED",
+          exitCode: 8,
+          target,
+        });
+      }
+      cache.set(target, bytes === null ? null : Buffer.from(bytes));
+    }
+    const cached = cache.get(target) ?? null;
+    return cached === null ? null : Buffer.from(cached);
+  };
+  const context: TransactionValidationContext = Object.freeze({
+    phase: input.phase,
+    projectRoot: input.root,
+    plan: input.plan,
+    mutationTargets: Object.freeze(
+      input.record.staged
+        .map(({ target }) => target)
+        .sort((left, right) => left.localeCompare(right, "en-US")),
+    ),
+    readFile,
+  });
+  for (const validator of [...input.validators].sort((left, right) =>
+    left.id.localeCompare(right.id, "en-US"),
+  )) {
+    let rawResult: TransactionValidationResult;
+    try {
+      const validate = staged ? validator.validateStagedOverlay : validator.validatePostCommit;
+      rawResult = validate(context);
+    } catch (error) {
+      rawResult = validatorExceptionResult(validator, input.phase, error);
+    }
+    const result = normalizedValidationResult(validator, input.phase, rawResult);
+    input.record.validations.push({
+      id: validatorPhaseResultId(input.phase, validator.id),
+      state: result.state,
+      summary: result.summary,
+    });
+    writeTransactionRecord(input.root, input.record);
+    if (result.state === "fail") {
+      const issue = result.issues?.[0];
+      throw new CliError(`${result.summary}${issue === undefined ? "" : ` ${issue.message}`}`, {
+        code:
+          input.phase === "staged-overlay"
+            ? "TRANSACTION_STAGED_VALIDATION_FAILED"
+            : "TRANSACTION_POST_VALIDATION_FAILED",
+        exitCode: 8,
+        target: issue?.target ?? ".mergora/transactions",
+      });
+    }
+  }
 }
 
 function assertStructuredState(root: string, record: TransactionRecord, staged: boolean): void {
@@ -1452,8 +1790,25 @@ function rollbackFromBackups(
   appendJournal(root, journal, "rolled-back", "finalized");
 }
 
-export function executeTransaction(options: ExecuteTransactionOptions): TransactionResult {
-  assertPlanDigest(options.plan);
+export function executeTransaction(inputOptions: ExecuteTransactionOptions): TransactionResult {
+  assertPlanDigest(inputOptions.plan);
+  const suppliedValidators = inputOptions.validators ?? [];
+  assertValidatorRegistrations(suppliedValidators);
+  const validators = immutableValidatorRegistrations(suppliedValidators);
+  const options: ExecuteTransactionOptions = {
+    ...inputOptions,
+    plan: immutableCanonicalSnapshot(inputOptions.plan),
+    validators,
+  };
+  const missingValidatorLabel = validators.find(
+    ({ label }) => !options.plan.validationSuite.includes(label),
+  );
+  if (missingValidatorLabel !== undefined) {
+    throw new CliError(
+      `Transaction validator ${missingValidatorLabel.id} is absent from the reviewed validation suite.`,
+      { code: "TRANSACTION_VALIDATOR_PLAN_MISMATCH", exitCode: 8 },
+    );
+  }
   assertPortableMutationSet(options.mutations);
   assertRegistryPayloads(options.registryPayloads);
   assertMutationPlanBinding(options.plan, options.mutations);
@@ -1552,7 +1907,13 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
         flag,
       })),
       resolutions: [],
-      validations: [],
+      validations: [...validators]
+        .sort((left, right) => left.id.localeCompare(right.id, "en-US"))
+        .map((validator) => ({
+          id: validatorRegistrationId(validator.id),
+          state: "pass" as const,
+          summary: `Registered ${validator.id} for staged-overlay and post-commit validation.`,
+        })),
       command: {
         name: options.plan.command,
         redactedArguments: redactArguments(options.commandArguments ?? []),
@@ -1621,6 +1982,13 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
         summary: "The staged manifest, immutable bases, and dependency closure are coherent.",
       },
     );
+    runRegisteredValidators({
+      root: options.root,
+      plan: options.plan,
+      record,
+      phase: "staged-overlay",
+      validators,
+    });
     record.state = "validated";
     writeTransactionRecord(options.root, record);
     appendJournal(options.root, journal, "validated", "validation-complete");
@@ -1791,6 +2159,13 @@ export function executeTransaction(options: ExecuteTransactionOptions): Transact
       id: "post-digest",
       state: "pass",
       summary: "Every authoritative post-state matches the staged digest.",
+    });
+    runRegisteredValidators({
+      root: options.root,
+      plan: options.plan,
+      record,
+      phase: "post-commit",
+      validators,
     });
     writeTransactionRecord(options.root, record);
     appendJournal(options.root, journal, "post-validating", "post-validation-complete");
@@ -2299,11 +2674,28 @@ function recoveryClassification(
   return { allPre, allPost, ambiguous };
 }
 
+function pendingRegisteredPostValidators(record: TransactionRecord): readonly string[] {
+  const registered = record.validations
+    .filter(({ id }) => id.startsWith(VALIDATOR_REGISTRATION_PREFIX))
+    .map(({ id }) => id.slice(VALIDATOR_REGISTRATION_PREFIX.length));
+  return registered.filter(
+    (validatorId) =>
+      !record.validations.some(
+        ({ id, state }) =>
+          id === validatorPhaseResultId("post-commit", validatorId) && state === "pass",
+      ),
+  );
+}
+
 function recoveryAction(
   record: TransactionRecord,
   classification: ReturnType<typeof recoveryClassification>,
   strategy: RecoveryOptions["strategy"],
 ): "rollback" | "resume" | "finalize" {
+  // Callback code is intentionally not serialized into provenance. An interrupted
+  // process therefore cannot safely resume or finalize until every registered
+  // post-commit callback already has a durable passing result.
+  if (pendingRegisteredPostValidators(record).length > 0) return "rollback";
   if (strategy === "rollback") return "rollback";
   if (strategy === "resume") return "resume";
   if (

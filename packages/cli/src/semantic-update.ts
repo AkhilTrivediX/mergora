@@ -11,11 +11,18 @@ import {
   renameSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { builtinModules } from "node:module";
+import { dirname, posix, resolve } from "node:path";
+
+import ts from "typescript";
 
 import {
   createConflictBundle,
+  mergeCssDeclarationsThreeWay,
+  mergeDtcgThreeWay,
   mergeFileThreeWay,
+  mergeJsonThreeWay,
+  mergeStructuredSourceThreeWay,
   type FileMergeResult,
   type SemanticConflict,
   type SemanticConflictReason,
@@ -35,6 +42,7 @@ import {
 import {
   mergoraConfigAliasPrefix,
   readMergoraConfig,
+  validateMergoraConfig,
   type MergoraConfig,
 } from "./configuration.js";
 import {
@@ -63,6 +71,7 @@ import {
 import {
   executeTransaction,
   finalizeOperationPlan,
+  validationSuiteForTransaction,
   type OperationPlan,
   type OperationPlanDependencyChange,
   type OperationPlanFile,
@@ -71,6 +80,10 @@ import {
   type TransactionMutation,
   type TransactionRegistryPayload,
   type TransactionResult,
+  type TransactionValidationContext,
+  type TransactionValidationIssue,
+  type TransactionValidationResult,
+  type TransactionValidator,
 } from "./transaction-engine.js";
 
 const SEMVER =
@@ -82,6 +95,11 @@ const TRANSACTION_ID = /^[0-9]{8}T[0-9]{6}(?:\.[0-9]{3})?Z-[0-9a-f]{32}$/u;
 const CONFLICT_MARKER = /^(?:<<<<<<<|=======|>>>>>>>)(?:\s|$)/mu;
 const CONFLICT_STATE_PATH = "conflict-state.json" as const;
 const CONFLICT_STATE_DIGEST_PATH = "conflict-state.sha256" as const;
+const MAX_SEMANTIC_VALIDATION_FILES = 8192;
+const MAX_SEMANTIC_VALIDATION_ISSUES = 128;
+const NODE_BUILTIN_IMPORTS = new Set(
+  builtinModules.flatMap((name) => [name, name.startsWith("node:") ? name : `node:${name}`]),
+);
 
 type Digest = `sha256:${string}`;
 
@@ -199,10 +217,812 @@ interface InternalUpdatePlan {
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
   readonly registryPayloads: readonly TransactionRegistryPayload[];
+  readonly validators: readonly TransactionValidator[];
 }
 
 function digest(value: unknown): Digest {
   return sha256(canonicalJson(value));
+}
+
+interface SemanticValidationFile {
+  readonly target: string;
+  readonly mediaType: string;
+  readonly role: ManifestFile["role"];
+}
+
+interface SemanticValidationItem {
+  readonly owner: string;
+  readonly contractVersion: string;
+  readonly payloadDigest: Digest;
+  readonly transformContextDigest: Digest;
+}
+
+interface CollectedToken {
+  readonly aliases: readonly string[];
+  readonly type: string | null;
+}
+
+interface TokenTraversalState {
+  nodes: number;
+  limitReported: boolean;
+}
+
+function validationResult(
+  successSummary: string,
+  failureSummary: string,
+  issues: readonly TransactionValidationIssue[],
+): TransactionValidationResult {
+  const sorted = [...issues].sort(
+    (left, right) =>
+      left.target.localeCompare(right.target, "en-US") ||
+      left.code.localeCompare(right.code, "en-US") ||
+      left.message.localeCompare(right.message, "en-US"),
+  );
+  if (sorted.length === 0) return { state: "pass", summary: successSummary };
+  return {
+    state: "fail",
+    summary: failureSummary,
+    issues: sorted.slice(0, MAX_SEMANTIC_VALIDATION_ISSUES),
+  };
+}
+
+function validationText(
+  context: TransactionValidationContext,
+  target: string,
+  issues: TransactionValidationIssue[],
+): string | null {
+  const bytes = context.readFile(target);
+  if (bytes === null) return null;
+  try {
+    return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    issues.push({
+      code: "MEDIA_UTF8_INVALID",
+      target,
+      message: "The proposed text is not valid UTF-8.",
+    });
+    return null;
+  }
+}
+
+function sourceScriptKind(file: SemanticValidationFile): ts.ScriptKind | null {
+  const extension = posix.extname(file.target).toLocaleLowerCase("en-US");
+  if (
+    file.mediaType === "text/typescript-jsx" ||
+    file.mediaType.includes("tsx") ||
+    extension === ".tsx"
+  ) {
+    return ts.ScriptKind.TSX;
+  }
+  if (
+    file.mediaType.includes("typescript") ||
+    extension === ".ts" ||
+    extension === ".mts" ||
+    extension === ".cts"
+  ) {
+    return ts.ScriptKind.TS;
+  }
+  if (file.mediaType.includes("jsx") || extension === ".jsx") return ts.ScriptKind.JSX;
+  if (
+    file.mediaType.includes("javascript") ||
+    file.mediaType.includes("ecmascript") ||
+    [".js", ".mjs", ".cjs"].includes(extension)
+  ) {
+    return ts.ScriptKind.JS;
+  }
+  return null;
+}
+
+function mergeAdapterMediaType(mediaType: string): string {
+  return mediaType === "text/typescript-jsx" ? "text/tsx" : mediaType;
+}
+
+function sourceParseIssues(
+  target: string,
+  text: string,
+  kind: ts.ScriptKind,
+): TransactionValidationIssue[] {
+  const source = ts.createSourceFile(target, text, ts.ScriptTarget.Latest, true, kind);
+  const diagnostics = (
+    source as ts.SourceFile & { readonly parseDiagnostics?: readonly ts.Diagnostic[] }
+  ).parseDiagnostics;
+  return (diagnostics ?? []).slice(0, MAX_SEMANTIC_VALIDATION_ISSUES).map((diagnostic) => ({
+    code: `TS_${diagnostic.code}`,
+    target,
+    message: ts.flattenDiagnosticMessageText(diagnostic.messageText, " ").slice(0, 1024),
+  }));
+}
+
+function mediaParseValidator(
+  files: readonly SemanticValidationFile[],
+): (context: TransactionValidationContext) => TransactionValidationResult {
+  return (context) => {
+    const issues: TransactionValidationIssue[] = [];
+    let parsed = 0;
+    for (const file of files) {
+      const bytes = context.readFile(file.target);
+      if (bytes === null) continue;
+      const isText =
+        file.mediaType.startsWith("text/") ||
+        file.mediaType.includes("json") ||
+        sourceScriptKind(file) !== null;
+      if (!isText) continue;
+      const text = validationText(context, file.target, issues);
+      if (text === null) continue;
+      parsed += 1;
+      try {
+        if (file.mediaType.includes("json") || file.target.endsWith(".json")) {
+          const result =
+            file.role === "token" || file.mediaType.includes("design-tokens")
+              ? mergeDtcgThreeWay({ base: text, local: text, remote: text })
+              : mergeJsonThreeWay(
+                  { base: text, local: text, remote: text },
+                  {
+                    format:
+                      file.mediaType.includes("jsonc") || file.target.endsWith(".jsonc")
+                        ? "jsonc"
+                        : "json",
+                  },
+                );
+          if (result.status === "conflict") {
+            issues.push(
+              ...result.conflicts.map((conflict) => ({
+                code: "MEDIA_JSON_INVALID",
+                target: file.target,
+                message: conflict.detail.slice(0, 1024),
+              })),
+            );
+          }
+        } else if (file.mediaType === "text/css" || file.target.endsWith(".css")) {
+          const result = mergeCssDeclarationsThreeWay({ base: text, local: text, remote: text });
+          if (result.status === "conflict") {
+            issues.push(
+              ...result.conflicts.map((conflict) => ({
+                code: "MEDIA_CSS_INVALID",
+                target: file.target,
+                message: conflict.reason,
+              })),
+            );
+          }
+        } else {
+          const kind = sourceScriptKind(file);
+          if (kind !== null) {
+            issues.push(...sourceParseIssues(file.target, text, kind));
+            const structuredKind =
+              kind === ts.ScriptKind.TSX
+                ? "tsx"
+                : kind === ts.ScriptKind.JSX
+                  ? "jsx"
+                  : kind === ts.ScriptKind.JS
+                    ? "javascript"
+                    : "typescript";
+            const result = mergeStructuredSourceThreeWay(
+              { base: text, local: text, remote: text },
+              { kind: structuredKind },
+            );
+            if (result.status === "conflict") {
+              issues.push(
+                ...result.conflicts
+                  .filter(({ reason }) => reason === "parse-error" || reason === "input-limit")
+                  .map((conflict) => ({
+                    code: "MEDIA_SOURCE_INVALID",
+                    target: file.target,
+                    message: conflict.detail.slice(0, 1024),
+                  })),
+              );
+            }
+          }
+        }
+      } catch (error) {
+        issues.push({
+          code: "MEDIA_PARSE_INVALID",
+          target: file.target,
+          message:
+            error instanceof Error
+              ? `Declared ${file.mediaType} parsing failed: ${error.message}`.slice(0, 1024)
+              : `Declared ${file.mediaType} parsing failed.`,
+        });
+      }
+      if (issues.length >= MAX_SEMANTIC_VALIDATION_ISSUES) break;
+    }
+    return validationResult(
+      `Parsed ${parsed} declared text artifacts in the ${context.phase} view.`,
+      `Declared media parsing failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+}
+
+function packageNameForImport(specifier: string): string {
+  if (!specifier.startsWith("@")) return specifier.split("/")[0]!;
+  return specifier.split("/").slice(0, 2).join("/");
+}
+
+function localImportCandidates(target: string, specifier: string): readonly string[] {
+  const joined = posix.normalize(posix.join(posix.dirname(target), specifier));
+  assertPortableRelativePath(joined, "Semantic validation import target");
+  const extension = posix.extname(joined);
+  const candidates = new Set<string>([joined]);
+  if (extension.length === 0) {
+    for (const suffix of [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".d.ts", ".json", ".css"]) {
+      candidates.add(`${joined}${suffix}`);
+      candidates.add(`${joined}/index${suffix}`);
+    }
+  } else if ([".js", ".jsx", ".mjs", ".cjs"].includes(extension)) {
+    const stem = joined.slice(0, -extension.length);
+    for (const suffix of [".ts", ".tsx", ".mts", ".cts"]) candidates.add(`${stem}${suffix}`);
+  }
+  return [...candidates];
+}
+
+function aliasImportCandidates(config: MergoraConfig, specifier: string): readonly string[] {
+  const candidates: string[] = [];
+  for (const key of Object.keys(config.aliases) as (keyof MergoraConfig["aliases"])[]) {
+    const alias = config.aliases[key];
+    if (specifier !== alias && !specifier.startsWith(`${alias}/`)) continue;
+    const suffix = specifier === alias ? "" : specifier.slice(alias.length + 1);
+    const target = suffix.length === 0 ? config.targets[key] : `${config.targets[key]}/${suffix}`;
+    candidates.push(target);
+    for (const extension of [".ts", ".tsx", ".js", ".jsx", ".d.ts", ".json", ".css"]) {
+      candidates.push(`${target}${extension}`, `${target}/index${extension}`);
+    }
+  }
+  return [...new Set(candidates)];
+}
+
+function pureTypeDiagnostics(target: string, text: string): readonly TransactionValidationIssue[] {
+  const virtualFile = `/__mergora_validation__/${target}`;
+  const options: ts.CompilerOptions = {
+    strict: true,
+    noEmit: true,
+    noResolve: true,
+    skipLibCheck: true,
+    target: ts.ScriptTarget.ES2022,
+    module: ts.ModuleKind.ESNext,
+    types: [],
+  };
+  const host = ts.createCompilerHost(options, true);
+  const originalGetSourceFile = host.getSourceFile.bind(host);
+  host.fileExists = (fileName) => fileName === virtualFile || ts.sys.fileExists(fileName);
+  host.readFile = (fileName) => (fileName === virtualFile ? text : ts.sys.readFile(fileName));
+  host.getSourceFile = (fileName, languageVersion, onError, shouldCreateNewSourceFile) =>
+    fileName === virtualFile
+      ? ts.createSourceFile(fileName, text, languageVersion, true, ts.ScriptKind.TS)
+      : originalGetSourceFile(fileName, languageVersion, onError, shouldCreateNewSourceFile);
+  const program = ts.createProgram({ rootNames: [virtualFile], options, host });
+  return ts
+    .getPreEmitDiagnostics(program)
+    .filter((diagnostic) => diagnostic.file?.fileName === virtualFile)
+    .slice(0, MAX_SEMANTIC_VALIDATION_ISSUES)
+    .map((diagnostic) => ({
+      code: `TS_${diagnostic.code}`,
+      target,
+      message: ts.flattenDiagnosticMessageText(diagnostic.messageText, " ").slice(0, 1024),
+    }));
+}
+
+function declaredPackageNames(bytes: Buffer | null): Set<string> {
+  const value = JSON.parse(bytes?.toString("utf8") ?? "null") as Record<string, unknown>;
+  return new Set(
+    ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"].flatMap(
+      (field) =>
+        value[field] !== null && typeof value[field] === "object"
+          ? Object.keys(value[field] as Record<string, unknown>)
+          : [],
+    ),
+  );
+}
+
+function typeImportValidator(
+  files: readonly SemanticValidationFile[],
+  baselineRoot: string,
+): (context: TransactionValidationContext) => TransactionValidationResult {
+  const baselineUnresolved = new Set<string>();
+  const baselineConfig = readMergoraConfig(baselineRoot);
+  let baselineDependencies = new Set<string>();
+  try {
+    baselineDependencies = declaredPackageNames(readProjectFile(baselineRoot, "package.json"));
+  } catch {
+    // The transaction's project-configured validator reports malformed baseline metadata.
+  }
+  for (const file of files) {
+    const bytes = readProjectFile(baselineRoot, file.target);
+    if (bytes === null || sourceScriptKind(file) === null) continue;
+    let text: string;
+    try {
+      text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    } catch {
+      continue;
+    }
+    for (const { fileName: specifier } of ts.preProcessFile(text, true, true).importedFiles) {
+      let candidates: readonly string[];
+      try {
+        candidates = specifier.startsWith(".")
+          ? localImportCandidates(file.target, specifier)
+          : baselineConfig === null
+            ? []
+            : aliasImportCandidates(baselineConfig, specifier);
+      } catch {
+        baselineUnresolved.add(`${file.target}\0${specifier}`);
+        continue;
+      }
+      if (candidates.length > 0) {
+        if (!candidates.some((candidate) => readProjectFile(baselineRoot, candidate) !== null)) {
+          baselineUnresolved.add(`${file.target}\0${specifier}`);
+        }
+      } else {
+        const packageName = packageNameForImport(specifier);
+        if (!NODE_BUILTIN_IMPORTS.has(specifier) && !baselineDependencies.has(packageName)) {
+          baselineUnresolved.add(`${file.target}\0${specifier}`);
+        }
+      }
+    }
+  }
+  return (context) => {
+    const issues: TransactionValidationIssue[] = [];
+    const packageBytes = context.readFile("package.json");
+    const configBytes = context.readFile("mergora.json");
+    let dependencies = new Set<string>();
+    let config: MergoraConfig | null = null;
+    try {
+      dependencies = declaredPackageNames(packageBytes);
+      config = validateMergoraConfig(
+        JSON.parse(configBytes?.toString("utf8") ?? "null") as unknown,
+      );
+    } catch {
+      issues.push({
+        code: "PROJECT_METADATA_INVALID",
+        target: "package.json",
+        message: "Import validation requires valid package.json and mergora.json metadata.",
+      });
+    }
+    let checkedImports = 0;
+    let typeChecked = 0;
+    for (const file of files) {
+      const kind = sourceScriptKind(file);
+      if (kind === null) continue;
+      const text = validationText(context, file.target, issues);
+      if (text === null) continue;
+      const imports = ts
+        .preProcessFile(text, true, true)
+        .importedFiles.map(({ fileName }) => fileName);
+      for (const specifier of imports) {
+        checkedImports += 1;
+        if (specifier.includes("\\") || specifier.includes("?") || specifier.includes("#")) {
+          issues.push({
+            code: "IMPORT_SPECIFIER_UNSAFE",
+            target: file.target,
+            message: `Import ${JSON.stringify(specifier)} is not a portable static specifier.`,
+          });
+          continue;
+        }
+        const localCandidates = specifier.startsWith(".")
+          ? localImportCandidates(file.target, specifier)
+          : config === null
+            ? []
+            : aliasImportCandidates(config, specifier);
+        if (localCandidates.length > 0) {
+          if (
+            !localCandidates.some((candidate) => context.readFile(candidate) !== null) &&
+            !baselineUnresolved.has(`${file.target}\0${specifier}`)
+          ) {
+            issues.push({
+              code: "IMPORT_TARGET_MISSING",
+              target: file.target,
+              message: `Import ${JSON.stringify(specifier)} has no file in the ${context.phase} view.`,
+            });
+          }
+          continue;
+        }
+        const packageName = packageNameForImport(specifier);
+        if (
+          !NODE_BUILTIN_IMPORTS.has(specifier) &&
+          !dependencies.has(packageName) &&
+          !baselineUnresolved.has(`${file.target}\0${specifier}`)
+        ) {
+          issues.push({
+            code: "IMPORT_PACKAGE_UNDECLARED",
+            target: file.target,
+            message: `Import ${JSON.stringify(specifier)} is not declared by package.json.`,
+          });
+        }
+      }
+      if (kind === ts.ScriptKind.TS && imports.length === 0 && !file.target.endsWith(".d.ts")) {
+        typeChecked += 1;
+        issues.push(...pureTypeDiagnostics(file.target, text));
+      }
+      if (issues.length >= MAX_SEMANTIC_VALIDATION_ISSUES) break;
+    }
+    return validationResult(
+      `Validated ${checkedImports} imports and type-checked ${typeChecked} self-contained TypeScript files in the ${context.phase} view.`,
+      `Type or import validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+}
+
+function collectTokenAliases(
+  value: unknown,
+  path: readonly string[],
+  tokens: Map<string, CollectedToken>,
+  aliases: string[],
+  issues: TransactionValidationIssue[],
+  target: string,
+  state: TokenTraversalState,
+  inheritedType: string | null,
+  depth = 0,
+): void {
+  state.nodes += 1;
+  if (depth > 128 || state.nodes > 65_536) {
+    if (!state.limitReported) {
+      state.limitReported = true;
+      issues.push({
+        code: "TOKEN_LIMIT_EXCEEDED",
+        target,
+        message: "The token document exceeds deterministic depth or node limits.",
+      });
+    }
+    return;
+  }
+  if (typeof value === "string") {
+    const alias = /^\{([^{}]+)\}$/u.exec(value);
+    if (alias !== null) aliases.push(alias[1]!);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value)
+      collectTokenAliases(
+        entry,
+        path,
+        tokens,
+        aliases,
+        issues,
+        target,
+        state,
+        inheritedType,
+        depth + 1,
+      );
+    return;
+  }
+  if (value === null || typeof value !== "object") return;
+  const record = value as Record<string, unknown>;
+  let effectiveType = inheritedType;
+  if (Object.hasOwn(record, "$type")) {
+    if (typeof record.$type !== "string" || record.$type.trim().length === 0) {
+      issues.push({
+        code: "TOKEN_TYPE_INVALID",
+        target,
+        message: `Token group ${path.length === 0 ? "<root>" : path.join(".")} has an invalid $type.`,
+      });
+      effectiveType = null;
+    } else {
+      effectiveType = record.$type;
+    }
+  }
+  if (Object.hasOwn(record, "$value")) {
+    if (path.length === 0 || record.$value === undefined) {
+      issues.push({
+        code: "TOKEN_RECORD_INVALID",
+        target,
+        message: "A DTCG token record has no stable path or value.",
+      });
+    } else {
+      const tokenPath = path.join(".");
+      const tokenAliases: string[] = [];
+      collectTokenAliases(
+        record.$value,
+        path,
+        tokens,
+        tokenAliases,
+        issues,
+        target,
+        state,
+        effectiveType,
+        depth + 1,
+      );
+      tokens.set(tokenPath, { aliases: [...new Set(tokenAliases)].sort(), type: effectiveType });
+    }
+    return;
+  }
+  for (const [key, entry] of Object.entries(record)) {
+    if (key.startsWith("$")) continue;
+    collectTokenAliases(
+      entry,
+      [...path, key],
+      tokens,
+      aliases,
+      issues,
+      target,
+      state,
+      effectiveType,
+      depth + 1,
+    );
+  }
+}
+
+function tokenValidator(
+  files: readonly SemanticValidationFile[],
+): (context: TransactionValidationContext) => TransactionValidationResult {
+  return (context) => {
+    const issues: TransactionValidationIssue[] = [];
+    let documents = 0;
+    let cssReferences = 0;
+    for (const file of files) {
+      const text = validationText(context, file.target, issues);
+      if (text === null) continue;
+      if (file.role === "token" || file.mediaType.includes("design-tokens")) {
+        documents += 1;
+        try {
+          const value = JSON.parse(text) as unknown;
+          const tokens = new Map<string, CollectedToken>();
+          collectTokenAliases(
+            value,
+            [],
+            tokens,
+            [],
+            issues,
+            file.target,
+            { nodes: 0, limitReported: false },
+            null,
+          );
+          const visited = new Set<string>();
+          const reportedCycles = new Set<string>();
+          const reportedMismatches = new Set<string>();
+          const visit = (token: string, stack: Set<string>): void => {
+            const current = tokens.get(token);
+            if (current === undefined || visited.has(token)) return;
+            if (stack.has(token)) {
+              if (!reportedCycles.has(token)) {
+                reportedCycles.add(token);
+                issues.push({
+                  code: "TOKEN_ALIAS_CYCLE",
+                  target: file.target,
+                  message: `Token alias cycle includes ${token}.`,
+                });
+              }
+              return;
+            }
+            const next = new Set(stack).add(token);
+            for (const reference of current.aliases) {
+              const referenced = tokens.get(reference);
+              if (referenced === undefined) {
+                issues.push({
+                  code: "TOKEN_ALIAS_MISSING",
+                  target: file.target,
+                  message: `Token ${token} references missing token ${reference}.`,
+                });
+              } else {
+                const pair = `${token}\0${reference}`;
+                if (
+                  current.type !== null &&
+                  referenced.type !== null &&
+                  current.type !== referenced.type &&
+                  !reportedMismatches.has(pair)
+                ) {
+                  reportedMismatches.add(pair);
+                  issues.push({
+                    code: "TOKEN_ALIAS_TYPE_MISMATCH",
+                    target: file.target,
+                    message: `Token ${token} (${current.type}) aliases ${reference} (${referenced.type}).`,
+                  });
+                }
+                visit(reference, next);
+              }
+            }
+            visited.add(token);
+          };
+          for (const token of [...tokens.keys()].sort()) visit(token, new Set());
+        } catch {
+          issues.push({
+            code: "TOKEN_DOCUMENT_INVALID",
+            target: file.target,
+            message: "The declared token document is not valid JSON.",
+          });
+        }
+      }
+      if (file.mediaType === "text/css" || file.target.endsWith(".css")) {
+        const occurrences = text.match(/var\s*\(/gu)?.length ?? 0;
+        const valid = [...text.matchAll(/var\s*\(\s*(--[a-zA-Z0-9_-]+)/gu)].length;
+        cssReferences += valid;
+        if (occurrences !== valid) {
+          issues.push({
+            code: "TOKEN_CSS_REFERENCE_INVALID",
+            target: file.target,
+            message: "A CSS var() reference lacks a portable custom-property name.",
+          });
+        }
+      }
+      if (issues.length >= MAX_SEMANTIC_VALIDATION_ISSUES) break;
+    }
+    return validationResult(
+      `Validated ${documents} token documents and ${cssReferences} CSS token references in the ${context.phase} view.`,
+      `Token integrity validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+}
+
+function validationManifest(
+  context: TransactionValidationContext,
+  issues: TransactionValidationIssue[],
+): Record<string, unknown> | null {
+  try {
+    const parsed = JSON.parse(
+      context.readFile(MANIFEST_PATH)?.toString("utf8") ?? "null",
+    ) as unknown;
+    if (parsed === null || Array.isArray(parsed) || typeof parsed !== "object") throw new Error();
+    return parsed as Record<string, unknown>;
+  } catch {
+    issues.push({
+      code: "MANIFEST_VALIDATION_INVALID",
+      target: MANIFEST_PATH,
+      message: "The validation view has no valid provenance manifest.",
+    });
+    return null;
+  }
+}
+
+function contractValidator(
+  expectedItems: readonly SemanticValidationItem[],
+): (context: TransactionValidationContext) => TransactionValidationResult {
+  return (context) => {
+    const issues: TransactionValidationIssue[] = [];
+    const manifest = validationManifest(context, issues);
+    const items =
+      manifest?.items !== null && typeof manifest?.items === "object"
+        ? (manifest.items as Record<string, unknown>)
+        : {};
+    for (const expected of expectedItems) {
+      const item = items[expected.owner];
+      if (item === null || typeof item !== "object" || Array.isArray(item)) {
+        issues.push({
+          code: "CONTRACT_OWNER_MISSING",
+          target: MANIFEST_PATH,
+          message: `Contract owner ${expected.owner} is absent from provenance.`,
+        });
+        continue;
+      }
+      const record = item as Record<string, unknown>;
+      const payload =
+        record.payload !== null &&
+        typeof record.payload === "object" &&
+        !Array.isArray(record.payload)
+          ? (record.payload as Record<string, unknown>)
+          : null;
+      if (
+        record.contractVersion !== expected.contractVersion ||
+        !SEMVER.test(String(record.contractVersion)) ||
+        payload?.digest !== expected.payloadDigest
+      ) {
+        issues.push({
+          code: "CONTRACT_PROVENANCE_MISMATCH",
+          target: MANIFEST_PATH,
+          message: `Contract version or immutable payload binding for ${expected.owner} is inconsistent.`,
+        });
+      }
+    }
+    return validationResult(
+      `Validated ${expectedItems.length} Contract-to-payload provenance bindings in the ${context.phase} view.`,
+      `Contract integrity validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+}
+
+function projectConfigurationValidator(
+  expectedItems: readonly SemanticValidationItem[],
+): (context: TransactionValidationContext) => TransactionValidationResult {
+  return (context) => {
+    const issues: TransactionValidationIssue[] = [];
+    let config: MergoraConfig | null = null;
+    try {
+      config = validateMergoraConfig(
+        JSON.parse(context.readFile("mergora.json")?.toString("utf8") ?? "null") as unknown,
+      );
+      if (digest(config) !== context.plan.configDigest) {
+        issues.push({
+          code: "PROJECT_CONFIG_DIGEST_MISMATCH",
+          target: "mergora.json",
+          message: "The validated configuration does not match the reviewed plan digest.",
+        });
+      }
+    } catch {
+      issues.push({
+        code: "PROJECT_CONFIG_INVALID",
+        target: "mergora.json",
+        message: "The validation view has no schema-valid Mergora configuration.",
+      });
+    }
+    if (context.phase === "post-commit" && config !== null) {
+      try {
+        const inspection = inspectProject(context.projectRoot, {
+          framework: config.project.framework,
+          sourceRoot: config.project.sourceRoot,
+          globalCss: config.styling.globalCss,
+          aliasPrefix: mergoraConfigAliasPrefix(config),
+        });
+        if (
+          inspection.framework !== config.project.framework ||
+          inspection.sourceRoot !== config.project.sourceRoot ||
+          inspection.globalCss !== config.styling.globalCss ||
+          inspection.stylingEngine !== config.styling.engine
+        ) {
+          throw new Error("inspection mismatch");
+        }
+      } catch {
+        issues.push({
+          code: "PROJECT_INSPECTION_MISMATCH",
+          target: "mergora.json",
+          message:
+            "The committed project no longer matches its configured framework or source layout.",
+        });
+      }
+    }
+    const manifest = validationManifest(context, issues);
+    const items =
+      manifest?.items !== null && typeof manifest?.items === "object"
+        ? (manifest.items as Record<string, unknown>)
+        : {};
+    for (const expected of expectedItems) {
+      const raw = items[expected.owner];
+      if (raw === null || typeof raw !== "object" || Array.isArray(raw)) continue;
+      const item = raw as Record<string, unknown>;
+      if (
+        item.transformContext === null ||
+        typeof item.transformContext !== "object" ||
+        Array.isArray(item.transformContext) ||
+        item.transformContextDigest !== expected.transformContextDigest ||
+        digest(item.transformContext) !== expected.transformContextDigest
+      ) {
+        issues.push({
+          code: "TRANSFORM_CONTEXT_MISMATCH",
+          target: MANIFEST_PATH,
+          message: `Transform context for ${expected.owner} is not bound to its reviewed digest.`,
+        });
+      }
+    }
+    return validationResult(
+      `Validated configuration and ${expectedItems.length} transform-context bindings in the ${context.phase} view.`,
+      `Project configuration validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+}
+
+function semanticTransactionValidators(input: {
+  readonly root: string;
+  readonly files: readonly SemanticValidationFile[];
+  readonly items: readonly SemanticValidationItem[];
+}): readonly TransactionValidator[] {
+  if (input.files.length > MAX_SEMANTIC_VALIDATION_FILES) {
+    throw new CliError("Semantic validation file inventory exceeds its deterministic bound.", {
+      code: "SEMANTIC_VALIDATION_LIMIT_EXCEEDED",
+      exitCode: 8,
+    });
+  }
+  const files = [...input.files].sort((left, right) =>
+    left.target.localeCompare(right.target, "en-US"),
+  );
+  const items = [...input.items].sort((left, right) =>
+    left.owner.localeCompare(right.owner, "en-US"),
+  );
+  const registrations: readonly [
+    string,
+    TransactionValidator["label"],
+    (context: TransactionValidationContext) => TransactionValidationResult,
+  ][] = [
+    ["semantic-media-parse", "parse", mediaParseValidator(files)],
+    ["semantic-type-imports", "type-imports", typeImportValidator(files, input.root)],
+    ["semantic-token-integrity", "tokens", tokenValidator(files)],
+    ["semantic-contract-integrity", "accessibility-contract", contractValidator(items)],
+    ["semantic-project-config", "project-configured", projectConfigurationValidator(items)],
+  ];
+  return registrations.map(([id, label, validate]) => ({
+    id,
+    label,
+    validateStagedOverlay: validate,
+    validatePostCommit: validate,
+  }));
 }
 
 function assertDigest(value: string, label: string): asserts value is Digest {
@@ -1003,7 +1823,7 @@ function buildEntries(input: {
         );
       } else {
         result = mergeFileThreeWay({
-          mediaType,
+          mediaType: mergeAdapterMediaType(mediaType),
           base,
           local,
           remote: remoteBytesValue,
@@ -1228,6 +2048,16 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
       : []),
     "Upstream logical-path moves are not inferred in this version; a changed logical path is conservatively represented as delete plus add.",
   ];
+  const validators = semanticTransactionValidators({
+    root: project.root,
+    files: entries.map(({ target, mediaType, role }) => ({ target, mediaType, role })),
+    items: remoteItems.map((item) => ({
+      owner: `official:${item.itemId}`,
+      contractVersion: item.contractVersion,
+      payloadDigest: item.payloadDigest,
+      transformContextDigest: item.renderedWithTransformContextDigest,
+    })),
+  });
   const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "update",
@@ -1309,19 +2139,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
         0,
       ),
     },
-    validationSuite: [
-      "schema",
-      "digest",
-      "path",
-      "collision",
-      "parse",
-      "type-imports",
-      "ownership",
-      "dependency",
-      "tokens",
-      "accessibility-contract",
-      "project-configured",
-    ],
+    validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: true,
   });
   return {
@@ -1339,6 +2157,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     plan,
     mutations,
     observedTargets,
+    validators,
     registryPayloads: remoteItems
       .map((item) => ({
         registry: options.release.registry.id,
@@ -1739,6 +2558,7 @@ export async function applySemanticUpdate(
     packageManagerRunner: options.packageManagerRunner,
     faultInjector: options.faultInjector,
     commandArguments: options.commandArguments,
+    validators: internal.validators,
   });
   return {
     mode: "semantic-update",
@@ -2170,7 +2990,7 @@ function assertConflictLivePreconditions(loaded: LoadedConflict): void {
 function resolutionLimitations(): readonly string[] {
   return [
     "Choices are target-specific; take-upstream has no operation-wide wildcard.",
-    "Manual resolution validates conflict markers, UTF-8, declared JSON syntax, and adapter parse diagnostics; full project type/Contract validation still runs after commit.",
+    "Registered transaction validators re-run declared media parsing, local import closure, self-contained TypeScript checks, token integrity, Contract provenance, and project configuration against both the staged overlay and post-commit view; this does not claim a full consumer-project compiler run.",
     "There is no force overwrite. Any changed live, manifest, package, base, state, or snapshot digest requires a fresh update plan.",
   ];
 }
@@ -2266,7 +3086,7 @@ function validateManualResolution(
             remote: Buffer.concat([bytes, Buffer.from("\n/* mergora-validation-remote */\n")]),
           };
   const diagnostics = mergeFileThreeWay({
-    mediaType: entry.mediaType,
+    mediaType: mergeAdapterMediaType(entry.mediaType),
     base: adapterProbe?.base ?? verifiedSnapshot(loaded, entry, "base"),
     local: bytes,
     remote: adapterProbe?.remote ?? verifiedSnapshot(loaded, entry, "remote"),
@@ -2473,6 +3293,7 @@ interface InternalResolveApplyPlan {
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
   readonly candidates: ReadonlyMap<string, Buffer | null>;
+  readonly validators: readonly TransactionValidator[];
 }
 
 function resolvedOperation(
@@ -2666,6 +3487,30 @@ function buildResolveApplyInternal(options: SemanticResolveApplyOptions): Intern
     );
   }
   const original = loaded.plan;
+  const validators = semanticTransactionValidators({
+    root: loaded.root,
+    files: loaded.state.entries.map(({ target, mediaType, role }) => ({
+      target,
+      mediaType,
+      role,
+    })),
+    items: loaded.state.selectedItems.map((owner) => {
+      const item = nextManifest.items[owner];
+      if (item === undefined) {
+        throw new CliError(`Resolved manifest lacks selected Contract owner ${owner}.`, {
+          code: "CONFLICT_STATE_INVALID",
+          exitCode: 8,
+          target: MANIFEST_PATH,
+        });
+      }
+      return {
+        owner,
+        contractVersion: item.contractVersion,
+        payloadDigest: item.payload.digest,
+        transformContextDigest: item.transformContextDigest,
+      };
+    }),
+  });
   const decisions = loaded.state.entries
     .filter(({ originalStatus }) => originalStatus === "conflict")
     .map(({ target, resolution }) => `${target}=${resolution}`)
@@ -2706,10 +3551,10 @@ function buildResolveApplyInternal(options: SemanticResolveApplyOptions): Intern
         0,
       ),
     },
-    validationSuite: original.validationSuite,
+    validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: true,
   });
-  return { loaded, plan, mutations, observedTargets, candidates };
+  return { loaded, plan, mutations, observedTargets, candidates, validators };
 }
 
 export function planSemanticResolveApply(options: SemanticResolveApplyOptions): OperationPlan {
@@ -2740,6 +3585,7 @@ export function applySemanticResolution(
     packageManagerRunner: options.packageManagerRunner,
     faultInjector: options.faultInjector,
     commandArguments: options.commandArguments,
+    validators: internal.validators,
   });
   const decisions = internal.loaded.state.entries
     .filter(
@@ -2934,7 +3780,7 @@ export function diffSemanticSource(options: SemanticSourceDiffOptions): Semantic
           }
           const local = readProjectFile(root, file.target);
           const result = mergeFileThreeWay({
-            mediaType: file.mediaType,
+            mediaType: mergeAdapterMediaType(file.mediaType),
             base,
             local,
             remote: base,

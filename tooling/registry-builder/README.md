@@ -13,13 +13,16 @@ blocked records, not Quality Passports.
 
 `buildStableReleaseProtocolBundle` is the separate fail-closed publication boundary. It accepts
 only an explicitly passing release gate and packed-consumer record, a digest-bound official
-identity, stable version and commit, complete stable-item quality evidence, and embedded source
-bytes whose lengths and digests verify. It then schema-validates and deterministically emits the
-native catalog, immutable item payloads, immutable release manifest, mutable latest aliases,
-response cache/security metadata, and a complete `SHA256SUMS`. Verification rechecks every
-digest and cross-document reference. Supplying a precomputed item payload digest, unverified
-source URL, inconsistent identity, missing dependency, cycle, alias collision, or incomplete
-Stable evidence fails before output.
+identity, stable version and commit, complete stable-item quality evidence, public schemas, an
+SBOM, Contracts, Passports, and embedded source bytes whose lengths and digests verify. It then
+schema-validates and deterministically emits the native catalog and search index, immutable item
+payloads and release manifest, mutable latest aliases, the exact evidence bytes, an immutable
+mirror inventory, a portable static release bundle, response cache/security metadata, and a
+complete `SHA256SUMS`. Verification reconstructs the bundle and rechecks every digest,
+cross-document reference, item/evidence binding, manifest inventory, and mirror byte. Supplying a
+precomputed item payload digest, unverified source URL, inconsistent identity, missing dependency,
+cycle, alias collision, incomplete Stable evidence, or coherently rehashed omission fails before
+output.
 
 ## Commands
 

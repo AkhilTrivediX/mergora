@@ -6,6 +6,7 @@ import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { defineContractV1 } from "../../packages/contracts/src/index.ts";
+import { validateSchemaDocument } from "../../registry/schemas/validators.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -31,7 +32,10 @@ function command(arguments_: readonly string[], cwd = workspaceRoot): CommandRes
 
 function json(result: CommandResult): Record<string, unknown> {
   expect(result.stdout.trim()).not.toBe("");
-  return JSON.parse(result.stdout) as Record<string, unknown>;
+  const envelope = JSON.parse(result.stdout) as Record<string, unknown>;
+  const validation = validateSchemaDocument("result-envelope", envelope);
+  expect(validation.errors, JSON.stringify(validation.errors, null, 2)).toEqual([]);
+  return envelope;
 }
 
 beforeAll(() => {
@@ -93,6 +97,12 @@ describe("packed command parser and output contract", () => {
     const unknown = command(["search", "--unknown", "--json"]);
     expect(unknown.status).toBe(2);
     expect(json(unknown)).toMatchObject({
+      errors: [{ code: "COMMAND_USAGE_INVALID" }],
+    });
+
+    const knownButDisallowed = command(["search", "button", "--yes", "--json"]);
+    expect(knownButDisallowed.status).toBe(2);
+    expect(json(knownButDisallowed)).toMatchObject({
       errors: [{ code: "COMMAND_USAGE_INVALID" }],
     });
 

@@ -58,7 +58,7 @@
         }
       },
       "minItems": 1,
-      "maxItems": 256
+      "maxItems": 4096
     },
     "qualitySummary": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
     "manifestDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
