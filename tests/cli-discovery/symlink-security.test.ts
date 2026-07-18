@@ -100,12 +100,15 @@ describe("project discovery no-follow policy", () => {
     applyInit({ projectRoot: project.root });
     const outside = outsideDirectory("mergora-outside-transactions-");
     writeFileSync(resolve(outside, "secret.txt"), "must not be read\n");
-    directoryJunction(outside, resolve(project.root, ".mergora/transactions"));
+    const transactionDirectory = resolve(project.root, ".mergora/transactions");
+    rmSync(transactionDirectory, { recursive: true });
+    directoryJunction(outside, transactionDirectory);
 
     expectSafeSymlinkDiagnostic(
       thrownCliError(() => projectStatus(project.root)),
       outside,
     );
+    expect(readFileSync(resolve(outside, "secret.txt"), "utf8")).toBe("must not be read\n");
   });
 
   it("rejects a linked owned-target ancestor", () => {

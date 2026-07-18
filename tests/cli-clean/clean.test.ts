@@ -27,14 +27,30 @@ const temporaryDirectories: string[] = [];
 const linkedDirectories: string[] = [];
 
 interface CleanFixture extends ProjectFixture {
+  readonly initTransactionIds: readonly string[];
   readonly transactionId: string | null;
+}
+
+function transactionIds(root: string): readonly string[] {
+  const directory = resolve(root, ".mergora/transactions");
+  return existsSync(directory)
+    ? readdirSync(directory).sort((left, right) => left.localeCompare(right, "en-US"))
+    : [];
+}
+
+function transactionPaths(transactionIds: readonly string[]): readonly string[] {
+  return transactionIds
+    .map((transactionId) => `.mergora/transactions/${transactionId}`)
+    .sort((left, right) => left.localeCompare(right, "en-US"));
 }
 
 function fixture(withSource = true): CleanFixture {
   const project = createProjectFixture({ directoryPrefix: "mergora-clean-" });
   temporaryDirectories.push(project.root);
   applyInit({ projectRoot: project.root });
-  if (!withSource) return { ...project, transactionId: null };
+  const initTransactionIds = transactionIds(project.root);
+  expect(initTransactionIds).toHaveLength(1);
+  if (!withSource) return { ...project, initTransactionIds, transactionId: null };
   const options = {
     projectRoot: project.root,
     itemIds: ["button"],
@@ -44,7 +60,7 @@ function fixture(withSource = true): CleanFixture {
   const result = applySourceAdd(options, planSourceAdd(options).planDigest);
   expect(result.transaction.state).toBe("committed");
   expect(result.transaction.transactionId).toBeTypeOf("string");
-  return { ...project, transactionId: result.transaction.transactionId! };
+  return { ...project, initTransactionIds, transactionId: result.transaction.transactionId! };
 }
 
 function json<T>(path: string): T {
@@ -153,9 +169,11 @@ describe("cleanup planning and exact apply", () => {
     expect(first.writesRequired).toBe(false);
     expect(first.candidates.cache.map(({ path }) => path)).toContain(cached);
     expect(first.candidates.bases.map(({ path }) => path)).toContain(unused.path);
-    expect(first.candidates.transactions.map(({ path }) => path)).toEqual([
-      `.mergora/transactions/${project.transactionId}`,
-    ]);
+    expect(
+      first.candidates.transactions
+        .map(({ path }) => path)
+        .sort((left, right) => left.localeCompare(right, "en-US")),
+    ).toEqual(transactionPaths([...project.initTransactionIds, project.transactionId!]));
     expect(inventory(project.root)).toEqual(before);
 
     expect(applyClean(options, first.planDigest)).toMatchObject({
@@ -212,12 +230,16 @@ describe("cleanup planning and exact apply", () => {
     };
     const transactionPlan = planClean(transactionOptions);
     expect(transactionPlan.selectedCategories).toEqual(["transactions"]);
-    expect(applyClean(transactionOptions, transactionPlan.planDigest).deleted).toEqual([
-      `.mergora/transactions/${project.transactionId}`,
-    ]);
     expect(
-      existsSync(resolve(project.root, `.mergora/transactions/${project.transactionId}`)),
-    ).toBe(false);
+      [...applyClean(transactionOptions, transactionPlan.planDigest).deleted].sort((left, right) =>
+        left.localeCompare(right, "en-US"),
+      ),
+    ).toEqual(transactionPaths([...project.initTransactionIds, project.transactionId!]));
+    for (const transactionId of [...project.initTransactionIds, project.transactionId!]) {
+      expect(existsSync(resolve(project.root, `.mergora/transactions/${transactionId}`))).toBe(
+        false,
+      );
+    }
     assertProtectedBytes(project.root, protectedSnapshot);
   });
 
@@ -256,10 +278,19 @@ describe("cleanup planning and exact apply", () => {
     const plan = planClean(options);
 
     expect(plan.preserved.activeTransactions).toEqual([project.transactionId]);
-    expect(plan.candidates.transactions).toEqual([]);
+    expect(
+      plan.candidates.transactions
+        .map(({ path }) => path)
+        .sort((left, right) => left.localeCompare(right, "en-US")),
+    ).toEqual(transactionPaths(project.initTransactionIds));
     expect(plan.blockedReasons).toEqual([expect.stringMatching(/recovered before cleanup/iu)]);
     expect(() => applyClean(options, plan.planDigest)).toThrow(/recovered before cleanup/iu);
     expect(existsSync(transactionRoot)).toBe(true);
+    for (const transactionId of project.initTransactionIds) {
+      expect(existsSync(resolve(project.root, `.mergora/transactions/${transactionId}`))).toBe(
+        true,
+      );
+    }
     expect(existsSync(resolve(project.root, cached))).toBe(true);
   });
 
