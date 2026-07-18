@@ -58,7 +58,7 @@ beforeAll(() => {
   if (result.status !== 0) {
     throw new Error(`Packed CLI build failed:\n${result.stdout}\n${result.stderr}`);
   }
-});
+}, 120_000);
 
 afterAll(() => {
   for (const directory of temporaryDirectories.splice(0)) {
