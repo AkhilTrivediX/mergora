@@ -24,7 +24,7 @@ Usage:
 Discovery and project commands:
   create <directory>   Create a deterministic Next or Vite React project
   init                 Inspect and initialize a supported React project
-  search [query]       Search the bundled verified catalog
+  search [query]       Search bundled unreleased data or an exact acquired release
   view <item...>       Inspect item metadata, targets, and dependencies
   docs <item|topic>    Print canonical documentation
   info                 Report local project and CLI compatibility
@@ -79,8 +79,18 @@ initializes Git. Missing required choices are prompted only on an interactive TT
 Creates only mergora.json, the empty portable manifest, and narrow local-state
 .gitignore rules. Existing package.json, tsconfig.json, and CSS bytes are preserved.`,
   search: `Usage: mergora search [query] [--kind <kind>] [--category <category>]
-                      [--maturity <maturity>] [--tag <tag>] [--limit <1-100>] [--json]`,
-  view: `Usage: mergora view <item...> [--files] [--source <logical-path>] [--json]`,
+                      [--maturity <maturity>] [--tag <tag>] [--limit <1-100>]
+                      [--release-file <project-relative-path>] [--cwd <path>]
+                      [--offline] [--json]
+
+An exact native release reference never falls back to bundled unreleased data.
+Offline acquisition requires the referenced artifacts in the verified cache.`,
+  view: `Usage: mergora view <item...> [--files] [--source <logical-path>]
+                    [--release-file <project-relative-path>] [--cwd <path>]
+                    [--offline] [--json]
+
+An exact native release reference acquires the requested dependency closure and
+never falls back to bundled unreleased data.`,
   docs: `Usage: mergora docs <item|topic> [--format <markdown|json|url>] [--open]
 
 --open is ignored in CI/non-interactive mode and never sends project data.`,
@@ -97,7 +107,8 @@ Status is local-only in this tranche.`,
 Runs immutable Contract snapshots against locally installed source. Runtime modes
 without an enrolled harness report unavailable evidence and never fabricate a pass.`,
   add: `Usage: mergora add <item...> [--root|--cwd <path>] [--target <relative-path>]
-                   [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
+                   [--release-file <project-relative-path>] [--no-install] [--offline]
+                   [--plan|--dry-run] [--yes] [--json]
 
 Stages the complete dependency closure, validates it, backs up every authoritative
 target, commits the provenance manifest last, and rolls back on failure.`,
@@ -129,9 +140,9 @@ explicitly acquired project-relative release snapshot and adds the B/L/R proposa
   update: `Usage: mergora update <item...>|--all --release-file <path> [--cwd <path>]
                       [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
 
-Validates an explicit immutable release snapshot, plans exact B/L/R merges, and
-either commits one transaction or stages a complete conflict bundle without
-changing authoritative project bytes.`,
+Accepts either the legacy immutable Semantic Sync snapshot or a schema-discriminated
+official native release reference. Acquired releases never fall back to bundled data.
+It plans exact B/L/R merges and changes no authoritative bytes on conflict.`,
   resolve: `Usage: mergora resolve <transaction-id> [--list]
                        [--take-local <target>|--take-upstream <target>|
                         --resolved <target>|--reset <target>]
@@ -461,6 +472,201 @@ function immutableRelease(parsed: ParsedArguments, root: string, api: Api) {
   return release;
 }
 
+const NATIVE_RELEASE_REFERENCE_KIND = "mergora-native-release-reference" as const;
+const NATIVE_RELEASE_REFERENCE_MAX_BYTES = 16 * 1024;
+const SHA256_DIGEST = /^sha256:[a-f0-9]{64}$/u;
+const SEMANTIC_RELEASE =
+  /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
+
+interface NativeReleaseReference {
+  readonly schemaVersion: 1;
+  readonly artifactKind: typeof NATIVE_RELEASE_REFERENCE_KIND;
+  readonly registryId: "official";
+  readonly release: string;
+  readonly catalog: {
+    readonly digest: `sha256:${string}`;
+    readonly bytes: number;
+  };
+  readonly manifest: {
+    readonly digest: `sha256:${string}`;
+    readonly bytes: number;
+  };
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function exactKeys(value: Record<string, unknown>, expected: readonly string[]): boolean {
+  const actual = Object.keys(value).sort((left, right) => left.localeCompare(right, "en-US"));
+  const sortedExpected = [...expected].sort((left, right) => left.localeCompare(right, "en-US"));
+  return (
+    actual.length === sortedExpected.length &&
+    actual.every((key, index) => key === sortedExpected[index])
+  );
+}
+
+function nativeReleaseReferenceError(message: string, api: Api): InstanceType<Api["CliError"]> {
+  return new api.CliError(message, {
+    code: "REGISTRY_RELEASE_REFERENCE_INVALID",
+    exitCode: 5,
+  });
+}
+
+function parseNativeArtifactReference(
+  value: unknown,
+  label: string,
+  api: Api,
+): NativeReleaseReference["catalog"] {
+  if (
+    !isRecord(value) ||
+    !exactKeys(value, ["bytes", "digest"]) ||
+    typeof value.digest !== "string" ||
+    !SHA256_DIGEST.test(value.digest) ||
+    !Number.isSafeInteger(value.bytes) ||
+    (value.bytes as number) < 1 ||
+    (value.bytes as number) > 64 * 1024 * 1024
+  ) {
+    throw nativeReleaseReferenceError(`${label} reference is invalid.`, api);
+  }
+  return {
+    digest: value.digest as `sha256:${string}`,
+    bytes: value.bytes as number,
+  };
+}
+
+async function readNativeReleaseReference(
+  parsed: ParsedArguments,
+  root: string,
+  api: Api,
+  allowLegacySnapshot: boolean,
+): Promise<NativeReleaseReference | null> {
+  const releaseFile = flagValue(parsed, "release-file");
+  if (releaseFile === undefined) return null;
+  const { readProjectFile } = await import("./source-operations.js");
+  const bytes = readProjectFile(root, releaseFile);
+  if (bytes === null) {
+    throw new api.CliError("The exact release reference file is unavailable.", {
+      code: "REGISTRY_RELEASE_REFERENCE_MISSING",
+      exitCode: 4,
+      target: releaseFile,
+    });
+  }
+  if (bytes.byteLength < 2 || bytes.byteLength > NATIVE_RELEASE_REFERENCE_MAX_BYTES) {
+    if (allowLegacySnapshot) return null;
+    throw nativeReleaseReferenceError("The exact release reference file has an unsafe size.", api);
+  }
+  let text: string;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    if (allowLegacySnapshot) return null;
+    throw nativeReleaseReferenceError("The exact release reference is not valid UTF-8.", api);
+  }
+  let value: unknown;
+  try {
+    value = JSON.parse(text) as unknown;
+  } catch {
+    if (allowLegacySnapshot) return null;
+    throw nativeReleaseReferenceError("The exact release reference is not valid JSON.", api);
+  }
+  if (!isRecord(value)) {
+    if (allowLegacySnapshot) return null;
+    throw nativeReleaseReferenceError("The exact release reference must be a JSON object.", api);
+  }
+  if (value.artifactKind === undefined) {
+    if (value.catalog !== undefined || value.manifest !== undefined) {
+      throw nativeReleaseReferenceError(
+        "A native release reference requires its schema discriminator.",
+        api,
+      );
+    }
+    if (allowLegacySnapshot) return null;
+    throw nativeReleaseReferenceError(
+      `The release file must declare artifactKind ${NATIVE_RELEASE_REFERENCE_KIND}.`,
+      api,
+    );
+  }
+  if (value.artifactKind !== NATIVE_RELEASE_REFERENCE_KIND) {
+    throw nativeReleaseReferenceError("The release file has an unsupported artifact kind.", api);
+  }
+  if (text !== api.canonicalJson(value) && text !== `${api.canonicalJson(value)}\n`) {
+    throw nativeReleaseReferenceError(
+      "The native release reference must use canonical JSON without duplicate keys.",
+      api,
+    );
+  }
+  if (
+    !exactKeys(value, [
+      "artifactKind",
+      "catalog",
+      "manifest",
+      "registryId",
+      "release",
+      "schemaVersion",
+    ]) ||
+    value.schemaVersion !== 1 ||
+    value.registryId !== "official" ||
+    typeof value.release !== "string" ||
+    !SEMANTIC_RELEASE.test(value.release)
+  ) {
+    throw nativeReleaseReferenceError("The native release reference schema is invalid.", api);
+  }
+  return {
+    schemaVersion: 1,
+    artifactKind: NATIVE_RELEASE_REFERENCE_KIND,
+    registryId: "official",
+    release: value.release,
+    catalog: parseNativeArtifactReference(value.catalog, "Catalog artifact", api),
+    manifest: parseNativeArtifactReference(value.manifest, "Release manifest artifact", api),
+  };
+}
+
+function officialItemReferences(itemIds: readonly string[]): readonly string[] {
+  return itemIds.map((input) => {
+    const separator = input.indexOf(":");
+    if (separator === -1) return input;
+    if (input.slice(0, separator) !== "official" || input.indexOf(":", separator + 1) !== -1) {
+      throw new CommandUsageError(
+        "An official native release accepts only unqualified or official-qualified item references.",
+      );
+    }
+    return input.slice(separator + 1);
+  });
+}
+
+async function acquireNativeRelease(
+  parsed: ParsedArguments,
+  root: string,
+  api: Api,
+  reference: NativeReleaseReference,
+  itemIds: readonly string[],
+) {
+  const origin = api.OFFICIAL_REGISTRY_ORIGIN;
+  return api.resolveNativeRegistryRelease({
+    projectRoot: root,
+    registry: {
+      id: "official",
+      origin,
+      trust: "official",
+      identityDigest: api.sha256(api.canonicalJson({ id: "official", origin, trust: "official" })),
+    },
+    release: reference.release,
+    catalog: {
+      path: "catalog.json",
+      digest: reference.catalog.digest,
+      bytes: reference.catalog.bytes,
+    },
+    manifest: {
+      path: `releases/${reference.release}/manifest.json`,
+      digest: reference.manifest.digest,
+      bytes: reference.manifest.bytes,
+    },
+    itemIds: officialItemReferences(itemIds),
+    offline: hasFlag(parsed, "offline"),
+  });
+}
+
 function operationWrites(plan: import("./transaction-engine.js").OperationPlan): boolean {
   return (
     plan.estimatedBytes.write > 0 ||
@@ -573,6 +779,11 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     case "search": {
       if (parsed.positionals.length > 1)
         throw new CommandUsageError("search accepts at most one query.");
+      const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const acquiredRelease =
+        releaseReference === null
+          ? undefined
+          : await acquireNativeRelease(parsed, root, api, releaseReference, []);
       const limitText = flagValue(parsed, "limit");
       const result = api.searchRegistry(parsed.positionals[0] ?? "", {
         kind: flagValue(parsed, "kind"),
@@ -580,6 +791,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         maturity: flagValue(parsed, "maturity"),
         tag: flagValue(parsed, "tag"),
         limit: limitText === undefined ? undefined : Number(limitText),
+        acquiredRelease,
       });
       return {
         result,
@@ -605,9 +817,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     }
     case "view": {
       const source = flagValue(parsed, "source");
-      const result = api.viewRegistryItems(parsed.positionals, {
+      const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const requestedItems =
+        releaseReference === null ? parsed.positionals : officialItemReferences(parsed.positionals);
+      const acquiredRelease =
+        releaseReference === null
+          ? undefined
+          : await acquireNativeRelease(parsed, root, api, releaseReference, requestedItems);
+      const result = api.viewRegistryItems(requestedItems, {
         files: hasFlag(parsed, "files"),
         source,
+        acquiredRelease,
       });
       const raw = source === undefined ? undefined : result[0]?.requestedSource?.content;
       return {
@@ -615,7 +835,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         text: result
           .map(
             (item) =>
-              `${item.id} — ${item.title}\n${item.description}\nMaturity: ${item.maturity}; source: ${item.sourceAvailable ? "available (unreleased)" : "not implemented"}; dependencies: ${String(item.registryDependencies.length)}`,
+              `${item.id} — ${item.title}\n${item.description}\nMaturity: ${item.maturity}; source: ${item.sourceAvailable ? (acquiredRelease === undefined ? "available (unreleased)" : `verified ${acquiredRelease.release}`) : "not implemented"}; dependencies: ${String(item.registryDependencies.length)}`,
           )
           .join("\n\n"),
         ...(raw === undefined ? {} : { raw }),
@@ -760,14 +980,25 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       if (hasFlag(parsed, "all") === parsed.positionals.length > 0) {
         throw new CommandUsageError("update requires explicit items or --all, but not both.");
       }
-      const release = immutableRelease(parsed, root, api);
-      if (release.release.includes("-") && !hasFlag(parsed, "allow-prerelease")) {
+      const releaseReference = await readNativeReleaseReference(parsed, root, api, true);
+      const acquisitionItems = hasFlag(parsed, "all")
+        ? api.projectStatus(root).items.map(({ id }) => id)
+        : parsed.positionals;
+      const acquiredRelease =
+        releaseReference === null
+          ? null
+          : await acquireNativeRelease(parsed, root, api, releaseReference, acquisitionItems);
+      const release = acquiredRelease === null ? immutableRelease(parsed, root, api) : null;
+      const releaseVersion = acquiredRelease?.release ?? release!.release;
+      const requestedTarget = flagValue(parsed, "to");
+      if (requestedTarget !== undefined && requestedTarget !== releaseVersion) {
+        throw new CommandUsageError("--to must exactly match the immutable release version.");
+      }
+      if (releaseVersion.includes("-") && !hasFlag(parsed, "allow-prerelease")) {
         throw new CommandUsageError("A prerelease target requires --allow-prerelease.");
       }
-      const options = {
+      const sharedOptions = {
         projectRoot: root,
-        itemIds: hasFlag(parsed, "all") ? undefined : parsed.positionals,
-        release,
         noInstall: hasFlag(parsed, "no-install"),
         offline: hasFlag(parsed, "offline"),
         packageManager: parseManager(flagValue(parsed, "package-manager")),
@@ -777,7 +1008,30 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           ...[...parsed.flags.keys()].map((name) => `--${name}`),
         ],
       };
-      const plan = api.planSemanticUpdate(options);
+      const acquiredOptions =
+        acquiredRelease === null
+          ? null
+          : {
+              ...sharedOptions,
+              itemIds: hasFlag(parsed, "all")
+                ? undefined
+                : officialItemReferences(parsed.positionals).map(
+                    (id) => acquiredRelease.aliases[id] ?? id,
+                  ),
+              acquiredRelease,
+            };
+      const legacyOptions =
+        acquiredOptions === null
+          ? {
+              ...sharedOptions,
+              itemIds: hasFlag(parsed, "all") ? undefined : parsed.positionals,
+              release: release!,
+            }
+          : null;
+      const plan =
+        acquiredOptions === null
+          ? api.planSemanticUpdate(legacyOptions!)
+          : api.planAcquiredSemanticUpdate(acquiredOptions);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
@@ -801,7 +1055,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           exitCode: 12,
         });
       }
-      const result = await api.applySemanticUpdate(options, plan.planDigest);
+      const result =
+        acquiredOptions === null
+          ? await api.applySemanticUpdate(legacyOptions!, plan.planDigest)
+          : await api.applyAcquiredSemanticUpdate(acquiredOptions, plan.planDigest);
       return {
         result,
         status: result.status,
@@ -814,8 +1071,22 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "add": {
-      const options = sourceCommandOptions(parsed, root);
-      const plan = api.planSourceAdd(options);
+      const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const requestedItems =
+        releaseReference === null ? parsed.positionals : officialItemReferences(parsed.positionals);
+      const acquiredRelease =
+        releaseReference === null
+          ? null
+          : await acquireNativeRelease(parsed, root, api, releaseReference, requestedItems);
+      const options = {
+        ...sourceCommandOptions(parsed, root),
+        itemIds: requestedItems,
+      };
+      const acquiredOptions = acquiredRelease === null ? null : { ...options, acquiredRelease };
+      const plan =
+        acquiredOptions === null
+          ? api.planSourceAdd(options)
+          : api.planAcquiredSourceAdd(acquiredOptions);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
@@ -840,7 +1111,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           { code: "CONSENT_REQUIRED", exitCode: 12 },
         );
       }
-      const result = api.applySourceAdd(options, plan.planDigest);
+      const result =
+        acquiredOptions === null
+          ? api.applySourceAdd(options, plan.planDigest)
+          : api.applyAcquiredSourceAdd(acquiredOptions, plan.planDigest);
       return {
         result,
         status: result.transaction.state,

@@ -6,7 +6,10 @@ import { resolve } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { defineContractV1 } from "../../packages/contracts/src/index.ts";
+import { canonicalJson } from "../../packages/cli/src/contracts.ts";
+import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.ts";
 import { validateSchemaDocument } from "../../registry/schemas/validators.ts";
+import { seedPackedNativeRelease } from "../cli-acquisition/packed-release-fixture.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -142,6 +145,256 @@ describe("packed command parser and output contract", () => {
 });
 
 describe("packed project commands", () => {
+  it("routes exact official native references through offline search, view, add, and update", async () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const first = await seedPackedNativeRelease(
+      project.root,
+      "1.0.0",
+      'export const button = "first";\n',
+    );
+    const second = await seedPackedNativeRelease(
+      project.root,
+      "1.1.0",
+      'export const button = "second";\n',
+    );
+    expect(first.requestedUrls).toEqual([
+      `${OFFICIAL_REGISTRY_ORIGIN}/catalog.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.0.0/manifest.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.0.0/items/button.json`,
+    ]);
+    expect(second.requestedUrls).toEqual([
+      `${OFFICIAL_REGISTRY_ORIGIN}/catalog.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/manifest.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/items/button.json`,
+    ]);
+    expect([...first.requestedUrls, ...second.requestedUrls]).not.toEqual(
+      expect.arrayContaining([expect.stringContaining("/r/v1/r/v1/")]),
+    );
+    expect(command(["init", "--yes", "--non-interactive"], project.root).status).toBe(0);
+
+    const searched = command([
+      "search",
+      "pressable",
+      "--cwd",
+      project.root,
+      "--release-file",
+      first.referencePath,
+      "--offline",
+      "--json",
+    ]);
+    expect(searched.status, `${searched.stdout}\n${searched.stderr}`).toBe(0);
+    expect(json(searched)).toMatchObject({
+      result: {
+        items: [
+          {
+            id: "button",
+            implementationStatus: "released",
+            latestStableVersion: "1.0.0",
+          },
+        ],
+      },
+    });
+    expect(searched.stdout).not.toContain(project.root);
+
+    const viewed = command(
+      [
+        "view",
+        "official:button",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--source",
+        "ui/button/button.tsx",
+      ],
+      project.root,
+    );
+    expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: first.source });
+
+    const addPlan = command(
+      [
+        "add",
+        "pressable",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(addPlan.status, `${addPlan.stdout}\n${addPlan.stderr}`).toBe(0);
+    expect(json(addPlan)).toMatchObject({
+      status: "planned",
+      result: {
+        registries: [
+          {
+            id: "official",
+            release: "1.0.0",
+            manifestDigest: first.manifestDigest,
+            source: "verified-cache",
+          },
+        ],
+      },
+    });
+    const added = command(
+      [
+        "add",
+        "pressable",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(json(added)).toMatchObject({
+      status: "committed",
+      result: { items: ["button"], transaction: { state: "committed" } },
+    });
+
+    const updatePlan = command(
+      [
+        "update",
+        "button",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--no-install",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(updatePlan.status, `${updatePlan.stdout}\n${updatePlan.stderr}`).toBe(0);
+    expect(json(updatePlan)).toMatchObject({
+      status: "planned",
+      result: {
+        registries: [
+          {
+            id: "official",
+            release: "1.1.0",
+            manifestDigest: second.manifestDigest,
+            source: "verified-cache",
+          },
+        ],
+      },
+    });
+    const updated = command(
+      [
+        "update",
+        "button",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
+    expect(json(updated)).toMatchObject({ status: "committed", result: { release: "1.1.0" } });
+    const manifest = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as {
+      items: Record<
+        string,
+        {
+          resolved: string;
+          payload: { digest: string; url: string };
+          files: readonly { target: string }[];
+        }
+      >;
+    };
+    const installed = manifest.items["official:button"]!;
+    expect(installed).toMatchObject({
+      resolved: "1.1.0",
+      payload: {
+        digest: second.payloadDigest,
+        url: `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/items/button.json`,
+      },
+    });
+    expect(installed.payload.url).not.toContain("/r/v1/r/v1/");
+    expect(readFileSync(resolve(project.root, installed.files[0]!.target), "utf8")).toBe(
+      second.source,
+    );
+  }, 30_000);
+
+  it("fails closed for ambiguous native references, non-official selection, and cache misses", async () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const release = await seedPackedNativeRelease(
+      project.root,
+      "1.0.0",
+      'export const button = "safe";\n',
+    );
+    expect(command(["init", "--yes", "--non-interactive"], project.root).status).toBe(0);
+    const maliciousPath = ".mergora/release-malicious.json";
+    writeFileSync(
+      resolve(project.root, maliciousPath),
+      `${canonicalJson({ ...release.reference, origin: "https://attacker.invalid/r/v1" })}\n`,
+    );
+    const malicious = command(
+      ["search", "button", "--release-file", maliciousPath, "--offline", "--json"],
+      project.root,
+    );
+    expect(malicious.status).toBe(5);
+    expect(json(malicious)).toMatchObject({
+      errors: [{ code: "REGISTRY_RELEASE_REFERENCE_INVALID" }],
+    });
+
+    const partner = command(
+      [
+        "search",
+        "button",
+        "--registry",
+        "partner",
+        "--release-file",
+        release.referencePath,
+        "--offline",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(partner.status).toBe(2);
+    expect(json(partner)).toMatchObject({ errors: [{ code: "COMMAND_USAGE_INVALID" }] });
+
+    const legacyPath = ".mergora/legacy-update-snapshot.json";
+    writeFileSync(
+      resolve(project.root, legacyPath),
+      `${canonicalJson({ schemaVersion: 0, release: "1.0.0" })}\n`,
+    );
+    const legacy = command(
+      ["update", "button", "--release-file", legacyPath, "--plan", "--json"],
+      project.root,
+    );
+    expect(legacy.status).toBe(5);
+    expect(json(legacy)).toMatchObject({ errors: [{ code: "REGISTRY_RELEASE_INVALID" }] });
+
+    const missingPath = ".mergora/release-missing-cache.json";
+    writeFileSync(
+      resolve(project.root, missingPath),
+      `${canonicalJson({
+        ...release.reference,
+        catalog: { ...release.reference.catalog, digest: `sha256:${"0".repeat(64)}` },
+      })}\n`,
+    );
+    const missing = command(
+      ["search", "button", "--release-file", missingPath, "--offline", "--json"],
+      project.root,
+    );
+    expect(missing.status).toBe(4);
+    expect(json(missing)).toMatchObject({ errors: [{ code: "REGISTRY_EVIDENCE_MISSING" }] });
+    expect(missing.stdout).not.toContain("0.0.0-unreleased");
+  });
+
   it("plans, requires narrow consent, applies, and then no-ops in a path with spaces", () => {
     const project = createProjectFixture({ directoryPrefix: "mergora packed path with spaces " });
     temporaryDirectories.push(project.root);
