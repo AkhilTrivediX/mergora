@@ -77,6 +77,7 @@ Creates a versioned minimal project, runs Mergora initialization, and never
 initializes Git. Missing required choices are prompted only on an interactive TTY.`,
   init: `Usage: mergora init [--cwd <path>] [--framework <next-app|next-pages|vite-react|react>]
                     [--source-root <path>] [--global-css <path>] [--alias-prefix <prefix>]
+                    [--mode <source|package|hybrid>]
                     [--package-manager <manager>] [--plan|--dry-run] [--yes]
 
 Creates only mergora.json, the empty portable manifest, and narrow local-state
@@ -361,6 +362,16 @@ function parseFramework(
     value !== "react"
   ) {
     throw new CommandUsageError("--framework must be next-app, next-pages, vite-react, or react.");
+  }
+  return value;
+}
+
+function parseDistributionMode(
+  value: string | undefined,
+): "source" | "package" | "hybrid" | undefined {
+  if (value === undefined) return undefined;
+  if (value !== "source" && value !== "package" && value !== "hybrid") {
+    throw new CommandUsageError("--mode must be source, package, or hybrid.");
   }
   return value;
 }
@@ -1013,7 +1024,11 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     case "init": {
       if (parsed.positionals.length > 0)
         throw new CommandUsageError("init does not accept positional arguments.");
-      const options = { projectRoot: root, ...commonProjectOptions(parsed) };
+      const options = {
+        projectRoot: root,
+        ...commonProjectOptions(parsed),
+        defaultMode: parseDistributionMode(flagValue(parsed, "mode")),
+      };
       const plan = api.planInit(options);
       const readOnly = hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan");
       const writes = operationWrites(plan);

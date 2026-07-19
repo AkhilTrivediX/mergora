@@ -350,6 +350,33 @@ describe("packed command parser and output contract", () => {
     });
   });
 
+  it("persists an explicit initialization distribution mode", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+
+    const initialized = command([
+      "init",
+      "--cwd",
+      project.root,
+      "--mode",
+      "package",
+      "--yes",
+      "--non-interactive",
+      "--json",
+    ]);
+    expect(initialized.status).toBe(0);
+    expect(json(initialized)).toMatchObject({ command: "init", status: "applied" });
+    expect(
+      JSON.parse(readFileSync(resolve(project.root, "mergora.json"), "utf8")) as {
+        distribution: { defaultMode: string };
+      },
+    ).toMatchObject({ distribution: { defaultMode: "package" } });
+
+    const invalid = command(["init", "--cwd", project.root, "--mode", "managed", "--json"]);
+    expect(invalid.status).toBe(2);
+    expect(json(invalid)).toMatchObject({ errors: [{ code: "COMMAND_USAGE_INVALID" }] });
+  });
+
   it("uses stable usage errors and never leaks ANSI or an absolute root", () => {
     const invalid = command(["search", "button", "--limit", "0", "--json"]);
     expect(invalid.status).toBe(2);

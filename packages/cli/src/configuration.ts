@@ -108,6 +108,7 @@ export interface MergoraConfig {
 
 export interface InitOptions {
   readonly projectRoot: string;
+  readonly defaultMode?: "source" | "package" | "hybrid" | undefined;
   readonly framework?: Framework | undefined;
   readonly sourceRoot?: string | undefined;
   readonly globalCss?: string | undefined;
@@ -606,7 +607,10 @@ function aliasPath(prefix: string, suffix: string): string {
   return `${prefix}/${suffix}`;
 }
 
-export function createMergoraConfig(inspection: ProjectInspection): MergoraConfig {
+export function createMergoraConfig(
+  inspection: ProjectInspection,
+  defaultMode: MergoraConfig["distribution"]["defaultMode"] = "source",
+): MergoraConfig {
   const { sourceRoot, aliasPrefix } = inspection;
   return {
     $schema: CONFIG_SCHEMA,
@@ -618,7 +622,7 @@ export function createMergoraConfig(inspection: ProjectInspection): MergoraConfi
       packageJson: "package.json",
       tsconfig: "tsconfig.json",
     },
-    distribution: { defaultMode: "source", packageName: PUBLIC_UI_PACKAGE },
+    distribution: { defaultMode, packageName: PUBLIC_UI_PACKAGE },
     targets: {
       components: rootPath(sourceRoot, "components/mergora"),
       hooks: rootPath(sourceRoot, "hooks/mergora"),
@@ -787,6 +791,7 @@ const INIT_CONFIG_VALIDATOR: TransactionValidator = {
 
 function compatibleOverrides(config: MergoraConfig, options: InitOptions): void {
   const conflicts: readonly [unknown, unknown, string][] = [
+    [options.defaultMode, config.distribution.defaultMode, "distribution mode"],
     [options.framework, config.project.framework, "framework"],
     [options.sourceRoot, config.project.sourceRoot, "source root"],
     [options.globalCss, config.styling.globalCss, "global CSS"],
@@ -827,7 +832,7 @@ function internalInitPlan(options: InitOptions, command: InitCommand): InternalI
       (configured === null ? undefined : mergoraConfigAliasPrefix(configured)),
     packageManager: options.packageManager,
   });
-  const config = configured ?? createMergoraConfig(inspection);
+  const config = configured ?? createMergoraConfig(inspection, options.defaultMode);
   assertNoSymlinkAncestors(root, "mergora.json");
   const configText =
     configured === null ? prettyJson(config) : readFileSync(resolve(root, "mergora.json"), "utf8");

@@ -112,6 +112,20 @@ describe("project initialization", () => {
     expect(readFileSync(resolve(project.root, ".mergora/manifest.json"))).toEqual(manifest);
   });
 
+  it("records an explicit distribution default without treating re-init as a migration", () => {
+    const project = fixture();
+    const options = { projectRoot: project.root, defaultMode: "hybrid" as const };
+    const plan = planInit(options);
+
+    applyInit(options, plan.planDigest);
+
+    expect(readMergoraConfig(project.root)?.distribution.defaultMode).toBe("hybrid");
+    expect(() => planInit({ projectRoot: project.root, defaultMode: "source" })).toThrow(
+      /distribution mode conflicts with committed mergora\.json/u,
+    );
+    expect(planInit(options).estimatedBytes.write).toBe(0);
+  });
+
   it("fails a stale reviewed plan before writing", () => {
     const project = fixture();
     const plan = planInit({ projectRoot: project.root });
