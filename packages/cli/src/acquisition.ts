@@ -36,7 +36,10 @@ export type AcquisitionTrust = "official" | "enrolled" | "local-development";
 export interface AcquisitionRegistryIdentity {
   readonly id: string;
   readonly origin: string;
+  /** Digest declared by the native catalog for its canonical id/origin/trust tuple. */
   readonly identityDigest: AcquisitionDigest;
+  /** Enrollment-policy binding persisted in mergora.json for non-official registries. */
+  readonly enrollmentDigest?: AcquisitionDigest | undefined;
   readonly trust: AcquisitionTrust;
 }
 
@@ -203,7 +206,12 @@ function normalizeRequest(request: ImmutableArtifactRequest): NormalizedRequest 
   ) {
     throw acquisitionError("Registry ID is invalid.", "REGISTRY_IDENTITY_INVALID");
   }
-  if (!DIGEST.test(request.registry.identityDigest) || !DIGEST.test(request.digest)) {
+  if (
+    !DIGEST.test(request.registry.identityDigest) ||
+    (request.registry.enrollmentDigest !== undefined &&
+      !DIGEST.test(request.registry.enrollmentDigest)) ||
+    !DIGEST.test(request.digest)
+  ) {
     throw acquisitionError("Registry or artifact digest is invalid.", "REGISTRY_DIGEST_INVALID");
   }
   if (!(["official", "enrolled", "local-development"] as const).includes(request.registry.trust)) {

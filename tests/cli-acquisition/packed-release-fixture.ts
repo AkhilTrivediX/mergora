@@ -31,8 +31,8 @@ function protocolRelativePath(internalPath: string): string {
   return internalPath.slice("r/v1/".length);
 }
 
-function publicRegistryUrl(internalPath: string): string {
-  return `${ORIGIN}/${protocolRelativePath(internalPath)}`;
+function publicRegistryUrl(internalPath: string, origin: string = ORIGIN): string {
+  return `${origin}/${protocolRelativePath(internalPath)}`;
 }
 
 const registry: AcquisitionRegistryIdentity = {
@@ -47,7 +47,7 @@ const validate: ReleaseProtocolValidator = (kind, value) => {
   return { ok: result.ok, errors: result.errors };
 };
 
-function evidence(id: string, path: string): ReleaseEvidenceReference {
+function evidence(id: string, path: string, origin: string = ORIGIN): ReleaseEvidenceReference {
   const content = canonicalJsonFile({
     schemaVersion: 1,
     artifactKind: "packed-command-routing-evidence",
@@ -55,7 +55,7 @@ function evidence(id: string, path: string): ReleaseEvidenceReference {
   });
   return {
     id,
-    artifact: publicRegistryUrl(path),
+    artifact: publicRegistryUrl(path, origin),
     digest: releaseArtifactDigest(content),
     content,
   };
@@ -78,7 +78,7 @@ export interface PackedNativeReleaseReference {
   readonly artifactKind: "mergora-native-release-reference";
   readonly catalog: { readonly bytes: number; readonly digest: `sha256:${string}` };
   readonly manifest: { readonly bytes: number; readonly digest: `sha256:${string}` };
-  readonly registryId: "official";
+  readonly registryId: string;
   readonly release: string;
   readonly schemaVersion: 1;
 }
@@ -91,6 +91,13 @@ export interface SeededPackedRelease {
   readonly requestedUrls: readonly string[];
   readonly source: string;
   readonly version: string;
+}
+
+export interface SeededPackedEnrolledRelease extends SeededPackedRelease {
+  readonly registry: AcquisitionRegistryIdentity & {
+    readonly trust: "enrolled";
+    readonly enrollmentDigest: `sha256:${string}`;
+  };
 }
 
 export interface PackedNpmPackageFixture {
@@ -113,9 +120,13 @@ function buildPackedRelease(
   version: string,
   source: string,
   npmPackageFixture?: PackedNpmPackageFixture,
+  registryFixture: { readonly id: string; readonly origin: string } = {
+    id: "official",
+    origin: ORIGIN,
+  },
 ): BuiltPackedRelease {
   const itemId = "button";
-  const identity = { id: "official", origin: ORIGIN } as const;
+  const identity = registryFixture;
   const npmPackageName = npmPackageFixture?.package ?? "mergora-ui";
   const npmArtifactFixture = Buffer.from(
     npmPackageFixture?.bytes ?? `synthetic packed fixture for mergora-ui@${version}\n`,
@@ -130,16 +141,16 @@ function buildPackedRelease(
     supportedHistorical: version === "1.0.0" ? [] : ["1.0.0"],
     releaseGate: {
       state: "pass",
-      qualitySummary: evidence("quality", `r/v1/releases/${version}/quality.json`),
+      qualitySummary: evidence("quality", `r/v1/releases/${version}/quality.json`, identity.origin),
     },
     packedConsumers: {
       state: "pass",
-      evidence: evidence("consumers", `r/v1/releases/${version}/consumers.json`),
+      evidence: evidence("consumers", `r/v1/releases/${version}/consumers.json`, identity.origin),
     },
     schemas: STABLE_RELEASE_SCHEMA_PATHS.map((path) =>
-      evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path),
+      evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path, identity.origin),
     ),
-    sbom: evidence("sbom", `r/v1/releases/${version}/sbom.json`),
+    sbom: evidence("sbom", `r/v1/releases/${version}/sbom.json`, identity.origin),
     npmPackageInventory: {
       allowedLicenses: ["MIT"],
       entries: [
@@ -159,7 +170,7 @@ function buildPackedRelease(
       {
         payload: {
           schemaVersion: 1,
-          registryId: "official",
+          registryId: identity.id,
           itemId,
           kind: "component",
           version,
@@ -169,11 +180,11 @@ function buildPackedRelease(
           title: "Button",
           description: "Verified packed command routing fixture.",
           links: {
-            docs: `${ORIGIN}/docs/button`,
-            source: `${ORIGIN}/source/button`,
-            changelog: `${ORIGIN}/changelog/button`,
-            passport: `${ORIGIN}/passports/${version}/button.json`,
-            contract: `${ORIGIN}/contracts/${version}/button.json`,
+            docs: `${identity.origin}/docs/button`,
+            source: `${identity.origin}/source/button`,
+            changelog: `${identity.origin}/changelog/button`,
+            passport: `${identity.origin}/passports/${version}/button.json`,
+            contract: `${identity.origin}/contracts/${version}/button.json`,
           },
           compatibility: compatibility(),
           files: [
@@ -202,11 +213,19 @@ function buildPackedRelease(
           category: "actions",
           tags: ["interactive"],
           keywords: ["button", "pressable"],
-          provenance: `${ORIGIN}/source/button`,
+          provenance: `${identity.origin}/source/button`,
           quality: { tier: "complete", manualAssistiveTechnologyEvidence: true },
         },
-        passport: evidence("button-passport", `r/v1/passports/${version}/button.json`),
-        contract: evidence("button-contract", `r/v1/contracts/${version}/button.json`),
+        passport: evidence(
+          "button-passport",
+          `r/v1/passports/${version}/button.json`,
+          identity.origin,
+        ),
+        contract: evidence(
+          "button-contract",
+          `r/v1/contracts/${version}/button.json`,
+          identity.origin,
+        ),
       },
     ],
   };
@@ -231,7 +250,7 @@ function buildPackedRelease(
       bytes: Buffer.byteLength(manifestArtifact.content),
       digest: manifestArtifact.digest,
     },
-    registryId: "official",
+    registryId: identity.id,
     release: version,
     schemaVersion: 1,
   };
@@ -297,6 +316,88 @@ export function seedPackedCompleteNativeReleaseCache(
     requestedUrls: [],
     source,
     version,
+  };
+}
+
+/** Seeds a public enrolled native release under its own immutable namespace and binding. */
+export function seedPackedEnrolledNativeReleaseCache(
+  projectRoot: string,
+  version: string,
+  source: string,
+  options: {
+    readonly id?: string | undefined;
+    readonly origin?: string | undefined;
+  } = {},
+): SeededPackedEnrolledRelease {
+  const id = options.id ?? "partner";
+  const origin = options.origin ?? "https://partner.example.test/r/v1";
+  const built = buildPackedRelease(version, source, undefined, { id, origin });
+  const catalogDocument = JSON.parse(built.catalogArtifact.content) as {
+    registry: {
+      id: string;
+      origin: string;
+      trust: string;
+      identityDigest: `sha256:${string}`;
+    };
+  };
+  const declaredIdentityDigest = sha256(canonicalJson({ id, origin, trust: "enrolled" }));
+  catalogDocument.registry.trust = "enrolled";
+  catalogDocument.registry.identityDigest = declaredIdentityDigest;
+  const catalogContent = `${canonicalJson(catalogDocument)}\n`;
+  const catalogArtifact: ReleaseProtocolArtifact = {
+    ...built.catalogArtifact,
+    content: catalogContent,
+    digest: releaseArtifactDigest(catalogContent),
+  };
+  const catalogValidation = validateSchemaDocument("registry-index", catalogDocument);
+  if (!catalogValidation.ok) {
+    throw new Error(
+      `Enrolled packed catalog is invalid: ${JSON.stringify(catalogValidation.errors)}`,
+    );
+  }
+  for (const artifact of built.bundle.artifacts) {
+    writeVerifiedCacheArtifact(
+      projectRoot,
+      artifact.path === catalogArtifact.path ? catalogArtifact : artifact,
+    );
+  }
+  const reference: PackedNativeReleaseReference = {
+    ...built.reference,
+    registryId: id,
+    catalog: {
+      bytes: Buffer.byteLength(catalogContent),
+      digest: catalogArtifact.digest,
+    },
+  };
+  const referencePath = writeReference(projectRoot, version, reference);
+  const enrollmentDigest = sha256(
+    canonicalJson({
+      protocol: "mergora-v1",
+      resolvedOrigin: origin,
+      declaredRegistry: { id, identityDigest: declaredIdentityDigest },
+      licensePolicy: { status: "observed", licenses: ["MIT"] },
+      keyPolicy: {
+        digest: "sha256",
+        immutableReleaseManifests: true,
+        signatures: "not-supplied",
+      },
+    }),
+  );
+  return {
+    referencePath,
+    reference,
+    manifestDigest: built.manifestArtifact.digest,
+    payloadDigest: built.payloadArtifact.digest,
+    requestedUrls: [],
+    source,
+    version,
+    registry: {
+      id,
+      origin,
+      trust: "enrolled",
+      identityDigest: declaredIdentityDigest,
+      enrollmentDigest,
+    },
   };
 }
 

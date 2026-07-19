@@ -48,7 +48,10 @@ import {
   validateMergoraConfig,
   type MergoraConfig,
 } from "./configuration.js";
-import type { AcquiredNativeRegistryRelease } from "./acquisition-resolver.js";
+import {
+  assertAuthenticAcquiredNativeRegistryRelease,
+  type AcquiredNativeRegistryRelease,
+} from "./acquisition-resolver.js";
 import {
   planPackageDependencies,
   readPackageDependencies,
@@ -114,11 +117,15 @@ const NODE_BUILTIN_IMPORTS = new Set(
 
 type Digest = `sha256:${string}`;
 
+const ACQUIRED_NATIVE_UPDATE_RELEASES = new WeakSet<object>();
+
 export interface ImmutableUpdateRegistry {
   readonly id: string;
   readonly protocol: "mergora-v1";
   readonly origin: string;
   readonly identityDigest: Digest;
+  /** Persisted enrollment-policy binding for non-official native registries. */
+  readonly bindingDigest?: Digest | undefined;
   readonly source: "network" | "verified-cache" | "vendor" | "mirror";
   readonly trust: "official" | "enrolled" | "local-development";
   readonly evidenceTier: "complete" | "partial" | "not-supplied";
@@ -1312,6 +1319,21 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
       exitCode: 5,
     });
   }
+  if (release.registry.bindingDigest !== undefined) {
+    assertDigest(release.registry.bindingDigest, "Update registry enrollment binding digest");
+  }
+  if (release.registry.id !== "official" && release.registry.trust === "official") {
+    throw new CliError("Only the compiled official registry may claim official trust.", {
+      code: "REGISTRY_IDENTITY_MISMATCH",
+      exitCode: 5,
+    });
+  }
+  if (release.registry.id !== "official" && release.registry.bindingDigest === undefined) {
+    throw new CliError("An enrolled update registry requires its persisted identity binding.", {
+      code: "REGISTRY_IDENTITY_MISMATCH",
+      exitCode: 5,
+    });
+  }
   assertDigest(release.manifestDigest, "Update release manifest digest");
   if (digest(updateReleaseManifest(release)) !== release.manifestDigest) {
     throw new CliError("Update release manifest failed digest verification.", {
@@ -1494,25 +1516,58 @@ function configuredProject(options: SemanticUpdateOptions): {
   return { root, config, inspection, manifest };
 }
 
-function qualifiedItemId(value: string): string {
-  const itemId = value.startsWith("official:") ? value.slice("official:".length) : value;
+function assertConfiguredUpdateRegistry(
+  config: MergoraConfig,
+  registry: ImmutableUpdateRegistry,
+): void {
+  const configured = config.registries[registry.id];
+  const expectedBinding =
+    configured?.trust === "official" ? registry.identityDigest : configured?.identityDigest;
+  if (
+    configured === undefined ||
+    configured.protocol !== "mergora-v1" ||
+    configured.origin !== registry.origin ||
+    configured.trust !== registry.trust ||
+    expectedBinding === undefined ||
+    (registry.bindingDigest ?? registry.identityDigest) !== expectedBinding
+  ) {
+    throw new CliError(
+      `Update registry ${JSON.stringify(registry.id)} does not match its enrolled configuration binding.`,
+      { code: "REGISTRY_IDENTITY_MISMATCH", exitCode: 5, target: "mergora.json" },
+    );
+  }
+}
+
+function qualifiedItemId(value: string, registryId: string): string {
+  const separator = value.indexOf(":");
+  const itemId = separator === -1 ? value : value.slice(separator + 1);
   if (!ITEM_ID.test(itemId)) {
     throw new CliError(`Update item ${JSON.stringify(value)} is invalid.`, {
       code: "ITEM_REFERENCE_INVALID",
       exitCode: 2,
     });
   }
-  return `official:${itemId}`;
+  if (
+    separator !== -1 &&
+    (value.slice(0, separator) !== registryId || value.indexOf(":", separator + 1) !== -1)
+  ) {
+    throw new CliError(
+      `Update item ${JSON.stringify(value)} is outside the selected ${registryId} registry.`,
+      { code: "ITEM_REGISTRY_MISMATCH", exitCode: 5 },
+    );
+  }
+  return `${registryId}:${itemId}`;
 }
 
 function selectedItemIds(
   manifest: ProvenanceManifest,
   requested: readonly string[] | undefined,
+  registryId = "official",
 ): readonly string[] {
   const selected =
     requested === undefined || requested.length === 0
-      ? Object.keys(manifest.items)
-      : [...new Set(requested.map(qualifiedItemId))];
+      ? Object.keys(manifest.items).filter((id) => id.startsWith(`${registryId}:`))
+      : [...new Set(requested.map((value) => qualifiedItemId(value, registryId)))];
   const sorted = [...selected].sort((left, right) => left.localeCompare(right, "en-US"));
   if (sorted.length === 0) {
     throw new CliError("No source-installed items are available to update.", {
@@ -1766,9 +1821,10 @@ function updatedManifestItem(
   installed: ManifestItem,
   remote: ImmutableUpdateItem,
   entries: readonly UpdateEntry[],
+  owner: string,
 ): ManifestItem {
   const files = entries
-    .filter(({ owner, remoteFile }) => owner === `official:${remote.itemId}` && remoteFile !== null)
+    .filter((entry) => entry.owner === owner && entry.remoteFile !== null)
     .map((entry) => ({
       logicalPath: entry.logicalPath,
       target: entry.target,
@@ -2065,13 +2121,24 @@ function buildEntries(input: {
 function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan {
   const project = configuredProject(options);
   validateRelease(options.release, project.config.policy.maxRegistryItemBytes);
-  if (options.release.registry.id !== "official") {
+  if (
+    options.release.registry.id !== "official" ||
+    options.release.registry.nativeIdentity === true
+  ) {
+    assertConfiguredUpdateRegistry(project.config, options.release.registry);
+  }
+  if (
+    options.release.registry.trust !== "official" &&
+    options.release.registry.nativeIdentity === true &&
+    !ACQUIRED_NATIVE_UPDATE_RELEASES.has(options.release)
+  ) {
     throw new CliError(
-      "This updater currently supports the installed official namespace only; enrolled registries require their own manifest namespace.",
-      { code: "UPDATE_REGISTRY_NAMESPACE_UNSUPPORTED", exitCode: 7 },
+      "Enrolled native updates must use the immutable resolver output from this process.",
+      { code: "UPDATE_ACQUIRED_RELEASE_UNAUTHENTIC", exitCode: 5 },
     );
   }
-  const selected = selectedItemIds(project.manifest.value, options.itemIds);
+  const registryId = options.release.registry.id;
+  const selected = selectedItemIds(project.manifest.value, options.itemIds, registryId);
   const remoteById = new Map(options.release.items.map((item) => [item.itemId, item]));
   const remoteItems = selected.map((owner) => {
     const installed = project.manifest.value.items[owner]!;
@@ -2136,8 +2203,13 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
   });
   const nextManifest = structuredClone(project.manifest.value);
   for (const remote of remoteItems) {
-    const owner = `official:${remote.itemId}`;
-    nextManifest.items[owner] = updatedManifestItem(nextManifest.items[owner]!, remote, entries);
+    const owner = `${registryId}:${remote.itemId}`;
+    nextManifest.items[owner] = updatedManifestItem(
+      nextManifest.items[owner]!,
+      remote,
+      entries,
+      owner,
+    );
   }
   for (const [owner, item] of Object.entries(nextManifest.items)) {
     for (const dependency of item.registryDependencies) {
@@ -2279,7 +2351,7 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     root: project.root,
     files: entries.map(({ target, mediaType, role }) => ({ target, mediaType, role })),
     items: remoteItems.map((item) => ({
-      owner: `official:${item.itemId}`,
+      owner: `${registryId}:${item.itemId}`,
       contractVersion: item.contractVersion,
       payloadDigest: provenancePayloadDigest(item),
       transformContextDigest: item.renderedWithTransformContextDigest,
@@ -2295,7 +2367,8 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     registries: [
       {
         id: options.release.registry.id,
-        identityDigest: options.release.registry.identityDigest,
+        identityDigest:
+          options.release.registry.bindingDigest ?? options.release.registry.identityDigest,
         release: options.release.release,
         manifestDigest: provenanceManifestDigest(options.release),
         source: options.release.registry.source,
@@ -2304,10 +2377,10 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
       },
     ],
     items: remoteItems.map((remote) => ({
-      id: `official:${remote.itemId}`,
-      direct: project.manifest.value.items[`official:${remote.itemId}`]!.direct,
-      requested: project.manifest.value.items[`official:${remote.itemId}`]!.requested,
-      fromVersion: project.manifest.value.items[`official:${remote.itemId}`]!.resolved,
+      id: `${registryId}:${remote.itemId}`,
+      direct: project.manifest.value.items[`${registryId}:${remote.itemId}`]!.direct,
+      requested: project.manifest.value.items[`${registryId}:${remote.itemId}`]!.requested,
+      fromVersion: project.manifest.value.items[`${registryId}:${remote.itemId}`]!.resolved,
       toVersion: remote.resolved,
       mode: "source" as const,
     })),
@@ -2347,12 +2420,12 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
     contractChanges: remoteItems
       .filter(
         (remote) =>
-          project.manifest.value.items[`official:${remote.itemId}`]!.contractVersion !==
+          project.manifest.value.items[`${registryId}:${remote.itemId}`]!.contractVersion !==
           remote.contractVersion,
       )
       .map((remote) => ({
-        item: `official:${remote.itemId}`,
-        from: project.manifest.value.items[`official:${remote.itemId}`]!.contractVersion,
+        item: `${registryId}:${remote.itemId}`,
+        from: project.manifest.value.items[`${registryId}:${remote.itemId}`]!.contractVersion,
         to: remote.contractVersion,
       })),
     warnings,
@@ -2414,12 +2487,7 @@ function semanticReleaseFromAcquisition(
   projectRoot: string,
   acquired: AcquiredNativeRegistryRelease,
 ): ImmutableUpdateRelease {
-  if (acquired.registry.id !== "official") {
-    throw new CliError(
-      "Semantic Sync currently supports acquired releases in the official namespace only.",
-      { code: "UPDATE_REGISTRY_NAMESPACE_UNSUPPORTED", exitCode: 7 },
-    );
-  }
+  assertAuthenticAcquiredNativeRegistryRelease(acquired);
   const root = validatedProjectRoot(projectRoot);
   const manifest = readManifest(root).value;
   const config = readMergoraConfig(root);
@@ -2438,7 +2506,7 @@ function semanticReleaseFromAcquisition(
         { code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
       );
     }
-    const installed = manifest.items[`official:${item.itemId}`];
+    const installed = manifest.items[`${acquired.registry.id}:${item.itemId}`];
     const moves: ImmutableUpdateMove[] = [];
     if (installed !== undefined) {
       for (const migration of item.migrations) {
@@ -2533,6 +2601,9 @@ function semanticReleaseFromAcquisition(
     protocol: "mergora-v1",
     origin: acquired.registry.origin,
     identityDigest: acquired.registry.identityDigest,
+    ...(acquired.registry.enrollmentDigest === undefined
+      ? {}
+      : { bindingDigest: acquired.registry.enrollmentDigest }),
     source: acquired.source,
     trust: acquired.registry.trust,
     evidenceTier,
@@ -2545,10 +2616,12 @@ function semanticReleaseFromAcquisition(
     items,
     acquiredManifestDigest: acquired.manifestDigest,
   };
-  return {
+  const release: ImmutableUpdateRelease = {
     ...withoutManifestDigest,
     manifestDigest: immutableUpdateReleaseDigest(withoutManifestDigest),
   };
+  ACQUIRED_NATIVE_UPDATE_RELEASES.add(release);
+  return release;
 }
 
 export function planAcquiredSemanticUpdate(options: AcquiredSemanticUpdateOptions): OperationPlan {

@@ -275,6 +275,11 @@ export interface AcquiredNativeRegistryRelease {
   readonly acquiredBytes: number;
 }
 
+/** Returns the persisted enrollment-policy binding when one exists, otherwise the declaration. */
+export function acquiredRegistryBindingDigest(registry: AcquisitionRegistryIdentity): Digest {
+  return registry.enrollmentDigest ?? registry.identityDigest;
+}
+
 const AUTHENTIC_ACQUIRED_NATIVE_RELEASES = new WeakSet<object>();
 
 /** Fails unless the value is the exact frozen object returned by this process's native resolver. */
@@ -705,14 +710,15 @@ function parseCatalog(
   const identity = record(root.registry, "Native registry identity");
   exactKeys(identity, ["id", "origin", "trust", "identityDigest"], [], "Native registry identity");
   const declaredOrigin = normalizedOrigin(immutableUrl(identity.origin, "Native registry origin"));
+  const declaredTrust = text(identity.trust, "Native registry trust", { max: 32 });
   const declaredIdentityDigest = digest(identity.identityDigest, "Native registry identity digest");
   if (
     identity.id !== registry.id ||
-    identity.trust !== "official" ||
+    declaredTrust !== registry.trust ||
     declaredOrigin !== normalizedOrigin(registry.origin) ||
     declaredIdentityDigest !== registry.identityDigest ||
     declaredIdentityDigest !==
-      sha256(canonicalJson({ id: registry.id, origin: declaredOrigin, trust: "official" }))
+      sha256(canonicalJson({ id: registry.id, origin: declaredOrigin, trust: declaredTrust }))
   ) {
     throw resolverError(
       "Native registry catalog identity does not match the selected registry binding.",
@@ -878,6 +884,30 @@ function parseCatalog(
   });
 
   const byId = new Map(items.map((item) => [item.id, item]));
+  if (registry.trust !== "official") {
+    const licenses = [...new Set(items.map(({ license }) => license))].sort((left, right) =>
+      left.localeCompare(right, "en-US"),
+    );
+    const expectedEnrollmentDigest = sha256(
+      canonicalJson({
+        protocol: "mergora-v1",
+        resolvedOrigin: declaredOrigin,
+        declaredRegistry: { id: registry.id, identityDigest: declaredIdentityDigest },
+        licensePolicy: { status: "observed", licenses },
+        keyPolicy: {
+          digest: "sha256",
+          immutableReleaseManifests: true,
+          signatures: "not-supplied",
+        },
+      }),
+    );
+    if (registry.enrollmentDigest !== expectedEnrollmentDigest) {
+      throw resolverError(
+        "Native registry catalog does not match the enrolled identity and policy binding.",
+        "REGISTRY_IDENTITY_MISMATCH",
+      );
+    }
+  }
   const graph = Object.fromEntries(
     [...items]
       .sort((left, right) => left.id.localeCompare(right.id, "en-US"))
@@ -1695,10 +1725,16 @@ function assertBound(
 export async function resolveNativeRegistryRelease(
   options: ResolveNativeRegistryReleaseOptions,
 ): Promise<AcquiredNativeRegistryRelease> {
-  if (options.registry.trust !== "official") {
+  if (options.registry.trust === "local-development") {
     throw resolverError(
-      "Native Stable release routing currently supports the official registry only; enrolled native registries require a trust-aware protocol schema.",
-      "REGISTRY_NATIVE_TRUST_UNSUPPORTED",
+      "Immutable native release routing does not yet support loopback HTTP catalogs.",
+      "REGISTRY_NATIVE_LOCAL_TRANSPORT_UNSUPPORTED",
+    );
+  }
+  if (options.registry.trust === "enrolled" && options.registry.enrollmentDigest === undefined) {
+    throw resolverError(
+      "An enrolled native registry requires its persisted identity and policy binding.",
+      "REGISTRY_IDENTITY_MISMATCH",
     );
   }
   if (!SEMVER.test(options.release)) {

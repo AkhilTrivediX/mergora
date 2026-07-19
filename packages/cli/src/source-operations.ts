@@ -118,7 +118,7 @@ export interface ManifestPatch {
 }
 
 export interface ManifestItem {
-  readonly registry: "official";
+  readonly registry: string;
   readonly itemId: string;
   readonly kind: "component" | "system" | "hook" | "utility" | "kit" | "theme" | "contract";
   readonly requested: string;
@@ -853,7 +853,9 @@ export function validateManifestDocument(raw: unknown): ProvenanceManifest {
       !Array.isArray(item.files) ||
       !Array.isArray(item.registryDependencies) ||
       !Array.isArray(item.structuredPatches) ||
+      typeof item.registry !== "string" ||
       typeof item.itemId !== "string" ||
+      qualifiedId !== `${item.registry}:${item.itemId}` ||
       (item.mode !== "source" &&
         !(
           distributionFields.length === DISTRIBUTION_MANIFEST_KEYS.length && item.mode === "package"
@@ -1068,8 +1070,8 @@ export function basePath(digest: `sha256:${string}`): string {
   return `.mergora/bases/sha256/${hexadecimal.slice(0, 2)}/${hexadecimal.slice(2)}.blob`;
 }
 
-function qualified(itemId: string): string {
-  return `official:${itemId}`;
+function qualified(itemId: string, registryId = "official"): string {
+  return `${registryId}:${itemId}`;
 }
 
 function payloadUrl(itemId: string): string {
@@ -1077,12 +1079,8 @@ function payloadUrl(itemId: string): string {
 }
 
 function acquiredSourceContext(release: AcquiredNativeRegistryRelease): AcquiredSourceContext {
-  if (release.registry.id !== "official") {
-    throw new CliError(
-      "Source ownership currently supports acquired releases in the official namespace only.",
-      { code: "SOURCE_REGISTRY_NAMESPACE_UNSUPPORTED", exitCode: 7 },
-    );
-  }
+  assertAuthenticAcquiredNativeRegistryRelease(release);
+  const dependencyPrefix = `${release.registry.id}:`;
   const items = release.items.map((item): SourceItemRecord => {
     if (
       item.structuredPatches.length > 0 ||
@@ -1136,9 +1134,19 @@ function acquiredSourceContext(release: AcquiredNativeRegistryRelease): Acquired
       visibleStatus: item.maturity,
       implementationStatus: "released",
       files,
-      registryDependencies: item.registryDependencies.map((dependency) =>
-        dependency.slice("official:".length),
-      ),
+      registryDependencies: item.registryDependencies.map((dependency) => {
+        if (!dependency.startsWith(dependencyPrefix)) {
+          throw new CliError(
+            `Acquired item ${item.itemId} crosses from ${release.registry.id} into an unresolved registry namespace.`,
+            {
+              code: "SOURCE_CROSS_REGISTRY_DEPENDENCY_UNSUPPORTED",
+              exitCode: 7,
+              target: dependency,
+            },
+          );
+        }
+        return dependency.slice(dependencyPrefix.length);
+      }),
       runtimeDependencies: item.dependencies.runtime,
       installDependencies,
       blockers: [],
@@ -1269,7 +1277,9 @@ export function deriveAcquiredDistributionSources(
   const selected = [...new Set(options.itemIds)].sort((left, right) =>
     left.localeCompare(right, "en-US"),
   );
-  const expectedContexts = selected.map((id) => qualified(acquiredAlias(id, context)));
+  const expectedContexts = selected.map((id) =>
+    qualified(acquiredAlias(id, context), context.release.registry.id),
+  );
   if (
     canonicalJson(Object.keys(options.transformContexts).sort()) !==
     canonicalJson([...expectedContexts].sort())
@@ -1283,7 +1293,7 @@ export function deriveAcquiredDistributionSources(
   const targets = new Set<string>();
   return selected.map((input): AcquiredDistributionSourceProjection => {
     const itemId = acquiredAlias(input, context);
-    const qualifiedId = qualified(itemId);
+    const qualifiedId = qualified(itemId, context.release.registry.id);
     const acquired = context.itemById.get(itemId);
     if (acquired === undefined) {
       throw new CliError(`Authentic release did not acquire item ${itemId}.`, {
@@ -1543,7 +1553,7 @@ function manifestItem(
     : "component";
   const resolved = acquired?.release.release ?? UNRELEASED_VERSION;
   return {
-    registry: "official",
+    registry: acquired?.release.registry.id ?? "official",
     itemId: source.itemId,
     kind,
     requested: `=${resolved}`,
@@ -1566,7 +1576,7 @@ function manifestItem(
       executable: false,
     })),
     registryDependencies: source.registryDependencies
-      .map(qualified)
+      .map((dependency) => qualified(dependency, acquired?.release.registry.id ?? "official"))
       .sort((left, right) => left.localeCompare(right, "en-US")),
     dependencies: {
       runtime: sortedRecord(source.runtimeDependencies),
@@ -1646,7 +1656,8 @@ function registryPlan(
     return [
       {
         id: acquired.release.registry.id,
-        identityDigest: acquired.release.registry.identityDigest,
+        identityDigest:
+          acquired.release.registry.enrollmentDigest ?? acquired.release.registry.identityDigest,
         release: acquired.release.release,
         manifestDigest: acquired.release.manifestDigest,
         source: acquired.release.source,
@@ -1705,9 +1716,10 @@ function sourcePlanItems(
   acquired?: AcquiredSourceContext | undefined,
 ): readonly OperationPlanItem[] {
   const resolved = acquired?.release.release ?? UNRELEASED_VERSION;
+  const registryId = acquired?.release.registry.id ?? "official";
   return items
     .map((item) => {
-      const id = qualified(item.itemId);
+      const id = qualified(item.itemId, registryId);
       const installed = from[id];
       const removed = removing.has(id);
       return {
@@ -2073,6 +2085,7 @@ function validateExistingInstall(
     canonicalJson(transformContext(config, targetDirectory, acquired !== undefined)),
   );
   if (
+    existing.registry !== (acquired?.release.registry.id ?? "official") ||
     existing.payload.digest !== source.payloadDigest ||
     existing.resolved !== (acquired?.release.release ?? UNRELEASED_VERSION) ||
     existing.transformContextDigest !== expectedContext
@@ -2086,11 +2099,12 @@ function validateExistingInstall(
 
 function dependencyRequirements(
   items: readonly SourceItemRecord[],
+  registryId = "official",
 ): Record<string, DependencyRequirement> {
   const requirements: Record<string, { range: string; owners: string[] }> = {};
   for (const item of items) {
     for (const [name, range] of Object.entries(item.installDependencies)) {
-      const owner = qualified(item.itemId);
+      const owner = qualified(item.itemId, registryId);
       const existing = requirements[name];
       if (existing !== undefined && existing.range !== range) {
         throw new CliError(`Registry items require incompatible ranges for ${name}.`, {
@@ -2119,12 +2133,34 @@ function addInternal(
     assertPortableRelativePath(options.targetDirectory, "Source target root");
   }
   const project = readConfiguredProject(options);
+  if (acquired !== undefined) {
+    const selected = project.config.registries[acquired.release.registry.id];
+    const expectedBinding =
+      selected?.trust === "official"
+        ? acquired.release.registry.identityDigest
+        : selected?.identityDigest;
+    if (
+      selected === undefined ||
+      selected.protocol !== "mergora-v1" ||
+      selected.origin !== acquired.release.registry.origin ||
+      selected.trust !== acquired.release.registry.trust ||
+      expectedBinding === undefined ||
+      (acquired.release.registry.enrollmentDigest ?? acquired.release.registry.identityDigest) !==
+        expectedBinding
+    ) {
+      throw new CliError(
+        `Acquired registry ${acquired.release.registry.id} does not match its enrolled project binding.`,
+        { code: "REGISTRY_IDENTITY_MISMATCH", exitCode: 5, target: "mergora.json" },
+      );
+    }
+  }
   const requested = requestedCanonicalIds(options, acquired);
   const sources =
     acquired === undefined
       ? resolveSourceDependencyClosure(requested, options)
       : acquiredClosure(requested, acquired);
   const direct = new Set(requested);
+  const registryId = acquired?.release.registry.id ?? "official";
   const nextManifest = cloneManifest(project.manifest.value);
   const mutations: TransactionMutation[] = [];
   const observedTargets: Record<string, `sha256:${string}` | null> = {};
@@ -2136,7 +2172,7 @@ function addInternal(
     for (const file of item.files) claimedTargets.set(file.target, owner);
   }
   for (const source of sources) {
-    const id = qualified(source.itemId);
+    const id = qualified(source.itemId, registryId);
     const existing = nextManifest.items[id];
     const files = mapFiles(source, project.config, options.targetDirectory, acquired);
     if (existing !== undefined) {
@@ -2231,7 +2267,9 @@ function addInternal(
         risk: "ordinary",
         reason: direct.has(source.itemId)
           ? "Directly requested canonical source."
-          : `Transitive registry dependency required by ${requested.map(qualified).join(", ")}.`,
+          : `Transitive registry dependency required by ${requested
+              .map((itemId) => qualified(itemId, registryId))
+              .join(", ")}.`,
       });
       const baseTarget = basePath(file.digest);
       const baseBytes = readProjectFile(project.root, baseTarget);
@@ -2250,7 +2288,7 @@ function addInternal(
     }
   }
 
-  const requirements = dependencyRequirements(sources);
+  const requirements = dependencyRequirements(sources, registryId);
   const packagePlan = planPackageDependencies(resolve(project.root, "package.json"), requirements);
   assertPackageManagerTransactionScope(
     project.inspection,
@@ -2401,7 +2439,7 @@ function assertSourceCommandOwnership(
 function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
   const configured = readConfiguredOwnership(options);
   const requestedIds = requestedCanonicalIds(options);
-  const requestedQualified = new Set(requestedIds.map(qualified));
+  const requestedQualified = new Set(requestedIds.map((id) => qualified(id)));
   const keep = remainingItemIdsAfterRemoval(configured.manifest.value.items, requestedQualified);
   const removed = new Set(
     Object.keys(configured.manifest.value.items).filter((id) => !keep.has(id)),

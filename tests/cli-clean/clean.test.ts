@@ -354,6 +354,35 @@ describe("cleanup planning and exact apply", () => {
     expect(existsSync(resolve(project.root, cached))).toBe(true);
     expect(existsSync(resolve(project.root, ".mergora/.lock"))).toBe(false);
   });
+
+  it("rejects a rehashed stored transaction plan that violates the closed schema", () => {
+    const project = fixture(false);
+    const transactionId = project.initTransactionIds[0]!;
+    const transactionRoot = resolve(project.root, ".mergora/transactions", transactionId);
+    const planPath = resolve(transactionRoot, "plan.json");
+    const transactionPath = resolve(transactionRoot, "transaction.json");
+    const storedPlan = json<Record<string, unknown>>(planPath);
+    const { planDigest: _oldDigest, ...semanticPlan } = storedPlan;
+    const invalidSemanticPlan = { ...semanticPlan, unreviewedTopLevelExtension: true };
+    const rehashedDigest = sha256(canonicalJson(invalidSemanticPlan));
+    writeFileSync(
+      planPath,
+      canonicalJson({ ...invalidSemanticPlan, planDigest: rehashedDigest }),
+      "utf8",
+    );
+    const transaction = json<Record<string, unknown>>(transactionPath);
+    (transaction.plan as Record<string, unknown>).digest = rehashedDigest;
+    writeFileSync(transactionPath, canonicalJson(transaction), "utf8");
+
+    expect(() =>
+      planClean({
+        projectRoot: project.root,
+        transactions: true,
+        retainTransactions: 0,
+      }),
+    ).toThrowError(expect.objectContaining({ code: "CLEAN_TRANSACTION_TAMPERED" }));
+    expect(existsSync(transactionRoot)).toBe(true);
+  });
 });
 
 describe("cleanup hostile filesystem rejection", () => {

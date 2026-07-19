@@ -16,6 +16,7 @@ import {
   type MergoraConfig,
   type MergoraRegistryConfig,
 } from "./configuration.js";
+import { OFFICIAL_REGISTRY_ORIGIN } from "./registry-data.js";
 import { readManifest } from "./source-operations.js";
 import {
   executeTransaction,
@@ -129,6 +130,7 @@ export interface RegistryMetadata extends RegistryPolicySummary {
   readonly resolvedOrigin: string;
   readonly redirects: readonly { readonly from: string; readonly to: string }[];
   readonly declaredRegistryId: string;
+  readonly declaredTrust: RegistryTrust;
   readonly declaredIdentityDigest: `sha256:${string}`;
   readonly identityBinding: RegistryIdentityBinding;
   readonly identityDigest: `sha256:${string}`;
@@ -213,6 +215,7 @@ interface BoundedJsonResponse {
 interface NativeCatalog {
   readonly registryId: string;
   readonly registryOrigin: string;
+  readonly declaredTrust: RegistryTrust;
   readonly declaredIdentityDigest: `sha256:${string}`;
   readonly currentStable: string;
   readonly dependencyGraphDigest: `sha256:${string}`;
@@ -763,10 +766,29 @@ function validateNativeCatalog(value: unknown): NativeCatalog {
     stringValue(registry.origin, "Native registry origin", { max: 2048 }),
     { allowInsecureLocalhost: true },
   );
-  if (registry.trust !== "official") {
+  if (
+    registry.trust !== "official" &&
+    registry.trust !== "enrolled" &&
+    registry.trust !== "local-development"
+  ) {
     throw registryError(
       "Native catalog registry identity has an invalid declared trust value.",
       "REGISTRY_METADATA_SCHEMA_INVALID",
+    );
+  }
+  const declaredTrust = registry.trust;
+  const localOrigin = localHttp(new URL(registryOrigin));
+  if (
+    (declaredTrust === "official" &&
+      (registryId !== "official" || registryOrigin !== OFFICIAL_REGISTRY_ORIGIN)) ||
+    (declaredTrust === "enrolled" && localOrigin) ||
+    (declaredTrust === "local-development" && !localOrigin)
+  ) {
+    throw registryError(
+      declaredTrust === "official"
+        ? "Only the compiled official registry origin may declare official trust."
+        : "Native catalog trust does not match its enrolled transport class.",
+      "REGISTRY_DECLARED_TRUST_INVALID",
     );
   }
   const declaredIdentityDigest = stringValue(
@@ -775,7 +797,7 @@ function validateNativeCatalog(value: unknown): NativeCatalog {
     { max: 71, pattern: DIGEST },
   ) as `sha256:${string}`;
   const expectedDeclaredIdentity = sha256(
-    canonicalJson({ id: registryId, origin: registryOrigin, trust: "official" }),
+    canonicalJson({ id: registryId, origin: registryOrigin, trust: declaredTrust }),
   );
   if (declaredIdentityDigest !== expectedDeclaredIdentity) {
     throw registryError(
@@ -986,7 +1008,10 @@ function validateNativeCatalog(value: unknown): NativeCatalog {
     "Native dependency graph digest",
     { max: 71, pattern: DIGEST },
   ) as `sha256:${string}`;
-  if (dependencyGraphDigest !== sha256(canonicalJson(graph))) {
+  if (
+    dependencyGraphDigest !==
+    sha256(canonicalJson({ registryId, uiVersion: currentStable, items: graph }))
+  ) {
     throw registryError(
       "Native catalog dependency graph digest does not match its graph.",
       "REGISTRY_DEPENDENCY_GRAPH_INVALID",
@@ -995,6 +1020,7 @@ function validateNativeCatalog(value: unknown): NativeCatalog {
   return {
     registryId,
     registryOrigin,
+    declaredTrust,
     declaredIdentityDigest,
     currentStable,
     dependencyGraphDigest,
@@ -1184,6 +1210,7 @@ function metadataFromCatalog(
     allowInsecureLocalhost: true,
   });
   let declaredRegistryId: string;
+  let declaredTrust: RegistryTrust;
   let declaredIdentityDigest: `sha256:${string}`;
   let currentStableRelease: string | null;
   let items: readonly RegistryCatalogItemSummary[];
@@ -1196,12 +1223,14 @@ function metadataFromCatalog(
       );
     }
     declaredRegistryId = catalog.registryId;
+    declaredTrust = catalog.declaredTrust;
     declaredIdentityDigest = catalog.declaredIdentityDigest;
     currentStableRelease = catalog.currentStable;
     items = catalog.items;
   } else {
     const catalog = validateShadcnCatalog(response.value, normalizedResolvedOrigin);
     declaredRegistryId = catalog.registryId;
+    declaredTrust = "enrolled";
     declaredIdentityDigest = catalog.declaredIdentityDigest;
     currentStableRelease = null;
     items = catalog.items;
@@ -1235,6 +1264,7 @@ function metadataFromCatalog(
     resolvedOrigin: normalizedResolvedOrigin,
     redirects: response.redirects,
     declaredRegistryId,
+    declaredTrust,
     declaredIdentityDigest,
     identityBinding,
     identityDigest: sha256(canonicalJson(identityBinding)),
@@ -1429,9 +1459,10 @@ export async function inspectRegistry(
   const identityStatus =
     registry.trust === "official"
       ? metadata.resolvedOrigin === registry.origin &&
-        metadata.declaredRegistryId === "mergora" &&
+        metadata.declaredRegistryId === "official" &&
+        metadata.declaredTrust === "official" &&
         metadata.declaredIdentityDigest ===
-          sha256(canonicalJson({ id: "mergora", origin: registry.origin, trust: "official" }))
+          sha256(canonicalJson({ id: "official", origin: registry.origin, trust: "official" }))
         ? "not-pinned"
         : "mismatch"
       : registry.identityDigest === null
@@ -1660,6 +1691,13 @@ export async function planRegistryEnrollment(
   }
   const resolvedUrl = new URL(metadata.resolvedOrigin);
   const trust: RegistryTrust = localHttp(resolvedUrl) ? "local-development" : "enrolled";
+  if (metadata.protocol === "mergora-v1" && metadata.declaredTrust !== trust) {
+    throw registryError(
+      `Registry ${JSON.stringify(options.id)} declares ${metadata.declaredTrust} trust but enrollment requires ${trust}.`,
+      "REGISTRY_DECLARED_TRUST_INVALID",
+      5,
+    );
+  }
   const enrolled: MergoraRegistryConfig = {
     protocol: metadata.protocol,
     origin: metadata.resolvedOrigin,

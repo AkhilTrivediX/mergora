@@ -37,6 +37,7 @@ import {
   type ProvenanceManifest,
 } from "./source-operations.js";
 import {
+  assertValidOperationPlanV1,
   finalizeOperationPlan,
   type OperationPlan,
   type OperationPlanFile,
@@ -586,6 +587,14 @@ function validatePlanBytes(bytes: Buffer, expectedDigest: string, label: string)
   const raw = parseJson(bytes, label);
   if (!isRecord(raw) || typeof raw.planDigest !== "string" || !DIGEST.test(raw.planDigest)) {
     throw new CliError(`${label} lacks a valid plan digest.`, {
+      code: "CLEAN_TRANSACTION_TAMPERED",
+      exitCode: 8,
+    });
+  }
+  try {
+    assertValidOperationPlanV1(raw);
+  } catch {
+    throw new CliError(`${label} failed canonical operation-plan schema validation.`, {
       code: "CLEAN_TRANSACTION_TAMPERED",
       exitCode: 8,
     });

@@ -212,6 +212,7 @@ export {
 } from "./acquisition.js";
 
 export {
+  acquiredRegistryBindingDigest,
   assertAuthenticAcquiredNativeRegistryRelease,
   resolveNativeRegistryRelease,
   type AcquiredNativeCatalogItem,

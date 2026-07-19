@@ -631,14 +631,14 @@ describe("native release acquisition routing", () => {
         },
       })),
     };
-    expect(
+    expect(() =>
       planAcquiredSourceAdd({
         projectRoot: target.root,
         itemIds: ["dialog"],
         acquiredRelease: noEvidenceRelease,
         noInstall: true,
-      }).registries[0]?.evidenceTier,
-    ).toBe("not-supplied");
+      }),
+    ).toThrowError(expect.objectContaining({ code: "REGISTRY_ACQUIRED_RELEASE_UNAUTHENTIC" }));
     expect(plan.items).toEqual([
       expect.objectContaining({ id: "official:button", direct: false, toVersion: "1.0.0" }),
       expect.objectContaining({ id: "official:dialog", direct: true, toVersion: "1.0.0" }),

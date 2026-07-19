@@ -8,7 +8,7 @@
   "properties": {
     "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
     "artifactKind": { "const": "mergora-native-release-reference" },
-    "registryId": { "const": "official" },
+    "registryId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
     "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
     "catalog": { "$ref": "#/$defs/artifactReference" },
     "manifest": { "$ref": "#/$defs/artifactReference" }

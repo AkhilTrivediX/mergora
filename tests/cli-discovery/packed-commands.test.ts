@@ -23,6 +23,7 @@ import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.t
 import { validateSchemaDocument } from "../../registry/schemas/validators.ts";
 import {
   seedPackedCompleteNativeReleaseCache,
+  seedPackedEnrolledNativeReleaseCache,
   seedPackedNativeRelease,
   seedPackedStableVendorRelease,
 } from "../cli-acquisition/packed-release-fixture.ts";
@@ -623,6 +624,161 @@ describe("packed project commands", () => {
     );
   }, 30_000);
 
+  it("routes an enrolled native registry without namespace fallback or provenance relabeling", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const first = seedPackedEnrolledNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "partner first";\n',
+    );
+    const second = seedPackedEnrolledNativeReleaseCache(
+      project.root,
+      "1.1.0",
+      'export const button = "partner second";\n',
+    );
+    expect(command(["init", "--yes", "--non-interactive"], project.root).status).toBe(0);
+    const configPath = resolve(project.root, "mergora.json");
+    const config = JSON.parse(readFileSync(configPath, "utf8")) as Record<string, unknown> & {
+      registries: Record<string, unknown>;
+      policy: Record<string, unknown>;
+    };
+    config.registries.partner = {
+      protocol: "mergora-v1",
+      origin: first.registry.origin,
+      trust: "enrolled",
+      identityDigest: first.registry.enrollmentDigest,
+    };
+    config.policy.allowExternalRegistries = true;
+    writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
+
+    const noFallback = command(
+      ["search", "button", "--registry", "partner", "--json"],
+      project.root,
+    );
+    expect(noFallback.status).toBe(4);
+    expect(json(noFallback)).toMatchObject({
+      errors: [{ code: "REGISTRY_RELEASE_REFERENCE_REQUIRED" }],
+    });
+
+    const wrongNamespace = command(
+      ["search", "button", "--release-file", first.referencePath, "--offline", "--json"],
+      project.root,
+    );
+    expect(wrongNamespace.status).toBe(5);
+    expect(json(wrongNamespace)).toMatchObject({
+      errors: [{ code: "REGISTRY_RELEASE_REFERENCE_MISMATCH" }],
+    });
+
+    const searched = command(
+      [
+        "search",
+        "pressable",
+        "--registry",
+        "partner",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(searched.status, `${searched.stdout}\n${searched.stderr}`).toBe(0);
+    expect(json(searched)).toMatchObject({ result: { items: [{ id: "button" }] } });
+
+    const viewed = command(
+      [
+        "view",
+        "partner:button",
+        "--registry",
+        "partner",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--source",
+        "ui/button/button.tsx",
+      ],
+      project.root,
+    );
+    expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: first.source });
+
+    const added = command(
+      [
+        "add",
+        "partner:button",
+        "--registry",
+        "partner",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(json(added)).toMatchObject({ status: "committed" });
+    const afterAdd = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as { items: Record<string, { registry: string; resolved: string }> };
+    expect(afterAdd.items["partner:button"]).toMatchObject({
+      registry: "partner",
+      resolved: "1.0.0",
+    });
+    expect(afterAdd.items["official:button"]).toBeUndefined();
+
+    const updated = command(
+      [
+        "update",
+        "partner:button",
+        "--registry",
+        "partner",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
+    expect(json(updated)).toMatchObject({ status: "committed", result: { release: "1.1.0" } });
+    const afterUpdate = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as { items: Record<string, { registry: string; resolved: string }> };
+    expect(afterUpdate.items["partner:button"]).toMatchObject({
+      registry: "partner",
+      resolved: "1.1.0",
+    });
+
+    const shadcnConfig = JSON.parse(readFileSync(configPath, "utf8")) as {
+      registries: Record<string, Record<string, unknown>>;
+    };
+    shadcnConfig.registries.partner!.protocol = "shadcn-v1";
+    writeFileSync(configPath, `${JSON.stringify(shadcnConfig, null, 2)}\n`, "utf8");
+    const shadcnNativeAttempt = command(
+      [
+        "search",
+        "button",
+        "--registry",
+        "partner",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(shadcnNativeAttempt.status).toBe(7);
+    expect(json(shadcnNativeAttempt)).toMatchObject({
+      errors: [{ code: "REGISTRY_NATIVE_PROTOCOL_REQUIRED" }],
+    });
+  }, 30_000);
+
   it("runs exact offline search, view, add, and update from a Stable vendor without cache", () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
@@ -743,7 +899,7 @@ describe("packed project commands", () => {
     expect(existsSync(resolve(project.root, ".mergora/cache/entries"))).toBe(false);
   }, 30_000);
 
-  it("fails closed for ambiguous native references, non-official selection, and cache misses", async () => {
+  it("fails closed for ambiguous native references, cross-registry selection, and cache misses", async () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
     const release = await seedPackedNativeRelease(
@@ -779,8 +935,10 @@ describe("packed project commands", () => {
       ],
       project.root,
     );
-    expect(partner.status).toBe(2);
-    expect(json(partner)).toMatchObject({ errors: [{ code: "COMMAND_USAGE_INVALID" }] });
+    expect(partner.status).toBe(5);
+    expect(json(partner)).toMatchObject({
+      errors: [{ code: "REGISTRY_RELEASE_REFERENCE_MISMATCH" }],
+    });
 
     const unavailableVersion = command(
       [

@@ -50,7 +50,7 @@ Transactional source commands:
 Common options:
   --cwd <path>         Explicit project root candidate (--root remains an add alias)
   --config <path>      Explicit project-relative config (currently mergora.json)
-  --registry <id>      Select a registry where supported (currently official)
+  --registry <id>      Select an already enrolled registry; never enrolls an origin
   --ui-version <range> Resolve the exact referenced UI release against an npm SemVer range
   --json               Emit one versioned JSON result envelope
   --dry-run            Resolve and emit the exact plan without writing
@@ -85,6 +85,7 @@ Creates only mergora.json, the empty portable manifest, and narrow local-state
   search: `Usage: mergora search [query] [--kind <kind>] [--category <category>]
                       [--maturity <maturity>] [--tag <tag>] [--limit <1-100>]
                       [--release-file <project-relative-path>] [--cwd <path>]
+                      [--registry <enrolled-id>]
                       [--ui-version <version-or-range>] [--allow-prerelease]
                       [--offline] [--json]
 
@@ -93,6 +94,7 @@ Offline acquisition requires the referenced artifacts in the verified cache or
 a checksum-verified Stable vendor bundle.`,
   view: `Usage: mergora view <item...> [--files] [--source <logical-path>]
                     [--release-file <project-relative-path>] [--cwd <path>]
+                    [--registry <enrolled-id>]
                     [--ui-version <version-or-range>] [--allow-prerelease]
                     [--offline] [--json]
 
@@ -123,6 +125,7 @@ The initial button program targets one “Save changes” button inside
 data-mergora-audit-root="button" and its data-mergora-audit-announcer="button" status.`,
   add: `Usage: mergora add <item...> [--root|--cwd <path>] [--target <relative-path>]
                    [--release-file <project-relative-path>] [--no-install] [--offline]
+                   [--registry <enrolled-id>]
                    [--ui-version <version-or-range>] [--allow-prerelease]
                    [--plan|--dry-run] [--yes] [--json]
 
@@ -155,6 +158,7 @@ state is never changed.`,
 Reads immutable Base and live Local bytes without writing. --upstream requires an
 explicitly acquired project-relative release snapshot and adds the B/L/R proposal.`,
   update: `Usage: mergora update <item...>|--all --release-file <path> [--cwd <path>]
+                      [--registry <enrolled-id>]
                       [--ui-version <version-or-range>] [--allow-prerelease]
                       [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
 
@@ -324,11 +328,15 @@ function projectRoot(parsed: ParsedArguments): string {
       "This tranche accepts only the project-relative --config mergora.json.",
     );
   }
-  const registry = flagValue(parsed, "registry");
-  if (registry !== undefined && registry !== "official") {
-    throw new CommandUsageError("Only the compiled official registry is enrolled in this tranche.");
-  }
   return cwd ?? legacy ?? process.cwd();
+}
+
+function selectedRegistryId(parsed: ParsedArguments): string {
+  const id = flagValue(parsed, "registry") ?? "official";
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(id) || id !== id.normalize("NFKC")) {
+    throw new CommandUsageError("--registry must be a lowercase enrolled registry ID.");
+  }
+  return id;
 }
 
 function parseManager(value: string | undefined): "npm" | "pnpm" | "yarn" | "bun" | undefined {
@@ -530,7 +538,7 @@ const SEMANTIC_RELEASE =
 interface NativeReleaseReference {
   readonly schemaVersion: 1;
   readonly artifactKind: typeof NATIVE_RELEASE_REFERENCE_KIND;
-  readonly registryId: "official";
+  readonly registryId: string;
   readonly release: string;
   readonly catalog: {
     readonly digest: `sha256:${string}`;
@@ -655,7 +663,9 @@ async function readNativeReleaseReference(
       "schemaVersion",
     ]) ||
     value.schemaVersion !== 1 ||
-    value.registryId !== "official" ||
+    typeof value.registryId !== "string" ||
+    !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(value.registryId) ||
+    value.registryId !== value.registryId.normalize("NFKC") ||
     typeof value.release !== "string" ||
     !SEMANTIC_RELEASE.test(value.release)
   ) {
@@ -664,20 +674,20 @@ async function readNativeReleaseReference(
   return {
     schemaVersion: 1,
     artifactKind: NATIVE_RELEASE_REFERENCE_KIND,
-    registryId: "official",
+    registryId: value.registryId,
     release: value.release,
     catalog: parseNativeArtifactReference(value.catalog, "Catalog artifact", api),
     manifest: parseNativeArtifactReference(value.manifest, "Release manifest artifact", api),
   };
 }
 
-function officialItemReferences(itemIds: readonly string[]): readonly string[] {
+function registryItemReferences(itemIds: readonly string[], registryId: string): readonly string[] {
   return itemIds.map((input) => {
     const separator = input.indexOf(":");
     if (separator === -1) return input;
-    if (input.slice(0, separator) !== "official" || input.indexOf(":", separator + 1) !== -1) {
+    if (input.slice(0, separator) !== registryId || input.indexOf(":", separator + 1) !== -1) {
       throw new CommandUsageError(
-        "An official native release accepts only unqualified or official-qualified item references.",
+        `The selected ${registryId} registry accepts only unqualified or ${registryId}-qualified item references.`,
       );
     }
     return input.slice(separator + 1);
@@ -749,15 +759,57 @@ async function acquireNativeRelease(
   api.resolveImmutableReleaseVersion([reference.release], flagValue(parsed, "ui-version"), {
     allowPrereleases: hasFlag(parsed, "allow-prerelease"),
   });
-  const origin = api.OFFICIAL_REGISTRY_ORIGIN;
-  const vendor = api.createStableAcquisitionVendorReader({ projectRoot: root });
+  const registryId = selectedRegistryId(parsed);
+  if (reference.registryId !== registryId) {
+    throw new api.CliError(
+      `Release reference registry ${JSON.stringify(reference.registryId)} does not match selected registry ${JSON.stringify(registryId)}.`,
+      { code: "REGISTRY_RELEASE_REFERENCE_MISMATCH", exitCode: 5 },
+    );
+  }
+  const config = api.readMergoraConfig(root);
+  if (config === null) {
+    throw new api.CliError("Mergora is not initialized; run mergora init first.", {
+      code: "CONFIG_MISSING",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+  const configured = config.registries[registryId];
+  if (configured === undefined) {
+    throw new api.CliError(`Registry ${JSON.stringify(registryId)} is not enrolled.`, {
+      code: "REGISTRY_NOT_ENROLLED",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
+  if (configured.protocol !== "mergora-v1") {
+    throw new api.CliError(
+      `Registry ${JSON.stringify(registryId)} uses shadcn-v1, which cannot supply immutable native release provenance.`,
+      { code: "REGISTRY_NATIVE_PROTOCOL_REQUIRED", exitCode: 7, target: registryId },
+    );
+  }
+  if (configured.authEnvironmentVariable !== undefined && !hasFlag(parsed, "offline")) {
+    throw new api.CliError(
+      `Registry ${JSON.stringify(registryId)} requires authenticated immutable acquisition, which is not available in this CLI build.`,
+      { code: "REGISTRY_AUTH_ACQUISITION_UNSUPPORTED", exitCode: 11, target: registryId },
+    );
+  }
+  const origin = configured.origin;
+  const declaredIdentityDigest = api.sha256(
+    api.canonicalJson({ id: registryId, origin, trust: configured.trust }),
+  );
+  const vendor =
+    configured.trust === "official"
+      ? api.createStableAcquisitionVendorReader({ projectRoot: root })
+      : undefined;
   return api.resolveNativeRegistryRelease({
     projectRoot: root,
     registry: {
-      id: "official",
+      id: registryId,
       origin,
-      trust: "official",
-      identityDigest: api.sha256(api.canonicalJson({ id: "official", origin, trust: "official" })),
+      trust: configured.trust,
+      identityDigest: declaredIdentityDigest,
+      ...(configured.trust === "official" ? {} : { enrollmentDigest: configured.identityDigest }),
     },
     release: reference.release,
     catalog: {
@@ -770,9 +822,9 @@ async function acquireNativeRelease(
       digest: reference.manifest.digest,
       bytes: reference.manifest.bytes,
     },
-    itemIds: officialItemReferences(itemIds),
+    itemIds: registryItemReferences(itemIds, registryId),
     offline: hasFlag(parsed, "offline"),
-    vendor,
+    ...(vendor === undefined ? {} : { vendor }),
     ...(validateDocument === undefined ? {} : { validateDocument }),
   });
 }
@@ -965,6 +1017,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
   assertAllowedFlags(parsed, allowedCliFlags(parsed.command, subcommand));
   colorMode(parsed);
   const root = projectRoot(parsed);
+  const explicitlySelectedRegistry = flagValue(parsed, "registry");
+  if (
+    explicitlySelectedRegistry !== undefined &&
+    selectedRegistryId(parsed) !== "official" &&
+    (["init", "docs", "info", "remove", "adopt"] as const).includes(parsed.command as never)
+  ) {
+    throw new api.CliError(
+      `--registry ${explicitlySelectedRegistry} is not supported by ${parsed.command}; this command will not fall back to official ownership.`,
+      { code: "REGISTRY_COMMAND_ROUTING_UNSUPPORTED", exitCode: 7 },
+    );
+  }
   if (
     flagValue(parsed, "ui-version") !== undefined &&
     flagValue(parsed, "release-file") === undefined
@@ -1061,6 +1124,13 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       if (parsed.positionals.length > 1)
         throw new CommandUsageError("search accepts at most one query.");
       const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const registryId = selectedRegistryId(parsed);
+      if (releaseReference === null && registryId !== "official") {
+        throw new api.CliError(
+          `Registry ${JSON.stringify(registryId)} search requires an exact --release-file and never falls back to bundled official data.`,
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
+        );
+      }
       const acquiredRelease =
         releaseReference === null
           ? undefined
@@ -1099,8 +1169,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     case "view": {
       const source = flagValue(parsed, "source");
       const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const registryId = selectedRegistryId(parsed);
+      if (releaseReference === null && registryId !== "official") {
+        throw new api.CliError(
+          `Registry ${JSON.stringify(registryId)} view requires an exact --release-file and never falls back to bundled official data.`,
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
+        );
+      }
       const requestedItems =
-        releaseReference === null ? parsed.positionals : officialItemReferences(parsed.positionals);
+        releaseReference === null
+          ? parsed.positionals
+          : registryItemReferences(parsed.positionals, registryId);
       const acquiredRelease =
         releaseReference === null
           ? undefined
@@ -1306,9 +1385,19 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         throw new CommandUsageError("update requires explicit items or --all, but not both.");
       }
       const releaseReference = await readNativeReleaseReference(parsed, root, api, true);
+      const registryId = selectedRegistryId(parsed);
+      if (releaseReference === null && registryId !== "official") {
+        throw new api.CliError(
+          `Registry ${JSON.stringify(registryId)} update requires a native exact --release-file and never accepts legacy official snapshots.`,
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
+        );
+      }
       const acquisitionItems = hasFlag(parsed, "all")
-        ? api.projectStatus(root).items.map(({ id }) => id)
-        : parsed.positionals;
+        ? api
+            .projectStatus(root)
+            .items.map(({ id }) => id)
+            .filter((id) => id.startsWith(`${registryId}:`))
+        : registryItemReferences(parsed.positionals, registryId);
       const acquiredRelease =
         releaseReference === null
           ? null
@@ -1339,10 +1428,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           : {
               ...sharedOptions,
               itemIds: hasFlag(parsed, "all")
-                ? undefined
-                : officialItemReferences(parsed.positionals).map(
-                    (id) => acquiredRelease.aliases[id] ?? id,
-                  ),
+                ? acquisitionItems
+                : acquisitionItems.map((id) => acquiredRelease.aliases[id] ?? id),
               acquiredRelease,
             };
       const legacyOptions =
@@ -1397,8 +1484,17 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
     }
     case "add": {
       const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+      const registryId = selectedRegistryId(parsed);
+      if (releaseReference === null && registryId !== "official") {
+        throw new api.CliError(
+          `Registry ${JSON.stringify(registryId)} add requires an exact --release-file and never falls back to bundled official data.`,
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
+        );
+      }
       const requestedItems =
-        releaseReference === null ? parsed.positionals : officialItemReferences(parsed.positionals);
+        releaseReference === null
+          ? parsed.positionals
+          : registryItemReferences(parsed.positionals, registryId);
       const acquiredRelease =
         releaseReference === null
           ? null
@@ -1982,6 +2078,12 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       throw new CommandUsageError("registry requires list, inspect, enroll, remove, or verify.");
     }
     case "vendor": {
+      if (selectedRegistryId(parsed) !== "official") {
+        throw new api.CliError(
+          "Stable vendor bundle creation currently supports the official registry only; enrolled registry bytes are never relabeled as official vendor evidence.",
+          { code: "VENDOR_ENROLLED_REGISTRY_UNSUPPORTED", exitCode: 7 },
+        );
+      }
       const verify = parsed.positionals[0] === "verify";
       if (verify) {
         if (parsed.positionals.length !== 1) {

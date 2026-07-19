@@ -172,12 +172,12 @@ function nativeFixture(origin = PARTNER_ORIGIN, registryId = PARTNER_ID): Native
   const payload = { ...payloadUnsigned, payloadDigest: sha256(canonicalJson(payloadUnsigned)) };
   const payloadText = `${canonicalJson(payload)}\n`;
   const graph = { button: [] };
-  const graphDigest = sha256(canonicalJson(graph));
-  const identityDigest = sha256(canonicalJson({ id: registryId, origin, trust: "official" }));
+  const graphDigest = sha256(canonicalJson({ registryId, uiVersion: "1.0.0", items: graph }));
+  const identityDigest = sha256(canonicalJson({ id: registryId, origin, trust: "enrolled" }));
   const catalog = {
     schemaVersion: 1,
     protocolVersion: "mergora-v1",
-    registry: { id: registryId, origin, trust: "official", identityDigest },
+    registry: { id: registryId, origin, trust: "enrolled", identityDigest },
     releases: { currentStable: "1.0.0", currentPrerelease: null, supportedHistorical: [] },
     items: [
       {
@@ -404,6 +404,30 @@ describe("registry read commands", () => {
 });
 
 describe("registry enrollment and removal plans", () => {
+  it("rejects a third-party native catalog that attempts to claim official trust", async () => {
+    const root = project();
+    const fixture = nativeFixture();
+    const registry = fixture.catalog.registry as Record<string, unknown>;
+    registry.trust = "official";
+    registry.identityDigest = sha256(
+      canonicalJson({ id: PARTNER_ID, origin: PARTNER_ORIGIN, trust: "official" }),
+    );
+    const fetchImplementation = vi.fn<typeof fetch>(async () =>
+      jsonResponse(`${canonicalJson(fixture.catalog)}\n`),
+    );
+
+    await expect(
+      planRegistryEnrollment({
+        projectRoot: root,
+        id: PARTNER_ID,
+        origin: PARTNER_ORIGIN,
+        protocol: "mergora-v1",
+        fetchImplementation,
+      }),
+    ).rejects.toMatchObject({ code: "REGISTRY_DECLARED_TRUST_INVALID" });
+    expect(readFileSync(resolve(root, "mergora.json"), "utf8")).not.toContain(PARTNER_ORIGIN);
+  });
+
   it("builds deterministic identity-bound plans and transactionally stores only an auth env name", async () => {
     const root = project();
     const fixture = nativeFixture();

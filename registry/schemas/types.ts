@@ -190,7 +190,7 @@ export interface RegistryIndexV1 {
   readonly registry: {
     readonly id: CatalogId;
     readonly origin: string;
-    readonly trust: "official";
+    readonly trust: "official" | "enrolled" | "local-development";
     readonly identityDigest: Sha256;
   };
   readonly releases: {
@@ -724,7 +724,7 @@ export interface ReleaseManifestV1 {
 export interface NativeReleaseReferenceV1 {
   readonly schemaVersion: 1;
   readonly artifactKind: "mergora-native-release-reference";
-  readonly registryId: "official";
+  readonly registryId: CatalogId;
   readonly release: Semver;
   readonly catalog: {
     readonly digest: Sha256;

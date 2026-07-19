@@ -22,7 +22,7 @@
       "properties": {
         "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
         "origin": { "$ref": "common-v1.schema.json#/$defs/registryOrigin" },
-        "trust": { "const": "official" },
+        "trust": { "$ref": "common-v1.schema.json#/$defs/registryTrust" },
         "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
       }
     },
