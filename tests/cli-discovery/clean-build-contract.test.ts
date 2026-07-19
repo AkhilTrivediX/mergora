@@ -33,6 +33,20 @@ describe("clean workspace CLI build contract", () => {
     });
   });
 
+  it("uses schema source only for clean-workspace development and publishes compiled paths", () => {
+    const manifest = readManifest("packages/schema/package.json");
+
+    expect(manifest.exports?.["."]).toEqual({
+      types: "./src/index.ts",
+      development: "./src/index.ts",
+      import: "./dist/packages/schema/src/index.js",
+    });
+    expect(manifest.publishConfig?.exports?.["."]).toEqual({
+      types: "./dist/packages/schema/src/index.d.ts",
+      import: "./dist/packages/schema/src/index.js",
+    });
+  });
+
   it("routes build and prepack through the same self-contained builder", () => {
     const manifest = readManifest("packages/cli/package.json");
     const workspaceDependencies = Object.entries(manifest.dependencies ?? {})

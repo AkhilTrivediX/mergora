@@ -4,7 +4,7 @@ import type {
   MeasurementEvidenceState,
   PassportEvidenceState,
   ReleaseGateState,
-} from "./types.ts";
+} from "./types.js";
 
 export interface EvidenceStatesByContext {
   readonly measurement: MeasurementEvidenceState;

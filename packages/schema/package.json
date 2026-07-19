@@ -7,10 +7,20 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/packages/schema/src/index.d.ts",
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
       "import": "./dist/packages/schema/src/index.js"
     },
     "./schemas/*": "./dist/registry/schemas/*"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/packages/schema/src/index.d.ts",
+        "import": "./dist/packages/schema/src/index.js"
+      },
+      "./schemas/*": "./dist/registry/schemas/*"
+    }
   },
   "files": [
     "dist"

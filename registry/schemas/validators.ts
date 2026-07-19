@@ -3,18 +3,18 @@ import {
   EXPECTED_SCHEMA_VERSION,
   schemaFor,
   type JsonSchema,
-} from "./schema-registry.ts";
+} from "./schema-registry.js";
 import {
   aggregateEvidenceState,
   isEvidenceStateForContext,
   type EvidenceContext,
-} from "./evidence.ts";
+} from "./evidence.js";
 import type {
   JsonValue,
   SchemaKind,
   SchemaValidationError,
   SchemaValidationResult,
-} from "./types.ts";
+} from "./types.js";
 
 type JsonObject = Record<string, unknown>;
 type Schema = boolean | JsonObject;
