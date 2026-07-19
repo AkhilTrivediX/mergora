@@ -16,6 +16,7 @@ import {
   distributionProvenanceFromManifest,
   parseManifestBytes,
 } from "../../packages/cli/src/source-operations.ts";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 import { createAuthenticModeFixture, type AuthenticModeFixture } from "./authentic-mode-fixture.ts";
 
 const configUrl = new URL("./fixtures/valid-config.json", import.meta.url);
@@ -92,6 +93,8 @@ describe("closed distribution mode execution", () => {
     const fixture = await createAuthenticModeFixture(root, config(), "source-to-package");
     seedLiveProject(root, fixture);
     const reviewed = planDistributionModeTransaction(planOptions(fixture));
+    expect(validateSchemaDocument("operation-plan", reviewed.plan).errors).toEqual([]);
+    expect(reviewed.plan.dependencyChanges.every(({ owners }) => owners.length > 0)).toBe(true);
 
     const result = applyDistributionModeTransaction(applyOptions(root, fixture));
 
@@ -119,6 +122,8 @@ describe("closed distribution mode execution", () => {
     const root = tempRoot();
     const fixture = await createAuthenticModeFixture(root, config(), "package-to-source");
     seedLiveProject(root, fixture);
+    const reviewed = planDistributionModeTransaction(planOptions(fixture));
+    expect(validateSchemaDocument("operation-plan", reviewed.plan).errors).toEqual([]);
 
     const result = applyDistributionModeTransaction(applyOptions(root, fixture));
 

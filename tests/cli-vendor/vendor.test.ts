@@ -20,6 +20,7 @@ import {
   verifyVendor,
   type VendorOptions,
 } from "../../packages/cli/src/vendor.ts";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -105,20 +106,22 @@ afterEach(() => {
 });
 
 describe("offline vendoring", () => {
+  it("keeps source execution independent from the mutable shared dist registry", () => {
+    const source = readFileSync(resolve(workspaceRoot, "packages/cli/src/vendor.ts"), "utf8");
+    expect(source).not.toContain('resolve(moduleDirectory, "../dist/registry")');
+    expect(source).toContain('resolve(moduleDirectory, "../../../registry/generated")');
+  });
+
   it("plans an explicit transitive graph deterministically without claiming a release", () => {
     const project = fixture(["provider"]);
     const first = planVendor(project.options);
     const second = planVendor(project.options);
 
     expect(second).toEqual(first);
+    expect(validateSchemaDocument("operation-plan", first).errors).toEqual([]);
+    expect(Object.keys(first)).not.toContain("vendor");
     expect(first.command).toBe("vendor");
     expect(first.registries).toEqual([]);
-    expect(first.vendor).toMatchObject({
-      outputRoot: ".mergora/vendor/v1",
-      provenanceState: "unreleased-local",
-      networkUsed: false,
-      selectedItems: ["official:direction", "official:slot", "official:provider"],
-    });
     expect(first.items.map(({ id }) => id)).toEqual([
       "official:direction",
       "official:slot",

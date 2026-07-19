@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
+  CLI_VERSION,
   assertPortableRelativePath,
   canonicalJson,
   CliError,
@@ -18,6 +19,7 @@ import {
 import { readManifest } from "./source-operations.js";
 import {
   executeTransaction,
+  finalizeOperationPlan,
   validateTransactionOverlay,
   validationSuiteForTransaction,
   type OperationPlan,
@@ -146,9 +148,7 @@ export interface RegistryInspection {
   readonly missingEvidence: readonly string[];
 }
 
-export type RegistryConfigOperationPlan = Omit<OperationPlan, "command"> & {
-  readonly command: RegistryConfigCommand;
-};
+export type RegistryConfigOperationPlan = OperationPlan;
 
 export interface RegistryConfigPatch {
   readonly target: "mergora.json";
@@ -1535,7 +1535,7 @@ function registryConfigPlan(
   const semantic = {
     schemaVersion: 1 as const,
     command,
-    cliVersion: "0.0.0",
+    cliVersion: CLI_VERSION,
     projectRoot: "." as const,
     configDigest,
     manifestPreconditionDigest: readJsonDigest(root, ".mergora/manifest.json"),
@@ -1582,10 +1582,7 @@ function registryConfigPlan(
     validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: true,
   };
-  const plan: RegistryConfigOperationPlan = {
-    ...semantic,
-    planDigest: sha256(canonicalJson(semantic)),
-  };
+  const plan: RegistryConfigOperationPlan = finalizeOperationPlan(semantic);
   const registry = listEntries(root, proposed).find((entry) => entry.id === id) ?? {
     id,
     protocol: current.registries[id]?.protocol ?? "mergora-v1",

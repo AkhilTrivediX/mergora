@@ -294,6 +294,9 @@ importers:
       mergora-registry:
         specifier: workspace:*
         version: link:../registry
+      mergora-schema:
+        specifier: workspace:*
+        version: link:../schema
       postcss:
         specifier: 'catalog:'
         version: 8.5.19

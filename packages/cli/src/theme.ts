@@ -22,6 +22,7 @@ import {
 import { validateMergoraConfig, type MergoraConfig } from "./configuration.js";
 import {
   executeTransaction,
+  finalizeOperationPlan,
   validateTransactionOverlay,
   validationSuiteForTransaction,
   type OperationPlan,
@@ -159,21 +160,21 @@ export interface ThemeApplyOptions {
   readonly commandArguments?: readonly string[] | undefined;
 }
 
-export type ThemeApplyPlan = OperationPlan & {
-  readonly theme: {
-    readonly id: string;
-    readonly label: string;
-    readonly origin: ThemeOrigin;
-    readonly source: ThemeSource;
-    readonly sourceDigest: Digest;
-    readonly effectiveDigest: Digest;
-    readonly target: string;
-    readonly receipt: typeof ACTIVE_THEME_RECEIPT;
-    readonly accessibilityIssues: readonly ThemeAccessibilityIssue[];
-    readonly semanticChanges: readonly ThemeSemanticChange[];
-    readonly requiredAcknowledgementIds: readonly string[];
-  };
-};
+export type ThemeApplyPlan = OperationPlan;
+
+interface ThemePlanDetails {
+  readonly id: string;
+  readonly label: string;
+  readonly origin: ThemeOrigin;
+  readonly source: ThemeSource;
+  readonly sourceDigest: Digest;
+  readonly effectiveDigest: Digest;
+  readonly target: string;
+  readonly receipt: typeof ACTIVE_THEME_RECEIPT;
+  readonly accessibilityIssues: readonly ThemeAccessibilityIssue[];
+  readonly semanticChanges: readonly ThemeSemanticChange[];
+  readonly requiredAcknowledgementIds: readonly string[];
+}
 
 export interface ThemeApplyResult {
   readonly id: string;
@@ -198,6 +199,7 @@ interface ParsedTheme {
 interface InternalThemePlan {
   readonly root: string;
   readonly plan: ThemeApplyPlan;
+  readonly details: ThemePlanDetails;
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
   readonly validators: readonly TransactionValidator[];
@@ -1178,10 +1180,6 @@ function operation(
   };
 }
 
-function finalizeThemePlan(plan: Omit<ThemeApplyPlan, "planDigest">): ThemeApplyPlan {
-  return { ...plan, planDigest: sha256(canonicalJson(plan)) } as ThemeApplyPlan;
-}
-
 function themeTransactionValidators(input: {
   readonly config: MergoraConfig;
   readonly preset: ThemePreset;
@@ -1433,7 +1431,20 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
     effectiveDigest,
     accessibilityIssues: parsed.validation.issues,
   });
-  const plan = finalizeThemePlan({
+  const details: ThemePlanDetails = {
+    id: options.preset.id,
+    label: options.preset.label,
+    origin: options.preset.origin,
+    source: options.preset.source,
+    sourceDigest: parsed.validation.digest,
+    effectiveDigest,
+    target,
+    receipt: ACTIVE_THEME_RECEIPT,
+    accessibilityIssues: parsed.validation.issues,
+    semanticChanges: parsed.validation.semanticChanges,
+    requiredAcknowledgementIds,
+  };
+  const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "theme-apply",
     cliVersion: CLI_VERSION,
@@ -1441,16 +1452,7 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
     configDigest: project.configDigest,
     manifestPreconditionDigest: project.manifestDigest,
     registries,
-    items: [
-      {
-        id: owner,
-        direct: true,
-        requested: options.preset.id,
-        fromVersion: null,
-        toVersion: parsed.validation.digest,
-        mode: "source",
-      },
-    ],
+    items: [],
     fileOperations,
     dependencyChanges: [],
     structuredPatches: [],
@@ -1481,23 +1483,11 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
     },
     validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: mutations.length > 0,
-    theme: {
-      id: options.preset.id,
-      label: options.preset.label,
-      origin: options.preset.origin,
-      source: options.preset.source,
-      sourceDigest: parsed.validation.digest,
-      effectiveDigest,
-      target,
-      receipt: ACTIVE_THEME_RECEIPT,
-      accessibilityIssues: parsed.validation.issues,
-      semanticChanges: parsed.validation.semanticChanges,
-      requiredAcknowledgementIds,
-    },
   });
   const internal = {
     root,
     plan,
+    details,
     mutations,
     observedTargets: {
       [target]: targetBeforeDigest,
@@ -1529,8 +1519,8 @@ export function planThemeImport(options: ThemeApplyOptions): ThemeApplyPlan {
   return buildThemePlan(options).plan;
 }
 
-function assertAcknowledgements(options: ThemeApplyOptions, plan: ThemeApplyPlan): void {
-  const expected = plan.theme.requiredAcknowledgementIds;
+function assertAcknowledgements(options: ThemeApplyOptions, details: ThemePlanDetails): void {
+  const expected = details.requiredAcknowledgementIds;
   const received = sortedUnique(options.acknowledgedIssueIds ?? []);
   if (expected.length !== received.length || expected.some((id, index) => received[index] !== id)) {
     throw themeError(
@@ -1555,7 +1545,7 @@ export function applyTheme(
       8,
     );
   }
-  if (options.preset.origin === "custom") assertAcknowledgements(options, built.plan);
+  if (options.preset.origin === "custom") assertAcknowledgements(options, built.details);
   const transaction = executeTransaction({
     root: built.root,
     plan: built.plan,
@@ -1569,11 +1559,11 @@ export function applyTheme(
     validators: built.validators,
   });
   return {
-    id: built.plan.theme.id,
-    target: built.plan.theme.target,
-    receipt: built.plan.theme.receipt,
+    id: built.details.id,
+    target: built.details.target,
+    receipt: built.details.receipt,
     planDigest: built.plan.planDigest,
-    accessibilityIssues: built.plan.theme.accessibilityIssues,
+    accessibilityIssues: built.details.accessibilityIssues,
     transaction,
   };
 }

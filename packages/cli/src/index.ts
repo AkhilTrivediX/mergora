@@ -11,18 +11,19 @@ export {
 } from "./official-browser-audit.js";
 
 export {
+  applyDoctorFix,
   applyInit,
   CONFIG_SCHEMA,
   createMergoraConfig,
   MANIFEST_SCHEMA,
   mergoraConfigAliasPrefix,
+  planDoctorFix,
   planInit,
   readMergoraConfig,
   validateMergoraConfig,
   type InitOptions,
   type InitPlan,
   type MergoraConfig,
-  type PlannedEdit,
 } from "./configuration.js";
 
 export {
@@ -63,7 +64,6 @@ export {
   type ProjectCreateFaultPoint,
   type ProjectCreateOptions,
   type ProjectCreatePlan,
-  type ProjectCreatePlannedFile,
   type ProjectCreatePreset,
   type ProjectCreateResult,
   type ProjectCreateTemplate,

@@ -44,6 +44,7 @@
   "dependencies": {
     "mergora-contracts": "workspace:*",
     "mergora-registry": "workspace:*",
+    "mergora-schema": "workspace:*",
     "postcss": "catalog:",
     "semver": "catalog:",
     "typescript": "catalog:"

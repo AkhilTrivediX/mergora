@@ -993,10 +993,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           result: plan,
           status: "planned",
           warnings: plan.warnings,
-          text: renderProjectCreatePlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
-      if (!(await confirmPlan(parsed, `create ${plan.destination.directoryName}`))) {
+      if (!(await confirmPlan(parsed, `create ${parsed.positionals[0]!}`))) {
         throw new api.CliError(
           "Project-creation consent is required; review --plan and pass --yes.",
           { code: "CONSENT_REQUIRED", exitCode: 12 },
@@ -1016,12 +1016,13 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       const options = { projectRoot: root, ...commonProjectOptions(parsed) };
       const plan = api.planInit(options);
       const readOnly = hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan");
-      if (readOnly || !plan.writesRequired) {
+      const writes = operationWrites(plan);
+      if (readOnly || !writes) {
         return {
           result: plan,
-          status: plan.writesRequired ? "planned" : "no-op",
+          status: writes ? "planned" : "no-op",
           warnings: plan.warnings,
-          text: renderPlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
       if (!(await confirmPlan(parsed, "initialization"))) {
@@ -1038,7 +1039,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         result: applied,
         status: "applied",
         warnings: applied.warnings,
-        text: `Initialized Mergora (${String(applied.edits.filter(({ action }) => action !== "no-op").length)} exact edits, plan ${applied.planDigest}).`,
+        text: `Initialized Mergora (${String(applied.fileOperations.filter(({ operation }) => operation !== "no-op").length)} exact edits, plan ${applied.planDigest}).`,
       };
     }
     case "search": {
@@ -1199,12 +1200,14 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           projectRoot: root,
           packageManager: parseManager(flagValue(parsed, "package-manager")),
         };
-        const fixPlan = api.planInit(options);
-        if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan") || !fixPlan.writesRequired) {
+        const fixPlan = api.planDoctorFix(options);
+        const writes = operationWrites(fixPlan);
+        if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan") || !writes) {
           return {
             result: { diagnosis: api.doctorProject(root), fixPlan },
-            status: fixPlan.writesRequired ? "fix-planned" : "no-op",
-            text: renderPlan(fixPlan),
+            status: writes ? "fix-planned" : "no-op",
+            warnings: fixPlan.warnings,
+            text: renderOperationPlan(fixPlan),
           };
         }
         if (!(await confirmPlan(parsed, "doctor fix"))) {
@@ -1213,7 +1216,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
             exitCode: 12,
           });
         }
-        api.applyInit(options, fixPlan.planDigest);
+        api.applyDoctorFix(options, fixPlan.planDigest);
       }
       const result = api.doctorProject(root);
       return {
@@ -1582,8 +1585,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         return {
           result: plan,
           status: "planned",
-          warnings: plan.limitations,
-          text: renderSemanticResolveChoicePlan(plan),
+          warnings: plan.warnings,
+          text: renderOperationPlan(plan),
         };
       }
       if (!(await confirmPlan(parsed, `resolve ${choice} (${String(targets.length)} targets)`))) {
@@ -1596,7 +1599,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       return {
         result,
         status: "recorded",
-        warnings: plan.limitations,
+        warnings: plan.warnings,
         text: `Recorded ${choice} for ${String(targets.length)} targets in ${transactionId}; plan ${result.planDigest}.`,
       };
     }
@@ -1736,29 +1739,30 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         ],
       };
       const plan = api.planMigration(options);
+      const manualOnly = plan.migrations.some(({ adapter }) => adapter === "manual-checklist");
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
-          status: plan.migration.execution,
+          status: manualOnly ? "manual-only" : operationWrites(plan) ? "planned" : "no-op",
           warnings: plan.warnings,
-          text: renderMigrationPlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
-      if (plan.migration.execution === "manual-only") {
+      if (manualOnly) {
         return {
           result: plan,
           status: "manual-only",
           exitCode: 7,
           warnings: plan.warnings,
-          text: renderMigrationPlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
-      if (plan.migration.execution === "no-op" || !operationWrites(plan)) {
+      if (!operationWrites(plan)) {
         return {
           result: plan,
           status: "no-op",
           warnings: plan.warnings,
-          text: renderMigrationPlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
       if (!(await confirmPlan(parsed, operationPromptSummary(plan)))) {
@@ -1792,22 +1796,18 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         retainTransactions: retentionInput === undefined ? undefined : Number(retentionInput),
       };
       const plan = api.planClean(options);
-      if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan") || !plan.writesRequired) {
+      const writes = operationWrites(plan);
+      if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan") || !writes) {
         return {
           result: plan,
-          status: plan.writesRequired ? "planned" : "report",
+          status: writes ? "planned" : "report",
           warnings: plan.warnings,
-          text: renderCleanPlan(plan),
+          text: renderOperationPlan(plan),
         };
       }
-      if (plan.blockedReasons.length > 0) {
-        throw new api.CliError(plan.blockedReasons[0]!, {
-          code: "CLEAN_BLOCKED_ACTIVE_STATE",
-          exitCode: 8,
-          target: ".mergora",
-        });
-      }
-      if (!(await confirmPlan(parsed, `cleanup of ${String(plan.selected.length)} artifact(s)`))) {
+      assertConflictFree(plan, api);
+      const deletes = plan.fileOperations.filter(({ operation }) => operation === "delete").length;
+      if (!(await confirmPlan(parsed, `cleanup of ${String(deletes)} artifact(s)`))) {
         throw new api.CliError("Cleanup consent is required; review --plan and pass --yes.", {
           code: "CONSENT_REQUIRED",
           exitCode: 12,
@@ -2236,32 +2236,6 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
   }
 }
 
-function renderPlan(plan: import("./configuration.js").InitPlan): string {
-  const lines = [
-    `Initialization plan ${plan.planDigest}`,
-    `Framework: ${plan.detection.framework} (${plan.detection.frameworkEvidence.join(", ")})`,
-    `Package manager: ${plan.detection.packageManager} (${plan.detection.packageManagerEvidence.join(", ")})`,
-  ];
-  for (const edit of plan.edits) {
-    lines.push(`${edit.action}\t${edit.target}\t${edit.afterDigest ?? "none"}\t${edit.reason}`);
-  }
-  return lines.join("\n");
-}
-
-function renderProjectCreatePlan(plan: import("./project-create.js").ProjectCreatePlan): string {
-  const lines = [
-    `Project creation plan ${plan.planDigest}`,
-    `Destination: ${plan.destination.directoryName} (${plan.destination.initialState})`,
-    `Template: ${plan.template.id}@${plan.template.version} (${plan.publicationStatus})`,
-    `Preset: ${plan.preset}`,
-    `Package manager: ${plan.packageManager.name}${plan.packageManager.install === null ? " (install skipped)" : `@${plan.packageManager.version}`}`,
-  ];
-  for (const file of plan.files) {
-    lines.push(`${file.source}\t${file.target}\t${file.digest}\t${String(file.byteLength)} bytes`);
-  }
-  return lines.join("\n");
-}
-
 function renderSemanticDiff(
   result: import("./semantic-update.js").SemanticSourceDiff,
   options: { readonly nameOnly: boolean; readonly statOnly: boolean },
@@ -2302,55 +2276,6 @@ function renderSemanticResolutionList(
     );
   }
   return lines.join("\n");
-}
-
-function renderSemanticResolveChoicePlan(
-  plan: import("./semantic-update.js").SemanticResolveChoicePlan,
-): string {
-  const lines = [
-    `resolve ${plan.choice} plan ${plan.planDigest}`,
-    `Conflict transaction: ${plan.transactionId}`,
-  ];
-  for (const change of plan.changes) {
-    lines.push(
-      `${change.resolution}\t${change.target}\t${change.from ?? "none"} -> ${change.to ?? "none"}`,
-    );
-  }
-  for (const limitation of plan.limitations) lines.push(`limitation\t${limitation}`);
-  return lines.join("\n");
-}
-
-function renderMigrationPlan(plan: import("./migrate.js").MigrationPlan): string {
-  const lines = [
-    `Migration ${plan.migration.id}: ${plan.migration.execution}; plan ${plan.planDigest}`,
-    `${plan.migration.sourceVersion} -> ${plan.migration.targetVersion}; trusted built-in; external executable code: no`,
-  ];
-  for (const step of plan.migration.steps) {
-    lines.push(
-      `${String(step.sequence)}\t${step.kind}\t${step.target}\t${step.description}\treversible=${String(step.reversible)}`,
-    );
-  }
-  for (const item of plan.migration.manualChecklist) {
-    lines.push(`manual\t${String(item.sequence)}\t${item.id}\t${item.description}`);
-  }
-  return lines.join("\n");
-}
-
-function renderCleanPlan(plan: import("./clean.js").CleanPlan): string {
-  const counts = (["cache", "transactions", "bases", "conflicts"] as const)
-    .map((category) => `${category}=${String(plan.candidates[category].length)}`)
-    .join(" ");
-  return [
-    `Cleanup report: ${counts}`,
-    `Selected: ${plan.selectedCategories.length === 0 ? "none (read-only)" : plan.selectedCategories.join(", ")}`,
-    `Candidates: ${String(plan.selected.length)}; reclaimable bytes: ${String(plan.estimatedReclaimBytes)}`,
-    `Preserved: ${String(plan.preserved.referencedBases)} referenced base(s), ${String(plan.preserved.retainedTerminalTransactions)} retained terminal transaction(s), ${String(plan.preserved.activeConflicts.length)} active conflict bundle(s)`,
-    `Rollback: unavailable; journal: ${plan.journalStrategy}`,
-    ...(plan.blockedReasons.length === 0
-      ? []
-      : plan.blockedReasons.map((reason) => `Blocked: ${reason}`)),
-    `Plan: ${plan.planDigest}`,
-  ].join("\n");
 }
 
 function operationPromptSummary(plan: import("./transaction-engine.js").OperationPlan): string {

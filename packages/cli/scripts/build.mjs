@@ -24,6 +24,10 @@ const runtimeWorkspaceDependencies = [
     directory: resolve(workspaceDirectory, "packages/registry"),
     name: "mergora-registry",
   },
+  {
+    directory: resolve(workspaceDirectory, "packages/schema"),
+    name: "mergora-schema",
+  },
 ];
 
 const cliManifest = JSON.parse(readFileSync(resolve(packageDirectory, "package.json"), "utf8"));

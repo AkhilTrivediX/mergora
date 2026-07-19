@@ -23,6 +23,7 @@ import {
 } from "../../packages/cli/src/vendor-reader.ts";
 import { canonicalJson, sha256 } from "../../packages/cli/src/contracts.ts";
 import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.ts";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 import {
   seedPackedCompleteNativeReleaseCache,
   seedPackedStableVendorRelease,
@@ -299,6 +300,8 @@ describe("Stable npm tarball vendoring", () => {
       expect.objectContaining({ code: "VENDOR_STABLE_SNAPSHOT_UNAUTHENTIC" }),
     );
     const plan = planStableVendor(snapshot);
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(Object.keys(plan)).not.toContain("vendor");
     const result = applyStableVendor(snapshot, plan.planDigest);
     expect(result.verification).toMatchObject({
       state: "valid",

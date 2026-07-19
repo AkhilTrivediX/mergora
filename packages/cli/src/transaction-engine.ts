@@ -19,6 +19,12 @@ import { basename, dirname, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 
 import {
+  formatValidationErrors,
+  validateSchemaDocument,
+  type OperationPlanV1,
+} from "mergora-schema";
+
+import {
   assertNoSymlinkAncestors,
   assertPortableRelativePath,
   canonicalJson,
@@ -104,6 +110,7 @@ export interface OperationPlan {
     | "adopt"
     | "init"
     | "create"
+    | "clean"
     | "update"
     | "resolve"
     | "doctor-fix"
@@ -188,8 +195,30 @@ export interface OperationPlan {
 
 export type OperationPlanWithoutDigest = Omit<OperationPlan, "planDigest">;
 
+/**
+ * Enforces the published, closed operation-plan v1 schema through the shared schema runtime.
+ * This is the authority behind the built-in `schema` validation label.
+ */
+export function assertValidOperationPlanV1(value: unknown): asserts value is OperationPlanV1 {
+  const result = validateSchemaDocument<OperationPlanV1>("operation-plan", value);
+  if (result.ok) return;
+  const safeErrors = result.errors.slice(0, 8).map(({ code, keyword }) => ({
+    code,
+    keyword,
+    path: "",
+    message: `Canonical operation-plan keyword ${keyword} failed.`,
+  }));
+  const details = formatValidationErrors(safeErrors).replaceAll("\n", "; ");
+  throw new CliError(`Operation plan failed canonical v1 schema validation. ${details}`, {
+    code: "OPERATION_PLAN_SCHEMA_INVALID",
+    exitCode: 8,
+  });
+}
+
 export function finalizeOperationPlan(plan: OperationPlanWithoutDigest): OperationPlan {
-  return { ...plan, planDigest: sha256(canonicalJson(plan)) };
+  const finalized = { ...plan, planDigest: sha256(canonicalJson(plan)) };
+  assertValidOperationPlanV1(finalized);
+  return finalized;
 }
 
 export interface TransactionMutation {
@@ -1168,6 +1197,7 @@ function appendJournal(
 }
 
 function assertPlanDigest(plan: OperationPlan): void {
+  assertValidOperationPlanV1(plan);
   const { planDigest, ...semantic } = plan;
   if (sha256(canonicalJson(semantic)) !== planDigest) {
     throw new CliError("Operation plan digest is invalid; regenerate the plan.", {
@@ -1263,7 +1293,7 @@ function assertAcceptedConsents(
 
 function acceptedConsentsForReviewedPlan(
   plan: OperationPlan,
-  reviewedPlanDigest: string | undefined,
+  reviewedPlanDigest: string,
 ): ExecuteTransactionOptions["acceptedConsents"] {
   if (reviewedPlanDigest !== plan.planDigest) return [];
   return plan.consentRequirements.map(({ id }) => ({ id, planDigest: plan.planDigest }));
@@ -1431,7 +1461,7 @@ function assertPreconditions(
 function assertGlobalPreconditions(root: string, plan: OperationPlan): void {
   const config = canonicalProjectJsonDigest(root, "mergora.json");
   const initializesMissingConfig =
-    plan.command === "init" &&
+    (plan.command === "init" || plan.command === "doctor-fix") &&
     config === null &&
     plan.fileOperations.some(
       (operation) =>
@@ -3228,10 +3258,10 @@ export interface RecoveryResult {
 
 export function recoverTransaction(
   options: RecoveryOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): RecoveryResult {
   const planned = planRecovery(options);
-  if (expectedPlanDigest !== undefined && expectedPlanDigest !== planned.plan.planDigest) {
+  if (expectedPlanDigest !== planned.plan.planDigest) {
     throw new CliError("Recovery plan changed before apply; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
@@ -3657,7 +3687,7 @@ export function planRollback(options: RollbackOptions): RollbackPlan {
     registries: originalPlan.registries,
     items: originalPlan.items.map((item) => ({
       ...item,
-      requested: `rollback:${id}`,
+      requested: item.requested,
       fromVersion: item.toVersion,
       toVersion: item.fromVersion,
     })),
@@ -3709,10 +3739,10 @@ export function planRollback(options: RollbackOptions): RollbackPlan {
 
 export function rollbackTransaction(
   options: RollbackOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): RollbackResult {
   const planned = planRollback(options);
-  if (expectedPlanDigest !== undefined && expectedPlanDigest !== planned.plan.planDigest) {
+  if (expectedPlanDigest !== planned.plan.planDigest) {
     throw new CliError("Rollback plan changed before apply; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,

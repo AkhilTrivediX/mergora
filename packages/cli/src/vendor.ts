@@ -41,6 +41,7 @@ import {
 } from "./registry-data.js";
 import {
   executeTransaction,
+  finalizeOperationPlan,
   type OperationPlan,
   type OperationPlanFile,
   type TransactionMutation,
@@ -237,18 +238,7 @@ export interface VendorManifestV1 {
   };
 }
 
-export type VendorPlan = Omit<OperationPlan, "command"> & {
-  readonly command: "vendor";
-  readonly vendor: {
-    readonly outputRoot: typeof VENDOR_ROOT;
-    readonly provenanceState: "unreleased-local";
-    readonly selectionMode: "all-installed" | "items";
-    readonly selectedItems: readonly string[];
-    readonly vendorManifestDigest: Digest;
-    readonly sha256SumsDigest: Digest;
-    readonly networkUsed: false;
-  };
-};
+export type VendorPlan = OperationPlan;
 
 export interface VendorVerificationResult {
   readonly schemaVersion: 1;
@@ -414,20 +404,7 @@ interface StableFormalVendorManifest {
   readonly sha256SumsDigest: Digest;
 }
 
-export type StableVendorPlan = Omit<OperationPlan, "command"> & {
-  readonly command: "vendor";
-  readonly vendor: {
-    readonly outputRoot: typeof VENDOR_ROOT;
-    readonly provenanceState: "stable-release";
-    readonly release: string;
-    readonly selectionMode: "all" | "items";
-    readonly selectedItems: readonly string[];
-    readonly vendorManifestDigest: Digest;
-    readonly sha256SumsDigest: Digest;
-    readonly acquisitionSource: AcquisitionSource;
-    readonly networkUsed: boolean;
-  };
-};
+export type StableVendorPlan = OperationPlan;
 
 export interface StableVendorResult {
   readonly mode: "offline-vendor";
@@ -1909,8 +1886,6 @@ function registryRoot(options: RegistryDataOptions): string {
   const moduleDirectory = dirname(fileURLToPath(import.meta.url));
   const bundled = resolve(moduleDirectory, "registry");
   if (existsSync(bundled)) return bundled;
-  const adjacentBuild = resolve(moduleDirectory, "../dist/registry");
-  if (existsSync(adjacentBuild)) return adjacentBuild;
   return resolve(moduleDirectory, "../../../registry/generated");
 }
 
@@ -2859,10 +2834,6 @@ function ownerFor(target: string): string {
   return match === null ? "vendor:bundle" : `${match[1]}:${match[2]}`;
 }
 
-function finalizeVendorPlan(value: Omit<VendorPlan, "planDigest">): VendorPlan {
-  return { ...value, planDigest: sha256(canonicalJson(value)) };
-}
-
 function buildBundle(options: VendorOptions): BuiltBundle {
   const project = readProjectState(options.projectRoot);
   const selection = requestedItems(project, options);
@@ -2919,9 +2890,7 @@ function buildBundle(options: VendorOptions): BuiltBundle {
       );
     }
   }
-  const manifestBytes = built.targetBytes.get(VENDOR_MANIFEST)!;
-  const sumsBytes = built.targetBytes.get(VENDOR_SUMS)!;
-  const plan = finalizeVendorPlan({
+  const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "vendor",
     cliVersion: CLI_VERSION,
@@ -2954,15 +2923,6 @@ function buildBundle(options: VendorOptions): BuiltBundle {
     },
     validationSuite: ["schema", "digest", "path", "collision", "ownership", "dependency"],
     rollbackAvailable: true,
-    vendor: {
-      outputRoot: VENDOR_ROOT,
-      provenanceState: "unreleased-local",
-      selectionMode: selection.mode,
-      selectedItems: selected.map(({ qualifiedId }) => qualifiedId),
-      vendorManifestDigest: sha256(manifestBytes),
-      sha256SumsDigest: sha256(sumsBytes),
-      networkUsed: false,
-    },
   });
   return {
     plan,
@@ -3008,10 +2968,6 @@ export function applyVendor(options: VendorOptions, expectedPlanDigest: string):
     transaction,
     verification: verifyVendor({ projectRoot: built.root }),
   };
-}
-
-function finalizeStableVendorPlan(value: Omit<StableVendorPlan, "planDigest">): StableVendorPlan {
-  return { ...value, planDigest: sha256(canonicalJson(value)) };
 }
 
 function buildStableBundle(snapshot: StableVendorSnapshot): BuiltStableBundle {
@@ -3092,9 +3048,7 @@ function buildStableBundle(snapshot: StableVendorSnapshot): BuiltStableBundle {
   const direct = new Set(
     snapshot.selectionMode === "all" ? snapshot.release.resolvedItems : snapshot.selectionRequested,
   );
-  const manifestBytes = built.targetBytes.get(VENDOR_MANIFEST)!;
-  const sumsBytes = built.targetBytes.get(VENDOR_SUMS)!;
-  const plan = finalizeStableVendorPlan({
+  const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "vendor",
     cliVersion: CLI_VERSION,
@@ -3146,18 +3100,6 @@ function buildStableBundle(snapshot: StableVendorSnapshot): BuiltStableBundle {
     },
     validationSuite: ["schema", "digest", "path", "collision", "dependency"],
     rollbackAvailable: true,
-    vendor: {
-      outputRoot: VENDOR_ROOT,
-      provenanceState: "stable-release",
-      release: snapshot.release.release,
-      selectionMode: snapshot.selectionMode,
-      selectedItems: snapshot.release.resolvedItems.map((id) => `official:${id}`),
-      vendorManifestDigest: sha256(manifestBytes),
-      sha256SumsDigest: sha256(sumsBytes),
-      acquisitionSource: snapshot.acquisitionSource,
-      networkUsed:
-        snapshot.acquisitionSource === "network" || snapshot.acquisitionSource === "mirror",
-    },
   });
   return {
     plan,

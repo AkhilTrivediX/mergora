@@ -14,6 +14,7 @@ import {
   listBuiltInMigrations,
   planMigration,
 } from "../../packages/cli/src/migrate.ts";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const temporaryDirectories: string[] = [];
@@ -51,13 +52,13 @@ describe("trusted migration planning", () => {
     const options = { projectRoot: fixture.root, target: "config" as const };
     const plan = planMigration(options);
     expect(plan).toEqual(planMigration(options));
-    expect(plan.migration).toMatchObject({
-      id: "config-v0-to-v1",
-      execution: "no-op",
-      sourceVersion: "1",
-      targetVersion: "1",
-      externalExecutableCodeUsed: false,
-    });
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(Object.keys(plan)).not.toContain("migration");
+    expect(plan.migrations).toEqual([
+      { id: "config-v0-to-v1", adapter: "config-v1", phase: "proposed" },
+    ]);
+    expect(plan.warnings.join(" ")).toContain("maps 1 to 1");
+    expect(plan.fileOperations.every(({ operation }) => operation === "no-op")).toBe(true);
     const result = applyMigration(options, plan.planDigest);
     expect(result.transaction).toMatchObject({ state: "no-op", transactionId: null });
   });
@@ -69,10 +70,8 @@ describe("trusted migration planning", () => {
     writeFileSync(configPath, before, "utf8");
     const options = { projectRoot: fixture.root, target: "config" as const };
     const plan = planMigration(options);
-    expect(plan.migration).toMatchObject({ execution: "transaction", trustedBuiltin: true });
-    expect(plan.migration.steps).toEqual([
-      expect.objectContaining({ sequence: 1, reversible: true, kind: "structured-json" }),
-    ]);
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(plan.warnings.join(" ")).toContain("Migration step 1 (config-v0-to-v1:write)");
     expect(plan.fileOperations).toEqual([
       expect.objectContaining({ target: "mergora.json", operation: "structured-patch" }),
     ]);
@@ -90,8 +89,9 @@ describe("trusted migration planning", () => {
     writeFileSync(configPath, before, "utf8");
     const options = { projectRoot: fixture.root, target: "config" as const };
     const plan = planMigration(options);
-    expect(plan.migration.execution).toBe("manual-only");
-    expect(plan.migration.manualChecklist.length).toBeGreaterThan(0);
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(plan.migrations[0]?.adapter).toBe("manual-checklist");
+    expect(plan.warnings.some((warning) => warning.startsWith("Manual checklist"))).toBe(true);
     expect(plan.fileOperations).toEqual([]);
     expect(() => applyMigration(options, plan.planDigest)).toThrowError(
       expect.objectContaining<Partial<CliError>>({ code: "MIGRATION_MANUAL_REQUIRED" }),
@@ -105,11 +105,9 @@ describe("trusted migration planning", () => {
     const components = '{"$schema":"https://ui.shadcn.com/schema.json","tsx":true}\n';
     writeFileSync(componentsPath, components, "utf8");
     const shadcnPlan = planMigration({ projectRoot: shadcn.root, target: "shadcn" });
-    expect(shadcnPlan.migration).toMatchObject({
-      execution: "manual-only",
-      componentsJsonRetained: true,
-      externalExecutableCodeUsed: false,
-    });
+    expect(validateSchemaDocument("operation-plan", shadcnPlan).errors).toEqual([]);
+    expect(shadcnPlan.migrations[0]?.adapter).toBe("manual-checklist");
+    expect(shadcnPlan.warnings.join(" ")).toContain("components.json file is retained");
     expect(readFileSync(componentsPath, "utf8")).toBe(components);
 
     const pages = project(false);
@@ -120,11 +118,9 @@ describe("trusted migration planning", () => {
       target: "framework",
       migrationId: "framework-next-pages-to-next-app-v1",
     });
-    expect(frameworkPlan.migration).toMatchObject({
-      execution: "manual-only",
-      sourceVersion: "next-pages",
-      targetVersion: "next-app",
-    });
+    expect(validateSchemaDocument("operation-plan", frameworkPlan).errors).toEqual([]);
+    expect(frameworkPlan.migrations[0]?.adapter).toBe("manual-checklist");
+    expect(frameworkPlan.warnings.join(" ")).toContain("maps next-pages to next-app");
 
     const modePlan = planMigration({
       projectRoot: shadcn.root,
@@ -132,8 +128,12 @@ describe("trusted migration planning", () => {
       migrationId: "mode-source-to-package-v1",
       itemIds: ["dialog", "button", "dialog"],
     });
-    expect(modePlan.migration.itemIds).toEqual(["official:button", "official:dialog"]);
-    expect(modePlan.migration.steps.every(({ reversible }) => reversible)).toBe(true);
+    expect(validateSchemaDocument("operation-plan", modePlan).errors).toEqual([]);
+    expect(modePlan.items.map(({ id }) => id)).toEqual(["official:button", "official:dialog"]);
+    expect(modePlan.items.every(({ requested }) => requested === "*")).toBe(true);
+    expect(modePlan.warnings.filter((warning) => warning.startsWith("Migration step"))).toHaveLength(
+      4,
+    );
   });
 
   it("rejects any external or mismatched migration ID", () => {

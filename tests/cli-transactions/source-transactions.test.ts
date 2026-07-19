@@ -208,6 +208,7 @@ describe("transactional source ownership", () => {
 
     const removePlan = planSourceRemove(options);
     assertSchema("operation-plan", removePlan);
+    expect(removePlan.items[0]?.requested).toBe(firstPlan.items[0]?.requested);
     const removed = applySourceRemove(options, removePlan.planDigest);
     expect(removed.transaction.state).toBe("committed");
     expect(item.files.every(({ target }) => !existsSync(resolve(project.root, target)))).toBe(true);

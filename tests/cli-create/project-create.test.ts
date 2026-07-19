@@ -20,7 +20,10 @@ import {
   PROJECT_CREATE_IGNORED_OS_METADATA,
   type ProjectCreateOptions,
 } from "../../packages/cli/src/project-create.ts";
-import type { PackageManagerInvocation } from "../../packages/cli/src/transaction-engine.ts";
+import {
+  assertValidOperationPlanV1,
+  type PackageManagerInvocation,
+} from "../../packages/cli/src/transaction-engine.ts";
 
 const temporaryParents: string[] = [];
 
@@ -65,24 +68,28 @@ describe("deterministic project creation planning", () => {
     expect(first).toEqual(second);
     expect(readdirSync(root)).toEqual(before);
     expect(first.command).toBe("create");
-    expect(first.publicationStatus).toBe("unreleased");
-    expect(first.template).toMatchObject({ id: "next", version: "0.0.0" });
-    expect(first.destination).toMatchObject({
-      directoryName: "application",
-      initialState: "absent",
-      ignoredOsMetadataNames: PROJECT_CREATE_IGNORED_OS_METADATA,
-    });
-    expect(first.packageManager.install).toBeNull();
-    expect(first.files.length).toBeGreaterThan(10);
-    expect(first.files.map(({ target }) => target)).toContain("mergora.json");
-    expect(first.files.map(({ target }) => target)).toContain(".mergora/manifest.json");
-    expect(first.files.map(({ target }) => target)).toContain(
+    expect(first.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(`Destination application begins absent; precondition sha256:`),
+        expect.stringContaining(PROJECT_CREATE_IGNORED_OS_METADATA.join(", ")),
+        expect.stringContaining("Template next@0.0.0 (unreleased)"),
+        expect.stringContaining("Package manager pnpm@11.14.0; install skipped"),
+      ]),
+    );
+    expect(first.fileOperations.length).toBeGreaterThan(10);
+    expect(first.fileOperations.map(({ target }) => target)).toContain("mergora.json");
+    expect(first.fileOperations.map(({ target }) => target)).toContain(".mergora/manifest.json");
+    expect(first.fileOperations.map(({ target }) => target)).toContain(
       "src/styles/mergora/tokens/workbench.css",
     );
-    expect(first.files.every(({ digest: value }) => /^sha256:[a-f0-9]{64}$/u.test(value))).toBe(
-      true,
-    );
+    expect(
+      first.fileOperations.every(
+        ({ proposed }) => proposed !== null && /^sha256:[a-f0-9]{64}$/u.test(proposed),
+      ),
+    ).toBe(true);
+    expect(() => assertValidOperationPlanV1(first)).not.toThrow();
     expect(first.planDigest).toMatch(/^sha256:[a-f0-9]{64}$/u);
+    expect(first.rollbackAvailable).toBe(false);
     expect(JSON.stringify(first)).not.toContain(root);
   });
 
@@ -154,8 +161,8 @@ describe("transactional project creation apply", () => {
     expect(readFileSync(resolve(target, "src/app/globals.css"), "utf8")).toContain(
       "styles/mergora/foundations.css",
     );
-    for (const file of plan.files) {
-      expect(digest(readFileSync(resolve(target, file.target)))).toBe(file.digest);
+    for (const file of plan.fileOperations) {
+      expect(digest(readFileSync(resolve(target, file.target)))).toBe(file.proposed);
     }
     expect(() => planProjectCreate(createOptions)).toThrow(/refusing to overwrite/u);
   });
@@ -184,12 +191,13 @@ describe("transactional project creation apply", () => {
     });
     const plan = planProjectCreate(createOptions);
 
-    expect(plan.packageManager.install).toEqual({
-      executable: "npm",
-      arguments: ["install", "--ignore-scripts"],
-      cwd: ".",
-      shell: false,
-    });
+    expect(plan.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(
+          "Package manager npm@11.4.2; fixed install npm install --ignore-scripts",
+        ),
+      ]),
+    );
     const result = applyProjectCreate(createOptions, plan.planDigest);
 
     expect(invocations).toHaveLength(1);
@@ -232,10 +240,14 @@ describe("transactional project creation apply", () => {
     });
     const plan = planProjectCreate(createOptions);
 
-    expect(plan.destination.initialState).toBe("os-metadata-only");
-    expect(plan.files.find(({ target: path }) => path === ".DS_Store")).toMatchObject({
-      digest: digest(Buffer.from([0, 1, 2, 3])),
-      source: "preserved-os-metadata",
+    expect(plan.warnings).toEqual(
+      expect.arrayContaining([expect.stringContaining("begins os-metadata-only")]),
+    );
+    expect(plan.fileOperations.find(({ target: path }) => path === ".DS_Store")).toMatchObject({
+      operation: "no-op",
+      base: digest(Buffer.from([0, 1, 2, 3])),
+      local: digest(Buffer.from([0, 1, 2, 3])),
+      proposed: digest(Buffer.from([0, 1, 2, 3])),
     });
     expect(() => applyProjectCreate(createOptions, plan.planDigest)).toThrow(
       /fault after reversible target move/u,
@@ -266,7 +278,9 @@ describe("transactional project creation apply", () => {
     mkdirSync(resolve(emptyRoot, "application"));
     const emptyOptions = options(emptyRoot, { preset: "none" });
     const emptyPlan = planProjectCreate(emptyOptions);
-    expect(emptyPlan.destination.initialState).toBe("empty");
+    expect(emptyPlan.warnings).toEqual(
+      expect.arrayContaining([expect.stringContaining("begins empty")]),
+    );
     applyProjectCreate(emptyOptions, emptyPlan.planDigest);
     expect(readFileSync(resolve(emptyRoot, "application/src/app/page.tsx"), "utf8")).toContain(
       "No starter preset was installed",

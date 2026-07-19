@@ -24,6 +24,10 @@ import {
 import { applyClean, planClean, type VerifiedCacheEntryV1 } from "../../packages/cli/src/clean.ts";
 import { canonicalJson, sha256 } from "../../packages/cli/src/contracts.ts";
 import { basePath, type ProvenanceManifest } from "../../packages/cli/src/source-operations.ts";
+import {
+  assertValidOperationPlanV1,
+  type OperationPlan,
+} from "../../packages/cli/src/transaction-engine.ts";
 import { createProjectFixture, type ProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -47,6 +51,10 @@ function transactionPaths(transactionIds: readonly string[]): readonly string[] 
   return transactionIds
     .map((transactionId) => `.mergora/transactions/${transactionId}`)
     .sort((left, right) => left.localeCompare(right, "en-US"));
+}
+
+function categoryOperations(plan: OperationPlan, category: string) {
+  return plan.fileOperations.filter(({ owner }) => owner === `official:clean-${category}`);
 }
 
 function fixture(withSource = true): CleanFixture {
@@ -169,14 +177,14 @@ describe("cleanup planning and exact apply", () => {
 
     const first = planClean(options);
     expect(planClean(options)).toEqual(first);
-    expect(first.selectedCategories).toEqual([]);
-    expect(first.selected).toEqual([]);
-    expect(first.writesRequired).toBe(false);
-    expect(first.candidates.cache.map(({ path }) => path)).toContain(cached);
-    expect(first.candidates.bases.map(({ path }) => path)).toContain(unused.path);
+    expect(() => assertValidOperationPlanV1(first)).not.toThrow();
+    expect(first.fileOperations.every(({ operation }) => operation === "no-op")).toBe(true);
+    expect(first.estimatedBytes.write).toBe(0);
+    expect(categoryOperations(first, "cache").map(({ target }) => target)).toContain(cached);
+    expect(categoryOperations(first, "bases").map(({ target }) => target)).toContain(unused.path);
     expect(
-      first.candidates.transactions
-        .map(({ path }) => path)
+      categoryOperations(first, "transactions")
+        .map(({ target }) => target)
         .sort((left, right) => left.localeCompare(right, "en-US")),
     ).toEqual(transactionPaths([...project.initTransactionIds, project.transactionId!]));
     expect(inventory(project.root)).toEqual(before);
@@ -205,8 +213,12 @@ describe("cleanup planning and exact apply", () => {
       retainTransactions: 0,
     };
     const cachePlan = planClean(cacheOptions);
-    expect(cachePlan.selectedCategories).toEqual(["cache"]);
-    expect(cachePlan.selected.every(({ category }) => category === "cache")).toBe(true);
+    expect(
+      categoryOperations(cachePlan, "cache").every(({ operation }) => operation === "delete"),
+    ).toBe(true);
+    expect(cachePlan.warnings).toEqual(
+      expect.arrayContaining([expect.stringContaining("selected categories: cache")]),
+    );
     const cacheResult = applyClean(cacheOptions, cachePlan.planDigest);
     expect(cacheResult.deleted).toEqual([cached]);
     expect(cacheResult.journal).toMatch(/^\.mergora\/tmp\/clean-[a-f0-9]{64}\/journal\.ndjson$/u);
@@ -220,7 +232,9 @@ describe("cleanup planning and exact apply", () => {
 
     const baseOptions = { projectRoot: project.root, bases: true, retainTransactions: 0 };
     const basePlan = planClean(baseOptions);
-    expect(basePlan.selectedCategories).toEqual(["bases"]);
+    expect(
+      categoryOperations(basePlan, "bases").every(({ operation }) => operation === "delete"),
+    ).toBe(true);
     expect(applyClean(baseOptions, basePlan.planDigest).deleted).toEqual([unused.path]);
     expect(existsSync(resolve(project.root, unused.path))).toBe(false);
     expect(
@@ -234,7 +248,11 @@ describe("cleanup planning and exact apply", () => {
       retainTransactions: 0,
     };
     const transactionPlan = planClean(transactionOptions);
-    expect(transactionPlan.selectedCategories).toEqual(["transactions"]);
+    expect(
+      categoryOperations(transactionPlan, "transactions").every(
+        ({ operation }) => operation === "delete",
+      ),
+    ).toBe(true);
     expect(
       [...applyClean(transactionOptions, transactionPlan.planDigest).deleted].sort((left, right) =>
         left.localeCompare(right, "en-US"),
@@ -259,9 +277,15 @@ describe("cleanup planning and exact apply", () => {
     const options = { projectRoot: project.root, bases: true };
     const plan = planClean(options);
 
-    expect(plan.preserved.referencedBases).toBe(referenced.size);
-    expect(plan.candidates.bases.map(({ path }) => path)).toEqual([unused.path]);
-    expect(plan.candidates.bases.every(({ path }) => !referenced.has(path))).toBe(true);
+    expect(plan.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(`preserves ${String(referenced.size)} referenced bases`),
+      ]),
+    );
+    expect(categoryOperations(plan, "bases").map(({ target }) => target)).toEqual([unused.path]);
+    expect(categoryOperations(plan, "bases").every(({ target }) => !referenced.has(target))).toBe(
+      true,
+    );
     applyClean(options, plan.planDigest);
     for (const path of referenced) expect(existsSync(resolve(project.root, path))).toBe(true);
   });
@@ -282,13 +306,19 @@ describe("cleanup planning and exact apply", () => {
     };
     const plan = planClean(options);
 
-    expect(plan.preserved.activeTransactions).toEqual([project.transactionId]);
+    expect(plan.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining(`Active transaction IDs: ${project.transactionId}`),
+      ]),
+    );
     expect(
-      plan.candidates.transactions
-        .map(({ path }) => path)
+      categoryOperations(plan, "transactions")
+        .map(({ target }) => target)
         .sort((left, right) => left.localeCompare(right, "en-US")),
     ).toEqual(transactionPaths(project.initTransactionIds));
-    expect(plan.blockedReasons).toEqual([expect.stringMatching(/recovered before cleanup/iu)]);
+    expect(plan.conflicts).toEqual([
+      expect.objectContaining({ reason: expect.stringMatching(/recovered before cleanup/iu) }),
+    ]);
     expect(() => applyClean(options, plan.planDigest)).toThrow(/recovered before cleanup/iu);
     expect(existsSync(transactionRoot)).toBe(true);
     for (const transactionId of project.initTransactionIds) {

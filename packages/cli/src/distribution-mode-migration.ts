@@ -2764,7 +2764,8 @@ function materializeDistributionModeTransaction(
           operation: operation.operation as "add" | "change" | "remove",
           from: operation.from,
           to: operation.to,
-          owners: operation.ownersAfter,
+          owners:
+            operation.operation === "remove" ? operation.ownersBefore : operation.ownersAfter,
         };
       });
   const plan = finalizeOperationPlan({

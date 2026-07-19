@@ -36,6 +36,11 @@ import {
   readProjectFile,
   type ProvenanceManifest,
 } from "./source-operations.js";
+import {
+  finalizeOperationPlan,
+  type OperationPlan,
+  type OperationPlanFile,
+} from "./transaction-engine.js";
 
 const DIGEST = /^sha256:[a-f0-9]{64}$/u;
 const TRANSACTION_ID = /^[0-9]{8}T[0-9]{6}(?:\.[0-9]{3})?Z-[0-9a-f]{32}$/u;
@@ -92,31 +97,7 @@ export interface CleanCandidate {
   readonly reason: string;
 }
 
-export interface CleanPlan {
-  readonly schemaVersion: 1;
-  readonly command: "clean";
-  readonly cliVersion: typeof CLI_VERSION;
-  readonly projectRoot: ".";
-  readonly configDigest: Digest;
-  readonly manifestPreconditionDigest: Digest;
-  readonly retention: { readonly terminalTransactions: number };
-  readonly selectedCategories: readonly CleanCategory[];
-  readonly candidates: Readonly<Record<CleanCategory, readonly CleanCandidate[]>>;
-  readonly selected: readonly CleanCandidate[];
-  readonly preserved: {
-    readonly referencedBases: number;
-    readonly retainedTerminalTransactions: number;
-    readonly activeTransactions: readonly string[];
-    readonly activeConflicts: readonly string[];
-  };
-  readonly blockedReasons: readonly string[];
-  readonly writesRequired: boolean;
-  readonly estimatedReclaimBytes: number;
-  readonly rollbackAvailable: false;
-  readonly journalStrategy: "intent-before-atomic-move-then-unlink";
-  readonly warnings: readonly string[];
-  readonly planDigest: Digest;
-}
+export type CleanPlan = OperationPlan;
 
 export interface CleanResult {
   readonly mode: "local-clean";
@@ -159,6 +140,7 @@ interface InternalCleanPlan {
   readonly options: CleanOptions;
   readonly plan: CleanPlan;
   readonly selected: readonly InternalCandidate[];
+  readonly blockedReasons: readonly string[];
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -1628,47 +1610,83 @@ function buildCleanInternal(options: CleanOptions, ignoreOwnLock = false): Inter
           `Incomplete transaction ${transactions.activeTransactions[0]} must be recovered before cleanup.`,
         ]),
   ];
-  const semantic = {
-    schemaVersion: 1 as const,
-    command: "clean" as const,
+  const fileOperations: OperationPlanFile[] = CLEAN_CATEGORIES.flatMap((category) =>
+    categories[category].map(({ public: publicCandidate }) => {
+      const selectedCandidate = selectedCategoryList.includes(category);
+      return {
+        operation: selectedCandidate ? "delete" : "no-op",
+        target: publicCandidate.path,
+        owner: `official:clean-${category}`,
+        base: publicCandidate.preconditionDigest,
+        local: publicCandidate.preconditionDigest,
+        remote: selectedCandidate ? null : publicCandidate.preconditionDigest,
+        proposed: selectedCandidate ? null : publicCandidate.preconditionDigest,
+        mediaType: "application/octet-stream",
+        risk: selectedCandidate ? "destructive" : "ordinary",
+        reason: selectedCandidate
+          ? publicCandidate.reason
+          : `${publicCandidate.reason} Preserve until the ${category} category is explicitly selected.`,
+      };
+    }),
+  );
+  const estimatedReclaimBytes = selected.reduce(
+    (total, { public: publicCandidate }) => total + publicCandidate.bytes,
+    0,
+  );
+  const candidateCounts = CLEAN_CATEGORIES.map(
+    (category) => `${category}=${String(categories[category].length)}`,
+  ).join(", ");
+  const plan = finalizeOperationPlan({
+    schemaVersion: 1,
+    command: "clean",
     cliVersion: CLI_VERSION,
-    projectRoot: "." as const,
+    projectRoot: ".",
     configDigest,
     manifestPreconditionDigest: manifestDigest,
-    retention: { terminalTransactions: retention },
-    selectedCategories: selectedCategoryList,
-    candidates: Object.fromEntries(
-      CLEAN_CATEGORIES.map((category) => [
-        category,
-        categories[category].map(({ public: publicCandidate }) => publicCandidate),
-      ]),
-    ) as unknown as Readonly<Record<CleanCategory, readonly CleanCandidate[]>>,
-    selected: selected.map(({ public: publicCandidate }) => publicCandidate),
-    preserved: {
-      referencedBases: bases.referenced,
-      retainedTerminalTransactions: transactions.retainedTerminal,
-      activeTransactions: transactions.activeTransactions,
-      activeConflicts: transactions.activeConflicts,
-    },
-    blockedReasons,
-    writesRequired: selected.length > 0,
-    estimatedReclaimBytes: selected.reduce(
-      (total, { public: publicCandidate }) => total + publicCandidate.bytes,
-      0,
-    ),
-    rollbackAvailable: false as const,
-    journalStrategy: "intent-before-atomic-move-then-unlink" as const,
+    registries: [],
+    items: [],
+    fileOperations,
+    dependencyChanges: [],
+    structuredPatches: [],
+    migrations: [],
+    contractChanges: [],
     warnings: [
       "Cleanup is local-only and never includes live source, mergora.json, the current manifest, referenced bases, vendor bundles, credentials, or active conflicts.",
+      `Cleanup inventory: ${candidateCounts}; selected categories: ${selectedCategoryList.length === 0 ? "none" : selectedCategoryList.join(", ")}; estimated reclaim: ${String(estimatedReclaimBytes)} bytes.`,
+      `Retention preserves ${String(bases.referenced)} referenced bases and ${String(transactions.retainedTerminal)} terminal transactions; terminal transaction retention is ${String(retention)}.`,
+      `Active transaction IDs: ${transactions.activeTransactions.join(", ") || "none"}; active conflict IDs: ${transactions.activeConflicts.join(", ") || "none"}.`,
       ...(selected.length === 0
         ? ["Read-only report: select each desired category explicitly before apply."]
         : [
             "Cleanup has no rollback claim. An append-only local journal records intent before each atomic move and final unlink.",
           ]),
+      ...blockedReasons.map((reason) => `Blocked: ${reason}`),
     ],
-  };
-  const plan: CleanPlan = { ...semantic, planDigest: sha256(canonicalJson(semantic)) };
-  return { root, options, plan, selected };
+    consentRequirements:
+      selected.length === 0
+        ? []
+        : [
+            {
+              id: "clean-local-artifacts",
+              flag: "--yes",
+              reason: "Delete only the reviewed local cleanup candidates.",
+            },
+          ],
+    conflicts:
+      selected.length === 0
+        ? []
+        : blockedReasons.map((reason) => ({
+            target: reason.startsWith("Incomplete transaction")
+              ? ".mergora/transactions"
+              : ".mergora/.lock",
+            kind: "ownership" as const,
+            reason,
+          })),
+    estimatedBytes: { download: 0, write: estimatedReclaimBytes },
+    validationSuite: ["schema", "digest", "path", "ownership"],
+    rollbackAvailable: false,
+  });
+  return { root, options, plan, selected, blockedReasons };
 }
 
 export function planClean(options: CleanOptions): CleanPlan {
@@ -1867,8 +1885,8 @@ export function applyClean(options: CleanOptions, expectedPlanDigest: string): C
       exitCode: 8,
     });
   }
-  if (internal.plan.blockedReasons.length > 0 && internal.plan.writesRequired) {
-    throw new CliError(internal.plan.blockedReasons[0]!, {
+  if (internal.blockedReasons.length > 0 && internal.selected.length > 0) {
+    throw new CliError(internal.blockedReasons[0]!, {
       code: "CLEAN_BLOCKED_ACTIVE_STATE",
       exitCode: 8,
       target: ".mergora",
@@ -1916,10 +1934,10 @@ export function applyClean(options: CleanOptions, expectedPlanDigest: string): C
           artifactKind: "mergora-clean-journal",
           planDigest: internal.plan.planDigest,
           rollbackAvailable: false,
-          candidates: internal.plan.selected.map(({ category, path, preconditionDigest }) => ({
-            category,
-            path,
-            preconditionDigest,
+          candidates: internal.selected.map(({ public: candidateValue }) => ({
+            category: candidateValue.category,
+            path: candidateValue.path,
+            preconditionDigest: candidateValue.preconditionDigest,
           })),
         })}\n`,
       ),

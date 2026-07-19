@@ -75,6 +75,7 @@ import {
 } from "./source-operations.js";
 import {
   TransactionInterruption,
+  assertValidOperationPlanV1,
   executeTransaction,
   finalizeOperationPlan,
   validationSuiteForTransaction,
@@ -3211,24 +3212,7 @@ export interface SemanticResolveChoiceOptions {
   readonly faultInjector?: TransactionFaultInjector | undefined;
 }
 
-export interface SemanticResolveChoicePlan {
-  readonly schemaVersion: 1;
-  readonly command: "resolve";
-  readonly scope: "local-conflict-bundle";
-  readonly transactionId: string;
-  readonly choice: SemanticResolveChoice;
-  readonly statePreconditionDigest: Digest;
-  readonly manifestPreconditionDigest: Digest;
-  readonly changes: readonly {
-    readonly target: string;
-    readonly from: Digest | null;
-    readonly to: Digest | null;
-    readonly present: boolean;
-    readonly resolution: ConflictResolution;
-  }[];
-  readonly limitations: readonly string[];
-  readonly planDigest: Digest;
-}
+export type SemanticResolveChoicePlan = OperationPlan;
 
 export interface SemanticResolutionList {
   readonly transactionId: string;
@@ -3595,6 +3579,7 @@ function validateConflictState(value: unknown, id: string): ConflictState {
 }
 
 function assertPlanIntegrity(plan: OperationPlan, expected: Digest): void {
+  assertValidOperationPlanV1(plan);
   const { planDigest, ...semantic } = plan;
   if (planDigest !== expected || digest(semantic) !== planDigest) {
     throw new CliError("Conflict transaction plan digest is invalid.", {
@@ -3939,6 +3924,7 @@ function validateManualResolution(
 interface InternalResolveChoicePlan {
   readonly loaded: LoadedConflict;
   readonly plan: SemanticResolveChoicePlan;
+  readonly changes: readonly ResolveChoiceChange[];
   readonly proposals: ReadonlyMap<
     string,
     {
@@ -3946,6 +3932,16 @@ interface InternalResolveChoicePlan {
       readonly resolution: ConflictResolution;
     }
   >;
+  readonly nextState: ConflictState;
+  readonly mutations: readonly ResolveChoiceMutation[];
+}
+
+interface ResolveChoiceChange {
+  readonly target: string;
+  readonly from: Digest | null;
+  readonly to: Digest | null;
+  readonly present: boolean;
+  readonly resolution: ConflictResolution;
 }
 
 function buildResolveChoicePlan(options: SemanticResolveChoiceOptions): InternalResolveChoicePlan {
@@ -4017,21 +4013,92 @@ function buildResolveChoicePlan(options: SemanticResolveChoiceOptions): Internal
       resolution: proposal.resolution,
     };
   });
-  const semantic = {
-    schemaVersion: 1 as const,
-    command: "resolve" as const,
-    scope: "local-conflict-bundle" as const,
-    transactionId: options.transactionId,
-    choice: options.choice,
-    statePreconditionDigest: loaded.stateDigest,
+  const nextEntries = loaded.state.entries.map((entry) => {
+    const proposal = proposals.get(entry.target);
+    if (proposal === undefined) return entry;
+    return {
+      ...entry,
+      resolution: proposal.resolution,
+      currentProposedDigest: digestOrNull(proposal.bytes),
+      currentProposedPresent: proposal.bytes !== null,
+    };
+  });
+  const nextState: ConflictState = { ...loaded.state, entries: nextEntries };
+  const mutations = resolveChoiceMutations(loaded, changes, proposals, nextState);
+  const stateTarget = `${transactionRoot(options.transactionId)}/${CONFLICT_STATE_PATH}`;
+  const digestTarget = `${transactionRoot(options.transactionId)}/${CONFLICT_STATE_DIGEST_PATH}`;
+  const fileOperations: OperationPlanFile[] = mutations.map((mutation) => {
+    const change = changes.find((candidate) => {
+      const entry = entryByTarget.get(candidate.target);
+      return (
+        entry !== undefined &&
+        mutation.target === conflictPath(options.transactionId, entry.key, "proposed")
+      );
+    });
+    const stateMutation = mutation.target === stateTarget;
+    return {
+      operation: stateMutation ? "structured-patch" : "binary-replace",
+      target: mutation.target,
+      owner: change === undefined ? "official:resolve" : entryByTarget.get(change.target)!.owner,
+      base: sha256(mutation.before),
+      local: sha256(mutation.before),
+      remote: sha256(mutation.after),
+      proposed: sha256(mutation.after),
+      mediaType:
+        change === undefined
+          ? mutation.target === digestTarget
+            ? "text/plain"
+            : "application/json"
+          : entryByTarget.get(change.target)!.mediaType,
+      risk: "review-required",
+      reason:
+        change === undefined
+          ? mutation.target === digestTarget
+            ? "Update the conflict-state digest to bind the exact reviewed state bytes."
+            : "Record the exact reviewed conflict resolution choices in local conflict state."
+          : `Update the local conflict proposal for ${change.target} with resolution ${change.resolution}.`,
+    };
+  });
+  const plan = finalizeOperationPlan({
+    schemaVersion: 1,
+    command: "resolve",
+    cliVersion: CLI_VERSION,
+    projectRoot: ".",
+    configDigest: loaded.state.configPreconditionDigest,
     manifestPreconditionDigest: loaded.state.manifestPreconditionDigest,
-    changes,
-    limitations: resolutionLimitations(),
-  };
+    registries: loaded.plan.registries,
+    items: loaded.plan.items,
+    fileOperations,
+    dependencyChanges: [],
+    structuredPatches: [],
+    migrations: [],
+    contractChanges: [],
+    warnings: [
+      `Local conflict transaction ${options.transactionId}; choice ${options.choice}; state precondition ${loaded.stateDigest}.`,
+      ...resolutionLimitations(),
+    ],
+    consentRequirements: [
+      {
+        id: "resolve-conflict-choice",
+        flag: "--yes",
+        reason: "Apply only the reviewed local conflict-bundle resolution mutations.",
+      },
+    ],
+    conflicts: [],
+    estimatedBytes: {
+      download: 0,
+      write: mutations.reduce((total, mutation) => total + mutation.after.byteLength, 0),
+    },
+    validationSuite: ["schema", "digest", "path", "collision", "ownership"],
+    rollbackAvailable: false,
+  });
   return {
     loaded,
+    changes,
     proposals,
-    plan: { ...semantic, planDigest: digest(semantic) },
+    nextState,
+    mutations,
+    plan,
   };
 }
 
@@ -4081,27 +4148,29 @@ function assertResolveChoiceMutationPreconditions(
 }
 
 function resolveChoiceMutations(
-  internal: InternalResolveChoicePlan,
+  loaded: LoadedConflict,
+  changes: readonly ResolveChoiceChange[],
+  proposals: InternalResolveChoicePlan["proposals"],
   nextState: ConflictState,
 ): readonly ResolveChoiceMutation[] {
   const mutations: ResolveChoiceMutation[] = [];
-  for (const change of internal.plan.changes) {
-    const entry = internal.loaded.state.entries.find(({ target }) => target === change.target)!;
-    const proposal = internal.proposals.get(change.target)!;
-    const target = conflictPath(internal.loaded.state.transactionId, entry.key, "proposed");
+  for (const change of changes) {
+    const entry = loaded.state.entries.find(({ target }) => target === change.target)!;
+    const proposal = proposals.get(change.target)!;
+    const target = conflictPath(loaded.state.transactionId, entry.key, "proposed");
     mutations.push({
       target,
-      before: requiredConflictFile(internal.loaded.root, target),
+      before: requiredConflictFile(loaded.root, target),
       after: fileBytesForBundle(proposal.bytes),
     });
   }
   const stateBytes = Buffer.from(`${JSON.stringify(nextState, null, 2)}\n`);
   const stateTarget = `${transactionRoot(nextState.transactionId)}/${CONFLICT_STATE_PATH}`;
   const digestTarget = `${transactionRoot(nextState.transactionId)}/${CONFLICT_STATE_DIGEST_PATH}`;
-  mutations.push({ target: stateTarget, before: internal.loaded.stateBytes, after: stateBytes });
+  mutations.push({ target: stateTarget, before: loaded.stateBytes, after: stateBytes });
   mutations.push({
     target: digestTarget,
-    before: requiredConflictFile(internal.loaded.root, digestTarget),
+    before: requiredConflictFile(loaded.root, digestTarget),
     after: Buffer.from(`${sha256(stateBytes)}\n`),
   });
   return mutations;
@@ -4160,21 +4229,7 @@ export function applySemanticResolveChoice(
   }
   const internal = buildResolveChoicePlan(options);
   requireReviewedPlanDigest(expectedPlanDigest, internal.plan.planDigest, "Resolve choice");
-  const nextEntries = internal.loaded.state.entries.map((entry) => {
-    const proposal = internal.proposals.get(entry.target);
-    if (proposal === undefined) return entry;
-    return {
-      ...entry,
-      resolution: proposal.resolution,
-      currentProposedDigest: digestOrNull(proposal.bytes),
-      currentProposedPresent: proposal.bytes !== null,
-    };
-  });
-  const nextState: ConflictState = {
-    ...internal.loaded.state,
-    entries: nextEntries,
-  };
-  const mutations = resolveChoiceMutations(internal, nextState);
+  const mutations = internal.mutations;
   const { journal, artifacts } = createResolveChoiceJournal(internal, mutations);
   const journalRoot = resolveChoiceJournalRoot(internal.loaded.state.transactionId);
   publishConflictArtifactTree({

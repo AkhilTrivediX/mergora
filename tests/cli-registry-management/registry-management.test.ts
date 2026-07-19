@@ -17,6 +17,7 @@ import {
   verifyRegistry,
 } from "../../packages/cli/src/registry-management.js";
 import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.js";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 
 const temporaryRoots: string[] = [];
 const PARTNER_ORIGIN = "https://registry.example.test/r/v1";
@@ -421,6 +422,7 @@ describe("registry enrollment and removal plans", () => {
     const second = await planRegistryEnrollment(options);
 
     expect(first.plan).toEqual(second.plan);
+    expect(validateSchemaDocument("operation-plan", first.plan).errors).toEqual([]);
     expect(first.plan.command).toBe("registry-enroll");
     expect(first.plan.consentRequirements[0]?.flag).toBe(
       `--accept-registry-identity ${first.metadata?.identityDigest}`,
@@ -531,6 +533,7 @@ describe("registry enrollment and removal plans", () => {
 
     const unusedRoot = project(externalConfig());
     const removal = planRegistryRemoval({ projectRoot: unusedRoot, id: "partner" });
+    expect(validateSchemaDocument("operation-plan", removal.plan).errors).toEqual([]);
     expect(removal.plan.command).toBe("registry-remove");
     expect(removal.proposedConfig.policy.allowExternalRegistries).toBe(false);
     const result = applyRegistryConfigPlan(removal, unusedRoot, {

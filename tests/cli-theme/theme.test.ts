@@ -19,6 +19,7 @@ import {
   validateTheme,
   type ThemePreset,
 } from "../../packages/cli/src/theme.ts";
+import { validateSchemaDocument } from "../../registry/schemas/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const temporaryDirectories: string[] = [];
@@ -183,7 +184,12 @@ describe("theme apply and import", () => {
     const options = { projectRoot: fixture.root, preset };
     const plan = planThemeApply(options);
     expect(plan).toEqual(planThemeApply(options));
-    expect(plan.theme.requiredAcknowledgementIds.length).toBeGreaterThan(0);
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(Object.keys(plan)).not.toContain("theme");
+    const requiredAcknowledgementIds = plan.consentRequirements
+      .filter(({ id }) => id.startsWith("theme-accessibility:"))
+      .map(({ id }) => id.slice("theme-accessibility:".length));
+    expect(requiredAcknowledgementIds.length).toBeGreaterThan(0);
     expect(plan.consentRequirements).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ flag: expect.stringMatching(/^--acknowledge=/u) }),
@@ -194,10 +200,13 @@ describe("theme apply and import", () => {
         code: "THEME_ACCESSIBILITY_ACKNOWLEDGEMENT_REQUIRED",
       }),
     );
-    expect(existsSync(resolve(fixture.root, plan.theme.target))).toBe(false);
+    const target = plan.fileOperations.find(
+      ({ target: operationTarget }) => operationTarget !== ".mergora/themes/active.json",
+    )!.target;
+    expect(existsSync(resolve(fixture.root, target))).toBe(false);
 
     const result = applyTheme(
-      { ...options, acknowledgedIssueIds: plan.theme.requiredAcknowledgementIds },
+      { ...options, acknowledgedIssueIds: requiredAcknowledgementIds },
       plan.planDigest,
     );
     expect(result.transaction.state).toBe("committed");
@@ -205,7 +214,7 @@ describe("theme apply and import", () => {
       readFileSync(resolve(fixture.root, ".mergora/themes/active.json"), "utf8"),
     ) as { acknowledgedAccessibilityIssueIds: readonly string[] };
     expect(receipt.acknowledgedAccessibilityIssueIds).toEqual(
-      plan.theme.requiredAcknowledgementIds,
+      requiredAcknowledgementIds,
     );
   });
 

@@ -5,14 +5,17 @@ import { resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
+  applyDoctorFix,
   applyInit,
   doctorProject,
   inspectProject,
+  planDoctorFix,
   planInit,
   projectInfo,
   projectStatus,
   readMergoraConfig,
 } from "../../packages/cli/src/index.ts";
+import { assertValidOperationPlanV1 } from "../../packages/cli/src/transaction-engine.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const temporaryDirectories: string[] = [];
@@ -35,20 +38,43 @@ describe("project initialization", () => {
     const plan = planInit({ projectRoot: project.root });
 
     expect(plan.projectRoot).toBe(".");
-    expect(plan.detection.framework).toBe("next-app");
-    expect(plan.detection.packageManager).toBe("pnpm");
-    expect(plan.detection.aliasPrefix).toBe("@");
-    expect(plan.edits.map(({ target }) => target)).toEqual([
+    expect(plan.command).toBe("init");
+    expect(plan.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining("framework next-app"),
+        expect.stringContaining("alias prefix @"),
+        expect.stringContaining("package manager pnpm"),
+      ]),
+    );
+    expect(plan.fileOperations.map(({ target }) => target)).toEqual([
       "mergora.json",
       ".gitignore",
       ".mergora/manifest.json",
     ]);
-    expect(plan.edits.every(({ afterDigest }) => afterDigest?.startsWith("sha256:") === true)).toBe(
-      true,
-    );
+    expect(
+      plan.fileOperations.every(({ proposed }) => proposed?.startsWith("sha256:") === true),
+    ).toBe(true);
+    expect(() => assertValidOperationPlanV1(plan)).not.toThrow();
     expect(plan.planDigest).toMatch(/^sha256:[a-f0-9]{64}$/u);
     expect(existsSync(resolve(project.root, "mergora.json"))).toBe(false);
     expect(existsSync(resolve(project.root, ".mergora"))).toBe(false);
+  });
+
+  it("uses a distinct canonical doctor-fix plan and digest boundary", () => {
+    const project = fixture();
+    const initialization = planInit({ projectRoot: project.root });
+    const repair = planDoctorFix({ projectRoot: project.root });
+
+    expect(repair.command).toBe("doctor-fix");
+    expect(repair.fileOperations).toEqual(initialization.fileOperations);
+    expect(repair.planDigest).not.toBe(initialization.planDigest);
+    expect(repair.consentRequirements).toEqual([
+      expect.objectContaining({ id: "doctor-fix-project-writes" }),
+    ]);
+    expect(() => assertValidOperationPlanV1(repair)).not.toThrow();
+
+    applyDoctorFix({ projectRoot: project.root }, repair.planDigest);
+    expect(readMergoraConfig(project.root)).not.toBeNull();
   });
 
   it("applies only planned metadata and preserves package, tsconfig, and CSS bytes", () => {
@@ -79,8 +105,8 @@ describe("project initialization", () => {
     const manifest = readFileSync(resolve(project.root, ".mergora/manifest.json"));
     const second = planInit({ projectRoot: project.root });
 
-    expect(second.writesRequired).toBe(false);
-    expect(second.edits.every(({ action }) => action === "no-op")).toBe(true);
+    expect(second.estimatedBytes.write).toBe(0);
+    expect(second.fileOperations.every(({ operation }) => operation === "no-op")).toBe(true);
     applyInit({ projectRoot: project.root }, second.planDigest);
     expect(readFileSync(resolve(project.root, "mergora.json"))).toEqual(config);
     expect(readFileSync(resolve(project.root, ".mergora/manifest.json"))).toEqual(manifest);

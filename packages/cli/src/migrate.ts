@@ -14,6 +14,7 @@ import { createMergoraConfig, validateMergoraConfig, type MergoraConfig } from "
 import { inspectProject, type Framework } from "./project-inspector.js";
 import {
   executeTransaction,
+  finalizeOperationPlan,
   validateTransactionOverlay,
   validationSuiteForTransaction,
   type OperationPlan,
@@ -76,21 +77,26 @@ export interface MigrationChecklistItem {
   readonly blocking: true;
 }
 
-export type MigrationPlan = OperationPlan & {
-  readonly migration: {
-    readonly id: BuiltInMigrationId;
-    readonly target: Exclude<MigrationTarget, "id">;
-    readonly trustedBuiltin: true;
-    readonly execution: "transaction" | "no-op" | "manual-only";
-    readonly sourceVersion: string;
-    readonly targetVersion: string;
-    readonly steps: readonly MigrationStep[];
-    readonly manualChecklist: readonly MigrationChecklistItem[];
-    readonly externalExecutableCodeUsed: false;
-    readonly componentsJsonRetained: boolean;
-    readonly itemIds: readonly string[];
-  };
-};
+export type MigrationPlan = OperationPlan;
+
+interface MigrationDetails {
+  readonly id: BuiltInMigrationId;
+  readonly target: Exclude<MigrationTarget, "id">;
+  readonly trustedBuiltin: true;
+  readonly execution: "transaction" | "no-op" | "manual-only";
+  readonly sourceVersion: string;
+  readonly targetVersion: string;
+  readonly steps: readonly MigrationStep[];
+  readonly manualChecklist: readonly MigrationChecklistItem[];
+  readonly externalExecutableCodeUsed: false;
+  readonly componentsJsonRetained: boolean;
+  readonly itemIds: readonly string[];
+}
+
+interface PlannedMigration {
+  readonly plan: MigrationPlan;
+  readonly details: MigrationDetails;
+}
 
 export interface MigrationResult {
   readonly id: BuiltInMigrationId;
@@ -102,6 +108,7 @@ export interface MigrationResult {
 interface InternalMigrationPlan {
   readonly root: string;
   readonly plan: MigrationPlan;
+  readonly details: MigrationDetails;
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
   readonly validators: readonly TransactionValidator[];
@@ -397,15 +404,33 @@ function checklist(descriptions: readonly string[]): readonly MigrationChecklist
   }));
 }
 
-function finalizeMigrationPlan(plan: Omit<MigrationPlan, "planDigest">): MigrationPlan {
-  return { ...plan, planDigest: sha256(canonicalJson(plan)) } as MigrationPlan;
+function migrationWarnings(details: MigrationDetails): readonly string[] {
+  return [
+    `Trusted built-in migration ${details.id} targets ${details.target} and maps ${details.sourceVersion} to ${details.targetVersion}; external executable code is never used.`,
+    ...(details.componentsJsonRetained
+      ? ["The existing components.json file is retained by this plan."]
+      : []),
+    ...details.steps.map(
+      ({ sequence, id, description, inverse }) =>
+        `Migration step ${String(sequence)} (${id}): ${description} Inverse: ${inverse}`,
+    ),
+    ...details.manualChecklist.map(
+      ({ sequence, id, description }) =>
+        `Manual checklist ${String(sequence)} (${id}, blocking): ${description}`,
+    ),
+    ...(details.execution === "manual-only"
+      ? [
+          "This migration cannot be expressed safely by the current built-in adapters. The plan is read-only and no project bytes will be changed.",
+        ]
+      : []),
+  ];
 }
 
 function planBase(input: {
   readonly project: ProjectDigests;
   readonly id: BuiltInMigrationId;
   readonly target: Exclude<MigrationTarget, "id">;
-  readonly execution: MigrationPlan["migration"]["execution"];
+  readonly execution: MigrationDetails["execution"];
   readonly sourceVersion: string;
   readonly targetVersion: string;
   readonly steps: readonly MigrationStep[];
@@ -414,13 +439,26 @@ function planBase(input: {
   readonly fileOperations: readonly OperationPlanFile[];
   readonly mutations: readonly TransactionMutation[];
   readonly componentsJsonRetained?: boolean | undefined;
-}): MigrationPlan {
+}): PlannedMigration {
   const manual = input.execution === "manual-only";
   const writes = input.mutations.reduce(
     (total, mutation) => total + (mutation.content?.byteLength ?? 0),
     0,
   );
-  return finalizeMigrationPlan({
+  const details: MigrationDetails = {
+    id: input.id,
+    target: input.target,
+    trustedBuiltin: true,
+    execution: input.execution,
+    sourceVersion: input.sourceVersion,
+    targetVersion: input.targetVersion,
+    steps: input.steps,
+    manualChecklist: input.manualChecklist,
+    externalExecutableCodeUsed: false,
+    componentsJsonRetained: input.componentsJsonRetained ?? false,
+    itemIds: input.items,
+  };
+  const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "migrate",
     cliVersion: CLI_VERSION,
@@ -431,9 +469,9 @@ function planBase(input: {
     items: input.items.map((id) => ({
       id,
       direct: true,
-      requested: id,
-      fromVersion: input.sourceVersion,
-      toVersion: input.targetVersion,
+      requested: "*",
+      fromVersion: null,
+      toVersion: null,
       mode: "source",
     })),
     fileOperations: input.fileOperations,
@@ -447,11 +485,7 @@ function planBase(input: {
       },
     ],
     contractChanges: [],
-    warnings: manual
-      ? [
-          "This migration cannot be expressed safely by the current built-in adapters. The plan is read-only and no project bytes will be changed.",
-        ]
-      : [],
+    warnings: migrationWarnings(details),
     consentRequirements:
       input.execution === "transaction"
         ? [
@@ -464,29 +498,17 @@ function planBase(input: {
         : [],
     conflicts: [],
     estimatedBytes: { download: 0, write: writes },
-    validationSuite: [],
+    validationSuite: ["schema"],
     rollbackAvailable: input.execution === "transaction",
-    migration: {
-      id: input.id,
-      target: input.target,
-      trustedBuiltin: true,
-      execution: input.execution,
-      sourceVersion: input.sourceVersion,
-      targetVersion: input.targetVersion,
-      steps: input.steps,
-      manualChecklist: input.manualChecklist,
-      externalExecutableCodeUsed: false,
-      componentsJsonRetained: input.componentsJsonRetained ?? false,
-      itemIds: input.items,
-    },
   });
+  return { plan, details };
 }
 
 function configPlan(
   root: string,
   project: ProjectDigests,
   id: Extract<BuiltInMigrationId, "config-v0-to-v1">,
-): { readonly plan: MigrationPlan; readonly mutations: readonly TransactionMutation[] } {
+): { readonly plan: PlannedMigration; readonly mutations: readonly TransactionMutation[] } {
   if (project.configBytes === null) {
     return {
       plan: planBase({
@@ -638,7 +660,7 @@ function shadcnPlan(
   root: string,
   project: ProjectDigests,
   id: Extract<BuiltInMigrationId, "shadcn-components-v1-to-mergora-v1">,
-): MigrationPlan {
+): PlannedMigration {
   const bytes = safeRead(root, SHADCN_CONFIG_PATH, true);
   const value = parseJson(bytes, SHADCN_CONFIG_PATH, true);
   const sourceVersion =
@@ -677,7 +699,7 @@ function shadcnPlan(
 function frameworkPlan(
   project: ProjectDigests,
   id: keyof typeof FRAMEWORK_MIGRATIONS,
-): MigrationPlan {
+): PlannedMigration {
   if (project.configBytes === null) {
     throw migrationError(
       "Framework migration requires mergora.json.",
@@ -738,7 +760,7 @@ function modePlan(
   project: ProjectDigests,
   id: Extract<BuiltInMigrationId, "mode-package-to-source-v1" | "mode-source-to-package-v1">,
   rawItems: readonly string[],
-): MigrationPlan {
+): PlannedMigration {
   if (project.configBytes === null) {
     throw migrationError(
       "Mode migration requires mergora.json.",
@@ -833,33 +855,38 @@ function migrationProjectValidator(expectedBytes: Buffer): TransactionValidator 
 }
 
 function withMigrationValidationSuite(
-  plan: MigrationPlan,
+  planned: PlannedMigration,
   validators: readonly TransactionValidator[],
-): MigrationPlan {
-  const { planDigest: _planDigest, ...semantic } = plan;
-  return finalizeMigrationPlan({
-    ...semantic,
-    validationSuite:
-      plan.migration.execution === "transaction" ? validationSuiteForTransaction(validators) : [],
-  });
+): PlannedMigration {
+  const { planDigest: _planDigest, ...semantic } = planned.plan;
+  return {
+    plan: finalizeOperationPlan({
+      ...semantic,
+      validationSuite:
+        planned.details.execution === "transaction"
+          ? validationSuiteForTransaction(validators)
+          : ["schema"],
+    }),
+    details: planned.details,
+  };
 }
 
 function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
   const root = validatedProjectRoot(options.projectRoot);
   const selected = checkedMigrationId(options);
   const project = projectDigests(root);
-  let plan: MigrationPlan;
+  let planned: PlannedMigration;
   let mutations: readonly TransactionMutation[] = [];
   if (selected.id === "config-v0-to-v1") {
     const built = configPlan(root, project, selected.id);
-    plan = built.plan;
+    planned = built.plan;
     mutations = built.mutations;
   } else if (selected.id === "shadcn-components-v1-to-mergora-v1") {
-    plan = shadcnPlan(root, project, selected.id);
+    planned = shadcnPlan(root, project, selected.id);
   } else if (selected.id in FRAMEWORK_MIGRATIONS) {
-    plan = frameworkPlan(project, selected.id as keyof typeof FRAMEWORK_MIGRATIONS);
+    planned = frameworkPlan(project, selected.id as keyof typeof FRAMEWORK_MIGRATIONS);
   } else {
-    plan = modePlan(
+    planned = modePlan(
       project,
       selected.id as Extract<
         BuiltInMigrationId,
@@ -873,7 +900,7 @@ function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
       mutation.target === CONFIG_PATH && mutation.content !== null,
   );
   const validators: readonly TransactionValidator[] =
-    plan.migration.execution === "transaction" && configMutation !== undefined
+    planned.details.execution === "transaction" && configMutation !== undefined
       ? [
           createMediaParseValidator("migration-media-parse", [
             { target: CONFIG_PATH, mediaType: "application/json" },
@@ -881,19 +908,20 @@ function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
           migrationProjectValidator(Buffer.from(configMutation.content)),
         ]
       : [];
-  plan = withMigrationValidationSuite(plan, validators);
+  planned = withMigrationValidationSuite(planned, validators);
   const internal = {
     root,
-    plan,
+    plan: planned.plan,
+    details: planned.details,
     mutations,
     observedTargets:
       project.configBytes === null ? {} : { [CONFIG_PATH]: sha256(project.configBytes) },
     validators,
   } satisfies InternalMigrationPlan;
-  if (plan.migration.execution === "transaction") {
+  if (planned.details.execution === "transaction") {
     validateTransactionOverlay({
       root,
-      plan,
+      plan: planned.plan,
       mutations,
       observedTargets: internal.observedTargets,
       validators,
@@ -919,7 +947,7 @@ export function applyMigration(
       8,
     );
   }
-  if (built.plan.migration.execution === "manual-only") {
+  if (built.details.execution === "manual-only") {
     throw migrationError(
       "This migration produced a manual checklist and cannot mutate project files.",
       "MIGRATION_MANUAL_REQUIRED",
@@ -940,8 +968,8 @@ export function applyMigration(
     validators: built.validators,
   });
   return {
-    id: built.plan.migration.id,
-    target: built.plan.migration.target,
+    id: built.details.id,
+    target: built.details.target,
     planDigest: built.plan.planDigest,
     transaction,
   };

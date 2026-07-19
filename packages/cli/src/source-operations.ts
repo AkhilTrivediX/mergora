@@ -1706,14 +1706,19 @@ function sourcePlanItems(
 ): readonly OperationPlanItem[] {
   const resolved = acquired?.release.release ?? UNRELEASED_VERSION;
   return items
-    .map((item) => ({
-      id: qualified(item.itemId),
-      direct: directIds.has(item.itemId),
-      requested: `=${resolved}`,
-      fromVersion: from[qualified(item.itemId)]?.resolved ?? null,
-      toVersion: removing.has(qualified(item.itemId)) ? null : resolved,
-      mode: "source" as const,
-    }))
+    .map((item) => {
+      const id = qualified(item.itemId);
+      const installed = from[id];
+      const removed = removing.has(id);
+      return {
+        id,
+        direct: directIds.has(item.itemId),
+        requested: removed ? (installed?.requested ?? `=${resolved}`) : `=${resolved}`,
+        fromVersion: installed?.resolved ?? null,
+        toVersion: removed ? null : resolved,
+        mode: "source" as const,
+      };
+    })
     .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
 }
 

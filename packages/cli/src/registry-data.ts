@@ -156,8 +156,6 @@ function defaultGeneratedRoot(): string {
   const moduleDirectory = dirname(fileURLToPath(import.meta.url));
   const bundled = resolve(moduleDirectory, "registry");
   if (existsSync(bundled)) return bundled;
-  const adjacentBuild = resolve(moduleDirectory, "../dist/registry");
-  if (existsSync(adjacentBuild)) return adjacentBuild;
   return resolve(moduleDirectory, "../../../registry/generated");
 }
 

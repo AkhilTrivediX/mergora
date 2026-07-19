@@ -30,6 +30,7 @@ export interface JsonSchema {
 }
 
 export const commonSchema = commonSchemaJson as JsonSchema;
+export const operationPlanSchema = operationPlanSchemaJson as JsonSchema;
 
 export const SCHEMA_REGISTRY: Readonly<Record<SchemaKind, JsonSchema>> = {
   "accessibility-contract": accessibilityContractSchemaJson as JsonSchema,
@@ -42,7 +43,7 @@ export const SCHEMA_REGISTRY: Readonly<Record<SchemaKind, JsonSchema>> = {
   "latest-alias": latestAliasSchemaJson as JsonSchema,
   manifest: manifestSchemaJson as JsonSchema,
   "native-release-reference": nativeReleaseReferenceSchemaJson as JsonSchema,
-  "operation-plan": operationPlanSchemaJson as JsonSchema,
+  "operation-plan": operationPlanSchema,
   "quality-passport": qualityPassportSchemaJson as JsonSchema,
   "registry-index": registryIndexSchemaJson as JsonSchema,
   "registry-item": registryItemSchemaJson as JsonSchema,

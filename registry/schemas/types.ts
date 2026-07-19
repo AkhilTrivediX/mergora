@@ -464,7 +464,23 @@ export interface ManifestFile {
 
 export interface OperationPlanV1 {
   readonly schemaVersion: 1;
-  readonly command: string;
+  readonly command:
+    | "create"
+    | "clean"
+    | "init"
+    | "add"
+    | "remove"
+    | "update"
+    | "resolve"
+    | "rollback"
+    | "recover"
+    | "doctor-fix"
+    | "theme-apply"
+    | "migrate"
+    | "adopt"
+    | "vendor"
+    | "registry-enroll"
+    | "registry-remove";
   readonly cliVersion: Semver;
   readonly projectRoot: ".";
   readonly configDigest: Sha256;

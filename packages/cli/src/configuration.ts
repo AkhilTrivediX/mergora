@@ -117,7 +117,7 @@ export interface InitOptions {
   readonly faultInjector?: TransactionFaultInjector | undefined;
 }
 
-export interface PlannedEdit {
+interface PlannedEdit {
   readonly action: "create" | "update" | "no-op";
   readonly target: string;
   readonly beforeDigest: `sha256:${string}` | null;
@@ -126,36 +126,19 @@ export interface PlannedEdit {
   readonly reason: string;
 }
 
-export interface InitPlan {
-  readonly schemaVersion: 1;
-  readonly command: "init";
-  readonly projectRoot: ".";
-  readonly detection: {
-    readonly framework: Framework;
-    readonly frameworkEvidence: readonly string[];
-    readonly sourceRoot: string;
-    readonly aliasPrefix: string;
-    readonly aliasEvidence: readonly string[];
-    readonly globalCss: string;
-    readonly packageManager: PackageManager;
-    readonly packageManagerEvidence: readonly string[];
-  };
-  readonly edits: readonly PlannedEdit[];
-  readonly writesRequired: boolean;
-  readonly planDigest: `sha256:${string}`;
-  readonly warnings: readonly string[];
-}
+export type InitPlan = OperationPlan;
 
 interface InternalEdit extends PlannedEdit {
   readonly content: string | null;
 }
 
 interface InternalInitPlan {
-  readonly publicPlan: InitPlan;
   readonly operationPlan: OperationPlan;
   readonly root: string;
   readonly edits: readonly InternalEdit[];
 }
+
+type InitCommand = "doctor-fix" | "init";
 
 const CONFIG_ROOT_KEYS = [
   "$schema",
@@ -831,7 +814,7 @@ function compatibleOverrides(config: MergoraConfig, options: InitOptions): void 
   }
 }
 
-function internalInitPlan(options: InitOptions): InternalInitPlan {
+function internalInitPlan(options: InitOptions, command: InitCommand): InternalInitPlan {
   const root = validatedProjectRoot(options.projectRoot);
   const configured = readMergoraConfig(root);
   if (configured !== null) compatibleOverrides(configured, options);
@@ -894,26 +877,15 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
   );
   const edits = [configEdit, ignoreEdit, manifestEdit];
   const writesRequired = edits.some(({ action }) => action !== "no-op");
-  const semantic = {
-    schemaVersion: 1,
-    command: "init",
-    projectRoot: ".",
-    detection: {
-      framework: inspection.framework,
-      frameworkEvidence: inspection.frameworkEvidence,
-      sourceRoot: inspection.sourceRoot,
-      aliasPrefix: inspection.aliasPrefix,
-      aliasEvidence: inspection.aliasEvidence,
-      globalCss: inspection.globalCss,
-      packageManager: inspection.packageManager,
-      packageManagerEvidence: inspection.packageManagerEvidence,
-    },
-    edits: edits.map(({ content: _content, ...edit }) => edit),
-    warnings: inspection.warnings,
-  } as const;
+  const warnings = [
+    `Detected framework ${inspection.framework} from ${inspection.frameworkEvidence.join(", ")}.`,
+    `Detected source root ${inspection.sourceRoot}, alias prefix ${inspection.aliasPrefix}, and global CSS ${inspection.globalCss}.`,
+    `Detected package manager ${inspection.packageManager} from ${inspection.packageManagerEvidence.join(", ")}.`,
+    ...inspection.warnings,
+  ];
   const operationPlan = finalizeOperationPlan({
     schemaVersion: 1,
-    command: "init",
+    command,
     cliVersion: CLI_VERSION,
     projectRoot: ".",
     configDigest: sha256(canonicalJson(config)),
@@ -925,13 +897,16 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     structuredPatches: [],
     migrations: [],
     contractChanges: [],
-    warnings: inspection.warnings,
+    warnings,
     consentRequirements: writesRequired
       ? [
           {
-            id: "init-project-writes",
+            id: command === "init" ? "init-project-writes" : "doctor-fix-project-writes",
             flag: "--yes",
-            reason: "Initialize the reviewed project metadata files.",
+            reason:
+              command === "init"
+                ? "Initialize the reviewed project metadata files."
+                : "Apply the reviewed safe project metadata repairs.",
           },
         ]
       : [],
@@ -946,28 +921,32 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     validationSuite: ["schema", "digest", "path", "collision", "ownership", "project-configured"],
     rollbackAvailable: true,
   });
-  const publicPlan: InitPlan = {
-    ...semantic,
-    writesRequired,
-    planDigest: operationPlan.planDigest,
-  };
-  return { publicPlan, operationPlan, root, edits };
+  return { operationPlan, root, edits };
 }
 
 export function planInit(options: InitOptions): InitPlan {
-  return internalInitPlan(options).publicPlan;
+  return internalInitPlan(options, "init").operationPlan;
 }
 
-export function applyInit(options: InitOptions, expectedPlanDigest: string): InitPlan {
-  const plan = internalInitPlan(options);
+export function planDoctorFix(options: InitOptions): OperationPlan {
+  return internalInitPlan(options, "doctor-fix").operationPlan;
+}
+
+function applyInitCommand(
+  options: InitOptions,
+  expectedPlanDigest: string,
+  command: InitCommand,
+): OperationPlan {
+  const plan = internalInitPlan(options, command);
+  const label = command === "init" ? "Initialization" : "Doctor fix";
   if (expectedPlanDigest === undefined) {
-    throw new CliError("Initialization requires the exact reviewed plan digest before apply.", {
+    throw new CliError(`${label} requires the exact reviewed plan digest before apply.`, {
       code: "PLAN_PRECONDITION_REQUIRED",
       exitCode: 8,
     });
   }
   if (expectedPlanDigest !== plan.operationPlan.planDigest) {
-    throw new CliError("Initialization plan changed before apply; review a fresh plan.", {
+    throw new CliError(`${label} plan changed before apply; review a fresh plan.`, {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
     });
@@ -992,9 +971,17 @@ export function applyInit(options: InitOptions, expectedPlanDigest: string): Ini
       id,
       planDigest: plan.operationPlan.planDigest,
     })),
-    commandArguments: [],
+    commandArguments: command === "init" ? ["init"] : ["doctor", "--fix"],
     faultInjector: options.faultInjector,
     validators: [INIT_CONFIG_VALIDATOR],
   });
-  return plan.publicPlan;
+  return plan.operationPlan;
+}
+
+export function applyInit(options: InitOptions, expectedPlanDigest: string): InitPlan {
+  return applyInitCommand(options, expectedPlanDigest, "init");
+}
+
+export function applyDoctorFix(options: InitOptions, expectedPlanDigest: string): OperationPlan {
+  return applyInitCommand(options, expectedPlanDigest, "doctor-fix");
 }

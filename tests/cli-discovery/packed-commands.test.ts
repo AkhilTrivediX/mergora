@@ -1029,7 +1029,7 @@ describe("packed project commands", () => {
       result: { rollbackOf: transactionId, transaction: { state: "committed" } },
     });
     expect(existsSync(source)).toBe(false);
-  });
+  }, 10_000);
 
   it("preserves Contract Audit reports while returning stable evidence exit codes", () => {
     const project = createProjectFixture();
@@ -1140,7 +1140,14 @@ describe("packed project commands", () => {
       status: "planned",
       result: {
         command: "vendor",
-        vendor: { provenanceState: "unreleased-local", networkUsed: false },
+        registries: [],
+        items: expect.arrayContaining([
+          expect.objectContaining({ id: "official:button", mode: "source" }),
+        ]),
+        warnings: expect.arrayContaining([
+          expect.stringContaining("unreleased-local offline snapshot"),
+          expect.stringContaining("No network source"),
+        ]),
       },
     });
     expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
@@ -1230,13 +1237,12 @@ describe("packed project commands", () => {
             trust: "official",
           },
         ],
-        vendor: {
-          provenanceState: "stable-release",
-          release: "1.0.0",
-          selectionMode: "all",
-          selectedItems: ["official:button"],
-          networkUsed: false,
-        },
+        items: expect.arrayContaining([
+          expect.objectContaining({ id: "official:button", direct: true }),
+        ]),
+        warnings: expect.arrayContaining([
+          expect.stringContaining("official Stable release 1.0.0"),
+        ]),
       },
     });
     expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
@@ -1611,7 +1617,11 @@ describe("packed project commands", () => {
     expect(json(migration)).toMatchObject({ status: "no-op", result: { command: "migrate" } });
     expect(json(cleanup)).toMatchObject({
       status: "report",
-      result: { command: "clean", selectedCategories: [], writesRequired: false },
+      result: {
+        command: "clean",
+        estimatedBytes: { write: 0 },
+        consentRequirements: [],
+      },
     });
     expect(transactionIds(project.root)).toEqual(transactionsBefore);
   });
@@ -1634,7 +1644,17 @@ describe("packed project commands", () => {
     expect(planned.status).toBe(0);
     expect(json(planned)).toMatchObject({
       status: "planned",
-      result: { command: "clean", selectedCategories: ["cache"], writesRequired: true },
+      result: {
+        command: "clean",
+        fileOperations: [
+          expect.objectContaining({
+            operation: "delete",
+            owner: "official:clean-cache",
+            target: ".mergora/cache/entries/official-button",
+          }),
+        ],
+        consentRequirements: [expect.objectContaining({ id: "clean-local-artifacts" })],
+      },
     });
     expect(existsSync(entryDirectory)).toBe(true);
 

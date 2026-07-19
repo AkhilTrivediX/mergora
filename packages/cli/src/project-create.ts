@@ -38,7 +38,14 @@ import {
   type PackageManager,
   type ProjectInspection,
 } from "./project-inspector.js";
-import type { PackageManagerInvocation, PackageManagerRunner } from "./transaction-engine.js";
+import {
+  finalizeOperationPlan,
+  type OperationPlan,
+  type OperationPlanDependencyChange,
+  type OperationPlanFile,
+  type PackageManagerInvocation,
+  type PackageManagerRunner,
+} from "./transaction-engine.js";
 
 export type ProjectCreateTemplate = "next" | "vite";
 export type ProjectCreatePreset = "minimal" | "application" | "none";
@@ -77,7 +84,7 @@ export interface ProjectCreateOptions {
   readonly faultInjector?: ((point: ProjectCreateFaultPoint) => void) | undefined;
 }
 
-export interface ProjectCreatePlannedFile {
+interface ProjectCreatePlannedFile {
   readonly target: string;
   readonly digest: `sha256:${string}`;
   readonly byteLength: number;
@@ -91,46 +98,7 @@ export interface ProjectCreatePlannedFile {
   readonly source: "template" | "foundation" | "initialization" | "preserved-os-metadata";
 }
 
-export interface ProjectCreatePlan {
-  readonly schemaVersion: 1;
-  readonly command: "create";
-  readonly cliVersion: typeof CLI_VERSION;
-  readonly publicationStatus: typeof PROJECT_CREATE_PUBLICATION_STATUS;
-  readonly projectRoot: ".";
-  readonly destination: {
-    readonly directoryName: string;
-    readonly initialState: "absent" | "empty" | "os-metadata-only";
-    readonly ignoredOsMetadataNames: typeof PROJECT_CREATE_IGNORED_OS_METADATA;
-    readonly preconditionDigest: `sha256:${string}`;
-  };
-  readonly template: {
-    readonly id: ProjectCreateTemplate;
-    readonly version: typeof PROJECT_CREATE_TEMPLATE_VERSION;
-    readonly digest: `sha256:${string}`;
-  };
-  readonly preset: ProjectCreatePreset;
-  readonly packageManager: {
-    readonly name: PackageManager;
-    readonly version: string;
-    readonly install: {
-      readonly executable: string;
-      readonly arguments: readonly string[];
-      readonly cwd: ".";
-      readonly shell: false;
-    } | null;
-  };
-  /** Exact deterministic writes. Lockfiles/dependency trees are package-manager-owned outputs. */
-  readonly files: readonly ProjectCreatePlannedFile[];
-  readonly validationSuite: readonly [
-    "path-and-portable-collisions",
-    "template-digests",
-    "project-inspection",
-    "mergora-configuration",
-    "git-absence",
-  ];
-  readonly warnings: readonly string[];
-  readonly planDigest: `sha256:${string}`;
-}
+export type ProjectCreatePlan = OperationPlan;
 
 export interface ProjectCreateResult {
   readonly state: "created";
@@ -163,7 +131,7 @@ interface TargetSnapshot {
 }
 
 interface InternalProjectCreatePlan {
-  readonly publicPlan: ProjectCreatePlan;
+  readonly plan: OperationPlan;
   readonly parent: string;
   readonly target: string;
   readonly targetName: string;
@@ -181,14 +149,6 @@ const MANAGER_VERSIONS: Readonly<Record<PackageManager, string>> = {
   yarn: "4.12.0",
   bun: "1.3.5",
 };
-
-const VALIDATION_SUITE = [
-  "path-and-portable-collisions",
-  "template-digests",
-  "project-inspection",
-  "mergora-configuration",
-  "git-absence",
-] as const;
 
 const TEMPLATE_GITIGNORE = `node_modules/
 .next/
@@ -951,15 +911,6 @@ function installationInvocation(manager: PackageManager, cwd: string): PackageMa
   return { executable: "bun", arguments: ["install", "--ignore-scripts"], cwd };
 }
 
-function publicInstallation(
-  manager: PackageManager,
-  noInstall: boolean,
-): ProjectCreatePlan["packageManager"]["install"] {
-  if (noInstall) return null;
-  const invocation = installationInvocation(manager, ".");
-  return { ...invocation, cwd: ".", shell: false };
-}
-
 function planFile(file: AuthoredFile): ProjectCreatePlannedFile {
   const { content: _content, ...planned } = file;
   return planned;
@@ -996,32 +947,75 @@ function internalProjectCreatePlan(options: ProjectCreateOptions): InternalProje
       files: deterministicFiles.filter(({ source }) => source !== "preserved-os-metadata"),
     }),
   );
-  const semantic = {
+  const configFile = files.find(({ target }) => target === "mergora.json");
+  const packageFile = files.find(({ target }) => target === "package.json");
+  if (configFile === undefined || packageFile === undefined) {
+    throw new CliError("The create template omitted required project metadata.", {
+      code: "CREATE_TEMPLATE_INVALID",
+      exitCode: 8,
+    });
+  }
+  const packageDocument = JSON.parse(packageFile.content.toString("utf8")) as {
+    readonly dependencies?: Readonly<Record<string, string>> | undefined;
+    readonly devDependencies?: Readonly<Record<string, string>> | undefined;
+  };
+  const dependencyChanges: OperationPlanDependencyChange[] = [
+    ...Object.entries(packageDocument.dependencies ?? {}).map(([name, version]) => ({
+      scope: "runtime" as const,
+      package: name,
+      operation: "add" as const,
+      from: null,
+      to: version,
+      owners: ["official:create"],
+    })),
+    ...Object.entries(packageDocument.devDependencies ?? {}).map(([name, version]) => ({
+      scope: "development" as const,
+      package: name,
+      operation: "add" as const,
+      from: null,
+      to: version,
+      owners: ["official:create"],
+    })),
+  ].sort(
+    (left, right) =>
+      left.package.localeCompare(right.package, "en-US") || left.scope.localeCompare(right.scope),
+  );
+  const fileOperations: OperationPlanFile[] = files.map((file) => {
+    const preserved = file.source === "preserved-os-metadata";
+    return {
+      operation: preserved ? "no-op" : "add",
+      target: file.target,
+      owner: "official:create",
+      base: preserved ? file.digest : null,
+      local: preserved ? file.digest : null,
+      remote: file.digest,
+      proposed: file.digest,
+      mediaType: file.mediaType,
+      risk: "ordinary",
+      reason: preserved
+        ? "Preserve allowlisted operating-system metadata byte-for-byte."
+        : `Create deterministic ${file.source} bytes from the reviewed project template.`,
+    };
+  });
+  const install = installationInvocation(options.packageManager, ".");
+  const plan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "create",
     cliVersion: CLI_VERSION,
-    publicationStatus: PROJECT_CREATE_PUBLICATION_STATUS,
     projectRoot: ".",
-    destination: {
-      directoryName: resolved.targetName,
-      initialState: snapshot.state,
-      ignoredOsMetadataNames: PROJECT_CREATE_IGNORED_OS_METADATA,
-      preconditionDigest: snapshot.preconditionDigest,
-    },
-    template: {
-      id: options.template,
-      version: PROJECT_CREATE_TEMPLATE_VERSION,
-      digest: templateDigest,
-    },
-    preset: options.preset,
-    packageManager: {
-      name: options.packageManager,
-      version: MANAGER_VERSIONS[options.packageManager],
-      install: publicInstallation(options.packageManager, options.noInstall === true),
-    },
-    files: deterministicFiles,
-    validationSuite: VALIDATION_SUITE,
+    configDigest: sha256(canonicalJson(JSON.parse(configFile.content.toString("utf8")) as unknown)),
+    manifestPreconditionDigest: null,
+    registries: [],
+    items: [],
+    fileOperations,
+    dependencyChanges,
+    structuredPatches: [],
+    migrations: [],
+    contractChanges: [],
     warnings: [
+      `Destination ${resolved.targetName} begins ${snapshot.state}; precondition ${snapshot.preconditionDigest}; ignored metadata ${PROJECT_CREATE_IGNORED_OS_METADATA.join(", ")}.`,
+      `Template ${options.template}@${PROJECT_CREATE_TEMPLATE_VERSION} (${PROJECT_CREATE_PUBLICATION_STATUS}) digest ${templateDigest}; preset ${options.preset}.`,
+      `Package manager ${options.packageManager}@${MANAGER_VERSIONS[options.packageManager]}${options.noInstall === true ? "; install skipped" : `; fixed install ${install.executable} ${install.arguments.join(" ")}; cwd .; shell false`}.`,
       "The bundled template and Mergora packages are 0.0.0/unreleased; this is not release evidence.",
       ...(options.noInstall === true
         ? [
@@ -1031,13 +1025,26 @@ function internalProjectCreatePlan(options: ProjectCreateOptions): InternalProje
             "The selected package manager owns its generated lockfile and dependency tree; deterministic authored-file digests remain separately verified.",
           ]),
     ],
-  } as const;
-  const publicPlan: ProjectCreatePlan = {
-    ...semantic,
-    planDigest: sha256(canonicalJson(semantic)),
-  };
+    consentRequirements: [
+      {
+        id: "create-project",
+        flag: "--yes",
+        reason: "Create the reviewed project directory and deterministic authored files.",
+      },
+    ],
+    conflicts: [],
+    estimatedBytes: {
+      download: 0,
+      write: files.reduce(
+        (total, file) => total + (file.source === "preserved-os-metadata" ? 0 : file.byteLength),
+        0,
+      ),
+    },
+    validationSuite: ["schema", "digest", "path", "collision", "project-configured"],
+    rollbackAvailable: false,
+  });
   return {
-    publicPlan,
+    plan,
     parent: resolved.parent,
     target: resolved.target,
     targetName: resolved.targetName,
@@ -1047,7 +1054,7 @@ function internalProjectCreatePlan(options: ProjectCreateOptions): InternalProje
 }
 
 export function planProjectCreate(options: ProjectCreateOptions): ProjectCreatePlan {
-  return internalProjectCreatePlan(options).publicPlan;
+  return internalProjectCreatePlan(options).plan;
 }
 
 function ensureStageDirectory(parent: string): { path: string; identity: FileIdentity } {
@@ -1342,7 +1349,7 @@ export function applyProjectCreate(
     });
   }
   const plan = internalProjectCreatePlan(options);
-  if (expectedPlanDigest !== plan.publicPlan.planDigest) {
+  if (expectedPlanDigest !== plan.plan.planDigest) {
     throw new CliError("Create plan changed before apply; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
@@ -1427,8 +1434,8 @@ export function applyProjectCreate(
       preset: options.preset,
       packageManager: options.packageManager,
       installInvoked: options.noInstall !== true,
-      files: plan.publicPlan.files.map(({ target }) => target),
-      planDigest: plan.publicPlan.planDigest,
+      files: plan.files.map(({ target }) => target),
+      planDigest: plan.plan.planDigest,
     };
   } catch (error) {
     try {

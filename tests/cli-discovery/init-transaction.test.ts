@@ -121,7 +121,8 @@ describe("durable initialization transactions", () => {
     const before = transactionIds(project.root);
     const reviewed = planInit({ projectRoot: project.root });
 
-    expect(reviewed.writesRequired).toBe(false);
+    expect(reviewed.estimatedBytes.write).toBe(0);
+    expect(reviewed.fileOperations.every(({ operation }) => operation === "no-op")).toBe(true);
     applyInit({ projectRoot: project.root }, reviewed.planDigest);
     expect(transactionIds(project.root)).toEqual(before);
   });

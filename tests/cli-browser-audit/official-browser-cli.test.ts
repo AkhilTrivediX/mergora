@@ -196,6 +196,7 @@ beforeAll(() => {
   const packages = [
     { directory: resolve(workspaceRoot, "packages/contracts"), name: "mergora-contracts" },
     { directory: resolve(workspaceRoot, "packages/registry"), name: "mergora-registry" },
+    { directory: resolve(workspaceRoot, "packages/schema"), name: "mergora-schema" },
     { directory: resolve(workspaceRoot, "packages/test-utils"), name: "@mergora/test-utils" },
     { directory: cliPackage, name: "mergora" },
   ] as const;

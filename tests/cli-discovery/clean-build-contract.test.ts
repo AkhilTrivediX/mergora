@@ -41,7 +41,11 @@ describe("clean workspace CLI build contract", () => {
       .sort((left, right) => left.localeCompare(right, "en-US"));
     const builder = readFileSync(resolve(workspaceRoot, "packages/cli/scripts/build.mjs"), "utf8");
 
-    expect(workspaceDependencies).toEqual(["mergora-contracts", "mergora-registry"]);
+    expect(workspaceDependencies).toEqual([
+      "mergora-contracts",
+      "mergora-registry",
+      "mergora-schema",
+    ]);
     expect(manifest.scripts).toMatchObject({
       build: "node scripts/build.mjs",
       prepack: "node scripts/build.mjs",

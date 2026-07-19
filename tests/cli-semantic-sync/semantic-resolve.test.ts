@@ -312,7 +312,12 @@ describe("Semantic Sync conflict and explicit resolution", () => {
       },
     };
     const choicePlan = planSemanticResolveChoice(interruptedChoice);
-    expect(choicePlan.changes).toHaveLength(2);
+    expect(choicePlan.command).toBe("resolve");
+    expect(
+      choicePlan.fileOperations.filter(({ target }) => target.endsWith("/proposed")),
+    ).toHaveLength(2);
+    expect(validateSchemaDocument("operation-plan", choicePlan).ok).toBe(true);
+    expect(choicePlan.rollbackAvailable).toBe(false);
     const conflictRoot = resolve(project.root, ".mergora/transactions", id);
     const before = directoryInventory(conflictRoot);
 

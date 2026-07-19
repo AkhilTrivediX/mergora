@@ -68,8 +68,15 @@ describe("verified acquisition cache", () => {
 
       const projectRelative = relative(project.root, entry).replaceAll("\\", "/");
       const cleanup = planClean({ projectRoot: project.root, cache: true });
-      expect(cleanup.candidates.cache.map(({ path }) => path)).toContain(projectRelative);
-      expect(cleanup.selected.map(({ path }) => path)).toContain(projectRelative);
+      expect(cleanup.fileOperations).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            owner: "official:clean-cache",
+            operation: "delete",
+            target: projectRelative,
+          }),
+        ]),
+      );
     } finally {
       source.cleanup();
       rmSync(project.root, { force: true, recursive: true });

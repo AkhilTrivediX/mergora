@@ -163,9 +163,13 @@ describe("cleanup of Semantic Sync conflict packets", () => {
     const options = { projectRoot: project.root, conflicts: true };
 
     const active = planClean(options);
-    expect(active.preserved.activeConflicts).toEqual([id]);
-    expect(active.candidates.conflicts).toEqual([]);
-    expect(active.selected).toEqual([]);
+    expect(active.warnings).toEqual(
+      expect.arrayContaining([expect.stringContaining(`active conflict IDs: ${id}`)]),
+    );
+    expect(
+      active.fileOperations.filter(({ owner }) => owner === "official:clean-conflicts"),
+    ).toEqual([]);
+    expect(active.fileOperations.some(({ operation }) => operation === "delete")).toBe(false);
     expect(applyClean(options, active.planDigest).status).toBe("no-op");
     expect(existsSync(conflictRoot)).toBe(true);
     expect(readFileSync(livePath)).toEqual(liveBefore);
@@ -176,13 +180,18 @@ describe("cleanup of Semantic Sync conflict packets", () => {
     ]);
     writeFileSync(livePath, changedLive);
     const stale = planClean(options);
-    expect(stale.preserved.activeConflicts).toEqual([]);
-    expect(stale.candidates.conflicts).toEqual([
-      expect.objectContaining({
-        category: "conflicts",
-        path: `.mergora/transactions/${id}`,
-      }),
-    ]);
+    expect(stale.warnings).toEqual(
+      expect.arrayContaining([expect.stringContaining("active conflict IDs: none")]),
+    );
+    expect(stale.fileOperations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          owner: "official:clean-conflicts",
+          operation: "delete",
+          target: `.mergora/transactions/${id}`,
+        }),
+      ]),
+    );
     expect(applyClean(options, stale.planDigest).deleted).toEqual([`.mergora/transactions/${id}`]);
     expect(existsSync(conflictRoot)).toBe(false);
     expect(readFileSync(livePath)).toEqual(changedLive);
