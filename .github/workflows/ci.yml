@@ -33,6 +33,8 @@ jobs:
           pnpm --version
       - name: Install frozen dependencies
         run: pnpm install --frozen-lockfile
+      - name: Install Chromium for runtime Contract Audit
+        run: pnpm exec playwright install --with-deps chromium
       - name: Run fast aggregate
         run: pnpm check
       - name: Build every workspace project
