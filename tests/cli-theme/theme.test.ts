@@ -213,9 +213,7 @@ describe("theme apply and import", () => {
     const receipt = JSON.parse(
       readFileSync(resolve(fixture.root, ".mergora/themes/active.json"), "utf8"),
     ) as { acknowledgedAccessibilityIssueIds: readonly string[] };
-    expect(receipt.acknowledgedAccessibilityIssueIds).toEqual(
-      requiredAcknowledgementIds,
-    );
+    expect(receipt.acknowledgedAccessibilityIssueIds).toEqual(requiredAcknowledgementIds);
   });
 
   it("accepts remote bytes only with matching enrollment and artifact pins", () => {

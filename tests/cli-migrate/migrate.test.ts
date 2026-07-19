@@ -131,9 +131,9 @@ describe("trusted migration planning", () => {
     expect(validateSchemaDocument("operation-plan", modePlan).errors).toEqual([]);
     expect(modePlan.items.map(({ id }) => id)).toEqual(["official:button", "official:dialog"]);
     expect(modePlan.items.every(({ requested }) => requested === "*")).toBe(true);
-    expect(modePlan.warnings.filter((warning) => warning.startsWith("Migration step"))).toHaveLength(
-      4,
-    );
+    expect(
+      modePlan.warnings.filter((warning) => warning.startsWith("Migration step")),
+    ).toHaveLength(4);
   });
 
   it("rejects any external or mismatched migration ID", () => {
