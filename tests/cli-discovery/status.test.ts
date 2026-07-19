@@ -4,7 +4,7 @@ import { dirname, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, projectStatus } from "../../packages/cli/src/index.ts";
+import { applyInit, planInit, projectStatus } from "../../packages/cli/src/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const temporaryDirectories: string[] = [];
@@ -22,7 +22,7 @@ function digest(content: string): `sha256:${string}` {
 function installedFixture() {
   const project = createProjectFixture();
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const target = "src/components/mergora/button/button.tsx";
   const content = "export const Button = true;\n";
   const base = digest(content);

@@ -125,9 +125,9 @@ describe("P4 slider registry records", () => {
 describe("slider domain and mark helpers", () => {
   it("accepts exact decimal domains and rejects unreachable endpoints", () => {
     expect(resolveSliderDomain(0, 1, 0.05)).toEqual({ maximum: 1, minimum: 0, step: 0.05 });
-    expect(resolveSliderDomain(3500, 12000, 250)).toEqual({
-      maximum: 12000,
-      minimum: 3500,
+    expect(resolveSliderDomain(1000, 10000, 250)).toEqual({
+      maximum: 10000,
+      minimum: 1000,
       step: 250,
     });
     expect(() => resolveSliderDomain(0, 1, 0.3)).toThrow(/reachable/u);
@@ -183,25 +183,25 @@ describe("slider server rendering", () => {
   it("renders distinct ordered range controls, names, and formatted value text", () => {
     const markup = renderToStaticMarkup(
       <MergoraProvider locale="en-US">
-        <Field label="Approved monthly salary range">
+        <Field label="Approved budget range">
           <RangeSlider
-            defaultValue={[6500, 12000]}
+            defaultValue={[4000, 10000]}
             formatOptions={{ currency: "EUR", maximumFractionDigits: 0, style: "currency" }}
-            maxValue={12000}
-            minValue={3500}
-            names={["salary-minimum", "salary-maximum"]}
+            maxValue={10000}
+            minValue={1000}
+            names={["budget-minimum", "budget-maximum"]}
             step={250}
-            thumbLabels={["Minimum monthly salary", "Maximum monthly salary"]}
+            thumbLabels={["Minimum approved budget", "Maximum approved budget"]}
           />
         </Field>
       </MergoraProvider>,
     );
-    expect(markup).toContain('aria-label="Minimum monthly salary"');
-    expect(markup).toContain('aria-label="Maximum monthly salary"');
-    expect(markup).toContain('aria-valuetext="€6,500"');
-    expect(markup).toContain('aria-valuetext="€12,000"');
-    expect(markup).toMatch(/name="salary-minimum"[^>]+value="6500"/u);
-    expect(markup).toMatch(/name="salary-maximum"[^>]+value="12000"/u);
+    expect(markup).toContain('aria-label="Minimum approved budget"');
+    expect(markup).toContain('aria-label="Maximum approved budget"');
+    expect(markup).toContain('aria-valuetext="€4,000"');
+    expect(markup).toContain('aria-valuetext="€10,000"');
+    expect(markup).toMatch(/name="budget-minimum"[^>]+value="4000"/u);
+    expect(markup).toMatch(/name="budget-maximum"[^>]+value="10000"/u);
     expect(markup).toContain('data-collision-behavior="clamp"');
   });
 

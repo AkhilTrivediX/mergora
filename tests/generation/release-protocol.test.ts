@@ -141,6 +141,32 @@ function releaseInput(
       evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path),
     ),
     sbom: evidence("release-sbom", `r/v1/releases/${VERSION}/sbom.json`),
+    npmPackageInventory: {
+      allowedLicenses: ["MIT"],
+      entries: [
+        {
+          package: "restricted-fixture",
+          version: "2.0.0",
+          url: "https://registry.npmjs.org/restricted-fixture/-/restricted-fixture-2.0.0.tgz",
+          bytes: 2048,
+          digest: releaseArtifactDigest("restricted fixture tarball"),
+          integrity: `sha512-${Buffer.alloc(64, 2).toString("base64")}`,
+          license: "GPL-3.0-only",
+          disposition: "omit",
+          omissionReason: "license-not-allowed",
+        },
+        {
+          package: "mergora-ui",
+          version: VERSION,
+          url: `https://registry.npmjs.org/mergora-ui/-/mergora-ui-${VERSION}.tgz`,
+          bytes: 4096,
+          digest: releaseArtifactDigest("mergora ui fixture tarball"),
+          integrity: `sha512-${Buffer.alloc(64, 1).toString("base64")}`,
+          license: "MIT",
+          disposition: "include",
+        },
+      ],
+    },
     items,
   };
 }
@@ -226,6 +252,10 @@ describe("native registry release protocol v1", () => {
         }
       >;
       artifacts: { name: string; url: string; digest: string; bytes: number }[];
+      npmPackageInventory: {
+        allowedLicenses: string[];
+        entries: { package: string; disposition: string; omissionReason?: string }[];
+      };
     };
     const catalog = json.get("r/v1/catalog.json") as {
       registry: { origin: string };
@@ -265,6 +295,17 @@ describe("native registry release protocol v1", () => {
     );
     expect(manifest.items.button?.passport.artifact).toBe(`${ORIGIN}/passports/1.0.0/button.json`);
     expect(manifest.items.button?.contract.artifact).toBe(`${ORIGIN}/contracts/1.0.0/button.json`);
+    expect(manifest.npmPackageInventory).toEqual({
+      allowedLicenses: ["MIT"],
+      entries: [
+        expect.objectContaining({ package: "mergora-ui", disposition: "include" }),
+        expect.objectContaining({
+          package: "restricted-fixture",
+          disposition: "omit",
+          omissionReason: "license-not-allowed",
+        }),
+      ],
+    });
     expect(buttonCatalog.links).toMatchObject({
       payload: `${ORIGIN}/releases/1.0.0/items/button.json`,
       passport: `${ORIGIN}/passports/1.0.0/button.json`,
@@ -424,6 +465,94 @@ describe("native registry release protocol v1", () => {
         validate,
       ),
     ).toThrow(/missing required public schema/u);
+  });
+
+  it("canonicalizes and fails closed on unsafe or ambiguous npm package inventories", () => {
+    const base = releaseInput([item("button")]);
+    const inventory = base.npmPackageInventory!;
+    const included = inventory.entries.find(({ disposition }) => disposition === "include")!;
+    const omitted = inventory.entries.find(({ disposition }) => disposition === "omit")!;
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: {
+            ...inventory,
+            entries: [
+              {
+                ...included,
+                version: "0.9.0",
+                url: "https://registry.npmjs.org/mergora-ui/-/mergora-ui-0.9.0.tgz",
+              },
+            ],
+          },
+        },
+        validate,
+      ),
+    ).toThrow(/Mergora-owned package must use release 1\.0\.0/u);
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: {
+            ...inventory,
+            entries: [{ ...included, url: `${included.url}?download=1` }],
+          },
+        },
+        validate,
+      ),
+    ).toThrow(/credential-free immutable public npm path/u);
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: {
+            ...inventory,
+            entries: [{ ...included, integrity: "sha512-YQ==" }],
+          },
+        },
+        validate,
+      ),
+    ).toThrow(/canonical SHA-512 SRI/u);
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: { ...inventory, entries: [included, included] },
+        },
+        validate,
+      ),
+    ).toThrow(/repeats or collides/u);
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: {
+            ...inventory,
+            entries: [{ ...omitted, omissionReason: "explicitly-omitted" }],
+          },
+        },
+        validate,
+      ),
+    ).toThrow(/omission reason disagrees/u);
+
+    expect(() =>
+      buildStableReleaseProtocolBundle(
+        {
+          ...base,
+          npmPackageInventory: {
+            ...inventory,
+            entries: Array.from({ length: 1025 }, () => included),
+          },
+        },
+        validate,
+      ),
+    ).toThrow(/entry bound/u);
   });
 
   it("rejects coherently rehashed mirror and static-bundle omissions", () => {

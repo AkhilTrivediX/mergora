@@ -43,17 +43,17 @@ function collectReferences(value: unknown, output: string[] = []): readonly stri
 describe("the JSON Schema source", () => {
   it("contains parseable, uniquely identified draft 2020-12 documents", () => {
     const files = readdirSync(schemaDirectory).filter((name) => name.endsWith(".schema.json"));
-    expect(files).toHaveLength(21);
+    expect(files).toHaveLength(22);
     const documents = files.map((name) =>
       JSON.parse(readFileSync(join(schemaDirectory, name), "utf8")),
     ) as { readonly $id?: string; readonly $schema?: string }[];
-    expect(new Set(documents.map((document) => document.$id)).size).toBe(21);
+    expect(new Set(documents.map((document) => document.$id)).size).toBe(22);
     expect(
       documents.every(
         (document) => document.$schema === "https://json-schema.org/draft/2020-12/schema",
       ),
     ).toBe(true);
-    expect(ALL_SCHEMAS).toHaveLength(21);
+    expect(ALL_SCHEMAS).toHaveLength(22);
   });
 
   it("keeps every critical document root closed to unknown fields", () => {
@@ -103,6 +103,7 @@ describe("schema negotiation and valid documents", () => {
     ["operation-plan", "operation-plan.json"],
     ["evidence", "evidence-not-tested.json"],
     ["transaction-journal", "transaction-journal.json"],
+    ["native-release-reference", "native-release-reference.json"],
   ];
 
   it("accepts a digest-bound latest alias fixture", () => {

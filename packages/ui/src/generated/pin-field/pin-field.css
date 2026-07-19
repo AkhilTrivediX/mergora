@@ -1,0 +1,146 @@
+/* Generated from registry/source/components/pin-field/pin-field.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-pin-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-pin-field [data-slot="pin-field-control"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: grid;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.mrg-pin-field [data-slot="pin-field-control"]:focus-within {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-pin-field[data-invalid="true"] [data-slot="pin-field-control"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-pin-field[data-readonly="true"] [data-slot="pin-field-control"] {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-pin-field[data-disabled="true"] [data-slot="pin-field-control"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-pin-field-input {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  direction: ltr;
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-body-large);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--mrg-semantic-font-weight-code);
+  inline-size: 100%;
+  letter-spacing: 0.46em;
+  line-height: var(--mrg-semantic-font-line-height-code);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  position: relative;
+  text-align: center;
+  unicode-bidi: plaintext;
+  z-index: 1;
+}
+
+.mrg-pin-field-input:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-pin-field [data-slot="pin-field-segments"] {
+  align-items: end;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  inset-block-end: var(--mrg-semantic-space-inline-xs);
+  inset-inline: var(--mrg-semantic-density-control-padding-inline);
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+}
+
+.mrg-pin-field [data-slot="pin-field-segment"] {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  inline-size: 1.25em;
+}
+
+.mrg-pin-field [data-slot="pin-field-purpose"] {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.mrg-pin-field [data-slot="pin-field-paste-status"] {
+  color: var(--mrg-semantic-color-status-warning-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  min-block-size: 1lh;
+}
+
+.mrg-pin-field [data-slot="pin-field-paste-status"]:empty {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .mrg-pin-field [data-slot="pin-field-control"],
+  .mrg-pin-field-input {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-pin-field [data-slot="pin-field-control"] {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-pin-field[data-disabled="true"] [data-slot="pin-field-control"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-pin-field[data-invalid="true"] [data-slot="pin-field-control"] {
+    border-style: double;
+  }
+
+  .mrg-pin-field [data-slot="pin-field-segment"] {
+    border-color: FieldText;
+  }
+
+  .mrg-pin-field [data-slot="pin-field-paste-status"] {
+    color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-pin-field,
+  .mrg-pin-field * {
+    scroll-behavior: auto;
+  }
+}

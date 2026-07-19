@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-picker",
+  "root": {
+    "element": "div role=group",
+    "ref": "HTMLDivElement",
+    "slot": "color-picker",
+    "stableAttributes": ["data-slot", "data-alpha-policy", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "color-picker-label",
+      "element": "span",
+      "purpose": "Visible localized label for the coordinated picker controls.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-area",
+      "element": "div role=group with two native range inputs",
+      "purpose": "React Aria two-dimensional saturation and brightness pointer/touch surface with documented slider semantics.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-area-thumb",
+      "element": "div with hidden native range inputs",
+      "purpose": "Visual focus and drag target for the two-dimensional area.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-channel",
+      "element": "div with named native range input",
+      "purpose": "Complete independent keyboard path for hue, saturation, brightness, and allowed alpha.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-channel-output",
+      "element": "output",
+      "purpose": "Locale-formatted text value for a channel slider.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-swatches",
+      "element": "div role=grid or listbox",
+      "purpose": "Named single-selection preset collection with keyboard navigation.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-swatch-item",
+      "element": "option",
+      "purpose": "Selectable preset with canonical text and non-color selected check.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-picker-swatch",
+      "element": "div",
+      "purpose": "Visual sample paired with a readable canonical text value.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field",
+      "element": "composed ColorField",
+      "purpose": "Exact text editing, invalid recovery, preview, contrast result, and canonical form serialization.",
+      "stability": "documented dependency"
+    }
+  ]
+}

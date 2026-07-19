@@ -22,11 +22,21 @@ import {
 import { validateMergoraConfig, type MergoraConfig } from "./configuration.js";
 import {
   executeTransaction,
+  validateTransactionOverlay,
+  validationSuiteForTransaction,
   type OperationPlan,
   type OperationPlanFile,
   type TransactionMutation,
   type TransactionResult,
+  type TransactionValidationContext,
+  type TransactionValidationIssue,
+  type TransactionValidationResult,
+  type TransactionValidator,
 } from "./transaction-engine.js";
+import {
+  createMediaParseValidator,
+  transactionValidationResult,
+} from "./trusted-transaction-validators.js";
 
 type Digest = `sha256:${string}`;
 
@@ -190,6 +200,7 @@ interface InternalThemePlan {
   readonly plan: ThemeApplyPlan;
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
+  readonly validators: readonly TransactionValidator[];
 }
 
 function themeError(message: string, code: string, target?: string, exitCode: 2 | 3 | 5 | 8 = 3) {
@@ -1171,6 +1182,165 @@ function finalizeThemePlan(plan: Omit<ThemeApplyPlan, "planDigest">): ThemeApply
   return { ...plan, planDigest: sha256(canonicalJson(plan)) } as ThemeApplyPlan;
 }
 
+function themeTransactionValidators(input: {
+  readonly config: MergoraConfig;
+  readonly preset: ThemePreset;
+  readonly target: string;
+  readonly sourceContent: Buffer;
+  readonly receiptContent: Buffer;
+  readonly sourceDigest: Digest;
+  readonly effectiveDigest: Digest;
+  readonly accessibilityIssues: readonly ThemeAccessibilityIssue[];
+}): readonly TransactionValidator[] {
+  const preset = structuredClone(input.preset);
+  const expectedConfig = canonicalJson(input.config);
+  const expectedIssues = canonicalJson(input.accessibilityIssues);
+
+  const validateTokens = (context: TransactionValidationContext): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const bytes = context.readFile(input.target);
+    if (bytes === null) {
+      issues.push({
+        code: "THEME_TARGET_MISSING",
+        target: input.target,
+        message: "The active token document is missing.",
+      });
+    } else {
+      try {
+        const raw = JSON.parse(bytes.toString("utf8")) as unknown;
+        if (!isObject(raw)) throw new Error("theme root is not an object");
+        parseDtcg(raw);
+        if (
+          sha256(bytes) !== sha256(input.sourceContent) ||
+          sha256(canonicalJson(raw)) !== input.sourceDigest
+        ) {
+          issues.push({
+            code: "THEME_TOKEN_DIGEST_MISMATCH",
+            target: input.target,
+            message: "The active token bytes differ from the exact reviewed DTCG document.",
+          });
+        }
+      } catch {
+        issues.push({
+          code: "THEME_TOKEN_DOCUMENT_INVALID",
+          target: input.target,
+          message: "The active token document is not valid strict DTCG JSON.",
+        });
+      }
+    }
+    return transactionValidationResult(
+      `Validated exact DTCG token state in the ${context.phase} view.`,
+      `DTCG token validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+
+  const validateAccessibility = (
+    context: TransactionValidationContext,
+  ): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const targetBytes = context.readFile(input.target);
+    const receiptBytes = context.readFile(ACTIVE_THEME_RECEIPT);
+    if (targetBytes === null || receiptBytes === null) {
+      issues.push({
+        code: "THEME_ACCESSIBILITY_EVIDENCE_MISSING",
+        target: targetBytes === null ? input.target : ACTIVE_THEME_RECEIPT,
+        message: "The reviewed theme document or accessibility receipt is missing.",
+      });
+    } else {
+      try {
+        const stagedDocument = JSON.parse(targetBytes.toString("utf8")) as unknown;
+        const validation = parsedPreset({
+          ...preset,
+          document:
+            preset.source.kind === "studio-export"
+              ? {
+                  schemaVersion: 1,
+                  format: "mergora-studio-theme-v1",
+                  theme: stagedDocument,
+                }
+              : targetBytes.toString("utf8"),
+        });
+        const effectiveDigest = sha256(canonicalJson(validation.effective.root));
+        if (
+          validation.validation.digest !== input.sourceDigest ||
+          effectiveDigest !== input.effectiveDigest ||
+          canonicalJson(validation.validation.issues) !== expectedIssues ||
+          sha256(receiptBytes) !== sha256(input.receiptContent)
+        ) {
+          issues.push({
+            code: "THEME_ACCESSIBILITY_CONTRACT_MISMATCH",
+            target: ACTIVE_THEME_RECEIPT,
+            message: "Theme accessibility evidence differs from the reviewed lint result.",
+          });
+        }
+      } catch {
+        issues.push({
+          code: "THEME_ACCESSIBILITY_CONTRACT_INVALID",
+          target: ACTIVE_THEME_RECEIPT,
+          message: "Theme accessibility evidence cannot be revalidated.",
+        });
+      }
+    }
+    return transactionValidationResult(
+      `Revalidated theme accessibility evidence in the ${context.phase} view.`,
+      `Theme accessibility validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+
+  const validateProject = (context: TransactionValidationContext): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const bytes = context.readFile("mergora.json");
+    try {
+      const raw = JSON.parse(bytes?.toString("utf8") ?? "null") as unknown;
+      const config = validateMergoraConfig(raw);
+      if (
+        canonicalJson(config) !== expectedConfig ||
+        sha256(canonicalJson(raw)) !== context.plan.configDigest
+      ) {
+        throw new Error("configuration mismatch");
+      }
+    } catch {
+      issues.push({
+        code: "THEME_PROJECT_CONFIG_INVALID",
+        target: "mergora.json",
+        message: "The token target is not bound to the exact reviewed project configuration.",
+      });
+    }
+    return transactionValidationResult(
+      `Validated the exact theme project configuration in the ${context.phase} view.`,
+      `Theme project configuration validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+
+  return [
+    createMediaParseValidator("theme-media-parse", [
+      { target: input.target, mediaType: "application/dtcg+json" },
+      { target: ACTIVE_THEME_RECEIPT, mediaType: "application/json" },
+    ]),
+    {
+      id: "theme-token-integrity",
+      label: "tokens",
+      validateStagedOverlay: validateTokens,
+      validatePostCommit: validateTokens,
+    },
+    {
+      id: "theme-accessibility-contract",
+      label: "accessibility-contract",
+      validateStagedOverlay: validateAccessibility,
+      validatePostCommit: validateAccessibility,
+    },
+    {
+      id: "theme-project-config",
+      label: "project-configured",
+      validateStagedOverlay: validateProject,
+      validatePostCommit: validateProject,
+    },
+  ];
+}
+
 function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
   const root = validatedProjectRoot(options.projectRoot);
   const project = projectConfiguration(root);
@@ -1253,6 +1423,16 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
           },
         ]
       : [];
+  const validators = themeTransactionValidators({
+    config: project.config,
+    preset: options.preset,
+    target,
+    sourceContent,
+    receiptContent,
+    sourceDigest: parsed.validation.digest,
+    effectiveDigest,
+    accessibilityIssues: parsed.validation.issues,
+  });
   const plan = finalizeThemePlan({
     schemaVersion: 1,
     command: "theme-apply",
@@ -1299,16 +1479,7 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
       download: 0,
       write: mutations.reduce((total, mutation) => total + mutation.content!.byteLength, 0),
     },
-    validationSuite: [
-      "schema",
-      "digest",
-      "path",
-      "collision",
-      "parse",
-      "tokens",
-      "accessibility-contract",
-      "project-configured",
-    ],
+    validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: mutations.length > 0,
     theme: {
       id: options.preset.id,
@@ -1324,7 +1495,7 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
       requiredAcknowledgementIds,
     },
   });
-  return {
+  const internal = {
     root,
     plan,
     mutations,
@@ -1332,7 +1503,16 @@ function buildThemePlan(options: ThemeApplyOptions): InternalThemePlan {
       [target]: targetBeforeDigest,
       [ACTIVE_THEME_RECEIPT]: receiptBeforeDigest,
     },
-  };
+    validators,
+  } satisfies InternalThemePlan;
+  validateTransactionOverlay({
+    root,
+    plan,
+    mutations,
+    observedTargets: internal.observedTargets,
+    validators,
+  });
+  return internal;
 }
 
 export function planThemeApply(options: ThemeApplyOptions): ThemeApplyPlan {
@@ -1380,8 +1560,13 @@ export function applyTheme(
     root: built.root,
     plan: built.plan,
     mutations: built.mutations,
+    acceptedConsents: built.plan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: built.plan.planDigest,
+    })),
     observedTargets: built.observedTargets,
     commandArguments: options.commandArguments ?? [],
+    validators: built.validators,
   });
   return {
     id: built.plan.theme.id,

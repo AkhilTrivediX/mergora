@@ -29,9 +29,25 @@ The runtime contracts provide these adapter boundaries:
 - geometry checks for overflow, visible and unobscured focus, target size, and overlay bounds;
 - visual capture with exact OS, browser, browser version, font digest, dimensions, and justified masks.
 
-The core intentionally has no browser or DOM dependency. A production adapter must be registered by
-the calling test environment. The absence of axe, ARIA, geometry, or visual capture support is an
-error, not proof that the contract passed.
+The core intentionally has no browser or DOM dependency. Runtime audit is opt-in through the
+official browser-host protocol. A reviewed host registers exact harness IDs and immutable
+registry/item/Contract/version/payload/assertion bindings compiled into that host; Contract JSON can
+select a registered ID but cannot supply code, commands, browser locations, or filesystem
+capabilities. Dispatch receives only frozen identity and evidence-binding metadata. Host exceptions
+are redacted, wall-clock execution is cancelled at the caller-owned timeout, and serialized output
+is capped before strict evidence normalization.
+
+The published CLI does not silently bundle or launch Playwright. A browser-aware application or test
+runner injects the official host and configures its consumer build/story route outside registry data.
+Without that opt-in host, axe, accessibility-tree, keyboard, focus, announcement, browser, and
+responsive evidence remains explicitly incomplete rather than becoming a skip or pass.
+
+`@mergora/test-utils` supplies `createOfficialPlaywrightBrowserHostV1` for that injection boundary.
+It consumes a caller-owned live Playwright `Page`, reloads only the already selected consumer build,
+and runs reviewed code-side programs for role/name lookup, state assertions, click/keypress behavior,
+focus visibility/occlusion, live-region text, axe-core, and viewport overflow. The executable program
+map is not serializable Contract data and is bound to the exact registry, item, Contract version,
+payload digest, and assertion ID before dispatch.
 
 ## Deterministic contract execution
 

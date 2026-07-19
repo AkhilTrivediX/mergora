@@ -112,6 +112,16 @@
       "import": "./dist/generated/collapsible/collapsible.js"
     },
     "./collapsible.css": "./dist/generated/collapsible/collapsible.css",
+    "./color-field": {
+      "types": "./dist/generated/color-field/color-field.d.ts",
+      "import": "./dist/generated/color-field/color-field.js"
+    },
+    "./color-field.css": "./dist/generated/color-field/color-field.css",
+    "./color-picker": {
+      "types": "./dist/generated/color-picker/color-picker.d.ts",
+      "import": "./dist/generated/color-picker/color-picker.js"
+    },
+    "./color-picker.css": "./dist/generated/color-picker/color-picker.css",
     "./combobox": {
       "types": "./dist/generated/combobox/index.d.ts",
       "import": "./dist/generated/combobox/index.js"
@@ -207,6 +217,11 @@
       "import": "./dist/generated/inline/inline.js"
     },
     "./inline.css": "./dist/generated/inline/inline.css",
+    "./inline-edit": {
+      "types": "./dist/generated/inline-edit/inline-edit.d.ts",
+      "import": "./dist/generated/inline-edit/inline-edit.js"
+    },
+    "./inline-edit.css": "./dist/generated/inline-edit/inline-edit.css",
     "./input": {
       "types": "./dist/generated/input/input.d.ts",
       "import": "./dist/generated/input/input.js"
@@ -232,6 +247,16 @@
       "import": "./dist/generated/link/link.js"
     },
     "./link.css": "./dist/generated/link/link.css",
+    "./listbox": {
+      "types": "./dist/generated/listbox/listbox.d.ts",
+      "import": "./dist/generated/listbox/listbox.js"
+    },
+    "./listbox.css": "./dist/generated/listbox/listbox.css",
+    "./masked-field": {
+      "types": "./dist/generated/masked-field/masked-field.d.ts",
+      "import": "./dist/generated/masked-field/masked-field.js"
+    },
+    "./masked-field.css": "./dist/generated/masked-field/masked-field.css",
     "./meter": {
       "types": "./dist/generated/meter/meter.d.ts",
       "import": "./dist/generated/meter/meter.js"
@@ -247,16 +272,36 @@
       "import": "./dist/generated/number-field/number-field.js"
     },
     "./number-field.css": "./dist/generated/number-field/number-field.css",
+    "./otp-field": {
+      "types": "./dist/generated/otp-field/otp-field.d.ts",
+      "import": "./dist/generated/otp-field/otp-field.js"
+    },
+    "./otp-field.css": "./dist/generated/otp-field/otp-field.css",
     "./pagination": {
       "types": "./dist/generated/pagination/pagination.d.ts",
       "import": "./dist/generated/pagination/pagination.js"
     },
     "./pagination.css": "./dist/generated/pagination/pagination.css",
+    "./password-field": {
+      "types": "./dist/generated/password-field/password-field.d.ts",
+      "import": "./dist/generated/password-field/password-field.js"
+    },
+    "./password-field.css": "./dist/generated/password-field/password-field.css",
     "./percentage-field": {
       "types": "./dist/generated/percentage-field/percentage-field.d.ts",
       "import": "./dist/generated/percentage-field/percentage-field.js"
     },
     "./percentage-field.css": "./dist/generated/percentage-field/percentage-field.css",
+    "./phone-field": {
+      "types": "./dist/generated/phone-field/phone-field.d.ts",
+      "import": "./dist/generated/phone-field/phone-field.js"
+    },
+    "./phone-field.css": "./dist/generated/phone-field/phone-field.css",
+    "./pin-field": {
+      "types": "./dist/generated/pin-field/pin-field.d.ts",
+      "import": "./dist/generated/pin-field/pin-field.js"
+    },
+    "./pin-field.css": "./dist/generated/pin-field/pin-field.css",
     "./popover": {
       "types": "./dist/generated/popover/index.d.ts",
       "import": "./dist/generated/popover/index.js"
@@ -292,6 +337,16 @@
       "import": "./dist/generated/radio-group/radio-group.js"
     },
     "./radio-group.css": "./dist/generated/radio-group/radio-group.css",
+    "./range-slider": {
+      "types": "./dist/generated/range-slider/range-slider.d.ts",
+      "import": "./dist/generated/range-slider/range-slider.js"
+    },
+    "./range-slider.css": "./dist/generated/range-slider/range-slider.css",
+    "./rating": {
+      "types": "./dist/generated/rating/rating.d.ts",
+      "import": "./dist/generated/rating/rating.js"
+    },
+    "./rating.css": "./dist/generated/rating/rating.css",
     "./resizable": {
       "types": "./dist/generated/resizable/resizable.d.ts",
       "import": "./dist/generated/resizable/resizable.js"
@@ -302,11 +357,21 @@
       "import": "./dist/generated/scroll-area/scroll-area.js"
     },
     "./scroll-area.css": "./dist/generated/scroll-area/scroll-area.css",
+    "./search-field": {
+      "types": "./dist/generated/search-field/search-field.d.ts",
+      "import": "./dist/generated/search-field/search-field.js"
+    },
+    "./search-field.css": "./dist/generated/search-field/search-field.css",
     "./segmented-control": {
       "types": "./dist/generated/segmented-control/segmented-control.d.ts",
       "import": "./dist/generated/segmented-control/segmented-control.js"
     },
     "./segmented-control.css": "./dist/generated/segmented-control/segmented-control.css",
+    "./select": {
+      "types": "./dist/generated/select/select.d.ts",
+      "import": "./dist/generated/select/select.js"
+    },
+    "./select.css": "./dist/generated/select/select.css",
     "./separator": {
       "types": "./dist/generated/separator/separator.d.ts",
       "import": "./dist/generated/separator/separator.js"
@@ -322,6 +387,11 @@
       "import": "./dist/generated/skeleton/skeleton.js"
     },
     "./skeleton.css": "./dist/generated/skeleton/skeleton.css",
+    "./slider": {
+      "types": "./dist/generated/slider/slider.d.ts",
+      "import": "./dist/generated/slider/slider.js"
+    },
+    "./slider.css": "./dist/generated/slider/slider.css",
     "./slot": {
       "types": "./dist/generated/slot/slot.d.ts",
       "import": "./dist/generated/slot/slot.js"

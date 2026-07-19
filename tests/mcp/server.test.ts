@@ -11,7 +11,12 @@ import { resolve } from "node:path";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { applyInit, planSourceAdd, type OperationPlan } from "../../packages/cli/src/index.js";
+import {
+  applyInit,
+  planInit,
+  planSourceAdd,
+  type OperationPlan,
+} from "../../packages/cli/src/index.js";
 import {
   createMergoraMcpServer,
   runMergoraMcpLineTransport,
@@ -24,7 +29,7 @@ const temporaryDirectories: string[] = [];
 function fixture() {
   const project = createProjectFixture({ framework: "vite-react" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   return project;
 }
 
@@ -225,6 +230,10 @@ describe("Mergora MCP read and plan tools", () => {
 
     expect(result).toEqual(expected);
     expect(result.conflicts.length).toBeGreaterThan(0);
+    expect(result.estimatedBytes.write).toBe(0);
+    expect(
+      result.fileOperations.every(({ operation }) => ["conflict", "no-op"].includes(operation)),
+    ).toBe(true);
     expect(bypass).toMatchObject({
       isError: true,
       structuredContent: { error: { code: "MCP_INPUT_FIELDS_INVALID" } },

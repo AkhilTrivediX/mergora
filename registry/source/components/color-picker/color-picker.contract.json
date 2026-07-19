@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "color-picker",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "React Aria ColorArea and ColorSlider native range inputs, ColorSwatchPicker option collection, group labelling, and composed ColorField text input",
+    "naming": "The picker, 2D area, each HSB and alpha channel, swatch collection, swatch option, and exact text editor have localized visible or programmatic names.",
+    "roleOverride": "No consumer role overrides are supported. Mergora does not synthesize a custom two-axis role; React Aria exposes the area through native range inputs and a documented 2D slider roledescription.",
+    "refTarget": "HTMLDivElement root; ColorField inputRef reaches the exact text editor"
+  },
+  "interaction": {
+    "keyboard": "The area supports React Aria two-axis keys. Named hue, saturation, brightness, and optional alpha native range inputs provide complete independent keyboard alternatives; swatches use single-selection collection keys and the text editor supports exact entry.",
+    "pointer": "Primary pointer interaction on the 2D area, channel tracks, and swatches updates the same controlled value with React Aria cancellation behavior.",
+    "touch": "Area and tracks use touch-action management from React Aria. Coarse-pointer thumbs, tracks, swatches, and the editor target at least 44 CSS pixels.",
+    "speech": "Visible picker, channel, swatch, and field labels remain available for voice targeting; canonical values are visible text.",
+    "switchAccess": "Every dimension has a native range or text input path and presets are real collection options; no pointer-only task remains."
+  },
+  "formBehavior": "The embedded ColorField owns one optional canonical hidden successful control and native reset. Area, channel, and swatch controls never add duplicate successful values. Disabled values are omitted; read-only values remain successful.",
+  "states": {
+    "attributes": [
+      "data-alpha-policy",
+      "data-disabled",
+      "data-readonly",
+      "data-channel",
+      "data-selected",
+      "data-focus-visible",
+      "data-dragging"
+    ],
+    "synchronization": "All spatial, channel, preset, text, preview, contrast, and form surfaces derive from one immutable 8-bit sRGB value and controlled owner."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=color-picker]",
+    "attributes": ["data-alpha-policy", "data-disabled", "data-readonly"]
+  },
+  "preferences": {
+    "dark": "Uses semantic surface, border, text, and focus tokens while color values remain explicit samples.",
+    "enhancedContrast": "Selected swatches add border geometry, weight, a check, and canonical text; channel outputs remain visible.",
+    "forcedColors": "Authored gradients and fills are replaced with system Canvas, CanvasText, Highlight, borders, outlines, checks, labels, outputs, and canonical text without opting out for the whole component.",
+    "reducedMotion": "No essential information or operation depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The area changes aspect ratio and channel/swatch grids become one column in narrow containers; labels, outputs, and canonical values wrap without page-level overflow."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "messages",
+      "fieldMessages",
+      "getSwatchLabel",
+      "field-label",
+      "field-description",
+      "field-error",
+      "placeholder"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The composed text editor owns composition-safe validation; sliders and swatches do not intercept text composition.",
+    "serialization": "Channel names and numbers follow the React Aria provider locale. CSS text and the canonical #rrggbb or #rrggbbaa form value remain ASCII machine data under bidi isolation."
+  },
+  "consumerResponsibilities": [
+    "Provide a persistent visible Field label and localize picker, field, and swatch labels.",
+    "Choose alphaPolicy and presets that match the domain; opaque mode rejects translucent values rather than silently flattening them.",
+    "Use the text and channel alternatives in documentation instead of teaching a pointer-only 2D workflow.",
+    "Pass the real opaque contrast background and verify final computed colors, text size, states, layering, themes, and consumer overrides."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "controlled-uncontrolled-reset",
+      "2d-pointer-touch-cancellation",
+      "named-keyboard-channel-parity",
+      "swatch-selection-and-alpha",
+      "exact-text-validation-recovery",
+      "field-form-and-contrast-text",
+      "narrow-rtl-forced-colors-axe",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-focus-order",
+      "touch-and-mobile-screen-reader",
+      "nvda-firefox",
+      "voiceover-safari",
+      "forced-colors-speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The picker intentionally exposes 8-bit sRGB through HSB spatial/channel controls and exact hex/RGB/HSL text. It does not claim wide-gamut, perceptual-space, eyedropper, canvas sampling, or arbitrary CSS color-function support.",
+    "The 2D area is not the sole path: named sliders and the text editor are required parts of the component and documentation contract.",
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

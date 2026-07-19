@@ -8,9 +8,10 @@ security-critical records with `additionalProperties: false`.
 
 The v1 source covers configuration, registry index and item payloads, mutable latest aliases,
 catalog and component metadata, compatibility, manifests and operation plans, conflicts,
-transactions and durable journals, CLI result envelopes, release and offline-vendor manifests,
-the honest blocked release-protocol plan, themes, evidence, Quality Passports, and accessibility
-acceptance contracts. `types.ts` exposes the matching TypeScript vocabulary, while
+transactions and durable journals, CLI result envelopes, exact native release references,
+release and offline-vendor manifests, the honest blocked release-protocol plan, themes,
+evidence, Quality Passports, and accessibility acceptance contracts. `types.ts` exposes the
+matching TypeScript vocabulary, while
 `schema-registry.ts` provides the runtime schema catalog.
 
 `validateSchemaDocument` negotiates `schemaVersion` before reading a record, evaluates the

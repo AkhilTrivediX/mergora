@@ -7,6 +7,7 @@ import {
   applyAcquiredSemanticUpdate,
   applyAcquiredSourceAdd,
   applyInit,
+  planInit,
   planAcquiredSemanticUpdate,
   planAcquiredSourceAdd,
   resolveNativeRegistryRelease,
@@ -108,11 +109,17 @@ function payload(
   ambiguous = false,
   collision = false,
   unsupportedTransform = false,
+  move?: {
+    readonly from: string;
+    readonly to: string;
+    readonly fromVersion: string;
+    readonly adapter?: "rename-file" | "rename-prop";
+  },
 ): {
   readonly payload: ReleaseItemPayloadInput;
   readonly sourceFiles: ReadonlyMap<string, Buffer>;
 } {
-  const logicalPath = `ui/${id}/${id}.tsx`;
+  const logicalPath = move?.to ?? `ui/${id}/${id}.tsx`;
   const sourcePath = `r/v1/releases/${version}/files/${id}.tsx`;
   const sourceFiles = new Map<string, Buffer>();
   if (sourceUrl) sourceFiles.set(sourcePath, Buffer.from(content));
@@ -166,7 +173,19 @@ function payload(
       registryDependencies: dependencies.map((dependency) => `official:${dependency}`),
       dependencies: { runtime: {}, development: {} },
       structuredPatches: [],
-      migrations: [],
+      migrations:
+        move === undefined
+          ? []
+          : [
+              {
+                id: `move-${id}-source`,
+                from: move.fromVersion,
+                to: version,
+                phase: "remote",
+                adapter: move.adapter ?? "rename-file",
+                arguments: { from: move.from, to: move.to },
+              },
+            ],
       contract: { id: `${id}-contract`, version },
       passport: { id: `${id}-passport`, version },
       examples: [`examples/${id}-basic.tsx`],
@@ -185,6 +204,12 @@ function item(
   ambiguous = false,
   collision = false,
   unsupportedTransform = false,
+  move?: {
+    readonly from: string;
+    readonly to: string;
+    readonly fromVersion: string;
+    readonly adapter?: "rename-file" | "rename-prop";
+  },
 ): { readonly item: ReleaseProtocolItemInput; readonly sourceFiles: ReadonlyMap<string, Buffer> } {
   const built = payload(
     id,
@@ -195,6 +220,7 @@ function item(
     ambiguous,
     collision,
     unsupportedTransform,
+    move,
   );
   return {
     sourceFiles: built.sourceFiles,
@@ -221,6 +247,8 @@ function nativeFixture(
     readonly ambiguous?: boolean;
     readonly collision?: boolean;
     readonly unsupportedTransform?: boolean;
+    readonly moveDialog?: boolean;
+    readonly unsupportedMigrationDialog?: boolean;
   } = {},
 ): NativeFixture {
   const button = item(
@@ -239,6 +267,17 @@ function nativeFixture(
     ["button"],
     `export const dialog = ${JSON.stringify(options.changed ? "changed" : "dialog")};\n`,
     false,
+    false,
+    false,
+    false,
+    options.moveDialog || options.unsupportedMigrationDialog
+      ? {
+          from: "ui/dialog/dialog.tsx",
+          to: "ui/dialog/dialog-core.tsx",
+          fromVersion: "1.0.0",
+          ...(options.unsupportedMigrationDialog ? { adapter: "rename-prop" as const } : {}),
+        }
+      : undefined,
   );
   const identity = { id: "official", origin: ORIGIN } as const;
   const input: StableReleaseProtocolInput = {
@@ -258,6 +297,21 @@ function nativeFixture(
       evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path),
     ),
     sbom: evidence("sbom", `r/v1/releases/${version}/sbom.json`),
+    npmPackageInventory: {
+      allowedLicenses: ["MIT"],
+      entries: [
+        {
+          package: "mergora-ui",
+          version,
+          url: `https://registry.npmjs.org/mergora-ui/-/mergora-ui-${version}.tgz`,
+          bytes: 4096,
+          digest: releaseArtifactDigest(`synthetic mergora-ui ${version} tarball`),
+          integrity: `sha512-${Buffer.alloc(64, 7).toString("base64")}`,
+          license: "MIT",
+          disposition: "include",
+        },
+      ],
+    },
     items: [dialog.item, button.item],
   };
   const bundle = buildStableReleaseProtocolBundle(input, validate);
@@ -374,7 +428,7 @@ function fixtureTransport(
 function project() {
   const fixture = createProjectFixture();
   temporaryDirectories.push(fixture.root);
-  applyInit({ projectRoot: fixture.root });
+  applyInit({ projectRoot: fixture.root }, planInit({ projectRoot: fixture.root }).planDigest);
   return fixture;
 }
 
@@ -441,6 +495,37 @@ function mutateItemFixture(
   };
 }
 
+function mutateManifestFixture(
+  fixture: NativeFixture,
+  mutate: (manifest: Record<string, unknown>) => void,
+): NativeFixture {
+  const manifestRequestPath = fixture.options.manifest.path;
+  const manifestPath = internalPath(manifestRequestPath);
+  const manifest = JSON.parse(fixture.bytesByPath.get(manifestPath)!.toString("utf8")) as Record<
+    string,
+    unknown
+  >;
+  mutate(manifest);
+  const { manifestDigest: ignoredManifestDigest, ...unsignedManifest } = manifest;
+  void ignoredManifestDigest;
+  manifest.manifestDigest = sha256(canonicalJson(unsignedManifest));
+  const manifestBytes = Buffer.from(canonicalJsonFile(manifest));
+  const bytesByPath = new Map(fixture.bytesByPath);
+  bytesByPath.set(manifestPath, manifestBytes);
+  return {
+    ...fixture,
+    bytesByPath,
+    options: {
+      ...fixture.options,
+      manifest: {
+        path: manifestRequestPath,
+        digest: sha256(manifestBytes),
+        bytes: manifestBytes.byteLength,
+      },
+    },
+  };
+}
+
 afterEach(() => {
   for (const directory of temporaryDirectories.splice(0)) {
     rmSync(directory, { recursive: true, force: true });
@@ -485,6 +570,17 @@ describe("native release acquisition routing", () => {
     expect(release.catalog.find(({ id }) => id === "button")?.links).toMatchObject({
       passport: `${ORIGIN}/passports/1.0.0/button.json`,
       contract: `${ORIGIN}/contracts/1.0.0/button.json`,
+    });
+    expect(release.npmPackageInventory).toEqual({
+      allowedLicenses: ["MIT"],
+      entries: [
+        expect.objectContaining({
+          package: "mergora-ui",
+          version: "1.0.0",
+          disposition: "include",
+          bytes: 4096,
+        }),
+      ],
     });
 
     const search = searchRegistry("pressable", { acquiredRelease: release });
@@ -552,6 +648,73 @@ describe("native release acquisition routing", () => {
       false,
     );
     expect(calls.some((url) => url.endsWith("/files/dialog.tsx"))).toBe(true);
+  });
+
+  it.each([
+    {
+      label: "Mergora package release drift",
+      expected: "REGISTRY_RELEASE_IDENTITY_INVALID",
+      mutate(manifest: Record<string, unknown>) {
+        const inventory = manifest.npmPackageInventory as {
+          entries: { version: string; url: string }[];
+        };
+        inventory.entries[0]!.version = "0.9.0";
+        inventory.entries[0]!.url = "https://registry.npmjs.org/mergora-ui/-/mergora-ui-0.9.0.tgz";
+      },
+    },
+    {
+      label: "credential or redirect-ambiguous URL",
+      expected: "REGISTRY_NPM_ORIGIN_INVALID",
+      mutate(manifest: Record<string, unknown>) {
+        const inventory = manifest.npmPackageInventory as { entries: { url: string }[] };
+        inventory.entries[0]!.url =
+          "https://token@registry.npmjs.org/mergora-ui/-/mergora-ui-1.0.0.tgz";
+      },
+    },
+    {
+      label: "noncanonical SHA-512 SRI",
+      expected: "REGISTRY_NPM_INVENTORY_INVALID",
+      mutate(manifest: Record<string, unknown>) {
+        const inventory = manifest.npmPackageInventory as { entries: { integrity: string }[] };
+        inventory.entries[0]!.integrity = "sha512-YQ==";
+      },
+    },
+    {
+      label: "duplicate package identity",
+      expected: "REGISTRY_NPM_INVENTORY_INVALID",
+      mutate(manifest: Record<string, unknown>) {
+        const inventory = manifest.npmPackageInventory as { entries: Record<string, unknown>[] };
+        inventory.entries.push({ ...inventory.entries[0]! });
+      },
+    },
+    {
+      label: "noncanonical policy ordering",
+      expected: "REGISTRY_NPM_INVENTORY_INVALID",
+      mutate(manifest: Record<string, unknown>) {
+        const inventory = manifest.npmPackageInventory as { allowedLicenses: string[] };
+        inventory.allowedLicenses = ["Zlib", "MIT"];
+      },
+    },
+  ])("rejects coherently rehashed npm inventory $label", async ({ expected, mutate }) => {
+    const target = project();
+    const tampered = mutateManifestFixture(nativeFixture(), mutate);
+    await expect(acquire(tampered, target.root)).rejects.toMatchObject({ code: expected });
+  });
+
+  it("distinguishes a backward-compatible absent npm inventory from a verified empty one", async () => {
+    const target = project();
+    const absent = mutateManifestFixture(nativeFixture(), (manifest) => {
+      delete manifest.npmPackageInventory;
+    });
+    const release = await acquire(absent, target.root);
+    expect(release.npmPackageInventory).toBeNull();
+
+    const empty = mutateManifestFixture(nativeFixture(), (manifest) => {
+      manifest.npmPackageInventory = { allowedLicenses: [], entries: [] };
+    });
+    await expect(acquire(empty, target.root)).resolves.toMatchObject({
+      npmPackageInventory: { allowedLicenses: [], entries: [] },
+    });
   });
 
   it("uses vendor before cache offline and never invokes transport", async () => {
@@ -958,6 +1121,93 @@ describe("native release acquisition routing", () => {
         digest: item.payloadDigest,
       })),
     );
+  });
+
+  it("applies an applicable acquired rename-file migration without inferring paths", async () => {
+    const target = project();
+    const first = await acquire(nativeFixture("1.0.0"), target.root);
+    const addOptions = {
+      projectRoot: target.root,
+      itemIds: ["dialog"],
+      acquiredRelease: first,
+      noInstall: true,
+    } as const;
+    applyAcquiredSourceAdd(addOptions, planAcquiredSourceAdd(addOptions).planDigest);
+    const before = JSON.parse(
+      readFileSync(resolve(target.root, ".mergora/manifest.json"), "utf8"),
+    ) as {
+      items: Record<
+        string,
+        { files: { logicalPath: string; target: string }[]; lastMigration: string | null }
+      >;
+    };
+    const oldFile = before.items["official:dialog"]!.files.find(
+      ({ logicalPath }) => logicalPath === "ui/dialog/dialog.tsx",
+    )!;
+    const next = await acquire(
+      nativeFixture("1.1.0", { changed: true, moveDialog: true }),
+      target.root,
+    );
+    const updateOptions = {
+      projectRoot: target.root,
+      acquiredRelease: next,
+      noInstall: true,
+    } as const;
+    const plan = planAcquiredSemanticUpdate(updateOptions);
+    const nextTarget = oldFile.target.replace("dialog.tsx", "dialog-core.tsx");
+    expect(plan.migrations).toContainEqual({
+      id: "move-dialog-source",
+      adapter: "rename-file",
+      phase: "remote",
+    });
+    expect(plan.fileOperations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ target: oldFile.target, operation: "delete" }),
+        expect.objectContaining({ target: nextTarget, operation: "fast-forward" }),
+      ]),
+    );
+    const result = await applyAcquiredSemanticUpdate(updateOptions, plan.planDigest);
+    expect(result.status).toBe("committed");
+    expect(existsSync(resolve(target.root, oldFile.target))).toBe(false);
+    expect(readFileSync(resolve(target.root, nextTarget), "utf8")).toContain('"changed"');
+    const after = JSON.parse(
+      readFileSync(resolve(target.root, ".mergora/manifest.json"), "utf8"),
+    ) as typeof before;
+    expect(after.items["official:dialog"]).toMatchObject({
+      lastMigration: "move-dialog-source",
+      files: [
+        expect.objectContaining({
+          logicalPath: "ui/dialog/dialog-core.tsx",
+          target: nextTarget,
+        }),
+      ],
+    });
+  });
+
+  it("fails closed for an applicable acquired migration without a trusted adapter", async () => {
+    const target = project();
+    const first = await acquire(nativeFixture("1.0.0"), target.root);
+    const addOptions = {
+      projectRoot: target.root,
+      itemIds: ["dialog"],
+      acquiredRelease: first,
+      noInstall: true,
+    } as const;
+    applyAcquiredSourceAdd(addOptions, planAcquiredSourceAdd(addOptions).planDigest);
+    const manifestPath = resolve(target.root, ".mergora/manifest.json");
+    const manifestBefore = readFileSync(manifestPath);
+    const next = await acquire(
+      nativeFixture("1.1.0", { unsupportedMigrationDialog: true }),
+      target.root,
+    );
+    expect(() =>
+      planAcquiredSemanticUpdate({
+        projectRoot: target.root,
+        acquiredRelease: next,
+        noInstall: true,
+      }),
+    ).toThrow(/unsupported applicable migration/iu);
+    expect(readFileSync(manifestPath)).toEqual(manifestBefore);
   });
 
   it("rejects coherently rehashed item dependency tampering without changing the live tree", async () => {

@@ -42,6 +42,9 @@ catalogs:
     '@types/react-dom':
       specifier: 19.2.3
       version: 19.2.3
+    '@types/semver':
+      specifier: 7.7.1
+      version: 7.7.1
     '@vitejs/plugin-react':
       specifier: 6.0.3
       version: 6.0.3
@@ -69,6 +72,9 @@ catalogs:
     react-dom:
       specifier: 19.2.7
       version: 19.2.7
+    semver:
+      specifier: 7.8.5
+      version: 7.8.5
     shadcn:
       specifier: 4.13.0
       version: 4.13.0
@@ -291,13 +297,25 @@ importers:
       postcss:
         specifier: 'catalog:'
         version: 8.5.19
+      semver:
+        specifier: 'catalog:'
+        version: 7.8.5
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
     devDependencies:
+      '@mergora/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.61.1
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
+      '@types/semver':
+        specifier: 'catalog:'
+        version: 7.7.1
 
   packages/contracts:
     devDependencies:
@@ -350,6 +368,9 @@ importers:
       axe-core:
         specifier: 'catalog:'
         version: 4.12.1
+      mergora-contracts:
+        specifier: workspace:*
+        version: link:../contracts
     devDependencies:
       '@playwright/test':
         specifier: 'catalog:'
@@ -1761,6 +1782,9 @@ packages:
 
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/validate-npm-package-name@4.0.2':
     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
@@ -4966,6 +4990,8 @@ snapshots:
       csstype: 3.2.3
 
   '@types/resolve@1.20.6': {}
+
+  '@types/semver@7.7.1': {}
 
   '@types/validate-npm-package-name@4.0.2': {}
 

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "phone-field",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "PhoneWorkbench"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "required", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Numbering metadata acquisition belongs to the application adapter boundary and this synchronous native input never fabricates a loading state."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "FormSerializationAndReset"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Entering, formatting, or clearing a phone number performs no destructive action."
+      }
+    }
+  ]
+}

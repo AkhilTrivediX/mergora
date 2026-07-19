@@ -126,11 +126,21 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "accepted", "flag"],
+        "required": ["id", "accepted", "flag", "planDigest"],
         "properties": {
-          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
-          "accepted": { "type": "boolean" },
-          "flag": { "type": "string", "pattern": "^--[a-z0-9]+(?:-[a-z0-9]+)*$" }
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:._-]{0,255}$",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "accepted": { "const": true },
+          "flag": {
+            "type": "string",
+            "pattern": "^--[a-z0-9]+(?:-[a-z0-9]+)*(?:(?:=| )[A-Za-z0-9][A-Za-z0-9:._/-]*)?$",
+            "maxLength": 1024
+          },
+          "planDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
         }
       }
     },

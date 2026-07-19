@@ -7,6 +7,7 @@ import {
   applyInit,
   applySourceAdd,
   listIncompleteTransactions,
+  planInit,
   planRecovery,
   planSourceAdd,
   recoverTransaction,
@@ -41,7 +42,7 @@ const FAULT_POINTS = Object.keys(FAULT_POINT_SET) as TransactionFaultPoint[];
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-security-fault-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   return project;
 }
 

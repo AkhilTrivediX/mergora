@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "color-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "label-associated input type=text, hidden successful form input, output, and persistent paragraph error",
+    "naming": "A visible Field label, aria-label, or aria-labelledby names the editor; preview and contrast outputs are supplementary text.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement root; inputRef reaches the editable HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "Native text editing, selection, clipboard, undo, and platform commands remain authoritative; Enter commits and Escape restores the last valid value.",
+    "pointer": "Pointer placement and selection use the native text input; no color-only proxy replaces it.",
+    "touch": "The editor and visual sample retain 44 CSS pixel preferred touch sizing in coarse-pointer contexts.",
+    "speech": "The persistent visible label remains available for voice targeting and the canonical value is text.",
+    "switchAccess": "The editor is one native focus target; preview and contrast do not introduce duplicate controls."
+  },
+  "formBehavior": "When name is supplied, one hidden successful input serializes lowercase #rrggbb for opaque policy or #rrggbbaa when alpha is allowed. Native reset restores the uncontrolled default and requests the default from a controlled owner. Disabled values are omitted.",
+  "states": {
+    "attributes": [
+      "data-alpha-policy",
+      "data-disabled",
+      "data-empty",
+      "data-format",
+      "data-invalid",
+      "data-pending",
+      "data-readonly",
+      "data-required"
+    ],
+    "synchronization": "The typed 8-bit sRGB value, formatted editor text, canonical form value, preview text, swatch, contrast output, validation state, and delayed controlled request are explicit. Pending controlled text does not change preview or form data until the owner accepts it."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=color-field]",
+    "attributes": [
+      "data-alpha-policy",
+      "data-disabled",
+      "data-empty",
+      "data-format",
+      "data-invalid",
+      "data-pending",
+      "data-readonly",
+      "data-required"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens; contrast is computed against the explicit contrastBackground value rather than inferred CSS.",
+    "enhancedContrast": "Uses semantic tokens plus persistent value, threshold, and error text.",
+    "forcedColors": "The editor and swatch use system colors; the canonical value and contrast outcome remain visible when authored color backgrounds are suppressed.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Editor text scrolls natively; preview, ratio, errors, and long localized strings wrap without creating page-level horizontal overflow."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "messages",
+      "field-label",
+      "field-description",
+      "field-error",
+      "placeholder"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "compositionstart and compositionend guard commit behavior; input, validation, and Escape recovery do not corrupt active composition.",
+    "serialization": "CSS color editor syntax and canonical form values remain ASCII machine data. Human ratio numbers follow the provider locale; bidi isolation protects canonical values."
+  },
+  "consumerResponsibilities": [
+    "Provide a persistent visible label and localize messages and surrounding instructions.",
+    "Choose alphaPolicy explicitly for domains where transparency is meaningful and never pass a translucent controlled value to opaque policy.",
+    "Pass the actual opaque surface as contrastBackground; do not describe the numeric threshold outcome as page or component conformance.",
+    "Perform server-side validation and verify final computed colors, text size, states, layering, and user theme overrides."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "hex-rgb-hsl-roundtrip",
+      "alpha-policy-and-canonical-serialization",
+      "invalid-incomplete-ime-recovery",
+      "controlled-uncontrolled-reset",
+      "field-label-error-and-form",
+      "contrast-compositing-and-text-outcome",
+      "mobile-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-ime-editing",
+      "mobile-virtual-keyboard",
+      "nvda-firefox",
+      "voiceover-safari",
+      "forced-colors-speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The text parser intentionally supports hexadecimal plus numeric comma-separated RGB/RGBA and HSL/HSLA syntax. Fractional RGB and alpha channels quantize to the nearest 8-bit value; named colors, wide-gamut spaces, percentage RGB channels, and arbitrary CSS color functions are rejected.",
+    "The canonical model is 8-bit sRGB. HSL text converts deterministically into that gamut and precision rather than retaining an independent HSL source value.",
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

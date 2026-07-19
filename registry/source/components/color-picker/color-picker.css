@@ -1,0 +1,251 @@
+@layer mergora.components {
+  .mrg-color-picker {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-lg);
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-label,
+  .mrg-color-picker-section-label {
+    color: inherit;
+    font-size: var(--mrg-semantic-font-size-body);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-color-picker [data-slot="color-picker-channels"],
+  .mrg-color-picker [data-slot="color-picker-swatches-section"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-area {
+    aspect-ratio: 8 / 5;
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-surface);
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 12rem;
+    min-inline-size: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .mrg-color-picker-area[data-disabled] {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    opacity: var(--mrg-semantic-opacity-disabled);
+  }
+
+  .mrg-color-picker-thumb {
+    block-size: var(--mrg-semantic-size-target-preferred);
+    border: calc(var(--mrg-semantic-border-width-default) * 2) solid
+      var(--mrg-semantic-color-background-canvas);
+    border-radius: 50%;
+    box-sizing: border-box;
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    outline: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-foreground-primary);
+    position: absolute;
+  }
+
+  .mrg-color-picker-thumb[data-focus-visible] {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-color-picker-channel-grid {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-channel {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-channel-header {
+    align-items: baseline;
+    display: flex;
+    gap: var(--mrg-semantic-space-inline-sm);
+    justify-content: space-between;
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-channel-header [data-slot="color-picker-channel-label"] {
+    font-weight: var(--mrg-semantic-font-weight-label);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-color-picker-channel-output {
+    color: var(--mrg-semantic-color-foreground-muted);
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mrg-color-picker-slider-track {
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    box-sizing: border-box;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    position: relative;
+    touch-action: none;
+  }
+
+  .mrg-color-picker-slider-track .mrg-color-picker-thumb {
+    inset-block-start: 50%;
+  }
+
+  .mrg-color-picker-channel[data-disabled] .mrg-color-picker-slider-track {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    opacity: var(--mrg-semantic-opacity-disabled);
+  }
+
+  .mrg-color-picker-swatches {
+    display: grid;
+    gap: var(--mrg-semantic-space-inline-sm);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 7rem), 1fr));
+    min-inline-size: 0;
+  }
+
+  .mrg-color-picker-swatch-item {
+    align-items: center;
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    box-sizing: border-box;
+    color: inherit;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    justify-items: stretch;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-space-inset-sm);
+    position: relative;
+  }
+
+  .mrg-color-picker-swatch-item[data-hovered] {
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-color-picker-swatch-item[data-selected] {
+    border-style: double;
+    border-width: calc(var(--mrg-semantic-border-width-default) * 3);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-color-picker-swatch-item[data-selected]::after {
+    align-items: center;
+    background: var(--mrg-semantic-color-background-canvas);
+    border-radius: 50%;
+    color: var(--mrg-semantic-color-foreground-primary);
+    content: "✓";
+    display: inline-flex;
+    font-weight: var(--mrg-semantic-font-weight-label);
+    inset-block-start: var(--mrg-semantic-space-inline-xs);
+    inset-inline-end: var(--mrg-semantic-space-inline-xs);
+    justify-content: center;
+    min-block-size: 1.25rem;
+    min-inline-size: 1.25rem;
+    position: absolute;
+  }
+
+  .mrg-color-picker-swatch-item[data-focus-visible] {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-color-picker-swatch-item[data-disabled] {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-color-picker-swatch {
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-compact);
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+
+  .mrg-color-picker-swatch-value {
+    font-family: var(--mrg-semantic-font-family-code);
+    font-size: var(--mrg-semantic-font-size-label);
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+
+  .mrg-color-picker[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+
+  @container (max-width: 20rem) {
+    .mrg-color-picker-area {
+      aspect-ratio: 4 / 3;
+      min-block-size: 10rem;
+    }
+
+    .mrg-color-picker-channel-grid,
+    .mrg-color-picker-swatches {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-color-picker-slider-track,
+    .mrg-color-picker-swatch {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-color-picker-area,
+    .mrg-color-picker-slider-track,
+    .mrg-color-picker-swatch {
+      background: Canvas !important;
+      border-color: CanvasText;
+      forced-color-adjust: auto !important;
+    }
+
+    .mrg-color-picker-thumb {
+      background: Highlight !important;
+      border-color: Canvas;
+      forced-color-adjust: auto !important;
+      outline-color: CanvasText;
+    }
+
+    .mrg-color-picker-swatch-item {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-color-picker-swatch-item[data-selected]::after {
+      background: Highlight;
+      color: HighlightText;
+    }
+
+    .mrg-color-picker-swatch-item[data-disabled],
+    .mrg-color-picker-channel[data-disabled] .mrg-color-picker-slider-track {
+      border-color: GrayText;
+      color: GrayText;
+      opacity: 1;
+    }
+  }
+}

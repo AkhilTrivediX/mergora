@@ -38,6 +38,7 @@ export {
   type RuntimeContractAssertionV1,
   type RuntimeHarnessAssertionV1,
   type RuntimeHarnessContractV1,
+  type RuntimeHarnessExecutionV1,
   type RuntimeHarnessInvocationV1,
   type RuntimeHarnessOutcomeV1,
   type StaticAssertionAdapterV1,
@@ -49,6 +50,18 @@ export {
   type TextIncludesAdapterV1,
   type TrustedRuntimeHarnessAdapterV1,
 } from "./model.js";
+
+export {
+  createOfficialBrowserHostAdaptersV1,
+  OFFICIAL_BROWSER_HOST_ID,
+  OFFICIAL_BROWSER_HOST_PROTOCOL_VERSION,
+  type OfficialBrowserHostAdapterOptionsV1,
+  type OfficialBrowserHostContractBindingV1,
+  type OfficialBrowserHostExecutionV1,
+  type OfficialBrowserHostHarnessV1,
+  type OfficialBrowserHostRequestV1,
+  type OfficialBrowserHostV1,
+} from "./official-browser-host.js";
 
 export { runContractAuditV1 } from "./runner.js";
 

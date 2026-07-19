@@ -1,10 +1,10 @@
 # Catalog status
 
-- Updated: 2026-07-18T15:30:00Z
+- Updated: 2026-07-19T04:08:40Z
 - Source of truth: `registry/definitions/`
 - Current validation result: 168 catalog items plus 10 workflow kits; 7 catalog tests pass in the working tree
 
-Seventy-five canonical entries now have the separate generated status `source-present-unreleased`.
+Ninety-two canonical entries now have the separate generated status `source-present-unreleased`.
 That status proves canonical source and derived surfaces exist; it does not count any entry as
 completed, Stable, or publicly released. Data Grid is additionally visible as Experimental. The
 planned definition records retain their target maturity, which is a requirement rather than
@@ -19,7 +19,8 @@ shipped evidence.
 | Stable workflow kits             |                      9 |           0 |                 0 | definition seed only   |
 | Beta workflow kits               |    1 (`scheduler-kit`) |           0 |                 0 | definition seed only   |
 
-Source-present-unreleased entries: **75**. Completed/Stable/released entries: **0**.
+Source-present-unreleased entries: **92**. Unimplemented definitions: **86**.
+Completed/Stable/released entries: **0**.
 
 ADR-0008 records why the collision-free inventory is 168 + 10. This file must become generated from
 the canonical definitions before completed or maturity counts change. Counts keep

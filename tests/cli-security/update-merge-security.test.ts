@@ -10,6 +10,7 @@ import {
   immutableUpdateItemDigest,
   immutableUpdateRegistryIdentityDigest,
   immutableUpdateReleaseDigest,
+  planInit,
   planSemanticUpdate,
   planSourceAdd,
   sha256,
@@ -53,7 +54,7 @@ interface ReleaseMutationContext {
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-security-update-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const options = {
     projectRoot: project.root,
     itemIds: ["button"],

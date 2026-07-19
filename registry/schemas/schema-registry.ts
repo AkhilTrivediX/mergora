@@ -8,6 +8,7 @@ import conflictSchemaJson from "./conflict-v1.schema.json" with { type: "json" }
 import evidenceSchemaJson from "./evidence-v1.schema.json" with { type: "json" };
 import latestAliasSchemaJson from "./latest-alias-v1.schema.json" with { type: "json" };
 import manifestSchemaJson from "./manifest-v1.schema.json" with { type: "json" };
+import nativeReleaseReferenceSchemaJson from "./native-release-reference-v1.schema.json" with { type: "json" };
 import operationPlanSchemaJson from "./operation-plan-v1.schema.json" with { type: "json" };
 import qualityPassportSchemaJson from "./quality-passport-v1.schema.json" with { type: "json" };
 import registryIndexSchemaJson from "./registry-index-v1.schema.json" with { type: "json" };
@@ -40,6 +41,7 @@ export const SCHEMA_REGISTRY: Readonly<Record<SchemaKind, JsonSchema>> = {
   evidence: evidenceSchemaJson as JsonSchema,
   "latest-alias": latestAliasSchemaJson as JsonSchema,
   manifest: manifestSchemaJson as JsonSchema,
+  "native-release-reference": nativeReleaseReferenceSchemaJson as JsonSchema,
   "operation-plan": operationPlanSchemaJson as JsonSchema,
   "quality-passport": qualityPassportSchemaJson as JsonSchema,
   "registry-index": registryIndexSchemaJson as JsonSchema,
@@ -65,6 +67,7 @@ export const EXPECTED_SCHEMA_VERSION: Readonly<Record<SchemaKind, 1 | "1.0.0">> 
   evidence: 1,
   "latest-alias": 1,
   manifest: 1,
+  "native-release-reference": 1,
   "operation-plan": 1,
   "quality-passport": 1,
   "registry-index": 1,

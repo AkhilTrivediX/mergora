@@ -7,7 +7,7 @@
   "riskClass": 2,
   "semantics": {
     "nativeBasis": "React Aria Slider with two or more visually hidden input type=range controls and one slider accessibility node per thumb",
-    "naming": "Field names the slider group; thumbLabels provide distinct boundary names such as Minimum salary and Maximum salary.",
+    "naming": "Field names the slider group; thumbLabels provide distinct boundary names such as Minimum allocation and Maximum allocation.",
     "roleOverride": "Consumer role overrides are outside the supported contract.",
     "refTarget": "HTMLDivElement visual root; the first hidden input receives the integrated Field control ID"
   },

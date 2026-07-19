@@ -1,0 +1,17 @@
+{
+  "declaredImports": [
+    "../listbox/index.js",
+    "../native-select/index.js",
+    "../provider/index.js",
+    "./select.css",
+    "react",
+    "react-aria-components/Header",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/Select",
+    "react-aria-components/Virtualizer"
+  ],
+  "entryPath": "registry/source/components/select/select.tsx",
+  "id": "select",
+  "itemDependencies": ["listbox", "native-select", "provider"],
+  "outputRole": "component"
+}

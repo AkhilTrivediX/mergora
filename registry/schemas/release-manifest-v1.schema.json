@@ -60,6 +60,101 @@
       "minItems": 1,
       "maxItems": 4096
     },
+    "npmPackageInventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["allowedLicenses", "entries"],
+      "properties": {
+        "allowedLicenses": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/spdxLicense" },
+          "uniqueItems": true,
+          "maxItems": 128
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "package",
+                  "version",
+                  "url",
+                  "bytes",
+                  "digest",
+                  "integrity",
+                  "license",
+                  "disposition"
+                ],
+                "properties": {
+                  "package": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://registry\\.npmjs\\.org/[^?#]+\\.tgz$",
+                    "maxLength": 2048
+                  },
+                  "bytes": { "type": "integer", "minimum": 1, "maximum": 16777216 },
+                  "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+                  "integrity": {
+                    "type": "string",
+                    "pattern": "^sha512-[A-Za-z0-9+/]{86}==$"
+                  },
+                  "license": { "$ref": "common-v1.schema.json#/$defs/spdxLicense" },
+                  "disposition": { "const": "include" }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "package",
+                  "version",
+                  "url",
+                  "bytes",
+                  "digest",
+                  "integrity",
+                  "license",
+                  "disposition",
+                  "omissionReason"
+                ],
+                "properties": {
+                  "package": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+                  "version": {
+                    "type": "string",
+                    "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+                  },
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://registry\\.npmjs\\.org/[^?#]+\\.tgz$",
+                    "maxLength": 2048
+                  },
+                  "bytes": { "type": "integer", "minimum": 1, "maximum": 16777216 },
+                  "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+                  "integrity": {
+                    "type": "string",
+                    "pattern": "^sha512-[A-Za-z0-9+/]{86}==$"
+                  },
+                  "license": { "$ref": "common-v1.schema.json#/$defs/spdxLicense" },
+                  "disposition": { "const": "omit" },
+                  "omissionReason": {
+                    "enum": ["explicitly-omitted", "license-not-allowed"]
+                  }
+                }
+              }
+            ]
+          },
+          "maxItems": 1024
+        }
+      }
+    },
     "qualitySummary": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
     "manifestDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
   }

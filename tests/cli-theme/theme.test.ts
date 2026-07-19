@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit } from "../../packages/cli/src/configuration.ts";
+import { applyInit, planInit } from "../../packages/cli/src/configuration.ts";
 import { sha256 } from "../../packages/cli/src/contracts.ts";
 import type { CliError } from "../../packages/cli/src/contracts.ts";
 import {
@@ -88,7 +88,7 @@ function customFailingPreset(): ThemePreset {
 function project() {
   const fixture = createProjectFixture();
   temporaryDirectories.push(fixture.root);
-  applyInit({ projectRoot: fixture.root });
+  applyInit({ projectRoot: fixture.root }, planInit({ projectRoot: fixture.root }).planDigest);
   return fixture;
 }
 

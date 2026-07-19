@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "listbox",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, performance, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "React Aria implements the APG listbox pattern over a labelled role=listbox and role=option descendants; sections expose labelled groups.",
+    "naming": "A required persistent visible label owns aria-labelledby. Descriptions, errors, and a bounded selected-text summary use stable references.",
+    "roleOverride": "Consumer role overrides, interactive option descendants, and alternate focus engines are outside the supported contract.",
+    "refTarget": "HTMLDivElement carrying role=listbox"
+  },
+  "interaction": {
+    "keyboard": "Tab enters one composite stop; Arrow Up/Down move direct option focus; Home/End move to boundaries; printable characters use locale-aware typeahead; Space selects; multiple mode uses toggle behavior without timing-dependent chords.",
+    "pointer": "Selection commits on React Aria press completion rather than pointer down; disabled items do not activate.",
+    "touch": "Options and retry/load-more actions preserve preferred 44 CSS pixel targets and require no path gesture.",
+    "speech": "The visible listbox label, option textValue, and explicit retry/load-more button labels remain voice target names.",
+    "switchAccess": "One composite and ordinary recovery buttons remain reachable without hidden duplicate option controls."
+  },
+  "formBehavior": "A named selection serializes each canonical key through hidden successful controls, producing one value in single mode and repeated same-name values in multiple mode. Disabled omits values. Dynamic page replacement retains a bounded copy of selected records and initial reset defaults, so entry churn cannot silently erase FormData or fabricate a change callback. Uncontrolled form reset restores the initial default unless canceled; controlled state remains parent-owned. aria-required requires application validation because no false native constraint proxy is introduced.",
+  "states": {
+    "attributes": [
+      "data-virtualized",
+      "aria-multiselectable",
+      "aria-selected",
+      "aria-disabled",
+      "aria-readonly",
+      "aria-required",
+      "aria-invalid",
+      "aria-busy",
+      "aria-posinset",
+      "aria-setsize"
+    ],
+    "synchronization": "Visible checks, aria-selected, callback values, hidden form values, selected summaries, retained selected records, and controlled/uncontrolled ownership derive from the same ordered key set."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=listbox]",
+    "attributes": [
+      "data-virtualized",
+      "aria-multiselectable",
+      "aria-required",
+      "aria-readonly",
+      "aria-disabled",
+      "aria-invalid",
+      "aria-busy"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Selected state combines aria-selected, a check, weight, and boundary geometry rather than color alone.",
+    "forcedColors": "Uses Canvas, CanvasText, Highlight, and visible system-color focus outlines while retaining the check cue.",
+    "reducedMotion": "No selection or loading information depends on motion; scrolling uses immediate browser behavior under reduced motion."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The collection scrolls in the block axis, long labels wrap, controls stack in narrow containers, and the page does not gain two-dimensional overflow."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "errorMessage",
+      "item.textValue",
+      "section.textValue",
+      "collection.empty",
+      "collection.loading",
+      "collection.loadingMore",
+      "collection.loadMore",
+      "collection.retry",
+      "selectionSummary"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Listbox has no editable text surface; printable-key handling is delegated to locale-aware React Aria typeahead and does not intercept active text composition elsewhere.",
+    "serialization": "Labels and summaries are localized; key serialization remains canonical consumer-owned machine data."
+  },
+  "consumerResponsibilities": [
+    "Provide stable keys that do not change when items reorder, filter, paginate, or localize.",
+    "Keep keys stable across pages and explicitly clear or replace selections when records are no longer valid; Listbox retains observed selected records when a page merely omits them.",
+    "Provide localized textValue for every item and section, including rich-rendered options.",
+    "Validate required Listbox selection in the owning workflow and associate persistent error text.",
+    "Use useCollectionLoader or an equivalently abortable, stale-safe adapter for remote data.",
+    "Do not treat automated axe and browser evidence as manual assistive-technology evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "stable-key-and-serialization-collisions",
+      "single-multiple-controlled-uncontrolled",
+      "section-disabled-typeahead-keyboard",
+      "formdata-reset-external-form",
+      "async-delay-failure-retry-cancel-stale-order-pagination",
+      "virtualized-10k-dom-window-focus-position-selection-summary",
+      "german-arabic-rtl-touch-narrow-forced-colors-reduced-motion",
+      "axe-representative-states",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-only",
+      "mobile-touch-screen-reader",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari",
+      "voice-control-and-switch",
+      "virtualization-and-async-recovery"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, performance baselines, or current manual assistive-technology sessions.",
+    "Listbox required state is an ARIA and application-validation contract; custom listboxes cannot provide native constraint validation without a misleading proxy.",
+    "Selection summaries are bounded to twelve visible names plus an omitted count so large multiple selections do not flood accessibility output."
+  ]
+}

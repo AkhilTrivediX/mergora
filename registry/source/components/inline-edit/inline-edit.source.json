@@ -1,0 +1,13 @@
+{
+  "declaredImports": [
+    "../button/button.js",
+    "../field/index.js",
+    "../provider/index.js",
+    "./inline-edit.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/inline-edit/inline-edit.tsx",
+  "id": "inline-edit",
+  "itemDependencies": ["button", "field", "provider"],
+  "outputRole": "component"
+}

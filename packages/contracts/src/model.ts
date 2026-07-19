@@ -297,6 +297,11 @@ export interface RuntimeHarnessOutcomeV1 {
   readonly context: AuditRuntimeContextV1;
 }
 
+/** Host-controlled cancellation for one bounded runtime assertion. */
+export interface RuntimeHarnessExecutionV1 {
+  readonly signal: AbortSignal;
+}
+
 /**
  * Host code registers reviewed adapters. Executable Contract JSON can only
  * select one by `harnessId`; it cannot provide this function or its runtime.
@@ -304,7 +309,10 @@ export interface RuntimeHarnessOutcomeV1 {
 export interface TrustedRuntimeHarnessAdapterV1 {
   readonly harnessId: string;
   readonly modes: readonly RuntimeAuditMode[];
-  run(input: RuntimeHarnessInvocationV1): unknown | Promise<unknown>;
+  run(
+    input: RuntimeHarnessInvocationV1,
+    execution: RuntimeHarnessExecutionV1,
+  ): unknown | Promise<unknown>;
 }
 
 export interface RunContractAuditOptions {

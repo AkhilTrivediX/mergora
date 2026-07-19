@@ -100,19 +100,19 @@ function ProductionForm() {
   return (
     <Canvas>
       <header style={{ display: "grid", gap: "var(--mrg-semantic-space-stack-sm)" }}>
-        <h1 style={headingStyle}>Offer calibration workbench</h1>
+        <h1 style={headingStyle}>Budget allocation workbench</h1>
         <p style={proseStyle}>
-          The upper boundary is deliberately set to the actual ceiling, not held at 3,500. Visible
-          currency formatting and canonical form values come from the same ordered slider state.
+          Visible currency formatting and canonical form values come from the same ordered project
+          budget state.
         </p>
       </header>
-      <form aria-label="Offer calibration" onSubmit={handleSubmit} style={specimenStyle}>
+      <form aria-label="Budget allocation" onSubmit={handleSubmit} style={specimenStyle}>
         <Field
-          description="The first and second thumbs remain Minimum monthly salary and Maximum monthly salary even when they meet."
-          label="Approved monthly salary range"
+          description="The first and second thumbs remain Minimum approved budget and Maximum approved budget even when they meet."
+          label="Approved budget range"
         >
           <RangeSlider
-            defaultValue={[6500, 12000]}
+            defaultValue={[4000, 10000]}
             formatOptions={{
               currency: "EUR",
               currencyDisplay: "code",
@@ -120,15 +120,15 @@ function ProductionForm() {
               style: "currency",
             }}
             marks={[
-              { label: "EUR 3.5k", value: 3500 },
-              { label: "EUR 7.5k", value: 7500 },
-              { label: "EUR 12k", value: 12000 },
+              { label: "EUR 1k", value: 1000 },
+              { label: "EUR 5k", value: 5000 },
+              { label: "EUR 10k", value: 10000 },
             ]}
-            maxValue={12000}
-            minValue={3500}
-            names={["salary-minimum", "salary-maximum"]}
+            maxValue={10000}
+            minValue={1000}
+            names={["budget-minimum", "budget-maximum"]}
             step={250}
-            thumbLabels={["Minimum monthly salary", "Maximum monthly salary"]}
+            thumbLabels={["Minimum approved budget", "Maximum approved budget"]}
           />
         </Field>
         <Field
@@ -285,18 +285,18 @@ export const DirectionAndOrientation: Story = {
           <section aria-label="Arabic horizontal slider" style={specimenStyle}>
             <Field description="المفاتيح الأفقية تتبع اتجاه الكتابة." label="نطاق الميزانية">
               <RangeSlider
-                defaultValue={[4000, 9000]}
+                defaultValue={[2500, 7500]}
                 formatOptions={{
                   currency: "EGP",
                   maximumFractionDigits: 0,
                   style: "currency",
                 }}
                 marks={[
-                  { label: "٣٬٥٠٠", value: 3500 },
-                  { label: "١٢٬٠٠٠", value: 12000 },
+                  { label: "١٬٠٠٠", value: 1000 },
+                  { label: "١٠٬٠٠٠", value: 10000 },
                 ]}
-                maxValue={12000}
-                minValue={3500}
+                maxValue={10000}
+                minValue={1000}
                 step={250}
                 thumbLabels={["الحد الأدنى للميزانية", "الحد الأقصى للميزانية"]}
               />

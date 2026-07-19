@@ -18,6 +18,7 @@ export type SchemaKind =
   | "evidence"
   | "latest-alias"
   | "manifest"
+  | "native-release-reference"
   | "operation-plan"
   | "quality-passport"
   | "registry-index"
@@ -369,10 +370,63 @@ export interface ProvenanceManifestV1 {
   readonly $schema: "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json";
   readonly schemaVersion: 1;
   readonly projectId: Sha256;
+  /** Present as a complete set after the explicit legacy-to-distribution migration. */
+  readonly configDigest?: Sha256;
+  readonly defaultMode?: "source" | "package" | "hybrid";
+  readonly packageName?: string;
   readonly toolchain: Readonly<Record<"cli" | "schema" | "transformer" | "formatter", string>>;
+  readonly releases?: Readonly<Record<string, ManifestDistributionRelease>>;
   readonly items: Readonly<Record<QualifiedItemId, ManifestItem>>;
   readonly sharedTargets: Readonly<Record<ProjectRelativePath, readonly CatalogId[]>>;
   readonly dependencyOwners: Readonly<Record<string, readonly QualifiedItemId[]>>;
+  readonly dependencyOwnership?: Readonly<Record<string, ManifestDependencyOwnership>>;
+  readonly patchOwnership?: Readonly<Record<CatalogId, ManifestPatchOwnership>>;
+}
+
+export interface ManifestDistributionRelease {
+  readonly registryId: CatalogId;
+  readonly origin: string;
+  readonly trust: "official" | "enrolled" | "local-development";
+  readonly identityDigest: Sha256;
+  readonly release: Semver;
+  readonly manifestUrl: string;
+  readonly manifestDigest: Sha256;
+  readonly packages: Readonly<Record<string, ManifestPackageArtifact>>;
+}
+
+export interface ManifestPackageArtifact {
+  readonly name: string;
+  readonly version: Semver;
+  readonly tarballDigest: Sha256;
+}
+
+export interface ManifestDependencyOwnership {
+  readonly scope: "runtime" | "development";
+  readonly package: string;
+  readonly range: SemverRange;
+  readonly owners: readonly QualifiedItemId[];
+  readonly retention: "remove-if-unowned" | "retain-if-unowned";
+}
+
+export interface ManifestStructuredPatch {
+  readonly id: CatalogId;
+  readonly adapter:
+    | "css-import"
+    | "css-source"
+    | "css-token-block"
+    | "package-dependency"
+    | "tsconfig-path"
+    | "tsconfig-include"
+    | "framework-config";
+  readonly target?: ProjectRelativePath;
+  readonly semanticKey: string;
+  readonly ownedValueDigest: Sha256;
+}
+
+export interface ManifestPatchOwnership extends Omit<ManifestStructuredPatch, "target"> {
+  readonly target: ProjectRelativePath;
+  readonly owners: readonly QualifiedItemId[];
+  readonly retention: "remove-if-unowned" | "retain-if-unowned";
 }
 
 export interface ManifestItem {
@@ -381,16 +435,18 @@ export interface ManifestItem {
   readonly kind: string;
   readonly requested: SemverRange;
   readonly resolved: Semver;
+  readonly releaseRef?: string;
   readonly payload: { readonly url: string; readonly digest: Sha256 };
   readonly mode: "source" | "package";
   readonly direct: boolean;
   readonly transformContextDigest: Sha256;
   readonly transformContext: JsonValue;
   readonly files: readonly ManifestFile[];
+  readonly packageClaims?: readonly string[];
   readonly importSubpaths?: readonly string[];
   readonly registryDependencies: readonly QualifiedItemId[];
   readonly dependencies: DependencySets;
-  readonly structuredPatches: readonly JsonValue[];
+  readonly structuredPatches: readonly ManifestStructuredPatch[];
   readonly contractVersion: Semver;
   readonly lastMigration: CatalogId | null;
 }
@@ -516,9 +572,10 @@ export interface TransactionV1 {
   }[];
   readonly conflicts: readonly ConflictV1[];
   readonly consents: readonly {
-    readonly id: CatalogId;
-    readonly accepted: boolean;
+    readonly id: string;
+    readonly accepted: true;
     readonly flag: string;
+    readonly planDigest: Sha256;
   }[];
   readonly resolutions: readonly {
     readonly target: ProjectRelativePath;
@@ -617,8 +674,50 @@ export interface ReleaseManifestV1 {
     readonly mediaType: string;
     readonly bytes: number;
   }[];
+  /** Optional only for backward-compatible reads of early v1 manifests. */
+  readonly npmPackageInventory?: {
+    readonly allowedLicenses: readonly string[];
+    readonly entries: readonly (
+      | {
+          readonly package: string;
+          readonly version: Semver;
+          readonly url: string;
+          readonly bytes: number;
+          readonly digest: Sha256;
+          readonly integrity: string;
+          readonly license: string;
+          readonly disposition: "include";
+        }
+      | {
+          readonly package: string;
+          readonly version: Semver;
+          readonly url: string;
+          readonly bytes: number;
+          readonly digest: Sha256;
+          readonly integrity: string;
+          readonly license: string;
+          readonly disposition: "omit";
+          readonly omissionReason: "explicitly-omitted" | "license-not-allowed";
+        }
+    )[];
+  };
   readonly qualitySummary: EvidenceReference;
   readonly manifestDigest: Sha256;
+}
+
+export interface NativeReleaseReferenceV1 {
+  readonly schemaVersion: 1;
+  readonly artifactKind: "mergora-native-release-reference";
+  readonly registryId: "official";
+  readonly release: Semver;
+  readonly catalog: {
+    readonly digest: Sha256;
+    readonly bytes: number;
+  };
+  readonly manifest: {
+    readonly digest: Sha256;
+    readonly bytes: number;
+  };
 }
 
 export interface VendorManifestV1 {
@@ -630,15 +729,21 @@ export interface VendorManifestV1 {
     readonly identityDigest: Sha256;
   };
   readonly release: Semver;
+  readonly selection: {
+    readonly mode: "all" | "items";
+    readonly requested: readonly CatalogId[];
+  };
   readonly releaseManifest: EvidenceReference;
   readonly items: readonly EvidenceReference[];
   readonly schemas: readonly EvidenceReference[];
   readonly contracts: readonly EvidenceReference[];
   readonly passports: readonly EvidenceReference[];
+  readonly npmCoverage: "not-requested" | "complete";
   readonly npmTarballs: readonly {
     readonly package: string;
     readonly version: Semver;
     readonly url: string;
+    readonly bytes: number;
     readonly digest: Sha256;
     readonly integrity: string;
     readonly license: string;

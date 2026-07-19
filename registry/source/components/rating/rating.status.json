@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rating",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify editable radio semantics, complete keyboard mapping, touch targets, native required validation, submission, reset, disabled omission, and external form association in every supported browser engine.",
+    "Verify that read-only and fractional displays expose exact text without interactive radio semantics and serialize only when named and enabled.",
+    "Record LTR, RTL, narrow, zoom, text-spacing, coarse-pointer, reduced-motion, enhanced-contrast, and forced-colors review.",
+    "Complete localized option/value-label fixtures and current risk-class manual assistive-technology evidence.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

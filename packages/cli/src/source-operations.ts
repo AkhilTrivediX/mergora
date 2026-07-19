@@ -21,11 +21,14 @@ import {
 import {
   mergoraConfigAliasPrefix,
   readMergoraConfig,
+  validateMergoraConfig,
   type MergoraConfig,
 } from "./configuration.js";
-import type {
-  AcquiredNativeRegistryItem,
-  AcquiredNativeRegistryRelease,
+import {
+  assertAuthenticAcquiredNativeRegistryRelease,
+  type AcquiredNativeFile,
+  type AcquiredNativeRegistryItem,
+  type AcquiredNativeRegistryRelease,
 } from "./acquisition-resolver.js";
 import {
   compatibleDependencyRange,
@@ -49,6 +52,8 @@ import {
 import {
   executeTransaction,
   finalizeOperationPlan,
+  validateTransactionOverlay,
+  validationSuiteForTransaction,
   type ExecuteTransactionOptions,
   type OperationPlan,
   type OperationPlanDependencyChange,
@@ -59,7 +64,28 @@ import {
   type TransactionMutation,
   type TransactionRegistryPayload,
   type TransactionResult,
+  type TransactionValidationContext,
+  type TransactionValidationIssue,
+  type TransactionValidationResult,
+  type TransactionValidator,
 } from "./transaction-engine.js";
+import {
+  createMediaParseValidator,
+  transactionValidationResult,
+  type TransactionMediaFile,
+} from "./trusted-transaction-validators.js";
+import {
+  assertDistributionConfigurationBinding,
+  serializeDistributionProvenance,
+  validateDistributionProvenance,
+  type ConfiguredDistributionMode,
+  type DistributionDependencyOwnership,
+  type DistributionItem,
+  type DistributionPatchOwnership,
+  type DistributionProvenanceState,
+  type DistributionReleasePin,
+  type ValidatedDistributionProvenance,
+} from "./distribution-provenance.js";
 
 const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
 export const MANIFEST_PATH = ".mergora/manifest.json" as const;
@@ -85,6 +111,8 @@ export interface ManifestPatch {
     | "tsconfig-path"
     | "tsconfig-include"
     | "framework-config";
+  /** Required by distribution-aware manifests; legacy source manifests did not persist it. */
+  readonly target?: string | undefined;
   readonly semanticKey: string;
   readonly ownedValueDigest: `sha256:${string}`;
 }
@@ -95,8 +123,10 @@ export interface ManifestItem {
   readonly kind: "component" | "system" | "hook" | "utility" | "kit" | "theme" | "contract";
   readonly requested: string;
   readonly resolved: string;
+  /** Exact immutable release key. Required once distribution provenance is attached. */
+  readonly releaseRef?: string | undefined;
   readonly payload: { readonly url: string; readonly digest: `sha256:${string}` };
-  readonly mode: "source";
+  readonly mode: "source" | "package";
   direct: boolean;
   readonly transformContextDigest: `sha256:${string}`;
   readonly transformContext: {
@@ -110,6 +140,10 @@ export interface ManifestItem {
     };
   };
   readonly files: readonly ManifestFile[];
+  /** Fixed-release package artifacts owned by this item in package mode only. */
+  readonly packageClaims?: readonly string[] | undefined;
+  /** Public package import subpaths owned by this item in package mode only. */
+  readonly importSubpaths?: readonly string[] | undefined;
   readonly registryDependencies: readonly string[];
   readonly dependencies: {
     readonly runtime: Readonly<Record<string, string>>;
@@ -124,15 +158,59 @@ export interface ProvenanceManifest {
   readonly $schema: string;
   readonly schemaVersion: 1;
   readonly projectId: `sha256:${string}`;
+  /** All distribution fields are either absent together (legacy source manifest) or present. */
+  readonly configDigest?: `sha256:${string}` | undefined;
+  readonly defaultMode?: ConfiguredDistributionMode | undefined;
+  readonly packageName?: string | undefined;
   readonly toolchain: {
     readonly cli: string;
     readonly schema: string;
     readonly transformer: string;
     readonly formatter: string;
   };
+  readonly releases?: Readonly<Record<string, DistributionReleasePin>> | undefined;
   items: Record<string, ManifestItem>;
   sharedTargets: Record<string, string[]>;
   dependencyOwners: Record<string, string[]>;
+  readonly dependencyOwnership?:
+    Readonly<Record<string, DistributionDependencyOwnership>> | undefined;
+  readonly patchOwnership?: Readonly<Record<string, DistributionPatchOwnership>> | undefined;
+}
+
+const DISTRIBUTION_MANIFEST_KEYS = [
+  "configDigest",
+  "defaultMode",
+  "packageName",
+  "releases",
+  "dependencyOwnership",
+  "patchOwnership",
+] as const;
+
+export interface DistributionManifestProjection extends ValidatedDistributionProvenance {
+  readonly manifest: ProvenanceManifest;
+}
+
+function distributionOwnershipViews(state: DistributionProvenanceState): {
+  readonly dependencyOwners: Record<string, string[]>;
+  readonly sharedTargets: Record<string, string[]>;
+} {
+  const sharedTargets = new Map<string, string[]>();
+  for (const patch of Object.values(state.patchOwnership)) {
+    const owners = sharedTargets.get(patch.target) ?? [];
+    owners.push(patch.id);
+    sharedTargets.set(patch.target, owners);
+  }
+  return {
+    dependencyOwners: Object.fromEntries(
+      Object.entries(state.dependencyOwnership).map(([key, ownership]) => [
+        key,
+        [...ownership.owners],
+      ]),
+    ),
+    sharedTargets: Object.fromEntries(
+      [...sharedTargets].map(([target, owners]) => [target, [...portableSort(owners)]]),
+    ),
+  };
 }
 
 interface MappedSourceFile {
@@ -190,6 +268,7 @@ interface InternalSourcePlan {
   readonly requestedItems: readonly string[];
   readonly transitiveItems: readonly string[];
   readonly retainedFiles: readonly string[];
+  readonly validators: readonly TransactionValidator[];
 }
 
 interface AcquiredSourceContext {
@@ -197,6 +276,45 @@ interface AcquiredSourceContext {
   readonly sources: readonly SourceItemRecord[];
   readonly sourceById: ReadonlyMap<string, SourceItemRecord>;
   readonly itemById: ReadonlyMap<string, AcquiredNativeRegistryItem>;
+}
+
+export interface AcquiredDistributionSourceFile {
+  readonly logicalPath: string;
+  readonly target: string;
+  readonly role: ManifestFile["role"];
+  readonly mediaType: string;
+  readonly digest: `sha256:${string}`;
+  readonly bytes: Uint8Array;
+}
+
+export interface AcquiredDistributionSourceProjection {
+  readonly qualifiedId: string;
+  readonly releaseRef: string;
+  readonly itemId: string;
+  readonly kind: ManifestItem["kind"];
+  readonly resolved: string;
+  readonly payload: ManifestItem["payload"];
+  readonly files: readonly AcquiredDistributionSourceFile[];
+  readonly registryDependencies: readonly string[];
+  readonly dependencies: ManifestItem["dependencies"];
+  readonly structuredPatches: readonly Required<ManifestPatch>[];
+  /** Exact package specifiers acquired for the inverse import rewrite. */
+  readonly packageImportSubpaths: readonly string[];
+  readonly contractVersion: string;
+}
+
+export interface DeriveAcquiredDistributionSourcesOptions {
+  readonly acquiredRelease: AcquiredNativeRegistryRelease;
+  readonly itemIds: readonly string[];
+  readonly transformContexts: Readonly<
+    Record<
+      string,
+      {
+        readonly digest: `sha256:${string}`;
+        readonly value: ManifestItem["transformContext"];
+      }
+    >
+  >;
 }
 
 function objectValue(value: unknown, label: string): Record<string, unknown> {
@@ -222,22 +340,298 @@ function exactKeys(value: Record<string, unknown>, keys: readonly string[], labe
   }
 }
 
-export function readManifest(root: string): {
-  readonly value: ProvenanceManifest;
-  readonly bytes: Buffer;
-} {
-  const bytes = readRequiredProjectFile(root, MANIFEST_PATH, "The provenance manifest is missing.");
-  let raw: unknown;
-  try {
-    raw = JSON.parse(bytes.toString("utf8")) as unknown;
-  } catch {
-    throw new CliError("The provenance manifest is not valid JSON.", {
-      code: "MANIFEST_INVALID_JSON",
-      exitCode: 3,
-      target: MANIFEST_PATH,
-    });
+function manifestError(message: string, code = "MANIFEST_DISTRIBUTION_INVALID"): CliError {
+  return new CliError(message, { code, exitCode: 3, target: MANIFEST_PATH });
+}
+
+function distributionFieldsPresent(value: Record<string, unknown>): readonly string[] {
+  return DISTRIBUTION_MANIFEST_KEYS.filter((key) => Object.hasOwn(value, key));
+}
+
+function distributionItemProjection(item: ManifestItem, qualifiedId: string): DistributionItem {
+  if (
+    item.releaseRef === undefined ||
+    item.packageClaims === undefined ||
+    item.importSubpaths === undefined
+  ) {
+    throw manifestError(
+      `Distribution-aware manifest item ${qualifiedId} is missing release or mode ownership fields.`,
+      "MANIFEST_DISTRIBUTION_INCOMPLETE",
+    );
   }
+  const patches = item.structuredPatches.map((patch) => {
+    if (patch.target === undefined) {
+      throw manifestError(
+        `Distribution-aware manifest patch ${patch.id} is missing its owned target.`,
+        "MANIFEST_DISTRIBUTION_INCOMPLETE",
+      );
+    }
+    return {
+      id: patch.id,
+      adapter: patch.adapter,
+      target: patch.target,
+      semanticKey: patch.semanticKey,
+      ownedValueDigest: patch.ownedValueDigest,
+    };
+  });
+  const common = {
+    registry: item.registry,
+    itemId: item.itemId,
+    kind: item.kind,
+    requested: item.requested,
+    resolved: item.resolved,
+    releaseRef: item.releaseRef,
+    payload: item.payload,
+    direct: item.direct,
+    registryDependencies: item.registryDependencies,
+    dependencies: item.dependencies,
+    structuredPatches: patches,
+    contractVersion: item.contractVersion,
+    lastMigration: item.lastMigration,
+  };
+  if (item.mode === "source") {
+    if (item.packageClaims.length !== 0 || item.importSubpaths.length !== 0) {
+      throw manifestError(
+        `Source manifest item ${qualifiedId} cannot claim package ownership.`,
+        "MANIFEST_DISTRIBUTION_OWNERSHIP_MISMATCH",
+      );
+    }
+    return {
+      ...common,
+      mode: "source",
+      files: item.files,
+      packageClaims: [],
+      importSubpaths: [],
+    };
+  }
+  if (item.files.length !== 0) {
+    throw manifestError(
+      `Package manifest item ${qualifiedId} cannot own copied source files.`,
+      "MANIFEST_DISTRIBUTION_OWNERSHIP_MISMATCH",
+    );
+  }
+  return {
+    ...common,
+    mode: "package",
+    files: [],
+    packageClaims: item.packageClaims,
+    importSubpaths: item.importSubpaths,
+  };
+}
+
+/**
+ * Projects the actual persisted manifest into the strict distribution ownership core. Legacy
+ * source-only v1 manifests return null; a partial or future distribution extension fails closed.
+ */
+export function distributionProvenanceFromManifest(
+  manifest: ProvenanceManifest,
+): DistributionManifestProjection | null {
+  const source = manifest as unknown as Record<string, unknown>;
+  const present = distributionFieldsPresent(source);
+  if (present.length === 0) return null;
+  if (present.length !== DISTRIBUTION_MANIFEST_KEYS.length) {
+    throw manifestError(
+      "The distribution manifest extension is partial or from an unsupported schema.",
+      "MANIFEST_DISTRIBUTION_INCOMPLETE",
+    );
+  }
+  const validated = serializeDistributionProvenance({
+    schemaVersion: 1,
+    projectId: manifest.projectId,
+    configDigest: manifest.configDigest,
+    defaultMode: manifest.defaultMode,
+    packageName: manifest.packageName,
+    releases: manifest.releases,
+    items: Object.fromEntries(
+      Object.entries(manifest.items).map(([id, item]) => [
+        id,
+        distributionItemProjection(item, id),
+      ]),
+    ),
+    dependencyOwnership: manifest.dependencyOwnership,
+    patchOwnership: manifest.patchOwnership,
+  });
+  const views = distributionOwnershipViews(validated.state);
+  if (
+    canonicalJson(normalizedStringArrayRecord(manifest.dependencyOwners)) !==
+      canonicalJson(normalizedStringArrayRecord(views.dependencyOwners)) ||
+    canonicalJson(normalizedStringArrayRecord(manifest.sharedTargets)) !==
+      canonicalJson(normalizedStringArrayRecord(views.sharedTargets))
+  ) {
+    throw manifestError(
+      "Legacy and retention-aware manifest ownership views disagree.",
+      "MANIFEST_DISTRIBUTION_OWNERSHIP_MISMATCH",
+    );
+  }
+  return { ...validated, manifest };
+}
+
+function normalizedStringArrayRecord(
+  value: Readonly<Record<string, readonly string[]>>,
+): Record<string, readonly string[]> {
+  return Object.fromEntries(
+    Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right, "en-US"))
+      .map(([key, entries]) => [key, [...portableSort(entries)]]),
+  );
+}
+
+function legacyItemProjection(item: ManifestItem): unknown {
+  return {
+    registry: item.registry,
+    itemId: item.itemId,
+    kind: item.kind,
+    requested: item.requested,
+    resolved: item.resolved,
+    payload: item.payload,
+    mode: item.mode,
+    direct: item.direct,
+    files: item.files,
+    registryDependencies: item.registryDependencies,
+    dependencies: item.dependencies,
+    structuredPatches: item.structuredPatches.map(({ target: _target, ...patch }) => patch),
+    contractVersion: item.contractVersion,
+    lastMigration: item.lastMigration,
+  };
+}
+
+function legacyDistributionProjection(item: DistributionItem): unknown {
+  return {
+    registry: item.registry,
+    itemId: item.itemId,
+    kind: item.kind,
+    requested: item.requested,
+    resolved: item.resolved,
+    payload: item.payload,
+    mode: item.mode,
+    direct: item.direct,
+    files: item.files,
+    registryDependencies: item.registryDependencies,
+    dependencies: item.dependencies,
+    structuredPatches: item.structuredPatches.map(({ target: _target, ...patch }) => patch),
+    contractVersion: item.contractVersion,
+    lastMigration: item.lastMigration,
+  };
+}
+
+/**
+ * Deterministically attaches exact distribution provenance to a compatible legacy source
+ * manifest. It never changes installed source, mode, dependencies, patches, or item identity.
+ */
+export function migrateLegacyManifestToDistribution(
+  manifest: ProvenanceManifest,
+  proposedState: unknown,
+  configuration: unknown,
+): ProvenanceManifest {
+  const state = validateDistributionProvenance(proposedState);
+  assertDistributionConfigurationBinding(state, configuration);
+  const existing = distributionProvenanceFromManifest(manifest);
+  if (existing !== null) {
+    if (existing.canonicalDigest !== sha256(canonicalJson(state))) {
+      throw manifestError(
+        "The manifest already has different distribution provenance.",
+        "MANIFEST_DISTRIBUTION_MIGRATION_CONFLICT",
+      );
+    }
+    return normalizedManifest(manifest);
+  }
+  if (state.projectId !== manifest.projectId) {
+    throw manifestError(
+      "Distribution provenance belongs to a different project.",
+      "MANIFEST_DISTRIBUTION_PROJECT_MISMATCH",
+    );
+  }
+  const currentIds = Object.keys(manifest.items).sort((left, right) =>
+    left.localeCompare(right, "en-US"),
+  );
+  const proposedIds = Object.keys(state.items).sort((left, right) =>
+    left.localeCompare(right, "en-US"),
+  );
+  if (canonicalJson(currentIds) !== canonicalJson(proposedIds)) {
+    throw manifestError(
+      "Distribution attachment cannot add, remove, or infer installed items.",
+      "MANIFEST_DISTRIBUTION_MIGRATION_CONFLICT",
+    );
+  }
+  const legacyDependencyOwners = normalizedStringArrayRecord(manifest.dependencyOwners);
+  const legacySharedTargets = normalizedStringArrayRecord(manifest.sharedTargets);
+  const proposedViews = distributionOwnershipViews(state);
+  if (
+    canonicalJson(legacyDependencyOwners) !==
+      canonicalJson(normalizedStringArrayRecord(proposedViews.dependencyOwners)) ||
+    canonicalJson(legacySharedTargets) !==
+      canonicalJson(normalizedStringArrayRecord(proposedViews.sharedTargets))
+  ) {
+    throw manifestError(
+      "Distribution attachment must preserve every legacy dependency owner and patch target.",
+      "MANIFEST_DISTRIBUTION_OWNERSHIP_MISMATCH",
+    );
+  }
+  if (
+    Object.values(state.dependencyOwnership).some(
+      ({ retention }) => retention !== "retain-if-unowned",
+    ) ||
+    Object.values(state.patchOwnership).some(({ retention }) => retention !== "retain-if-unowned")
+  ) {
+    throw manifestError(
+      "Legacy provenance cannot prove Mergora created a dependency or patch, so attachment must retain every value after its final owner leaves.",
+      "MANIFEST_DISTRIBUTION_RETENTION_UNPROVABLE",
+    );
+  }
+  const items = Object.fromEntries(
+    currentIds.map((id): readonly [string, ManifestItem] => {
+      const current = manifest.items[id]!;
+      const proposed = state.items[id]!;
+      if (
+        current.mode !== "source" ||
+        proposed.mode !== "source" ||
+        canonicalJson(legacyItemProjection(current)) !==
+          canonicalJson(legacyDistributionProjection(proposed))
+      ) {
+        throw manifestError(
+          `Distribution attachment would change legacy item ${id}; use a reviewed transaction instead.`,
+          "MANIFEST_DISTRIBUTION_MIGRATION_CONFLICT",
+        );
+      }
+      return [
+        id,
+        {
+          ...current,
+          releaseRef: proposed.releaseRef,
+          packageClaims: [],
+          importSubpaths: [],
+          structuredPatches: proposed.structuredPatches.map((patch) => ({ ...patch })),
+        },
+      ];
+    }),
+  );
+  const migrated: ProvenanceManifest = {
+    ...structuredClone(manifest),
+    configDigest: state.configDigest,
+    defaultMode: state.defaultMode,
+    packageName: state.packageName,
+    releases: state.releases,
+    items,
+    ...distributionOwnershipViews(state),
+    dependencyOwnership: state.dependencyOwnership,
+    patchOwnership: state.patchOwnership,
+  };
+  distributionProvenanceFromManifest(migrated);
+  return normalizedManifest(migrated);
+}
+
+export function validateManifestDocument(raw: unknown): ProvenanceManifest {
   const manifest = objectValue(raw, "The provenance manifest");
+  const distributionFields = distributionFieldsPresent(manifest);
+  if (
+    distributionFields.length !== 0 &&
+    distributionFields.length !== DISTRIBUTION_MANIFEST_KEYS.length
+  ) {
+    throw manifestError(
+      "The distribution manifest extension is partial or unsupported.",
+      "MANIFEST_DISTRIBUTION_INCOMPLETE",
+    );
+  }
   exactKeys(
     manifest,
     [
@@ -248,6 +642,7 @@ export function readManifest(root: string): {
       "items",
       "sharedTargets",
       "dependencyOwners",
+      ...distributionFields,
     ],
     "The provenance manifest",
   );
@@ -255,6 +650,9 @@ export function readManifest(root: string): {
     manifest.schemaVersion !== 1 ||
     typeof manifest.$schema !== "string" ||
     !manifest.$schema.endsWith("/manifest-v1.schema.json") ||
+    (distributionFields.length === DISTRIBUTION_MANIFEST_KEYS.length &&
+      manifest.$schema !==
+        "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json") ||
     typeof manifest.projectId !== "string" ||
     !/^sha256:[a-f0-9]{64}$/u.test(manifest.projectId)
   ) {
@@ -264,7 +662,25 @@ export function readManifest(root: string): {
       target: MANIFEST_PATH,
     });
   }
-  objectValue(manifest.toolchain, "Manifest toolchain");
+  const toolchain = objectValue(manifest.toolchain, "Manifest toolchain");
+  exactKeys(toolchain, ["cli", "schema", "transformer", "formatter"], "Manifest toolchain");
+  const semver =
+    /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
+  if (
+    !semver.test(String(toolchain.cli)) ||
+    !semver.test(String(toolchain.schema)) ||
+    !semver.test(String(toolchain.transformer)) ||
+    typeof toolchain.formatter !== "string" ||
+    toolchain.formatter.length === 0 ||
+    toolchain.formatter.length > 160 ||
+    /^(?:[A-Za-z]:[\\/]|[\\/]{1,2})/u.test(toolchain.formatter) ||
+    toolchain.formatter.includes("\\")
+  ) {
+    throw manifestError(
+      "Manifest toolchain metadata must use portable version identities.",
+      "MANIFEST_TOOLCHAIN_INVALID",
+    );
+  }
   const items = objectValue(manifest.items, "Manifest items");
   objectValue(manifest.sharedTargets, "Manifest sharedTargets");
   objectValue(manifest.dependencyOwners, "Manifest dependencyOwners");
@@ -277,12 +693,171 @@ export function readManifest(root: string): {
       });
     }
     const item = objectValue(rawItem, `Manifest item ${qualifiedId}`);
+    if (distributionFields.length === DISTRIBUTION_MANIFEST_KEYS.length) {
+      exactKeys(
+        item,
+        [
+          "registry",
+          "itemId",
+          "kind",
+          "requested",
+          "resolved",
+          "releaseRef",
+          "payload",
+          "mode",
+          "direct",
+          "transformContextDigest",
+          "transformContext",
+          "files",
+          "packageClaims",
+          "importSubpaths",
+          "registryDependencies",
+          "dependencies",
+          "structuredPatches",
+          "contractVersion",
+          "lastMigration",
+        ],
+        `Manifest item ${qualifiedId}`,
+      );
+      const transform = objectValue(
+        item.transformContext,
+        `Manifest item ${qualifiedId} transform context`,
+      );
+      if (
+        typeof item.transformContextDigest !== "string" ||
+        !/^sha256:[a-f0-9]{64}$/u.test(item.transformContextDigest) ||
+        sha256(canonicalJson(transform)) !== item.transformContextDigest
+      ) {
+        throw manifestError(
+          `Manifest item ${qualifiedId} transform context digest is invalid.`,
+          "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+        );
+      }
+      exactKeys(
+        transform,
+        ["targets", "aliases", "styling"],
+        `Manifest item ${qualifiedId} transform context`,
+      );
+      const targets = objectValue(
+        transform.targets,
+        `Manifest item ${qualifiedId} transform targets`,
+      );
+      const transformKeys = new Set([
+        "components",
+        "hooks",
+        "lib",
+        "systems",
+        "kits",
+        "styles",
+        "tokens",
+      ]);
+      for (const [key, target] of Object.entries(targets)) {
+        if (!transformKeys.has(key)) {
+          throw manifestError(
+            `Manifest item ${qualifiedId} has an unknown transform target.`,
+            "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+          );
+        }
+        if (typeof target !== "string") {
+          throw manifestError(
+            `Manifest item ${qualifiedId} has a non-string transform target.`,
+            "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+          );
+        }
+        assertPortableRelativePath(target, "Manifest transform target");
+      }
+      const aliases = objectValue(
+        transform.aliases,
+        `Manifest item ${qualifiedId} transform aliases`,
+      );
+      for (const [key, alias] of Object.entries(aliases)) {
+        if (
+          !transformKeys.has(key) ||
+          typeof alias !== "string" ||
+          alias.length === 0 ||
+          alias.length > 256 ||
+          alias !== alias.trim() ||
+          /^(?:[A-Za-z]:[\\/]|[\\/]{1,2})/u.test(alias) ||
+          alias.includes("\\") ||
+          [...alias].some((character) => {
+            const point = character.codePointAt(0)!;
+            return point <= 31 || point === 127;
+          })
+        ) {
+          throw manifestError(
+            `Manifest item ${qualifiedId} has an unsafe transform alias.`,
+            "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+          );
+        }
+      }
+      const styling = objectValue(
+        transform.styling,
+        `Manifest item ${qualifiedId} transform styling`,
+      );
+      exactKeys(
+        styling,
+        ["engine", "tokenPreset", "density", "direction"],
+        `Manifest item ${qualifiedId} transform styling`,
+      );
+      if (
+        styling.engine !== "tailwind-v4" ||
+        typeof styling.tokenPreset !== "string" ||
+        styling.tokenPreset.length === 0 ||
+        styling.tokenPreset.length > 128 ||
+        !["comfortable", "compact", "touch"].includes(String(styling.density)) ||
+        !["ltr", "rtl", "auto"].includes(String(styling.direction))
+      ) {
+        throw manifestError(
+          `Manifest item ${qualifiedId} has an invalid transform styling context.`,
+          "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+        );
+      }
+      if (!Array.isArray(item.structuredPatches)) {
+        throw manifestError(
+          `Manifest item ${qualifiedId} patches must be an array.`,
+          "MANIFEST_DISTRIBUTION_TRANSFORM_INVALID",
+        );
+      }
+      for (const [index, rawPatch] of item.structuredPatches.entries()) {
+        exactKeys(
+          objectValue(rawPatch, `Manifest patch ${index} for ${qualifiedId}`),
+          ["id", "adapter", "target", "semanticKey", "ownedValueDigest"],
+          `Manifest patch ${index} for ${qualifiedId}`,
+        );
+      }
+    } else {
+      exactKeys(
+        item,
+        [
+          "registry",
+          "itemId",
+          "kind",
+          "requested",
+          "resolved",
+          "payload",
+          "mode",
+          "direct",
+          "transformContextDigest",
+          "transformContext",
+          "files",
+          "registryDependencies",
+          "dependencies",
+          "structuredPatches",
+          "contractVersion",
+          "lastMigration",
+        ],
+        `Manifest item ${qualifiedId}`,
+      );
+    }
     if (
       !Array.isArray(item.files) ||
       !Array.isArray(item.registryDependencies) ||
       !Array.isArray(item.structuredPatches) ||
       typeof item.itemId !== "string" ||
-      item.mode !== "source" ||
+      (item.mode !== "source" &&
+        !(
+          distributionFields.length === DISTRIBUTION_MANIFEST_KEYS.length && item.mode === "package"
+        )) ||
       typeof item.direct !== "boolean"
     ) {
       throw new CliError(`Manifest item ${qualifiedId} is invalid.`, {
@@ -307,7 +882,32 @@ export function readManifest(root: string): {
       assertPortableRelativePath(file.target, "Manifest target");
     }
   }
-  return { value: manifest as unknown as ProvenanceManifest, bytes };
+  const value = manifest as unknown as ProvenanceManifest;
+  distributionProvenanceFromManifest(value);
+  return value;
+}
+
+export function parseManifestBytes(bytes: Uint8Array): ProvenanceManifest {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(Buffer.from(bytes).toString("utf8")) as unknown;
+  } catch {
+    throw new CliError("The provenance manifest is not valid JSON.", {
+      code: "MANIFEST_INVALID_JSON",
+      exitCode: 3,
+      target: MANIFEST_PATH,
+    });
+  }
+  return validateManifestDocument(raw);
+}
+
+export function readManifest(root: string): {
+  readonly value: ProvenanceManifest;
+  readonly bytes: Buffer;
+} {
+  const bytes = readRequiredProjectFile(root, MANIFEST_PATH, "The provenance manifest is missing.");
+  const value = parseManifestBytes(bytes);
+  return { value, bytes };
 }
 
 export function readProjectFile(root: string, target: string): Buffer | null {
@@ -372,7 +972,7 @@ function sortedRecord<T>(record: Readonly<Record<string, T>>): Record<string, T>
 }
 
 export function normalizedManifest(manifest: ProvenanceManifest): ProvenanceManifest {
-  const items = Object.fromEntries(
+  const items: Record<string, ManifestItem> = Object.fromEntries(
     Object.entries(manifest.items)
       .sort(([left], [right]) => left.localeCompare(right, "en-US"))
       .map(([id, item]) => [
@@ -390,10 +990,17 @@ export function normalizedManifest(manifest: ProvenanceManifest): ProvenanceMani
           structuredPatches: [...item.structuredPatches].sort((left, right) =>
             left.id.localeCompare(right.id, "en-US"),
           ),
+          ...(item.releaseRef === undefined ? {} : { releaseRef: item.releaseRef }),
+          ...(item.packageClaims === undefined
+            ? {}
+            : { packageClaims: [...portableSort(item.packageClaims)] }),
+          ...(item.importSubpaths === undefined
+            ? {}
+            : { importSubpaths: [...portableSort(item.importSubpaths)] }),
         },
       ]),
   );
-  return {
+  const normalized: ProvenanceManifest = {
     $schema: manifest.$schema,
     schemaVersion: 1,
     projectId: manifest.projectId,
@@ -409,6 +1016,42 @@ export function normalizedManifest(manifest: ProvenanceManifest): ProvenanceMani
         .sort(([left], [right]) => left.localeCompare(right, "en-US"))
         .map(([dependency, owners]) => [dependency, [...portableSort(owners)]]),
     ),
+  };
+  const distribution = distributionProvenanceFromManifest(manifest);
+  if (distribution === null) return normalized;
+  const distributionItems = Object.fromEntries(
+    Object.entries(items).map(([id, item]) => {
+      const projected = distribution.state.items[id]!;
+      return [
+        id,
+        {
+          ...item,
+          releaseRef: projected.releaseRef,
+          mode: projected.mode,
+          files: projected.files,
+          packageClaims: projected.packageClaims,
+          importSubpaths: projected.importSubpaths,
+          registryDependencies: projected.registryDependencies,
+          dependencies: projected.dependencies,
+          structuredPatches: projected.structuredPatches.map((patch) => ({ ...patch })),
+        },
+      ];
+    }),
+  );
+  return {
+    $schema: normalized.$schema,
+    schemaVersion: 1,
+    projectId: normalized.projectId,
+    configDigest: distribution.state.configDigest,
+    defaultMode: distribution.state.defaultMode,
+    packageName: distribution.state.packageName,
+    toolchain: normalized.toolchain,
+    releases: distribution.state.releases,
+    items: distributionItems,
+    sharedTargets: normalized.sharedTargets,
+    dependencyOwners: normalized.dependencyOwners,
+    dependencyOwnership: distribution.state.dependencyOwnership,
+    patchOwnership: distribution.state.patchOwnership,
   };
 }
 
@@ -554,6 +1197,180 @@ function acquiredClosure(
   };
   [...new Set(requested)].sort((left, right) => left.localeCompare(right, "en-US")).forEach(visit);
   return result;
+}
+
+function acquiredDistributionRole(file: AcquiredNativeFile): ManifestFile["role"] {
+  if (
+    !(["component", "hook", "lib", "system", "kit", "style", "token"] as const).includes(
+      file.targetRole as never,
+    )
+  ) {
+    throw new CliError(
+      `Acquired file ${file.logicalPath} has no supported distribution source role.`,
+      { code: "SOURCE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: file.logicalPath },
+    );
+  }
+  return file.targetRole as ManifestFile["role"];
+}
+
+function acquiredDistributionTarget(
+  itemId: string,
+  file: AcquiredNativeFile,
+  context: ManifestItem["transformContext"],
+): string {
+  const role = acquiredDistributionRole(file);
+  const targetKey =
+    role === "hook"
+      ? "hooks"
+      : role === "lib"
+        ? "lib"
+        : role === "system"
+          ? "systems"
+          : role === "kit"
+            ? "kits"
+            : role === "style"
+              ? "styles"
+              : role === "token"
+                ? "tokens"
+                : "components";
+  const root = context.targets[targetKey];
+  if (root === undefined) {
+    throw new CliError(`Transform context has no target for acquired ${role} files.`, {
+      code: "SOURCE_ACQUIRED_TARGET_INVALID",
+      exitCode: 5,
+      target: file.logicalPath,
+    });
+  }
+  assertSourceRoot(root);
+  const sourceSegments = file.logicalPath.split("/");
+  const relativeSegments =
+    sourceSegments[1] === itemId ? sourceSegments.slice(2) : sourceSegments.slice(1);
+  if (relativeSegments.length === 0) {
+    throw new CliError(`Acquired file ${file.logicalPath} has no target-relative path.`, {
+      code: "SOURCE_ACQUIRED_TARGET_INVALID",
+      exitCode: 5,
+      target: file.logicalPath,
+    });
+  }
+  const target = `${root}/${itemId}/${relativeSegments.join("/")}`;
+  assertPortableRelativePath(target, "Acquired distribution source target");
+  return target;
+}
+
+/**
+ * Derives exact package-to-source materialization only from a resolver-branded release and the
+ * persisted compiled transform context. Unsupported transforms and project glue fail closed.
+ */
+export function deriveAcquiredDistributionSources(
+  options: DeriveAcquiredDistributionSourcesOptions,
+): readonly AcquiredDistributionSourceProjection[] {
+  assertAuthenticAcquiredNativeRegistryRelease(options.acquiredRelease);
+  const context = acquiredSourceContext(options.acquiredRelease);
+  const selected = [...new Set(options.itemIds)].sort((left, right) =>
+    left.localeCompare(right, "en-US"),
+  );
+  const expectedContexts = selected.map((id) => qualified(acquiredAlias(id, context)));
+  if (
+    canonicalJson(Object.keys(options.transformContexts).sort()) !==
+    canonicalJson([...expectedContexts].sort())
+  ) {
+    throw new CliError("Acquired distribution transform contexts are incomplete or out of scope.", {
+      code: "SOURCE_ACQUIRED_TARGET_INVALID",
+      exitCode: 5,
+      target: MANIFEST_PATH,
+    });
+  }
+  const targets = new Set<string>();
+  return selected.map((input): AcquiredDistributionSourceProjection => {
+    const itemId = acquiredAlias(input, context);
+    const qualifiedId = qualified(itemId);
+    const acquired = context.itemById.get(itemId);
+    if (acquired === undefined) {
+      throw new CliError(`Authentic release did not acquire item ${itemId}.`, {
+        code: "REGISTRY_ITEM_NOT_ACQUIRED",
+        exitCode: 4,
+        target: itemId,
+      });
+    }
+    const transform = options.transformContexts[qualifiedId]!;
+    if (sha256(canonicalJson(transform.value)) !== transform.digest) {
+      throw new CliError(`Compiled transform context for ${qualifiedId} changed.`, {
+        code: "SOURCE_ACQUIRED_TARGET_INVALID",
+        exitCode: 5,
+        target: MANIFEST_PATH,
+      });
+    }
+    const files = acquired.files
+      .map((file): AcquiredDistributionSourceFile => {
+        const bytes = Buffer.from(file.content, file.encoding === "utf8" ? "utf8" : "base64");
+        if (
+          file.executable !== false ||
+          file.transformPipeline.some(
+            ({ adapter }) => adapter !== "none" && adapter !== "target-map",
+          ) ||
+          bytes.byteLength !== file.bytes ||
+          sha256(bytes) !== file.digest
+        ) {
+          throw new CliError(
+            `Acquired source ${file.logicalPath} requires an unsupported transform or changed after verification.`,
+            {
+              code: "SOURCE_ACQUIRED_ADAPTER_UNSUPPORTED",
+              exitCode: 7,
+              target: file.logicalPath,
+            },
+          );
+        }
+        const target = acquiredDistributionTarget(itemId, file, transform.value);
+        const portable = target.normalize("NFC").toLocaleLowerCase("en-US");
+        if (targets.has(portable)) {
+          throw new CliError(`Acquired distribution source target ${target} collides.`, {
+            code: "SOURCE_TARGET_COLLISION",
+            exitCode: 5,
+            target,
+          });
+        }
+        targets.add(portable);
+        return {
+          logicalPath: file.logicalPath,
+          target,
+          role: acquiredDistributionRole(file),
+          mediaType: file.mediaType,
+          digest: file.digest,
+          bytes,
+        };
+      })
+      .sort((left, right) => left.target.localeCompare(right.target, "en-US"));
+    const dependencies = {
+      runtime: sortedRecord(acquired.dependencies.runtime),
+      development: sortedRecord(acquired.dependencies.development),
+    };
+    const structuredPatches = Object.entries(acquired.dependencies.runtime)
+      .filter(([name]) => name !== "react" && name !== "react-dom")
+      .map(([name, range]): Required<ManifestPatch> => ({
+        id: dependencyPatchId(name),
+        adapter: "package-dependency",
+        target: "package.json",
+        semanticKey: `dependencies.${name}`,
+        ownedValueDigest: sha256(range),
+      }))
+      .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
+    return {
+      qualifiedId,
+      releaseRef: `${options.acquiredRelease.registry.id}@${options.acquiredRelease.release}`,
+      itemId,
+      kind: acquired.kind,
+      resolved: acquired.version,
+      payload: { url: acquired.payloadUrl, digest: acquired.payloadDigest },
+      files,
+      registryDependencies: [...acquired.registryDependencies].sort(),
+      dependencies,
+      structuredPatches,
+      packageImportSubpaths: [...acquired.importPaths].sort((left, right) =>
+        left.localeCompare(right, "en-US"),
+      ),
+      contractVersion: acquired.contract.version,
+    };
+  });
 }
 
 function assertSourceRoot(value: string): string {
@@ -776,6 +1593,7 @@ function packagePatch(item: ManifestItem, name: string, range: string): Manifest
   return {
     id: dependencyPatchId(name),
     adapter: "package-dependency",
+    target: "package.json",
     semanticKey: `dependencies.${name}`,
     ownedValueDigest: sha256(range),
   };
@@ -899,7 +1717,7 @@ function sourcePlanItems(
     .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
 }
 
-function readConfiguredProject(options: SourceOperationOptions) {
+function readConfiguredOwnership(options: SourceOperationOptions) {
   const root = validatedProjectRoot(options.projectRoot);
   const config = readMergoraConfig(root);
   if (config === null) {
@@ -910,6 +1728,14 @@ function readConfiguredProject(options: SourceOperationOptions) {
     });
   }
   const manifest = readManifest(root);
+  return { root, config, manifest };
+}
+
+function readConfiguredProject(
+  options: SourceOperationOptions,
+  configured = readConfiguredOwnership(options),
+) {
+  const { root, config, manifest } = configured;
   const inspection = inspectProject(root, {
     framework: config.project.framework,
     sourceRoot: config.project.sourceRoot,
@@ -956,6 +1782,143 @@ function mutation(
   };
 }
 
+function sourceProjectValidator(
+  expectedConfig: MergoraConfig,
+  expectedManifest: ProvenanceManifest,
+): TransactionValidator {
+  const expectedConfigDocument = canonicalJson(expectedConfig);
+  const expectedContexts = Object.fromEntries(
+    Object.entries(expectedManifest.items).map(([id, item]) => [
+      id,
+      {
+        digest: item.transformContextDigest,
+        document: canonicalJson(item.transformContext),
+      },
+    ]),
+  );
+  const validate = (context: TransactionValidationContext): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const configBytes = context.readFile("mergora.json");
+    if (configBytes === null) {
+      issues.push({
+        code: "CONFIG_MISSING",
+        target: "mergora.json",
+        message: "The transaction view has no project configuration.",
+      });
+    } else {
+      try {
+        const raw = JSON.parse(configBytes.toString("utf8")) as unknown;
+        const config = validateMergoraConfig(raw);
+        if (
+          canonicalJson(config) !== expectedConfigDocument ||
+          sha256(canonicalJson(raw)) !== context.plan.configDigest
+        ) {
+          issues.push({
+            code: "PROJECT_CONFIG_MISMATCH",
+            target: "mergora.json",
+            message: "The project configuration differs from the exact reviewed transform input.",
+          });
+        }
+      } catch (error) {
+        issues.push({
+          code: error instanceof CliError ? error.code : "CONFIG_INVALID_JSON",
+          target: "mergora.json",
+          message: "The project configuration does not satisfy the reviewed schema.",
+        });
+      }
+    }
+
+    const manifestBytes = context.readFile(MANIFEST_PATH);
+    if (manifestBytes === null) {
+      issues.push({
+        code: "MANIFEST_MISSING",
+        target: MANIFEST_PATH,
+        message: "The source ownership manifest is missing from the transaction view.",
+      });
+    } else {
+      try {
+        const manifest = parseManifestBytes(manifestBytes);
+        for (const [id, expected] of Object.entries(expectedContexts)) {
+          const item = manifest.items[id];
+          if (
+            item === undefined ||
+            item.transformContextDigest !== expected.digest ||
+            sha256(canonicalJson(item.transformContext)) !== expected.digest ||
+            canonicalJson(item.transformContext) !== expected.document
+          ) {
+            issues.push({
+              code: "TRANSFORM_CONTEXT_MISMATCH",
+              target: MANIFEST_PATH,
+              message: `Transform context for ${id} differs from the reviewed project mapping.`,
+            });
+          }
+        }
+        const actualIds = Object.keys(manifest.items).sort();
+        const expectedIds = Object.keys(expectedContexts).sort();
+        if (canonicalJson(actualIds) !== canonicalJson(expectedIds)) {
+          issues.push({
+            code: "MANIFEST_ITEM_SET_MISMATCH",
+            target: MANIFEST_PATH,
+            message: "The source ownership item set differs from the reviewed post-state.",
+          });
+        }
+      } catch (error) {
+        issues.push({
+          code: error instanceof CliError ? error.code : "MANIFEST_INVALID",
+          target: MANIFEST_PATH,
+          message: "The source ownership manifest does not satisfy the reviewed schema.",
+        });
+      }
+    }
+    return transactionValidationResult(
+      `Validated exact project configuration and transform contexts in the ${context.phase} view.`,
+      `Project configuration or transform-context validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+  return {
+    id: "source-project-context",
+    label: "project-configured",
+    validateStagedOverlay: validate,
+    validatePostCommit: validate,
+  };
+}
+
+function sourceTransactionValidators(input: {
+  readonly config: MergoraConfig;
+  readonly manifest: ProvenanceManifest;
+  readonly mutations: readonly TransactionMutation[];
+  readonly fileOperations: readonly OperationPlanFile[];
+}): readonly TransactionValidator[] {
+  const mediaByTarget = new Map(
+    input.fileOperations.map(({ target, mediaType }) => [target, mediaType]),
+  );
+  const files: TransactionMediaFile[] = input.mutations
+    .filter(({ content }) => content !== null)
+    .map(({ target }) => ({
+      target,
+      mediaType:
+        target === MANIFEST_PATH || target === "package.json" || target === "mergora.json"
+          ? "application/json"
+          : (mediaByTarget.get(target) ?? "application/octet-stream"),
+    }));
+  return [
+    createMediaParseValidator("source-media-parse", files),
+    sourceProjectValidator(input.config, normalizedManifest(input.manifest)),
+  ];
+}
+
+function validateSourcePlanOverlay(internal: InternalSourcePlan): InternalSourcePlan {
+  validateTransactionOverlay({
+    root: internal.root,
+    plan: internal.publicPlan,
+    mutations: internal.mutations,
+    observedTargets: internal.observedTargets,
+    validators: internal.validators,
+  });
+  return internal;
+}
+
 function operationPlan(
   command: "add" | "remove" | "adopt",
   context: {
@@ -970,6 +1933,7 @@ function operationPlan(
     readonly mutations: readonly TransactionMutation[];
     readonly structuredPatches?: OperationPlan["structuredPatches"] | undefined;
     readonly acquired?: AcquiredSourceContext | undefined;
+    readonly validators: readonly TransactionValidator[];
   },
 ): OperationPlan {
   const files = [...context.fileOperations];
@@ -1055,16 +2019,7 @@ function operationPlan(
         0,
       ),
     },
-    validationSuite: [
-      "schema",
-      "digest",
-      "path",
-      "collision",
-      "parse",
-      "ownership",
-      "dependency",
-      "project-configured",
-    ],
+    validationSuite: validationSuiteForTransaction(context.validators),
     rollbackAvailable: true,
   });
 }
@@ -1180,6 +2135,16 @@ function addInternal(
     const existing = nextManifest.items[id];
     const files = mapFiles(source, project.config, options.targetDirectory, acquired);
     if (existing !== undefined) {
+      if (existing.mode !== "source") {
+        throw new CliError(
+          `Installed item ${source.itemId} is package-owned; use an explicit mode migration before source add.`,
+          {
+            code: "DISTRIBUTION_MIXED_OWNERSHIP_CONFLICT",
+            exitCode: 6,
+            target: MANIFEST_PATH,
+          },
+        );
+      }
       validateExistingInstall(existing, source, project.config, options.targetDirectory, acquired);
       if (direct.has(source.itemId)) existing.direct = true;
       for (const file of existing.files) {
@@ -1302,6 +2267,28 @@ function addInternal(
   if (!nextManifestBytes.equals(project.manifest.bytes)) {
     mutations.push(mutation(project.root, MANIFEST_PATH, nextManifestBytes, true));
   }
+  const blockedByConflict = conflicts.length > 0;
+  const transactionMutations = blockedByConflict ? [] : mutations;
+  const transactionFileOperations = blockedByConflict
+    ? fileOperations.map((operation): OperationPlanFile =>
+        operation.operation === "add"
+          ? {
+              ...operation,
+              operation: "conflict",
+              proposed: null,
+              risk: "conflict",
+              reason:
+                "The source add is blocked by another ownership conflict; no partial files will be staged.",
+            }
+          : operation,
+      )
+    : fileOperations;
+  const validators = sourceTransactionValidators({
+    config: project.config,
+    manifest: blockedByConflict ? project.manifest.value : nextManifest,
+    mutations: transactionMutations,
+    fileOperations: transactionFileOperations,
+  });
   const plan = operationPlan("add", {
     configDigest: sha256(canonicalJson(project.config)),
     manifestDigest: sha256(canonicalJson(project.manifest.value)),
@@ -1313,7 +2300,7 @@ function addInternal(
       acquired,
     ),
     sources,
-    fileOperations,
+    fileOperations: transactionFileOperations,
     dependencyChanges: packagePlan.changes,
     structuredPatches: packagePlan.changes.map((change) => ({
       id: dependencyPatchId(change.package),
@@ -1334,13 +2321,14 @@ function addInternal(
       ),
     ],
     conflicts,
-    mutations,
+    mutations: transactionMutations,
     acquired,
+    validators,
   });
-  return {
+  return validateSourcePlanOverlay({
     root: project.root,
     publicPlan: plan,
-    mutations,
+    mutations: transactionMutations,
     observedTargets,
     registryPayloads: registryPayloads(sources, acquired),
     packageManager: project.inspection.packageManager,
@@ -1349,7 +2337,8 @@ function addInternal(
     requestedItems: requested,
     transitiveItems: sources.map(({ itemId }) => itemId).filter((id) => !direct.has(id)),
     retainedFiles: [],
-  };
+    validators,
+  });
 }
 
 function sourceForManifestItem(item: ManifestItem, options: RegistryDataOptions): SourceItemRecord {
@@ -1384,12 +2373,40 @@ function remainingItemIdsAfterRemoval(
   return keep;
 }
 
+function assertSourceCommandOwnership(
+  manifest: ProvenanceManifest,
+  requestedIds: readonly string[],
+  command: "remove" | "adopt",
+): void {
+  for (const itemId of requestedIds) {
+    const installed = manifest.items[qualified(itemId)];
+    if (installed?.mode === "package") {
+      throw new CliError(
+        `Installed item ${itemId} is package-owned; run the explicit package-to-source distribution migration before source ${command}.`,
+        {
+          code: "DISTRIBUTION_MODE_MIGRATION_REQUIRED",
+          exitCode: 6,
+          target: MANIFEST_PATH,
+        },
+      );
+    }
+  }
+}
+
 function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
-  const project = readConfiguredProject(options);
+  const configured = readConfiguredOwnership(options);
   const requestedIds = requestedCanonicalIds(options);
   const requestedQualified = new Set(requestedIds.map(qualified));
-  const keep = remainingItemIdsAfterRemoval(project.manifest.value.items, requestedQualified);
-  const removed = new Set(Object.keys(project.manifest.value.items).filter((id) => !keep.has(id)));
+  const keep = remainingItemIdsAfterRemoval(configured.manifest.value.items, requestedQualified);
+  const removed = new Set(
+    Object.keys(configured.manifest.value.items).filter((id) => !keep.has(id)),
+  );
+  assertSourceCommandOwnership(
+    configured.manifest.value,
+    [...removed].map((id) => id.slice("official:".length)),
+    "remove",
+  );
+  const project = readConfiguredProject(options, configured);
   const nextManifest = cloneManifest(project.manifest.value);
   for (const id of keep) {
     if (requestedQualified.has(id)) nextManifest.items[id]!.direct = false;
@@ -1568,6 +2585,12 @@ function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
     (source) =>
       removed.has(qualified(source.itemId)) || requestedQualified.has(qualified(source.itemId)),
   );
+  const validators = sourceTransactionValidators({
+    config: project.config,
+    manifest: nextManifest,
+    mutations,
+    fileOperations,
+  });
   const plan = operationPlan("remove", {
     configDigest: sha256(canonicalJson(project.config)),
     manifestDigest: sha256(canonicalJson(project.manifest.value)),
@@ -1586,8 +2609,9 @@ function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
     warnings,
     conflicts,
     mutations,
+    validators,
   });
-  return {
+  return validateSourcePlanOverlay({
     root: project.root,
     publicPlan: plan,
     mutations,
@@ -1603,16 +2627,24 @@ function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
         .filter((id) => !requestedIds.includes(id)),
     ),
     retainedFiles: portableSort(retainedFiles),
-  };
+    validators,
+  });
 }
 
 function adoptInternal(options: SourceOperationOptions): InternalSourcePlan {
   if (options.targetDirectory !== undefined) {
     assertPortableRelativePath(options.targetDirectory, "Source target root");
   }
-  const project = readConfiguredProject(options);
+  const configured = readConfiguredOwnership(options);
   const requested = requestedCanonicalIds(options);
+  assertSourceCommandOwnership(configured.manifest.value, requested, "adopt");
   const sources = resolveSourceDependencyClosure(requested, options);
+  assertSourceCommandOwnership(
+    configured.manifest.value,
+    sources.map(({ itemId }) => itemId),
+    "adopt",
+  );
+  const project = readConfiguredProject(options, configured);
   const direct = new Set(requested);
   const nextManifest = cloneManifest(project.manifest.value);
   const mutations: TransactionMutation[] = [];
@@ -1719,6 +2751,12 @@ function adoptInternal(options: SourceOperationOptions): InternalSourcePlan {
   if (!nextManifestBytes.equals(project.manifest.bytes)) {
     mutations.push(mutation(project.root, MANIFEST_PATH, nextManifestBytes, true));
   }
+  const validators = sourceTransactionValidators({
+    config: project.config,
+    manifest: nextManifest,
+    mutations,
+    fileOperations,
+  });
   const plan = operationPlan("adopt", {
     configDigest: sha256(canonicalJson(project.config)),
     manifestDigest: sha256(canonicalJson(project.manifest.value)),
@@ -1732,8 +2770,9 @@ function adoptInternal(options: SourceOperationOptions): InternalSourcePlan {
     ],
     conflicts,
     mutations,
+    validators,
   });
-  return {
+  return validateSourcePlanOverlay({
     root: project.root,
     publicPlan: plan,
     mutations,
@@ -1745,16 +2784,17 @@ function adoptInternal(options: SourceOperationOptions): InternalSourcePlan {
     requestedItems: requested,
     transitiveItems: sources.map(({ itemId }) => itemId).filter((id) => !direct.has(id)),
     retainedFiles: [],
-  };
+    validators,
+  });
 }
 
 function executeSourceOperation(
   command: "add" | "remove" | "adopt",
   internal: InternalSourcePlan,
   options: SourceOperationOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SourceOperationResult {
-  if (expectedPlanDigest !== undefined && expectedPlanDigest !== internal.publicPlan.planDigest) {
+  if (expectedPlanDigest !== internal.publicPlan.planDigest) {
     throw new CliError("Operation plan changed before apply; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
@@ -1764,6 +2804,10 @@ function executeSourceOperation(
     root: internal.root,
     plan: internal.publicPlan,
     mutations: internal.mutations,
+    acceptedConsents: internal.publicPlan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: internal.publicPlan.planDigest,
+    })),
     observedTargets: internal.observedTargets,
     registryPayloads: internal.registryPayloads,
     packageManager: internal.packageManager,
@@ -1773,6 +2817,7 @@ function executeSourceOperation(
     packageManagerRunner: options.packageManagerRunner,
     commandArguments: options.commandArguments,
     faultInjector: options.faultInjector,
+    validators: internal.validators,
   } satisfies ExecuteTransactionOptions);
   return {
     mode: "source-transaction",
@@ -1793,7 +2838,7 @@ export function planSourceAdd(options: SourceOperationOptions): SourceOperationP
 
 export function applySourceAdd(
   options: SourceOperationOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SourceOperationResult {
   return executeSourceOperation("add", addInternal(options), options, expectedPlanDigest);
 }
@@ -1807,7 +2852,7 @@ export function planAcquiredSourceAdd(
 
 export function applyAcquiredSourceAdd(
   options: AcquiredSourceOperationOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SourceOperationResult {
   const acquired = acquiredSourceContext(options.acquiredRelease);
   return executeSourceOperation("add", addInternal(options, acquired), options, expectedPlanDigest);
@@ -1819,7 +2864,7 @@ export function planSourceRemove(options: SourceRemoveOptions): SourceOperationP
 
 export function applySourceRemove(
   options: SourceRemoveOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SourceOperationResult {
   return executeSourceOperation("remove", removeInternal(options), options, expectedPlanDigest);
 }
@@ -1830,7 +2875,7 @@ export function planSourceAdopt(options: SourceOperationOptions): SourceOperatio
 
 export function applySourceAdopt(
   options: SourceOperationOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SourceOperationResult {
   return executeSourceOperation("adopt", adoptInternal(options), options, expectedPlanDigest);
 }

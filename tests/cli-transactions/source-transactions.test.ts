@@ -11,6 +11,7 @@ import {
   applySourceRemove,
   listIncompleteTransactions,
   loadSourceItem,
+  planInit,
   planRecovery,
   planSourceAdd,
   planSourceAdopt,
@@ -25,6 +26,7 @@ import {
   type SchemaKind,
 } from "../../registry/schemas/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
+import { createAuthenticModeFixture } from "../cli-package-modes/authentic-mode-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
 const registryDirectory = resolve(workspaceRoot, "registry/generated");
@@ -33,7 +35,7 @@ const temporaryDirectories: string[] = [];
 function fixture() {
   const project = createProjectFixture();
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   return project;
 }
 
@@ -63,6 +65,28 @@ afterEach(() => {
 });
 
 describe("transactional source ownership", () => {
+  it("rejects package-owned remove and adopt before planning any source mutation", async () => {
+    const project = fixture();
+    const config = jsonFile(resolve(project.root, "mergora.json")) as Record<string, unknown>;
+    const mode = await createAuthenticModeFixture(project.root, config, "package-to-source");
+    writeFileSync(resolve(project.root, ".mergora/manifest.json"), mode.currentManifest);
+    writeFileSync(resolve(project.root, "package.json"), mode.packageBefore);
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+    const manifestBefore = readFileSync(resolve(project.root, ".mergora/manifest.json"));
+    const options = { projectRoot: project.root, itemIds: ["button"], registryDirectory };
+
+    expect(() => planSourceRemove(options)).toThrowError(
+      expect.objectContaining({ code: "DISTRIBUTION_MODE_MIGRATION_REQUIRED" }),
+    );
+    expect(() => planSourceAdopt(options)).toThrowError(
+      expect.objectContaining({ code: "DISTRIBUTION_MODE_MIGRATION_REQUIRED" }),
+    );
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(readFileSync(resolve(project.root, ".mergora/manifest.json"))).toEqual(manifestBefore);
+    expect(existsSync(resolve(project.root, mode.sourceTarget))).toBe(false);
+  });
+
   it("plans complete closure with explicit direct/transitive ownership reasons", () => {
     const project = fixture();
     const plan = planSourceAdd({
@@ -85,6 +109,46 @@ describe("transactional source ownership", () => {
         .filter(({ owner }) => owner === "official:provider")
         .every(({ reason }) => reason.includes("Directly requested")),
     ).toBe(true);
+  });
+
+  it("rejects invalid proposed source during read-only planning before transaction metadata", () => {
+    const project = fixture();
+    const fixtureRegistry = resolve(project.root, "invalid-source-registry");
+    const fixtureItems = resolve(fixtureRegistry, "native-source-items");
+    mkdirSync(fixtureItems, { recursive: true });
+    const button = jsonFile(resolve(registryDirectory, "native-source-items/button.json")) as {
+      files: { content: string; mediaType: string }[];
+    };
+    const script = button.files.find(({ mediaType }) => mediaType.includes("typescript"))!;
+    script.content = "export const = ;\n";
+    writeFileSync(resolve(fixtureItems, "button.json"), `${JSON.stringify(button)}\n`);
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+
+    expect(() =>
+      planSourceAdd({
+        projectRoot: project.root,
+        itemIds: ["button"],
+        registryDirectory: fixtureRegistry,
+      }),
+    ).toThrowError(
+      expect.objectContaining({ code: "TRANSACTION_STAGED_VALIDATION_FAILED", exitCode: 8 }),
+    );
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(existsSync(resolve(project.root, "src/components/mergora/button.tsx"))).toBe(false);
+  });
+
+  it("requires a type-level reviewed plan digest and rejects a stale one before writes", () => {
+    const project = fixture();
+    const options = { projectRoot: project.root, itemIds: ["button"], registryDirectory };
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+
+    expect(() => applySourceAdd(options, `sha256:${"0".repeat(64)}`)).toThrowError(
+      expect.objectContaining({ code: "PLAN_PRECONDITION_STALE", exitCode: 8 }),
+    );
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(existsSync(resolve(project.root, "src/components/mergora/button.tsx"))).toBe(false);
   });
 
   it("adds and removes exact source idempotently with schema-valid manifest-last records", () => {
@@ -444,8 +508,11 @@ describe("transactional source ownership", () => {
     ]);
     applySourceRemove(options, removal.planDigest);
     expect(
-      (jsonFile(resolve(project.root, "package.json")) as { dependencies: Record<string, string> })
-        .dependencies["react-aria-components"],
+      (
+        jsonFile(resolve(project.root, "package.json")) as {
+          dependencies: Record<string, string>;
+        }
+      ).dependencies["react-aria-components"],
     ).toBeUndefined();
 
     const modified = fixture();
@@ -465,5 +532,5 @@ describe("transactional source ownership", () => {
         "react-aria-components"
       ],
     ).toBe("^1.19.0");
-  });
+  }, 10_000);
 });

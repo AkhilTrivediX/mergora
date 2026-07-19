@@ -8,7 +8,10 @@ import {
   mkdirSync,
   openSync,
   readFileSync,
+  readdirSync,
   renameSync,
+  rmdirSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { builtinModules } from "node:module";
@@ -52,6 +55,7 @@ import {
   type DependencyRequirement,
   type PackageDependencyPlan,
 } from "./package-editor.js";
+import { immutableReleaseSatisfies } from "./version-resolution.js";
 import {
   inspectProject,
   type PackageManager,
@@ -70,6 +74,7 @@ import {
   type ProvenanceManifest,
 } from "./source-operations.js";
 import {
+  TransactionInterruption,
   executeTransaction,
   finalizeOperationPlan,
   validationSuiteForTransaction,
@@ -98,6 +103,8 @@ const TRANSACTION_ID = /^[0-9]{8}T[0-9]{6}(?:\.[0-9]{3})?Z-[0-9a-f]{32}$/u;
 const CONFLICT_MARKER = /^(?:<<<<<<<|=======|>>>>>>>)(?:\s|$)/mu;
 const CONFLICT_STATE_PATH = "conflict-state.json" as const;
 const CONFLICT_STATE_DIGEST_PATH = "conflict-state.sha256" as const;
+const MAX_CONFLICT_ARTIFACTS = 100_000;
+const MAX_CONFLICT_ARTIFACT_BYTES = 512 * 1024 * 1024;
 const MAX_SEMANTIC_VALIDATION_FILES = 8192;
 const MAX_SEMANTIC_VALIDATION_ISSUES = 128;
 const NODE_BUILTIN_IMPORTS = new Set(
@@ -128,6 +135,13 @@ export interface ImmutableUpdateFile {
   readonly executable: false;
 }
 
+export interface ImmutableUpdateMove {
+  /** Stable reviewed migration identifier recorded in the operation plan. */
+  readonly id: string;
+  readonly fromLogicalPath: string;
+  readonly toLogicalPath: string;
+}
+
 export interface ImmutableUpdateItem {
   readonly itemId: string;
   readonly kind: ManifestItem["kind"];
@@ -143,6 +157,8 @@ export interface ImmutableUpdateItem {
   };
   readonly contractVersion: string;
   readonly lastMigration: string | null;
+  /** Explicit registry-declared logical path moves; never inferred from byte similarity. */
+  readonly moves?: readonly ImmutableUpdateMove[] | undefined;
   /** Exact digest of the acquired native payload document, when routed from native v1. */
   readonly acquiredPayloadDigest?: Digest | undefined;
 }
@@ -202,12 +218,14 @@ export type SemanticUpdateResult = SemanticUpdateCommittedResult | SemanticUpdat
 interface UpdateEntry {
   readonly key: string;
   readonly target: string;
+  readonly previousTarget?: string | undefined;
   readonly owner: string;
   readonly logicalPath: string;
   readonly role: ManifestFile["role"];
   readonly mediaType: string;
   readonly base: Buffer | null;
   readonly local: Buffer | null;
+  readonly destinationBefore?: Buffer | null | undefined;
   readonly remote: Buffer | null;
   readonly result: FileMergeResult;
   readonly proposed: Buffer | null;
@@ -235,6 +253,32 @@ interface InternalUpdatePlan {
 
 function digest(value: unknown): Digest {
   return sha256(canonicalJson(value));
+}
+
+function requireReviewedPlanDigest(
+  expectedPlanDigest: string | undefined,
+  actualPlanDigest: Digest,
+  operation: string,
+): asserts expectedPlanDigest is string {
+  requireReviewedPlanDigestArgument(expectedPlanDigest, operation);
+  if (expectedPlanDigest !== actualPlanDigest) {
+    throw new CliError(`${operation} plan changed before apply; review a fresh plan.`, {
+      code: "PLAN_PRECONDITION_STALE",
+      exitCode: 8,
+    });
+  }
+}
+
+function requireReviewedPlanDigestArgument(
+  expectedPlanDigest: string | undefined,
+  operation: string,
+): asserts expectedPlanDigest is string {
+  if (expectedPlanDigest === undefined) {
+    throw new CliError(`${operation} requires the exact reviewed plan digest before apply.`, {
+      code: "PLAN_PRECONDITION_REQUIRED",
+      exitCode: 8,
+    });
+  }
 }
 
 interface SemanticValidationFile {
@@ -1114,6 +1158,7 @@ function updateItemPayload(item: Omit<ImmutableUpdateItem, "payloadDigest">): un
     dependencies: item.dependencies,
     contractVersion: item.contractVersion,
     lastMigration: item.lastMigration,
+    ...(item.moves === undefined ? {} : { moves: item.moves }),
   };
 }
 
@@ -1289,6 +1334,7 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
       itemIds.has(item.itemId) ||
       item.resolved !== release.release ||
       !SEMVER.test(item.contractVersion) ||
+      (item.lastMigration !== null && !ITEM_ID.test(item.lastMigration)) ||
       item.files.length > 2048
     ) {
       throw new CliError(`Update payload for ${item.itemId} has invalid immutable metadata.`, {
@@ -1346,6 +1392,53 @@ function validateRelease(release: ImmutableUpdateRelease, maxFileBytes: number):
           exitCode: 5,
           target: file.logicalPath,
         });
+      }
+    }
+    if (item.moves !== undefined) {
+      if (item.moves.length === 0 || item.moves.length > 128) {
+        throw new CliError(`Update payload for ${item.itemId} has an invalid move count.`, {
+          code: "REGISTRY_PAYLOAD_INVALID",
+          exitCode: 5,
+          target: item.itemId,
+        });
+      }
+      const moveIds = new Set<string>();
+      const moveSources = new Set<string>();
+      const moveDestinations = new Set<string>();
+      for (const move of item.moves) {
+        if (!ITEM_ID.test(move.id)) {
+          throw new CliError(`Update payload for ${item.itemId} has an invalid move ID.`, {
+            code: "REGISTRY_PAYLOAD_INVALID",
+            exitCode: 5,
+            target: item.itemId,
+          });
+        }
+        assertPortableRelativePath(move.fromLogicalPath, "Move source logical path");
+        assertPortableRelativePath(move.toLogicalPath, "Move destination logical path");
+        const sourceKey = move.fromLogicalPath.normalize("NFC").toLocaleLowerCase("en-US");
+        const destinationKey = move.toLogicalPath.normalize("NFC").toLocaleLowerCase("en-US");
+        if (
+          sourceKey === destinationKey ||
+          moveIds.has(move.id) ||
+          moveSources.has(sourceKey) ||
+          moveDestinations.has(destinationKey) ||
+          moveSources.has(destinationKey) ||
+          moveDestinations.has(sourceKey)
+        ) {
+          throw new CliError(
+            `Update payload for ${item.itemId} has colliding or chained file moves.`,
+            { code: "REGISTRY_PAYLOAD_INVALID", exitCode: 5, target: item.itemId },
+          );
+        }
+        moveIds.add(move.id);
+        moveSources.add(sourceKey);
+        moveDestinations.add(destinationKey);
+      }
+      if (item.lastMigration !== item.moves.at(-1)!.id) {
+        throw new CliError(
+          `Update payload for ${item.itemId} does not bind lastMigration to its final declared move.`,
+          { code: "REGISTRY_PAYLOAD_INVALID", exitCode: 5, target: item.itemId },
+        );
       }
     }
     for (const dependency of item.registryDependencies) {
@@ -1728,7 +1821,7 @@ function mutation(
 
 function entryOperation(entry: UpdateEntry): OperationPlanFile {
   const proposed = digestOrNull(entry.proposed);
-  const reason =
+  const classificationReason =
     entry.result.status === "conflict"
       ? entry.result.conflicts.map(({ detail }) => detail).join(" ")
       : entry.result.status === "keep-local"
@@ -1738,12 +1831,18 @@ function entryOperation(entry: UpdateEntry): OperationPlanFile {
           : entry.result.status === "semantic-merge"
             ? "Apply disjoint deterministic semantic edits while preserving local customization."
             : `Deterministic B/L/R classification: ${entry.result.status}.`;
+  const reason =
+    entry.previousTarget === undefined
+      ? classificationReason
+      : `Apply an explicit reviewed move from ${entry.previousTarget} to ${entry.target}. ${classificationReason}`;
   return {
     operation: operationFor(entry.result.status),
     target: entry.target,
     owner: entry.owner,
     base: digestOrNull(entry.base),
-    local: digestOrNull(entry.local),
+    local: digestOrNull(
+      entry.destinationBefore === undefined ? entry.local : entry.destinationBefore,
+    ),
     remote: digestOrNull(entry.remote),
     proposed,
     mediaType: entry.mediaType,
@@ -1752,7 +1851,7 @@ function entryOperation(entry: UpdateEntry): OperationPlanFile {
         ? "conflict"
         : entry.result.status === "delete"
           ? "destructive"
-          : entry.result.status === "semantic-merge"
+          : entry.result.status === "semantic-merge" || entry.previousTarget !== undefined
             ? "review-required"
             : "ordinary",
     reason,
@@ -1829,13 +1928,39 @@ function buildEntries(input: {
     }
     const oldByLogical = new Map(installed.files.map((file) => [file.logicalPath, file]));
     const remoteByLogical = new Map(remote.files.map((file) => [file.logicalPath, file]));
-    const logicalPaths = [...new Set([...oldByLogical.keys(), ...remoteByLogical.keys()])].sort(
-      (left, right) => left.localeCompare(right, "en-US"),
+    const movesByDestination = new Map(
+      (remote.moves ?? []).map((move) => [move.toLogicalPath, move] as const),
     );
+    const movedSources = new Set((remote.moves ?? []).map((move) => move.fromLogicalPath));
+    for (const move of remote.moves ?? []) {
+      if (
+        !oldByLogical.has(move.fromLogicalPath) ||
+        oldByLogical.has(move.toLogicalPath) ||
+        remoteByLogical.has(move.fromLogicalPath) ||
+        !remoteByLogical.has(move.toLogicalPath)
+      ) {
+        throw new CliError(
+          `Declared move ${move.id} does not map exactly one installed source to one remote destination.`,
+          { code: "UPDATE_MOVE_DECLARATION_INVALID", exitCode: 7, target: move.toLogicalPath },
+        );
+      }
+    }
+    const logicalPaths = [
+      ...new Set([
+        ...[...oldByLogical.keys()].filter((logicalPath) => !movedSources.has(logicalPath)),
+        ...remoteByLogical.keys(),
+      ]),
+    ].sort((left, right) => left.localeCompare(right, "en-US"));
     for (const logicalPath of logicalPaths) {
-      const existing = oldByLogical.get(logicalPath);
+      const move = movesByDestination.get(logicalPath);
+      const existing =
+        move === undefined ? oldByLogical.get(logicalPath) : oldByLogical.get(move.fromLogicalPath);
       const remoteFile = remoteByLogical.get(logicalPath);
-      const target = existing?.target ?? remoteTarget(installed, remoteFile!, existing);
+      const target =
+        move === undefined
+          ? (existing?.target ?? remoteTarget(installed, remoteFile!, existing))
+          : remoteTarget(installed, remoteFile!, undefined);
+      const previousTarget = move === undefined ? undefined : existing!.target;
       assertPortableRelativePath(target, "Semantic Sync target");
       const mediaType = remoteFile?.mediaType ?? existing!.mediaType;
       if (existing !== undefined && remoteFile !== undefined && existing.mediaType !== mediaType) {
@@ -1859,11 +1984,23 @@ function buildEntries(input: {
           target: basePath(existing.base),
         });
       }
-      const local = readProjectFile(input.root, target);
+      const local = readProjectFile(input.root, previousTarget ?? target);
+      const destinationLocal =
+        previousTarget === undefined ? local : readProjectFile(input.root, target);
       const remoteBytesValue = remoteFile === undefined ? null : remoteBytes(remoteFile);
       const portableTarget = target.normalize("NFC").toLocaleLowerCase("en-US");
       const otherOwner = targetOwners.get(portableTarget);
       let result: FileMergeResult;
+      if (
+        previousTarget !== undefined &&
+        previousTarget !== target &&
+        (destinationLocal !== null || (otherOwner !== undefined && otherOwner !== owner))
+      ) {
+        throw new CliError(
+          `Declared move ${move!.id} targets occupied path ${target}; live bytes are unchanged.`,
+          { code: "UPDATE_MOVE_TARGET_OCCUPIED", exitCode: 7, target },
+        );
+      }
       if (otherOwner !== undefined && otherOwner !== owner) {
         result = conflictResult(
           "$ownership",
@@ -1879,6 +2016,12 @@ function buildEntries(input: {
           maxFileBytes: input.config.policy.maxRegistryItemBytes,
         });
       }
+      if (previousTarget !== undefined && result.status === "conflict") {
+        throw new CliError(
+          `Declared move ${move!.id} conflicts with local changes at ${previousTarget}; live bytes are unchanged.`,
+          { code: "UPDATE_MOVE_CONFLICT", exitCode: 6, target: previousTarget },
+        );
+      }
       targetOwners.set(portableTarget, owner);
       const proposed =
         result.status === "conflict"
@@ -1889,12 +2032,14 @@ function buildEntries(input: {
       entries.push({
         key: portableTargetKey(target),
         target,
+        ...(previousTarget === undefined ? {} : { previousTarget }),
         owner,
         logicalPath,
         role: remoteFile?.role ?? existing!.role,
         mediaType,
         base,
         local,
+        destinationBefore: destinationLocal,
         remote: remoteBytesValue,
         result,
         proposed,
@@ -2012,16 +2157,29 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
   const mutations: TransactionMutation[] = [];
   const observedTargets: Record<string, Digest | null> = {};
   for (const entry of entries) {
-    observedTargets[entry.target] = digestOrNull(entry.local);
+    const destinationBefore =
+      entry.destinationBefore === undefined ? entry.local : entry.destinationBefore;
+    observedTargets[entry.target] = digestOrNull(destinationBefore);
     if (
       entry.result.status !== "conflict" &&
-      digestOrNull(entry.local) !== digestOrNull(entry.proposed)
+      digestOrNull(destinationBefore) !== digestOrNull(entry.proposed)
     ) {
       mutations.push({
         target: entry.target,
         content: entry.proposed,
-        beforeDigest: digestOrNull(entry.local),
+        beforeDigest: digestOrNull(destinationBefore),
       });
+    }
+    if (entry.previousTarget !== undefined && entry.previousTarget !== entry.target) {
+      const previousBytes = readProjectFile(project.root, entry.previousTarget);
+      observedTargets[entry.previousTarget] = digestOrNull(previousBytes);
+      if (previousBytes !== null) {
+        mutations.push({
+          target: entry.previousTarget,
+          content: null,
+          beforeDigest: sha256(previousBytes),
+        });
+      }
     }
     if (entry.remote !== null) {
       const remoteDigest = sha256(entry.remote);
@@ -2048,6 +2206,21 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
   }
   const owner = selected[0]!;
   const fileOperations = entries.map(entryOperation);
+  for (const entry of entries) {
+    if (entry.previousTarget === undefined || entry.previousTarget === entry.target) continue;
+    fileOperations.push({
+      operation: "delete",
+      target: entry.previousTarget,
+      owner: entry.owner,
+      base: digestOrNull(entry.base),
+      local: digestOrNull(entry.local),
+      remote: null,
+      proposed: null,
+      mediaType: entry.mediaType,
+      risk: "review-required",
+      reason: `Move ${entry.logicalPath} from ${entry.previousTarget} to ${entry.target} through an explicit reviewed registry migration.`,
+    });
+  }
   for (const change of mutations) {
     if (fileOperations.some(({ target }) => target === change.target)) continue;
     const before = readProjectFile(project.root, change.target);
@@ -2095,7 +2268,11 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
           `Dependency metadata changes are planned, but --no-install skips ${project.inspection.packageManager} and lockfile mutation.`,
         ]
       : []),
-    "Upstream logical-path moves are not inferred in this version; a changed logical path is conservatively represented as delete plus add.",
+    ...(remoteItems.some((item) => (item.moves?.length ?? 0) > 0)
+      ? [
+          "Apply only registry-declared logical-path moves; byte similarity and filename resemblance never infer a move.",
+        ]
+      : []),
   ];
   const validators = semanticTransactionValidators({
     root: project.root,
@@ -2145,17 +2322,27 @@ function buildUpdateInternal(options: SemanticUpdateOptions): InternalUpdatePlan
       owner: change.owners[0] ?? owner,
       operation: change.operation,
     })),
-    migrations: remoteItems.flatMap((remote) =>
-      remote.lastMigration === null
-        ? []
-        : [
-            {
-              id: remote.lastMigration,
-              adapter: "manual-checklist" as const,
-              phase: "remote" as const,
-            },
-          ],
-    ),
+    migrations: remoteItems.flatMap((remote) => {
+      const moves = (remote.moves ?? []).map((move) => ({
+        id: move.id,
+        adapter: "rename-file" as const,
+        phase: "remote" as const,
+      }));
+      if (
+        remote.lastMigration === null ||
+        moves.some((migration) => migration.id === remote.lastMigration)
+      ) {
+        return moves;
+      }
+      return [
+        ...moves,
+        {
+          id: remote.lastMigration,
+          adapter: "manual-checklist" as const,
+          phase: "remote" as const,
+        },
+      ];
+    }),
     contractChanges: remoteItems
       .filter(
         (remote) =>
@@ -2234,15 +2421,62 @@ function semanticReleaseFromAcquisition(
   }
   const root = validatedProjectRoot(projectRoot);
   const manifest = readManifest(root).value;
+  const config = readMergoraConfig(root);
+  if (config === null) {
+    throw new CliError("mergora.json is missing; initialize the project first.", {
+      code: "CONFIG_MISSING",
+      exitCode: 3,
+      target: "mergora.json",
+    });
+  }
   const catalogById = new Map(acquired.catalog.map((item) => [item.id, item]));
   const items = acquired.items.map((item): ImmutableUpdateItem => {
-    if (item.structuredPatches.length > 0 || item.migrations.length > 0) {
+    if (item.structuredPatches.length > 0) {
       throw new CliError(
-        `Acquired item ${item.itemId} requires a declarative patch or migration adapter that native update routing does not yet implement.`,
+        `Acquired item ${item.itemId} requires a declarative patch adapter that native update routing does not yet implement.`,
         { code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
       );
     }
     const installed = manifest.items[`official:${item.itemId}`];
+    const moves: ImmutableUpdateMove[] = [];
+    if (installed !== undefined) {
+      for (const migration of item.migrations) {
+        const fromRange = migration.from;
+        const toRange = migration.to;
+        if (typeof fromRange !== "string" || typeof toRange !== "string") {
+          throw new CliError(`Acquired migration for ${item.itemId} is invalid.`, {
+            code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED",
+            exitCode: 7,
+            target: item.itemId,
+          });
+        }
+        const applies =
+          immutableReleaseSatisfies(installed.resolved, fromRange, { allowPrereleases: true }) &&
+          immutableReleaseSatisfies(acquired.release, toRange, {
+            allowPrereleases: config.policy.allowPrereleases,
+          });
+        if (!applies) continue;
+        if (
+          migration.adapter !== "rename-file" ||
+          migration.phase !== "remote" ||
+          typeof migration.id !== "string" ||
+          !isRecord(migration.arguments) ||
+          typeof migration.arguments.from !== "string" ||
+          typeof migration.arguments.to !== "string" ||
+          JSON.stringify(Object.keys(migration.arguments).sort()) !== JSON.stringify(["from", "to"])
+        ) {
+          throw new CliError(
+            `Acquired item ${item.itemId} requires unsupported applicable migration ${String(migration.id)}.`,
+            { code: "UPDATE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
+          );
+        }
+        moves.push({
+          id: migration.id,
+          fromLogicalPath: migration.arguments.from,
+          toLogicalPath: migration.arguments.to,
+        });
+      }
+    }
     const renderedWithTransformContextDigest =
       installed?.transformContextDigest ??
       sha256(canonicalJson({ itemId: item.itemId, state: "not-installed" }));
@@ -2277,7 +2511,8 @@ function semanticReleaseFromAcquisition(
       registryDependencies: item.registryDependencies,
       dependencies: item.dependencies,
       contractVersion: item.contract.version,
-      lastMigration: null,
+      lastMigration: moves.at(-1)?.id ?? null,
+      ...(moves.length === 0 ? {} : { moves }),
       acquiredPayloadDigest: item.payloadDigest,
     };
     return { ...withoutDigest, payloadDigest: immutableUpdateItemDigest(withoutDigest) };
@@ -2324,8 +2559,9 @@ export function planAcquiredSemanticUpdate(options: AcquiredSemanticUpdateOption
 
 export async function applyAcquiredSemanticUpdate(
   options: AcquiredSemanticUpdateOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): Promise<SemanticUpdateResult> {
+  requireReviewedPlanDigestArgument(expectedPlanDigest, "Acquired Semantic Sync");
   return applySemanticUpdate(
     {
       ...options,
@@ -2388,8 +2624,19 @@ function transactionRoot(id: string): string {
   return `.mergora/transactions/${id}`;
 }
 
+function snapshotArtifactPath(key: string, view: "base" | "local" | "remote" | "proposed"): string {
+  return `snapshots/${key}/${view}`;
+}
+
 function snapshotPath(id: string, key: string, view: "base" | "local" | "remote" | "proposed") {
-  return `${transactionRoot(id)}/snapshots/${key}/${view}`;
+  return `${transactionRoot(id)}/${snapshotArtifactPath(key, view)}`;
+}
+
+function conflictArtifactPath(
+  key: string,
+  view: "base" | "local" | "remote" | "proposed" | "conflict.json",
+): string {
+  return `conflicts/${key}/${view}`;
 }
 
 function conflictPath(
@@ -2397,7 +2644,7 @@ function conflictPath(
   key: string,
   view: "base" | "local" | "remote" | "proposed" | "conflict.json",
 ) {
-  return `${transactionRoot(id)}/conflicts/${key}/${view}`;
+  return `${transactionRoot(id)}/${conflictArtifactPath(key, view)}`;
 }
 
 function createConflictTransactionId(): string {
@@ -2465,8 +2712,216 @@ function writeAtomic(root: string, relativePath: string, bytes: Uint8Array): voi
     });
   }
   const temporaryRelative = `${relativePath}.mergora-${randomBytes(16).toString("hex")}.tmp`;
-  writeExclusive(root, temporaryRelative, bytes);
-  renameSync(resolveInside(root, temporaryRelative, "Conflict temporary artifact"), path);
+  try {
+    writeExclusive(root, temporaryRelative, bytes);
+    renameSync(resolveInside(root, temporaryRelative, "Conflict temporary artifact"), path);
+  } finally {
+    const temporaryPath = resolveInside(root, temporaryRelative, "Conflict temporary artifact");
+    if (existsSync(temporaryPath)) unlinkSync(temporaryPath);
+  }
+}
+
+type ConflictArtifactTree = ReadonlyMap<string, Buffer>;
+
+function addConflictArtifact(
+  artifacts: Map<string, Buffer>,
+  relativePath: string,
+  bytes: Buffer,
+): void {
+  assertPortableRelativePath(relativePath, "Conflict artifact path");
+  if (artifacts.has(relativePath)) {
+    throw new CliError(`Conflict artifact tree repeats ${relativePath}.`, {
+      code: "CONFLICT_TREE_VERIFICATION_FAILED",
+      exitCode: 8,
+      target: relativePath,
+    });
+  }
+  artifacts.set(relativePath, bytes);
+}
+
+function assertConflictArtifactTreeBounds(artifacts: ConflictArtifactTree): void {
+  if (artifacts.size === 0 || artifacts.size > MAX_CONFLICT_ARTIFACTS) {
+    throw new CliError("Conflict artifact tree has an unsafe file count.", {
+      code: "CONFLICT_TREE_BOUNDS_EXCEEDED",
+      exitCode: 8,
+    });
+  }
+  let totalBytes = 0;
+  for (const [relativePath, bytes] of artifacts) {
+    assertPortableRelativePath(relativePath, "Conflict artifact path");
+    totalBytes += bytes.byteLength;
+    if (!Number.isSafeInteger(totalBytes) || totalBytes > MAX_CONFLICT_ARTIFACT_BYTES) {
+      throw new CliError("Conflict artifact tree exceeds the bounded byte budget.", {
+        code: "CONFLICT_TREE_BOUNDS_EXCEEDED",
+        exitCode: 8,
+      });
+    }
+  }
+}
+
+function removeOwnedTreeAtPath(path: string): void {
+  if (!existsSync(path)) return;
+  const metadata = lstatSync(path);
+  if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+    unlinkSync(path);
+    return;
+  }
+  for (const entry of readdirSync(path)) {
+    removeOwnedTreeAtPath(resolve(path, entry));
+  }
+  rmdirSync(path);
+}
+
+function removeOwnedTree(root: string, relativePath: string): void {
+  assertPortableRelativePath(relativePath, "Owned conflict tree");
+  removeOwnedTreeAtPath(resolveInside(root, relativePath, "Owned conflict tree"));
+}
+
+function createStagingSibling(root: string, finalRelativePath: string): string {
+  assertPortableRelativePath(finalRelativePath, "Conflict tree target");
+  const parent = posix.dirname(finalRelativePath);
+  const base = posix.basename(finalRelativePath);
+  ensureSafeDirectory(root, parent);
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    const candidate = `${parent}/mergora-stage-${base}-${randomBytes(16).toString("hex")}.tmp`;
+    const path = resolveInside(root, candidate, "Conflict staging tree");
+    try {
+      mkdirSync(path, { mode: 0o700 });
+      return candidate;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== "EEXIST" || attempt === 3) throw error;
+    }
+  }
+  throw new Error("Unable to allocate an exclusive conflict staging tree.");
+}
+
+function verifyConflictArtifactTree(
+  root: string,
+  treeRelativePath: string,
+  artifacts: ConflictArtifactTree,
+): void {
+  const treeRoot = resolveInside(root, treeRelativePath, "Conflict staging tree");
+  const found = new Set<string>();
+  const expectedDirectories = new Set<string>();
+  for (const artifact of artifacts.keys()) {
+    const segments = artifact.split("/");
+    for (let index = 1; index < segments.length; index += 1) {
+      expectedDirectories.add(segments.slice(0, index).join("/"));
+    }
+  }
+  let totalBytes = 0;
+  let visitedEntries = 0;
+  const visit = (directory: string, prefix: string): void => {
+    for (const entry of readdirSync(directory)) {
+      visitedEntries += 1;
+      if (visitedEntries > MAX_CONFLICT_ARTIFACTS * 2) {
+        throw new CliError("Conflict staging tree exceeds its bounded entry count.", {
+          code: "CONFLICT_TREE_BOUNDS_EXCEEDED",
+          exitCode: 8,
+        });
+      }
+      const relativePath = prefix === "" ? entry : `${prefix}/${entry}`;
+      assertPortableRelativePath(relativePath, "Conflict staged artifact");
+      const path = resolve(directory, entry);
+      const metadata = lstatSync(path);
+      if (metadata.isSymbolicLink()) {
+        throw new CliError(`Conflict staged artifact ${relativePath} is a symbolic link.`, {
+          code: "CONFLICT_PATH_UNSAFE",
+          exitCode: 5,
+          target: relativePath,
+        });
+      }
+      if (metadata.isDirectory()) {
+        if (!expectedDirectories.has(relativePath)) {
+          throw new CliError(`Conflict staging tree contains unexpected ${relativePath}.`, {
+            code: "CONFLICT_TREE_VERIFICATION_FAILED",
+            exitCode: 8,
+            target: relativePath,
+          });
+        }
+        visit(path, relativePath);
+        continue;
+      }
+      if (!metadata.isFile() || found.size >= MAX_CONFLICT_ARTIFACTS) {
+        throw new CliError("Conflict staging tree contains an unsafe entry.", {
+          code: "CONFLICT_PATH_UNSAFE",
+          exitCode: 5,
+          target: relativePath,
+        });
+      }
+      const expected = artifacts.get(relativePath);
+      if (expected === undefined) {
+        throw new CliError(`Conflict staging tree contains unexpected ${relativePath}.`, {
+          code: "CONFLICT_TREE_VERIFICATION_FAILED",
+          exitCode: 8,
+          target: relativePath,
+        });
+      }
+      const actual = readFileSync(path);
+      totalBytes += actual.byteLength;
+      if (
+        !Number.isSafeInteger(totalBytes) ||
+        totalBytes > MAX_CONFLICT_ARTIFACT_BYTES ||
+        !actual.equals(expected)
+      ) {
+        throw new CliError(`Conflict staged artifact ${relativePath} failed verification.`, {
+          code: "CONFLICT_TREE_VERIFICATION_FAILED",
+          exitCode: 8,
+          target: relativePath,
+        });
+      }
+      found.add(relativePath);
+    }
+  };
+  visit(treeRoot, "");
+  if (found.size !== artifacts.size) {
+    throw new CliError("Conflict staging tree is incomplete.", {
+      code: "CONFLICT_TREE_VERIFICATION_FAILED",
+      exitCode: 8,
+    });
+  }
+}
+
+function publishConflictArtifactTree(options: {
+  readonly root: string;
+  readonly finalRelativePath: string;
+  readonly artifacts: ConflictArtifactTree;
+  readonly transactionId: string;
+  readonly faultInjector?: TransactionFaultInjector | undefined;
+  readonly beforePublish?: (() => void) | undefined;
+}): void {
+  assertConflictArtifactTreeBounds(options.artifacts);
+  const finalPath = resolveInside(options.root, options.finalRelativePath, "Conflict tree target");
+  if (existsSync(finalPath)) {
+    throw new CliError(`Conflict tree ${options.finalRelativePath} already exists.`, {
+      code: "CONFLICT_TRANSACTION_EXISTS",
+      exitCode: 8,
+      target: options.finalRelativePath,
+    });
+  }
+  const stagingRelativePath = createStagingSibling(options.root, options.finalRelativePath);
+  try {
+    for (const [relativePath, bytes] of [...options.artifacts.entries()].sort(([left], [right]) =>
+      left.localeCompare(right, "en-US"),
+    )) {
+      writeExclusive(options.root, `${stagingRelativePath}/${relativePath}`, bytes);
+      options.faultInjector?.("stage-file", {
+        transactionId: options.transactionId,
+        target: `${options.finalRelativePath}/${relativePath}`,
+      });
+    }
+    options.faultInjector?.("stage-complete", { transactionId: options.transactionId });
+    verifyConflictArtifactTree(options.root, stagingRelativePath, options.artifacts);
+    options.faultInjector?.("validation-complete", { transactionId: options.transactionId });
+    options.beforePublish?.();
+    renameSync(
+      resolveInside(options.root, stagingRelativePath, "Conflict staging tree"),
+      finalPath,
+    );
+  } catch (error) {
+    removeOwnedTree(options.root, stagingRelativePath);
+    throw error;
+  }
 }
 
 function fileBytesForBundle(value: Buffer | null): Buffer {
@@ -2540,6 +2995,7 @@ async function stageConflict(
   internal: InternalUpdatePlan,
   requestedId: string | undefined,
   noInstall: boolean,
+  faultInjector: TransactionFaultInjector | undefined,
 ): Promise<SemanticUpdateConflictResult> {
   assertInternalPreconditions(internal);
   const id = requestedId ?? createConflictTransactionId();
@@ -2559,20 +3015,12 @@ async function stageConflict(
       target: rootPath,
     });
   }
-  mkdirSync(resolvedRoot, { mode: 0o700 });
-  writeExclusive(internal.root, `${rootPath}/plan.json`, Buffer.from(canonicalJson(internal.plan)));
-  writeExclusive(internal.root, `${rootPath}/next-manifest.json`, internal.nextManifestBytes);
-  writeExclusive(
-    internal.root,
-    `${rootPath}/package-local`,
-    Buffer.from(internal.packagePlan.before),
-  );
-  writeExclusive(
-    internal.root,
-    `${rootPath}/package-proposed`,
-    Buffer.from(internal.packagePlan.after),
-  );
-  writeExclusive(internal.root, `${rootPath}/README.md`, conflictReadme(id, internal.entries));
+  const artifacts = new Map<string, Buffer>();
+  addConflictArtifact(artifacts, "plan.json", Buffer.from(canonicalJson(internal.plan)));
+  addConflictArtifact(artifacts, "next-manifest.json", internal.nextManifestBytes);
+  addConflictArtifact(artifacts, "package-local", Buffer.from(internal.packagePlan.before));
+  addConflictArtifact(artifacts, "package-proposed", Buffer.from(internal.packagePlan.after));
+  addConflictArtifact(artifacts, "README.md", conflictReadme(id, internal.entries));
   const stateEntries: ConflictStateEntry[] = [];
   for (const entry of internal.entries) {
     for (const [view, bytes] of [
@@ -2581,7 +3029,11 @@ async function stageConflict(
       ["remote", entry.remote],
       ["proposed", entry.proposed],
     ] as const) {
-      writeExclusive(internal.root, snapshotPath(id, entry.key, view), fileBytesForBundle(bytes));
+      addConflictArtifact(
+        artifacts,
+        snapshotArtifactPath(entry.key, view),
+        fileBytesForBundle(bytes),
+      );
     }
     let conflictMetadataDigest: Digest | null = null;
     if (entry.result.status === "conflict") {
@@ -2601,9 +3053,9 @@ async function stageConflict(
         ["remote", bundle.files.remote],
         ["proposed", bundle.files.proposed],
       ] as const) {
-        writeExclusive(
-          internal.root,
-          conflictPath(id, entry.key, view),
+        addConflictArtifact(
+          artifacts,
+          conflictArtifactPath(entry.key, view),
           fileBytesForBundle(bytes === null ? null : Buffer.from(bytes)),
         );
       }
@@ -2623,7 +3075,11 @@ async function stageConflict(
       };
       const metadataBytes = Buffer.from(`${JSON.stringify(metadata, null, 2)}\n`);
       conflictMetadataDigest = sha256(metadataBytes);
-      writeExclusive(internal.root, conflictPath(id, entry.key, "conflict.json"), metadataBytes);
+      addConflictArtifact(
+        artifacts,
+        conflictArtifactPath(entry.key, "conflict.json"),
+        metadataBytes,
+      );
     }
     stateEntries.push({
       key: entry.key,
@@ -2672,13 +3128,20 @@ async function stageConflict(
     committedTransactionId: null,
   };
   const stateBytes = Buffer.from(`${JSON.stringify(state, null, 2)}\n`);
-  writeExclusive(internal.root, `${rootPath}/${CONFLICT_STATE_PATH}`, stateBytes);
-  writeExclusive(
-    internal.root,
-    `${rootPath}/${CONFLICT_STATE_DIGEST_PATH}`,
+  addConflictArtifact(artifacts, CONFLICT_STATE_PATH, stateBytes);
+  addConflictArtifact(
+    artifacts,
+    CONFLICT_STATE_DIGEST_PATH,
     Buffer.from(`${sha256(stateBytes)}\n`),
   );
-  assertInternalPreconditions(internal);
+  publishConflictArtifactTree({
+    root: internal.root,
+    finalRelativePath: rootPath,
+    artifacts,
+    transactionId: id,
+    faultInjector,
+    beforePublish: () => assertInternalPreconditions(internal),
+  });
   return {
     mode: "semantic-update",
     status: "conflicted",
@@ -2694,23 +3157,28 @@ async function stageConflict(
 
 export async function applySemanticUpdate(
   options: SemanticUpdateOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): Promise<SemanticUpdateResult> {
+  requireReviewedPlanDigestArgument(expectedPlanDigest, "Semantic Sync");
   const internal = buildUpdateInternal(options);
-  if (expectedPlanDigest !== undefined && internal.plan.planDigest !== expectedPlanDigest) {
-    throw new CliError("Semantic Sync plan changed before apply; review a fresh plan.", {
-      code: "PLAN_PRECONDITION_STALE",
-      exitCode: 8,
-    });
-  }
+  requireReviewedPlanDigest(expectedPlanDigest, internal.plan.planDigest, "Semantic Sync");
   if (internal.plan.conflicts.length > 0) {
-    return stageConflict(internal, options.conflictTransactionId, options.noInstall === true);
+    return stageConflict(
+      internal,
+      options.conflictTransactionId,
+      options.noInstall === true,
+      options.faultInjector,
+    );
   }
   const packageRequired = internal.packagePlan.before !== internal.packagePlan.after;
   const transaction = executeTransaction({
     root: internal.root,
     plan: internal.plan,
     mutations: internal.mutations,
+    acceptedConsents: internal.plan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: internal.plan.planDigest,
+    })),
     observedTargets: internal.observedTargets,
     registryPayloads: internal.registryPayloads,
     packageManager: internal.inspection.packageManager,
@@ -2739,6 +3207,8 @@ export interface SemanticResolveChoiceOptions {
   readonly transactionId: string;
   readonly choice: SemanticResolveChoice;
   readonly targets: readonly string[];
+  /** Deterministic interruption seam for journal rollback and recovery tests. */
+  readonly faultInjector?: TransactionFaultInjector | undefined;
 }
 
 export interface SemanticResolveChoicePlan {
@@ -2791,6 +3261,201 @@ interface LoadedConflict {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && !Array.isArray(value) && typeof value === "object";
+}
+
+interface ResolveChoiceJournalEntry {
+  readonly target: string;
+  readonly beforeDigest: Digest;
+  readonly afterDigest: Digest;
+  readonly backupArtifact: string;
+  readonly stagedArtifact: string;
+}
+
+interface ResolveChoiceJournal {
+  readonly schemaVersion: 1;
+  readonly artifactKind: "mergora-semantic-resolve-choice-journal";
+  readonly transactionId: string;
+  readonly planDigest: Digest;
+  readonly statePreconditionDigest: Digest;
+  readonly entries: readonly ResolveChoiceJournalEntry[];
+}
+
+function resolveChoiceJournalRoot(id: string): string {
+  return `.mergora/transactions/mergora-resolve-choice-${id}-journal`;
+}
+
+function exactRecordKeys(value: Record<string, unknown>, expected: readonly string[]): boolean {
+  const actual = Object.keys(value).sort((left, right) => left.localeCompare(right, "en-US"));
+  const sortedExpected = [...expected].sort((left, right) => left.localeCompare(right, "en-US"));
+  return JSON.stringify(actual) === JSON.stringify(sortedExpected);
+}
+
+function validResolveChoiceTarget(id: string, target: string): boolean {
+  const rootPath = transactionRoot(id);
+  if (
+    target === `${rootPath}/${CONFLICT_STATE_PATH}` ||
+    target === `${rootPath}/${CONFLICT_STATE_DIGEST_PATH}`
+  ) {
+    return true;
+  }
+  const prefix = `${rootPath}/conflicts/`;
+  if (!target.startsWith(prefix) || !target.endsWith("/proposed")) return false;
+  return /^target-[a-f0-9]{32}$/u.test(target.slice(prefix.length, -"/proposed".length));
+}
+
+function parseResolveChoiceJournal(bytes: Buffer, id: string): ResolveChoiceJournal {
+  if (bytes.byteLength > 2 * 1024 * 1024) {
+    throw new CliError("Resolve-choice journal exceeds its bounded metadata budget.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+    });
+  }
+  let value: unknown;
+  try {
+    value = JSON.parse(bytes.toString("utf8")) as unknown;
+  } catch {
+    value = null;
+  }
+  if (
+    !isRecord(value) ||
+    !exactRecordKeys(value, [
+      "schemaVersion",
+      "artifactKind",
+      "transactionId",
+      "planDigest",
+      "statePreconditionDigest",
+      "entries",
+    ]) ||
+    value.schemaVersion !== 1 ||
+    value.artifactKind !== "mergora-semantic-resolve-choice-journal" ||
+    value.transactionId !== id ||
+    typeof value.planDigest !== "string" ||
+    !DIGEST.test(value.planDigest) ||
+    typeof value.statePreconditionDigest !== "string" ||
+    !DIGEST.test(value.statePreconditionDigest) ||
+    !Array.isArray(value.entries) ||
+    value.entries.length < 3 ||
+    value.entries.length > MAX_SEMANTIC_VALIDATION_FILES + 2
+  ) {
+    throw new CliError("Resolve-choice journal metadata is invalid.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+    });
+  }
+  const targets = new Set<string>();
+  let stateSeen = false;
+  let stateDigestSeen = false;
+  let proposalSeen = false;
+  for (const [index, rawEntry] of value.entries.entries()) {
+    const backupArtifact = `backups/${String(index).padStart(5, "0")}.bin`;
+    const stagedArtifact = `staged/${String(index).padStart(5, "0")}.bin`;
+    if (
+      !isRecord(rawEntry) ||
+      !exactRecordKeys(rawEntry, [
+        "target",
+        "beforeDigest",
+        "afterDigest",
+        "backupArtifact",
+        "stagedArtifact",
+      ]) ||
+      typeof rawEntry.target !== "string" ||
+      !validResolveChoiceTarget(id, rawEntry.target) ||
+      targets.has(rawEntry.target) ||
+      typeof rawEntry.beforeDigest !== "string" ||
+      !DIGEST.test(rawEntry.beforeDigest) ||
+      typeof rawEntry.afterDigest !== "string" ||
+      !DIGEST.test(rawEntry.afterDigest) ||
+      rawEntry.backupArtifact !== backupArtifact ||
+      rawEntry.stagedArtifact !== stagedArtifact
+    ) {
+      throw new CliError("Resolve-choice journal entry is invalid.", {
+        code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+        exitCode: 8,
+      });
+    }
+    assertPortableRelativePath(rawEntry.target, "Resolve-choice journal target");
+    targets.add(rawEntry.target);
+    stateSeen ||= rawEntry.target === `${transactionRoot(id)}/${CONFLICT_STATE_PATH}`;
+    stateDigestSeen ||= rawEntry.target === `${transactionRoot(id)}/${CONFLICT_STATE_DIGEST_PATH}`;
+    proposalSeen ||= rawEntry.target.endsWith("/proposed");
+  }
+  if (!stateSeen || !stateDigestSeen || !proposalSeen) {
+    throw new CliError("Resolve-choice journal lacks its required mutation set.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+    });
+  }
+  const stateEntry = (value.entries as unknown[]).find(
+    (entry) => isRecord(entry) && entry.target === `${transactionRoot(id)}/${CONFLICT_STATE_PATH}`,
+  );
+  if (!isRecord(stateEntry) || stateEntry.beforeDigest !== value.statePreconditionDigest) {
+    throw new CliError("Resolve-choice journal is not bound to its state precondition.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+    });
+  }
+  return value as unknown as ResolveChoiceJournal;
+}
+
+function pendingResolveChoiceJournal(root: string, id: string): ResolveChoiceJournal | null {
+  const journalRoot = resolveChoiceJournalRoot(id);
+  const resolvedJournalRoot = resolveInside(root, journalRoot, "Resolve-choice journal");
+  if (!existsSync(resolvedJournalRoot)) return null;
+  const metadata = lstatSync(resolvedJournalRoot);
+  if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+    throw new CliError("Resolve-choice journal path is unsafe.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+      target: journalRoot,
+    });
+  }
+  return parseResolveChoiceJournal(requiredConflictFile(root, `${journalRoot}/journal.json`), id);
+}
+
+function recoverResolveChoiceJournal(root: string, id: string): void {
+  const journalRoot = resolveChoiceJournalRoot(id);
+  const resolvedJournalRoot = resolveInside(root, journalRoot, "Resolve-choice journal");
+  if (!existsSync(resolvedJournalRoot)) return;
+  const metadata = lstatSync(resolvedJournalRoot);
+  if (metadata.isSymbolicLink() || !metadata.isDirectory()) {
+    throw new CliError("Resolve-choice journal path is unsafe.", {
+      code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+      exitCode: 8,
+      target: journalRoot,
+    });
+  }
+  const journalBytes = requiredConflictFile(root, `${journalRoot}/journal.json`);
+  const journal = parseResolveChoiceJournal(journalBytes, id);
+  const artifacts = new Map<string, Buffer>();
+  addConflictArtifact(artifacts, "journal.json", journalBytes);
+  for (const entry of journal.entries) {
+    const backup = requiredConflictFile(root, `${journalRoot}/${entry.backupArtifact}`);
+    const staged = requiredConflictFile(root, `${journalRoot}/${entry.stagedArtifact}`);
+    if (sha256(backup) !== entry.beforeDigest || sha256(staged) !== entry.afterDigest) {
+      throw new CliError("Resolve-choice journal artifact failed digest verification.", {
+        code: "CONFLICT_RESOLUTION_JOURNAL_INVALID",
+        exitCode: 8,
+        target: journalRoot,
+      });
+    }
+    addConflictArtifact(artifacts, entry.backupArtifact, backup);
+    addConflictArtifact(artifacts, entry.stagedArtifact, staged);
+  }
+  verifyConflictArtifactTree(root, journalRoot, artifacts);
+  for (const entry of journal.entries) {
+    const backup = artifacts.get(entry.backupArtifact)!;
+    writeAtomic(root, entry.target, backup);
+  }
+  for (const entry of journal.entries) {
+    if (sha256(requiredConflictFile(root, entry.target)) !== entry.beforeDigest) {
+      throw new CliError("Resolve-choice rollback verification failed.", {
+        code: "CONFLICT_RESOLUTION_RECOVERY_FAILED",
+        exitCode: 8,
+        target: entry.target,
+      });
+    }
+  }
+  removeOwnedTree(root, journalRoot);
 }
 
 function requiredConflictFile(root: string, relativePath: string): Buffer {
@@ -3006,6 +3671,7 @@ function readConflict(projectRoot: string, id: string): LoadedConflict {
       exitCode: 2,
     });
   }
+  recoverResolveChoiceJournal(root, id);
   const statePath = `${transactionRoot(id)}/${CONFLICT_STATE_PATH}`;
   const stateBytes = requiredConflictFile(root, statePath);
   const expectedStateDigest = requiredConflictFile(
@@ -3389,26 +4055,111 @@ function persistConflictState(loaded: LoadedConflict, state: ConflictState): voi
   );
 }
 
+interface ResolveChoiceMutation {
+  readonly target: string;
+  readonly before: Buffer;
+  readonly after: Buffer;
+}
+
+function assertResolveChoiceMutationPreconditions(
+  internal: InternalResolveChoicePlan,
+  mutations: readonly ResolveChoiceMutation[],
+): void {
+  assertConflictLivePreconditions(internal.loaded);
+  for (const mutation of mutations) {
+    if (
+      sha256(requiredConflictFile(internal.loaded.root, mutation.target)) !==
+      sha256(mutation.before)
+    ) {
+      throw new CliError(`Resolve-choice target ${mutation.target} changed after planning.`, {
+        code: "PLAN_PRECONDITION_STALE",
+        exitCode: 8,
+        target: mutation.target,
+      });
+    }
+  }
+}
+
+function resolveChoiceMutations(
+  internal: InternalResolveChoicePlan,
+  nextState: ConflictState,
+): readonly ResolveChoiceMutation[] {
+  const mutations: ResolveChoiceMutation[] = [];
+  for (const change of internal.plan.changes) {
+    const entry = internal.loaded.state.entries.find(({ target }) => target === change.target)!;
+    const proposal = internal.proposals.get(change.target)!;
+    const target = conflictPath(internal.loaded.state.transactionId, entry.key, "proposed");
+    mutations.push({
+      target,
+      before: requiredConflictFile(internal.loaded.root, target),
+      after: fileBytesForBundle(proposal.bytes),
+    });
+  }
+  const stateBytes = Buffer.from(`${JSON.stringify(nextState, null, 2)}\n`);
+  const stateTarget = `${transactionRoot(nextState.transactionId)}/${CONFLICT_STATE_PATH}`;
+  const digestTarget = `${transactionRoot(nextState.transactionId)}/${CONFLICT_STATE_DIGEST_PATH}`;
+  mutations.push({ target: stateTarget, before: internal.loaded.stateBytes, after: stateBytes });
+  mutations.push({
+    target: digestTarget,
+    before: requiredConflictFile(internal.loaded.root, digestTarget),
+    after: Buffer.from(`${sha256(stateBytes)}\n`),
+  });
+  return mutations;
+}
+
+function createResolveChoiceJournal(
+  internal: InternalResolveChoicePlan,
+  mutations: readonly ResolveChoiceMutation[],
+): { readonly journal: ResolveChoiceJournal; readonly artifacts: ConflictArtifactTree } {
+  const entries = mutations.map((mutation, index) => ({
+    target: mutation.target,
+    beforeDigest: sha256(mutation.before),
+    afterDigest: sha256(mutation.after),
+    backupArtifact: `backups/${String(index).padStart(5, "0")}.bin`,
+    stagedArtifact: `staged/${String(index).padStart(5, "0")}.bin`,
+  }));
+  const journal: ResolveChoiceJournal = {
+    schemaVersion: 1,
+    artifactKind: "mergora-semantic-resolve-choice-journal",
+    transactionId: internal.loaded.state.transactionId,
+    planDigest: internal.plan.planDigest,
+    statePreconditionDigest: internal.loaded.stateDigest,
+    entries,
+  };
+  const artifacts = new Map<string, Buffer>();
+  addConflictArtifact(
+    artifacts,
+    "journal.json",
+    Buffer.from(`${JSON.stringify(journal, null, 2)}\n`),
+  );
+  for (const [index, mutation] of mutations.entries()) {
+    addConflictArtifact(artifacts, entries[index]!.backupArtifact, mutation.before);
+    addConflictArtifact(artifacts, entries[index]!.stagedArtifact, mutation.after);
+  }
+  return { journal, artifacts };
+}
+
 export function applySemanticResolveChoice(
   options: SemanticResolveChoiceOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SemanticResolveChoicePlan {
-  const internal = buildResolveChoicePlan(options);
-  if (expectedPlanDigest !== undefined && internal.plan.planDigest !== expectedPlanDigest) {
-    throw new CliError("Resolve choice plan changed before apply; review a fresh plan.", {
+  requireReviewedPlanDigestArgument(expectedPlanDigest, "Resolve choice");
+  const preconditionRoot = validatedProjectRoot(options.projectRoot);
+  if (!TRANSACTION_ID.test(options.transactionId)) {
+    throw new CliError("Conflict transaction ID is invalid.", {
+      code: "CONFLICT_TRANSACTION_ID_INVALID",
+      exitCode: 2,
+    });
+  }
+  const pendingJournal = pendingResolveChoiceJournal(preconditionRoot, options.transactionId);
+  if (pendingJournal !== null && pendingJournal.planDigest !== expectedPlanDigest) {
+    throw new CliError("Resolve choice plan changed before recovery; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
     });
   }
-  for (const change of internal.plan.changes) {
-    const entry = internal.loaded.state.entries.find(({ target }) => target === change.target)!;
-    const proposal = internal.proposals.get(change.target)!;
-    writeAtomic(
-      internal.loaded.root,
-      conflictPath(internal.loaded.state.transactionId, entry.key, "proposed"),
-      fileBytesForBundle(proposal.bytes),
-    );
-  }
+  const internal = buildResolveChoicePlan(options);
+  requireReviewedPlanDigest(expectedPlanDigest, internal.plan.planDigest, "Resolve choice");
   const nextEntries = internal.loaded.state.entries.map((entry) => {
     const proposal = internal.proposals.get(entry.target);
     if (proposal === undefined) return entry;
@@ -3419,10 +4170,52 @@ export function applySemanticResolveChoice(
       currentProposedPresent: proposal.bytes !== null,
     };
   });
-  persistConflictState(internal.loaded, {
+  const nextState: ConflictState = {
     ...internal.loaded.state,
     entries: nextEntries,
+  };
+  const mutations = resolveChoiceMutations(internal, nextState);
+  const { journal, artifacts } = createResolveChoiceJournal(internal, mutations);
+  const journalRoot = resolveChoiceJournalRoot(internal.loaded.state.transactionId);
+  publishConflictArtifactTree({
+    root: internal.loaded.root,
+    finalRelativePath: journalRoot,
+    artifacts,
+    transactionId: internal.loaded.state.transactionId,
+    faultInjector: options.faultInjector,
+    beforePublish: () => assertResolveChoiceMutationPreconditions(internal, mutations),
   });
+  try {
+    for (const [index, entry] of journal.entries.entries()) {
+      writeAtomic(internal.loaded.root, entry.target, mutations[index]!.after);
+      options.faultInjector?.("commit-file", {
+        transactionId: internal.loaded.state.transactionId,
+        target: entry.target,
+      });
+    }
+    for (const entry of journal.entries) {
+      if (sha256(requiredConflictFile(internal.loaded.root, entry.target)) !== entry.afterDigest) {
+        throw new CliError("Resolve-choice commit verification failed.", {
+          code: "CONFLICT_RESOLUTION_COMMIT_FAILED",
+          exitCode: 8,
+          target: entry.target,
+        });
+      }
+    }
+    removeOwnedTree(internal.loaded.root, journalRoot);
+  } catch (error) {
+    if (error instanceof TransactionInterruption) throw error;
+    try {
+      recoverResolveChoiceJournal(internal.loaded.root, internal.loaded.state.transactionId);
+    } catch {
+      throw new CliError("Resolve-choice mutation failed and requires journal recovery.", {
+        code: "CONFLICT_RESOLUTION_RECOVERY_FAILED",
+        exitCode: 8,
+        transactionId: internal.loaded.state.transactionId,
+      });
+    }
+    throw error;
+  }
   return internal.plan;
 }
 
@@ -3725,19 +4518,33 @@ export function planSemanticResolveApply(options: SemanticResolveApplyOptions): 
 
 export function applySemanticResolution(
   options: SemanticResolveApplyOptions,
-  expectedPlanDigest?: string,
+  expectedPlanDigest: string,
 ): SemanticResolveApplyResult {
-  const internal = buildResolveApplyInternal(options);
-  if (expectedPlanDigest !== undefined && expectedPlanDigest !== internal.plan.planDigest) {
-    throw new CliError("Resolved transaction plan changed before apply; review a fresh plan.", {
-      code: "PLAN_PRECONDITION_STALE",
-      exitCode: 8,
+  requireReviewedPlanDigestArgument(expectedPlanDigest, "Resolved transaction");
+  const preconditionRoot = validatedProjectRoot(options.projectRoot);
+  if (!TRANSACTION_ID.test(options.transactionId)) {
+    throw new CliError("Conflict transaction ID is invalid.", {
+      code: "CONFLICT_TRANSACTION_ID_INVALID",
+      exitCode: 2,
     });
   }
+  if (pendingResolveChoiceJournal(preconditionRoot, options.transactionId) !== null) {
+    throw new CliError("Resolve-choice recovery must complete before applying the resolution.", {
+      code: "CONFLICT_RESOLUTION_RECOVERY_REQUIRED",
+      exitCode: 8,
+      transactionId: options.transactionId,
+    });
+  }
+  const internal = buildResolveApplyInternal(options);
+  requireReviewedPlanDigest(expectedPlanDigest, internal.plan.planDigest, "Resolved transaction");
   const transaction = executeTransaction({
     root: internal.loaded.root,
     plan: internal.plan,
     mutations: internal.mutations,
+    acceptedConsents: internal.plan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: internal.plan.planDigest,
+    })),
     observedTargets: internal.observedTargets,
     registryPayloads: internal.loaded.state.registryPayloads,
     packageManager: internal.loaded.state.package.packageManager,

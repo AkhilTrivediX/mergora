@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rating",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "rating",
+    "stableAttributes": [
+      "data-slot",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid",
+      "data-empty"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "rating-fieldset",
+      "element": "fieldset",
+      "purpose": "Groups every editable native radio under one visible legend.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "rating-option",
+      "element": "label containing input type=radio",
+      "purpose": "Provides a comfortable star-and-number target backed by native checked and form behavior.",
+      "stability": "documented"
+    },
+    {
+      "slot": "rating-clear",
+      "element": "label containing input type=radio",
+      "purpose": "Exposes an optional explicit no-rating choice with an empty canonical value.",
+      "stability": "documented"
+    },
+    {
+      "slot": "rating-readonly",
+      "element": "div with labelled text",
+      "purpose": "Presents exact whole or fractional values without interactive semantics.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "rating-readonly-stars",
+      "element": "aria-hidden span",
+      "purpose": "Adds a decorative visual projection whose partial fill follows the exact textual value.",
+      "stability": "documented"
+    },
+    {
+      "slot": "rating-hidden-input",
+      "element": "input type=hidden",
+      "purpose": "Serializes a named enabled read-only value without pretending it is editable.",
+      "stability": "behavioral"
+    }
+  ]
+}

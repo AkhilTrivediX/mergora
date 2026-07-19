@@ -60,6 +60,25 @@ scripts disabled. `--no-install` records dependency metadata without running the
 When the authoritative lockfile is outside the selected workspace package, dependency-changing
 operations require `--no-install`; run the workspace-root install separately.
 
+## Stable offline vendors and npm archives
+
+An exact native Stable release can be captured from verified acquisition evidence without claiming
+that bundled development data is released:
+
+```sh
+mergora vendor --all --release-file .mergora/release-1.0.0.json --plan --json
+mergora vendor --all --release-file .mergora/release-1.0.0.json --yes --non-interactive
+```
+
+Package archives are excluded by default. `--include-npm-tarballs` opts into the exact digest-bound
+inventory declared by that Stable release. The CLI fetches included archives directly with HTTPS,
+manual redirect rejection, omitted credentials, a timeout, and per-archive and aggregate byte
+limits; it does not invoke npm or another package manager. A legacy release that omits the inventory
+fails closed, while a verified empty inventory succeeds without a fetch. `--offline` can include an
+empty or omission-only inventory, but refuses an inventory that still requires network acquisition.
+`mergora vendor verify` subsequently checks every bundled archive, digest, integrity value, license,
+package identity, and install-script prohibition without network access.
+
 ## Semantic Sync and current boundary
 
 `update` reconstructs immutable Base/Local/Remote inputs, classifies local and upstream changes,
@@ -72,9 +91,13 @@ Registered staged-overlay and post-commit validators execute media parsing, isol
 import/type checks, token integrity, Contract provenance, project configuration, and transform
 context checks. Pre-commit failure writes nothing; post-commit failure restores the exact pre-state.
 
-Contract Audit supports deterministic static checks and programmatic trusted runtime harness
-adapters. The CLI registers no browser harness by default, so requested runtime modes remain
-incomplete instead of receiving fabricated passes. Theme, migration-plan, registry-management,
+Contract Audit supports deterministic static checks and an opt-in official browser-host protocol.
+The host must register exact immutable Contract/assertion routes compiled into trusted host code;
+registry data cannot provide commands, browser locations, or executable code. The CLI registers no
+browser harness by default, so requested runtime modes remain incomplete instead of receiving
+fabricated passes. Browser-aware consumers can inject the concrete Playwright host from
+`@mergora/test-utils` through the public `auditProject` options without adding Playwright to the CLI
+fast path. Theme, migration-plan, registry-management,
 offline vendor, project-create, and bounded clean surfaces exist; immutable acquisition is not yet
 routed through every discovery/add/update/audit consumer. Package/hybrid moves, remaining executable
 migrations, several documented flags, the complete packed lifecycle, and Stable release claims are

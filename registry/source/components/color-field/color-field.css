@@ -1,0 +1,151 @@
+@layer mergora.components {
+  .mrg-color-field {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-sm);
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .mrg-color-field-input {
+    appearance: none;
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+    inline-size: 100%;
+    line-height: var(--mrg-semantic-font-line-height-body);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    padding-block: var(--mrg-semantic-space-inline-sm);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    unicode-bidi: plaintext;
+  }
+
+  .mrg-color-field-input::placeholder {
+    color: var(--mrg-semantic-color-foreground-muted);
+    opacity: 1;
+  }
+
+  .mrg-color-field-input:focus-visible {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-color-field[data-invalid] .mrg-color-field-input {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-color-field[data-disabled] .mrg-color-field-input {
+    background: var(--mrg-semantic-color-background-surface);
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-color-field[data-readonly] .mrg-color-field-input {
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-color-field [data-slot="color-field-preview-row"] {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    min-inline-size: 0;
+  }
+
+  .mrg-color-field [data-slot="color-field-swatch"] {
+    background: var(--mrg-semantic-color-background-surface);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-compact);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: var(--mrg-semantic-size-target-preferred);
+  }
+
+  .mrg-color-field [data-slot="color-field-swatch"][data-empty]::after {
+    color: var(--mrg-semantic-color-foreground-muted);
+    content: "—";
+    display: grid;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    place-items: center;
+  }
+
+  .mrg-color-field [data-slot="color-field-preview"],
+  .mrg-color-field [data-slot="color-field-contrast"],
+  .mrg-color-field [data-slot="color-field-error"] {
+    font-size: var(--mrg-semantic-font-size-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    margin: 0;
+    max-inline-size: 70ch;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-color-field [data-slot="color-field-preview"] bdi {
+    font-family: var(--mrg-semantic-font-family-code);
+  }
+
+  .mrg-color-field [data-slot="color-field-contrast"] {
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+
+  .mrg-color-field [data-slot="color-field-error"] {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+  }
+
+  @container (max-width: 16rem) {
+    .mrg-color-field [data-slot="color-field-preview-row"] {
+      align-items: start;
+      flex-direction: column;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-color-field-input,
+    .mrg-color-field [data-slot="color-field-swatch"] {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+
+    .mrg-color-field [data-slot="color-field-swatch"] {
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-color-field-input {
+      background: Field;
+      border-color: FieldText;
+      color: FieldText;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-color-field[data-invalid] .mrg-color-field-input {
+      border-style: double;
+    }
+
+    .mrg-color-field[data-disabled] .mrg-color-field-input {
+      border-color: GrayText;
+      color: GrayText;
+    }
+
+    .mrg-color-field [data-slot="color-field-swatch"] {
+      background: Canvas !important;
+      border-color: CanvasText;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-color-field [data-slot="color-field-swatch"]::after,
+    .mrg-color-field [data-slot="color-field-contrast"],
+    .mrg-color-field [data-slot="color-field-error"] {
+      color: CanvasText;
+    }
+  }
+}

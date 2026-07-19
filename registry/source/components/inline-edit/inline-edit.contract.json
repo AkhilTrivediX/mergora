@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "inline-edit",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "View mode uses readable text and an Edit button. Edit mode uses a labelled native input or textarea plus Save and Cancel buttons.",
+    "naming": "One persistent visible label names the editor. Plain-text labels automatically contextualize the default Edit accessible name; rich labels and repeated custom actions use editAccessibleLabel or a contextual editLabel.",
+    "roleOverride": "Consumer role overrides, contenteditable replacements, and action render replacements are outside the supported contract.",
+    "refTarget": "HTMLDivElement stable root; editor and action focus are managed internally"
+  },
+  "interaction": {
+    "keyboard": "Enter saves an input; Control+Enter or Command+Enter saves a textarea; Escape cancels; none run during IME composition. Tab reaches the native editor and visible actions normally.",
+    "pointer": "Edit, Save, and Cancel activate on click and retain pointer cancellation before release. Outside blur keeps the draft by default.",
+    "touch": "Editor and actions preserve comfortable touch targets and require no gesture.",
+    "speech": "Visible action labels remain in their accessible names; consumers provide contextual translated action labels when repeated.",
+    "switchAccess": "Native editor and buttons remain separate logical tab stops in DOM order."
+  },
+  "focus": {
+    "entry": "Edit moves focus to the native editor after the mode transition.",
+    "validationFailure": "Synchronous and async failure keep edit mode, retain the draft, and return focus to the editor.",
+    "exit": "Successful save, unchanged save, and Cancel restore focus to Edit; read-only transition falls back to the programmatically focusable root.",
+    "blur": "keep-editing is the safe default; explicit save-on-blur uses the same validation, stale, and pending guards."
+  },
+  "asyncBehavior": "Only one save runs at a time. Save receives an AbortSignal. Reset and unmount abort and invalidate the operation. Controlled external changes block stale local commits. Rejection preserves the draft and exposes a persistent associated error.",
+  "formBehavior": "A named hidden input serializes the saved value. Disabled omits it; read-only remains successful. Native reset restores an uncontrolled default and exits editing. Required is checked on InlineEdit save because hidden inputs do not participate in browser constraint validation.",
+  "states": {
+    "attributes": [
+      "data-control",
+      "data-editing",
+      "data-pending",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid"
+    ],
+    "synchronization": "Saved text and hidden form value share committed state; editor text is an isolated draft until one guarded save succeeds."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=inline-edit]",
+    "attributes": [
+      "data-control",
+      "data-editing",
+      "data-pending",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses text, boundaries, native disabled/read-only state, and persistent status rather than color alone.",
+    "forcedColors": "Uses Canvas, CanvasText, Field, FieldText, Mark, and native focus indicators.",
+    "reducedMotion": "Mode and status transitions are immediate and no focus movement depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "View columns collapse to one intrinsic column; actions wrap and user text wraps without truncation."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "error",
+      "inlineEdit.edit",
+      "inlineEdit.save",
+      "inlineEdit.cancel",
+      "inlineEdit.pending",
+      "inlineEdit.success",
+      "inlineEdit.canceled",
+      "inlineEdit.noChanges",
+      "inlineEdit.emptyValue",
+      "inlineEdit.readOnly",
+      "inlineEdit.required",
+      "inlineEdit.saveError",
+      "inlineEdit.externalChange",
+      "inlineEdit.reset"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Composition start/end are tracked. Enter, Control+Enter, Command+Enter, and Escape do not save or cancel while composition is active.",
+    "serialization": "The saved JavaScript string is submitted unchanged; display and draft preserve Unicode, newlines, bidi content, and grapheme sequences."
+  },
+  "consumerResponsibilities": [
+    "Provide meaningful translated labels, descriptions, validation text, and contextual action labels when instances repeat.",
+    "Honor the save AbortSignal before committing an external side effect and make server writes idempotent where retries are possible.",
+    "Perform server validation and include Inline Edit failures in the owning form's summary when it participates in a larger submission.",
+    "Choose save-on-blur only when an implicit commit is expected and reversible; keep-editing is the safe default.",
+    "Do not treat the polite success message as the only persistent workflow outcome."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "view-edit-save-cancel",
+      "input-textarea-keyboard-ime",
+      "sync-async-validation-retry",
+      "pending-double-submit-stale-cancellation",
+      "focus-restoration",
+      "form-submission-reset",
+      "controlled-uncontrolled",
+      "rtl-touch-narrow-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-only",
+      "mobile-touch",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions.",
+    "A parent form's native constraint validation cannot target the hidden saved-value input; the owning workflow must integrate Inline Edit validation into its persistent summary and server validation.",
+    "AbortSignal is cooperative. Consumers must honor it before external persistence; Mergora prevents stale local commits but cannot roll back a remote side effect that ignores cancellation."
+  ]
+}

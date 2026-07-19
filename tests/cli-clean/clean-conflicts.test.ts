@@ -3,7 +3,12 @@ import { resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, applySourceAdd, planSourceAdd } from "../../packages/cli/src/index.ts";
+import {
+  applyInit,
+  applySourceAdd,
+  planInit,
+  planSourceAdd,
+} from "../../packages/cli/src/index.ts";
 import { applyClean, planClean } from "../../packages/cli/src/clean.ts";
 import { sha256 } from "../../packages/cli/src/contracts.ts";
 import {
@@ -35,7 +40,7 @@ function json<T>(path: string): T {
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-clean-conflict-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const options = {
     projectRoot: project.root,
     itemIds: ["button"],

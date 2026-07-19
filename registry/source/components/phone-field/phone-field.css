@@ -1,0 +1,179 @@
+.mrg-phone-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  container-type: inline-size;
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-phone-field [data-slot="phone-field-layout"] {
+  align-items: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  min-inline-size: 0;
+}
+
+.mrg-phone-field [data-slot="phone-field-control"] {
+  align-items: stretch;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: grid;
+  flex: 1 1 18rem;
+  grid-template-columns: max-content minmax(7rem, 1fr);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+}
+
+.mrg-phone-field [data-slot="phone-field-control"]:focus-within,
+.mrg-phone-field [data-slot="phone-field-extension-input"]:focus-visible {
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-phone-field [data-slot="phone-field-country"] {
+  align-items: center;
+  border-inline-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  max-inline-size: min(16rem, 45cqi);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-phone-field [data-slot="phone-field-calling-code"] {
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+
+.mrg-phone-field-input,
+.mrg-phone-field [data-slot="phone-field-extension-input"] {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-phone-field-input::placeholder,
+.mrg-phone-field [data-slot="phone-field-extension-input"]::placeholder {
+  color: var(--mrg-semantic-color-foreground-muted);
+  opacity: 1;
+}
+
+.mrg-phone-field-extension {
+  display: grid;
+  flex: 1 1 8rem;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: min(100%, 8rem);
+}
+
+.mrg-phone-field [data-slot="phone-field-extension-label"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+}
+
+.mrg-phone-field [data-slot="phone-field-extension-input"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+}
+
+.mrg-phone-field[data-invalid="true"] [data-slot="phone-field-control"],
+.mrg-phone-field[data-invalid="true"] [data-slot="phone-field-extension-input"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-phone-field[data-readonly="true"] [data-slot="phone-field-control"],
+.mrg-phone-field[data-readonly="true"] [data-slot="phone-field-extension-input"] {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-phone-field[data-disabled="true"] [data-slot="phone-field-control"],
+.mrg-phone-field[data-disabled="true"] [data-slot="phone-field-extension-input"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-phone-field [data-slot="phone-field-validation"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  overflow-wrap: anywhere;
+}
+
+@container (inline-size < 19rem) {
+  .mrg-phone-field [data-slot="phone-field-control"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-phone-field [data-slot="phone-field-country"] {
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-subtle);
+    border-inline-end: 0;
+    max-inline-size: none;
+  }
+
+  .mrg-phone-field-extension {
+    flex-basis: 100%;
+  }
+}
+
+@media (pointer: coarse) {
+  .mrg-phone-field [data-slot="phone-field-control"],
+  .mrg-phone-field [data-slot="phone-field-country"],
+  .mrg-phone-field-input,
+  .mrg-phone-field [data-slot="phone-field-extension-input"] {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-phone-field-input,
+  .mrg-phone-field [data-slot="phone-field-extension-input"] {
+    scroll-behavior: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-phone-field [data-slot="phone-field-control"],
+  .mrg-phone-field [data-slot="phone-field-extension-input"] {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-phone-field [data-slot="phone-field-country"] {
+    border-color: FieldText;
+  }
+
+  .mrg-phone-field[data-invalid="true"] [data-slot="phone-field-control"],
+  .mrg-phone-field[data-invalid="true"] [data-slot="phone-field-extension-input"] {
+    border-style: double;
+  }
+
+  .mrg-phone-field[data-disabled="true"] [data-slot="phone-field-control"],
+  .mrg-phone-field[data-disabled="true"] [data-slot="phone-field-extension-input"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

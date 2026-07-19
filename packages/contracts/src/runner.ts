@@ -14,6 +14,7 @@ import {
   type RunContractAuditOptions,
   type RuntimeAuditMode,
   type RuntimeContractAssertionV1,
+  type RuntimeHarnessExecutionV1,
   type RuntimeHarnessInvocationV1,
   type StaticAuditTargetAdapter,
   type StaticTargetSnapshot,
@@ -50,7 +51,10 @@ interface TrustedAdapterRegistry {
 interface RegisteredTrustedRuntimeAdapter {
   readonly harnessId: string;
   readonly modes: readonly RuntimeAuditMode[];
-  run(input: RuntimeHarnessInvocationV1): unknown | Promise<unknown>;
+  run(
+    input: RuntimeHarnessInvocationV1,
+    execution: RuntimeHarnessExecutionV1,
+  ): unknown | Promise<unknown>;
 }
 
 class RuntimeHarnessTimeoutError extends Error {
@@ -129,12 +133,18 @@ async function boundedRuntimeExecution(
   invocation: RuntimeHarnessInvocationV1,
   timeoutMs: number,
 ): Promise<unknown> {
+  const controller = new AbortController();
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
-      Promise.resolve().then(() => adapter.run(invocation)),
+      Promise.resolve().then(() =>
+        adapter.run(invocation, Object.freeze({ signal: controller.signal })),
+      ),
       new Promise<never>((_resolve, reject) => {
-        timer = setTimeout(() => reject(new RuntimeHarnessTimeoutError()), timeoutMs);
+        timer = setTimeout(() => {
+          reject(new RuntimeHarnessTimeoutError());
+          controller.abort();
+        }, timeoutMs);
       }),
     ]);
   } finally {

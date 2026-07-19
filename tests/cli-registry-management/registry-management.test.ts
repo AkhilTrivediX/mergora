@@ -425,9 +425,14 @@ describe("registry enrollment and removal plans", () => {
     expect(first.plan.consentRequirements[0]?.flag).toBe(
       `--accept-registry-identity ${first.metadata?.identityDigest}`,
     );
-    expect(() => applyRegistryConfigPlan(first, root)).toThrow(/--yes is insufficient/u);
     expect(() =>
       applyRegistryConfigPlan(first, root, {
+        expectedPlanDigest: first.plan.planDigest,
+      }),
+    ).toThrow(/--yes is insufficient/u);
+    expect(() =>
+      applyRegistryConfigPlan(first, root, {
+        expectedPlanDigest: first.plan.planDigest,
         acceptRegistryIdentity: `sha256:${"f".repeat(64)}`,
       }),
     ).toThrow(/accept-registry-identity/u);
@@ -467,6 +472,7 @@ describe("registry enrollment and removal plans", () => {
 
     expect(() =>
       applyRegistryConfigPlan(planned, root, {
+        expectedPlanDigest: planned.plan.planDigest,
         acceptRegistryIdentity: planned.metadata?.identityDigest,
       }),
     ).toThrowError(expect.objectContaining({ code: "PLAN_CONFIG_STALE" }));
@@ -486,16 +492,33 @@ describe("registry enrollment and removal plans", () => {
         $schema: `${OFFICIAL_REGISTRY_ORIGIN}/schemas/manifest-v1.schema.json`,
         schemaVersion: 1,
         projectId: `sha256:${"1".repeat(64)}`,
-        toolchain: {},
+        toolchain: {
+          cli: "0.0.0",
+          schema: "1.0.0",
+          transformer: "0.0.0",
+          formatter: "mergora@1",
+        },
         items: {
           "partner:button": {
             registry: "partner",
             itemId: "button",
+            kind: "component",
+            requested: "=1.0.0",
+            resolved: "1.0.0",
+            payload: {
+              url: `${PARTNER_ORIGIN}/releases/1.0.0/items/button.json`,
+              digest: `sha256:${"2".repeat(64)}`,
+            },
             mode: "source",
             direct: true,
+            transformContextDigest: sha256(canonicalJson({})),
+            transformContext: {},
             files: [],
             registryDependencies: [],
+            dependencies: { runtime: {}, development: {} },
             structuredPatches: [],
+            contractVersion: "1.0.0",
+            lastMigration: null,
           },
         },
         sharedTargets: {},
@@ -614,6 +637,7 @@ describe("registry verification", () => {
       fetchImplementation,
     });
     applyRegistryConfigPlan(enrollment, root, {
+      expectedPlanDigest: enrollment.plan.planDigest,
       acceptRegistryIdentity: enrollment.metadata?.identityDigest,
     });
 

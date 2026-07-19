@@ -14,6 +14,16 @@ import { fileURLToPath } from "node:url";
 import { ContractDefinitionError, parseContractDefinitionV1 } from "mergora-contracts";
 
 import {
+  acquireImmutableArtifact,
+  type AcquisitionSource,
+  type AcquisitionTransport,
+  type AcquisitionVendorReader,
+} from "./acquisition.js";
+import {
+  assertAuthenticAcquiredNativeRegistryRelease,
+  type AcquiredNativeRegistryRelease,
+} from "./acquisition-resolver.js";
+import {
   CLI_VERSION,
   assertNoSymlinkAncestors,
   assertPortableRelativePath,
@@ -36,6 +46,18 @@ import {
   type TransactionMutation,
   type TransactionResult,
 } from "./transaction-engine.js";
+import {
+  createStableAcquisitionVendorReader,
+  stableNpmTarballInternalPath,
+  validateStableNpmRegistryOriginPolicies,
+  validateStableNpmTarballBytes,
+  validateStableNpmTarballDescriptor,
+  verifyStableVendorBundle,
+  verifyStableVendorBundleBytes,
+  type StableNpmRegistryOriginPolicy,
+  type StableVendorNpmTarballDescriptor,
+  type StableVendorVerificationResult,
+} from "./vendor-reader.js";
 
 const VENDOR_ROOT = ".mergora/vendor/v1" as const;
 const VENDOR_MANIFEST = `${VENDOR_ROOT}/vendor-manifest.json` as const;
@@ -56,11 +78,18 @@ const MAX_BUNDLE_FILES = 8192;
 const MAX_ITEMS = 4096;
 const MAX_SCHEMAS = 128;
 const MAX_CONTRACTS = 4096;
+const MAX_NPM_TARBALLS = 1024;
+const MAX_NPM_TARBALL_BYTES = 16 * 1024 * 1024;
+const MAX_NPM_TARBALL_TOTAL_BYTES = 32 * 1024 * 1024;
+const MAX_NPM_FETCH_TIMEOUT_MS = 60_000;
 const DIGEST_PATTERN = /^sha256:[a-f0-9]{64}$/u;
 const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const QUALIFIED_ID_PATTERN = /^([a-z0-9]+(?:-[a-z0-9]+)*):([a-z0-9]+(?:-[a-z0-9]+)*)$/u;
 const SEMVER_PATTERN =
   /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
+const STABLE_RELEASE_PATTERN = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/u;
+const MEDIA_TYPE_PATTERN = /^[a-z0-9!#$&^_.+-]+\/[a-z0-9!#$&^_.+-]+$/u;
+const SPDX_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-.+]*(?: WITH [A-Za-z0-9][A-Za-z0-9-.+]*)?$/u;
 
 type Digest = `sha256:${string}`;
 type ArtifactKind =
@@ -259,6 +288,166 @@ interface BuiltBundle {
   readonly root: string;
 }
 
+export interface StableVendorDocuments {
+  readonly catalog: unknown;
+  readonly manifest: unknown;
+  readonly items: Readonly<Record<string, unknown>>;
+}
+
+export interface StableNpmTarballInventoryDescriptor extends StableVendorNpmTarballDescriptor {
+  /** Exact compressed byte count from trusted package metadata. */
+  readonly bytes: number;
+}
+
+export type StableNpmTarballInventoryEntry =
+  | (StableNpmTarballInventoryDescriptor & {
+      readonly disposition: "include";
+    })
+  | (StableNpmTarballInventoryDescriptor & {
+      readonly disposition: "omit";
+      readonly omissionReason: "explicitly-omitted" | "license-not-allowed";
+    });
+
+export interface StableNpmTarballInventory {
+  readonly entries: readonly StableNpmTarballInventoryEntry[];
+  /** SPDX identifiers explicitly permitted for inclusion. */
+  readonly allowedLicenses: readonly string[];
+  /** Exact enrolled identities in addition to the compiled public npm registry. */
+  readonly enrolledOrigins?: readonly StableNpmRegistryOriginPolicy[] | undefined;
+  /** May lower, but never raise, the compiled per-tarball ceiling. */
+  readonly maxTarballBytes?: number | undefined;
+  /** May lower, but never raise, the compiled aggregate ceiling. */
+  readonly maxTotalBytes?: number | undefined;
+  readonly timeoutMs?: number | undefined;
+}
+
+export interface StableNpmTarballFetchRequest {
+  readonly package: string;
+  readonly version: string;
+  readonly url: string;
+  readonly maxBytes: number;
+  readonly signal: AbortSignal;
+}
+
+export interface StableNpmTarballFetchResult {
+  readonly bytes: Uint8Array;
+  /** Final response URL, which must equal the requested URL byte-for-byte. */
+  readonly url: string;
+  /** Redirect targets observed by the fetcher; redirects are never accepted. */
+  readonly redirects: readonly string[];
+  readonly contentType: string | null;
+  readonly source: AcquisitionSource;
+}
+
+export type StableNpmTarballFetcher = (
+  request: StableNpmTarballFetchRequest,
+) => Promise<StableNpmTarballFetchResult>;
+
+export interface AcquireStableVendorSnapshotOptions {
+  readonly projectRoot: string;
+  readonly release: AcquiredNativeRegistryRelease;
+  readonly documents: StableVendorDocuments;
+  readonly selectionMode: "all" | "items";
+  readonly offline?: boolean | undefined;
+  readonly vendor?: AcquisitionVendorReader | undefined;
+  readonly transport?: AcquisitionTransport | undefined;
+  readonly npmTarballs?: StableNpmTarballInventory | undefined;
+  readonly npmTarballFetcher?: StableNpmTarballFetcher | undefined;
+  readonly commandArguments?: readonly string[] | undefined;
+}
+
+interface StableVendorEvidenceReference {
+  readonly id: string;
+  readonly artifact: string;
+  readonly digest: Digest;
+}
+
+interface StableVendorSnapshotArtifact {
+  readonly path: string;
+  readonly digest: Digest;
+  readonly mediaType: string;
+  readonly content: Buffer;
+}
+
+export interface StableVendorSnapshot {
+  readonly projectRoot: string;
+  readonly release: AcquiredNativeRegistryRelease;
+  readonly selectionMode: "all" | "items";
+  readonly selectionRequested: readonly string[];
+  readonly artifacts: readonly StableVendorSnapshotArtifact[];
+  readonly releaseManifest: StableVendorEvidenceReference;
+  readonly items: readonly StableVendorEvidenceReference[];
+  readonly schemas: readonly StableVendorEvidenceReference[];
+  readonly contracts: readonly StableVendorEvidenceReference[];
+  readonly passports: readonly StableVendorEvidenceReference[];
+  readonly npmRegistryOrigins: readonly StableNpmRegistryOriginPolicy[];
+  readonly npmCoverage: "not-requested" | "complete";
+  readonly npmTarballs: readonly StableVendorNpmTarballDescriptor[];
+  readonly npmTarballOmissions: readonly string[];
+  readonly acquiredBytes: number;
+  readonly acquisitionSource: AcquisitionSource;
+  readonly commandArguments?: readonly string[] | undefined;
+}
+
+interface StableFormalVendorManifest {
+  readonly schemaVersion: 1;
+  readonly format: typeof VENDOR_FORMAT;
+  readonly registry: {
+    readonly id: "official";
+    readonly origin: typeof OFFICIAL_REGISTRY_ORIGIN;
+    readonly identityDigest: Digest;
+  };
+  readonly release: string;
+  readonly selection: {
+    readonly mode: "all" | "items";
+    readonly requested: readonly string[];
+  };
+  readonly releaseManifest: StableVendorEvidenceReference;
+  readonly items: readonly StableVendorEvidenceReference[];
+  readonly schemas: readonly StableVendorEvidenceReference[];
+  readonly contracts: readonly StableVendorEvidenceReference[];
+  readonly passports: readonly StableVendorEvidenceReference[];
+  readonly npmRegistryOrigins?: readonly StableNpmRegistryOriginPolicy[] | undefined;
+  readonly npmCoverage: "not-requested" | "complete";
+  readonly npmTarballs: readonly StableVendorNpmTarballDescriptor[];
+  readonly dependencyGraphDigest: Digest;
+  readonly sha256SumsDigest: Digest;
+}
+
+export type StableVendorPlan = Omit<OperationPlan, "command"> & {
+  readonly command: "vendor";
+  readonly vendor: {
+    readonly outputRoot: typeof VENDOR_ROOT;
+    readonly provenanceState: "stable-release";
+    readonly release: string;
+    readonly selectionMode: "all" | "items";
+    readonly selectedItems: readonly string[];
+    readonly vendorManifestDigest: Digest;
+    readonly sha256SumsDigest: Digest;
+    readonly acquisitionSource: AcquisitionSource;
+    readonly networkUsed: boolean;
+  };
+};
+
+export interface StableVendorResult {
+  readonly mode: "offline-vendor";
+  readonly root: typeof VENDOR_ROOT;
+  readonly items: readonly string[];
+  readonly release: string;
+  readonly planDigest: Digest;
+  readonly transaction: TransactionResult;
+  readonly verification: StableVendorVerificationResult;
+}
+
+interface BuiltStableBundle {
+  readonly plan: StableVendorPlan;
+  readonly mutations: readonly TransactionMutation[];
+  readonly observedTargets: Readonly<Record<string, Digest | null>>;
+  readonly targetBytes: ReadonlyMap<string, Buffer>;
+  readonly root: string;
+  readonly snapshot: StableVendorSnapshot;
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -282,9 +471,46 @@ function compareText(left: string, right: string): number {
 function vendorError(message: string, code: string, target?: string): CliError {
   return new CliError(message, {
     code,
-    exitCode: code.endsWith("_INVALID_OPTION") ? 2 : code.endsWith("_MISSING") ? 3 : 5,
+    exitCode:
+      code === "VENDOR_STABLE_NPM_FETCH_TIMEOUT"
+        ? 4
+        : code === "VENDOR_STABLE_NPM_INVENTORY_MISSING"
+          ? 5
+          : code.endsWith("_INVALID_OPTION")
+            ? 2
+            : code.endsWith("_MISSING")
+              ? 3
+              : 5,
     ...(target === undefined ? {} : { target }),
   });
+}
+
+const AUTHENTIC_STABLE_VENDOR_SNAPSHOTS = new WeakSet<object>();
+
+function assertAuthenticStableVendorSnapshot(
+  value: unknown,
+): asserts value is StableVendorSnapshot {
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    !AUTHENTIC_STABLE_VENDOR_SNAPSHOTS.has(value)
+  ) {
+    throw vendorError(
+      "Stable vendoring requires the authentic snapshot returned by acquisition.",
+      "VENDOR_STABLE_SNAPSHOT_UNAUTHENTIC",
+    );
+  }
+}
+
+function freezeStableSnapshotValue<T>(value: T, seen = new WeakSet<object>()): T {
+  if (value === null || typeof value !== "object" || ArrayBuffer.isView(value) || seen.has(value)) {
+    return value;
+  }
+  seen.add(value);
+  for (const nested of Object.values(value as Record<string, unknown>)) {
+    freezeStableSnapshotValue(nested, seen);
+  }
+  return Object.freeze(value);
 }
 
 function safeReadAbsolute(path: string, label: string, maximumBytes: number): Buffer {
@@ -366,6 +592,392 @@ function parseDigest(value: unknown, label: string): Digest {
   return value as Digest;
 }
 
+function stableRecord(value: unknown, label: string): Record<string, unknown> {
+  if (!isRecord(value)) {
+    throw vendorError(`${label} must be an object.`, "VENDOR_STABLE_SNAPSHOT_INVALID");
+  }
+  return value;
+}
+
+function stableExactKeys(
+  value: Record<string, unknown>,
+  expected: readonly string[],
+  label: string,
+): void {
+  if (!exactKeys(value, expected)) {
+    throw vendorError(`${label} fields are invalid.`, "VENDOR_STABLE_SNAPSHOT_INVALID");
+  }
+}
+
+function stableCanonicalBytes(value: unknown, label: string): Buffer {
+  let canonical: string;
+  try {
+    canonical = canonicalJson(value);
+  } catch {
+    throw vendorError(
+      `${label} cannot be represented as canonical JSON.`,
+      "VENDOR_STABLE_JSON_INVALID",
+    );
+  }
+  const bytes = Buffer.from(`${canonical}\n`, "utf8");
+  if (bytes.byteLength > MAX_ARTIFACT_BYTES) {
+    throw vendorError(`${label} exceeds the byte limit.`, "VENDOR_STABLE_ARTIFACT_OVERSIZE");
+  }
+  return bytes;
+}
+
+function stableCanonicalJsonBytes(bytes: Uint8Array, label: string): Buffer {
+  let text: string;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    throw vendorError(`${label} is not valid UTF-8.`, "VENDOR_STABLE_ENCODING_INVALID");
+  }
+  let value: unknown;
+  try {
+    value = JSON.parse(text) as unknown;
+  } catch {
+    throw vendorError(`${label} is not valid JSON.`, "VENDOR_STABLE_JSON_INVALID");
+  }
+  const canonical = stableCanonicalBytes(value, label);
+  if (!Buffer.from(bytes).equals(canonical)) {
+    throw vendorError(
+      `${label} is not canonical JSON or contains duplicate fields.`,
+      "VENDOR_STABLE_JSON_INVALID",
+    );
+  }
+  return canonical;
+}
+
+function stableProtocolPath(url: unknown, label: string): string {
+  const value = secureDeclaredUrl(url, label);
+  const prefix = `${OFFICIAL_REGISTRY_ORIGIN}/`;
+  if (!value.startsWith(prefix)) {
+    throw vendorError(
+      `${label} leaves the official registry protocol root.`,
+      "VENDOR_STABLE_ORIGIN_INVALID",
+    );
+  }
+  const relative = value.slice(prefix.length);
+  assertPortableRelativePath(relative, label);
+  if (relative.startsWith("r/v1/")) {
+    throw vendorError(`${label} repeats the protocol root.`, "VENDOR_STABLE_ORIGIN_INVALID");
+  }
+  return `r/v1/${relative}`;
+}
+
+function stableEvidenceReference(value: unknown, label: string): StableVendorEvidenceReference {
+  const record = stableRecord(value, label);
+  stableExactKeys(record, ["id", "artifact", "digest"], label);
+  if (
+    typeof record.id !== "string" ||
+    !ID_PATTERN.test(record.id) ||
+    record.id !== record.id.normalize("NFKC")
+  ) {
+    throw vendorError(`${label} ID is invalid.`, "VENDOR_STABLE_SNAPSHOT_INVALID");
+  }
+  stableProtocolPath(record.artifact, `${label} artifact`);
+  return {
+    id: record.id,
+    artifact: record.artifact as string,
+    digest: parseDigest(record.digest, `${label} digest`),
+  };
+}
+
+interface ParsedStableManifestArtifact {
+  readonly path: string;
+  readonly url: string;
+  readonly digest: Digest;
+  readonly mediaType: string;
+  readonly bytes: number;
+}
+
+interface ParsedStableManifestSnapshot {
+  readonly items: Readonly<
+    Record<
+      string,
+      {
+        readonly payload: StableVendorEvidenceReference;
+        readonly passport: StableVendorEvidenceReference;
+        readonly contract: StableVendorEvidenceReference;
+        readonly dependencies: readonly string[];
+      }
+    >
+  >;
+  readonly artifactsByUrl: ReadonlyMap<string, ParsedStableManifestArtifact>;
+}
+
+function parseStableManifestSnapshot(
+  value: unknown,
+  release: AcquiredNativeRegistryRelease,
+): ParsedStableManifestSnapshot {
+  const root = stableRecord(value, "Stable release manifest snapshot");
+  stableExactKeys(
+    root,
+    [
+      "schemaVersion",
+      "registryId",
+      "uiVersion",
+      "releaseCommit",
+      "items",
+      "dependencyGraphDigest",
+      "artifacts",
+      "qualitySummary",
+      "manifestDigest",
+      ...(root.npmPackageInventory === undefined ? [] : ["npmPackageInventory"]),
+    ],
+    "Stable release manifest snapshot",
+  );
+  if (
+    root.schemaVersion !== 1 ||
+    root.registryId !== "official" ||
+    root.uiVersion !== release.release ||
+    root.dependencyGraphDigest !== release.dependencyGraphDigest ||
+    root.manifestDigest !== release.manifestSelfDigest
+  ) {
+    throw vendorError(
+      "Stable release manifest snapshot disagrees with the verified acquisition.",
+      "VENDOR_STABLE_RELEASE_INVALID",
+    );
+  }
+  const snapshotNpmInventory = root.npmPackageInventory;
+  if (
+    (snapshotNpmInventory === undefined) !== (release.npmPackageInventory === null) ||
+    (snapshotNpmInventory !== undefined &&
+      release.npmPackageInventory !== null &&
+      canonicalJson(snapshotNpmInventory) !== canonicalJson(release.npmPackageInventory))
+  ) {
+    throw vendorError(
+      "Stable release npm package inventory disagrees with the verified acquisition.",
+      "VENDOR_STABLE_RELEASE_INVALID",
+    );
+  }
+  const rawArtifacts = root.artifacts;
+  if (!Array.isArray(rawArtifacts) || rawArtifacts.length < 1 || rawArtifacts.length > 4096) {
+    throw vendorError(
+      "Stable release artifact inventory is invalid.",
+      "VENDOR_STABLE_SNAPSHOT_INVALID",
+    );
+  }
+  const artifactsByUrl = new Map<string, ParsedStableManifestArtifact>();
+  const paths = new Set<string>();
+  for (const [index, entry] of rawArtifacts.entries()) {
+    const label = `Stable release artifact ${String(index)}`;
+    const record = stableRecord(entry, label);
+    stableExactKeys(record, ["name", "url", "digest", "mediaType", "bytes"], label);
+    if (
+      typeof record.name !== "string" ||
+      typeof record.url !== "string" ||
+      typeof record.mediaType !== "string" ||
+      !MEDIA_TYPE_PATTERN.test(record.mediaType) ||
+      !Number.isSafeInteger(record.bytes) ||
+      Number(record.bytes) < 1 ||
+      Number(record.bytes) > MAX_ARTIFACT_BYTES
+    ) {
+      throw vendorError(`${label} is invalid.`, "VENDOR_STABLE_SNAPSHOT_INVALID");
+    }
+    const path = stableProtocolPath(record.url, `${label} URL`);
+    if (record.name !== path || paths.has(path) || artifactsByUrl.has(record.url)) {
+      throw vendorError(
+        `${label} path identity is duplicated or inconsistent.`,
+        "VENDOR_STABLE_SNAPSHOT_INVALID",
+      );
+    }
+    paths.add(path);
+    artifactsByUrl.set(record.url, {
+      path,
+      url: record.url,
+      digest: parseDigest(record.digest, `${label} digest`),
+      mediaType: record.mediaType,
+      bytes: Number(record.bytes),
+    });
+  }
+  const rawItems = stableRecord(root.items, "Stable release item inventory");
+  const items: Record<
+    string,
+    {
+      payload: StableVendorEvidenceReference;
+      passport: StableVendorEvidenceReference;
+      contract: StableVendorEvidenceReference;
+      dependencies: readonly string[];
+    }
+  > = {};
+  for (const [id, entry] of Object.entries(rawItems)) {
+    if (!ID_PATTERN.test(id)) {
+      throw vendorError("Stable release item ID is invalid.", "VENDOR_STABLE_SNAPSHOT_INVALID");
+    }
+    const record = stableRecord(entry, `Stable release item ${id}`);
+    stableExactKeys(
+      record,
+      ["version", "payload", "passport", "contract", "dependencies"],
+      `Stable release item ${id}`,
+    );
+    if (record.version !== release.release) {
+      throw vendorError(
+        `Stable release item ${id} has a mismatched release.`,
+        "VENDOR_STABLE_RELEASE_INVALID",
+      );
+    }
+    const payload = stableEvidenceReference(record.payload, `Stable release item ${id} payload`);
+    const passport = stableEvidenceReference(record.passport, `Stable release item ${id} Passport`);
+    const contract = stableEvidenceReference(record.contract, `Stable release item ${id} Contract`);
+    if (!Array.isArray(record.dependencies) || record.dependencies.length > 256) {
+      throw vendorError(
+        `Stable release item ${id} dependencies are invalid.`,
+        "VENDOR_STABLE_SELECTION_INVALID",
+      );
+    }
+    const dependencies = record.dependencies.map((dependency) => {
+      const match = typeof dependency === "string" ? QUALIFIED_ID_PATTERN.exec(dependency) : null;
+      if (match === null || match[1] !== "official") {
+        throw vendorError(
+          `Stable release item ${id} dependency is not an official item reference.`,
+          "VENDOR_STABLE_SELECTION_INVALID",
+        );
+      }
+      return match[2]!;
+    });
+    const sortedDependencies = [...new Set(dependencies)].sort(compareText);
+    if (canonicalJson(dependencies) !== canonicalJson(sortedDependencies)) {
+      throw vendorError(
+        `Stable release item ${id} dependencies are not uniquely sorted.`,
+        "VENDOR_STABLE_SELECTION_INVALID",
+      );
+    }
+    if (payload.id !== id) {
+      throw vendorError(
+        `Stable release item ${id} payload identity is invalid.`,
+        "VENDOR_STABLE_RELEASE_INVALID",
+      );
+    }
+    items[id] = { payload, passport, contract, dependencies };
+  }
+  return { items, artifactsByUrl };
+}
+
+function exactStableSelectionRoots(
+  release: AcquiredNativeRegistryRelease,
+  manifest: ParsedStableManifestSnapshot,
+  selectionMode: "all" | "items",
+): readonly string[] {
+  const releaseIds = Object.keys(manifest.items).sort(compareText);
+  const releaseIdSet = new Set(releaseIds);
+  const requested = [
+    ...new Set(release.requestedItems.map((id) => release.aliases[id] ?? id)),
+  ].sort(compareText);
+  if (
+    requested.length < 1 ||
+    requested.some((id) => !releaseIdSet.has(id)) ||
+    (selectionMode === "all" && canonicalJson(requested) !== canonicalJson(releaseIds))
+  ) {
+    throw vendorError(
+      "Stable vendor selection roots disagree with the exact release item set.",
+      "VENDOR_STABLE_SELECTION_INVALID",
+    );
+  }
+
+  const visited = new Set<string>();
+  const active = new Set<string>();
+  const closure: string[] = [];
+  const visit = (id: string): void => {
+    if (active.has(id)) {
+      throw vendorError(
+        `Stable release dependency closure cycles through ${id}.`,
+        "VENDOR_STABLE_SELECTION_INVALID",
+      );
+    }
+    if (visited.has(id)) return;
+    active.add(id);
+    const item = manifest.items[id];
+    if (item === undefined) {
+      throw vendorError(
+        `Stable release dependency ${id} is absent from the release manifest.`,
+        "VENDOR_STABLE_SELECTION_INVALID",
+      );
+    }
+    for (const dependency of item.dependencies) visit(dependency);
+    active.delete(id);
+    visited.add(id);
+    closure.push(id);
+  };
+  for (const id of requested) visit(id);
+  const acquiredItemIds = release.items.map(({ itemId }) => itemId);
+  if (
+    canonicalJson(closure) !== canonicalJson(release.resolvedItems) ||
+    canonicalJson(closure) !== canonicalJson(acquiredItemIds)
+  ) {
+    throw vendorError(
+      "Acquired Stable items are not the exact release-manifest dependency closure.",
+      "VENDOR_STABLE_SELECTION_INVALID",
+    );
+  }
+  return requested;
+}
+
+function stableArtifactBytes(
+  item: AcquiredNativeRegistryRelease["items"][number]["files"][number],
+): Buffer {
+  const bytes =
+    item.encoding === "utf8"
+      ? Buffer.from(item.content, "utf8")
+      : Buffer.from(item.content, "base64");
+  if (bytes.byteLength !== item.bytes || sha256(bytes) !== item.digest) {
+    throw vendorError(
+      `Stable acquired source ${item.logicalPath} failed its digest binding.`,
+      "VENDOR_STABLE_DIGEST_MISMATCH",
+      item.logicalPath,
+    );
+  }
+  return bytes;
+}
+
+function addStableSnapshotArtifact(
+  artifacts: Map<string, StableVendorSnapshotArtifact>,
+  artifact: StableVendorSnapshotArtifact,
+): void {
+  assertPortableRelativePath(artifact.path, "Stable vendor artifact path");
+  const npmTarball = artifact.path.startsWith("npm/tarballs/");
+  if (!artifact.path.startsWith("r/v1/") && !npmTarball) {
+    throw vendorError(
+      "Stable vendor artifact leaves the protocol tree.",
+      "VENDOR_STABLE_PATH_UNSAFE",
+      artifact.path,
+    );
+  }
+  if (
+    artifact.content.byteLength > (npmTarball ? MAX_NPM_TARBALL_BYTES : MAX_ARTIFACT_BYTES) ||
+    sha256(artifact.content) !== artifact.digest
+  ) {
+    throw vendorError(
+      `Stable vendor artifact ${artifact.path} failed its digest or byte policy.`,
+      "VENDOR_STABLE_DIGEST_MISMATCH",
+      artifact.path,
+    );
+  }
+  const identity = artifact.path.normalize("NFKC").toLocaleLowerCase("en-US");
+  const prior = [...artifacts.values()].find(
+    ({ path }) => path.normalize("NFKC").toLocaleLowerCase("en-US") === identity,
+  );
+  if (prior !== undefined) {
+    if (
+      prior.path !== artifact.path ||
+      prior.digest !== artifact.digest ||
+      !prior.content.equals(artifact.content)
+    ) {
+      throw vendorError(
+        `Stable vendor artifact ${artifact.path} has a conflicting source.`,
+        "VENDOR_STABLE_PATH_COLLISION",
+        artifact.path,
+      );
+    }
+    return;
+  }
+  artifacts.set(artifact.path, {
+    ...artifact,
+    content: Buffer.from(artifact.content),
+  });
+}
+
 function secureDeclaredUrl(value: unknown, label: string): string {
   if (typeof value !== "string") {
     throw vendorError(`${label} is not a URL.`, "VENDOR_ORIGIN_INVALID");
@@ -389,6 +1001,641 @@ function secureDeclaredUrl(value: unknown, label: string): string {
     );
   }
   return value;
+}
+
+function stableManifestArtifact(
+  manifest: ParsedStableManifestSnapshot,
+  reference: StableVendorEvidenceReference,
+  label: string,
+): ParsedStableManifestArtifact {
+  const artifact = manifest.artifactsByUrl.get(reference.artifact);
+  if (
+    artifact === undefined ||
+    artifact.digest !== reference.digest ||
+    artifact.mediaType !== "application/json"
+  ) {
+    throw vendorError(
+      `${label} is absent from or inconsistent with the release artifact inventory.`,
+      "VENDOR_STABLE_REFERENCE_INVALID",
+    );
+  }
+  return artifact;
+}
+
+function stableAggregateSource(sources: readonly AcquisitionSource[]): AcquisitionSource {
+  if (sources.includes("mirror")) return "mirror";
+  if (sources.includes("network")) return "network";
+  if (sources.includes("vendor")) return "vendor";
+  return "verified-cache";
+}
+
+interface AcquiredStableNpmTarballInventory {
+  readonly artifacts: readonly StableVendorSnapshotArtifact[];
+  readonly descriptors: readonly StableVendorNpmTarballDescriptor[];
+  readonly omissions: readonly string[];
+  readonly enrolledOrigins: readonly StableNpmRegistryOriginPolicy[];
+  readonly acquiredBytes: number;
+  readonly sources: readonly AcquisitionSource[];
+}
+
+function boundedPositiveInteger(
+  value: number | undefined,
+  fallback: number,
+  maximum: number,
+  label: string,
+): number {
+  const resolved = value ?? fallback;
+  if (!Number.isSafeInteger(resolved) || resolved < 1 || resolved > maximum) {
+    throw vendorError(`${label} is invalid.`, "VENDOR_STABLE_NPM_POLICY_INVALID");
+  }
+  return resolved;
+}
+
+async function fetchStableNpmTarball(
+  fetcher: StableNpmTarballFetcher,
+  request: Omit<StableNpmTarballFetchRequest, "signal">,
+  timeoutMs: number,
+): Promise<StableNpmTarballFetchResult> {
+  const controller = new AbortController();
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const timeoutFailure = new Promise<never>((_resolve, reject) => {
+    timeout = setTimeout(() => {
+      controller.abort();
+      reject(
+        vendorError(
+          `Stable npm tarball fetch timed out for ${request.package}@${request.version}.`,
+          "VENDOR_STABLE_NPM_FETCH_TIMEOUT",
+        ),
+      );
+    }, timeoutMs);
+    timeout.unref?.();
+  });
+  try {
+    return await Promise.race([fetcher({ ...request, signal: controller.signal }), timeoutFailure]);
+  } finally {
+    if (timeout !== undefined) clearTimeout(timeout);
+  }
+}
+
+/**
+ * Acquires an explicit, bounded npm inventory without invoking a package
+ * manager or shell. Every included archive is descriptor- and metadata-bound;
+ * every excluded archive is named by an explicit omission decision.
+ */
+export async function acquireStableNpmTarballInventory(options: {
+  readonly release: string;
+  readonly inventory: StableNpmTarballInventory;
+  readonly fetcher?: StableNpmTarballFetcher | undefined;
+  readonly offline?: boolean | undefined;
+}): Promise<AcquiredStableNpmTarballInventory> {
+  if (!STABLE_RELEASE_PATTERN.test(options.release)) {
+    throw vendorError(
+      "Stable npm tarballs require an exact stable release.",
+      "VENDOR_STABLE_NPM_RELEASE_INVALID",
+    );
+  }
+  const inventory = options.inventory;
+  if (!Array.isArray(inventory.entries) || inventory.entries.length > MAX_NPM_TARBALLS) {
+    throw vendorError(
+      "Stable npm tarball inventory exceeds its entry bound.",
+      "VENDOR_STABLE_NPM_POLICY_INVALID",
+    );
+  }
+  if (!Array.isArray(inventory.allowedLicenses) || inventory.allowedLicenses.length > 128) {
+    throw vendorError(
+      "Stable npm tarball license allowlist is invalid.",
+      "VENDOR_STABLE_NPM_LICENSE_INVALID",
+    );
+  }
+  const allowedLicenses = new Set<string>();
+  for (const license of inventory.allowedLicenses) {
+    if (
+      typeof license !== "string" ||
+      !SPDX_PATTERN.test(license) ||
+      license.length > 128 ||
+      allowedLicenses.has(license)
+    ) {
+      throw vendorError(
+        "Stable npm tarball license allowlist contains an invalid or duplicate identifier.",
+        "VENDOR_STABLE_NPM_LICENSE_INVALID",
+      );
+    }
+    allowedLicenses.add(license);
+  }
+  const enrolledOrigins = validateStableNpmRegistryOriginPolicies(
+    [...(inventory.enrolledOrigins ?? [])].sort((left, right) =>
+      left.origin.localeCompare(right.origin, "en-US"),
+    ),
+  );
+  const maximumTarballBytes = boundedPositiveInteger(
+    inventory.maxTarballBytes,
+    MAX_NPM_TARBALL_BYTES,
+    MAX_NPM_TARBALL_BYTES,
+    "Stable npm per-tarball byte limit",
+  );
+  const maximumTotalBytes = boundedPositiveInteger(
+    inventory.maxTotalBytes,
+    MAX_NPM_TARBALL_TOTAL_BYTES,
+    MAX_NPM_TARBALL_TOTAL_BYTES,
+    "Stable npm aggregate byte limit",
+  );
+  const timeoutMs = boundedPositiveInteger(
+    inventory.timeoutMs,
+    30_000,
+    MAX_NPM_FETCH_TIMEOUT_MS,
+    "Stable npm fetch timeout",
+  );
+
+  const normalized = inventory.entries.map((entry, index) => {
+    const label = `Stable npm inventory entry ${String(index)}`;
+    const record = stableRecord(entry, label);
+    const expected =
+      entry.disposition === "omit"
+        ? [
+            "bytes",
+            "digest",
+            "disposition",
+            "integrity",
+            "license",
+            "omissionReason",
+            "package",
+            "url",
+            "version",
+          ]
+        : ["bytes", "digest", "disposition", "integrity", "license", "package", "url", "version"];
+    stableExactKeys(record, expected, label);
+    if (
+      (entry.disposition !== "include" && entry.disposition !== "omit") ||
+      !Number.isSafeInteger(entry.bytes) ||
+      entry.bytes < 1 ||
+      entry.bytes > maximumTarballBytes
+    ) {
+      throw vendorError(`${label} is invalid or oversized.`, "VENDOR_STABLE_NPM_POLICY_INVALID");
+    }
+    const descriptor = validateStableNpmTarballDescriptor(
+      {
+        package: entry.package,
+        version: entry.version,
+        url: entry.url,
+        bytes: entry.bytes,
+        digest: entry.digest,
+        integrity: entry.integrity,
+        license: entry.license,
+      },
+      enrolledOrigins,
+    );
+    const isMergoraOwnedPackage =
+      descriptor.package === "mergora" ||
+      descriptor.package.startsWith("mergora-") ||
+      descriptor.package.startsWith("@mergora/");
+    if (isMergoraOwnedPackage && descriptor.version !== options.release) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package} is not bound to release ${options.release}.`,
+        "VENDOR_STABLE_NPM_RELEASE_INVALID",
+      );
+    }
+    const licenseAllowed = allowedLicenses.has(descriptor.license);
+    if (entry.disposition === "include" && !licenseAllowed) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package}@${descriptor.version} is not permitted by the explicit license allowlist.`,
+        "VENDOR_STABLE_NPM_LICENSE_INVALID",
+      );
+    }
+    if (entry.disposition === "omit") {
+      if (
+        (entry.omissionReason === "license-not-allowed") !== !licenseAllowed ||
+        (entry.omissionReason !== "license-not-allowed" &&
+          entry.omissionReason !== "explicitly-omitted")
+      ) {
+        throw vendorError(
+          `Stable npm tarball ${descriptor.package}@${descriptor.version} has an inconsistent omission reason.`,
+          "VENDOR_STABLE_NPM_LICENSE_INVALID",
+        );
+      }
+    }
+    return { entry, descriptor };
+  });
+  normalized.sort((left, right) =>
+    left.descriptor.package === right.descriptor.package
+      ? left.descriptor.version.localeCompare(right.descriptor.version, "en-US")
+      : left.descriptor.package.localeCompare(right.descriptor.package, "en-US"),
+  );
+  const paths = new Set<string>();
+  for (const { descriptor } of normalized) {
+    const path = stableNpmTarballInternalPath(descriptor.package, descriptor.version);
+    const identity = path.normalize("NFKC").toLocaleLowerCase("en-US");
+    if (paths.has(identity)) {
+      throw vendorError(
+        `Stable npm tarball inventory repeats ${descriptor.package}@${descriptor.version}.`,
+        "VENDOR_STABLE_NPM_PATH_COLLISION",
+      );
+    }
+    paths.add(identity);
+  }
+
+  const included = normalized.filter(({ entry }) => entry.disposition === "include");
+  if (included.length > 0 && options.fetcher === undefined) {
+    throw vendorError(
+      "Stable npm tarball inclusion requires an injected bounded fetcher.",
+      "VENDOR_STABLE_NPM_FETCHER_REQUIRED",
+    );
+  }
+  if (included.length > 0 && options.offline === true) {
+    throw vendorError(
+      "Stable npm tarballs must be acquired before entering offline mode.",
+      "VENDOR_STABLE_NPM_OFFLINE",
+    );
+  }
+  const artifacts: StableVendorSnapshotArtifact[] = [];
+  const descriptors: StableVendorNpmTarballDescriptor[] = [];
+  const omissions: string[] = [];
+  const sources: AcquisitionSource[] = [];
+  let acquiredBytes = 0;
+  for (const { entry, descriptor } of normalized) {
+    if (entry.disposition === "omit") {
+      omissions.push(`${descriptor.package}@${descriptor.version}:${entry.omissionReason}`);
+      continue;
+    }
+    const fetched = await fetchStableNpmTarball(
+      options.fetcher!,
+      {
+        package: descriptor.package,
+        version: descriptor.version,
+        url: descriptor.url,
+        maxBytes: Math.min(entry.bytes, maximumTarballBytes),
+      },
+      timeoutMs,
+    );
+    if (
+      fetched.url !== descriptor.url ||
+      !Array.isArray(fetched.redirects) ||
+      fetched.redirects.length !== 0
+    ) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package}@${descriptor.version} redirected or changed origin.`,
+        "VENDOR_STABLE_NPM_REDIRECT_REJECTED",
+      );
+    }
+    if (
+      fetched.source !== "network" &&
+      fetched.source !== "mirror" &&
+      fetched.source !== "verified-cache" &&
+      fetched.source !== "vendor"
+    ) {
+      throw vendorError(
+        "Stable npm tarball fetcher returned an invalid acquisition source.",
+        "VENDOR_STABLE_NPM_FETCH_INVALID",
+      );
+    }
+    if (
+      fetched.contentType !== "application/octet-stream" &&
+      fetched.contentType !== "application/gzip" &&
+      fetched.contentType !== "application/x-gzip"
+    ) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package}@${descriptor.version} has an invalid media type.`,
+        "VENDOR_STABLE_NPM_FETCH_INVALID",
+      );
+    }
+    const content = Buffer.from(fetched.bytes);
+    if (content.byteLength !== entry.bytes || content.byteLength > maximumTarballBytes) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package}@${descriptor.version} has an unexpected byte count.`,
+        "VENDOR_STABLE_NPM_OVERSIZE",
+      );
+    }
+    validateStableNpmTarballBytes(descriptor, content, maximumTarballBytes);
+    acquiredBytes += content.byteLength;
+    if (acquiredBytes > maximumTotalBytes) {
+      throw vendorError(
+        "Stable npm tarball inventory exceeds its aggregate byte limit.",
+        "VENDOR_STABLE_NPM_OVERSIZE",
+      );
+    }
+    artifacts.push({
+      path: stableNpmTarballInternalPath(descriptor.package, descriptor.version),
+      digest: descriptor.digest,
+      mediaType: "application/gzip",
+      content,
+    });
+    descriptors.push(descriptor);
+    sources.push(fetched.source);
+  }
+  return {
+    artifacts,
+    descriptors,
+    omissions,
+    enrolledOrigins: enrolledOrigins.filter(({ origin }) =>
+      descriptors.some((descriptor) => new URL(descriptor.url).origin === origin),
+    ),
+    acquiredBytes,
+    sources,
+  };
+}
+
+/**
+ * Materializes a bounded, immutable Stable snapshot from a release that has
+ * already passed native protocol resolution. Missing evidence is acquired
+ * through the same digest-bound cache/vendor/network path; mutable catalog
+ * metadata can never redefine the supplied exact release.
+ */
+export async function acquireStableVendorSnapshot(
+  options: AcquireStableVendorSnapshotOptions,
+): Promise<StableVendorSnapshot> {
+  assertAuthenticAcquiredNativeRegistryRelease(options.release);
+  const root = validatedProjectRoot(options.projectRoot);
+  const release = options.release;
+  if (
+    release.protocolVersion !== "mergora-v1" ||
+    release.registry.id !== "official" ||
+    release.registry.origin !== OFFICIAL_REGISTRY_ORIGIN ||
+    release.registry.trust !== "official" ||
+    !STABLE_RELEASE_PATTERN.test(release.release)
+  ) {
+    throw vendorError(
+      "Formal Stable vendoring requires an exact official stable native release.",
+      "VENDOR_STABLE_RELEASE_INVALID",
+    );
+  }
+  const catalogBytes = stableCanonicalBytes(options.documents.catalog, "Stable vendor catalog");
+  const manifestBytes = stableCanonicalBytes(
+    options.documents.manifest,
+    "Stable vendor release manifest",
+  );
+  if (
+    sha256(catalogBytes) !== release.catalogDigest ||
+    sha256(manifestBytes) !== release.manifestDigest
+  ) {
+    throw vendorError(
+      "Captured catalog or release manifest bytes disagree with the verified acquisition.",
+      "VENDOR_STABLE_DIGEST_MISMATCH",
+    );
+  }
+  const manifest = parseStableManifestSnapshot(options.documents.manifest, release);
+  const selectionRequested = exactStableSelectionRoots(release, manifest, options.selectionMode);
+  if (options.npmTarballs !== undefined) {
+    const npmInventory = stableRecord(
+      options.npmTarballs,
+      "Stable release npm package inventory request",
+    );
+    if (release.npmPackageInventory === null) {
+      throw vendorError(
+        "This exact Stable release does not declare an npm package inventory.",
+        "VENDOR_STABLE_NPM_INVENTORY_MISSING",
+      );
+    }
+    if (Object.hasOwn(npmInventory, "enrolledOrigins")) {
+      throw vendorError(
+        "Native Stable npm acquisition cannot add self-asserted enrolled registry origins.",
+        "VENDOR_STABLE_NPM_ORIGIN_INVALID",
+      );
+    }
+    const requestedInventory = {
+      allowedLicenses: npmInventory.allowedLicenses,
+      entries: npmInventory.entries,
+    };
+    if (canonicalJson(requestedInventory) !== canonicalJson(release.npmPackageInventory)) {
+      throw vendorError(
+        "Stable npm package selection disagrees with the exact release manifest inventory.",
+        "VENDOR_STABLE_NPM_INVENTORY_MISMATCH",
+      );
+    }
+  }
+  const selectedIds = [...release.resolvedItems];
+  if (selectedIds.length === 0 || selectedIds.length > MAX_ITEMS) {
+    throw vendorError(
+      "Stable vendoring requires one or more resolved release items.",
+      "VENDOR_STABLE_SELECTION_INVALID",
+    );
+  }
+  const acquiredById = new Map(release.items.map((item) => [item.itemId, item]));
+  if (
+    selectedIds.some((id) => acquiredById.get(id)?.version !== release.release) ||
+    Object.keys(options.documents.items).some((id) => !selectedIds.includes(id))
+  ) {
+    throw vendorError(
+      "Captured Stable item documents disagree with the resolved dependency closure.",
+      "VENDOR_STABLE_SELECTION_INVALID",
+    );
+  }
+
+  const artifacts = new Map<string, StableVendorSnapshotArtifact>();
+  addStableSnapshotArtifact(artifacts, {
+    path: "r/v1/catalog.json",
+    digest: release.catalogDigest,
+    mediaType: "application/json",
+    content: catalogBytes,
+  });
+  const manifestPath = `r/v1/releases/${release.release}/manifest.json`;
+  addStableSnapshotArtifact(artifacts, {
+    path: manifestPath,
+    digest: release.manifestDigest,
+    mediaType: "application/json",
+    content: manifestBytes,
+  });
+
+  const itemReferences: StableVendorEvidenceReference[] = [];
+  const contractReferences: StableVendorEvidenceReference[] = [];
+  const passportReferences: StableVendorEvidenceReference[] = [];
+  for (const id of selectedIds) {
+    const acquired = acquiredById.get(id)!;
+    const manifestItem = manifest.items[id];
+    const document = options.documents.items[id];
+    if (manifestItem === undefined || document === undefined) {
+      throw vendorError(
+        `Stable vendor item ${id} is missing its verified manifest or payload snapshot.`,
+        "VENDOR_STABLE_ARTIFACT_MISSING",
+      );
+    }
+    const payloadBytes = stableCanonicalBytes(document, `Stable vendor item ${id}`);
+    const payloadPath = stableProtocolPath(acquired.payloadUrl, `Stable vendor item ${id} URL`);
+    const payloadArtifact = stableManifestArtifact(
+      manifest,
+      manifestItem.payload,
+      `Stable vendor item ${id} payload`,
+    );
+    if (
+      payloadPath !== `r/v1/releases/${release.release}/items/${id}.json` ||
+      payloadPath !== payloadArtifact.path ||
+      acquired.payloadDigest !== manifestItem.payload.digest ||
+      sha256(payloadBytes) !== acquired.payloadDigest
+    ) {
+      throw vendorError(
+        `Stable vendor item ${id} payload binding is invalid.`,
+        "VENDOR_STABLE_DIGEST_MISMATCH",
+        payloadPath,
+      );
+    }
+    addStableSnapshotArtifact(artifacts, {
+      path: payloadPath,
+      digest: acquired.payloadDigest,
+      mediaType: "application/json",
+      content: payloadBytes,
+    });
+    itemReferences.push({
+      id,
+      artifact: acquired.payloadUrl,
+      digest: acquired.payloadDigest,
+    });
+    contractReferences.push(manifestItem.contract);
+    passportReferences.push(manifestItem.passport);
+
+    for (const file of acquired.files) {
+      if (file.sourceUrl === null) continue;
+      const sourcePath = stableProtocolPath(
+        file.sourceUrl,
+        `Stable vendor item ${id} source ${file.logicalPath}`,
+      );
+      if (!sourcePath.startsWith(`r/v1/releases/${release.release}/files/`)) {
+        throw vendorError(
+          `Stable vendor item ${id} source leaves its exact release.`,
+          "VENDOR_STABLE_ORIGIN_INVALID",
+          sourcePath,
+        );
+      }
+      addStableSnapshotArtifact(artifacts, {
+        path: sourcePath,
+        digest: file.digest,
+        mediaType: file.mediaType,
+        content: stableArtifactBytes(file),
+      });
+    }
+  }
+
+  const schemaArtifacts = [...manifest.artifactsByUrl.values()]
+    .filter(({ path }) => path.startsWith("r/v1/schemas/") && path.endsWith(".schema.json"))
+    .sort((left, right) => compareText(left.path, right.path));
+  if (schemaArtifacts.length < 1 || schemaArtifacts.length > MAX_SCHEMAS) {
+    throw vendorError(
+      "Stable release schema inventory is missing or exceeds the bound.",
+      "VENDOR_STABLE_REFERENCE_INVALID",
+    );
+  }
+  const schemaReferences: StableVendorEvidenceReference[] = schemaArtifacts.map((artifact) => {
+    const filename = artifact.path.split("/").at(-1)!;
+    const id = filename.slice(0, -".schema.json".length);
+    if (!ID_PATTERN.test(id)) {
+      throw vendorError(
+        `Stable schema path ${artifact.path} has an invalid identity.`,
+        "VENDOR_STABLE_REFERENCE_INVALID",
+      );
+    }
+    return { id, artifact: artifact.url, digest: artifact.digest };
+  });
+
+  const requiredEvidence = [
+    ...schemaReferences.map((reference) => ({ kind: "schema" as const, reference })),
+    ...contractReferences.map((reference) => ({ kind: "Contract" as const, reference })),
+    ...passportReferences.map((reference) => ({ kind: "Passport" as const, reference })),
+  ].sort((left, right) => compareText(left.reference.artifact, right.reference.artifact));
+  const vendor =
+    options.vendor ?? createStableAcquisitionVendorReader({ projectRoot: options.projectRoot });
+  const sources: AcquisitionSource[] = [...release.artifactSources];
+  let acquiredBytes = release.acquiredBytes;
+  const acquiredEvidence = new Set<string>();
+  for (const evidence of requiredEvidence) {
+    const artifact = stableManifestArtifact(
+      manifest,
+      evidence.reference,
+      `Stable vendor ${evidence.kind} ${evidence.reference.id}`,
+    );
+    if (acquiredEvidence.has(artifact.path)) continue;
+    const acquired = await acquireImmutableArtifact({
+      projectRoot: root,
+      request: {
+        registry: release.registry,
+        path: artifact.path.slice("r/v1/".length),
+        digest: artifact.digest,
+        bytes: artifact.bytes,
+        maxBytes: MAX_ARTIFACT_BYTES,
+        acceptedMediaTypes: [artifact.mediaType],
+        release: release.release,
+      },
+      offline: options.offline,
+      vendor,
+      transport: options.transport,
+      validate: (bytes) => {
+        if (artifact.mediaType === "application/json") {
+          stableCanonicalJsonBytes(
+            bytes,
+            `Stable vendor ${evidence.kind} ${evidence.reference.id}`,
+          );
+        }
+      },
+    });
+    const content = Buffer.from(acquired.bytes);
+    addStableSnapshotArtifact(artifacts, {
+      path: artifact.path,
+      digest: artifact.digest,
+      mediaType: artifact.mediaType,
+      content,
+    });
+    acquiredEvidence.add(artifact.path);
+    sources.push(acquired.source);
+    acquiredBytes += content.byteLength;
+    if (acquiredBytes > MAX_BUNDLE_BYTES) {
+      throw vendorError(
+        "Stable vendor acquisition exceeds the operation byte limit.",
+        "VENDOR_STABLE_BUNDLE_OVERSIZE",
+      );
+    }
+  }
+
+  const npm =
+    options.npmTarballs === undefined
+      ? {
+          artifacts: [] as readonly StableVendorSnapshotArtifact[],
+          descriptors: [] as readonly StableVendorNpmTarballDescriptor[],
+          omissions: [] as readonly string[],
+          enrolledOrigins: [] as readonly StableNpmRegistryOriginPolicy[],
+          acquiredBytes: 0,
+          sources: [] as readonly AcquisitionSource[],
+        }
+      : await acquireStableNpmTarballInventory({
+          release: release.release,
+          inventory: options.npmTarballs,
+          fetcher: options.npmTarballFetcher,
+          offline: options.offline,
+        });
+  for (const artifact of npm.artifacts) addStableSnapshotArtifact(artifacts, artifact);
+  acquiredBytes += npm.acquiredBytes;
+  sources.push(...npm.sources);
+  if (acquiredBytes > MAX_BUNDLE_BYTES) {
+    throw vendorError(
+      "Stable vendor acquisition exceeds the operation byte limit.",
+      "VENDOR_STABLE_BUNDLE_OVERSIZE",
+    );
+  }
+
+  const sortedReferences = (references: readonly StableVendorEvidenceReference[]) =>
+    [...references].sort((left, right) => compareText(left.artifact, right.artifact));
+  const snapshot = freezeStableSnapshotValue<StableVendorSnapshot>({
+    projectRoot: root,
+    release,
+    selectionMode: options.selectionMode,
+    selectionRequested,
+    artifacts: [...artifacts.values()].sort((left, right) => compareText(left.path, right.path)),
+    releaseManifest: {
+      id: "release-manifest",
+      artifact: `${OFFICIAL_REGISTRY_ORIGIN}/releases/${release.release}/manifest.json`,
+      digest: release.manifestDigest,
+    },
+    items: sortedReferences(itemReferences),
+    schemas: sortedReferences(schemaReferences),
+    contracts: sortedReferences(contractReferences),
+    passports: sortedReferences(passportReferences),
+    npmRegistryOrigins: npm.enrolledOrigins,
+    npmCoverage: options.npmTarballs === undefined ? "not-requested" : "complete",
+    npmTarballs: npm.descriptors,
+    npmTarballOmissions: npm.omissions,
+    acquiredBytes,
+    acquisitionSource: stableAggregateSource(sources),
+    ...(options.commandArguments === undefined
+      ? {}
+      : { commandArguments: [...options.commandArguments] }),
+  });
+  AUTHENTIC_STABLE_VENDOR_SNAPSHOTS.add(snapshot);
+  return snapshot;
 }
 
 function parseManifestFile(value: unknown, qualifiedId: string): ProjectManifestFile {
@@ -426,7 +1673,11 @@ function parseManifestFile(value: unknown, qualifiedId: string): ProjectManifest
   };
 }
 
-function parseManifestItem(qualifiedId: string, value: unknown): ProjectManifestItem {
+function parseManifestItem(
+  qualifiedId: string,
+  value: unknown,
+  allowStableRelease: boolean,
+): ProjectManifestItem {
   const identity = QUALIFIED_ID_PATTERN.exec(qualifiedId);
   if (identity === null || !isRecord(value)) {
     throw vendorError(
@@ -467,7 +1718,11 @@ function parseManifestItem(qualifiedId: string, value: unknown): ProjectManifest
       PROJECT_MANIFEST,
     );
   }
-  if (value.resolved !== UNRELEASED_VERSION) {
+  const resolved = value.resolved as string;
+  if (
+    resolved !== UNRELEASED_VERSION &&
+    (!allowStableRelease || !STABLE_RELEASE_PATTERN.test(resolved))
+  ) {
     throw vendorError(
       `Installed item ${qualifiedId} requires its published release manifest; none may be fabricated from local state.`,
       "VENDOR_RELEASE_ARTIFACT_REQUIRED",
@@ -475,7 +1730,7 @@ function parseManifestItem(qualifiedId: string, value: unknown): ProjectManifest
     );
   }
   const payloadUrl = secureDeclaredUrl(value.payload.url, `${qualifiedId} payload origin`);
-  if (!payloadUrl.startsWith(`${OFFICIAL_REGISTRY_ORIGIN}/releases/${UNRELEASED_VERSION}/items/`)) {
+  if (payloadUrl !== `${OFFICIAL_REGISTRY_ORIGIN}/releases/${resolved}/items/${itemId}.json`) {
     throw vendorError(
       `Installed item ${qualifiedId} has an unexpected payload origin.`,
       "VENDOR_ORIGIN_INVALID",
@@ -495,7 +1750,7 @@ function parseManifestItem(qualifiedId: string, value: unknown): ProjectManifest
     registry,
     itemId,
     kind: value.kind,
-    resolved: UNRELEASED_VERSION,
+    resolved,
     direct: value.direct,
     mode: "source",
     payload: {
@@ -508,7 +1763,7 @@ function parseManifestItem(qualifiedId: string, value: unknown): ProjectManifest
   };
 }
 
-function readProjectState(projectRoot: string): ProjectState {
+function readProjectState(projectRoot: string, allowStableRelease = false): ProjectState {
   const root = validatedProjectRoot(projectRoot);
   const configBytes = readProjectBytes(root, PROJECT_CONFIG, "Mergora config", MAX_JSON_BYTES);
   const manifestBytes = readProjectBytes(
@@ -535,7 +1790,7 @@ function readProjectState(projectRoot: string): ProjectState {
   }
   const entries = Object.entries(manifest.items)
     .sort(([left], [right]) => compareText(left, right))
-    .map(([id, item]) => [id, parseManifestItem(id, item)] as const);
+    .map(([id, item]) => [id, parseManifestItem(id, item, allowStableRelease)] as const);
   const items = new Map(entries);
   for (const item of items.values()) {
     for (const dependency of item.registryDependencies) {
@@ -1331,6 +2586,180 @@ function buildTargetBytes(
   return { targetBytes, manifest, artifacts: artifactRecords };
 }
 
+function stableSha256Sums(artifacts: readonly StableVendorSnapshotArtifact[]): Buffer {
+  return Buffer.from(
+    `${artifacts
+      .map(({ path, digest }) => `${digest.slice("sha256:".length)}  ${path}`)
+      .join("\n")}\n`,
+    "utf8",
+  );
+}
+
+function buildStableTargetBytes(snapshot: StableVendorSnapshot): {
+  readonly targetBytes: ReadonlyMap<string, Buffer>;
+  readonly manifest: StableFormalVendorManifest;
+} {
+  if (snapshot.artifacts.length < 3 || snapshot.artifacts.length > MAX_BUNDLE_FILES - 2) {
+    throw vendorError("Stable vendor artifact count is invalid.", "VENDOR_STABLE_BUNDLE_OVERSIZE");
+  }
+  const artifacts = [...snapshot.artifacts].sort((left, right) =>
+    compareText(left.path, right.path),
+  );
+  const npmRegistryOrigins = validateStableNpmRegistryOriginPolicies(
+    [...snapshot.npmRegistryOrigins].sort((left, right) => compareText(left.origin, right.origin)),
+  );
+  const npmTarballs = snapshot.npmTarballs.map((descriptor) =>
+    validateStableNpmTarballDescriptor(descriptor, npmRegistryOrigins),
+  );
+  npmTarballs.sort((left, right) =>
+    left.package === right.package
+      ? compareText(left.version, right.version)
+      : compareText(left.package, right.package),
+  );
+  const npmArtifacts = new Map<string, StableVendorNpmTarballDescriptor>();
+  if (snapshot.npmCoverage === "not-requested" && npmTarballs.length !== 0) {
+    throw vendorError(
+      "A not-requested Stable npm coverage declaration cannot attach tarballs.",
+      "VENDOR_STABLE_NPM_INVENTORY_MISMATCH",
+    );
+  }
+  for (const descriptor of npmTarballs) {
+    if (
+      (descriptor.package === "mergora" ||
+        descriptor.package.startsWith("mergora-") ||
+        descriptor.package.startsWith("@mergora/")) &&
+      descriptor.version !== snapshot.release.release
+    ) {
+      throw vendorError(
+        `Stable npm tarball ${descriptor.package} is not bound to release ${snapshot.release.release}.`,
+        "VENDOR_STABLE_NPM_RELEASE_INVALID",
+      );
+    }
+    const path = stableNpmTarballInternalPath(descriptor.package, descriptor.version);
+    const identity = path.normalize("NFKC").toLocaleLowerCase("en-US");
+    if (
+      [...npmArtifacts.keys()].some(
+        (entry) => entry.normalize("NFKC").toLocaleLowerCase("en-US") === identity,
+      )
+    ) {
+      throw vendorError(
+        `Stable npm tarball inventory collides at ${path}.`,
+        "VENDOR_STABLE_NPM_PATH_COLLISION",
+      );
+    }
+    npmArtifacts.set(path, descriptor);
+  }
+  const identities = new Set<string>();
+  const observedNpmArtifacts = new Set<string>();
+  let artifactBytes = 0;
+  for (const artifact of artifacts) {
+    assertPortableRelativePath(artifact.path, "Stable vendor artifact path");
+    const npmDescriptor = npmArtifacts.get(artifact.path);
+    if (
+      (!artifact.path.startsWith("r/v1/") && npmDescriptor === undefined) ||
+      !MEDIA_TYPE_PATTERN.test(artifact.mediaType) ||
+      (npmDescriptor !== undefined && artifact.mediaType !== "application/gzip")
+    ) {
+      throw vendorError(
+        `Stable vendor artifact ${artifact.path} has unsafe metadata.`,
+        "VENDOR_STABLE_PATH_UNSAFE",
+        artifact.path,
+      );
+    }
+    const identity = artifact.path.normalize("NFKC").toLocaleLowerCase("en-US");
+    if (identities.has(identity)) {
+      throw vendorError(
+        `Stable vendor artifact ${artifact.path} has a portable path collision.`,
+        "VENDOR_STABLE_PATH_COLLISION",
+        artifact.path,
+      );
+    }
+    identities.add(identity);
+    if (
+      artifact.content.byteLength >
+        (npmDescriptor === undefined ? MAX_ARTIFACT_BYTES : MAX_NPM_TARBALL_BYTES) ||
+      sha256(artifact.content) !== artifact.digest
+    ) {
+      throw vendorError(
+        `Stable vendor artifact ${artifact.path} changed after acquisition.`,
+        "VENDOR_STABLE_DIGEST_MISMATCH",
+        artifact.path,
+      );
+    }
+    if (npmDescriptor !== undefined) {
+      if (artifact.digest !== npmDescriptor.digest) {
+        throw vendorError(
+          `Stable npm tarball ${npmDescriptor.package}@${npmDescriptor.version} changed after acquisition.`,
+          "VENDOR_STABLE_NPM_DIGEST_MISMATCH",
+          artifact.path,
+        );
+      }
+      validateStableNpmTarballBytes(npmDescriptor, artifact.content);
+      observedNpmArtifacts.add(artifact.path);
+    }
+    artifactBytes += artifact.content.byteLength;
+  }
+  if (
+    observedNpmArtifacts.size !== npmArtifacts.size ||
+    [...npmArtifacts.keys()].some((path) => !observedNpmArtifacts.has(path))
+  ) {
+    throw vendorError(
+      "Stable npm tarball inventory is missing a descriptor-bound artifact.",
+      "VENDOR_STABLE_NPM_MISSING",
+    );
+  }
+  if (artifactBytes > MAX_BUNDLE_BYTES) {
+    throw vendorError(
+      "Stable vendor artifact bytes exceed the bundle limit.",
+      "VENDOR_STABLE_BUNDLE_OVERSIZE",
+    );
+  }
+  const sums = stableSha256Sums(artifacts);
+  const manifest: StableFormalVendorManifest = {
+    schemaVersion: 1,
+    format: VENDOR_FORMAT,
+    registry: {
+      id: "official",
+      origin: OFFICIAL_REGISTRY_ORIGIN,
+      identityDigest: snapshot.release.registry.identityDigest,
+    },
+    release: snapshot.release.release,
+    selection: {
+      mode: snapshot.selectionMode,
+      requested: snapshot.selectionRequested,
+    },
+    releaseManifest: snapshot.releaseManifest,
+    items: snapshot.items,
+    schemas: snapshot.schemas,
+    contracts: snapshot.contracts,
+    passports: snapshot.passports,
+    ...(npmRegistryOrigins.length === 0 ? {} : { npmRegistryOrigins }),
+    npmCoverage: snapshot.npmCoverage,
+    npmTarballs,
+    dependencyGraphDigest: snapshot.release.dependencyGraphDigest,
+    sha256SumsDigest: sha256(sums),
+  };
+  assertManifestHygiene(manifest);
+  const targetBytes = new Map<string, Buffer>();
+  for (const artifact of artifacts) {
+    targetBytes.set(`${VENDOR_ROOT}/${artifact.path}`, Buffer.from(artifact.content));
+  }
+  targetBytes.set(VENDOR_SUMS, sums);
+  targetBytes.set(VENDOR_MANIFEST, canonicalBytes(manifest));
+  const total = [...targetBytes.values()].reduce((sum, bytes) => sum + bytes.byteLength, 0);
+  if (
+    sums.byteLength > MAX_JSON_BYTES ||
+    targetBytes.get(VENDOR_MANIFEST)!.byteLength > MAX_JSON_BYTES ||
+    total > MAX_BUNDLE_BYTES
+  ) {
+    throw vendorError(
+      "Stable vendor output exceeds its manifest, checksum, or total byte limit.",
+      "VENDOR_STABLE_BUNDLE_OVERSIZE",
+    );
+  }
+  return { targetBytes, manifest };
+}
+
 function enumerateBundleFiles(root: string, optional = false): readonly string[] {
   assertNoSymlinkAncestors(root, VENDOR_ROOT);
   const directory = resolveInside(root, VENDOR_ROOT, "Vendor root");
@@ -1406,12 +2835,15 @@ function existingBundleFiles(root: string): readonly string[] {
       VENDOR_ROOT,
     );
   }
-  verifyVendor({ projectRoot: root });
+  verifyVendorBundle({ projectRoot: root });
   return files;
 }
 
 function currentDigest(root: string, target: string): Digest | null {
-  const bytes = readProjectBytes(root, target, `Vendor target ${target}`, MAX_ARTIFACT_BYTES, true);
+  const maximumBytes = target.startsWith(`${VENDOR_ROOT}/npm/tarballs/`)
+    ? MAX_NPM_TARBALL_BYTES
+    : MAX_ARTIFACT_BYTES;
+  const bytes = readProjectBytes(root, target, `Vendor target ${target}`, maximumBytes, true);
   return bytes === null ? null : sha256(bytes);
 }
 
@@ -1561,6 +2993,7 @@ export function applyVendor(options: VendorOptions, expectedPlanDigest: string):
   const transaction = executeTransaction({
     root: built.root,
     plan: built.plan,
+    acceptedConsents: [],
     mutations: built.mutations,
     observedTargets: built.observedTargets,
     packageManagerRequired: false,
@@ -1574,6 +3007,224 @@ export function applyVendor(options: VendorOptions, expectedPlanDigest: string):
     planDigest: built.plan.planDigest,
     transaction,
     verification: verifyVendor({ projectRoot: built.root }),
+  };
+}
+
+function finalizeStableVendorPlan(value: Omit<StableVendorPlan, "planDigest">): StableVendorPlan {
+  return { ...value, planDigest: sha256(canonicalJson(value)) };
+}
+
+function buildStableBundle(snapshot: StableVendorSnapshot): BuiltStableBundle {
+  assertAuthenticStableVendorSnapshot(snapshot);
+  const project = readProjectState(snapshot.projectRoot, true);
+  if (project.root !== snapshot.projectRoot) {
+    throw vendorError(
+      "Stable vendor snapshot project root changed before planning.",
+      "VENDOR_STABLE_SNAPSHOT_INVALID",
+    );
+  }
+  const built = buildStableTargetBytes(snapshot);
+  const existingStable = verifyStableVendorBundle({ projectRoot: project.root });
+  if (
+    existingStable !== null &&
+    existingStable.release === snapshot.release.release &&
+    (existingStable.catalogDigest !== snapshot.release.catalogDigest ||
+      existingStable.releaseManifestDigest !== snapshot.release.manifestDigest)
+  ) {
+    throw vendorError(
+      "A valid Stable vendor bundle already binds this release to different immutable bytes.",
+      "VENDOR_STABLE_RELEASE_MUTATION_REFUSED",
+      VENDOR_ROOT,
+    );
+  }
+  const existing = existingBundleFiles(project.root);
+  const expectedRelative = new Set(
+    [...built.targetBytes.keys()].map((target) => target.slice(`${VENDOR_ROOT}/`.length)),
+  );
+  const stale = existing.filter((target) => !expectedRelative.has(target));
+  if (stale.length > 0) {
+    throw vendorError(
+      `Existing valid vendor selection contains stale artifact ${stale[0]}; replacing a release, format, or shrinking selection requires explicit cleanup.`,
+      "VENDOR_REPLACEMENT_REQUIRES_CLEAN",
+      relativeVendorTarget(stale[0]!),
+    );
+  }
+  const operations: OperationPlanFile[] = [];
+  const mutations: TransactionMutation[] = [];
+  const observedTargets: Record<string, Digest | null> = {};
+  const mediaTypes = new Map(
+    snapshot.artifacts.map((artifact) => [`${VENDOR_ROOT}/${artifact.path}`, artifact.mediaType]),
+  );
+  for (const [target, content] of [...built.targetBytes.entries()].sort(([left], [right]) =>
+    compareText(left, right),
+  )) {
+    const local = currentDigest(project.root, target);
+    const proposed = sha256(content);
+    const unchanged = local === proposed;
+    observedTargets[target] = local;
+    operations.push({
+      operation: unchanged ? "no-op" : local === null ? "add" : "fast-forward",
+      target,
+      owner: ownerFor(target),
+      base: local,
+      local,
+      remote: proposed,
+      proposed,
+      mediaType: mediaTypes.get(target) ?? mediaType(target),
+      risk: "ordinary",
+      reason: unchanged
+        ? "The exact Stable vendor artifact already matches the deterministic plan."
+        : target === VENDOR_MANIFEST
+          ? "Commit the formal Stable vendor manifest after every immutable artifact."
+          : "Copy a digest-verified immutable release artifact into the offline bundle.",
+    });
+    if (!unchanged) mutations.push({ target, content, beforeDigest: local });
+  }
+  if (mutations.length > 0) {
+    const ordered = [...mutations].sort((left, right) => compareText(left.target, right.target));
+    if (ordered.at(-1)?.target !== VENDOR_MANIFEST) {
+      throw vendorError(
+        "Stable vendor manifest cannot be committed last by the transaction plan.",
+        "VENDOR_PLAN_INVALID",
+      );
+    }
+  }
+  const direct = new Set(
+    snapshot.selectionMode === "all" ? snapshot.release.resolvedItems : snapshot.selectionRequested,
+  );
+  const manifestBytes = built.targetBytes.get(VENDOR_MANIFEST)!;
+  const sumsBytes = built.targetBytes.get(VENDOR_SUMS)!;
+  const plan = finalizeStableVendorPlan({
+    schemaVersion: 1,
+    command: "vendor",
+    cliVersion: CLI_VERSION,
+    projectRoot: ".",
+    configDigest: project.configDigest,
+    manifestPreconditionDigest: project.manifestDigest,
+    registries: [
+      {
+        id: "official",
+        identityDigest: snapshot.release.registry.identityDigest,
+        release: snapshot.release.release,
+        manifestDigest: snapshot.release.manifestDigest,
+        source: snapshot.acquisitionSource,
+        trust: "official",
+        evidenceTier: "complete",
+      },
+    ],
+    items: snapshot.release.resolvedItems.map((id) => ({
+      id: `official:${id}`,
+      direct: direct.has(id),
+      requested: `=${snapshot.release.release}`,
+      fromVersion: snapshot.release.release,
+      toVersion: snapshot.release.release,
+      mode: "source",
+    })),
+    fileOperations: operations,
+    dependencyChanges: [],
+    structuredPatches: [],
+    migrations: [],
+    contractChanges: snapshot.release.items.map((item) => ({
+      item: `official:${item.itemId}`,
+      from: null,
+      to: item.contract.version,
+    })),
+    warnings: [
+      `This bundle is bound to official Stable release ${snapshot.release.release}; mutable aliases and cache metadata are excluded.`,
+      ...(snapshot.npmTarballs.length === 0
+        ? ["Exact npm tarballs were not requested or were explicitly omitted."]
+        : [
+            `${String(snapshot.npmTarballs.length)} exact npm tarball${snapshot.npmTarballs.length === 1 ? " is" : "s are"} included with SHA-256, SHA-512 SRI, license, and package-metadata verification.`,
+          ]),
+      ...snapshot.npmTarballOmissions.map((omission) => `Exact npm tarball omitted: ${omission}.`),
+    ],
+    consentRequirements: [],
+    conflicts: [],
+    estimatedBytes: {
+      download: snapshot.acquiredBytes,
+      write: mutations.reduce((total, mutation) => total + (mutation.content?.byteLength ?? 0), 0),
+    },
+    validationSuite: ["schema", "digest", "path", "collision", "dependency"],
+    rollbackAvailable: true,
+    vendor: {
+      outputRoot: VENDOR_ROOT,
+      provenanceState: "stable-release",
+      release: snapshot.release.release,
+      selectionMode: snapshot.selectionMode,
+      selectedItems: snapshot.release.resolvedItems.map((id) => `official:${id}`),
+      vendorManifestDigest: sha256(manifestBytes),
+      sha256SumsDigest: sha256(sumsBytes),
+      acquisitionSource: snapshot.acquisitionSource,
+      networkUsed:
+        snapshot.acquisitionSource === "network" || snapshot.acquisitionSource === "mirror",
+    },
+  });
+  return {
+    plan,
+    mutations,
+    observedTargets,
+    targetBytes: built.targetBytes,
+    root: project.root,
+    snapshot,
+  };
+}
+
+export function planStableVendor(snapshot: StableVendorSnapshot): StableVendorPlan {
+  return buildStableBundle(snapshot).plan;
+}
+
+export function applyStableVendor(
+  snapshot: StableVendorSnapshot,
+  expectedPlanDigest: string,
+): StableVendorResult {
+  const built = buildStableBundle(snapshot);
+  if (expectedPlanDigest !== built.plan.planDigest) {
+    throw new CliError("Stable vendor plan changed before apply; review a fresh plan.", {
+      code: "PLAN_PRECONDITION_STALE",
+      exitCode: 8,
+    });
+  }
+  const bundleFiles = new Map<string, Uint8Array>();
+  for (const [target, bytes] of built.targetBytes) {
+    if (!target.startsWith(`${VENDOR_ROOT}/`)) {
+      throw vendorError(
+        "Stable vendor plan contains a target outside its bundle root.",
+        "VENDOR_STABLE_PATH_UNSAFE",
+        target,
+      );
+    }
+    bundleFiles.set(target.slice(`${VENDOR_ROOT}/`.length), bytes);
+  }
+  verifyStableVendorBundleBytes({
+    projectRoot: built.root,
+    files: bundleFiles,
+  });
+  const transaction = executeTransaction({
+    root: built.root,
+    plan: built.plan,
+    acceptedConsents: [],
+    mutations: built.mutations,
+    observedTargets: built.observedTargets,
+    packageManagerRequired: false,
+    offline: true,
+    commandArguments: snapshot.commandArguments,
+  });
+  const verification = verifyStableVendorBundle({ projectRoot: built.root });
+  if (verification === null) {
+    throw vendorError(
+      "Committed Stable vendor output did not retain its formal provenance.",
+      "VENDOR_STABLE_VERIFICATION_FAILED",
+      VENDOR_ROOT,
+    );
+  }
+  return {
+    mode: "offline-vendor",
+    root: VENDOR_ROOT,
+    items: snapshot.release.resolvedItems.map((id) => `official:${id}`),
+    release: snapshot.release.release,
+    planDigest: built.plan.planDigest,
+    transaction,
+    verification,
   };
 }
 
@@ -2445,4 +4096,13 @@ export function verifyVendor(options: VendorVerifyOptions): VendorVerificationRe
     networkUsed: false,
     writePerformed: false,
   };
+}
+
+export type VendorBundleVerificationResult =
+  VendorVerificationResult | StableVendorVerificationResult;
+
+/** Detects and verifies either supported vendor provenance without network or writes. */
+export function verifyVendorBundle(options: VendorVerifyOptions): VendorBundleVerificationResult {
+  const stable = verifyStableVendorBundle(options);
+  return stable ?? verifyVendor(options);
 }

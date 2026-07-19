@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-picker",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete cross-browser 2D pointer, touch, capture, cancellation, bounds, and controlled-owner fixtures.",
+    "Complete named hue, saturation, brightness, alpha, swatch, and exact-text keyboard parity fixtures.",
+    "Verify canonical form submission/reset, invalid recovery, alpha policy, contrast text, and Field relationships.",
+    "Record 320 CSS pixel, 400% zoom, 200% text, long locale, RTL, mobile, forced-colors, and reduced-motion geometry.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current Risk Class 2 desktop and mobile manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

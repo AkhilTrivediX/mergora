@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline-edit",
+  "entryExport": "InlineEdit",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the stable root plus constrained native inputProps or textareaProps for the editor",
+  "exports": [
+    { "kind": "component", "name": "InlineEdit" },
+    { "kind": "function", "name": "validateInlineEditValue" },
+    { "kind": "type", "name": "InlineEditBlurBehavior" },
+    { "kind": "type", "name": "InlineEditControl" },
+    { "kind": "type", "name": "InlineEditInputProps" },
+    { "kind": "type", "name": "InlineEditProps" },
+    { "kind": "type", "name": "InlineEditSaveContext" },
+    { "kind": "type", "name": "InlineEditTextareaProps" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "value", "required": false, "type": "string" },
+    { "name": "defaultValue", "required": false, "default": "", "type": "string" },
+    { "name": "onValueChange", "required": false, "type": "(value: string) => void" },
+    {
+      "name": "onSave",
+      "required": false,
+      "type": "(value, { previousValue, signal }) => void | Promise<void>"
+    },
+    { "name": "onEdit", "required": false, "type": "() => void" },
+    { "name": "onCancel", "required": false, "type": "() => void" },
+    { "name": "control", "required": false, "default": "input", "type": "input | textarea" },
+    {
+      "name": "blurBehavior",
+      "required": false,
+      "default": "keep-editing",
+      "type": "keep-editing | save"
+    },
+    { "name": "validate", "required": false, "type": "(value: string) => ReactNode | undefined" },
+    { "name": "resolveSaveError", "required": false, "type": "(error: unknown) => ReactNode" },
+    { "name": "name", "required": false, "type": "non-empty string" },
+    { "name": "form", "required": false, "type": "string" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "invalid", "required": false, "default": false, "type": "boolean" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "error", "required": false, "type": "ReactNode" },
+    { "name": "inputProps", "required": false, "type": "constrained native input attributes" },
+    {
+      "name": "textareaProps",
+      "required": false,
+      "type": "constrained native textarea attributes"
+    },
+    { "name": "editAccessibleLabel", "required": false, "type": "localized contextual string" },
+    { "name": "editLabel", "required": false, "type": "localized string" },
+    { "name": "saveLabel", "required": false, "type": "localized string" },
+    { "name": "cancelLabel", "required": false, "type": "localized string" },
+    { "name": "pendingLabel", "required": false, "type": "localized string" },
+    { "name": "successMessage", "required": false, "type": "localized string" },
+    { "name": "canceledMessage", "required": false, "type": "localized string" },
+    { "name": "emptyValueLabel", "required": false, "type": "localized string" },
+    { "name": "readOnlyLabel", "required": false, "type": "localized string" },
+    { "name": "requiredMessage", "required": false, "type": "localized string" },
+    { "name": "saveErrorMessage", "required": false, "type": "localized string" },
+    { "name": "externalChangeMessage", "required": false, "type": "localized string" }
+  ],
+  "compositionPolicy": {
+    "transitions": "View and edit are explicit modes. Only Edit enters; Save or Cancel exits; blur keeps editing unless the consumer explicitly opts into validated save-on-blur.",
+    "draft": "The native editor owns a draft separate from the saved controlled or uncontrolled value. Validation and save failure never replace the saved value or discard the draft.",
+    "async": "One abortable operation runs at a time; request identity, reset/unmount abort, and controlled external-change checks prevent stale local commits.",
+    "forms": "A named hidden input serializes only the saved value. Inline required validation runs on save; the owning form retains server validation and validation-summary responsibility."
+  }
+}

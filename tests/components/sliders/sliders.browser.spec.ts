@@ -69,13 +69,13 @@ async function submission(page: Page): Promise<Record<string, string>> {
 test("single and every named range thumb submit canonically and reset natively", async ({
   page,
 }) => {
-  await openStory(page, "production-workbench", "Offer calibration workbench");
-  const minimum = slider(page, "Minimum monthly salary");
-  const maximum = slider(page, "Maximum monthly salary");
+  await openStory(page, "production-workbench", "Budget allocation workbench");
+  const minimum = slider(page, "Minimum approved budget");
+  const maximum = slider(page, "Maximum approved budget");
   const confidence = slider(page, "Confidence threshold");
 
-  await expect(minimum).toHaveValue("6500");
-  await expect(maximum).toHaveValue("12000");
+  await expect(minimum).toHaveValue("4000");
+  await expect(maximum).toHaveValue("10000");
   await expect(confidence).toHaveValue("0.8");
   await expect(minimum).toHaveAttribute(
     "aria-valuetext",
@@ -84,16 +84,16 @@ test("single and every named range thumb submit canonically and reset natively",
       currencyDisplay: "code",
       maximumFractionDigits: 0,
       style: "currency",
-    }).format(6500),
+    }).format(4000),
   );
   await expect(confidence).toHaveAttribute("aria-valuetext", "80%");
-  await expect(minimum).toHaveAttribute("name", "salary-minimum");
-  await expect(maximum).toHaveAttribute("name", "salary-maximum");
+  await expect(minimum).toHaveAttribute("name", "budget-minimum");
+  await expect(maximum).toHaveAttribute("name", "budget-maximum");
   await expect(confidence).toHaveAttribute("name", "confidence-threshold");
 
   const fieldLabel = page
     .locator('[data-slot="field-label"]')
-    .filter({ hasText: "Approved monthly salary range" });
+    .filter({ hasText: "Approved budget range" });
   const minimumId = await minimum.getAttribute("id");
   expect(minimumId).not.toBeNull();
   if (minimumId !== null) await expect(fieldLabel).toHaveAttribute("for", minimumId);
@@ -103,8 +103,8 @@ test("single and every named range thumb submit canonically and reset natively",
   expect(rangeOutputFor).toContain(await maximum.getAttribute("id"));
   expect(await submission(page)).toEqual({
     "confidence-threshold": "0.8",
-    "salary-maximum": "12000",
-    "salary-minimum": "6500",
+    "budget-maximum": "10000",
+    "budget-minimum": "4000",
   });
 
   await minimum.focus();
@@ -115,18 +115,18 @@ test("single and every named range thumb submit canonically and reset natively",
   await confidence.press("Home");
   expect(await submission(page)).toEqual({
     "confidence-threshold": "0",
-    "salary-maximum": "11750",
-    "salary-minimum": "6750",
+    "budget-maximum": "9750",
+    "budget-minimum": "4250",
   });
 
   await page.getByRole("button", { name: "Restore slider defaults" }).click();
-  await expect(minimum).toHaveValue("6500");
-  await expect(maximum).toHaveValue("12000");
+  await expect(minimum).toHaveValue("4000");
+  await expect(maximum).toHaveValue("10000");
   await expect(confidence).toHaveValue("0.8");
   expect(await submission(page)).toEqual({
     "confidence-threshold": "0.8",
-    "salary-maximum": "12000",
-    "salary-minimum": "6500",
+    "budget-maximum": "10000",
+    "budget-minimum": "4000",
   });
   expect(await axeViolations(page)).toEqual([]);
 });
@@ -282,7 +282,7 @@ test("vertical and RTL keyboard semantics, localized value text, and forced colo
   const vertical = slider(page, "Storage temperature");
 
   await expect(rtlMinimum).toHaveAttribute("aria-orientation", "horizontal");
-  await expect(rtlMinimum).toHaveValue("4000");
+  await expect(rtlMinimum).toHaveValue("2500");
   const rtlThumbBounds = await rtlMinimum.locator("xpath=../..").boundingBox();
   expect(rtlThumbBounds).not.toBeNull();
   if (rtlThumbBounds !== null) {
@@ -292,15 +292,15 @@ test("vertical and RTL keyboard semantics, localized value text, and forced colo
     await page.mouse.down();
     await page.mouse.move(x + 40, y, { steps: 4 });
     await page.mouse.up();
-    expect(Number(await rtlMinimum.inputValue())).toBeLessThan(4000);
+    expect(Number(await rtlMinimum.inputValue())).toBeLessThan(2500);
   }
   await rtlMinimum.focus();
   await rtlMinimum.press("Home");
-  await expect(rtlMinimum).toHaveValue("3500");
+  await expect(rtlMinimum).toHaveValue("1000");
   await rtlMinimum.press("ArrowLeft");
-  await expect(rtlMinimum).toHaveValue("3750");
+  await expect(rtlMinimum).toHaveValue("1250");
   await rtlMinimum.press("ArrowRight");
-  await expect(rtlMinimum).toHaveValue("3500");
+  await expect(rtlMinimum).toHaveValue("1000");
 
   await expect(vertical).toHaveAttribute("aria-orientation", "vertical");
   await expect(vertical).toHaveAttribute(

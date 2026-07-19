@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./rating.css", "react"],
+  "entryPath": "registry/source/components/rating/rating.tsx",
+  "id": "rating",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "mergora-native-release-reference",
+  "registryId": "official",
+  "release": "1.2.3",
+  "catalog": {
+    "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "bytes": 1024
+  },
+  "manifest": {
+    "digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "bytes": 2048
+  }
+}

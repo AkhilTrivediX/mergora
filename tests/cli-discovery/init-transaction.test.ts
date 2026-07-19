@@ -41,7 +41,7 @@ describe("durable initialization transactions", () => {
     writeFileSync(resolve(project.root, ".gitignore"), "dist/\n", "utf8");
 
     const reviewed = planInit({ projectRoot: project.root });
-    applyInit({ projectRoot: project.root }, reviewed.planDigest);
+    const applied = applyInit({ projectRoot: project.root }, reviewed.planDigest);
 
     const [transactionId] = transactionIds(project.root);
     expect(transactionId).toBeDefined();
@@ -57,7 +57,26 @@ describe("durable initialization transactions", () => {
       }[];
       backups: readonly { target: string; backupPath: string; digest: string | null }[];
       preconditions: { liveTargets: Record<string, string | null> };
+      plan: { path: string; digest: string };
+      consents: readonly { id: string; accepted: true; flag: string; planDigest: string }[];
     };
+    const committedPlan = JSON.parse(
+      readFileSync(resolve(transactionRoot, "plan.json"), "utf8"),
+    ) as { planDigest: string };
+    expect(applied.planDigest).toBe(reviewed.planDigest);
+    expect(committedPlan.planDigest).toBe(reviewed.planDigest);
+    expect(record.plan).toEqual({
+      path: `.mergora/transactions/${transactionId!}/plan.json`,
+      digest: reviewed.planDigest,
+    });
+    expect(record.consents).toEqual([
+      {
+        id: "init-project-writes",
+        accepted: true,
+        flag: "--yes",
+        planDigest: reviewed.planDigest,
+      },
+    ]);
     expect(record.state).toBe("committed");
     expect(record.staged.map(({ target }) => target)).toEqual([
       ".gitignore",
@@ -97,13 +116,25 @@ describe("durable initialization transactions", () => {
 
   it("does not create another transaction for an idempotent no-op", () => {
     const project = fixture();
-    applyInit({ projectRoot: project.root });
+    const first = planInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, first.planDigest);
     const before = transactionIds(project.root);
     const reviewed = planInit({ projectRoot: project.root });
 
     expect(reviewed.writesRequired).toBe(false);
     applyInit({ projectRoot: project.root }, reviewed.planDigest);
     expect(transactionIds(project.root)).toEqual(before);
+  });
+
+  it("requires a reviewed digest before creating files or transaction state", () => {
+    const project = fixture();
+
+    expect(() => Reflect.apply(applyInit, undefined, [{ projectRoot: project.root }])).toThrow(
+      /exact reviewed plan digest/u,
+    );
+    expect(existsSync(resolve(project.root, "mergora.json"))).toBe(false);
+    expect(existsSync(resolve(project.root, ".mergora"))).toBe(false);
+    expect(transactionIds(project.root)).toEqual([]);
   });
 
   it("restores the exact first-run pre-state after an ordinary commit failure", () => {

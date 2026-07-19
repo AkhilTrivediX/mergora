@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-field",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "ColorFieldWorkbench"
+    },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "ColorFieldWorkbench" },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "ColorFieldWorkbench"
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to the surrounding validation or submission workflow."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "AdverseStateMatrix" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "ColorFieldWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Submission success belongs to a persistent workflow status rather than the editor."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to persistent field or workflow guidance rather than color alone."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Editing a color does not itself perform a destructive action."
+      }
+    }
+  ]
+}

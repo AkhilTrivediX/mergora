@@ -1,4 +1,5 @@
 export * from "./adapters/index.js";
+export * from "./contract-audit-browser-host.js";
 export * from "./environment.js";
 export * from "./evidence.js";
 export * from "./manual-evidence.js";

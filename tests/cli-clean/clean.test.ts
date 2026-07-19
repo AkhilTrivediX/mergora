@@ -15,7 +15,12 @@ import { dirname, relative, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, applySourceAdd, planSourceAdd } from "../../packages/cli/src/index.ts";
+import {
+  applyInit,
+  applySourceAdd,
+  planInit,
+  planSourceAdd,
+} from "../../packages/cli/src/index.ts";
 import { applyClean, planClean, type VerifiedCacheEntryV1 } from "../../packages/cli/src/clean.ts";
 import { canonicalJson, sha256 } from "../../packages/cli/src/contracts.ts";
 import { basePath, type ProvenanceManifest } from "../../packages/cli/src/source-operations.ts";
@@ -47,7 +52,7 @@ function transactionPaths(transactionIds: readonly string[]): readonly string[] 
 function fixture(withSource = true): CleanFixture {
   const project = createProjectFixture({ directoryPrefix: "mergora-clean-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const initTransactionIds = transactionIds(project.root);
   expect(initTransactionIds).toHaveLength(1);
   if (!withSource) return { ...project, initTransactionIds, transactionId: null };

@@ -11,9 +11,9 @@ import { dirname, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit } from "../../packages/cli/src/configuration.ts";
+import { applyInit, planInit } from "../../packages/cli/src/configuration.ts";
 import { CliError } from "../../packages/cli/src/contracts.ts";
-import { applySourceAdd } from "../../packages/cli/src/source-operations.ts";
+import { applySourceAdd, planSourceAdd } from "../../packages/cli/src/source-operations.ts";
 import {
   applyVendor,
   planVendor,
@@ -46,8 +46,9 @@ interface FixtureResult {
 function fixture(itemIds: readonly string[] = ["button"]): FixtureResult {
   const project = createProjectFixture();
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
-  applySourceAdd({ projectRoot: project.root, itemIds, registryDirectory });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
+  const addOptions = { projectRoot: project.root, itemIds, registryDirectory };
+  applySourceAdd(addOptions, planSourceAdd(addOptions).planDigest);
   return {
     root: project.root,
     options: {

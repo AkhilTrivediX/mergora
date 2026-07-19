@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "phone-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Record adapter compatibility for selected production-grade international numbering adapters without implying a bundled numbering database.",
+    "Verify canonical E.164 and separate extension serialization in controlled, uncontrolled, external-form, validation, submission, and reset paths.",
+    "Verify input, paste, autofill, mobile tel keyboard, IME deferral, adapter caret mapping, invalid recovery, and bounded-input behavior.",
+    "Record narrow, 400 percent reflow, RTL, long localized country text, forced-colors, enhanced-contrast, and reduced-motion review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

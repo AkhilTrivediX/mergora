@@ -3,7 +3,11 @@ import { resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, validateMergoraConfig } from "../../packages/cli/src/configuration.ts";
+import {
+  applyInit,
+  planInit,
+  validateMergoraConfig,
+} from "../../packages/cli/src/configuration.ts";
 import type { CliError } from "../../packages/cli/src/contracts.ts";
 import {
   applyMigration,
@@ -17,7 +21,9 @@ const temporaryDirectories: string[] = [];
 function project(initialized = true) {
   const fixture = createProjectFixture();
   temporaryDirectories.push(fixture.root);
-  if (initialized) applyInit({ projectRoot: fixture.root });
+  if (initialized) {
+    applyInit({ projectRoot: fixture.root }, planInit({ projectRoot: fixture.root }).planDigest);
+  }
   return fixture;
 }
 
@@ -107,7 +113,8 @@ describe("trusted migration planning", () => {
     expect(readFileSync(componentsPath, "utf8")).toBe(components);
 
     const pages = project(false);
-    applyInit({ projectRoot: pages.root, framework: "next-pages" });
+    const initOptions = { projectRoot: pages.root, framework: "next-pages" as const };
+    applyInit(initOptions, planInit(initOptions).planDigest);
     const frameworkPlan = planMigration({
       projectRoot: pages.root,
       target: "framework",

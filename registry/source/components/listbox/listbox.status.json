@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "listbox",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers, package/source parity, and Semantic Sync update/conflict/rollback fixtures.",
+    "Benchmark the 10k measured virtualizer in the pinned production browser runner and publish retained raw traces.",
+    "Verify delayed, failed, retried, canceled, stale, partial, offline, and paginated adapters across supported browser engines.",
+    "Verify single/multiple selection, required workflow validation, repeated FormData, prevented/accepted reset, focus fallback, and external form association.",
+    "Record narrow, zoom, text-spacing, German, Arabic RTL, touch, forced-colors, reduced-motion, speech, switch, and mobile/desktop screen-reader sessions.",
+    "Publish an approved immutable Risk Class 3 Quality Passport."
+  ]
+}

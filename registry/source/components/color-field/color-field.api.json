@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-field",
+  "entryExport": "ColorField",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement> with value, defaultValue, onChange, and children reserved",
+  "exports": [
+    { "kind": "component", "name": "ColorField" },
+    { "kind": "function", "name": "colorContrastRatio" },
+    { "kind": "function", "name": "compositeSrgbColors" },
+    { "kind": "function", "name": "createSrgbColor" },
+    { "kind": "function", "name": "formatColorValue" },
+    { "kind": "function", "name": "hslToSrgb" },
+    { "kind": "function", "name": "parseColorText" },
+    { "kind": "function", "name": "relativeLuminance" },
+    { "kind": "function", "name": "serializeColorValue" },
+    { "kind": "function", "name": "srgbToHsl" },
+    { "kind": "type", "name": "ColorAlphaPolicy" },
+    { "kind": "type", "name": "ColorFieldMessages" },
+    { "kind": "type", "name": "ColorFieldProps" },
+    { "kind": "type", "name": "ColorParseFailureReason" },
+    { "kind": "type", "name": "ColorParseResult" },
+    { "kind": "type", "name": "ColorTextFormat" },
+    { "kind": "type", "name": "HslColorValue" },
+    { "kind": "type", "name": "SrgbColorValue" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    {
+      "name": "value",
+      "required": false,
+      "type": "SrgbColorValue | null; null represents empty"
+    },
+    {
+      "name": "defaultValue",
+      "required": false,
+      "default": null,
+      "type": "SrgbColorValue | null"
+    },
+    {
+      "name": "onChange",
+      "required": false,
+      "type": "(value: SrgbColorValue | null) => void"
+    },
+    { "name": "format", "required": false, "default": "hex", "type": "hex | rgb | hsl" },
+    {
+      "name": "alphaPolicy",
+      "required": false,
+      "default": "opaque",
+      "type": "opaque | allow"
+    },
+    { "name": "name", "required": false, "type": "non-empty string" },
+    { "name": "form", "required": false, "type": "non-empty form ID" },
+    { "name": "contrastBackground", "required": false, "type": "opaque SrgbColorValue" },
+    { "name": "contrastThreshold", "required": false, "default": 4.5, "type": "number > 1" },
+    { "name": "messages", "required": false, "type": "localized ColorFieldMessages overrides" }
+  ],
+  "compositionPolicy": {
+    "field": "Field owns the integrated visible label, control ID, description, error, required, and invalid relationships.",
+    "value": "Public values are immutable 8-bit sRGB channels. CSS-like text is an editor surface; the successful form value is canonical lowercase #rrggbb or #rrggbbaa.",
+    "editing": "Incomplete or invalid text remains visible and marked invalid while the last accepted typed value is retained; Escape restores it. A valid controlled commit remains as a pending draft until the owner accepts or replaces it, and repeated Enter does not emit the same request twice. Composition is never committed mid-IME.",
+    "contrast": "The preview reports a computed ratio and threshold outcome in text without claiming that a component, token pair, or page conforms."
+  }
+}

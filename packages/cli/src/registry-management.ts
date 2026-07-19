@@ -18,10 +18,17 @@ import {
 import { readManifest } from "./source-operations.js";
 import {
   executeTransaction,
+  validateTransactionOverlay,
+  validationSuiteForTransaction,
   type OperationPlan,
   type TransactionMutation,
   type TransactionResult,
+  type TransactionValidationContext,
+  type TransactionValidationIssue,
+  type TransactionValidationResult,
+  type TransactionValidator,
 } from "./transaction-engine.js";
+import { transactionValidationResult } from "./trusted-transaction-validators.js";
 
 const REGISTRY_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const ENVIRONMENT_VARIABLE = /^[A-Z_][A-Z0-9_]*$/u;
@@ -175,7 +182,7 @@ export interface RegistryRemovalOptions {
 }
 
 export interface ApplyRegistryConfigOptions {
-  readonly expectedPlanDigest?: string | undefined;
+  readonly expectedPlanDigest: string;
   readonly acceptRegistryIdentity?: string | undefined;
   readonly commandArguments?: readonly string[] | undefined;
 }
@@ -1457,6 +1464,48 @@ function configBytes(config: MergoraConfig): Buffer {
   return Buffer.from(`${JSON.stringify(config, null, 2)}\n`);
 }
 
+function registryConfigValidator(input: {
+  readonly proposedConfig: MergoraConfig;
+  readonly expectedByteDigest: `sha256:${string}`;
+  readonly expectedConfigDigest: `sha256:${string}`;
+}): TransactionValidator {
+  const expectedDocument = canonicalJson(input.proposedConfig);
+  const validate = (context: TransactionValidationContext): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const bytes = context.readFile("mergora.json");
+    try {
+      if (bytes === null || sha256(bytes) !== input.expectedByteDigest) {
+        throw new Error("byte mismatch");
+      }
+      const raw = JSON.parse(bytes.toString("utf8")) as unknown;
+      const config = validateMergoraConfig(raw);
+      if (
+        sha256(canonicalJson(raw)) !== input.expectedConfigDigest ||
+        canonicalJson(config) !== expectedDocument
+      ) {
+        throw new Error("semantic mismatch");
+      }
+    } catch {
+      issues.push({
+        code: "REGISTRY_PROJECT_CONFIG_INVALID",
+        target: "mergora.json",
+        message: "The registry configuration differs from the exact reviewed schema-valid state.",
+      });
+    }
+    return transactionValidationResult(
+      `Validated exact registry configuration in the ${context.phase} view.`,
+      `Registry configuration validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+  return {
+    id: "registry-project-config",
+    label: "project-configured",
+    validateStagedOverlay: validate,
+    validatePostCommit: validate,
+  };
+}
+
 function registryConfigPlan(
   root: string,
   current: MergoraConfig,
@@ -1472,6 +1521,13 @@ function registryConfigPlan(
   const afterDigest = sha256(after);
   const configDigest = sha256(canonicalJson(current));
   const afterConfigDigest = sha256(canonicalJson(proposed));
+  const validators = [
+    registryConfigValidator({
+      proposedConfig: proposed,
+      expectedByteDigest: afterDigest,
+      expectedConfigDigest: afterConfigDigest,
+    }),
+  ];
   const commandReason =
     command === "registry-enroll"
       ? `Enroll registry ${id} with an explicitly accepted identity.`
@@ -1523,7 +1579,7 @@ function registryConfigPlan(
         : [],
     conflicts: [],
     estimatedBytes: { download: metadata?.catalogBytes ?? 0, write: after.byteLength },
-    validationSuite: ["schema", "digest", "path", "project-configured"] as const,
+    validationSuite: validationSuiteForTransaction(validators),
     rollbackAvailable: true,
   };
   const plan: RegistryConfigOperationPlan = {
@@ -1541,7 +1597,7 @@ function registryConfigPlan(
     installedDependents: [],
     ...uninspectedPolicies(),
   };
-  return {
+  const result: RegistryConfigPlan = {
     plan,
     patch: {
       target: "mergora.json",
@@ -1555,6 +1611,13 @@ function registryConfigPlan(
     registry: metadata === null ? registry : { ...registry, ...summarizePolicies(metadata.items) },
     metadata,
   };
+  validateTransactionOverlay({
+    root,
+    plan: operationPlanForEngine(result.plan),
+    mutations: [result.mutation],
+    validators,
+  });
+  return result;
 }
 
 export async function planRegistryEnrollment(
@@ -1667,13 +1730,10 @@ function operationPlanForEngine(plan: RegistryConfigOperationPlan): OperationPla
 export function applyRegistryConfigPlan(
   registryPlan: RegistryConfigPlan,
   projectRoot: string,
-  options: ApplyRegistryConfigOptions = {},
+  options: ApplyRegistryConfigOptions,
 ): TransactionResult {
   const root = validatedProjectRoot(projectRoot);
-  if (
-    options.expectedPlanDigest !== undefined &&
-    options.expectedPlanDigest !== registryPlan.plan.planDigest
-  ) {
+  if (options.expectedPlanDigest !== registryPlan.plan.planDigest) {
     throw registryError(
       "Registry configuration plan changed after review.",
       "PLAN_DIGEST_MISMATCH",
@@ -1691,11 +1751,21 @@ export function applyRegistryConfigPlan(
     }
   }
   validateMergoraConfig(registryPlan.proposedConfig);
+  const validator = registryConfigValidator({
+    proposedConfig: registryPlan.proposedConfig,
+    expectedByteDigest: registryPlan.patch.afterDigest,
+    expectedConfigDigest: registryPlan.patch.afterConfigDigest,
+  });
   return executeTransaction({
     root,
     plan: operationPlanForEngine(registryPlan.plan),
     mutations: [registryPlan.mutation],
+    acceptedConsents: registryPlan.plan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: registryPlan.plan.planDigest,
+    })),
     commandArguments: options.commandArguments,
+    validators: [validator],
   });
 }
 

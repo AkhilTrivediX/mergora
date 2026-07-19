@@ -3,7 +3,12 @@ import { relative, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, applySourceAdd, planSourceAdd } from "../../packages/cli/src/index.ts";
+import {
+  applyInit,
+  applySourceAdd,
+  planInit,
+  planSourceAdd,
+} from "../../packages/cli/src/index.ts";
 import {
   applySemanticUpdate,
   immutableUpdateItemDigest,
@@ -30,7 +35,7 @@ type MutableRemoteFile = {
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-semantic-validator-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const add = {
     projectRoot: project.root,
     itemIds: ["button"],

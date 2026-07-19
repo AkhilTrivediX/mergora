@@ -93,30 +93,34 @@ function SubmitWorkbench() {
   return (
     <Canvas>
       <header>
-        <h1 style={{ marginBlock: 0 }}>Compensation model</h1>
+        <h1 style={{ marginBlock: 0 }}>Project budget model</h1>
         <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
           Localized editing stays human-readable while submission keeps canonical numeric values.
-          The monthly salary is not capped at 3,500: this scenario supports the full 3,500 to 12,000
-          range.
+          This scenario uses a generic monthly project budget from 1,000 to 10,000.
         </p>
       </header>
-      <Form aria-label="Compensation model" onSubmit={handleSubmit}>
+      <Form aria-label="Project budget model" onSubmit={handleSubmit}>
         <Field
-          description="Allowed monthly range: EUR 3,500 to EUR 12,000."
-          label="Monthly compensation"
+          description="Allowed monthly range: EUR 1,000 to EUR 10,000."
+          label="Monthly operating budget"
           required
         >
           <CurrencyField
             currency="EUR"
-            defaultValue={12000}
-            maxValue={12000}
-            minValue={3500}
-            name="monthly-compensation"
+            defaultValue={8000}
+            maxValue={10000}
+            minValue={1000}
+            name="monthly-budget"
             step={250}
           />
         </Field>
-        <Field description="Stored as a fraction: 0.15 means 15%." label="Annual bonus target">
-          <PercentageField defaultValue={0.15} maxValue={0.5} name="bonus-target" step={0.005} />
+        <Field description="Stored as a fraction: 0.15 means 15%." label="Contingency target">
+          <PercentageField
+            defaultValue={0.15}
+            maxValue={0.5}
+            name="contingency-target"
+            step={0.005}
+          />
         </Field>
         <Field description="One decimal place, from 0 to 10." label="Review score">
           <NumberField
@@ -254,7 +258,7 @@ export const ScrubAndKeyboard: Story = {
         />
       </Field>
       <Field description="Wheel changes remain disabled by default." label="Monthly budget">
-        <CurrencyField currency="USD" defaultValue={9000} maxValue={25000} minValue={3500} />
+        <CurrencyField currency="USD" defaultValue={9000} maxValue={25000} minValue={1000} />
       </Field>
     </Canvas>
   ),
@@ -269,7 +273,7 @@ export const RightToLeft: Story = {
     <Canvas direction="rtl" locale="ar-EG">
       <h1 style={{ margin: 0 }}>قيم رقمية من اليمين إلى اليسار</h1>
       <Field description="القيمة المخفية رقم أساسي بدون تنسيق محلي." label="الميزانية الشهرية">
-        <CurrencyField currency="EGP" defaultValue={7800} maxValue={20000} minValue={3500} />
+        <CurrencyField currency="EGP" defaultValue={7800} maxValue={20000} minValue={1000} />
       </Field>
       <Field description="القيمة الأساسية 0.275." label="نسبة التخصيص">
         <PercentageField defaultValue={0.275} />

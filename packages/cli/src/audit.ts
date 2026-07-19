@@ -3,11 +3,13 @@ import { resolve } from "node:path";
 
 import {
   ContractDefinitionError,
+  createOfficialBrowserHostAdaptersV1,
   parseContractDefinitionV1,
   runContractAuditV1,
   type AuditMode,
   type AuditReportV1,
   type ContractDefinitionV1,
+  type OfficialBrowserHostV1,
   type StaticAuditTargetAdapter,
   type StaticTargetSnapshot,
   type TrustedRuntimeHarnessAdapterV1,
@@ -58,6 +60,10 @@ export interface AuditProjectOptions {
   readonly maxTargetBytes?: number;
   /** Trusted host code only; Contract JSON can select but never define these adapters. */
   readonly trustedRuntimeAdapters?: readonly TrustedRuntimeHarnessAdapterV1[];
+  /** Opt-in official browser host. No browser runtime is bundled or registered by default. */
+  readonly officialBrowserHost?: OfficialBrowserHostV1;
+  /** Host-controlled cap applied before official browser evidence normalization. */
+  readonly runtimeMaxOutputBytes?: number;
   /** Host-controlled wall-clock limit for each configured runtime assertion. */
   readonly runtimeTimeoutMs?: number;
 }
@@ -435,15 +441,22 @@ export async function auditProject(
   const selected = selectItems(root, manifestItems, options);
   preflightTargets(root, selected);
   const definitions = definitionsForItems(root, selected, options);
+  const officialAdapters =
+    options.officialBrowserHost === undefined
+      ? []
+      : createOfficialBrowserHostAdaptersV1(options.officialBrowserHost, {
+          ...(options.runtimeMaxOutputBytes === undefined
+            ? {}
+            : { maxOutputBytes: options.runtimeMaxOutputBytes }),
+        });
+  const trustedRuntimeAdapters = [...(options.trustedRuntimeAdapters ?? []), ...officialAdapters];
   return runContractAuditV1(
     definitions,
     createProjectTargetAdapter(root, selected, validateTargetBytes(options.maxTargetBytes)),
     {
       ...(options.requestedModes === undefined ? {} : { requestedModes: options.requestedModes }),
       changedOnly: options.changed ?? false,
-      ...(options.trustedRuntimeAdapters === undefined
-        ? {}
-        : { trustedRuntimeAdapters: options.trustedRuntimeAdapters }),
+      ...(trustedRuntimeAdapters.length === 0 ? {} : { trustedRuntimeAdapters }),
       ...(options.runtimeTimeoutMs === undefined
         ? {}
         : { runtimeTimeoutMs: options.runtimeTimeoutMs }),

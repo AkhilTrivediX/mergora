@@ -14,7 +14,7 @@ import { describe, expect, it } from "vitest";
 
 import { acquireImmutableArtifact } from "../../packages/cli/src/acquisition.ts";
 import { planClean } from "../../packages/cli/src/clean.ts";
-import { applyInit } from "../../packages/cli/src/configuration.ts";
+import { applyInit, planInit } from "../../packages/cli/src/configuration.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 import {
   acquisitionFixture,
@@ -28,7 +28,7 @@ describe("verified acquisition cache", () => {
     const source = acquisitionFixture();
     const project = createProjectFixture({ directoryPrefix: "mergora-acquisition-clean-" });
     try {
-      applyInit({ projectRoot: project.root });
+      applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
       const acquired = await acquireImmutableArtifact({
         projectRoot: project.root,
         request: source.request,

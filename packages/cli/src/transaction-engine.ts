@@ -152,6 +152,7 @@ export interface OperationPlan {
       | "rename-prop"
       | "rename-token"
       | "config-v1"
+      | "mode-source-package-v1"
       | "manual-checklist";
     readonly phase: "remote" | "proposed";
   }[];
@@ -309,7 +310,12 @@ interface TransactionRecord {
   staged: StagedRecord[];
   backups: BackupRecord[];
   conflicts: readonly unknown[];
-  consents: readonly { readonly id: string; readonly accepted: boolean; readonly flag: string }[];
+  consents: readonly {
+    readonly id: string;
+    readonly accepted: true;
+    readonly flag: string;
+    readonly planDigest: `sha256:${string}`;
+  }[];
   resolutions: readonly unknown[];
   validations: { readonly id: string; readonly state: "pass" | "fail"; readonly summary: string }[];
   command: { readonly name: string; readonly redactedArguments: readonly string[] };
@@ -360,6 +366,11 @@ export interface ExecuteTransactionOptions {
   readonly root: string;
   readonly plan: OperationPlan;
   readonly mutations: readonly TransactionMutation[];
+  /** Exact consent IDs accepted for this finalized plan; an acceptance cannot be replayed on another plan. */
+  readonly acceptedConsents: readonly {
+    readonly id: string;
+    readonly planDigest: OperationPlan["planDigest"];
+  }[];
   readonly observedTargets?: Readonly<Record<string, `sha256:${string}` | null>> | undefined;
   readonly registryPayloads?: readonly TransactionRegistryPayload[] | undefined;
   readonly packageManager?: PackageManager | undefined;
@@ -370,6 +381,14 @@ export interface ExecuteTransactionOptions {
   readonly commandArguments?: readonly string[] | undefined;
   readonly faultInjector?: TransactionFaultInjector | undefined;
   readonly validators?: readonly TransactionValidator[] | undefined;
+}
+
+export interface ValidateTransactionOverlayOptions {
+  readonly root: string;
+  readonly plan: OperationPlan;
+  readonly mutations: readonly TransactionMutation[];
+  readonly validators: readonly TransactionValidator[];
+  readonly observedTargets?: Readonly<Record<string, `sha256:${string}` | null>> | undefined;
 }
 
 export interface TransactionResult {
@@ -410,6 +429,9 @@ const MAX_VALIDATION_READS = 8192;
 const MAX_VALIDATION_FILE_BYTES = 16 * 1024 * 1024;
 const MAX_VALIDATION_TOTAL_BYTES = 128 * 1024 * 1024;
 const MAX_VALIDATION_ISSUES = 256;
+const TRANSACTION_CONSENT_ID_PATTERN = /^[a-z0-9][a-z0-9:._-]{0,255}$/u;
+const TRANSACTION_CONSENT_FLAG_PATTERN =
+  /^--[a-z0-9]+(?:-[a-z0-9]+)*(?:(?:=| )[A-Za-z0-9][A-Za-z0-9:._/-]*)?$/u;
 const VALIDATION_LABEL_ORDER: readonly TransactionValidationLabel[] = [
   "schema",
   "digest",
@@ -423,7 +445,15 @@ const VALIDATION_LABEL_ORDER: readonly TransactionValidationLabel[] = [
   "accessibility-contract",
   "project-configured",
 ];
-const BUILT_IN_TRANSACTION_VALIDATIONS: readonly TransactionValidationLabel[] = [
+/**
+ * Labels implemented unconditionally by the transaction engine itself. `schema` covers the
+ * operation-plan digest plus any mutated package and present provenance document shape;
+ * `digest`, `path`, and `collision` cover the staged and committed mutation set; `ownership` and
+ * `dependency` cover the target and dependency-owner graph whenever provenance is present. Every
+ * other label must be backed by a command-owned validator registration before execution is
+ * allowed.
+ */
+export const BUILT_IN_TRANSACTION_VALIDATIONS: readonly TransactionValidationLabel[] = [
   "schema",
   "digest",
   "path",
@@ -498,6 +528,40 @@ function assertValidatorRegistrations(validators: readonly TransactionValidator[
       });
     }
     identifiers.add(validator.id);
+  }
+}
+
+function assertPlanValidatorBinding(
+  plan: OperationPlan,
+  validators: readonly TransactionValidator[],
+): void {
+  if (
+    !Array.isArray(plan.validationSuite) ||
+    new Set(plan.validationSuite).size !== plan.validationSuite.length ||
+    plan.validationSuite.some((label) => !VALIDATION_LABEL_ORDER.includes(label))
+  ) {
+    throw new CliError("The reviewed transaction validation suite is malformed.", {
+      code: "TRANSACTION_VALIDATOR_PLAN_MISMATCH",
+      exitCode: 8,
+    });
+  }
+  const reviewed = new Set(plan.validationSuite);
+  const unexpected = validators.find(({ label }) => !reviewed.has(label));
+  if (unexpected !== undefined) {
+    throw new CliError(
+      `Transaction validator ${unexpected.id} is absent from the reviewed validation suite.`,
+      { code: "TRANSACTION_VALIDATOR_PLAN_MISMATCH", exitCode: 8 },
+    );
+  }
+  const registeredLabels = new Set(validators.map(({ label }) => label));
+  const missing = plan.validationSuite.find(
+    (label) => !BUILT_IN_TRANSACTION_VALIDATIONS.includes(label) && !registeredLabels.has(label),
+  );
+  if (missing !== undefined) {
+    throw new CliError(
+      `Reviewed validation label ${missing} has no fixed validator registration.`,
+      { code: "TRANSACTION_VALIDATOR_REQUIRED", exitCode: 8 },
+    );
   }
 }
 
@@ -1113,6 +1177,98 @@ function assertPlanDigest(plan: OperationPlan): void {
   }
 }
 
+function assertAcceptedConsents(
+  plan: OperationPlan,
+  acceptedConsents: ExecuteTransactionOptions["acceptedConsents"],
+): void {
+  if (!Array.isArray(plan.consentRequirements) || !Array.isArray(acceptedConsents)) {
+    throw new CliError("Transaction consent metadata is malformed.", {
+      code: "TRANSACTION_CONSENT_INVALID",
+      exitCode: 8,
+    });
+  }
+
+  const required = new Map<string, OperationPlan["consentRequirements"][number]>();
+  for (const rawRequirement of plan.consentRequirements) {
+    const requirement = plainRecord(rawRequirement);
+    if (
+      requirement === null ||
+      !hasExactKeys(requirement, ["id", "flag", "reason"]) ||
+      typeof requirement.id !== "string" ||
+      !TRANSACTION_CONSENT_ID_PATTERN.test(requirement.id) ||
+      typeof requirement.flag !== "string" ||
+      !TRANSACTION_CONSENT_FLAG_PATTERN.test(requirement.flag) ||
+      requirement.flag.length > 1024 ||
+      typeof requirement.reason !== "string" ||
+      requirement.reason.length === 0 ||
+      requirement.reason.length > 4096 ||
+      required.has(requirement.id)
+    ) {
+      throw new CliError(
+        "The operation plan contains malformed or duplicate consent requirements.",
+        {
+          code: "TRANSACTION_CONSENT_INVALID",
+          exitCode: 8,
+        },
+      );
+    }
+    required.set(requirement.id, rawRequirement as OperationPlan["consentRequirements"][number]);
+  }
+
+  const accepted = new Set<string>();
+  for (const rawAcceptance of acceptedConsents) {
+    const acceptance = plainRecord(rawAcceptance);
+    if (
+      acceptance === null ||
+      !hasExactKeys(acceptance, ["id", "planDigest"]) ||
+      typeof acceptance.id !== "string" ||
+      !TRANSACTION_CONSENT_ID_PATTERN.test(acceptance.id) ||
+      !isDigest(acceptance.planDigest) ||
+      accepted.has(acceptance.id)
+    ) {
+      throw new CliError("Transaction consent acceptance is malformed or duplicated.", {
+        code: "TRANSACTION_CONSENT_INVALID",
+        exitCode: 8,
+      });
+    }
+    if (acceptance.planDigest !== plan.planDigest) {
+      throw new CliError("Transaction consent was accepted for a stale operation plan.", {
+        code: "PLAN_PRECONDITION_STALE",
+        exitCode: 8,
+      });
+    }
+    if (!required.has(acceptance.id)) {
+      throw new CliError(
+        `Transaction consent ${JSON.stringify(acceptance.id)} is not required by this plan.`,
+        {
+          code: "TRANSACTION_CONSENT_UNEXPECTED",
+          exitCode: 8,
+        },
+      );
+    }
+    accepted.add(acceptance.id);
+  }
+
+  const missing = [...required.keys()].filter((id) => !accepted.has(id));
+  if (missing.length > 0) {
+    throw new CliError(
+      `Transaction requires explicit consent for ${missing.map((id) => JSON.stringify(id)).join(", ")}.`,
+      {
+        code: "CONSENT_REQUIRED",
+        exitCode: 12,
+      },
+    );
+  }
+}
+
+function acceptedConsentsForReviewedPlan(
+  plan: OperationPlan,
+  reviewedPlanDigest: string | undefined,
+): ExecuteTransactionOptions["acceptedConsents"] {
+  if (reviewedPlanDigest !== plan.planDigest) return [];
+  return plan.consentRequirements.map(({ id }) => ({ id, planDigest: plan.planDigest }));
+}
+
 function assertPortableMutationSet(mutations: readonly TransactionMutation[]): void {
   const targets = new Set<string>();
   for (const mutation of mutations) {
@@ -1512,13 +1668,111 @@ function runRegisteredValidators(input: {
   }
 }
 
-function assertStructuredState(root: string, record: TransactionRecord, staged: boolean): void {
-  const packageEntry = record.staged.find(({ target }) => target === "package.json");
-  if (packageEntry !== undefined) {
-    const packageBytes = transactionViewBytes(root, record, "package.json", staged);
+/**
+ * Runs command-owned staged-overlay validators without creating a lock, transaction directory, or
+ * any other project bytes. Planners use this to reject invalid proposed state before returning a
+ * dry-run plan; authoritative execution repeats the same callbacks in both transaction phases.
+ */
+export function validateTransactionOverlay(inputOptions: ValidateTransactionOverlayOptions): void {
+  const plan = immutableCanonicalSnapshot(inputOptions.plan);
+  assertPlanDigest(plan);
+  assertValidatorRegistrations(inputOptions.validators);
+  const validators = immutableValidatorRegistrations(inputOptions.validators);
+  assertPlanValidatorBinding(plan, validators);
+  assertPortableMutationSet(inputOptions.mutations);
+  assertMutationPlanBinding(plan, inputOptions.mutations);
+  assertGlobalPreconditions(inputOptions.root, plan);
+  const preconditions: Record<string, `sha256:${string}` | null> = {
+    ...(inputOptions.observedTargets ?? {}),
+  };
+  for (const mutation of inputOptions.mutations)
+    preconditions[mutation.target] = mutation.beforeDigest;
+  assertPreconditions(inputOptions.root, preconditions);
+
+  const overlay = new Map(
+    inputOptions.mutations.map((mutation) => [
+      mutation.target,
+      mutation.content === null ? null : Buffer.from(mutation.content),
+    ]),
+  );
+  const cache = new Map<string, Buffer | null>();
+  let totalBytes = 0;
+  const readFile = (target: string): Buffer | null => {
+    assertPortableRelativePath(target, "Transaction validator read target");
+    if (!cache.has(target)) {
+      if (cache.size >= MAX_VALIDATION_READS) {
+        throw new CliError("Transaction validation exceeded its deterministic read bound.", {
+          code: "TRANSACTION_VALIDATION_LIMIT_EXCEEDED",
+          exitCode: 8,
+          target,
+        });
+      }
+      const overlaid = overlay.get(target);
+      const bytes = overlay.has(target)
+        ? overlaid
+        : readProjectBytes(inputOptions.root, target, MAX_VALIDATION_FILE_BYTES);
+      totalBytes += bytes?.byteLength ?? 0;
+      if (
+        (bytes?.byteLength ?? 0) > MAX_VALIDATION_FILE_BYTES ||
+        totalBytes > MAX_VALIDATION_TOTAL_BYTES
+      ) {
+        throw new CliError("Transaction validation exceeded its deterministic byte bound.", {
+          code: "TRANSACTION_VALIDATION_LIMIT_EXCEEDED",
+          exitCode: 8,
+          target,
+        });
+      }
+      cache.set(target, bytes === null || bytes === undefined ? null : Buffer.from(bytes));
+    }
+    const cached = cache.get(target) ?? null;
+    return cached === null ? null : Buffer.from(cached);
+  };
+  const context: TransactionValidationContext = Object.freeze({
+    phase: "staged-overlay" as const,
+    projectRoot: inputOptions.root,
+    plan,
+    mutationTargets: Object.freeze(
+      inputOptions.mutations
+        .map(({ target }) => target)
+        .sort((left, right) => left.localeCompare(right, "en-US")),
+    ),
+    readFile,
+  });
+  const packageChanged = inputOptions.mutations.some(({ target }) => target === "package.json");
+  assertStructuredView(
+    (target) => (target === "package.json" && !packageChanged ? null : readFile(target)),
+    (target) => target,
+  );
+  for (const validator of [...validators].sort((left, right) =>
+    left.id.localeCompare(right.id, "en-US"),
+  )) {
+    let rawResult: TransactionValidationResult;
+    try {
+      rawResult = validator.validateStagedOverlay(context);
+    } catch (error) {
+      rawResult = validatorExceptionResult(validator, "staged-overlay", error);
+    }
+    const result = normalizedValidationResult(validator, "staged-overlay", rawResult);
+    if (result.state === "fail") {
+      const issue = result.issues?.[0];
+      throw new CliError(`${result.summary}${issue === undefined ? "" : ` ${issue.message}`}`, {
+        code: "TRANSACTION_STAGED_VALIDATION_FAILED",
+        exitCode: 8,
+        target: issue?.target ?? ".",
+      });
+    }
+  }
+}
+
+function assertStructuredView(
+  readFile: (target: string) => Buffer | null,
+  validationTarget: (target: string) => string,
+): void {
+  const packageBytes = readFile("package.json");
+  if (packageBytes !== null) {
     let packageValue: unknown;
     try {
-      packageValue = JSON.parse(packageBytes?.toString("utf8") ?? "null") as unknown;
+      packageValue = JSON.parse(packageBytes.toString("utf8")) as unknown;
     } catch {
       packageValue = null;
     }
@@ -1526,12 +1780,12 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       throw new CliError("The transaction package.json post-state is invalid.", {
         code: "TRANSACTION_STAGE_INVALID",
         exitCode: 8,
-        target: staged ? packageEntry.stagePath : "package.json",
+        target: validationTarget("package.json"),
       });
     }
   }
 
-  const manifestBytes = transactionViewBytes(root, record, ".mergora/manifest.json", staged);
+  const manifestBytes = readFile(".mergora/manifest.json");
   if (manifestBytes === null) return;
   let parsed: unknown;
   try {
@@ -1541,8 +1795,20 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
     parsed = null;
   }
   const manifest = plainRecord(parsed);
+  const distributionKeys = [
+    "configDigest",
+    "defaultMode",
+    "packageName",
+    "releases",
+    "dependencyOwnership",
+    "patchOwnership",
+  ] as const;
+  const presentDistributionKeys =
+    manifest === null ? [] : distributionKeys.filter((key) => Object.hasOwn(manifest, key));
+  const distributionAware = presentDistributionKeys.length === distributionKeys.length;
   if (
     manifest === null ||
+    (presentDistributionKeys.length !== 0 && !distributionAware) ||
     !hasExactKeys(manifest, [
       "$schema",
       "schemaVersion",
@@ -1551,6 +1817,7 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       "items",
       "sharedTargets",
       "dependencyOwners",
+      ...presentDistributionKeys,
     ]) ||
     manifest.schemaVersion !== 1 ||
     manifest.$schema !==
@@ -1591,7 +1858,7 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       typeof item.itemId !== "string" ||
       qualifiedId !== `${item.registry}:${item.itemId}` ||
       typeof item.direct !== "boolean" ||
-      item.mode !== "source" ||
+      (item.mode !== "source" && !(distributionAware && item.mode === "package")) ||
       !isDigest(item.transformContextDigest) ||
       sha256(canonicalJson(transformContext)) !== item.transformContextDigest ||
       !Array.isArray(item.files) ||
@@ -1602,6 +1869,24 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       !isDigest(payload.digest)
     ) {
       throw new CliError(`Provenance item ${qualifiedId} is invalid.`, {
+        code: "TRANSACTION_PROVENANCE_INVALID",
+        exitCode: 8,
+        target: ".mergora/manifest.json",
+      });
+    }
+    if (
+      distributionAware &&
+      (typeof item.releaseRef !== "string" ||
+        !Array.isArray(item.packageClaims) ||
+        !Array.isArray(item.importSubpaths) ||
+        (item.mode === "source" &&
+          (item.packageClaims.length !== 0 || item.importSubpaths.length !== 0)) ||
+        (item.mode === "package" &&
+          (item.files.length !== 0 ||
+            item.packageClaims.length === 0 ||
+            item.importSubpaths.length === 0)))
+    ) {
+      throw new CliError(`Distribution ownership for ${qualifiedId} is invalid.`, {
         code: "TRANSACTION_PROVENANCE_INVALID",
         exitCode: 8,
         target: ".mergora/manifest.json",
@@ -1673,7 +1958,7 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       }
       ownedTargets.add(portableTarget);
       const blobTarget = baseBlobPath(file.base);
-      const baseBytes = transactionViewBytes(root, record, blobTarget, staged);
+      const baseBytes = readFile(blobTarget);
       if (baseBytes === null || sha256(baseBytes) !== file.base) {
         throw new CliError(`Provenance base ${blobTarget} is missing or corrupt.`, {
           code: "TRANSACTION_PROVENANCE_INVALID",
@@ -1697,6 +1982,20 @@ function assertStructuredState(root: string, record: TransactionRecord, staged: 
       });
     }
   }
+}
+
+function assertStructuredState(root: string, record: TransactionRecord, staged: boolean): void {
+  const packageChanged = record.staged.some(({ target }) => target === "package.json");
+  assertStructuredView(
+    (target) =>
+      target === "package.json" && !packageChanged
+        ? null
+        : transactionViewBytes(root, record, target, staged),
+    (target) =>
+      staged
+        ? (record.staged.find((entry) => entry.target === target)?.stagePath ?? target)
+        : target,
+  );
 }
 
 function transactionDirectoryIds(root: string): readonly string[] {
@@ -1802,24 +2101,26 @@ function rollbackFromBackups(
 }
 
 export function executeTransaction(inputOptions: ExecuteTransactionOptions): TransactionResult {
-  assertPlanDigest(inputOptions.plan);
+  if (!Array.isArray(inputOptions.acceptedConsents)) {
+    throw new CliError("Transaction consent acceptance must be supplied explicitly.", {
+      code: "TRANSACTION_CONSENT_INVALID",
+      exitCode: 8,
+    });
+  }
+  const plan = immutableCanonicalSnapshot(inputOptions.plan);
+  assertPlanDigest(plan);
   const suppliedValidators = inputOptions.validators ?? [];
   assertValidatorRegistrations(suppliedValidators);
   const validators = immutableValidatorRegistrations(suppliedValidators);
+  assertPlanValidatorBinding(plan, validators);
+  const acceptedConsents = immutableCanonicalSnapshot(inputOptions.acceptedConsents);
+  assertAcceptedConsents(plan, acceptedConsents);
   const options: ExecuteTransactionOptions = {
     ...inputOptions,
-    plan: immutableCanonicalSnapshot(inputOptions.plan),
+    plan,
+    acceptedConsents,
     validators,
   };
-  const missingValidatorLabel = validators.find(
-    ({ label }) => !options.plan.validationSuite.includes(label),
-  );
-  if (missingValidatorLabel !== undefined) {
-    throw new CliError(
-      `Transaction validator ${missingValidatorLabel.id} is absent from the reviewed validation suite.`,
-      { code: "TRANSACTION_VALIDATOR_PLAN_MISMATCH", exitCode: 8 },
-    );
-  }
   assertPortableMutationSet(options.mutations);
   assertRegistryPayloads(options.registryPayloads);
   assertMutationPlanBinding(options.plan, options.mutations);
@@ -1912,11 +2213,18 @@ export function executeTransaction(inputOptions: ExecuteTransactionOptions): Tra
       staged,
       backups: [],
       conflicts: [],
-      consents: options.plan.consentRequirements.map(({ id: consentId, flag }) => ({
-        id: consentId,
-        accepted: true,
-        flag,
-      })),
+      consents: options.plan.consentRequirements.map(({ id: consentId, flag }) => {
+        const acceptance = options.acceptedConsents.find(({ id: acceptedId }) => {
+          return acceptedId === consentId;
+        });
+        if (acceptance === undefined) throw new Error("verified consent acceptance missing");
+        return {
+          id: consentId,
+          accepted: true,
+          flag,
+          planDigest: acceptance.planDigest,
+        };
+      }),
       resolutions: [],
       validations: [...validators]
         .sort((left, right) => left.id.localeCompare(right.id, "en-US"))
@@ -1941,7 +2249,6 @@ export function executeTransaction(inputOptions: ExecuteTransactionOptions): Tra
     journal = { schemaVersion: 1, transactionId: id, state: "planning", entries: [] };
     writeTransactionRecord(options.root, record);
     appendJournal(options.root, journal, "planning", "lock-acquired");
-    appendJournal(options.root, journal, "planning", "plan-complete");
     writeProjectBytes(options.root, planPath, Buffer.from(canonicalJson(options.plan)), 0o600);
     const writtenPlan = readProjectBytes(options.root, planPath);
     if (writtenPlan === null || sha256(writtenPlan) !== sha256(canonicalJson(options.plan))) {
@@ -1951,6 +2258,8 @@ export function executeTransaction(inputOptions: ExecuteTransactionOptions): Tra
         target: planPath,
       });
     }
+    appendJournal(options.root, journal, "planning", "plan-complete");
+    appendJournal(options.root, journal, "planning", "consent-recorded");
     invokeFault(options, "lock-acquired", id);
     invokeFault(options, "transaction-created", id);
 
@@ -2413,6 +2722,25 @@ function readTransactionRecord(root: string, id: string): TransactionRecord {
     }
     backupTargets.add(backup.target);
   }
+  const consentIds = new Set<string>();
+  for (const entry of record.consents) {
+    const consent = plainRecord(entry);
+    if (
+      consent === null ||
+      !hasExactKeys(consent, ["id", "accepted", "flag", "planDigest"]) ||
+      typeof consent.id !== "string" ||
+      !TRANSACTION_CONSENT_ID_PATTERN.test(consent.id) ||
+      consent.accepted !== true ||
+      typeof consent.flag !== "string" ||
+      !TRANSACTION_CONSENT_FLAG_PATTERN.test(consent.flag) ||
+      consent.flag.length > 1024 ||
+      !isDigest(consent.planDigest) ||
+      consentIds.has(consent.id)
+    ) {
+      invalidTransactionRecord(id);
+    }
+    consentIds.add(consent.id);
+  }
   try {
     assertRegistryPayloads(record.registryPayloads as TransactionRegistryPayload[]);
   } catch {
@@ -2443,6 +2771,21 @@ function readRecordedPlan(root: string, record: TransactionRecord): OperationPla
         target: record.plan.path,
       },
     );
+  }
+  if (
+    record.consents.length !== plan.consentRequirements.length ||
+    plan.consentRequirements.some((requirement, index) => {
+      const consent = record.consents[index];
+      return (
+        consent === undefined ||
+        consent.id !== requirement.id ||
+        consent.flag !== requirement.flag ||
+        consent.accepted !== true ||
+        consent.planDigest !== plan.planDigest
+      );
+    })
+  ) {
+    invalidTransactionRecord(record.transactionId);
   }
   return plan;
 }
@@ -2894,6 +3237,8 @@ export function recoverTransaction(
       exitCode: 8,
     });
   }
+  const acceptedConsents = acceptedConsentsForReviewedPlan(planned.plan, expectedPlanDigest);
+  assertAcceptedConsents(planned.plan, acceptedConsents);
   if (planned.orphan === true) {
     if (readProjectBytes(options.root, recordPath(options.root, planned.transactionId)) !== null) {
       throw new CliError("The orphan recovery precondition changed; review a fresh plan.", {
@@ -2931,7 +3276,12 @@ export function recoverTransaction(
         staged: [],
         backups: [],
         conflicts: [],
-        consents: [{ id: "recover-transaction", accepted: true, flag: "--yes" }],
+        consents: acceptedConsents.map(({ id, planDigest }) => ({
+          id,
+          accepted: true,
+          flag: planned.plan.consentRequirements.find((requirement) => requirement.id === id)!.flag,
+          planDigest,
+        })),
         resolutions: [],
         validations: [
           {
@@ -2950,6 +3300,7 @@ export function recoverTransaction(
         entries: [],
       };
       writeTransactionRecord(options.root, record);
+      appendJournal(options.root, journal, "abandoned", "consent-recorded");
       appendJournal(options.root, journal, "abandoned", "finalized");
       releaseLock(options.root, orphanLock);
       orphanLock = null;
@@ -3387,6 +3738,7 @@ export function rollbackTransaction(
     root: options.root,
     plan: planned.plan,
     mutations,
+    acceptedConsents: acceptedConsentsForReviewedPlan(planned.plan, expectedPlanDigest),
     packageManager: planned.packageManager === "none" ? undefined : planned.packageManager,
     packageManagerRequired: planned.packageManager !== "none",
     noInstall: options.noInstall,

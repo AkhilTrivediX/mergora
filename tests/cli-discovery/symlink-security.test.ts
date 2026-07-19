@@ -18,6 +18,7 @@ import {
   CliError,
   doctorProject,
   inspectProject,
+  planInit,
   projectStatus,
 } from "../../packages/cli/src/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
@@ -78,7 +79,7 @@ function digest(content: string): `sha256:${string}` {
 describe("project discovery no-follow policy", () => {
   it("rejects a linked manifest and returns a safe doctor diagnostic", () => {
     const project = projectFixture();
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const outside = outsideDirectory("mergora-outside-manifest-");
     writeFileSync(resolve(outside, "secret.txt"), "must not be read\n");
     const manifest = resolve(project.root, ".mergora/manifest.json");
@@ -97,7 +98,7 @@ describe("project discovery no-follow policy", () => {
 
   it("rejects a linked transaction directory", () => {
     const project = projectFixture();
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const outside = outsideDirectory("mergora-outside-transactions-");
     writeFileSync(resolve(outside, "secret.txt"), "must not be read\n");
     const transactionDirectory = resolve(project.root, ".mergora/transactions");
@@ -113,7 +114,7 @@ describe("project discovery no-follow policy", () => {
 
   it("rejects a linked owned-target ancestor", () => {
     const project = projectFixture();
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const target = "src/components/mergora/button/button.tsx";
     const targetDirectory = dirname(resolve(project.root, target));
     const content = "export const Button = true;\n";
@@ -150,7 +151,7 @@ describe("project discovery no-follow policy", () => {
 
   it("rejects a linked immutable-base ancestor", () => {
     const project = projectFixture();
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const target = "src/components/mergora/button/button.tsx";
     const content = "export const Button = true;\n";
     const base = digest(content);

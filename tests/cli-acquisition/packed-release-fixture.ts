@@ -1,4 +1,5 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import {
@@ -15,7 +16,9 @@ import {
   releaseArtifactDigest,
   STABLE_RELEASE_SCHEMA_PATHS,
   type ReleaseEvidenceReference,
+  type ReleaseProtocolArtifact,
   type ReleaseProtocolValidator,
+  type StableReleaseProtocolBundle,
   type StableReleaseProtocolInput,
 } from "../../tooling/registry-builder/src/index.ts";
 import { validateSchemaDocument } from "../../registry/schemas/index.ts";
@@ -90,13 +93,36 @@ export interface SeededPackedRelease {
   readonly version: string;
 }
 
-export async function seedPackedNativeRelease(
-  projectRoot: string,
+export interface PackedNpmPackageFixture {
+  readonly package: string;
+  readonly bytes: Uint8Array;
+  readonly license?: string | undefined;
+}
+
+interface BuiltPackedRelease {
+  readonly bundle: StableReleaseProtocolBundle;
+  readonly catalogArtifact: ReleaseProtocolArtifact;
+  readonly input: StableReleaseProtocolInput;
+  readonly itemId: "button";
+  readonly manifestArtifact: ReleaseProtocolArtifact;
+  readonly payloadArtifact: ReleaseProtocolArtifact;
+  readonly reference: PackedNativeReleaseReference;
+}
+
+function buildPackedRelease(
   version: string,
   source: string,
-): Promise<SeededPackedRelease> {
+  npmPackageFixture?: PackedNpmPackageFixture,
+): BuiltPackedRelease {
   const itemId = "button";
   const identity = { id: "official", origin: ORIGIN } as const;
+  const npmPackageName = npmPackageFixture?.package ?? "mergora-ui";
+  const npmArtifactFixture = Buffer.from(
+    npmPackageFixture?.bytes ?? `synthetic packed fixture for mergora-ui@${version}\n`,
+  );
+  const npmPackageUnscopedName = npmPackageName.includes("/")
+    ? npmPackageName.split("/")[1]!
+    : npmPackageName;
   const input: StableReleaseProtocolInput = {
     registry: { ...identity, identityDigest: officialRegistryIdentityDigest(identity) },
     uiVersion: version,
@@ -114,6 +140,21 @@ export async function seedPackedNativeRelease(
       evidence(path.slice("r/v1/schemas/".length, -".schema.json".length), path),
     ),
     sbom: evidence("sbom", `r/v1/releases/${version}/sbom.json`),
+    npmPackageInventory: {
+      allowedLicenses: ["MIT"],
+      entries: [
+        {
+          package: npmPackageName,
+          version,
+          url: `https://registry.npmjs.org/${npmPackageName}/-/${npmPackageUnscopedName}-${version}.tgz`,
+          bytes: npmArtifactFixture.byteLength,
+          digest: releaseArtifactDigest(npmArtifactFixture),
+          integrity: `sha512-${createHash("sha512").update(npmArtifactFixture).digest("base64")}`,
+          license: npmPackageFixture?.license ?? "MIT",
+          disposition: "include",
+        },
+      ],
+    },
     items: [
       {
         payload: {
@@ -173,6 +214,100 @@ export async function seedPackedNativeRelease(
   if (bundle.artifacts.some(({ content }) => content.includes(`${ORIGIN}/r/v1/`))) {
     throw new Error("Packed native release contains a doubled public protocol prefix.");
   }
+  const catalogArtifact = bundle.artifacts.find(({ path }) => path === "r/v1/catalog.json")!;
+  const manifestArtifact = bundle.artifacts.find(
+    ({ path }) => path === `r/v1/releases/${version}/manifest.json`,
+  )!;
+  const payloadArtifact = bundle.artifacts.find(
+    ({ path }) => path === `r/v1/releases/${version}/items/button.json`,
+  )!;
+  const reference: PackedNativeReleaseReference = {
+    artifactKind: "mergora-native-release-reference",
+    catalog: {
+      bytes: Buffer.byteLength(catalogArtifact.content),
+      digest: catalogArtifact.digest,
+    },
+    manifest: {
+      bytes: Buffer.byteLength(manifestArtifact.content),
+      digest: manifestArtifact.digest,
+    },
+    registryId: "official",
+    release: version,
+    schemaVersion: 1,
+  };
+  return {
+    bundle,
+    catalogArtifact,
+    input,
+    itemId,
+    manifestArtifact,
+    payloadArtifact,
+    reference,
+  };
+}
+
+function writeReference(
+  projectRoot: string,
+  version: string,
+  reference: PackedNativeReleaseReference,
+): string {
+  const referencePath = `.mergora/release-${version}.json`;
+  mkdirSync(resolve(projectRoot, ".mergora"), { recursive: true });
+  writeFileSync(resolve(projectRoot, referencePath), `${canonicalJson(reference)}\n`, "utf8");
+  return referencePath;
+}
+
+function writeVerifiedCacheArtifact(projectRoot: string, artifact: ReleaseProtocolArtifact): void {
+  const key = artifact.digest.slice("sha256:".length);
+  const directory = resolve(projectRoot, ".mergora/cache/entries", key);
+  const bytes = Buffer.from(artifact.content);
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(resolve(directory, "artifact"), bytes);
+  writeFileSync(
+    resolve(directory, "cache-entry.json"),
+    `${canonicalJson({
+      schemaVersion: 1,
+      artifactKind: "mergora-verified-cache-entry",
+      key,
+      artifact: "artifact",
+      digest: artifact.digest,
+      bytes: bytes.byteLength,
+    })}\n`,
+    "utf8",
+  );
+}
+
+/** Seeds every immutable release artifact in verified cache, but creates no vendor bundle. */
+export function seedPackedCompleteNativeReleaseCache(
+  projectRoot: string,
+  version: string,
+  source: string,
+  npmPackageFixture?: PackedNpmPackageFixture,
+): SeededPackedRelease {
+  const built = buildPackedRelease(version, source, npmPackageFixture);
+  for (const artifact of built.bundle.artifacts) {
+    writeVerifiedCacheArtifact(projectRoot, artifact);
+  }
+  const referencePath = writeReference(projectRoot, version, built.reference);
+  return {
+    referencePath,
+    reference: built.reference,
+    manifestDigest: built.manifestArtifact.digest,
+    payloadDigest: built.payloadArtifact.digest,
+    requestedUrls: [],
+    source,
+    version,
+  };
+}
+
+export async function seedPackedNativeRelease(
+  projectRoot: string,
+  version: string,
+  source: string,
+  npmPackageFixture?: PackedNpmPackageFixture,
+): Promise<SeededPackedRelease> {
+  const built = buildPackedRelease(version, source, npmPackageFixture);
+  const { bundle, catalogArtifact, itemId, manifestArtifact, payloadArtifact, reference } = built;
   const bytesByPath = new Map(
     bundle.artifacts.map((artifact) => [artifact.path, Buffer.from(artifact.content)]),
   );
@@ -182,13 +317,6 @@ export async function seedPackedNativeRelease(
       artifact.headers.contentType.split(";", 1)[0]!,
     ]),
   );
-  const catalogArtifact = bundle.artifacts.find(({ path }) => path === "r/v1/catalog.json")!;
-  const manifestArtifact = bundle.artifacts.find(
-    ({ path }) => path === `r/v1/releases/${version}/manifest.json`,
-  )!;
-  const payloadArtifact = bundle.artifacts.find(
-    ({ path }) => path === `r/v1/releases/${version}/items/button.json`,
-  )!;
   const requestedUrls: string[] = [];
   const transport: AcquisitionTransport = async (request) => {
     requestedUrls.push(request.url);
@@ -219,29 +347,112 @@ export async function seedPackedNativeRelease(
     itemIds: [itemId],
     transport,
   });
-  const reference: PackedNativeReleaseReference = {
-    artifactKind: "mergora-native-release-reference",
-    catalog: {
-      bytes: Buffer.byteLength(catalogArtifact.content),
-      digest: catalogArtifact.digest,
-    },
-    manifest: {
-      bytes: Buffer.byteLength(manifestArtifact.content),
-      digest: manifestArtifact.digest,
-    },
-    registryId: "official",
-    release: version,
-    schemaVersion: 1,
-  };
-  const referencePath = `.mergora/release-${version}.json`;
-  mkdirSync(resolve(projectRoot, ".mergora"), { recursive: true });
-  writeFileSync(resolve(projectRoot, referencePath), `${canonicalJson(reference)}\n`, "utf8");
+  const referencePath = writeReference(projectRoot, version, reference);
   return {
     referencePath,
     reference,
     manifestDigest: manifestArtifact.digest,
     payloadDigest: payloadArtifact.digest,
     requestedUrls,
+    source,
+    version,
+  };
+}
+
+function evidencePointer(reference: ReleaseEvidenceReference) {
+  return { id: reference.id, artifact: reference.artifact, digest: reference.digest };
+}
+
+/** Writes the exact public release tree plus a vendor-only checksum/descriptor, without cache. */
+export function seedPackedStableVendorRelease(
+  projectRoot: string,
+  version: string,
+  source: string,
+  npmPackageFixture?: PackedNpmPackageFixture,
+): SeededPackedRelease {
+  const built = buildPackedRelease(version, source, npmPackageFixture);
+  const vendorRoot = resolve(projectRoot, ".mergora/vendor/v1");
+  const selectedPaths = new Set([
+    built.catalogArtifact.path,
+    built.manifestArtifact.path,
+    built.payloadArtifact.path,
+    ...built.input.schemas.map(({ artifact }) => `r/v1/${artifact.slice(`${ORIGIN}/`.length)}`),
+    ...built.input.items.map(
+      ({ contract }) => `r/v1/${contract.artifact.slice(`${ORIGIN}/`.length)}`,
+    ),
+    ...built.input.items.map(
+      ({ passport }) => `r/v1/${passport.artifact.slice(`${ORIGIN}/`.length)}`,
+    ),
+  ]);
+  const selectedArtifacts = built.bundle.artifacts.filter(({ path }) => selectedPaths.has(path));
+  if (selectedArtifacts.length !== selectedPaths.size) {
+    throw new Error("Packed Stable vendor closure is missing an immutable artifact.");
+  }
+  rmSync(vendorRoot, { recursive: true, force: true });
+  for (const artifact of selectedArtifacts) {
+    const target = resolve(vendorRoot, ...artifact.path.split("/"));
+    mkdirSync(resolve(target, ".."), { recursive: true });
+    writeFileSync(target, artifact.content, "utf8");
+  }
+  const checksumContent = selectedArtifacts
+    .map(({ path, digest }) => ({ path, digest }))
+    .sort((left, right) => left.path.localeCompare(right.path, "en-US"))
+    .map(({ path, digest }) => `${digest.slice("sha256:".length)}  ${path}`)
+    .join("\n")
+    .concat("\n");
+  const stableManifest = {
+    schemaVersion: 1,
+    format: "mergora-vendor-v1",
+    registry: {
+      id: "official",
+      origin: ORIGIN,
+      identityDigest: registry.identityDigest,
+    },
+    release: version,
+    selection: {
+      mode: "items",
+      requested: [built.itemId],
+    },
+    releaseManifest: {
+      id: "release-manifest",
+      artifact: publicRegistryUrl(built.manifestArtifact.path),
+      digest: built.manifestArtifact.digest,
+    },
+    items: [
+      {
+        id: built.itemId,
+        artifact: publicRegistryUrl(built.payloadArtifact.path),
+        digest: built.payloadArtifact.digest,
+      },
+    ],
+    schemas: built.input.schemas
+      .map(evidencePointer)
+      .sort((left, right) => left.artifact.localeCompare(right.artifact, "en-US")),
+    contracts: built.input.items
+      .map(({ contract }) => evidencePointer(contract))
+      .sort((left, right) => left.artifact.localeCompare(right.artifact, "en-US")),
+    passports: built.input.items
+      .map(({ passport }) => evidencePointer(passport))
+      .sort((left, right) => left.artifact.localeCompare(right.artifact, "en-US")),
+    npmCoverage: "not-requested",
+    npmTarballs: [],
+    dependencyGraphDigest: built.bundle.dependencyGraphDigest,
+    sha256SumsDigest: sha256(checksumContent),
+  } as const;
+  const validation = validateSchemaDocument("vendor-manifest", stableManifest);
+  if (!validation.ok) {
+    throw new Error(`Stable vendor fixture is invalid: ${JSON.stringify(validation.errors)}`);
+  }
+  mkdirSync(vendorRoot, { recursive: true });
+  writeFileSync(resolve(vendorRoot, "SHA256SUMS"), checksumContent, "utf8");
+  writeFileSync(resolve(vendorRoot, "vendor-manifest.json"), canonicalJson(stableManifest), "utf8");
+  const referencePath = writeReference(projectRoot, version, built.reference);
+  return {
+    referencePath,
+    reference: built.reference,
+    manifestDigest: built.manifestArtifact.digest,
+    payloadDigest: built.payloadArtifact.digest,
+    requestedUrls: [],
     source,
     version,
   };

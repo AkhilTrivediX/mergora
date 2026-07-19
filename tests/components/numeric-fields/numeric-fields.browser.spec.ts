@@ -53,21 +53,21 @@ function visibleNumericInput(scope: Page | Locator, label: string): Locator {
 test("workbench associates visible labels, preserves target size, and submits canonical values", async ({
   page,
 }) => {
-  await openStory(page, "production-workbench", "Compensation model");
+  await openStory(page, "production-workbench", "Project budget model");
 
-  const compensation = visibleNumericInput(page, "Monthly compensation");
-  const bonus = visibleNumericInput(page, "Annual bonus target");
+  const projectBudget = visibleNumericInput(page, "Monthly operating budget");
+  const contingency = visibleNumericInput(page, "Contingency target");
   const score = visibleNumericInput(page, "Review score");
-  await expect(compensation).toHaveAttribute("required", "");
-  await expect(compensation).toHaveAttribute("inputmode", "numeric");
-  await expect(compensation).toHaveValue(/EUR.*12,000\.00/u);
-  await expect(bonus).toHaveValue("15%");
+  await expect(projectBudget).toHaveAttribute("required", "");
+  await expect(projectBudget).toHaveAttribute("inputmode", "numeric");
+  await expect(projectBudget).toHaveValue(/EUR.*8,000\.00/u);
+  await expect(contingency).toHaveValue("15%");
   await expect(score).toHaveValue("8.5");
 
   await page.getByRole("button", { name: "Preview canonical values" }).click();
   expect(JSON.parse((await page.getByTestId("submission-result").textContent()) ?? "{}")).toEqual({
-    "bonus-target": "0.15",
-    "monthly-compensation": "12000",
+    "contingency-target": "0.15",
+    "monthly-budget": "8000",
     "review-score": "8.5",
   });
 
@@ -178,32 +178,32 @@ test("keyboard, scrub, bounds, pointer drag, and wheel safeguard share one state
 test("localized edits serialize canonically and native reset restores every numeric default", async ({
   page,
 }) => {
-  await openStory(page, "form-serialization-and-reset", "Compensation model");
-  const compensation = visibleNumericInput(page, "Monthly compensation");
-  const bonus = visibleNumericInput(page, "Annual bonus target");
+  await openStory(page, "form-serialization-and-reset", "Project budget model");
+  const projectBudget = visibleNumericInput(page, "Monthly operating budget");
+  const contingency = visibleNumericInput(page, "Contingency target");
   const score = visibleNumericInput(page, "Review score");
 
-  await compensation.fill("9000");
-  await compensation.blur();
-  await bonus.fill("25%");
-  await bonus.blur();
+  await projectBudget.fill("7000");
+  await projectBudget.blur();
+  await contingency.fill("25%");
+  await contingency.blur();
   await score.fill("9.5");
   await score.blur();
   await page.getByRole("button", { name: "Preview canonical values" }).click();
   expect(JSON.parse((await page.getByTestId("submission-result").textContent()) ?? "{}")).toEqual({
-    "bonus-target": "0.25",
-    "monthly-compensation": "9000",
+    "contingency-target": "0.25",
+    "monthly-budget": "7000",
     "review-score": "9.5",
   });
 
   await page.getByRole("button", { name: "Restore numeric defaults" }).click();
-  await expect(compensation).toHaveValue(/EUR.*12,000\.00/u);
-  await expect(bonus).toHaveValue("15%");
+  await expect(projectBudget).toHaveValue(/EUR.*8,000\.00/u);
+  await expect(contingency).toHaveValue("15%");
   await expect(score).toHaveValue("8.5");
   await page.getByRole("button", { name: "Preview canonical values" }).click();
   expect(JSON.parse((await page.getByTestId("submission-result").textContent()) ?? "{}")).toEqual({
-    "bonus-target": "0.15",
-    "monthly-compensation": "12000",
+    "contingency-target": "0.15",
+    "monthly-budget": "8000",
     "review-score": "8.5",
   });
 });

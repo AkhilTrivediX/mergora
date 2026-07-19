@@ -1,7 +1,19 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+import { gzipSync } from "node:zlib";
 
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
@@ -9,12 +21,16 @@ import { defineContractV1 } from "../../packages/contracts/src/index.ts";
 import { canonicalJson } from "../../packages/cli/src/contracts.ts";
 import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.ts";
 import { validateSchemaDocument } from "../../registry/schemas/validators.ts";
-import { seedPackedNativeRelease } from "../cli-acquisition/packed-release-fixture.ts";
+import {
+  seedPackedCompleteNativeReleaseCache,
+  seedPackedNativeRelease,
+  seedPackedStableVendorRelease,
+} from "../cli-acquisition/packed-release-fixture.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
 const cliPackage = resolve(workspaceRoot, "packages/cli");
-const cliBin = resolve(cliPackage, "dist/bin.js");
+let cliBin = resolve(cliPackage, "dist/bin.js");
 const temporaryDirectories: string[] = [];
 
 interface CommandResult {
@@ -23,10 +39,15 @@ interface CommandResult {
   readonly stderr: string;
 }
 
-function command(arguments_: readonly string[], cwd = workspaceRoot): CommandResult {
+function command(
+  arguments_: readonly string[],
+  cwd = workspaceRoot,
+  environment: Readonly<Record<string, string>> = {},
+): CommandResult {
   const result = spawnSync(process.execPath, [cliBin, ...arguments_], {
     cwd,
     encoding: "utf8",
+    env: { ...process.env, ...environment },
     shell: false,
     windowsHide: true,
   });
@@ -51,16 +72,245 @@ function transactionIds(root: string): readonly string[] {
     : [];
 }
 
-beforeAll(() => {
-  const result = spawnSync(process.execPath, [resolve(cliPackage, "scripts/build.mjs")], {
-    cwd: cliPackage,
-    encoding: "utf8",
-    shell: false,
-    windowsHide: true,
+function digest(value: string | Uint8Array): `sha256:${string}` {
+  return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
+function rewriteCachedNpmInventory(
+  projectRoot: string,
+  referencePath: string,
+  inventory: unknown | undefined,
+): { readonly manifestDigest: `sha256:${string}` } {
+  const absoluteReference = resolve(projectRoot, referencePath);
+  const reference = JSON.parse(readFileSync(absoluteReference, "utf8")) as {
+    manifest: { bytes: number; digest: `sha256:${string}` };
+  };
+  const currentKey = reference.manifest.digest.slice("sha256:".length);
+  const currentManifestPath = resolve(
+    projectRoot,
+    ".mergora/cache/entries",
+    currentKey,
+    "artifact",
+  );
+  const manifest = JSON.parse(readFileSync(currentManifestPath, "utf8")) as Record<string, unknown>;
+  if (inventory === undefined) delete manifest.npmPackageInventory;
+  else manifest.npmPackageInventory = inventory;
+  const { manifestDigest: _oldManifestDigest, ...unsigned } = manifest;
+  manifest.manifestDigest = digest(canonicalJson(unsigned));
+  const content = Buffer.from(`${canonicalJson(manifest)}\n`, "utf8");
+  const manifestDigest = digest(content);
+  const key = manifestDigest.slice("sha256:".length);
+  const directory = resolve(projectRoot, ".mergora/cache/entries", key);
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(resolve(directory, "artifact"), content);
+  writeFileSync(
+    resolve(directory, "cache-entry.json"),
+    `${canonicalJson({
+      schemaVersion: 1,
+      artifactKind: "mergora-verified-cache-entry",
+      key,
+      artifact: "artifact",
+      digest: manifestDigest,
+      bytes: content.byteLength,
+    })}\n`,
+    "utf8",
+  );
+  reference.manifest = { digest: manifestDigest, bytes: content.byteLength };
+  writeFileSync(absoluteReference, `${canonicalJson(reference)}\n`, "utf8");
+  return { manifestDigest };
+}
+
+function tarString(header: Buffer, offset: number, length: number, value: string): void {
+  const bytes = Buffer.from(value, "utf8");
+  if (bytes.byteLength > length) throw new Error("test tar field is too long");
+  bytes.copy(header, offset);
+}
+
+function tarOctal(header: Buffer, offset: number, length: number, value: number): void {
+  tarString(header, offset, length, `${value.toString(8).padStart(length - 1, "0")}\0`);
+}
+
+function tarEntry(path: string, content: Buffer): Buffer {
+  const header = Buffer.alloc(512);
+  tarString(header, 0, 100, path);
+  tarOctal(header, 100, 8, 0o644);
+  tarOctal(header, 108, 8, 0);
+  tarOctal(header, 116, 8, 0);
+  tarOctal(header, 124, 12, content.byteLength);
+  tarOctal(header, 136, 12, 0);
+  header.fill(32, 148, 156);
+  header[156] = "0".charCodeAt(0);
+  tarString(header, 257, 6, "ustar\0");
+  tarString(header, 263, 2, "00");
+  let checksum = 0;
+  for (const byte of header) checksum += byte;
+  tarString(header, 148, 8, `${checksum.toString(8).padStart(6, "0")}\0 `);
+  return Buffer.concat([
+    header,
+    content,
+    Buffer.alloc(Math.ceil(content.byteLength / 512) * 512 - content.byteLength),
+  ]);
+}
+
+function packedNpmTarball(packageName: string, version: string): Buffer {
+  return gzipSync(
+    Buffer.concat([
+      tarEntry(
+        "package/package.json",
+        Buffer.from(`${JSON.stringify({ name: packageName, version, license: "MIT" })}\n`, "utf8"),
+      ),
+      tarEntry("package/index.js", Buffer.from("export const packed = true;\n", "utf8")),
+      Buffer.alloc(1024),
+    ]),
+    { level: 9 },
+  );
+}
+
+function writeFetchPreload(
+  projectRoot: string,
+  bytes: Buffer,
+  expectedUrl: string,
+): { readonly environment: Readonly<Record<string, string>>; readonly logPath: string } {
+  const directory = resolve(projectRoot, ".mergora/test-fetch");
+  const bytesPath = resolve(directory, "archive.tgz");
+  const logPath = resolve(directory, "request.json");
+  const preloadPath = resolve(directory, "preload.mjs");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(bytesPath, bytes);
+  writeFileSync(
+    preloadPath,
+    `import { readFileSync, writeFileSync } from "node:fs";
+const bytes = readFileSync(process.env.MERGORA_TEST_FETCH_BYTES);
+globalThis.fetch = async (input, init = {}) => {
+  const url = typeof input === "string" ? input : input.url;
+  const headers = new Headers(init.headers);
+  writeFileSync(process.env.MERGORA_TEST_FETCH_LOG, JSON.stringify({
+    url,
+    method: init.method,
+    redirect: init.redirect,
+    credentials: init.credentials,
+    referrerPolicy: init.referrerPolicy,
+    accept: headers.get("accept"),
+    acceptEncoding: headers.get("accept-encoding"),
+    hasSignal: init.signal instanceof AbortSignal,
+  }));
+  if (url !== process.env.MERGORA_TEST_FETCH_URL) throw new Error("unexpected URL");
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "content-type": "application/gzip; charset=binary",
+      "content-length": String(bytes.byteLength),
+    },
   });
-  if (result.status !== 0) {
-    throw new Error(`Packed CLI build failed:\n${result.stdout}\n${result.stderr}`);
+};
+`,
+    "utf8",
+  );
+  return {
+    environment: {
+      NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}`,
+      MERGORA_TEST_FETCH_BYTES: bytesPath,
+      MERGORA_TEST_FETCH_LOG: logPath,
+      MERGORA_TEST_FETCH_URL: expectedUrl,
+    },
+    logPath,
+  };
+}
+
+function writeFailingFetchPreload(
+  projectRoot: string,
+  behavior: "http" | "redirect" | "reject",
+): Readonly<Record<string, string>> {
+  const directory = resolve(projectRoot, `.mergora/test-fetch-${behavior}`);
+  const preloadPath = resolve(directory, "preload.mjs");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(
+    preloadPath,
+    `const behavior = ${JSON.stringify(behavior)};
+globalThis.fetch = async () => {
+  if (behavior === "reject") throw new TypeError("synthetic network failure");
+  if (behavior === "redirect") {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "https://cdn.example.invalid/archive.tgz" },
+    });
   }
+  return new Response("unavailable", {
+    status: 503,
+    headers: { "content-type": "text/plain" },
+  });
+};
+`,
+    "utf8",
+  );
+  return { NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}` };
+}
+
+beforeAll(() => {
+  const typeScript = resolve(cliPackage, "node_modules/typescript/bin/tsc");
+  const cacheDirectory = resolve(cliPackage, "node_modules/.cache");
+  mkdirSync(cacheDirectory, { recursive: true });
+  const isolatedRoot = mkdtempSync(resolve(cacheDirectory, "mergora-packed-cli-"));
+  temporaryDirectories.push(isolatedRoot);
+  for (const { directory, name } of [
+    { directory: resolve(workspaceRoot, "packages/contracts"), name: "mergora-contracts" },
+    { directory: resolve(workspaceRoot, "packages/registry"), name: "mergora-registry" },
+  ]) {
+    const isolatedPackage = resolve(isolatedRoot, "node_modules", name);
+    mkdirSync(isolatedPackage, { recursive: true });
+    copyFileSync(resolve(directory, "package.json"), resolve(isolatedPackage, "package.json"));
+    const result = spawnSync(
+      process.execPath,
+      [typeScript, "-p", "tsconfig.json", "--outDir", resolve(isolatedPackage, "dist")],
+      {
+        cwd: directory,
+        encoding: "utf8",
+        shell: false,
+        windowsHide: true,
+      },
+    );
+    if (result.status !== 0) {
+      throw new Error(`Packed CLI dependency build failed:\n${result.stdout}\n${result.stderr}`);
+    }
+  }
+
+  const isolatedDist = resolve(isolatedRoot, "dist");
+  const result = spawnSync(
+    process.execPath,
+    [typeScript, "-p", "tsconfig.json", "--outDir", isolatedDist],
+    {
+      cwd: cliPackage,
+      encoding: "utf8",
+      shell: false,
+      windowsHide: true,
+    },
+  );
+  if (result.status !== 0) {
+    throw new Error(`Packed CLI isolated build failed:\n${result.stdout}\n${result.stderr}`);
+  }
+  const registry = resolve(isolatedDist, "registry");
+  mkdirSync(registry);
+  cpSync(
+    resolve(workspaceRoot, "registry/generated/native-source-items"),
+    resolve(registry, "items"),
+    { recursive: true },
+  );
+  copyFileSync(
+    resolve(workspaceRoot, "registry/generated/catalog.json"),
+    resolve(registry, "catalog.json"),
+  );
+  cpSync(resolve(workspaceRoot, "registry/schemas"), resolve(isolatedDist, "schemas"), {
+    recursive: true,
+    filter: (source) => !source.endsWith("validators.ts"),
+  });
+  cpSync(resolve(workspaceRoot, "registry/source/tokens/themes"), resolve(isolatedDist, "themes"), {
+    recursive: true,
+  });
+  copyFileSync(
+    resolve(workspaceRoot, "packages/tokens/src/generated/canonical.dtcg.json"),
+    resolve(isolatedDist, "themes/canonical.dtcg.json"),
+  );
+  cliBin = resolve(isolatedDist, "bin.js");
 }, 120_000);
 
 afterAll(() => {
@@ -123,6 +373,24 @@ describe("packed command parser and output contract", () => {
     expect(sensitive.status).toBe(2);
     expect(sensitive.stdout).not.toContain("person");
     expect(sensitive.stdout).not.toContain("private-token");
+  });
+
+  it("restricts npm tarball inclusion to formal Stable vendor creation", () => {
+    const help = command(["vendor", "--help"]);
+    expect(help).toMatchObject({ status: 0, stderr: "" });
+    expect(help.stdout).toContain("--include-npm-tarballs");
+
+    const unreleased = command(["vendor", "button", "--include-npm-tarballs", "--plan", "--json"]);
+    expect(unreleased.status).toBe(2);
+    expect(json(unreleased)).toMatchObject({
+      errors: [{ code: "COMMAND_USAGE_INVALID" }],
+    });
+
+    const verify = command(["vendor", "verify", "--include-npm-tarballs", "--json"]);
+    expect(verify.status).toBe(2);
+    expect(json(verify)).toMatchObject({
+      errors: [{ code: "COMMAND_USAGE_INVALID" }],
+    });
   });
 
   it("prints explicit source only when requested", () => {
@@ -327,6 +595,126 @@ describe("packed project commands", () => {
     );
   }, 30_000);
 
+  it("runs exact offline search, view, add, and update from a Stable vendor without cache", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const first = seedPackedStableVendorRelease(
+      project.root,
+      "1.0.0",
+      'export const button = "vendor first";\n',
+    );
+    expect(first.requestedUrls).toEqual([]);
+    expect(command(["init", "--yes", "--non-interactive"], project.root).status).toBe(0);
+
+    const searched = command(
+      [
+        "search",
+        "pressable",
+        "--release-file",
+        first.referencePath,
+        "--ui-version",
+        "^1.0.0",
+        "--offline",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(searched.status, `${searched.stdout}\n${searched.stderr}`).toBe(0);
+    expect(json(searched)).toMatchObject({
+      result: { items: [{ id: "button", latestStableVersion: "1.0.0" }] },
+    });
+
+    const viewed = command(
+      [
+        "view",
+        "button",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--source",
+        "ui/button/button.tsx",
+      ],
+      project.root,
+    );
+    expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: first.source });
+
+    const addPlan = command(
+      [
+        "add",
+        "button",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(addPlan.status, `${addPlan.stdout}\n${addPlan.stderr}`).toBe(0);
+    expect(json(addPlan)).toMatchObject({
+      result: { registries: [{ id: "official", release: "1.0.0", source: "vendor" }] },
+    });
+    const added = command(
+      [
+        "add",
+        "button",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(existsSync(resolve(project.root, ".mergora/cache/entries"))).toBe(false);
+
+    const second = seedPackedStableVendorRelease(
+      project.root,
+      "1.1.0",
+      'export const button = "vendor second";\n',
+    );
+    const updatePlan = command(
+      [
+        "update",
+        "button",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--no-install",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(updatePlan.status, `${updatePlan.stdout}\n${updatePlan.stderr}`).toBe(0);
+    expect(json(updatePlan)).toMatchObject({
+      result: { registries: [{ id: "official", release: "1.1.0", source: "vendor" }] },
+    });
+    const updated = command(
+      [
+        "update",
+        "button",
+        "--release-file",
+        second.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
+    expect(
+      readFileSync(resolve(project.root, "src/components/mergora/button/button.tsx"), "utf8"),
+    ).toBe(second.source);
+    expect(existsSync(resolve(project.root, ".mergora/cache/entries"))).toBe(false);
+  }, 30_000);
+
   it("fails closed for ambiguous native references, non-official selection, and cache misses", async () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
@@ -365,6 +753,24 @@ describe("packed project commands", () => {
     );
     expect(partner.status).toBe(2);
     expect(json(partner)).toMatchObject({ errors: [{ code: "COMMAND_USAGE_INVALID" }] });
+
+    const unavailableVersion = command(
+      [
+        "search",
+        "button",
+        "--release-file",
+        release.referencePath,
+        "--ui-version",
+        "^2.0.0",
+        "--offline",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(unavailableVersion.status).toBe(4);
+    expect(json(unavailableVersion)).toMatchObject({
+      errors: [{ code: "REGISTRY_RELEASE_NOT_FOUND" }],
+    });
 
     const legacyPath = ".mergora/legacy-update-snapshot.json";
     writeFileSync(
@@ -784,6 +1190,407 @@ describe("packed project commands", () => {
       result: { state: "valid", releaseClaim: "none", networkUsed: false },
     });
     expect(verified.stdout).not.toContain(project.root);
+  }, 30_000);
+
+  it("creates a formal Stable vendor from verified cache and consumes it fully offline", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const seeded = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "formal stable vendor";\n',
+    );
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+
+    const planned = command(
+      [
+        "vendor",
+        "--all",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--offline",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(planned.status, `${planned.stdout}\n${planned.stderr}`).toBe(0);
+    expect(json(planned)).toMatchObject({
+      status: "planned",
+      result: {
+        command: "vendor",
+        registries: [
+          {
+            id: "official",
+            release: "1.0.0",
+            manifestDigest: seeded.manifestDigest,
+            source: "verified-cache",
+            trust: "official",
+          },
+        ],
+        vendor: {
+          provenanceState: "stable-release",
+          release: "1.0.0",
+          selectionMode: "all",
+          selectedItems: ["official:button"],
+          networkUsed: false,
+        },
+      },
+    });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+
+    const missingConsent = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--offline",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(missingConsent.status).toBe(12);
+    expect(json(missingConsent)).toMatchObject({ errors: [{ code: "CONSENT_REQUIRED" }] });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+
+    const applied = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--offline",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(applied.status, `${applied.stdout}\n${applied.stderr}`).toBe(0);
+    expect(json(applied)).toMatchObject({
+      status: "committed",
+      result: {
+        mode: "offline-vendor",
+        release: "1.0.0",
+        items: ["official:button"],
+        transaction: { state: "committed" },
+        verification: {
+          state: "valid",
+          provenanceState: "stable-release",
+          releaseClaim: "exact",
+          release: "1.0.0",
+          items: ["button"],
+          networkUsed: false,
+          writePerformed: false,
+        },
+      },
+    });
+    const formalManifestPath = resolve(project.root, ".mergora/vendor/v1/vendor-manifest.json");
+    const formalManifest = readFileSync(formalManifestPath, "utf8");
+    expect(formalManifest).not.toContain("cache-entry");
+    expect(formalManifest).not.toContain(project.root);
+    expect(formalManifest).not.toContain("/r/v1/r/v1/");
+
+    rmSync(resolve(project.root, ".mergora/cache"), { recursive: true, force: true });
+    const verified = command(
+      ["vendor", "verify", "--cwd", project.root, "--offline", "--json"],
+      project.root,
+    );
+    expect(verified.status, `${verified.stdout}\n${verified.stderr}`).toBe(0);
+    expect(json(verified)).toMatchObject({
+      status: "valid",
+      result: {
+        state: "valid",
+        provenanceState: "stable-release",
+        releaseClaim: "exact",
+        release: "1.0.0",
+        items: ["button"],
+        networkUsed: false,
+        writePerformed: false,
+      },
+    });
+
+    const viewed = command(
+      [
+        "view",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--offline",
+        "--source",
+        "ui/button/button.tsx",
+      ],
+      project.root,
+    );
+    expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: seeded.source });
+    const added = command(
+      [
+        "add",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(json(added)).toMatchObject({
+      status: "committed",
+      result: { items: ["button"], transaction: { state: "committed" } },
+    });
+    expect(existsSync(resolve(project.root, ".mergora/cache/entries"))).toBe(false);
+
+    const replacement = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.1.0",
+      'export const button = "replacement refused";\n',
+    );
+    const refused = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        replacement.referencePath,
+        "--offline",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(refused.status, `${refused.stdout}\n${refused.stderr}`).toBe(5);
+    expect(json(refused)).toMatchObject({
+      errors: [{ code: "VENDOR_REPLACEMENT_REQUIRES_CLEAN" }],
+    });
+    expect(readFileSync(formalManifestPath, "utf8")).toBe(formalManifest);
+  }, 30_000);
+
+  it("fails closed for a legacy npm inventory and accepts a verified empty inventory offline", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const seeded = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "npm inventory boundary";\n',
+    );
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+
+    rewriteCachedNpmInventory(project.root, seeded.referencePath, undefined);
+    const legacy = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--include-npm-tarballs",
+        "--offline",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(legacy.status, `${legacy.stdout}\n${legacy.stderr}`).toBe(5);
+    expect(json(legacy)).toMatchObject({
+      errors: [{ code: "VENDOR_STABLE_NPM_INVENTORY_MISSING" }],
+    });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+
+    rewriteCachedNpmInventory(project.root, seeded.referencePath, {
+      allowedLicenses: [],
+      entries: [],
+    });
+    const empty = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--include-npm-tarballs",
+        "--offline",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(empty.status, `${empty.stdout}\n${empty.stderr}`).toBe(0);
+    expect(json(empty)).toMatchObject({ status: "planned" });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+  }, 30_000);
+
+  it("fetches an opted-in exact npm tarball directly and preserves it in the Stable vendor", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const seeded = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "npm tarball vendor";\n',
+    );
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+
+    const tarball = packedNpmTarball("mergora-ui", "1.0.0");
+    const url = "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.0.0.tgz";
+    const exact = {
+      package: "mergora-ui",
+      version: "1.0.0",
+      url,
+      bytes: tarball.byteLength,
+      digest: digest(tarball),
+      integrity: `sha512-${createHash("sha512").update(tarball).digest("base64")}`,
+      license: "MIT",
+      disposition: "include",
+    } as const;
+    rewriteCachedNpmInventory(project.root, seeded.referencePath, {
+      allowedLicenses: ["MIT"],
+      entries: [exact],
+    });
+
+    const offline = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--include-npm-tarballs",
+        "--offline",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(offline.status, `${offline.stdout}\n${offline.stderr}`).toBe(5);
+    expect(json(offline)).toMatchObject({
+      errors: [{ code: "VENDOR_STABLE_NPM_OFFLINE" }],
+    });
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
+
+    const preload = writeFetchPreload(project.root, tarball, url);
+    const applied = command(
+      [
+        "vendor",
+        "button",
+        "--cwd",
+        project.root,
+        "--release-file",
+        seeded.referencePath,
+        "--include-npm-tarballs",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+      preload.environment,
+    );
+    expect(applied.status, `${applied.stdout}\n${applied.stderr}`).toBe(0);
+    expect(json(applied)).toMatchObject({
+      status: "committed",
+      result: { verification: { state: "valid", npmTarballs: 1 } },
+    });
+    expect(JSON.parse(readFileSync(preload.logPath, "utf8"))).toEqual({
+      url,
+      method: "GET",
+      redirect: "manual",
+      credentials: "omit",
+      referrerPolicy: "no-referrer",
+      accept: "application/gzip, application/octet-stream, application/x-gzip",
+      acceptEncoding: "identity",
+      hasSignal: true,
+    });
+    const manifest = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/vendor/v1/vendor-manifest.json"), "utf8"),
+    ) as { npmTarballs: unknown[] };
+    expect(manifest.npmTarballs).toEqual([
+      {
+        package: exact.package,
+        version: exact.version,
+        url: exact.url,
+        bytes: exact.bytes,
+        digest: exact.digest,
+        integrity: exact.integrity,
+        license: exact.license,
+      },
+    ]);
+    const verified = command(["vendor", "verify", "--cwd", project.root, "--json"], project.root);
+    expect(verified.status, `${verified.stdout}\n${verified.stderr}`).toBe(0);
+    expect(json(verified)).toMatchObject({
+      status: "valid",
+      result: { state: "valid", npmTarballs: 1 },
+    });
+  }, 30_000);
+
+  it("classifies direct npm transport and HTTP failures separately from redirects", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const seeded = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "npm fetch failures";\n',
+    );
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const tarball = packedNpmTarball("mergora-ui", "1.0.0");
+    const url = "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.0.0.tgz";
+    rewriteCachedNpmInventory(project.root, seeded.referencePath, {
+      allowedLicenses: ["MIT"],
+      entries: [
+        {
+          package: "mergora-ui",
+          version: "1.0.0",
+          url,
+          bytes: tarball.byteLength,
+          digest: digest(tarball),
+          integrity: `sha512-${createHash("sha512").update(tarball).digest("base64")}`,
+          license: "MIT",
+          disposition: "include",
+        },
+      ],
+    });
+
+    for (const [behavior, expectedStatus, expectedCode] of [
+      ["reject", 4, "VENDOR_STABLE_NPM_FETCH_FAILED"],
+      ["http", 4, "VENDOR_STABLE_NPM_FETCH_FAILED"],
+      ["redirect", 5, "VENDOR_STABLE_NPM_REDIRECT_REJECTED"],
+    ] as const) {
+      const result = command(
+        [
+          "vendor",
+          "button",
+          "--cwd",
+          project.root,
+          "--release-file",
+          seeded.referencePath,
+          "--include-npm-tarballs",
+          "--plan",
+          "--json",
+        ],
+        project.root,
+        writeFailingFetchPreload(project.root, behavior),
+      );
+      expect(result.status, `${behavior}: ${result.stdout}\n${result.stderr}`).toBe(expectedStatus);
+      expect(json(result)).toMatchObject({ errors: [{ code: expectedCode }] });
+    }
+    expect(existsSync(resolve(project.root, ".mergora/vendor"))).toBe(false);
   }, 30_000);
 
   it("keeps theme, registry, migration, and cleanup inspection read-only", () => {

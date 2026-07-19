@@ -51,12 +51,15 @@ Common options:
   --cwd <path>         Explicit project root candidate (--root remains an add alias)
   --config <path>      Explicit project-relative config (currently mergora.json)
   --registry <id>      Select a registry where supported (currently official)
+  --ui-version <range> Resolve the exact referenced UI release against an npm SemVer range
   --json               Emit one versioned JSON result envelope
   --dry-run            Resolve and emit the exact plan without writing
   --plan               Alias for a read-only exact plan
   --yes                Accept an ordinary conflict-free exact plan
   --non-interactive    Never prompt; missing consent fails safely
   --offline            Forbid network access and require verified local evidence
+  --include-npm-tarballs
+                      Include the release's exact verified npm package archives
   --no-install         Skip package-manager invocation and report required work
   --package-manager <npm|pnpm|yarn|bun>
   --color <always|auto|never>  Human output only; no ANSI is emitted today
@@ -81,12 +84,15 @@ Creates only mergora.json, the empty portable manifest, and narrow local-state
   search: `Usage: mergora search [query] [--kind <kind>] [--category <category>]
                       [--maturity <maturity>] [--tag <tag>] [--limit <1-100>]
                       [--release-file <project-relative-path>] [--cwd <path>]
+                      [--ui-version <version-or-range>] [--allow-prerelease]
                       [--offline] [--json]
 
 An exact native release reference never falls back to bundled unreleased data.
-Offline acquisition requires the referenced artifacts in the verified cache.`,
+Offline acquisition requires the referenced artifacts in the verified cache or
+a checksum-verified Stable vendor bundle.`,
   view: `Usage: mergora view <item...> [--files] [--source <logical-path>]
                     [--release-file <project-relative-path>] [--cwd <path>]
+                    [--ui-version <version-or-range>] [--allow-prerelease]
                     [--offline] [--json]
 
 An exact native release reference acquires the requested dependency closure and
@@ -102,12 +108,21 @@ Status is local-only in this tranche.`,
 
 --fix is limited to the same safe initialization edits and cannot touch source.`,
   audit: `Usage: mergora audit [item...] [--static|--browser|--a11y|--keyboard|--responsive|--all]
-                    [--changed] [--cwd <path>] [--json]
+                    [--preview-url <https-or-loopback-url> |
+                     --preview-build <project-relative-path> [--preview-route <route>]]
+                    [--audit-timeout <100-30000>] [--changed] [--cwd <path>] [--json]
 
-Runs immutable Contract snapshots against locally installed source. Runtime modes
-without an enrolled harness report unavailable evidence and never fabricate a pass.`,
+Runs immutable Contract snapshots against locally installed source. Runtime execution
+is opt-in: use an explicit HTTPS/loopback route or serve an existing static build.
+The CLI never runs a build/server command. It loads only Mergora-compiled Contract
+programs; unsupported harnesses remain incomplete rather than fabricating a pass.
+Install optional @mergora/test-utils and @playwright/test packages, then run
+playwright install chromium. The CLI never downloads a browser implicitly.
+The initial button program targets one “Save changes” button inside
+data-mergora-audit-root="button" and its data-mergora-audit-announcer="button" status.`,
   add: `Usage: mergora add <item...> [--root|--cwd <path>] [--target <relative-path>]
                    [--release-file <project-relative-path>] [--no-install] [--offline]
+                   [--ui-version <version-or-range>] [--allow-prerelease]
                    [--plan|--dry-run] [--yes] [--json]
 
 Stages the complete dependency closure, validates it, backs up every authoritative
@@ -134,10 +149,12 @@ Classifies recorded pre/post digests. Auto recovery is conservative; ambiguous l
 state is never changed.`,
   diff: `Usage: mergora diff [item...] [--cwd <path>] [--release-file <path>]
                     [--local|--upstream] [--stat|--name-only] [--format json]
+                    [--ui-version <version-or-range>] [--allow-prerelease]
 
 Reads immutable Base and live Local bytes without writing. --upstream requires an
 explicitly acquired project-relative release snapshot and adds the B/L/R proposal.`,
   update: `Usage: mergora update <item...>|--all --release-file <path> [--cwd <path>]
+                      [--ui-version <version-or-range>] [--allow-prerelease]
                       [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
 
 Accepts either the legacy immutable Semantic Sync snapshot or a schema-discriminated
@@ -177,10 +194,19 @@ Only migration IDs compiled into this CLI are accepted. Unsafe transformations
 return a deterministic manual checklist and perform no mutation.`,
   vendor: `Usage: mergora vendor <item...>|--all-installed [--cwd <path>]
                       [--plan|--dry-run] [--yes] [--json]
+       mergora vendor <item...>|--all --release-file <path> [--offline]
+                      [--ui-version <version-or-range>] [--allow-prerelease]
+                      [--include-npm-tarballs]
+                      [--plan|--dry-run] [--yes] [--json]
        mergora vendor verify [--cwd <path>] [--json]
 
-Creates a digest-bound, network-free snapshot of installed source, bases, schemas,
-and available Contracts. verify is read-only and validates every bundled byte.`,
+Without --release-file, creates an honest unreleased-local snapshot of installed
+source, bases, schemas, and available Contracts. An exact release reference creates
+a formal Stable bundle with its selected dependency closure, schemas, Contracts,
+Passports, and immutable protocol bytes. verify detects either format and validates
+every bundled byte without network or writes. --include-npm-tarballs is opt-in and
+is accepted only for this exact Stable path. Included archives are fetched directly
+with bounded, redirect-free HTTPS requests; Mergora never invokes a package manager.`,
   clean: `Usage: mergora clean [--cache] [--transactions] [--bases] [--conflicts]
                      [--retain-transactions <count>]
                      [--plan|--dry-run] [--yes] [--cwd <path>] [--json]
@@ -310,6 +336,18 @@ function parseManager(value: string | undefined): "npm" | "pnpm" | "yarn" | "bun
     throw new CommandUsageError("--package-manager must be npm, pnpm, yarn, or bun.");
   }
   return value;
+}
+
+function parseAuditTimeout(value: string | undefined): number | undefined {
+  if (value === undefined) return undefined;
+  if (!/^(?:[1-9][0-9]*)$/u.test(value)) {
+    throw new CommandUsageError("--audit-timeout must be an integer from 100 through 30000.");
+  }
+  const timeout = Number(value);
+  if (!Number.isSafeInteger(timeout) || timeout < 100 || timeout > 30_000) {
+    throw new CommandUsageError("--audit-timeout must be an integer from 100 through 30000.");
+  }
+  return timeout;
 }
 
 function parseFramework(
@@ -635,14 +673,73 @@ function officialItemReferences(itemIds: readonly string[]): readonly string[] {
   });
 }
 
+interface CapturedNativeVendorDocuments {
+  catalog: unknown | undefined;
+  manifest: unknown | undefined;
+  readonly items: Record<string, unknown>;
+}
+
+function captureNativeVendorDocuments(
+  target: CapturedNativeVendorDocuments,
+  api: Api,
+): import("./acquisition-resolver.js").NativeRegistryDocumentValidator {
+  return (kind, value) => {
+    if (kind === "catalog") {
+      if (
+        target.catalog !== undefined &&
+        api.canonicalJson(target.catalog) !== api.canonicalJson(value)
+      ) {
+        throw new api.CliError("Stable vendor catalog changed during exact acquisition.", {
+          code: "VENDOR_STABLE_MUTATED",
+          exitCode: 5,
+        });
+      }
+      target.catalog = structuredClone(value);
+      return;
+    }
+    if (kind === "release-manifest") {
+      if (
+        target.manifest !== undefined &&
+        api.canonicalJson(target.manifest) !== api.canonicalJson(value)
+      ) {
+        throw new api.CliError("Stable vendor release manifest changed during acquisition.", {
+          code: "VENDOR_STABLE_MUTATED",
+          exitCode: 5,
+        });
+      }
+      target.manifest = structuredClone(value);
+      return;
+    }
+    if (!isRecord(value) || typeof value.itemId !== "string") {
+      throw new api.CliError("Stable vendor item capture is invalid.", {
+        code: "VENDOR_STABLE_SNAPSHOT_INVALID",
+        exitCode: 5,
+      });
+    }
+    const prior = target.items[value.itemId];
+    if (prior !== undefined && api.canonicalJson(prior) !== api.canonicalJson(value)) {
+      throw new api.CliError(`Stable vendor item ${value.itemId} changed during acquisition.`, {
+        code: "VENDOR_STABLE_MUTATED",
+        exitCode: 5,
+      });
+    }
+    target.items[value.itemId] = structuredClone(value);
+  };
+}
+
 async function acquireNativeRelease(
   parsed: ParsedArguments,
   root: string,
   api: Api,
   reference: NativeReleaseReference,
   itemIds: readonly string[],
+  validateDocument?: import("./acquisition-resolver.js").NativeRegistryDocumentValidator,
 ) {
+  api.resolveImmutableReleaseVersion([reference.release], flagValue(parsed, "ui-version"), {
+    allowPrereleases: hasFlag(parsed, "allow-prerelease"),
+  });
   const origin = api.OFFICIAL_REGISTRY_ORIGIN;
+  const vendor = api.createStableAcquisitionVendorReader({ projectRoot: root });
   return api.resolveNativeRegistryRelease({
     projectRoot: root,
     registry: {
@@ -664,7 +761,167 @@ async function acquireNativeRelease(
     },
     itemIds: officialItemReferences(itemIds),
     offline: hasFlag(parsed, "offline"),
+    vendor,
+    ...(validateDocument === undefined ? {} : { validateDocument }),
   });
+}
+
+const STABLE_NPM_MEDIA_TYPES = new Set([
+  "application/gzip",
+  "application/octet-stream",
+  "application/x-gzip",
+]);
+
+function stableNpmMediaType(value: string | null): string | null {
+  if (value === null) return null;
+  const normalized = value.split(";", 1)[0]!.trim().toLowerCase();
+  return STABLE_NPM_MEDIA_TYPES.has(normalized) ? normalized : null;
+}
+
+function createStableNpmTarballFetcher(api: Api): import("./vendor.js").StableNpmTarballFetcher {
+  return async (request) => {
+    let target: URL;
+    try {
+      target = new URL(request.url);
+    } catch {
+      throw new api.CliError("Stable npm tarball URL is invalid.", {
+        code: "VENDOR_STABLE_NPM_FETCH_INVALID",
+        exitCode: 5,
+      });
+    }
+    if (
+      target.protocol !== "https:" ||
+      target.username !== "" ||
+      target.password !== "" ||
+      target.search !== "" ||
+      target.hash !== "" ||
+      target.href !== request.url
+    ) {
+      throw new api.CliError("Stable npm tarball URL is not credential-free immutable HTTPS.", {
+        code: "VENDOR_STABLE_NPM_CREDENTIALS_REJECTED",
+        exitCode: 5,
+      });
+    }
+
+    let response: Response;
+    try {
+      response = await globalThis.fetch(request.url, {
+        method: "GET",
+        redirect: "manual",
+        credentials: "omit",
+        referrerPolicy: "no-referrer",
+        headers: {
+          Accept: [...STABLE_NPM_MEDIA_TYPES].join(", "),
+          "Accept-Encoding": "identity",
+        },
+        signal: request.signal,
+      });
+    } catch (error) {
+      throw new api.CliError(
+        request.signal.aborted
+          ? `Stable npm tarball fetch timed out for ${request.package}@${request.version}.`
+          : `Stable npm tarball fetch failed for ${request.package}@${request.version}: ${error instanceof Error ? error.name : "network error"}.`,
+        {
+          code: request.signal.aborted
+            ? "VENDOR_STABLE_NPM_FETCH_TIMEOUT"
+            : "VENDOR_STABLE_NPM_FETCH_FAILED",
+          exitCode: 4,
+        },
+      );
+    }
+
+    if (response.status >= 300 && response.status < 400) {
+      await response.body?.cancel().catch(() => undefined);
+      throw new api.CliError(
+        `Stable npm tarball ${request.package}@${request.version} returned a redirect.`,
+        { code: "VENDOR_STABLE_NPM_REDIRECT_REJECTED", exitCode: 5 },
+      );
+    }
+    if (response.status !== 200) {
+      await response.body?.cancel().catch(() => undefined);
+      throw new api.CliError(
+        `Stable npm tarball ${request.package}@${request.version} returned HTTP ${String(response.status)}.`,
+        { code: "VENDOR_STABLE_NPM_FETCH_FAILED", exitCode: 4 },
+      );
+    }
+    if (response.url !== "" && response.url !== request.url) {
+      await response.body?.cancel().catch(() => undefined);
+      throw new api.CliError(
+        `Stable npm tarball ${request.package}@${request.version} changed URL.`,
+        { code: "VENDOR_STABLE_NPM_REDIRECT_REJECTED", exitCode: 5 },
+      );
+    }
+
+    const contentType = stableNpmMediaType(response.headers.get("content-type"));
+    if (contentType === null) {
+      await response.body?.cancel().catch(() => undefined);
+      throw new api.CliError(
+        `Stable npm tarball ${request.package}@${request.version} has an invalid media type.`,
+        { code: "VENDOR_STABLE_NPM_FETCH_INVALID", exitCode: 5 },
+      );
+    }
+    const declaredLength = response.headers.get("content-length");
+    if (declaredLength !== null) {
+      const length = /^(?:0|[1-9][0-9]*)$/u.test(declaredLength)
+        ? Number(declaredLength)
+        : Number.NaN;
+      if (!Number.isSafeInteger(length) || length < 0 || length > request.maxBytes) {
+        await response.body?.cancel().catch(() => undefined);
+        throw new api.CliError(
+          `Stable npm tarball ${request.package}@${request.version} exceeds its declared byte limit.`,
+          { code: "VENDOR_STABLE_NPM_OVERSIZE", exitCode: 5 },
+        );
+      }
+    }
+    if (response.body === null) {
+      throw new api.CliError(
+        `Stable npm tarball ${request.package}@${request.version} returned no body.`,
+        { code: "VENDOR_STABLE_NPM_FETCH_INVALID", exitCode: 5 },
+      );
+    }
+
+    const reader = response.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let total = 0;
+    for (;;) {
+      let result: ReadableStreamReadResult<Uint8Array>;
+      try {
+        result = await reader.read();
+      } catch (error) {
+        throw new api.CliError(
+          request.signal.aborted
+            ? `Stable npm tarball fetch timed out for ${request.package}@${request.version}.`
+            : `Stable npm tarball stream failed for ${request.package}@${request.version}: ${error instanceof Error ? error.name : "network error"}.`,
+          {
+            code: request.signal.aborted
+              ? "VENDOR_STABLE_NPM_FETCH_TIMEOUT"
+              : "VENDOR_STABLE_NPM_FETCH_FAILED",
+            exitCode: 4,
+          },
+        );
+      }
+      if (result.done) break;
+      total += result.value.byteLength;
+      if (total > request.maxBytes) {
+        await reader.cancel().catch(() => undefined);
+        throw new api.CliError(
+          `Stable npm tarball ${request.package}@${request.version} exceeds its byte limit.`,
+          { code: "VENDOR_STABLE_NPM_OVERSIZE", exitCode: 5 },
+        );
+      }
+      chunks.push(result.value);
+    }
+    return {
+      bytes: Buffer.concat(
+        chunks.map((chunk) => Buffer.from(chunk)),
+        total,
+      ),
+      url: response.url || request.url,
+      redirects: [],
+      contentType,
+      source: "network",
+    };
+  };
 }
 
 function operationWrites(plan: import("./transaction-engine.js").OperationPlan): boolean {
@@ -697,6 +954,14 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
   assertAllowedFlags(parsed, allowedCliFlags(parsed.command, subcommand));
   colorMode(parsed);
   const root = projectRoot(parsed);
+  if (
+    flagValue(parsed, "ui-version") !== undefined &&
+    flagValue(parsed, "release-file") === undefined
+  ) {
+    throw new CommandUsageError(
+      "--ui-version requires --release-file with a verified exact release reference.",
+    );
+  }
   switch (parsed.command) {
     case "create": {
       if (parsed.positionals.length !== 1) {
@@ -962,11 +1227,53 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       const selectedModes = hasFlag(parsed, "all")
         ? allModes
         : allModes.filter((mode) => hasFlag(parsed, mode));
-      const result = await api.auditProject(root, {
+      const requestedModes = selectedModes.length === 0 ? (["static"] as const) : selectedModes;
+      const previewUrl = flagValue(parsed, "preview-url");
+      const previewBuild = flagValue(parsed, "preview-build");
+      const previewRoute = flagValue(parsed, "preview-route");
+      const timeout = parseAuditTimeout(flagValue(parsed, "audit-timeout"));
+      if (previewUrl !== undefined && previewBuild !== undefined) {
+        throw new CommandUsageError("audit accepts either --preview-url or --preview-build.");
+      }
+      if (previewRoute !== undefined && previewBuild === undefined) {
+        throw new CommandUsageError("--preview-route requires --preview-build.");
+      }
+      const previewSelected = previewUrl !== undefined || previewBuild !== undefined;
+      if (timeout !== undefined && !previewSelected) {
+        throw new CommandUsageError("--audit-timeout requires an explicit browser preview.");
+      }
+      if (
+        previewSelected &&
+        !requestedModes.some((mode) =>
+          (["a11y", "browser", "keyboard", "responsive"] as const).includes(
+            mode as "a11y" | "browser" | "keyboard" | "responsive",
+          ),
+        )
+      ) {
+        throw new CommandUsageError(
+          "An explicit browser preview requires --browser, --a11y, --keyboard, --responsive, or --all.",
+        );
+      }
+      const shared = {
         items: parsed.positionals,
-        requestedModes: selectedModes.length === 0 ? ["static"] : selectedModes,
+        requestedModes,
         changed: hasFlag(parsed, "changed"),
-      });
+      };
+      const result = previewSelected
+        ? await api.auditProjectWithOfficialBrowserV1(root, {
+            ...shared,
+            preview:
+              previewBuild === undefined
+                ? { kind: "url", url: previewUrl! }
+                : {
+                    kind: "build",
+                    buildPath: previewBuild,
+                    ...(previewRoute === undefined ? {} : { route: previewRoute }),
+                  },
+            ...(timeout === undefined ? {} : { runtimeTimeoutMs: timeout }),
+            offline: hasFlag(parsed, "offline"),
+          })
+        : await api.auditProject(root, shared);
       const exitCode = api.auditProjectExitCode(result);
       return {
         result,
@@ -1665,12 +1972,131 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         if (parsed.positionals.length !== 1) {
           throw new CommandUsageError("vendor verify does not accept item arguments.");
         }
-        const result = api.verifyVendor({ projectRoot: root });
+        const result = api.verifyVendorBundle({ projectRoot: root });
         return {
           result,
           status: result.state,
-          text: `Vendor snapshot valid: ${String(result.items.length)} items, ${String(result.artifacts)} artifacts, ${String(result.totalBytes)} bytes; manifest ${result.manifestDigest}.`,
+          text: `Vendor snapshot valid (${result.provenanceState}): ${String(result.items.length)} items, ${String(result.artifacts)} artifacts, ${String(result.totalBytes)} bytes; manifest ${result.manifestDigest}.`,
         };
+      }
+      const releaseFile = flagValue(parsed, "release-file");
+      const includeNpmTarballs = hasFlag(parsed, "include-npm-tarballs");
+      if (includeNpmTarballs && releaseFile === undefined) {
+        throw new CommandUsageError(
+          "--include-npm-tarballs requires Stable vendor create with --release-file.",
+        );
+      }
+      if (releaseFile !== undefined) {
+        if (hasFlag(parsed, "all-installed")) {
+          throw new CommandUsageError(
+            "Stable vendoring accepts --all or explicit release items, not --all-installed.",
+          );
+        }
+        if (hasFlag(parsed, "all") === parsed.positionals.length > 0) {
+          throw new CommandUsageError(
+            "Stable vendoring requires either --all or one or more explicit items.",
+          );
+        }
+        const reference = await readNativeReleaseReference(parsed, root, api, false);
+        if (reference === null) {
+          throw new CommandUsageError("Stable vendoring requires an exact release reference.");
+        }
+        const captured: CapturedNativeVendorDocuments = {
+          catalog: undefined,
+          manifest: undefined,
+          items: {},
+        };
+        const capture = captureNativeVendorDocuments(captured, api);
+        let acquired;
+        if (hasFlag(parsed, "all")) {
+          const catalogOnly = await acquireNativeRelease(parsed, root, api, reference, [], capture);
+          acquired = await acquireNativeRelease(
+            parsed,
+            root,
+            api,
+            reference,
+            catalogOnly.catalog.map(({ id }) => id),
+            capture,
+          );
+        } else {
+          acquired = await acquireNativeRelease(
+            parsed,
+            root,
+            api,
+            reference,
+            parsed.positionals,
+            capture,
+          );
+        }
+        if (captured.catalog === undefined || captured.manifest === undefined) {
+          throw new api.CliError("Stable vendor acquisition did not capture its exact documents.", {
+            code: "VENDOR_STABLE_SNAPSHOT_INVALID",
+            exitCode: 5,
+          });
+        }
+        if (includeNpmTarballs && acquired.npmPackageInventory === null) {
+          throw new api.CliError(
+            "This exact Stable release does not declare a verified npm package inventory.",
+            { code: "VENDOR_STABLE_NPM_INVENTORY_MISSING", exitCode: 5 },
+          );
+        }
+        const commandArguments = [
+          parsed.command,
+          ...parsed.positionals,
+          ...[...parsed.flags.keys()].map((name) => `--${name}`),
+        ];
+        const snapshot = await api.acquireStableVendorSnapshot({
+          projectRoot: root,
+          release: acquired,
+          documents: {
+            catalog: captured.catalog,
+            manifest: captured.manifest,
+            items: captured.items,
+          },
+          selectionMode: hasFlag(parsed, "all") ? "all" : "items",
+          offline: hasFlag(parsed, "offline"),
+          ...(includeNpmTarballs
+            ? {
+                npmTarballs: acquired.npmPackageInventory!,
+                npmTarballFetcher: createStableNpmTarballFetcher(api),
+              }
+            : {}),
+          commandArguments,
+        });
+        const plan = api.planStableVendor(snapshot);
+        if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
+          return {
+            result: plan,
+            status: operationWrites(plan) ? "planned" : "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        assertConflictFree(plan, api);
+        if (!operationWrites(plan)) {
+          return {
+            result: plan,
+            status: "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        if (!(await confirmPlan(parsed, operationPromptSummary(plan)))) {
+          throw new api.CliError(
+            "Stable vendoring consent is required; review --plan and pass --yes.",
+            { code: "CONSENT_REQUIRED", exitCode: 12 },
+          );
+        }
+        const result = api.applyStableVendor(snapshot, plan.planDigest);
+        return {
+          result,
+          status: result.transaction.state,
+          warnings: plan.warnings,
+          text: `Stable vendor ${result.release} ${result.transaction.state}: ${String(result.items.length)} items, ${String(result.verification.artifacts)} verified artifacts; plan ${result.planDigest}.`,
+        };
+      }
+      if (hasFlag(parsed, "all")) {
+        throw new CommandUsageError("Unreleased-local vendoring uses --all-installed, not --all.");
       }
       const options = {
         projectRoot: root,

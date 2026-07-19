@@ -8,6 +8,7 @@ import {
   CliError,
   applyInit,
   canonicalJson,
+  planInit,
   sha256,
 } from "../../packages/cli/src/index.ts";
 import {
@@ -16,6 +17,7 @@ import {
   finalizeOperationPlan,
   planRecovery,
   recoverTransaction,
+  validateTransactionOverlay,
   validationSuiteForTransaction,
   type OperationPlan,
   type TransactionMutation,
@@ -33,7 +35,7 @@ const proposedBytes = Buffer.from('export const validatorState = "proposed";\n')
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-transaction-validator-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   writeFileSync(resolve(project.root, target), originalBytes);
   return project;
 }
@@ -46,6 +48,7 @@ function transactionPlan(
   root: string,
   validators: readonly TransactionValidator[],
   writeBytes = proposedBytes.byteLength,
+  consentRequirements: OperationPlan["consentRequirements"] = [],
 ): OperationPlan {
   return finalizeOperationPlan({
     schemaVersion: 1,
@@ -75,7 +78,7 @@ function transactionPlan(
     migrations: [],
     contractChanges: [],
     warnings: [],
-    consentRequirements: [],
+    consentRequirements,
     conflicts: [],
     estimatedBytes: { download: 0, write: writeBytes },
     validationSuite: validationSuiteForTransaction(validators),
@@ -87,6 +90,12 @@ function onlyTransactionRecord(root: string): {
   readonly transactionId: string;
   readonly state: string;
   readonly backups: readonly unknown[];
+  readonly consents: readonly {
+    readonly id: string;
+    readonly accepted: boolean;
+    readonly flag: string;
+    readonly planDigest: `sha256:${string}`;
+  }[];
   readonly validations: readonly {
     readonly id: string;
     readonly state: string;
@@ -143,7 +152,224 @@ afterEach(() => {
   }
 });
 
+describe("transaction consent binding", () => {
+  const consentRequirements = [
+    {
+      id: "reviewed-update",
+      flag: "--yes",
+      reason: "Commit the reviewed update transaction.",
+    },
+  ] as const;
+
+  it("rejects missing consent before even no-op transaction metadata can be written", () => {
+    const project = fixture();
+    const plan = transactionPlan(project.root, [], 0, consentRequirements);
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+
+    const error = catchError(() =>
+      executeTransaction({
+        root: project.root,
+        plan,
+        mutations: [],
+        acceptedConsents: [],
+      }),
+    );
+
+    expect(error).toMatchObject({ code: "CONSENT_REQUIRED", exitCode: 12 });
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(readFileSync(resolve(project.root, target))).toEqual(originalBytes);
+  });
+
+  it("rejects unexpected, duplicate, and stale acceptances before changing live bytes", () => {
+    const cases = [
+      {
+        acceptedConsents: [
+          { id: "reviewed-update", planDigest: "current" },
+          { id: "unexpected-update", planDigest: "current" },
+        ],
+        code: "TRANSACTION_CONSENT_UNEXPECTED",
+      },
+      {
+        acceptedConsents: [
+          { id: "reviewed-update", planDigest: "current" },
+          { id: "reviewed-update", planDigest: "current" },
+        ],
+        code: "TRANSACTION_CONSENT_INVALID",
+      },
+      {
+        acceptedConsents: [{ id: "reviewed-update", planDigest: `sha256:${"0".repeat(64)}` }],
+        code: "PLAN_PRECONDITION_STALE",
+      },
+    ] as const;
+
+    for (const testCase of cases) {
+      const project = fixture();
+      const plan = transactionPlan(project.root, [], proposedBytes.byteLength, consentRequirements);
+      const transactionRoot = resolve(project.root, ".mergora/transactions");
+      const transactionsBefore = readdirSync(transactionRoot).sort();
+      const acceptedConsents = testCase.acceptedConsents.map(({ id, planDigest }) => ({
+        id,
+        planDigest: planDigest === "current" ? plan.planDigest : planDigest,
+      }));
+
+      const error = catchError(() =>
+        executeTransaction({
+          root: project.root,
+          plan,
+          mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+          acceptedConsents,
+        }),
+      );
+
+      expect(error).toMatchObject({ code: testCase.code });
+      expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+      expect(readFileSync(resolve(project.root, target))).toEqual(originalBytes);
+    }
+  });
+
+  it("records only the verified plan-bound acceptance after a successful commit", () => {
+    const project = fixture();
+    const plan = transactionPlan(project.root, [], proposedBytes.byteLength, consentRequirements);
+
+    const result = executeTransaction({
+      root: project.root,
+      plan,
+      mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+      acceptedConsents: [{ id: "reviewed-update", planDigest: plan.planDigest }],
+    });
+
+    expect(result.state).toBe("committed");
+    expect(readFileSync(resolve(project.root, target))).toEqual(proposedBytes);
+    expect(onlyTransactionRecord(project.root).consents).toEqual([
+      {
+        id: "reviewed-update",
+        accepted: true,
+        flag: "--yes",
+        planDigest: plan.planDigest,
+      },
+    ]);
+    const journal = JSON.parse(
+      readFileSync(
+        resolve(project.root, `.mergora/transactions/${result.transactionId!}/journal.json`),
+        "utf8",
+      ),
+    ) as { readonly entries: readonly { readonly checkpoint: string }[] };
+    expect(journal.entries.map(({ checkpoint }) => checkpoint)).toContain("consent-recorded");
+  });
+});
+
 describe("registered transaction validators", () => {
+  it("rejects a claimed non-built-in label with no fixed validator before transaction writes", () => {
+    const project = fixture();
+    const claimed: TransactionValidator = {
+      id: "claimed-parse",
+      label: "parse",
+      validateStagedOverlay: () => ({ state: "pass", summary: "Parse passed." }),
+      validatePostCommit: () => ({ state: "pass", summary: "Parse passed." }),
+    };
+    const plan = transactionPlan(project.root, [claimed]);
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+
+    const error = catchError(() =>
+      executeTransaction({
+        root: project.root,
+        plan,
+        mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+        acceptedConsents: [],
+        validators: [],
+      }),
+    );
+
+    expect(error).toMatchObject({ code: "TRANSACTION_VALIDATOR_REQUIRED", exitCode: 8 });
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(readFileSync(resolve(project.root, target))).toEqual(originalBytes);
+  });
+
+  it("continues rejecting a supplied validator label absent from the reviewed plan", () => {
+    const project = fixture();
+    const plan = transactionPlan(project.root, []);
+    const validator: TransactionValidator = {
+      id: "unreviewed-parse",
+      label: "parse",
+      validateStagedOverlay: () => ({ state: "pass", summary: "Parse passed." }),
+      validatePostCommit: () => ({ state: "pass", summary: "Parse passed." }),
+    };
+    const transactionRoot = resolve(project.root, ".mergora/transactions");
+    const transactionsBefore = readdirSync(transactionRoot).sort();
+
+    const error = catchError(() =>
+      executeTransaction({
+        root: project.root,
+        plan,
+        mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+        acceptedConsents: [],
+        validators: [validator],
+      }),
+    );
+
+    expect(error).toMatchObject({ code: "TRANSACTION_VALIDATOR_PLAN_MISMATCH", exitCode: 8 });
+    expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+    expect(readFileSync(resolve(project.root, target))).toEqual(originalBytes);
+  });
+
+  it.each([
+    { target: "package.json", manifest: false },
+    { target: ".mergora/manifest.json", manifest: true },
+  ] as const)(
+    "read-only overlay validation rejects malformed proposed $target bytes",
+    ({ target: malformedTarget, manifest }) => {
+      const project = fixture();
+      const before = readFileSync(resolve(project.root, malformedTarget));
+      const malformed = Buffer.from("{\n");
+      const template = transactionPlan(project.root, []);
+      const { planDigest: _planDigest, ...semantic } = template;
+      const plan = finalizeOperationPlan({
+        ...semantic,
+        fileOperations: [
+          {
+            operation: "structured-patch",
+            target: malformedTarget,
+            owner: "test:malformed-overlay",
+            base: sha256(before),
+            local: sha256(before),
+            remote: sha256(malformed),
+            proposed: sha256(malformed),
+            mediaType: "application/json",
+            risk: "review-required",
+            reason: "Exercise read-only built-in structured validation.",
+          },
+        ],
+        estimatedBytes: { download: 0, write: malformed.byteLength },
+      });
+      const transactionRoot = resolve(project.root, ".mergora/transactions");
+      const transactionsBefore = readdirSync(transactionRoot).sort();
+
+      const error = catchError(() =>
+        validateTransactionOverlay({
+          root: project.root,
+          plan,
+          mutations: [
+            {
+              target: malformedTarget,
+              content: malformed,
+              beforeDigest: sha256(before),
+              ...(manifest ? { manifest: true } : {}),
+            },
+          ],
+          validators: [],
+        }),
+      );
+
+      expect(error).toMatchObject({
+        code: manifest ? "TRANSACTION_PROVENANCE_INVALID" : "TRANSACTION_STAGE_INVALID",
+      });
+      expect(readdirSync(transactionRoot).sort()).toEqual(transactionsBefore);
+      expect(readFileSync(resolve(project.root, malformedTarget))).toEqual(before);
+    },
+  );
+
   it("rejects the staged overlay before backups or authoritative writes", () => {
     const project = fixture();
     let stagedBytes: Buffer | null = null;
@@ -178,6 +404,7 @@ describe("registered transaction validators", () => {
         root: project.root,
         plan,
         mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+        acceptedConsents: [],
         validators,
       }),
     );
@@ -267,7 +494,13 @@ describe("registered transaction validators", () => {
       },
     ];
     const error = catchError(() =>
-      executeTransaction({ root: project.root, plan, mutations, validators }),
+      executeTransaction({
+        root: project.root,
+        plan,
+        mutations,
+        acceptedConsents: [],
+        validators,
+      }),
     );
 
     expect(error).toMatchObject({
@@ -320,6 +553,7 @@ describe("registered transaction validators", () => {
       root: project.root,
       plan,
       mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+      acceptedConsents: [],
       validators,
     });
 
@@ -381,6 +615,7 @@ describe("registered transaction validators", () => {
       root: project.root,
       plan,
       mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+      acceptedConsents: [],
       validators,
     });
 
@@ -438,6 +673,7 @@ describe("registered transaction validators", () => {
           root: project.root,
           plan,
           mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+          acceptedConsents: [],
           validators,
         }),
       );
@@ -481,6 +717,7 @@ describe("registered transaction validators", () => {
         root: project.root,
         plan,
         mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+        acceptedConsents: [],
         validators,
         faultInjector: (point) => {
           if (!interrupted && point === "commit-file") {
@@ -533,6 +770,7 @@ describe("registered transaction validators", () => {
         root: project.root,
         plan,
         mutations: [{ target, content: proposedBytes, beforeDigest: sha256(originalBytes) }],
+        acceptedConsents: [],
         validators,
       }),
     );

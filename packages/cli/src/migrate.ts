@@ -14,11 +14,21 @@ import { createMergoraConfig, validateMergoraConfig, type MergoraConfig } from "
 import { inspectProject, type Framework } from "./project-inspector.js";
 import {
   executeTransaction,
+  validateTransactionOverlay,
+  validationSuiteForTransaction,
   type OperationPlan,
   type OperationPlanFile,
   type TransactionMutation,
   type TransactionResult,
+  type TransactionValidationContext,
+  type TransactionValidationIssue,
+  type TransactionValidationResult,
+  type TransactionValidator,
 } from "./transaction-engine.js";
+import {
+  createMediaParseValidator,
+  transactionValidationResult,
+} from "./trusted-transaction-validators.js";
 
 type Digest = `sha256:${string}`;
 
@@ -94,6 +104,7 @@ interface InternalMigrationPlan {
   readonly plan: MigrationPlan;
   readonly mutations: readonly TransactionMutation[];
   readonly observedTargets: Readonly<Record<string, Digest | null>>;
+  readonly validators: readonly TransactionValidator[];
 }
 
 interface ProjectDigests {
@@ -453,7 +464,7 @@ function planBase(input: {
         : [],
     conflicts: [],
     estimatedBytes: { download: 0, write: writes },
-    validationSuite: ["schema", "digest", "path", "collision", "parse", "project-configured"],
+    validationSuite: [],
     rollbackAvailable: input.execution === "transaction",
     migration: {
       id: input.id,
@@ -787,6 +798,52 @@ function modePlan(
   });
 }
 
+function migrationProjectValidator(expectedBytes: Buffer): TransactionValidator {
+  const expectedByteDigest = sha256(expectedBytes);
+  const expectedValue = validateMergoraConfig(
+    JSON.parse(expectedBytes.toString("utf8")) as unknown,
+  );
+  const expectedDocument = canonicalJson(expectedValue);
+  const validate = (context: TransactionValidationContext): TransactionValidationResult => {
+    const issues: TransactionValidationIssue[] = [];
+    const bytes = context.readFile(CONFIG_PATH);
+    try {
+      if (bytes === null || sha256(bytes) !== expectedByteDigest) throw new Error("byte mismatch");
+      const value = validateMergoraConfig(JSON.parse(bytes.toString("utf8")) as unknown);
+      if (canonicalJson(value) !== expectedDocument) throw new Error("semantic mismatch");
+    } catch {
+      issues.push({
+        code: "MIGRATION_PROJECT_CONFIG_INVALID",
+        target: CONFIG_PATH,
+        message: "The migrated project configuration differs from the reviewed schema-v1 state.",
+      });
+    }
+    return transactionValidationResult(
+      `Validated migrated project configuration in the ${context.phase} view.`,
+      `Migrated project configuration validation failed in the ${context.phase} view.`,
+      issues,
+    );
+  };
+  return {
+    id: "migration-project-config",
+    label: "project-configured",
+    validateStagedOverlay: validate,
+    validatePostCommit: validate,
+  };
+}
+
+function withMigrationValidationSuite(
+  plan: MigrationPlan,
+  validators: readonly TransactionValidator[],
+): MigrationPlan {
+  const { planDigest: _planDigest, ...semantic } = plan;
+  return finalizeMigrationPlan({
+    ...semantic,
+    validationSuite:
+      plan.migration.execution === "transaction" ? validationSuiteForTransaction(validators) : [],
+  });
+}
+
 function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
   const root = validatedProjectRoot(options.projectRoot);
   const selected = checkedMigrationId(options);
@@ -811,13 +868,38 @@ function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
       options.itemIds ?? [],
     );
   }
-  return {
+  const configMutation = mutations.find(
+    (mutation): mutation is TransactionMutation & { readonly content: Uint8Array } =>
+      mutation.target === CONFIG_PATH && mutation.content !== null,
+  );
+  const validators: readonly TransactionValidator[] =
+    plan.migration.execution === "transaction" && configMutation !== undefined
+      ? [
+          createMediaParseValidator("migration-media-parse", [
+            { target: CONFIG_PATH, mediaType: "application/json" },
+          ]),
+          migrationProjectValidator(Buffer.from(configMutation.content)),
+        ]
+      : [];
+  plan = withMigrationValidationSuite(plan, validators);
+  const internal = {
     root,
     plan,
     mutations,
     observedTargets:
       project.configBytes === null ? {} : { [CONFIG_PATH]: sha256(project.configBytes) },
-  };
+    validators,
+  } satisfies InternalMigrationPlan;
+  if (plan.migration.execution === "transaction") {
+    validateTransactionOverlay({
+      root,
+      plan,
+      mutations,
+      observedTargets: internal.observedTargets,
+      validators,
+    });
+  }
+  return internal;
 }
 
 export function planMigration(options: MigrationOptions): MigrationPlan {
@@ -849,8 +931,13 @@ export function applyMigration(
     root: built.root,
     plan: built.plan,
     mutations: built.mutations,
+    acceptedConsents: built.plan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: built.plan.planDigest,
+    })),
     observedTargets: built.observedTargets,
     commandArguments: options.commandArguments ?? [],
+    validators: built.validators,
   });
   return {
     id: built.plan.migration.id,

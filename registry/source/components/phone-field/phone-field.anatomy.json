@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "itemId": "phone-field",
+  "root": {
+    "element": "input",
+    "ref": "HTMLInputElement",
+    "slot": "phone-field-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "type",
+      "inputmode",
+      "autocomplete",
+      "required",
+      "disabled",
+      "readonly",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "phone-field",
+      "element": "span",
+      "purpose": "Specialist phone, extension, canonical serialization, and validation layout.",
+      "stability": "documented"
+    },
+    {
+      "slot": "phone-field-control",
+      "element": "span",
+      "purpose": "Visual grouping of explicit country context and the native telephone input.",
+      "stability": "documented"
+    },
+    {
+      "slot": "phone-field-country",
+      "element": "span with bdi",
+      "purpose": "Localized country name and isolated international calling code; never a flag-only label.",
+      "stability": "documented"
+    },
+    {
+      "slot": "phone-field-extension",
+      "element": "label",
+      "purpose": "Optional separately named decimal telephone-extension control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "phone-field-canonical-input",
+      "element": "input type=hidden",
+      "purpose": "Optional form-owned canonical E.164 serialization while formatted text remains visible.",
+      "stability": "documented"
+    },
+    {
+      "slot": "phone-field-validation",
+      "element": "span",
+      "purpose": "Localized adapter validation and recovery text associated with the telephone input.",
+      "stability": "documented"
+    }
+  ]
+}

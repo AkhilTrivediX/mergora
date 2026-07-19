@@ -3,14 +3,12 @@ export const CLI_NODE_RANGE = ">=22.14.0" as const;
 export { auditProject, auditProjectExitCode, type AuditProjectOptions } from "./audit.js";
 
 export {
-  installP1Source,
-  planP1SourceInstall,
-  P1_SOURCE_ITEM_IDS,
-  type P1SourceInstallPlan,
-  type P1SourceInstallOptions,
-  type P1SourceInstallResult,
-  type P1SourceItemId,
-} from "./p1-installer.js";
+  auditProjectWithOfficialBrowserV1,
+  type OfficialBrowserAuditOptionsV1,
+  type OfficialBrowserAuditPreviewBuildV1,
+  type OfficialBrowserAuditPreviewUrlV1,
+  type OfficialBrowserAuditPreviewV1,
+} from "./official-browser-audit.js";
 
 export {
   applyInit,
@@ -93,9 +91,13 @@ export {
   applyAcquiredSourceAdd,
   applySourceAdopt,
   applySourceRemove,
+  deriveAcquiredDistributionSources,
   planSourceAdd,
   planAcquiredSourceAdd,
   type AcquiredSourceOperationOptions,
+  type AcquiredDistributionSourceFile,
+  type AcquiredDistributionSourceProjection,
+  type DeriveAcquiredDistributionSourcesOptions,
   planSourceAdopt,
   planSourceRemove,
   type SourceOperationOptions,
@@ -144,9 +146,26 @@ export {
 } from "./package-editor.js";
 
 export {
+  acquireStableNpmTarballInventory,
+  acquireStableVendorSnapshot,
+  applyStableVendor,
   applyVendor,
+  planStableVendor,
   planVendor,
+  verifyVendorBundle,
   verifyVendor,
+  type AcquireStableVendorSnapshotOptions,
+  type StableNpmTarballFetcher,
+  type StableNpmTarballFetchRequest,
+  type StableNpmTarballFetchResult,
+  type StableNpmTarballInventory,
+  type StableNpmTarballInventoryDescriptor,
+  type StableNpmTarballInventoryEntry,
+  type StableVendorDocuments,
+  type StableVendorPlan,
+  type StableVendorResult,
+  type StableVendorSnapshot,
+  type VendorBundleVerificationResult,
   type VendorArtifactReference,
   type VendorItemReference,
   type VendorManifestV1,
@@ -156,6 +175,23 @@ export {
   type VendorVerificationResult,
   type VendorVerifyOptions,
 } from "./vendor.js";
+
+export {
+  createStableAcquisitionVendorReader,
+  createStableNpmTarballVendorReader,
+  stableNpmTarballInternalPath,
+  validateStableNpmRegistryOriginPolicies,
+  validateStableNpmTarballBytes,
+  validateStableNpmTarballDescriptor,
+  verifyStableVendorBundle,
+  verifyStableVendorBundleBytes,
+  type StableAcquisitionVendorReaderOptions,
+  type StableNpmRegistryOriginPolicy,
+  type StableVendorNpmTarballDescriptor,
+  type StableVendorNpmTarballReader,
+  type StableVendorNpmTarballRequest,
+  type StableVendorVerificationResult,
+} from "./vendor-reader.js";
 
 export {
   acquireImmutableArtifact,
@@ -176,6 +212,7 @@ export {
 } from "./acquisition.js";
 
 export {
+  assertAuthenticAcquiredNativeRegistryRelease,
   resolveNativeRegistryRelease,
   type AcquiredNativeCatalogItem,
   type AcquiredNativeFile,
@@ -187,6 +224,56 @@ export {
   type NativeReleaseArtifactReference,
   type ResolveNativeRegistryReleaseOptions,
 } from "./acquisition-resolver.js";
+
+export {
+  immutableReleaseSatisfies,
+  resolveImmutableReleaseVersion,
+  type ImmutableReleaseVersionPolicy,
+} from "./version-resolution.js";
+
+export {
+  assertDistributionConfigurationBinding,
+  assertDistributionEnrollmentAllowed,
+  DISTRIBUTION_PROVENANCE_SCHEMA_VERSION,
+  resolveRequestedDistributionMode,
+  serializeDistributionProvenance,
+  validateDistributionProvenance,
+  type ConfiguredDistributionMode,
+  type DistributionDependencyOwnership,
+  type DistributionDigest,
+  type DistributionItem,
+  type DistributionPackageArtifact,
+  type DistributionPatchOwnership,
+  type DistributionProvenanceState,
+  type DistributionReleasePin,
+  type DistributionSourceFile,
+  type DistributionStructuredPatch,
+  type InstalledDistributionMode,
+  type PackageDistributionItem,
+  type SourceDistributionItem,
+  type ValidatedDistributionProvenance,
+} from "./distribution-provenance.js";
+
+export {
+  applyDistributionModeTransaction,
+  BUILT_IN_MODE_IMPORT_ADAPTER,
+  DISTRIBUTION_MODE_VALIDATOR_IDS,
+  planDistributionModeTransaction,
+  type ApplyDistributionModeTransactionOptions,
+  type ApplyDistributionModeTransactionResult,
+  type DistributionImportRewrite,
+  type DistributionModeBaseMaterialization,
+  type DistributionModeDependencyOperation,
+  type DistributionModeFileOperation,
+  type DistributionModeMigrationObservation,
+  type DistributionModeMigrationOptions,
+  type DistributionModeMigrationPlan,
+  type DistributionModePackageIntegrityEvidence,
+  type DistributionModePatchOperation,
+  type DistributionModeTargetMaterialization,
+  type PlanDistributionModeTransactionOptions,
+  type PlanDistributionModeTransactionResult,
+} from "./distribution-mode-migration.js";
 
 export {
   applySemanticResolution,
@@ -204,6 +291,7 @@ export {
   planAcquiredSemanticUpdate,
   readImmutableUpdateRelease,
   type ImmutableUpdateFile,
+  type ImmutableUpdateMove,
   type ImmutableUpdateItem,
   type ImmutableUpdateRegistry,
   type ImmutableUpdateRelease,

@@ -4,15 +4,22 @@ import { resolve } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
+  CLI_VERSION,
   TransactionInterruption,
   applyInit,
   applySourceAdd,
+  canonicalJson,
+  executeTransaction,
+  finalizeOperationPlan,
   listIncompleteTransactions,
+  planInit,
   planRecovery,
   planSourceAdd,
   recoverTransaction,
+  sha256,
   type TransactionFaultPoint,
 } from "../../packages/cli/src/index.ts";
+import { validationSuiteForTransaction } from "../../packages/cli/src/transaction-engine.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -22,7 +29,7 @@ const temporaryDirectories: string[] = [];
 function fixture() {
   const project = createProjectFixture();
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   return project;
 }
 
@@ -93,11 +100,67 @@ describe("transaction fault convergence", () => {
 
   it("explicit resume finishes the staged deterministic order with manifest last", () => {
     const project = fixture();
+    const target = "src/recovery-resume.ts";
+    const proposed = Buffer.from('export const recoveryState = "resumed";\n');
+    const manifestPath = resolve(project.root, ".mergora/manifest.json");
+    const manifestBefore = readFileSync(manifestPath);
+    const manifest = JSON.parse(manifestBefore.toString("utf8")) as {
+      toolchain: { formatter: string };
+    };
+    manifest.toolchain.formatter = `${manifest.toolchain.formatter}-recovery-test`;
+    const manifestAfter = Buffer.from(`${JSON.stringify(manifest, null, 2)}\n`);
+    const configDigest = sha256(
+      canonicalJson(JSON.parse(readFileSync(resolve(project.root, "mergora.json"), "utf8"))),
+    );
+    const manifestPreconditionDigest = sha256(canonicalJson(JSON.parse(manifestBefore.toString())));
+    const plan = finalizeOperationPlan({
+      schemaVersion: 1,
+      command: "update",
+      cliVersion: CLI_VERSION,
+      projectRoot: ".",
+      configDigest,
+      manifestPreconditionDigest,
+      registries: [],
+      items: [],
+      fileOperations: [
+        {
+          operation: "add",
+          target,
+          owner: "test:recovery",
+          base: null,
+          local: null,
+          remote: sha256(proposed),
+          proposed: sha256(proposed),
+          mediaType: "text/typescript",
+          risk: "ordinary",
+          reason: "Exercise deterministic built-in-only recovery.",
+        },
+      ],
+      dependencyChanges: [],
+      structuredPatches: [],
+      migrations: [],
+      contractChanges: [],
+      warnings: [],
+      consentRequirements: [],
+      conflicts: [],
+      estimatedBytes: { download: 0, write: proposed.byteLength + manifestAfter.byteLength },
+      validationSuite: validationSuiteForTransaction(),
+      rollbackAvailable: true,
+    });
     let injected = false;
     const options = {
-      projectRoot: project.root,
-      itemIds: ["button"],
-      registryDirectory,
+      root: project.root,
+      plan,
+      acceptedConsents: [],
+      mutations: [
+        { target, content: proposed, beforeDigest: null },
+        {
+          target: ".mergora/manifest.json",
+          content: manifestAfter,
+          beforeDigest: sha256(manifestBefore),
+          manifest: true,
+        },
+      ],
       faultInjector: (point: TransactionFaultPoint) => {
         if (!injected && point === "commit-file") {
           injected = true;
@@ -105,8 +168,7 @@ describe("transaction fault convergence", () => {
         }
       },
     };
-    const plan = planSourceAdd(options);
-    expect(() => applySourceAdd(options, plan.planDigest)).toThrow(TransactionInterruption);
+    expect(() => executeTransaction(options)).toThrow(TransactionInterruption);
     const [transactionId] = listIncompleteTransactions(project.root);
     const recovery = planRecovery({ root: project.root, transactionId, strategy: "resume" });
     expect(recovery.action).toBe("resume");
@@ -130,7 +192,7 @@ describe("transaction fault convergence", () => {
     expect(commits.at(-1)).toMatchObject({ target: ".mergora/manifest.json" });
   });
 
-  it("rolls back at package-manager start and finalizes a recorded successful PM post-state", () => {
+  it("rolls back at package-manager start and finalizes a post-validated PM state", () => {
     const start = fixture();
     let runnerCalled = false;
     const startOptions = {
@@ -176,9 +238,9 @@ describe("transaction fault convergence", () => {
         return { status: 0 };
       },
       faultInjector: (point: TransactionFaultPoint) => {
-        if (!completedFault && point === "package-manager-complete") {
+        if (!completedFault && point === "post-validation-complete") {
           completedFault = true;
-          throw new TransactionInterruption("after package manager");
+          throw new TransactionInterruption("after durable post-validation");
         }
       },
     };

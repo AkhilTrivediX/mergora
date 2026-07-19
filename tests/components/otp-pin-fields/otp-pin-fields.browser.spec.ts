@@ -48,7 +48,7 @@ async function axeViolations(page: Page): Promise<unknown[]> {
 
 async function pasteText(page: Page, target: Locator, value: string): Promise<void> {
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"], {
-    origin: "http://127.0.0.1:8142",
+    origin: new URL(page.url()).origin,
   });
   await page.evaluate((text) => navigator.clipboard.writeText(text), value);
   await target.focus();

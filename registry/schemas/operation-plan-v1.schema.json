@@ -224,6 +224,7 @@
               "rename-prop",
               "rename-token",
               "config-v1",
+              "mode-source-package-v1",
               "manual-checklist"
             ]
           },
@@ -259,8 +260,17 @@
         "additionalProperties": false,
         "required": ["id", "flag", "reason"],
         "properties": {
-          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
-          "flag": { "type": "string", "pattern": "^--[a-z0-9]+(?:-[a-z0-9]+)*$" },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:._-]{0,255}$",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "flag": {
+            "type": "string",
+            "pattern": "^--[a-z0-9]+(?:-[a-z0-9]+)*(?:(?:=| )[A-Za-z0-9][A-Za-z0-9:._/-]*)?$",
+            "maxLength": 1024
+          },
           "reason": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
         }
       }

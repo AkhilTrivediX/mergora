@@ -1,0 +1,16 @@
+/* Generated from registry/source/components/range-slider/range-slider.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-range-slider .mrg-slider-fill {
+    background: var(--mrg-semantic-color-selection-border);
+  }
+
+  .mrg-range-slider[data-collision-behavior="clamp"] .mrg-slider-thumb[data-focused] {
+    z-index: 2;
+  }
+
+  @media (forced-colors: active) {
+    .mrg-range-slider .mrg-slider-fill {
+      background: Highlight;
+    }
+  }
+}

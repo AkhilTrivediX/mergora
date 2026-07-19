@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   applyInit,
   applySourceAdd,
+  planInit,
   planSourceAdd,
   type PackageManager,
   type PackageManagerInvocation,
@@ -39,7 +40,7 @@ describe("fixed package-manager policy", () => {
   ] as const)("uses fixed no-hook argv for %s", (manager, expectedArguments) => {
     const project = createProjectFixture({ manager });
     temporaryDirectories.push(project.root);
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const lockPath = resolve(project.root, lockfile(manager));
     const lockBefore = readFileSync(lockPath);
     let invocation: PackageManagerInvocation | undefined;
@@ -68,7 +69,7 @@ describe("fixed package-manager policy", () => {
   it("honors --no-install without invoking a runner or touching the lockfile", () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const lockPath = resolve(project.root, "pnpm-lock.yaml");
     const lockBefore = readFileSync(lockPath);
     let invoked = false;
@@ -110,7 +111,7 @@ describe("fixed package-manager policy", () => {
     ].join(newline);
     const project = createProjectFixture({ newline, packageText });
     temporaryDirectories.push(project.root);
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
     const options = {
       projectRoot: project.root,
       itemIds: ["dialog"],
@@ -132,7 +133,7 @@ describe("fixed package-manager policy", () => {
     writeFileSync(workspaceLockPath, "workspace-lock-before\n");
     const project = createProjectFixture({ parentDirectory: parent });
     rmSync(resolve(project.root, "pnpm-lock.yaml"));
-    applyInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
 
     const installOptions = {
       projectRoot: project.root,

@@ -3,7 +3,13 @@ import { relative, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, applySourceAdd, planSourceAdd } from "../../packages/cli/src/index.ts";
+import {
+  TransactionInterruption,
+  applyInit,
+  applySourceAdd,
+  planInit,
+  planSourceAdd,
+} from "../../packages/cli/src/index.ts";
 import { sha256 } from "../../packages/cli/src/contracts.ts";
 import {
   applySemanticResolution,
@@ -40,7 +46,7 @@ function json<T>(path: string): T {
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-semantic-resolve-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const options = {
     projectRoot: project.root,
     itemIds: ["button"],
@@ -55,7 +61,11 @@ function manifest(root: string): ProvenanceManifest {
   return json<ProvenanceManifest>(resolve(root, ".mergora/manifest.json"));
 }
 
-function conflictRelease(root: string, version = "0.0.2"): ImmutableUpdateRelease {
+function conflictRelease(
+  root: string,
+  version = "0.0.2",
+  declarationConflict = false,
+): ImmutableUpdateRelease {
   const installed = manifest(root).items["official:button"]!;
   const files: ImmutableUpdateFile[] = installed.files.map((file) => {
     const bytes = readFileSync(resolve(root, basePath(file.base)));
@@ -63,6 +73,8 @@ function conflictRelease(root: string, version = "0.0.2"): ImmutableUpdateReleas
     let content = bytes.toString(binary ? "base64" : "utf8");
     if (file.logicalPath.endsWith("button.css")) {
       content = content.replace("align-items: center;", "align-items: flex-end;");
+    } else if (declarationConflict && file.logicalPath.endsWith("button-css.d.ts")) {
+      content = content.replace('declare module "*.css";', 'declare module "*.upstream";');
     }
     const nextBytes = Buffer.from(content, binary ? "base64" : "utf8");
     return {
@@ -129,6 +141,22 @@ function makeLocalConflict(root: string): { readonly target: string; readonly by
   return { target: file.target, bytes: Buffer.from(text) };
 }
 
+function makeLocalDeclarationConflict(root: string): {
+  readonly target: string;
+  readonly bytes: Buffer;
+} {
+  const file = manifest(root).items["official:button"]!.files.find(({ target }) =>
+    target.endsWith("button-css.d.ts"),
+  )!;
+  const path = resolve(root, file.target);
+  const text = readFileSync(path, "utf8").replace(
+    'declare module "*.css";',
+    'declare module "*.local";',
+  );
+  writeFileSync(path, text);
+  return { target: file.target, bytes: Buffer.from(text) };
+}
+
 function authoritativeInventory(root: string): Readonly<Record<string, string>> {
   const output: Record<string, string> = {};
   const visit = (directory: string): void => {
@@ -136,6 +164,20 @@ function authoritativeInventory(root: string): Readonly<Record<string, string>> 
       const path = resolve(directory, entry.name);
       const key = relative(root, path).replaceAll("\\", "/");
       if (key === ".mergora/transactions" || key.startsWith(".mergora/transactions/")) continue;
+      if (entry.isDirectory()) visit(path);
+      else if (entry.isFile()) output[key] = sha256(readFileSync(path));
+    }
+  };
+  visit(root);
+  return output;
+}
+
+function directoryInventory(root: string): Readonly<Record<string, string>> {
+  const output: Record<string, string> = {};
+  const visit = (directory: string): void => {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const path = resolve(directory, entry.name);
+      const key = relative(root, path).replaceAll("\\", "/");
       if (entry.isDirectory()) visit(path);
       else if (entry.isFile()) output[key] = sha256(readFileSync(path));
     }
@@ -175,6 +217,7 @@ describe("Semantic Sync conflict and explicit resolution", () => {
       conflictTransactionId: id,
       liveProjectChanged: false,
     });
+    expect(result.planDigest).toBe(plan.planDigest);
     expect(authoritativeInventory(project.root)).toEqual(before);
     const root = resolve(project.root, ".mergora/transactions", id);
     const key = conflictKey(project.root, id);
@@ -194,6 +237,139 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     ).toEqual([expect.objectContaining({ target: local.target })]);
   });
 
+  it("publishes a conflict tree only after every staged artifact verifies", async () => {
+    const project = fixture();
+    makeLocalConflict(project.root);
+    const release = conflictRelease(project.root);
+    const id = "20260718T120000.100Z-00000000000000000000000000000011";
+    let stagedFiles = 0;
+    const options = {
+      projectRoot: project.root,
+      release,
+      noInstall: true,
+      conflictTransactionId: id,
+      faultInjector: (point: string) => {
+        if (point === "stage-file" && ++stagedFiles === 4) {
+          throw new Error("interrupt conflict artifact staging");
+        }
+      },
+    };
+    const plan = planSemanticUpdate(options);
+    const before = authoritativeInventory(project.root);
+
+    await expect(applySemanticUpdate(options, plan.planDigest)).rejects.toThrow(
+      /interrupt conflict artifact staging/u,
+    );
+    expect(existsSync(resolve(project.root, ".mergora/transactions", id))).toBe(false);
+    expect(
+      readdirSync(resolve(project.root, ".mergora/transactions")).filter((name) =>
+        name.includes(id),
+      ),
+    ).toEqual([]);
+    expect(authoritativeInventory(project.root)).toEqual(before);
+
+    const retry = {
+      projectRoot: project.root,
+      release,
+      noInstall: true,
+      conflictTransactionId: id,
+    };
+    expect(planSemanticUpdate(retry).planDigest).toBe(plan.planDigest);
+    await expect(applySemanticUpdate(retry, plan.planDigest)).resolves.toMatchObject({
+      status: "conflicted",
+      conflictTransactionId: id,
+    });
+  });
+
+  it("rolls back an interrupted multi-target resolve-choice journal", async () => {
+    const project = fixture();
+    const css = makeLocalConflict(project.root);
+    const declaration = makeLocalDeclarationConflict(project.root);
+    const release = conflictRelease(project.root, "0.0.2", true);
+    const id = "20260718T120000.200Z-00000000000000000000000000000012";
+    const updateOptions = {
+      projectRoot: project.root,
+      release,
+      noInstall: true,
+      conflictTransactionId: id,
+    };
+    const updatePlan = planSemanticUpdate(updateOptions);
+    expect(updatePlan.conflicts.map(({ target }) => target)).toEqual(
+      expect.arrayContaining([css.target, declaration.target]),
+    );
+    await applySemanticUpdate(updateOptions, updatePlan.planDigest);
+
+    let committedFiles = 0;
+    const interruptedChoice = {
+      projectRoot: project.root,
+      transactionId: id,
+      choice: "take-upstream" as const,
+      targets: [css.target, declaration.target],
+      faultInjector: (point: string) => {
+        if (point === "commit-file" && ++committedFiles === 1) {
+          throw new Error("interrupt resolve-choice swap");
+        }
+      },
+    };
+    const choicePlan = planSemanticResolveChoice(interruptedChoice);
+    expect(choicePlan.changes).toHaveLength(2);
+    const conflictRoot = resolve(project.root, ".mergora/transactions", id);
+    const before = directoryInventory(conflictRoot);
+
+    expect(() => applySemanticResolveChoice(interruptedChoice, choicePlan.planDigest)).toThrow(
+      /interrupt resolve-choice swap/u,
+    );
+    expect(directoryInventory(conflictRoot)).toEqual(before);
+    expect(
+      readdirSync(resolve(project.root, ".mergora/transactions")).some((name) =>
+        name.includes(`mergora-resolve-choice-${id}`),
+      ),
+    ).toBe(false);
+    expect(
+      listSemanticResolutions({ projectRoot: project.root, transactionId: id }).unresolved,
+    ).toHaveLength(2);
+
+    const retry = {
+      projectRoot: project.root,
+      transactionId: id,
+      choice: "take-upstream" as const,
+      targets: [css.target, declaration.target],
+    };
+    expect(planSemanticResolveChoice(retry).planDigest).toBe(choicePlan.planDigest);
+    let interruptedFiles = 0;
+    const interrupted = {
+      ...retry,
+      faultInjector: (point: string) => {
+        if (point === "commit-file" && ++interruptedFiles === 1) {
+          throw new TransactionInterruption("simulate resolve-choice process interruption");
+        }
+      },
+    };
+    expect(() => applySemanticResolveChoice(interrupted, choicePlan.planDigest)).toThrow(
+      TransactionInterruption,
+    );
+    expect(
+      readdirSync(resolve(project.root, ".mergora/transactions")).some((name) =>
+        name.includes(`mergora-resolve-choice-${id}`),
+      ),
+    ).toBe(true);
+    expect(
+      listSemanticResolutions({ projectRoot: project.root, transactionId: id }).unresolved,
+    ).toHaveLength(2);
+    expect(directoryInventory(conflictRoot)).toEqual(before);
+    expect(
+      readdirSync(resolve(project.root, ".mergora/transactions")).some((name) =>
+        name.includes(`mergora-resolve-choice-${id}`),
+      ),
+    ).toBe(false);
+    expect(applySemanticResolveChoice(retry, choicePlan.planDigest).planDigest).toBe(
+      choicePlan.planDigest,
+    );
+    expect(
+      listSemanticResolutions({ projectRoot: project.root, transactionId: id }).resolved,
+    ).toHaveLength(2);
+  });
+
   it("records take-local, commits through the transaction engine, and advances R provenance", async () => {
     const project = fixture();
     const local = makeLocalConflict(project.root);
@@ -202,12 +378,13 @@ describe("Semantic Sync conflict and explicit resolution", () => {
       logicalPath.endsWith("button.css"),
     )!;
     const id = "20260718T120001.000Z-00000000000000000000000000000002";
-    await applySemanticUpdate({
+    const updateOptions = {
       projectRoot: project.root,
       release,
       noInstall: true,
       conflictTransactionId: id,
-    });
+    };
+    await applySemanticUpdate(updateOptions, planSemanticUpdate(updateOptions).planDigest);
 
     const choiceOptions = {
       projectRoot: project.root,
@@ -217,6 +394,14 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     };
     const choice = planSemanticResolveChoice(choiceOptions);
     expect(planSemanticResolveChoice(choiceOptions)).toEqual(choice);
+    const beforeChoice = directoryInventory(project.root);
+    expect(() => Reflect.apply(applySemanticResolveChoice, undefined, [choiceOptions])).toThrow(
+      /exact reviewed plan digest/iu,
+    );
+    expect(() => applySemanticResolveChoice(choiceOptions, sha256("stale-choice"))).toThrow(
+      /plan changed before apply/iu,
+    );
+    expect(directoryInventory(project.root)).toEqual(beforeChoice);
     applySemanticResolveChoice(choiceOptions, choice.planDigest);
     expect(listSemanticResolutions({ projectRoot: project.root, transactionId: id })).toMatchObject(
       {
@@ -233,8 +418,27 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     expect(schema.ok).toBe(true);
     expect(plan.command).toBe("resolve");
     expect(plan.conflicts).toEqual([]);
+    const beforeApply = directoryInventory(project.root);
+    expect(() => Reflect.apply(applySemanticResolution, undefined, [applyOptions])).toThrow(
+      /exact reviewed plan digest/iu,
+    );
+    expect(() => applySemanticResolution(applyOptions, sha256("stale-resolution"))).toThrow(
+      /plan changed before apply/iu,
+    );
+    expect(directoryInventory(project.root)).toEqual(beforeApply);
     const result = applySemanticResolution(applyOptions, plan.planDigest);
+    expect(result.planDigest).toBe(plan.planDigest);
     expect(result.transaction.state).toBe("committed");
+    expect(
+      json<{ planDigest: string }>(
+        resolve(
+          project.root,
+          ".mergora/transactions",
+          result.transaction.transactionId!,
+          "plan.json",
+        ),
+      ).planDigest,
+    ).toBe(plan.planDigest);
     expect(result.decisions).toEqual([
       expect.objectContaining({ target: local.target, resolution: "take-local" }),
     ]);
@@ -255,12 +459,13 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     const project = fixture();
     const local = makeLocalConflict(project.root);
     const id = "20260718T120002.000Z-00000000000000000000000000000003";
-    await applySemanticUpdate({
+    const updateOptions = {
       projectRoot: project.root,
       release: conflictRelease(project.root),
       noInstall: true,
       conflictTransactionId: id,
-    });
+    };
+    await applySemanticUpdate(updateOptions, planSemanticUpdate(updateOptions).planDigest);
     writeFileSync(
       resolve(project.root, local.target),
       `${local.bytes.toString("utf8")}\n/* later */\n`,
@@ -284,12 +489,13 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     const project = fixture();
     const local = makeLocalConflict(project.root);
     const id = "20260718T120003.000Z-00000000000000000000000000000004";
-    await applySemanticUpdate({
+    const updateOptions = {
       projectRoot: project.root,
       release: conflictRelease(project.root),
       noInstall: true,
       conflictTransactionId: id,
-    });
+    };
+    await applySemanticUpdate(updateOptions, planSemanticUpdate(updateOptions).planDigest);
     const key = conflictKey(project.root, id);
     const proposed = resolve(
       project.root,
@@ -340,12 +546,13 @@ describe("Semantic Sync conflict and explicit resolution", () => {
     const project = fixture();
     makeLocalConflict(project.root);
     const id = "20260718T120004.000Z-00000000000000000000000000000005";
-    await applySemanticUpdate({
+    const updateOptions = {
       projectRoot: project.root,
       release: conflictRelease(project.root),
       noInstall: true,
       conflictTransactionId: id,
-    });
+    };
+    await applySemanticUpdate(updateOptions, planSemanticUpdate(updateOptions).planDigest);
     const snapshotRoot = resolve(project.root, ".mergora/transactions", id, "snapshots");
     const key = readdirSync(snapshotRoot)[0]!;
     writeFileSync(resolve(snapshotRoot, key, "remote"), "corrupt");

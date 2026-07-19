@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/native-release-reference-v1.schema.json",
+  "title": "Mergora exact native release reference v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "artifactKind", "registryId", "release", "catalog", "manifest"],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "artifactKind": { "const": "mergora-native-release-reference" },
+    "registryId": { "const": "official" },
+    "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "catalog": { "$ref": "#/$defs/artifactReference" },
+    "manifest": { "$ref": "#/$defs/artifactReference" }
+  },
+  "$defs": {
+    "artifactReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "bytes"],
+      "properties": {
+        "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 67108864
+        }
+      }
+    }
+  }
+}

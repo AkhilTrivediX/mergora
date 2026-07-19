@@ -1,5 +1,6 @@
 import {
   existsSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
   rmSync,
@@ -7,11 +8,16 @@ import {
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { relative, resolve } from "node:path";
+import { dirname, relative, resolve } from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import { applyInit, applySourceAdd, planSourceAdd } from "../../packages/cli/src/index.ts";
+import {
+  applyInit,
+  applySourceAdd,
+  planInit,
+  planSourceAdd,
+} from "../../packages/cli/src/index.ts";
 import {
   applySemanticUpdate,
   diffSemanticSource,
@@ -21,6 +27,7 @@ import {
   planSemanticUpdate,
   type ImmutableUpdateFile,
   type ImmutableUpdateItem,
+  type ImmutableUpdateMove,
   type ImmutableUpdateRegistry,
   type ImmutableUpdateRelease,
 } from "../../packages/cli/src/semantic-update.ts";
@@ -44,7 +51,7 @@ function json<T>(path: string): T {
 function fixture() {
   const project = createProjectFixture({ directoryPrefix: "mergora-semantic-update-" });
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   const addOptions = {
     projectRoot: project.root,
     itemIds: ["button"],
@@ -66,6 +73,7 @@ type MutableRemoteFile = {
 interface ReleaseMutationContext {
   readonly installed: ManifestItem;
   readonly files: MutableRemoteFile[];
+  readonly moves: ImmutableUpdateMove[];
 }
 
 function releaseFor(
@@ -87,7 +95,8 @@ function releaseFor(
       executable: false,
     };
   });
-  mutate({ installed, files });
+  const moves: ImmutableUpdateMove[] = [];
+  mutate({ installed, files, moves });
   for (const file of files) {
     const bytes = Buffer.from(file.content, file.encoding === "base64" ? "base64" : "utf8");
     file.digest = sha256(bytes);
@@ -102,7 +111,8 @@ function releaseFor(
     registryDependencies: installed.registryDependencies,
     dependencies: installed.dependencies,
     contractVersion: version,
-    lastMigration: null,
+    lastMigration: moves.at(-1)?.id ?? null,
+    ...(moves.length === 0 ? {} : { moves }),
   };
   const item: ImmutableUpdateItem = {
     ...itemWithoutDigest,
@@ -163,6 +173,26 @@ afterEach(() => {
 });
 
 describe("Semantic Sync update planning and apply", () => {
+  it("requires an exact reviewed digest before creating transaction state or writing files", async () => {
+    const project = fixture();
+    const release = releaseFor(project.root, ({ files }) => {
+      const file = files.find(({ logicalPath }) => logicalPath.endsWith("button-css.d.ts"))!;
+      file.content += 'declare module "*.reviewed";\n';
+    });
+    const options = { projectRoot: project.root, release, noInstall: true };
+    const before = inventory(project.root);
+
+    await expect(Reflect.apply(applySemanticUpdate, undefined, [options])).rejects.toMatchObject({
+      code: "PLAN_PRECONDITION_REQUIRED",
+    });
+    await expect(applySemanticUpdate(options, sha256("stale-semantic-plan"))).rejects.toMatchObject(
+      {
+        code: "PLAN_PRECONDITION_STALE",
+      },
+    );
+    expect(inventory(project.root)).toEqual(before);
+  });
+
   it("fast-forwards clean files and stores exact R as base with exact live provenance", async () => {
     const project = fixture();
     const release = releaseFor(project.root, ({ files }) => {
@@ -252,6 +282,77 @@ describe("Semantic Sync update planning and apply", () => {
     const next = installedFile(project.root, "button.css");
     expect(next.base).toBe(remoteFile(release, "button.css").digest);
     expect(next.installed).toBe(sha256(merged));
+  });
+
+  it("applies an explicit logical-path move and advances exact provenance", async () => {
+    const project = fixture();
+    const installed = installedFile(project.root, "button-css.d.ts");
+    const oldPath = resolve(project.root, installed.target);
+    const destinationLogicalPath = installed.logicalPath.replace(
+      "button-css.d.ts",
+      "button-styles.d.ts",
+    );
+    const release = releaseFor(project.root, ({ files, moves }) => {
+      const declaration = files.find(({ logicalPath }) => logicalPath === installed.logicalPath)!;
+      declaration.logicalPath = destinationLogicalPath;
+      declaration.content += 'declare module "*.theme.css";\n';
+      moves.push({
+        id: "move-button-style-declaration",
+        fromLogicalPath: installed.logicalPath,
+        toLogicalPath: destinationLogicalPath,
+      });
+    });
+    const options = { projectRoot: project.root, release, noInstall: true };
+    const plan = planSemanticUpdate(options);
+    const destination = installed.target.replace("button-css.d.ts", "button-styles.d.ts");
+    expect(plan.migrations).toContainEqual({
+      id: "move-button-style-declaration",
+      adapter: "rename-file",
+      phase: "remote",
+    });
+    expect(plan.fileOperations).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ target: installed.target, operation: "delete" }),
+        expect.objectContaining({ target: destination, operation: "fast-forward" }),
+      ]),
+    );
+    await applySemanticUpdate(options, plan.planDigest);
+    expect(existsSync(oldPath)).toBe(false);
+    expect(readFileSync(resolve(project.root, destination), "utf8")).toContain(
+      'declare module "*.theme.css";',
+    );
+    expect(manifest(project.root).items["official:button"]).toMatchObject({
+      lastMigration: "move-button-style-declaration",
+      files: expect.arrayContaining([
+        expect.objectContaining({ logicalPath: destinationLogicalPath, target: destination }),
+      ]),
+    });
+  });
+
+  it("fails closed when an explicit move destination is occupied", () => {
+    const project = fixture();
+    const installed = installedFile(project.root, "button-css.d.ts");
+    const destinationLogicalPath = installed.logicalPath.replace(
+      "button-css.d.ts",
+      "button-styles.d.ts",
+    );
+    const destination = installed.target.replace("button-css.d.ts", "button-styles.d.ts");
+    mkdirSync(dirname(resolve(project.root, destination)), { recursive: true });
+    writeFileSync(resolve(project.root, destination), "consumer-owned\n");
+    const before = inventory(project.root);
+    const release = releaseFor(project.root, ({ files, moves }) => {
+      files.find(({ logicalPath }) => logicalPath === installed.logicalPath)!.logicalPath =
+        destinationLogicalPath;
+      moves.push({
+        id: "move-button-style-declaration",
+        fromLogicalPath: installed.logicalPath,
+        toLogicalPath: destinationLogicalPath,
+      });
+    });
+    expect(() =>
+      planSemanticUpdate({ projectRoot: project.root, release, noInstall: true }),
+    ).toThrow(/occupied path/iu);
+    expect(inventory(project.root)).toEqual(before);
   });
 
   it("handles upstream deletion and an intentional local tombstone in one transaction", async () => {

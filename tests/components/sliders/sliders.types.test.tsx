@@ -31,13 +31,13 @@ const rootRef = createRef<HTMLDivElement>();
   thumbLabels={["Minimum score", "Target score", "Maximum score"]}
 />;
 
-const controlled: RangeSliderValues = [3500, 12000];
+const controlled: RangeSliderValues = [1000, 10000];
 <RangeSlider
   collisionBehavior="clamp"
-  maxValue={12000}
-  minValue={3500}
+  maxValue={10000}
+  minValue={1000}
   step={250}
-  thumbLabels={["Minimum monthly salary", "Maximum monthly salary"]}
+  thumbLabels={["Minimum allocation", "Maximum allocation"]}
   value={controlled}
 />;
 

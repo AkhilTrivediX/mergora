@@ -14,15 +14,19 @@ None.
 
 ## Implementation gates, not external blockers
 
-- The current P3 checkpoint is `12a39f1` on `feature/foundation` in draft PR [#2](https://github.com/AkhilTrivediX/mergora/pull/2); merge and protected-main evidence remain open.
-- The clean dependency-output reproduction, 183 focused tests, numeric browser matrix, generation,
-  shadcn validation, and root/package typechecks pass. Linux aggregate run `29652787085` is pending.
+- The current P3 checkpoint is `075e214` plus the verified active worktree on
+  `feature/foundation` in draft PR [#2](https://github.com/AkhilTrivediX/mergora/pull/2); a new commit,
+  Linux checks, merge, and protected-main evidence remain open.
+- `pnpm check` passes 1,011 tests with one intentional platform skip, all 21 package typechecks,
+  generation, and shadcn validation. The production/static build, 178 browser passes with four
+  intentional forced-colors skips, and writer plus two exact consumer comparisons pass.
 - GitHub Discussions, environments, security settings, labels, main protection, and release-tag immutability are configured. Pages deployment and required CI contexts remain unexercised.
 - The approved unscoped package map is verified from authenticated read-only checks. Availability and legal/confusion review remain time-bound pre-publication gates.
 - Exact unreleased package tarballs and generated registry artifacts now exist and pass P1 consumers,
   including the read/plan-only MCP runtime. No public npm package, deployed production site/registry,
   or release exists yet.
-- No S0/S1 P3 finding remains; three S2 lifecycle findings remain open in
+- No S0 P3 finding remains. One systemic S1 operation-plan schema binding finding plus universal
+  registry/mode routing, executable migrations, and full packed-lifecycle S2 gaps remain open in
   [`../quality/P3_SECURITY_DATA_LOSS_AUDIT.md`](../quality/P3_SECURITY_DATA_LOSS_AUDIT.md). These are
   implementation gates, not external blockers.
 

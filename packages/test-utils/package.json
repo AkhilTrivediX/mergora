@@ -21,7 +21,16 @@
   },
   "dependencies": {
     "@testing-library/dom": "catalog:",
-    "axe-core": "catalog:"
+    "axe-core": "catalog:",
+    "mergora-contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.61.1 <2"
+  },
+  "peerDependenciesMeta": {
+    "@playwright/test": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "catalog:",

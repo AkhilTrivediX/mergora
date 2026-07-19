@@ -893,6 +893,7 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     "Ignore only local cache, transaction, temporary, and lock state.",
   );
   const edits = [configEdit, ignoreEdit, manifestEdit];
+  const writesRequired = edits.some(({ action }) => action !== "no-op");
   const semantic = {
     schemaVersion: 1,
     command: "init",
@@ -910,11 +911,6 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     edits: edits.map(({ content: _content, ...edit }) => edit),
     warnings: inspection.warnings,
   } as const;
-  const publicPlan: InitPlan = {
-    ...semantic,
-    writesRequired: edits.some(({ action }) => action !== "no-op"),
-    planDigest: sha256(JSON.stringify(semantic)),
-  };
   const operationPlan = finalizeOperationPlan({
     schemaVersion: 1,
     command: "init",
@@ -930,7 +926,15 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     migrations: [],
     contractChanges: [],
     warnings: inspection.warnings,
-    consentRequirements: [],
+    consentRequirements: writesRequired
+      ? [
+          {
+            id: "init-project-writes",
+            flag: "--yes",
+            reason: "Initialize the reviewed project metadata files.",
+          },
+        ]
+      : [],
     conflicts: [],
     estimatedBytes: {
       download: 0,
@@ -942,6 +946,11 @@ function internalInitPlan(options: InitOptions): InternalInitPlan {
     validationSuite: ["schema", "digest", "path", "collision", "ownership", "project-configured"],
     rollbackAvailable: true,
   });
+  const publicPlan: InitPlan = {
+    ...semantic,
+    writesRequired,
+    planDigest: operationPlan.planDigest,
+  };
   return { publicPlan, operationPlan, root, edits };
 }
 
@@ -949,9 +958,15 @@ export function planInit(options: InitOptions): InitPlan {
   return internalInitPlan(options).publicPlan;
 }
 
-export function applyInit(options: InitOptions, expectedPlanDigest?: string): InitPlan {
+export function applyInit(options: InitOptions, expectedPlanDigest: string): InitPlan {
   const plan = internalInitPlan(options);
-  if (expectedPlanDigest !== undefined && expectedPlanDigest !== plan.publicPlan.planDigest) {
+  if (expectedPlanDigest === undefined) {
+    throw new CliError("Initialization requires the exact reviewed plan digest before apply.", {
+      code: "PLAN_PRECONDITION_REQUIRED",
+      exitCode: 8,
+    });
+  }
+  if (expectedPlanDigest !== plan.operationPlan.planDigest) {
     throw new CliError("Initialization plan changed before apply; review a fresh plan.", {
       code: "PLAN_PRECONDITION_STALE",
       exitCode: 8,
@@ -973,6 +988,10 @@ export function applyInit(options: InitOptions, expectedPlanDigest?: string): In
     root: plan.root,
     plan: plan.operationPlan,
     mutations,
+    acceptedConsents: plan.operationPlan.consentRequirements.map(({ id }) => ({
+      id,
+      planDigest: plan.operationPlan.planDigest,
+    })),
     commandArguments: [],
     faultInjector: options.faultInjector,
     validators: [INIT_CONFIG_VALIDATOR],

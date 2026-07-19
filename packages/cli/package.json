@@ -45,9 +45,25 @@
     "mergora-contracts": "workspace:*",
     "mergora-registry": "workspace:*",
     "postcss": "catalog:",
+    "semver": "catalog:",
     "typescript": "catalog:"
   },
+  "peerDependencies": {
+    "@mergora/test-utils": ">=0.0.0 <1",
+    "@playwright/test": ">=1.61.1 <2"
+  },
+  "peerDependenciesMeta": {
+    "@mergora/test-utils": {
+      "optional": true
+    },
+    "@playwright/test": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "@types/node": "catalog:"
+    "@mergora/test-utils": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@types/node": "catalog:",
+    "@types/semver": "catalog:"
   }
 }

@@ -14,8 +14,8 @@ P3.3/P3.4 transaction and provenance evidence is recorded in
 - Next App/Pages, Vite React, and React detection; named source-root, tsconfig alias, global CSS,
   Tailwind CSS v4, and npm/pnpm/Yarn/Bun detection;
 - deterministic item aliases and explicit source viewing;
-- build-time discovery of every generated native source payload and complete source dependency
-  closure for the compatibility `add` command.
+- build-time discovery of every generated native source payload used by the transactional source
+  operation path.
 
 The initial validation bundle contained 26 generated source items. The build and tests compare
 against directory discovery, so adding a canonical generated payload does not require a hand-edited
@@ -30,15 +30,21 @@ CLI implementation table.
 - the four narrow local-only `.gitignore` rules for cache, transactions, temporary state, and the
   lock.
 
-The plan carries before/after digests and a deterministic semantic plan digest. Apply recomputes
-the plan and checks every target precondition. Existing `package.json`, `tsconfig.json`, and global
-CSS bytes are not rewritten. Writes use an unpredictable same-directory file opened exclusively,
-flushed, closed, and renamed; cleanup can remove only the temporary file created by that operation.
+The plan carries before/after digests and exposes the exact finalized OperationPlan digest that is
+committed to the transaction's `plan.json`. Public apply requires that reviewed digest even for a
+no-op. A write plan also carries an `init-project-writes` consent requirement, and the accepted
+consent recorded by the transaction is bound to the same digest. Missing or stale digests fail
+before files or transaction state are created. Existing `package.json`, `tsconfig.json`, and global
+CSS bytes are not rewritten.
 
 At the P3.2 freeze, the compatibility `add` path required a reviewed plan plus interactive consent
 or explicit `--yes`; automation also had to pass `--non-interactive`. That implementation wrote
 `.mergora/p1-manifest.json` and was replaced by the P3.3/P3.4 v1 transaction and immutable-base
 provenance path.
+
+The non-transactional P1 installer is no longer compiled or exported. Read-only discovery still
+recognizes an existing `.mergora/p1-manifest.json` as `p1-legacy`, so projects can inspect their
+old state before migrating without restoring the unsafe writer.
 
 ## Security and privacy checks
 
@@ -72,11 +78,11 @@ The focused validation run passed:
 pnpm --filter mergora typecheck
 pnpm exec tsc --noEmit -p tsconfig.json
 pnpm exec eslint packages/cli tests/cli-discovery tests/cli-fixtures
-pnpm exec vitest run tests/cli-discovery tests/cli-fixtures/p1-installer.test.ts
-  7 files, 75 tests passed
-
-pnpm exec vitest run tests/packed-consumers/packed-consumer-contract.test.ts tests/cli-fixtures/p1-installer.test.ts
-  2 files, 7 tests passed
+pnpm exec vitest run tests/cli-discovery/initialization.test.ts \
+  tests/cli-discovery/init-transaction.test.ts \
+  tests/cli-discovery/status.test.ts \
+  tests/cli-fixtures/p1-installer.test.ts
+  4 files, 25 tests passed
 
 pnpm --filter mergora build
 pnpm --filter mergora pack --pack-destination packages/cli/.pack-probe --dry-run
@@ -85,8 +91,9 @@ pnpm --filter mergora pack --pack-destination packages/cli/.pack-probe --dry-run
 
 The command integration suite builds the packed CLI entry and verifies help/version, parser
 placement and `--flag=value`, deterministic search JSON, explicit-source gating, docs
-non-interactive behavior, init plan/consent/apply/no-op, info/status/doctor, legacy clean-consumer
-`add`, and safe usage errors.
+non-interactive behavior, init plan/consent/apply/no-op, info/status/doctor, and safe usage errors.
+The compatibility-boundary test asserts that the legacy P1 mutator is absent while legacy manifest
+status remains readable.
 
 ## Historical boundary and current handoff
 

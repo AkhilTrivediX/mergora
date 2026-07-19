@@ -16,9 +16,12 @@ const QUALIFIED_ID = /^([a-z0-9]+(?:-[a-z0-9]+)*):([a-z0-9]+(?:-[a-z0-9]+)*)$/u;
 const PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u;
 const SEMVER =
   /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
+const STABLE_SEMVER = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/u;
 const SEMVER_RANGE =
   /^(?!.*(?:git|https?|file|workspace|link|portal|patch|github):)[-0-9A-Za-z*<>=~^|. +]+$/u;
 const SPDX = /^[A-Za-z0-9][A-Za-z0-9-.+]*(?: WITH [A-Za-z0-9][A-Za-z0-9-.+]*)?$/u;
+const SHA512_SRI = /^sha512-[A-Za-z0-9+/]+={0,2}$/u;
+const PUBLIC_NPM_REGISTRY_ORIGIN = "https://registry.npmjs.org" as const;
 const MEDIA_TYPES = new Set([
   "text/typescript",
   "text/typescript-jsx",
@@ -91,6 +94,10 @@ const DEFAULT_MAX_ITEM_BYTES = 2 * 1024 * 1024;
 const DEFAULT_MAX_OPERATION_BYTES = 64 * 1024 * 1024;
 const MAX_ITEMS = 4096;
 const MAX_FILES_PER_ITEM = 1024;
+const MAX_NPM_PACKAGES = 1024;
+const MAX_NPM_LICENSES = 128;
+const MAX_NPM_TARBALL_BYTES = 16 * 1024 * 1024;
+const MAX_NPM_TOTAL_INCLUDED_BYTES = 32 * 1024 * 1024;
 
 type Digest = `sha256:${string}`;
 
@@ -217,6 +224,34 @@ export interface AcquiredNativeRegistryItem {
   readonly acquisitionSource: AcquisitionSource;
 }
 
+export type AcquiredNativeNpmPackageArtifact =
+  | {
+      readonly package: string;
+      readonly version: string;
+      readonly url: string;
+      readonly bytes: number;
+      readonly digest: Digest;
+      readonly integrity: `sha512-${string}`;
+      readonly license: string;
+      readonly disposition: "include";
+    }
+  | {
+      readonly package: string;
+      readonly version: string;
+      readonly url: string;
+      readonly bytes: number;
+      readonly digest: Digest;
+      readonly integrity: `sha512-${string}`;
+      readonly license: string;
+      readonly disposition: "omit";
+      readonly omissionReason: "explicitly-omitted" | "license-not-allowed";
+    };
+
+export interface AcquiredNativeNpmPackageInventory {
+  readonly allowedLicenses: readonly string[];
+  readonly entries: readonly AcquiredNativeNpmPackageArtifact[];
+}
+
 export interface AcquiredNativeRegistryRelease {
   readonly protocolVersion: "mergora-v1";
   readonly registry: AcquisitionRegistryIdentity;
@@ -232,7 +267,30 @@ export interface AcquiredNativeRegistryRelease {
   readonly catalog: readonly AcquiredNativeCatalogItem[];
   readonly aliases: Readonly<Record<string, string>>;
   readonly items: readonly AcquiredNativeRegistryItem[];
+  /**
+   * Digest-bound public npm inventory. `null` means the older manifest omitted
+   * the inventory and consumers requesting npm tarballs must fail closed.
+   */
+  readonly npmPackageInventory: AcquiredNativeNpmPackageInventory | null;
   readonly acquiredBytes: number;
+}
+
+const AUTHENTIC_ACQUIRED_NATIVE_RELEASES = new WeakSet<object>();
+
+/** Fails unless the value is the exact frozen object returned by this process's native resolver. */
+export function assertAuthenticAcquiredNativeRegistryRelease(
+  value: unknown,
+): asserts value is AcquiredNativeRegistryRelease {
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    !AUTHENTIC_ACQUIRED_NATIVE_RELEASES.has(value)
+  ) {
+    throw resolverError(
+      "Distribution source materialization requires an authentic acquired native release.",
+      "REGISTRY_ACQUIRED_RELEASE_UNAUTHENTIC",
+    );
+  }
 }
 
 interface ManifestEvidenceReference {
@@ -262,6 +320,7 @@ interface ParsedManifest {
   readonly dependencyGraphDigest: Digest;
   readonly items: Readonly<Record<string, ManifestItem>>;
   readonly artifactsByUrl: ReadonlyMap<string, ManifestArtifact>;
+  readonly npmPackageInventory: AcquiredNativeNpmPackageInventory | null;
 }
 
 interface ParsedPayloadFile {
@@ -433,7 +492,9 @@ function httpsUrl(value: unknown, label: string): string {
 }
 
 function normalizedOrigin(value: string): string {
-  return value.replace(/\/+$/u, "");
+  let end = value.length;
+  while (end > 0 && value.charCodeAt(end - 1) === 47) end -= 1;
+  return value.slice(0, end);
 }
 
 function pathFromImmutableUrl(url: string, origin: string, label: string): string {
@@ -874,6 +935,210 @@ function parseCatalog(
   };
 }
 
+function isMergoraOwnedPackage(packageName: string): boolean {
+  return (
+    packageName === "mergora" ||
+    packageName.startsWith("mergora-") ||
+    packageName.startsWith("@mergora/")
+  );
+}
+
+function canonicalSha512Sri(value: unknown, label: string): `sha512-${string}` {
+  const integrity = text(value, label, { pattern: SHA512_SRI, max: 96 });
+  const encoded = integrity.slice("sha512-".length);
+  const decoded = Buffer.from(encoded, "base64");
+  if (decoded.byteLength !== 64 || decoded.toString("base64") !== encoded) {
+    throw resolverError(`${label} is not canonical SHA-512 SRI.`, "REGISTRY_NPM_INVENTORY_INVALID");
+  }
+  return integrity as `sha512-${string}`;
+}
+
+function publicNpmTarballUrl(
+  value: unknown,
+  packageName: string,
+  version: string,
+  label: string,
+): string {
+  const raw = text(value, label, { max: 2048 });
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    throw resolverError(`${label} is invalid.`, "REGISTRY_NPM_ORIGIN_INVALID");
+  }
+  const unscopedName = packageName.includes("/") ? packageName.split("/")[1]! : packageName;
+  const pathname = packageName.startsWith("@")
+    ? `/${packageName}/-/${unscopedName}-${version}.tgz`
+    : `/${packageName}/-/${packageName}-${version}.tgz`;
+  const expected = `${PUBLIC_NPM_REGISTRY_ORIGIN}${pathname}`;
+  if (
+    raw !== expected ||
+    parsed.href !== expected ||
+    parsed.origin !== PUBLIC_NPM_REGISTRY_ORIGIN ||
+    parsed.protocol !== "https:" ||
+    parsed.username !== "" ||
+    parsed.password !== "" ||
+    parsed.search !== "" ||
+    parsed.hash !== "" ||
+    parsed.pathname !== pathname
+  ) {
+    throw resolverError(
+      `${label} is not the credential-free immutable public npm path for ${packageName}@${version}.`,
+      "REGISTRY_NPM_ORIGIN_INVALID",
+    );
+  }
+  return raw;
+}
+
+function parseNpmPackageInventory(
+  value: unknown,
+  release: string,
+): AcquiredNativeNpmPackageInventory {
+  const source = record(value, "Native release npm package inventory");
+  exactKeys(source, ["allowedLicenses", "entries"], [], "Native release npm package inventory");
+  const allowedLicenses = strings(
+    source.allowedLicenses,
+    "Native release npm package allowed licenses",
+    { max: MAX_NPM_LICENSES, pattern: SPDX, itemMax: 128 },
+  );
+  const canonicalAllowedLicenses = [...allowedLicenses].sort((left, right) =>
+    left.localeCompare(right, "en-US"),
+  );
+  if (JSON.stringify(allowedLicenses) !== JSON.stringify(canonicalAllowedLicenses)) {
+    throw resolverError(
+      "Native release npm package allowed licenses are not canonically sorted.",
+      "REGISTRY_NPM_INVENTORY_INVALID",
+    );
+  }
+  const allowed = new Set(allowedLicenses);
+  if (!Array.isArray(source.entries) || source.entries.length > MAX_NPM_PACKAGES) {
+    throw resolverError(
+      "Native release npm package inventory exceeds its entry bound.",
+      "REGISTRY_NPM_INVENTORY_INVALID",
+    );
+  }
+  const identities = new Set<string>();
+  const urls = new Set<string>();
+  let includedBytes = 0;
+  const entries = source.entries.map((rawEntry, index): AcquiredNativeNpmPackageArtifact => {
+    const label = `Native release npm package ${String(index)}`;
+    const entry = record(rawEntry, label);
+    const disposition = entry.disposition;
+    exactKeys(
+      entry,
+      disposition === "omit"
+        ? [
+            "bytes",
+            "digest",
+            "disposition",
+            "integrity",
+            "license",
+            "omissionReason",
+            "package",
+            "url",
+            "version",
+          ]
+        : ["bytes", "digest", "disposition", "integrity", "license", "package", "url", "version"],
+      [],
+      label,
+    );
+    const packageName = text(entry.package, `${label}.package`, {
+      pattern: PACKAGE_NAME,
+      max: 214,
+    });
+    const version = text(entry.version, `${label}.version`, {
+      pattern: STABLE_SEMVER,
+      max: 64,
+    });
+    if (isMergoraOwnedPackage(packageName) && version !== release) {
+      throw resolverError(
+        `${label} Mergora-owned package is not bound to release ${release}.`,
+        "REGISTRY_RELEASE_IDENTITY_INVALID",
+      );
+    }
+    const url = publicNpmTarballUrl(entry.url, packageName, version, `${label}.url`);
+    const artifactDigest = digest(entry.digest, `${label}.digest`);
+    const integrity = canonicalSha512Sri(entry.integrity, `${label}.integrity`);
+    const license = text(entry.license, `${label}.license`, { pattern: SPDX, max: 128 });
+    const bytes = byteCount(entry.bytes, `${label}.bytes`, MAX_NPM_TARBALL_BYTES);
+    if (bytes < 1 || (disposition !== "include" && disposition !== "omit")) {
+      throw resolverError(`${label} is invalid.`, "REGISTRY_NPM_INVENTORY_INVALID");
+    }
+    const licenseAllowed = allowed.has(license);
+    if (disposition === "include" && !licenseAllowed) {
+      throw resolverError(
+        `${label} license is absent from the explicit allowlist.`,
+        "REGISTRY_NPM_INVENTORY_INVALID",
+      );
+    }
+    let omissionReason: "explicitly-omitted" | "license-not-allowed" | undefined;
+    if (disposition === "omit") {
+      if (
+        entry.omissionReason !== "explicitly-omitted" &&
+        entry.omissionReason !== "license-not-allowed"
+      ) {
+        throw resolverError(
+          `${label} omission reason is invalid.`,
+          "REGISTRY_NPM_INVENTORY_INVALID",
+        );
+      }
+      omissionReason = entry.omissionReason;
+      if ((omissionReason === "license-not-allowed") !== !licenseAllowed) {
+        throw resolverError(
+          `${label} omission reason disagrees with the explicit license policy.`,
+          "REGISTRY_NPM_INVENTORY_INVALID",
+        );
+      }
+    }
+    const identity = `${packageName}@${version}`.toLocaleLowerCase("en-US");
+    if (identities.has(identity) || urls.has(url)) {
+      throw resolverError(
+        `${label} repeats or collides with another exact package artifact.`,
+        "REGISTRY_NPM_INVENTORY_INVALID",
+      );
+    }
+    identities.add(identity);
+    urls.add(url);
+    if (disposition === "include") includedBytes += bytes;
+    const descriptor = {
+      package: packageName,
+      version,
+      url,
+      bytes,
+      digest: artifactDigest,
+      integrity,
+      license,
+    } as const;
+    return disposition === "include"
+      ? { ...descriptor, disposition }
+      : { ...descriptor, disposition, omissionReason: omissionReason! };
+  });
+  if (includedBytes > MAX_NPM_TOTAL_INCLUDED_BYTES) {
+    throw resolverError(
+      "Native release included npm packages exceed the aggregate byte bound.",
+      "REGISTRY_NPM_INVENTORY_INVALID",
+    );
+  }
+  const sortedEntries = [...entries].sort((left, right) =>
+    left.package === right.package
+      ? left.version.localeCompare(right.version, "en-US")
+      : left.package.localeCompare(right.package, "en-US"),
+  );
+  if (
+    entries.some(
+      (entry, index) =>
+        entry.package !== sortedEntries[index]?.package ||
+        entry.version !== sortedEntries[index]?.version,
+    )
+  ) {
+    throw resolverError(
+      "Native release npm package entries are not canonically sorted.",
+      "REGISTRY_NPM_INVENTORY_INVALID",
+    );
+  }
+  return { allowedLicenses: canonicalAllowedLicenses, entries: sortedEntries };
+}
+
 function parseManifest(
   value: unknown,
   registry: AcquisitionRegistryIdentity,
@@ -895,7 +1160,7 @@ function parseManifest(
       "qualitySummary",
       "manifestDigest",
     ],
-    [],
+    ["npmPackageInventory"],
     "Native release manifest",
   );
   if (
@@ -1034,11 +1299,16 @@ function parseManifest(
     registry.origin,
   );
   assertInventoriedJsonEvidence(qualitySummary, "Native release quality summary");
+  const npmPackageInventory =
+    root.npmPackageInventory === undefined
+      ? null
+      : parseNpmPackageInventory(root.npmPackageInventory, release);
   return {
     manifestSelfDigest,
     dependencyGraphDigest: catalog.dependencyGraphDigest,
     items,
     artifactsByUrl,
+    npmPackageInventory,
   };
 }
 
@@ -1758,7 +2028,10 @@ export async function resolveNativeRegistryRelease(
     catalog: catalog.items,
     aliases: catalog.aliases,
     items,
+    npmPackageInventory: manifest.npmPackageInventory,
     acquiredBytes,
   };
-  return deepFreeze(result);
+  const frozen = deepFreeze(result);
+  AUTHENTIC_ACQUIRED_NATIVE_RELEASES.add(frozen);
+  return frozen;
 }

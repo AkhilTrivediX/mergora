@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "rating",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "Editable values are native radio inputs in a fieldset with a visible legend. Read-only values are labelled text with decorative stars.",
+    "naming": "The legend names the editable group. Every radio has a locale-formatted value/max accessible label. Provider and formatter outputs must be non-empty and no longer than 256 Unicode code points. Read-only value text follows the visible label in DOM order.",
+    "roleOverride": "Consumer role overrides and interactive render replacements are outside the supported contract.",
+    "refTarget": "HTMLDivElement stable root"
+  },
+  "interaction": {
+    "keyboard": "Tab enters the native radio group; Arrow keys move and select with spatial RTL behavior; Home and End select the first and last enabled choices; Space uses native activation.",
+    "pointer": "Each radio label is the complete pointer target and activation occurs on click rather than pointer down.",
+    "touch": "Every choice preserves a minimum 44 CSS pixel target and no gesture is required.",
+    "speech": "Locale-formatted value labels and the explicit clear label are available for voice targeting.",
+    "switchAccess": "Native radios expose one group of reachable choices without duplicate interactive stars."
+  },
+  "formBehavior": "Editable radios submit the selected canonical integer, or an empty string for the explicit clear choice. Native reset restores an uncontrolled default. Disabled controls are omitted. A named read-only value uses one successful hidden input.",
+  "states": {
+    "attributes": ["data-disabled", "data-readonly", "data-invalid", "data-empty"],
+    "synchronization": "Checked radio, star fill, check mark, callback value, submitted value, invalid relationship, and read-only text derive from one controlled or uncontrolled value."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=rating]",
+    "attributes": ["data-disabled", "data-readonly", "data-invalid", "data-empty"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses text, native checked state, a check mark, and boundary geometry in addition to color.",
+    "forcedColors": "Uses Canvas, CanvasText, and Highlight while retaining a check mark and exact value text.",
+    "reducedMotion": "No value, focus, or state transition depends on motion."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Radio targets wrap intrinsically; the explicit clear target occupies its own row on narrow canvases."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "error",
+      "rating.clear",
+      "rating.option",
+      "rating.value",
+      "rating.readOnly",
+      "rating.required"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The component contains no free-form text editing path.",
+    "serialization": "Labels use Intl.NumberFormat; editable and read-only form values remain canonical ASCII numbers."
+  },
+  "consumerResponsibilities": [
+    "Provide a concise visible group label and meaningful error or instruction text.",
+    "Translate dynamic option and value messages through provider messages or formatting callbacks.",
+    "Do not combine allowClear with required; the component rejects that ambiguous native constraint.",
+    "Use read-only for displayed values that still belong to a form and plain text when no field relationship remains useful."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "native-radio-keyboard",
+      "form-submission-reset-required",
+      "controlled-uncontrolled",
+      "readonly-fractional-semantics",
+      "localized-labels-rtl",
+      "touch-narrow-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-only",
+      "mobile-touch",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions.",
+    "The editable control intentionally supports whole-star choices only; fractional ratings are an exact non-interactive read-only presentation."
+  ]
+}

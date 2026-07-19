@@ -5,14 +5,14 @@
       "file": "mergora-0.0.0.tgz",
       "name": "mergora",
       "role": "cli",
-      "sha256": "5cca87aec6934899aa05dbcf718258f6bd06e0fdc98edd97ccbee9e4179131a9",
+      "sha256": "ac139956ba22951516adde62e0ee0ddced7d286b2052020e69d7c524554f91b5",
       "version": "0.0.0"
     },
     {
       "file": "mergora-contracts-0.0.0.tgz",
       "name": "mergora-contracts",
       "role": "contracts",
-      "sha256": "0f42da0cdba28aaa4d741eb6722b2dafa1b9368d023b0b223809700bb1faaaca",
+      "sha256": "d90925928e3f83fa8e4a94c702c4ace4f6c7fb73cc0011b34595b201ae33666c",
       "version": "0.0.0"
     },
     {
@@ -33,7 +33,7 @@
       "file": "mergora-schema-0.0.0.tgz",
       "name": "mergora-schema",
       "role": "schema",
-      "sha256": "1987d79a43d9e0a2861cec73f8b0101256fef7ea0d5ffbb190783bb81d785c8e",
+      "sha256": "d7492d60abbb9cbc6efad8b8e3d441edf36552c05110179de88e61edd85ac18c",
       "version": "0.0.0"
     },
     {
@@ -47,7 +47,7 @@
       "file": "mergora-ui-0.0.0.tgz",
       "name": "mergora-ui",
       "role": "ui",
-      "sha256": "48152dd980351088f3a5d83ac5de42552e4a6cba564ead85356efd1740dc4ed5",
+      "sha256": "0d13ee640bf59c870ee804ce9aaf04fd1d105e98af92cd2e4baef2532e44c5d2",
       "version": "0.0.0"
     }
   ],

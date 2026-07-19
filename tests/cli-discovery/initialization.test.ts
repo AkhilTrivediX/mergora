@@ -8,17 +8,13 @@ import {
   applyInit,
   doctorProject,
   inspectProject,
-  installP1Source,
   planInit,
-  planP1SourceInstall,
   projectInfo,
   projectStatus,
   readMergoraConfig,
 } from "../../packages/cli/src/index.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
-const workspaceRoot = resolve(import.meta.dirname, "../..");
-const registryDirectory = resolve(workspaceRoot, "registry/generated");
 const temporaryDirectories: string[] = [];
 
 function fixture(...parameters: Parameters<typeof createProjectFixture>) {
@@ -119,7 +115,8 @@ describe("project initialization", () => {
     expect(before.healthy).toBe(false);
     expect(before.checks.some(({ code }) => code === "CONFIG_MISSING")).toBe(true);
 
-    applyInit({ projectRoot: project.root });
+    const initPlan = planInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, initPlan.planDigest);
     const info = projectInfo(project.root);
     const status = projectStatus(project.root);
     const doctor = doctorProject(project.root);
@@ -176,7 +173,8 @@ describe("project discovery failures", () => {
     const before = readFileSync(resolve(project.root, "tsconfig.json"));
 
     expect(inspectProject(project.root).aliasPrefix).toBe("@");
-    applyInit({ projectRoot: project.root });
+    const initPlan = planInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, initPlan.planDigest);
     expect(readFileSync(resolve(project.root, "tsconfig.json"))).toEqual(before);
   });
 
@@ -226,145 +224,13 @@ describe("project discovery failures", () => {
 
   it("rejects dirty configuration rather than silently ignoring fields", () => {
     const project = fixture();
-    applyInit({ projectRoot: project.root });
+    const initPlan = planInit({ projectRoot: project.root });
+    applyInit({ projectRoot: project.root }, initPlan.planDigest);
     const config = JSON.parse(
       readFileSync(resolve(project.root, "mergora.json"), "utf8"),
     ) as Record<string, unknown>;
     config.unexpected = true;
     writeFileSync(resolve(project.root, "mergora.json"), JSON.stringify(config), "utf8");
     expect(() => readMergoraConfig(project.root)).toThrow(/missing or unknown fields/u);
-  });
-});
-
-describe("dynamic compatibility add", () => {
-  it("plans and installs transitive source closure", () => {
-    const project = fixture();
-    const plan = planP1SourceInstall({
-      projectRoot: project.root,
-      itemIds: ["provider"],
-      registryDirectory,
-    });
-    expect(plan.items).toEqual(["direction", "slot", "provider"]);
-    expect(plan.transitiveItems).toEqual(["direction", "slot"]);
-    expect(plan.files.length).toBeGreaterThanOrEqual(12);
-    expect(existsSync(resolve(project.root, "src/components/provider"))).toBe(false);
-
-    const result = installP1Source({
-      projectRoot: project.root,
-      itemIds: ["provider"],
-      registryDirectory,
-    });
-    expect(result.items).toEqual(plan.items);
-    expect(existsSync(resolve(project.root, "src/components/provider/provider.tsx"))).toBe(true);
-    expect(existsSync(resolve(project.root, "src/components/direction/direction.tsx"))).toBe(true);
-    expect(existsSync(resolve(project.root, "src/components/slot/slot.tsx"))).toBe(true);
-  });
-
-  it("preserves CRLF package formatting while adding a compatible dependency", () => {
-    const packageText =
-      '{\r\n    "name": "format-fixture",\r\n    "private": true,\r\n    "packageManager": "pnpm@11.14.0",\r\n    "dependencies": {\r\n        "next": "16.2.10",\r\n        "react": "19.2.7",\r\n        "tailwindcss": "4.3.3"\r\n    }\r\n}\r\n';
-    const project = fixture({ packageText, newline: "\r\n" });
-    installP1Source({
-      projectRoot: project.root,
-      itemIds: ["dialog"],
-      registryDirectory,
-    });
-    const after = readFileSync(resolve(project.root, "package.json"), "utf8");
-    expect(after).toContain('    "private": true,\r\n');
-    expect(after).toContain('        "react-aria-components": "1.19.0"');
-    expect(after.replaceAll("\r\n", "")).not.toContain("\n");
-    expect(JSON.parse(after)).toMatchObject({
-      dependencies: { "react-aria-components": "1.19.0" },
-    });
-  });
-
-  it("does not mistake dependency-like text inside a JSON string for the root field", () => {
-    const packageText = `${JSON.stringify(
-      {
-        name: "string-fixture",
-        description: 'example text containing "dependencies": { but no field',
-        private: true,
-        packageManager: "pnpm@11.14.0",
-        dependencies: {
-          next: "16.2.10",
-          react: "19.2.7",
-          tailwindcss: "4.3.3",
-        },
-      },
-      null,
-      2,
-    )}\n`;
-    const project = fixture({ packageText });
-    installP1Source({ projectRoot: project.root, itemIds: ["dialog"], registryDirectory });
-    const after = JSON.parse(readFileSync(resolve(project.root, "package.json"), "utf8")) as {
-      description: string;
-      dependencies: Record<string, string>;
-    };
-    expect(after.description).toContain('"dependencies": {');
-    expect(after.dependencies["react-aria-components"]).toBe("1.19.0");
-  });
-
-  it("rejects duplicate top-level JSON keys before any source write", () => {
-    const packageText = `{
-  "name": "duplicate-fixture",
-  "packageManager": "pnpm@11.14.0",
-  "dependencies": { "next": "16.2.10", "react": "19.2.7", "tailwindcss": "4.3.3" },
-  "dependencies": { "next": "16.2.10", "react": "19.2.7", "tailwindcss": "4.3.3" }
-}\n`;
-    const project = fixture({ packageText });
-    expect(() =>
-      installP1Source({ projectRoot: project.root, itemIds: ["dialog"], registryDirectory }),
-    ).toThrow(/repeats top-level field/u);
-    expect(existsSync(resolve(project.root, "src/components/dialog"))).toBe(false);
-  });
-
-  it("is idempotent and preserves compatible existing ranges", () => {
-    const project = fixture();
-    const packageDocument = JSON.parse(project.packageText) as Record<string, unknown>;
-    (packageDocument.dependencies as Record<string, string>)["react-aria-components"] = "^1.19.0";
-    writeFileSync(
-      resolve(project.root, "package.json"),
-      `${JSON.stringify(packageDocument, null, 2)}\n`,
-    );
-    const before = readFileSync(resolve(project.root, "package.json"));
-    installP1Source({ projectRoot: project.root, itemIds: ["dialog"], registryDirectory });
-    expect(readFileSync(resolve(project.root, "package.json"))).toEqual(before);
-    const second = planP1SourceInstall({
-      projectRoot: project.root,
-      itemIds: ["dialog"],
-      registryDirectory,
-    });
-    expect(second.files.every(({ status }) => status === "unchanged")).toBe(true);
-    expect(second.dependenciesAdded).toEqual({});
-    expect(second.writesRequired).toBe(false);
-  });
-
-  it("preflights all targets and leaves package bytes unchanged on collision", () => {
-    const project = fixture();
-    const target = resolve(project.root, "src/components/dialog");
-    mkdirSync(target, { recursive: true });
-    writeFileSync(resolve(target, "dialog.tsx"), "// local source\n");
-    const packageBefore = readFileSync(resolve(project.root, "package.json"));
-    expect(() =>
-      installP1Source({ projectRoot: project.root, itemIds: ["dialog"], registryDirectory }),
-    ).toThrow(/Refusing to overwrite locally modified source/u);
-    expect(readFileSync(resolve(project.root, "package.json"))).toEqual(packageBefore);
-    expect(existsSync(resolve(project.root, ".mergora/p1-manifest.json"))).toBe(false);
-  });
-
-  it("preserves unrelated files matching the former predictable add temp suffix", () => {
-    const project = fixture();
-    const plan = planP1SourceInstall({
-      projectRoot: project.root,
-      itemIds: ["dialog"],
-      registryDirectory,
-    });
-    const userFile = resolve(
-      project.root,
-      `package.json.mergora-add-${plan.planDigest.slice(-12)}.tmp`,
-    );
-    writeFileSync(userFile, "consumer-owned\n");
-    installP1Source({ projectRoot: project.root, itemIds: ["dialog"], registryDirectory });
-    expect(readFileSync(userFile, "utf8")).toBe("consumer-owned\n");
   });
 });

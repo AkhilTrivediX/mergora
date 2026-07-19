@@ -1,0 +1,266 @@
+@layer mergora.components {
+  .mrg-listbox-field {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .mrg-listbox-label {
+    font-size: var(--mrg-semantic-font-size-body);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-listbox-field [data-slot="listbox-description"] {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    max-inline-size: 70ch;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-listbox {
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-block-size: min(20rem, 70vh);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    outline: none;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: var(--mrg-semantic-space-inset-xs);
+    position: relative;
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-listbox[data-virtualized="true"] {
+    block-size: min(20rem, 70vh);
+  }
+
+  .mrg-listbox[data-focus-visible] {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-listbox[aria-invalid="true"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-listbox-section {
+    min-inline-size: 0;
+  }
+
+  .mrg-listbox-section-header {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow-wrap: anywhere;
+    padding-block: var(--mrg-semantic-space-inline-xs);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+
+  .mrg-listbox-item {
+    align-items: center;
+    border-radius: var(--mrg-semantic-radius-compact);
+    box-sizing: border-box;
+    color: inherit;
+    display: grid;
+    gap: var(--mrg-semantic-space-inline-sm);
+    grid-template-columns: minmax(0, 1fr) auto;
+    line-height: var(--mrg-semantic-font-line-height-body);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    outline: none;
+    padding-block: var(--mrg-semantic-space-inline-sm);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    position: relative;
+  }
+
+  .mrg-listbox-item-copy {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-listbox-item [data-slot="listbox-item-description"] {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+
+  .mrg-listbox-item [data-slot="listbox-item-check"] {
+    align-items: center;
+    display: inline-flex;
+    font-weight: var(--mrg-semantic-font-weight-label);
+    inline-size: 1.25rem;
+    justify-content: center;
+  }
+
+  .mrg-listbox-item[data-hovered] {
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-listbox-item[data-selected] {
+    background: var(--mrg-semantic-color-background-surface);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    outline: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    outline-offset: calc(var(--mrg-semantic-border-width-default) * -1);
+  }
+
+  .mrg-listbox-item[data-focus-visible] {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+    z-index: 1;
+  }
+
+  .mrg-listbox-item[data-pressed] {
+    background: var(--mrg-semantic-color-action-background);
+    color: var(--mrg-semantic-color-action-foreground);
+  }
+
+  .mrg-listbox-item[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-listbox-empty {
+    align-items: center;
+    color: var(--mrg-semantic-color-foreground-muted);
+    display: flex;
+    min-block-size: calc(var(--mrg-semantic-size-target-preferred) * 2);
+    overflow-wrap: anywhere;
+    padding: var(--mrg-semantic-space-inset-md);
+  }
+
+  .mrg-listbox-field [data-slot="listbox-error"],
+  .mrg-listbox-async {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-listbox-async {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    justify-content: space-between;
+  }
+
+  .mrg-listbox-async button,
+  .mrg-listbox-load-more {
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font: inherit;
+    inline-size: fit-content;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: var(--mrg-semantic-size-target-preferred);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+
+  .mrg-listbox-async button:focus-visible,
+  .mrg-listbox-load-more:focus-visible {
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-listbox-load-more:disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+
+  .mrg-listbox-field[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+
+  .mrg-collection-visually-hidden {
+    block-size: 1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    inline-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+  @container (max-width: 20rem) {
+    .mrg-listbox {
+      max-block-size: min(16rem, 65vh);
+      scrollbar-gutter: auto;
+    }
+
+    .mrg-listbox[data-virtualized="true"] {
+      block-size: min(16rem, 65vh);
+    }
+
+    .mrg-listbox-async {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .mrg-listbox-async button,
+    .mrg-listbox-load-more {
+      inline-size: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-listbox {
+      scroll-behavior: auto;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-listbox,
+    .mrg-listbox-async button,
+    .mrg-listbox-load-more {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-listbox-item[data-hovered],
+    .mrg-listbox-item[data-selected] {
+      background: Canvas;
+      color: CanvasText;
+      outline-color: Highlight;
+    }
+
+    .mrg-listbox-item[data-selected] [data-slot="listbox-item-check"] {
+      background: Highlight;
+      color: HighlightText;
+    }
+
+    .mrg-listbox-item[data-focus-visible] {
+      outline-color: Highlight;
+    }
+
+    .mrg-listbox-item[data-disabled],
+    .mrg-listbox-load-more:disabled {
+      color: GrayText;
+    }
+
+    .mrg-listbox-field [data-slot="listbox-error"],
+    .mrg-listbox-async {
+      color: CanvasText;
+    }
+  }
+}

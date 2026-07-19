@@ -11,6 +11,7 @@ export const STABLE_RELEASE_SCHEMA_PATHS = [
   "r/v1/schemas/item-v1.schema.json",
   "r/v1/schemas/latest-alias-v1.schema.json",
   "r/v1/schemas/manifest-v1.schema.json",
+  "r/v1/schemas/native-release-reference-v1.schema.json",
   "r/v1/schemas/passport-v1.schema.json",
   "r/v1/schemas/plan-v1.schema.json",
   "r/v1/schemas/release-manifest-v1.schema.json",
@@ -106,6 +107,25 @@ export interface ReleaseProtocolItemInput {
   readonly contract: ReleaseEvidenceReference;
 }
 
+export interface ReleaseNpmPackageArtifactInput {
+  readonly package: string;
+  readonly version: string;
+  readonly url: string;
+  readonly bytes: number;
+  readonly digest: ReleaseSha256;
+  readonly integrity: `sha512-${string}`;
+  readonly license: string;
+  readonly disposition: "include" | "omit";
+  readonly omissionReason?: "explicitly-omitted" | "license-not-allowed" | undefined;
+}
+
+export interface ReleaseNpmPackageInventoryInput {
+  /** SPDX identifiers approved by the release's redistribution review. */
+  readonly allowedLicenses: readonly string[];
+  /** Complete, exact package closure needed for supported offline package installation. */
+  readonly entries: readonly ReleaseNpmPackageArtifactInput[];
+}
+
 export interface StableReleaseProtocolInput {
   readonly registry: {
     readonly id: string;
@@ -126,6 +146,12 @@ export interface StableReleaseProtocolInput {
   readonly schemas: readonly ReleaseEvidenceReference[];
   readonly sbom: ReleaseEvidenceReference;
   readonly items: readonly ReleaseProtocolItemInput[];
+  /**
+   * Exact public npm artifacts for this release. Older v1 manifests may omit
+   * this field; newly built manifests always emit it, including an empty
+   * inventory, so consumers can distinguish "verified empty" from "unknown".
+   */
+  readonly npmPackageInventory?: ReleaseNpmPackageInventoryInput | undefined;
 }
 
 export interface ReleaseProtocolArtifact {
@@ -205,8 +231,16 @@ const CATALOG_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const SHA256 = /^sha256:[0-9a-f]{64}$/u;
 const STABLE_SEMVER = /^(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)$/u;
 const RELEASE_COMMIT = /^[0-9a-f]{40}$/u;
+const PACKAGE_NAME = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u;
+const SPDX = /^[A-Za-z0-9][A-Za-z0-9-.+]*(?: WITH [A-Za-z0-9][A-Za-z0-9-.+]*)?$/u;
+const SHA512_SRI = /^sha512-[A-Za-z0-9+/]+={0,2}$/u;
 const WINDOWS_RESERVED = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/iu;
 const INTERNAL_PROTOCOL_PREFIX = "r/v1/" as const;
+const PUBLIC_NPM_REGISTRY_ORIGIN = "https://registry.npmjs.org" as const;
+const MAX_NPM_PACKAGES = 1024;
+const MAX_NPM_LICENSES = 128;
+const MAX_NPM_TARBALL_BYTES = 16 * 1024 * 1024;
+const MAX_NPM_TOTAL_INCLUDED_BYTES = 32 * 1024 * 1024;
 
 function containsControlCharacter(value: string): boolean {
   return [...value].some((character) => {
@@ -246,6 +280,220 @@ function assertCatalogId(value: string, context: string): void {
 
 function assertStableSemver(value: string, context: string): void {
   if (!STABLE_SEMVER.test(value)) fail(`${context} must be a stable semantic version.`);
+}
+
+function compareText(left: string, right: string): number {
+  return left.localeCompare(right, "en-US");
+}
+
+function isMergoraOwnedPackage(packageName: string): boolean {
+  return (
+    packageName === "mergora" ||
+    packageName.startsWith("mergora-") ||
+    packageName.startsWith("@mergora/")
+  );
+}
+
+function assertCanonicalSha512Sri(
+  value: unknown,
+  context: string,
+): asserts value is `sha512-${string}` {
+  if (typeof value !== "string" || !SHA512_SRI.test(value)) {
+    fail(`${context} must be canonical SHA-512 SRI.`);
+  }
+  const encoded = value.slice("sha512-".length);
+  const decoded = Buffer.from(encoded, "base64");
+  if (decoded.byteLength !== 64 || decoded.toString("base64") !== encoded) {
+    fail(`${context} must be canonical SHA-512 SRI.`);
+  }
+}
+
+function assertCanonicalPublicNpmTarballUrl(
+  value: unknown,
+  packageName: string,
+  version: string,
+  context: string,
+): asserts value is string {
+  if (typeof value !== "string" || value.length > 2048) {
+    fail(`${context} must be a canonical public npm tarball URL.`);
+  }
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    fail(`${context} must be a canonical public npm tarball URL.`);
+  }
+  const unscopedName = packageName.includes("/") ? packageName.split("/")[1]! : packageName;
+  const pathname = packageName.startsWith("@")
+    ? `/${packageName}/-/${unscopedName}-${version}.tgz`
+    : `/${packageName}/-/${packageName}-${version}.tgz`;
+  const expected = `${PUBLIC_NPM_REGISTRY_ORIGIN}${pathname}`;
+  if (
+    value !== expected ||
+    parsed.href !== expected ||
+    parsed.origin !== PUBLIC_NPM_REGISTRY_ORIGIN ||
+    parsed.protocol !== "https:" ||
+    parsed.username !== "" ||
+    parsed.password !== "" ||
+    parsed.search !== "" ||
+    parsed.hash !== "" ||
+    parsed.pathname !== pathname
+  ) {
+    fail(
+      `${context} must be the credential-free immutable public npm path for ${packageName}@${version}.`,
+    );
+  }
+}
+
+function canonicalNpmPackageInventory(
+  value: unknown,
+  release: string,
+): ReleaseNpmPackageInventoryInput {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) {
+    fail("npm package inventory must be an object.");
+  }
+  const source = value as Record<string, unknown>;
+  if (
+    Object.keys(source).length !== 2 ||
+    !Object.hasOwn(source, "allowedLicenses") ||
+    !Object.hasOwn(source, "entries")
+  ) {
+    fail("npm package inventory has missing or unknown fields.");
+  }
+  if (!Array.isArray(source.allowedLicenses) || source.allowedLicenses.length > MAX_NPM_LICENSES) {
+    fail("npm package license allowlist exceeds its bound.");
+  }
+  const allowedLicenses = source.allowedLicenses.map((license, index) => {
+    if (
+      typeof license !== "string" ||
+      license.length > 128 ||
+      !SPDX.test(license) ||
+      license !== license.normalize("NFKC")
+    ) {
+      fail(`npm package allowed license ${String(index)} is not an SPDX identifier.`);
+    }
+    return license;
+  });
+  if (new Set(allowedLicenses).size !== allowedLicenses.length) {
+    fail("npm package license allowlist contains duplicates.");
+  }
+  const canonicalAllowedLicenses = [...allowedLicenses].sort(compareText);
+  const allowed = new Set(canonicalAllowedLicenses);
+
+  if (!Array.isArray(source.entries) || source.entries.length > MAX_NPM_PACKAGES) {
+    fail("npm package artifact inventory exceeds its entry bound.");
+  }
+  let includedBytes = 0;
+  const identities = new Set<string>();
+  const urls = new Set<string>();
+  const entries = source.entries.map((rawEntry, index): ReleaseNpmPackageArtifactInput => {
+    const context = `npm package artifact ${String(index)}`;
+    if (rawEntry === null || typeof rawEntry !== "object" || Array.isArray(rawEntry)) {
+      fail(`${context} must be an object.`);
+    }
+    const entry = rawEntry as Record<string, unknown>;
+    const disposition = entry.disposition;
+    const expectedKeys =
+      disposition === "omit"
+        ? [
+            "bytes",
+            "digest",
+            "disposition",
+            "integrity",
+            "license",
+            "omissionReason",
+            "package",
+            "url",
+            "version",
+          ]
+        : ["bytes", "digest", "disposition", "integrity", "license", "package", "url", "version"];
+    const actualKeys = Object.keys(entry).sort(compareText);
+    if (
+      actualKeys.length !== expectedKeys.length ||
+      actualKeys.some((key, keyIndex) => key !== [...expectedKeys].sort(compareText)[keyIndex])
+    ) {
+      fail(`${context} has missing or unknown fields.`);
+    }
+    if (
+      typeof entry.package !== "string" ||
+      entry.package.length > 214 ||
+      !PACKAGE_NAME.test(entry.package) ||
+      entry.package !== entry.package.normalize("NFKC")
+    ) {
+      fail(`${context} package name is invalid.`);
+    }
+    if (typeof entry.version !== "string" || !STABLE_SEMVER.test(entry.version)) {
+      fail(`${context} version must be exact stable semantic version.`);
+    }
+    if (isMergoraOwnedPackage(entry.package) && entry.version !== release) {
+      fail(`${context} Mergora-owned package must use release ${release}.`);
+    }
+    assertCanonicalPublicNpmTarballUrl(entry.url, entry.package, entry.version, `${context} URL`);
+    assertSha256(entry.digest as string, `${context} digest`);
+    assertCanonicalSha512Sri(entry.integrity, `${context} integrity`);
+    if (
+      typeof entry.license !== "string" ||
+      entry.license.length > 128 ||
+      !SPDX.test(entry.license) ||
+      entry.license !== entry.license.normalize("NFKC")
+    ) {
+      fail(`${context} license is not an SPDX identifier.`);
+    }
+    if (
+      !Number.isSafeInteger(entry.bytes) ||
+      Number(entry.bytes) < 1 ||
+      Number(entry.bytes) > MAX_NPM_TARBALL_BYTES
+    ) {
+      fail(`${context} byte count is invalid or exceeds its bound.`);
+    }
+    if (disposition !== "include" && disposition !== "omit") {
+      fail(`${context} disposition must be include or omit.`);
+    }
+    const licenseAllowed = allowed.has(entry.license);
+    if (disposition === "include" && !licenseAllowed) {
+      fail(`${context} license is absent from the explicit allowlist.`);
+    }
+    if (disposition === "omit") {
+      if (
+        (entry.omissionReason !== "explicitly-omitted" &&
+          entry.omissionReason !== "license-not-allowed") ||
+        (entry.omissionReason === "license-not-allowed") !== !licenseAllowed
+      ) {
+        fail(`${context} omission reason disagrees with the explicit license policy.`);
+      }
+    }
+    const identity = `${entry.package}@${entry.version}`.toLocaleLowerCase("en-US");
+    if (identities.has(identity) || urls.has(entry.url)) {
+      fail(`${context} repeats or collides with another exact package artifact.`);
+    }
+    identities.add(identity);
+    urls.add(entry.url);
+    if (disposition === "include") includedBytes += Number(entry.bytes);
+    return {
+      package: entry.package,
+      version: entry.version,
+      url: entry.url,
+      bytes: Number(entry.bytes),
+      digest: entry.digest as ReleaseSha256,
+      integrity: entry.integrity,
+      license: entry.license,
+      disposition,
+      ...(disposition === "omit"
+        ? {
+            omissionReason: entry.omissionReason as "explicitly-omitted" | "license-not-allowed",
+          }
+        : {}),
+    };
+  });
+  if (includedBytes > MAX_NPM_TOTAL_INCLUDED_BYTES) {
+    fail("included npm package artifacts exceed the aggregate byte bound.");
+  }
+  entries.sort((left, right) =>
+    left.package === right.package
+      ? compareText(left.version, right.version)
+      : compareText(left.package, right.package),
+  );
+  return { allowedLicenses: canonicalAllowedLicenses, entries };
 }
 
 function compareStableSemver(left: string, right: string): number {
@@ -715,6 +963,10 @@ export function buildStableReleaseProtocolBundle(
   validate: ReleaseProtocolValidator,
 ): StableReleaseProtocolBundle {
   assertReleaseInput(input);
+  const npmPackageInventory = canonicalNpmPackageInventory(
+    input.npmPackageInventory ?? { allowedLicenses: [], entries: [] },
+    input.uiVersion,
+  );
   const orderedItems = [...input.items].sort((left, right) =>
     left.payload.itemId.localeCompare(right.payload.itemId, "en-US"),
   );
@@ -914,6 +1166,7 @@ export function buildStableReleaseProtocolBundle(
     artifacts: [...itemArtifacts.values(), ...evidenceArtifacts]
       .sort((left, right) => left.path.localeCompare(right.path, "en-US"))
       .map((artifact) => manifestArtifactRecord(artifact, input.registry.origin)),
+    npmPackageInventory,
     qualitySummary: evidencePointer(input.releaseGate.qualitySummary),
   } as const;
   const manifest = {
@@ -1128,6 +1381,18 @@ export function verifyStableReleaseProtocolBundle(
     manifest.dependencyGraphDigest !== bundle.dependencyGraphDigest
   ) {
     fail("catalog, manifest, and bundle dependency graph digests disagree.");
+  }
+  if (manifest.npmPackageInventory !== undefined) {
+    const normalizedNpmPackageInventory = canonicalNpmPackageInventory(
+      manifest.npmPackageInventory,
+      bundle.uiVersion,
+    );
+    if (
+      canonicalJsonFile(manifest.npmPackageInventory) !==
+      canonicalJsonFile(normalizedNpmPackageInventory)
+    ) {
+      fail("release npm package inventory is not canonically ordered.");
+    }
   }
 
   const registry = catalog.registry;

@@ -19,9 +19,12 @@ import {
   applySourceAdd,
   canonicalJson,
   executeTransaction,
+  finalizeOperationPlan,
+  planInit,
   planSourceAdd,
   sha256,
 } from "../../packages/cli/src/index.ts";
+import { validationSuiteForTransaction } from "../../packages/cli/src/transaction-engine.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
@@ -31,7 +34,7 @@ const temporaryDirectories: string[] = [];
 function fixture() {
   const project = createProjectFixture();
   temporaryDirectories.push(project.root);
-  applyInit({ projectRoot: project.root });
+  applyInit({ projectRoot: project.root }, planInit({ projectRoot: project.root }).planDigest);
   return project;
 }
 
@@ -188,10 +191,19 @@ describe("transaction security boundaries", () => {
       itemIds: ["button"],
       registryDirectory,
     });
+    const { planDigest: _sourcePlanDigest, ...planWithoutDigest } = plan;
+    const collisionPlan = finalizeOperationPlan({
+      ...planWithoutDigest,
+      validationSuite: validationSuiteForTransaction(),
+    });
     expect(() =>
       executeTransaction({
         root: maliciousProject.root,
-        plan,
+        plan: collisionPlan,
+        acceptedConsents: collisionPlan.consentRequirements.map(({ id }) => ({
+          id,
+          planDigest: collisionPlan.planDigest,
+        })),
         mutations: [
           { target: "src/Case.ts", content: Buffer.from("a"), beforeDigest: null },
           { target: "src/case.ts", content: Buffer.from("b"), beforeDigest: null },
@@ -201,8 +213,12 @@ describe("transaction security boundaries", () => {
     expect(() =>
       executeTransaction({
         root: maliciousProject.root,
-        plan,
+        plan: collisionPlan,
         mutations: [],
+        acceptedConsents: collisionPlan.consentRequirements.map(({ id }) => ({
+          id,
+          planDigest: collisionPlan.planDigest,
+        })),
         registryPayloads: [
           {
             registry: "official",
