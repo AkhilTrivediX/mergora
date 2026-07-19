@@ -255,6 +255,7 @@ beforeAll(() => {
   for (const { directory, name } of [
     { directory: resolve(workspaceRoot, "packages/contracts"), name: "mergora-contracts" },
     { directory: resolve(workspaceRoot, "packages/registry"), name: "mergora-registry" },
+    { directory: resolve(workspaceRoot, "packages/schema"), name: "mergora-schema" },
   ]) {
     const isolatedPackage = resolve(isolatedRoot, "node_modules", name);
     mkdirSync(isolatedPackage, { recursive: true });
