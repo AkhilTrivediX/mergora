@@ -21,7 +21,7 @@ import transactionJournalSchemaJson from "./transaction-journal-v1.schema.json" 
 import transactionSchemaJson from "./transaction-v1.schema.json" with { type: "json" };
 import vendorManifestSchemaJson from "./vendor-manifest-v1.schema.json" with { type: "json" };
 
-import type { SchemaKind } from "./types.js";
+import type { SchemaKind } from "./types.ts";
 
 export interface JsonSchema {
   readonly [key: string]: unknown;
