@@ -515,11 +515,16 @@ describe("package and source parity", () => {
     expect(dataGrid.docs).toMatch(/^Experimental/u);
     expect(dataGrid.docs).toMatch(/Risk Class 3 contract has not passed/u);
     const dataGridRuntime = dataGrid.files.find(({ path }) => path.endsWith("/data-grid.tsx"));
+    const dataGridCsv = dataGrid.files.find(({ path }) => path.endsWith("/data-grid-csv.ts"));
     const dataGridEntry = dataGrid.files.find(({ path }) => path.endsWith("/index.ts"));
     expect(dataGridRuntime?.content).toContain("export interface DataGridQuery");
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-filter-input"');
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-operation-status"');
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-query-input"');
+    expect(dataGridCsv?.content).toContain("export function createDataGridCsv");
+    expect(dataGridCsv?.content).toContain('formulaProtection ?? "apostrophe"');
+    expect(dataGridEntry?.content).toContain("createDataGridCsv");
+    expect(dataGridEntry?.content).toContain("DataGridCsvOptions");
     expect(dataGridEntry?.content).toContain("normalizeDataGridQuery");
     expect(dataGridEntry?.content).toContain("DataGridSelectionProps");
     expect(dataGridEntry?.content).toContain("DataGridSortingProps");

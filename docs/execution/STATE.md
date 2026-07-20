@@ -1,10 +1,10 @@
 # Execution state
 
-- Updated: 2026-07-20T06:08:04Z
-- Commit: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d` plus active visual-review integration
+- Updated: 2026-07-20T07:47:46Z
+- Commit: `58d6de0` plus the active uncommitted Data Grid safe-CSV integration
 - Branch: `feature/foundation`
 - Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
-- Phase result: gate-failed
+- Phase result: locally green checkpoint awaiting an exact pushed CI run
 
 ## Completed since previous update
 
@@ -19,12 +19,12 @@
 - Confirmed target maturity remains 175 Stable, two Beta, and one Experimental, while every
   published maturity is null and release publication is blocked.
 - Confirmed the implementation matrix records evidence-backed Mergora advantages and shared visual
-  signatures for all 178 entries, 247 evidence-backed optional enhancements, tested Basic and
+  signatures for all 178 entries, 256 evidence-backed optional enhancements, tested Basic and
   Recommended stories for every entry, and verified package/source/Shadcn parity for every entry.
 - Confirmed all 178 profiles remain incomplete: 129 interaction records are verified, 49 are
   partial, and all 178 accessibility records are partial.
-- Updated current generator facts to 1,050 deterministic outputs including the artifact manifest,
-  with 1,049 other outputs enumerated by that manifest, including the authoritative
+- Updated current generator facts to 1,051 deterministic outputs including the artifact manifest,
+  with 1,050 other outputs enumerated by that manifest, including the authoritative
   documentation-contract index.
 - Recorded current token evidence: 405 tokens, 12 theme/density contexts, 12 resolved artifacts, and
   144 contrast records.
@@ -64,7 +64,15 @@
   Combobox, and Data Grid workbench. All 16 eligible comparisons changed as expected; the accepted
   record now includes a named agent reviewer, timestamp, explanation, affected stories, and bundle
   digest. Its Windows result remains diagnostic and its four-story scope is not catalog-wide.
-- Reverified the complete local `pnpm check` gate: 198 test files passed, 1,510 tests passed, and one
+- Reviewed and accepted the clean `2ebc3a7` to `5c2fb93` Data Grid visual transition across all
+  16 eligible Chromium, Firefox, and WebKit comparisons. Light, dark, enhanced-contrast,
+  forced-colors, reduced-motion, and RTL presentation remain intact; the exact baseline replay
+  passed 16/16 in both immutable and candidate phases, with two expected engine-policy skips.
+- Added a public, deterministic `createDataGridCsv` utility with explicit row-model ownership,
+  formula-injection protection by default, and no download, storage, or network side effects.
+  Its Storybook control proves complete removal when disabled; unit, generation, and cross-browser
+  Data Grid evidence are current for the active worktree.
+- Reverified the complete local `pnpm check` gate: 200 test files passed, 1,540 tests passed, and one
   intentional test was skipped; the serial official-browser audit passed 5/5. Formatting, lint,
   root and all 21 workspace typechecks, generation, Storybook, site, registry, API, documentation,
   accessibility, compatibility, dependency, and license gates remain green.
@@ -88,9 +96,9 @@
 
 ## Next atomic batch
 
-1. Commit and push the coherent locally green `feature/*` checkpoint, obtain fresh exact-commit
-   GitHub Actions
-   evidence, and perform a narrow cross-commit visual review without waiting for PR review.
+1. Commit and push the coherent locally green `feature/*` Data Grid safe-CSV checkpoint, obtain
+   fresh exact-commit GitHub Actions evidence, and fix any reproducible failure without waiting for
+   PR review.
 2. Continue the next dependency-ordered hardening batch: complete Data Grid's Stable-target
    contract, large-data/virtualization evidence, temporal edge cases, upload adapters, package-shape
    checks, coverage enforcement, CSP/social metadata, and broader consumer matrices.
@@ -121,27 +129,27 @@ The phase is not marked externally blocked because substantial independent work 
 
 ## Latest evidence
 
-| Gate                      | Command/run                                       | Commit          | Result                                                                                   | Artifact                                                  |
-| ------------------------- | ------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Catalog authority         | generated matrix inspection                       | active worktree | 178/178 source-present; 0 published maturity                                             | `registry/generated/catalog.json`                         |
-| Mergora product standard  | generated matrix inspection                       | active worktree | 178 advantages, 178 signatures, 247 enhancements, 178 Basic and 178 Recommended stories  | `registry/generated/implementation-matrix.v1.json`        |
-| Generation                | latest generator output and manifest inspection   | active worktree | 1,050 outputs including manifest; authoritative docs contract and all delivery surfaces  | `registry/generated/artifact-manifest.json`               |
-| Public API                | `pnpm api:check`                                  | active worktree | 178 entries; 530 groups; 3,431/3,431 props described; 807 runtime defaults               | `content/generated/api-index.json`                        |
-| Local quality             | `pnpm check`                                      | active worktree | 198 files; 1,510 passed; 1 intentional skip; serial official browser audit 5/5           | `tests/`                                                  |
-| Full browser matrix       | `pnpm test:browser`                               | active worktree | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip) | `tests/browser/`, `tests/components/`, `tests/web/`       |
-| Accessibility             | `pnpm test:a11y`                                  | active worktree | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                          | `tests/browser/`                                          |
-| Compatibility             | `pnpm test:compat`                                | active worktree | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                               | `tests/compatibility/`                                    |
-| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 45/45                                   | `docs/`, `tests/harness/`                                 |
-| Component cross-browser   | complete component Playwright aggregate           | active worktree | 909 total: 907 passed, 2 intentional platform skips, 0 failures                          | `tests/components/`                                       |
-| Exact packed consumers    | WRITE plus immediate NO-WRITE replay              | active worktree | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay      | `tests/packed-consumers/evidence.json`                    |
-| Website implementation    | generated contract and site model inspection      | active worktree | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented    | `registry/generated/documentation-contract-index.v1.json` |
-| Production build/export   | forced 21-workspace `/mergora` build and verifier | active worktree | Storybook and 956 pages built; Quality Lab assembled; 4,259 text artifacts verified      | `apps/web/out/`, `apps/web/public/quality-lab/`           |
-| Website browser           | `pnpm test:web-browser`                           | active worktree | 46 passed; 2 documented forced-colors policy skips; 0 failures across three engines      | `tests/web/`                                              |
-| Website performance       | `pnpm test:performance`                           | active worktree | 6/6 routes; performance 95-96; accessibility/best practices/SEO 100                      | `scripts/verify-site-performance.mjs`                     |
-| Manual preparation        | `node scripts/prepare-manual-evidence.mjs --plan` | active worktree | 178 items; 3,253 sessions; 4,124 tasks; all NOT RUN; zero claims                         | `docs/quality/manual/CAMPAIGN.md`                         |
-| Security and licenses     | production/high audits and license gate           | active worktree | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains           | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
-| npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved    | local npm session, `config/public-packages.json`          |
-| Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                | `tests/compatibility/matrix.v1.json`                      |
-| Visual                    | reviewed cross-commit baseline                    | `2ebc3a7`       | approved review metadata and digest; four stories; local Windows diagnostic only         | `tests/visual/baseline.v1.json`                           |
-| GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                 | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
-| Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                        | `registry/generated/release-protocol/plan.json`           |
+| Gate                      | Command/run                                       | Commit          | Result                                                                                    | Artifact                                                  |
+| ------------------------- | ------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Catalog authority         | generated matrix inspection                       | active worktree | 178/178 source-present; 0 published maturity                                              | `registry/generated/catalog.json`                         |
+| Mergora product standard  | generated matrix inspection                       | active worktree | 178 advantages, 178 signatures, 256 enhancements, 178 Basic and 178 Recommended stories   | `registry/generated/implementation-matrix.v1.json`        |
+| Generation                | latest generator output and manifest inspection   | active worktree | 1,051 outputs including manifest; authoritative docs contract and all delivery surfaces   | `registry/generated/artifact-manifest.json`               |
+| Public API                | `pnpm api:check`                                  | active worktree | 178 entries; 547 groups; 3,517/3,517 props described; 807 runtime defaults                | `content/generated/api-index.json`                        |
+| Local quality             | `pnpm check`                                      | active worktree | 200 files; 1,540 passed; 1 intentional skip; serial official browser audit 5/5            | `tests/`                                                  |
+| Full browser matrix       | `pnpm test:browser`                               | active worktree | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip)  | `tests/browser/`, `tests/components/`, `tests/web/`       |
+| Accessibility             | `pnpm test:a11y`                                  | active worktree | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                           | `tests/browser/`                                          |
+| Compatibility             | `pnpm test:compat`                                | active worktree | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                                | `tests/compatibility/`                                    |
+| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 45/45                                    | `docs/`, `tests/harness/`                                 |
+| Component cross-browser   | complete component Playwright aggregate           | active worktree | 909 total: 907 passed, 2 intentional platform skips, 0 failures                           | `tests/components/`                                       |
+| Exact packed consumers    | WRITE plus immediate NO-WRITE replay              | active worktree | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay       | `tests/packed-consumers/evidence.json`                    |
+| Website implementation    | generated contract and site model inspection      | active worktree | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented     | `registry/generated/documentation-contract-index.v1.json` |
+| Production build/export   | forced 21-workspace `/mergora` build and verifier | active worktree | Storybook and 956 pages built; Quality Lab assembled; 4,259 text artifacts verified       | `apps/web/out/`, `apps/web/public/quality-lab/`           |
+| Website browser           | `pnpm test:web-browser`                           | active worktree | 46 passed; 2 documented forced-colors policy skips; 0 failures across three engines       | `tests/web/`                                              |
+| Website performance       | `pnpm test:performance`                           | active worktree | 6/6 routes; performance 95-96; accessibility/best practices/SEO 100                       | `scripts/verify-site-performance.mjs`                     |
+| Manual preparation        | `node scripts/prepare-manual-evidence.mjs --plan` | active worktree | 178 items; 3,253 sessions; 4,124 tasks; all NOT RUN; zero claims                          | `docs/quality/manual/CAMPAIGN.md`                         |
+| Security and licenses     | production/high audits and license gate           | active worktree | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains            | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
+| npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved     | local npm session, `config/public-packages.json`          |
+| Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                 | `tests/compatibility/matrix.v1.json`                      |
+| Visual                    | reviewed cross-commit baseline                    | `5c2fb93`       | 16/16 accepted replay comparisons; two expected engine-policy skips; scope remains narrow | `tests/visual/baseline.v1.json`                           |
+| GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                  | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
+| Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                         | `registry/generated/release-protocol/plan.json`           |

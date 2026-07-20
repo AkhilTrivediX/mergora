@@ -16,7 +16,7 @@ The requirement text remains authoritative under its stable ID. This table recor
 implementation, automated, manual, and public-documentation evidence without copying private
 planning prose into distributable documentation.
 
-The 2026-07-20 refresh adds the 1,050-output documentation contract, the 907-pass/2-policy-skip/
+The 2026-07-20 refresh adds the 1,051-output documentation contract, the 907-pass/2-policy-skip/
 0-failure component aggregate, deterministic exact packed WRITE/NO-WRITE lifecycle evidence, and
 implemented State Lab/Passport/Studio/machine surfaces. It does not change the totals below because
 the broader rows still require exact-commit CI, coordinated site gates, manual evidence, immutable

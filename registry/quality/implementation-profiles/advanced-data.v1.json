@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, adapter persistence, native form/reset behavior, recoverable async status, and optional live query and selection context without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, adapter persistence, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -30,6 +30,14 @@
           {
             "kind": "repository-file",
             "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/systems/data-grid/data-grid-csv.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid-csv.test.ts"
           }
         ],
         "enhancementIds": [
@@ -41,7 +49,8 @@
           "operation-status",
           "form-serialization",
           "native-single-selection",
-          "selection-summary"
+          "selection-summary",
+          "safe-csv-export"
         ]
       },
       "visualSignature": {
@@ -371,6 +380,42 @@
             "events": "The selection-summary renderer is not invoked.",
             "accessibility": "No output element or polite live region is exposed."
           }
+        },
+        {
+          "id": "safe-csv-export",
+          "status": "evidence-backed",
+          "summary": "Consumers can serialize an explicit full, filtered, visible, or selected row model to deterministic CSV with default spreadsheet-formula protection and no component-owned download, network, or storage side effects.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid-csv.ts"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid-csv.test.ts"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["csvExportEnabled"],
+          "api": {
+            "kind": "composition",
+            "names": ["createDataGridCsv"],
+            "enableWhen": "Call createDataGridCsv with explicit rows and columns, and compose a consumer-owned export action only where it is useful."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The Data Grid renders no export action; the reference Storybook composition removes its prepare-CSV button and preview output.",
+            "behavior": "No row accessor, serialization, download, storage, or network behavior runs.",
+            "events": "No export callback or consumer-owned side effect can occur.",
+            "accessibility": "No export control, status, preview, announcement, or hidden value is exposed."
+          }
         }
       ],
       "storybook": {
@@ -388,7 +433,8 @@
             "operationStatusState",
             "formSerializationEnabled",
             "selectionMode",
-            "showSelectionSummary"
+            "showSelectionSummary",
+            "csvExportEnabled"
           ],
           "references": [
             {
@@ -415,7 +461,8 @@
             "operationStatusState",
             "formSerializationEnabled",
             "selectionMode",
-            "showSelectionSummary"
+            "showSelectionSummary",
+            "csvExportEnabled"
           ],
           "references": [
             {
@@ -445,7 +492,7 @@
       },
       "interactionEvidence": {
         "status": "verified",
-        "summary": "Native sorting and selection, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
+        "summary": "Native sorting and selection, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, deterministic safe CSV serialization, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
         "references": [
           {
             "kind": "repository-file",
@@ -454,6 +501,10 @@
           {
             "kind": "repository-file",
             "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid-csv.test.ts"
           }
         ]
       },
@@ -478,7 +529,7 @@
       "blockers": [
         {
           "code": "production-grid-contract-incomplete",
-          "summary": "Interactive Grid mode, editing, row and column virtualization, column state, advanced selection, detail and tree rows, grouping and aggregation, saved views, safe export, permissions, responsive alternatives, scale evidence, and the full independent Risk Class 3 manual matrix remain open.",
+          "summary": "Interactive Grid mode, editing, row and column virtualization, column state, advanced selection, detail and tree rows, grouping and aggregation, saved views, permissions, responsive alternatives, scale evidence, and the full independent Risk Class 3 manual matrix remain open.",
           "references": [
             {
               "kind": "repository-file",

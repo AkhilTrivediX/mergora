@@ -40,7 +40,7 @@ target. These target values are requirements, not shipped maturity claims.
 | ------------------------------------------- | ---------------: |
 | Mergora-specific advantage, evidence-backed |        178 / 178 |
 | Shared visual signature, evidence-backed    |        178 / 178 |
-| Optional enhancements, evidence-backed      |        247 / 247 |
+| Optional enhancements, evidence-backed      |        256 / 256 |
 | Basic story tested                          |        178 / 178 |
 | Recommended Mergora story tested            |        178 / 178 |
 | Package/source/Shadcn parity verified       |        178 / 178 |
@@ -66,7 +66,7 @@ not published maturity.
 
 ## Current automated breadth
 
-- The generator emits 1,050 deterministic outputs including its manifest. The manifest's 1,049
+- The generator emits 1,051 deterministic outputs including its manifest. The manifest's 1,050
   entries include the authoritative documentation-contract index for all 178 items.
 - The full component Playwright aggregate on 2026-07-20 scheduled 909 Chromium, Firefox, and WebKit
   cases: 907 passed, two Firefox/WebKit instances of a Chromium-only mobile-touch-emulation case

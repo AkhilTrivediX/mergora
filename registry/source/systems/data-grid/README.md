@@ -111,7 +111,34 @@ customizes the query rail; `false` removes it, while omission uses the localized
 when filtering or pagination is enabled. Empty custom content removes the live region rather than
 leaving an unnamed announcement target.
 
+## Safe CSV serialization
+
+`createDataGridCsv` serializes the exact row model a consumer supplies, so the same utility can
+export all rows, filtered rows, the current visible window, or a selected subset without giving the
+component ownership of downloads, storage, or network behavior:
+
+```tsx
+const csv = createDataGridCsv({
+  rows: visibleRecords,
+  columns: [
+    { id: "title", header: "Record", accessor: (record) => record.title },
+    { id: "state", header: "State", accessor: (record) => record.state },
+  ],
+});
+```
+
+Column and row order are preserved. Strings, finite numbers, booleans, dates, null, and undefined
+have deterministic locale-neutral output; dates use ISO 8601 and records use CRLF by default.
+Commas, quotes, CR, and LF are escaped according to CSV rules. Text and headings that could be
+interpreted as spreadsheet formulas are prefixed with an apostrophe by default, including values
+with leading whitespace or format controls. Set `formulaProtection: false` only for a completely
+trusted data set whose receiving application requires the original text byte-for-byte.
+
+The serializer has no browser side effects. Consumers decide whether and how to expose an export
+action, create a file, start a download, or send the output elsewhere. Omitting that composition
+means there is no export UI, behavior, event, or accessibility output.
+
 The component remains Experimental. Interactive ARIA grid mode, editing, virtualization, column
-resize/reorder/pinning/grouping, range and bulk selection, saved views, safe CSV export, a
-narrow-screen item alternative, and complete Risk Class 3 manual evidence remain later promotion
-work. No package, catalog, or Passport surface should represent D1-A as Stable.
+resize/reorder/pinning/grouping, range and bulk selection, saved views, permissions, a narrow-screen
+item alternative, and complete Risk Class 3 manual evidence remain later promotion work. No
+package, catalog, or Passport surface should represent D1-A as Stable.

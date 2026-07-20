@@ -3,7 +3,7 @@
   "contractVersion": "0.2.0",
   "itemId": "data-grid",
   "contractStatus": "source-present-unreleased",
-  "claim": "This Experimental source contract covers the semantic-table tracer and its optional query-operation layer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
+  "claim": "This Experimental source contract covers the semantic-table tracer, its optional query-operation layer, and the side-effect-free safe CSV serializer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
   "riskClass": 3,
   "semantics": {
     "nativeBasis": "A labelled overflow region contains a native table with a caption, scoped column headers, native buttons for sorting and pagination, native inputs for filtering and selection, and native hidden inputs for optional form serialization.",
@@ -60,6 +60,7 @@
     "Provide stable unique row IDs, localized captions, region labels, operation messages, and task-specific row-selection labels.",
     "In manual mode, apply remote filtering, sorting, and pagination outside the component and return rows and cursor boundaries that match the controlled query.",
     "Keep query adapters deterministic and side-effect safe; transport, routing, persistence, authorization, and retry effects remain consumer-owned.",
+    "Supply the exact row model and explicit typed columns for CSV serialization; downloads, storage, network behavior, and any decision to disable default spreadsheet-formula protection remain consumer-owned.",
     "Preserve native table structure and retest long content, 320px reflow, 400% zoom, RTL, touch, forced colors, reduced motion, and supported assistive technology.",
     "Do not claim Stable or complete Data Grid conformance until the recorded completion delta and Risk Class 3 manual matrix are closed."
   ],
@@ -73,6 +74,7 @@
       "client-operation-order",
       "manual-operation-isolation",
       "form-serialization-reset",
+      "formula-injection-safe-csv",
       "keyboard",
       "focus-restoration",
       "axe",

@@ -2,8 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { StrictMode, useMemo, useState, type FormEvent, type ReactElement } from "react";
 
 import {
+  createDataGridCsv,
   DataGrid,
   type DataGridColumn,
+  type DataGridCsvColumn,
   type DataGridOperationStatus,
   type DataGridProps,
   type DataGridQuery,
@@ -24,6 +26,12 @@ const columns: readonly DataGridColumn<LibraryRecord>[] = [
   { id: "owner", header: "Owner", accessor: (row) => row.owner, sortable: true },
 ];
 
+const csvColumns: readonly DataGridCsvColumn<LibraryRecord>[] = [
+  { id: "title", header: "Record", accessor: (row) => row.title },
+  { id: "state", header: "State", accessor: (row) => row.state },
+  { id: "owner", header: "Owner", accessor: (row) => row.owner },
+];
+
 const rows: readonly LibraryRecord[] = [
   { id: "artifact-1", title: "Design tokens", state: "Ready", owner: "Asha" },
   { id: "artifact-2", title: "Icon exports", state: "Review", owner: "Mina" },
@@ -35,6 +43,7 @@ const rows: readonly LibraryRecord[] = [
 
 interface LibraryGridStoryArgs {
   readonly caption: string;
+  readonly csvExportEnabled: boolean;
   readonly rows: readonly LibraryRecord[];
   readonly selectionMode: "none" | "single";
   readonly showSelectionSummary: boolean;
@@ -73,6 +82,7 @@ function selectionProps(
 
 function LibraryGrid({
   caption,
+  csvExportEnabled,
   rows: storyRows,
   selectionMode,
   showSelectionSummary,
@@ -85,6 +95,7 @@ function LibraryGrid({
   showQuerySummary,
 }: LibraryGridStoryArgs): ReactElement {
   const [adapterWrites, setAdapterWrites] = useState(0);
+  const [csvPreview, setCsvPreview] = useState("CSV not prepared");
   const [formData, setFormData] = useState("Not inspected");
   const [retryRequests, setRetryRequests] = useState(0);
   const operationStatus: false | DataGridOperationStatus =
@@ -151,6 +162,25 @@ function LibraryGrid({
       ) : (
         grid
       )}
+      {csvExportEnabled ? (
+        <div style={{ display: "grid", gap: "0.5rem" }}>
+          <button
+            type="button"
+            onClick={() =>
+              setCsvPreview(createDataGridCsv({ columns: csvColumns, rows: storyRows }))
+            }
+          >
+            Prepare safe CSV
+          </button>
+          <output
+            aria-live="polite"
+            data-story-csv-preview=""
+            style={{ overflowWrap: "anywhere", whiteSpace: "pre-wrap" }}
+          >
+            {csvPreview}
+          </output>
+        </div>
+      ) : null}
       {queryAdapterEnabled ? (
         <output aria-live="polite" data-story-adapter-writes="">
           {adapterWrites} persisted {adapterWrites === 1 ? "change" : "changes"}
@@ -419,6 +449,7 @@ function FormSerializationExample(): ReactElement {
 const meta = {
   argTypes: {
     caption: { control: "text" },
+    csvExportEnabled: { control: "boolean" },
     filteringEnabled: { control: "boolean" },
     formSerializationEnabled: { control: "boolean" },
     operationMode: { control: "inline-radio", options: ["client", "manual"] },
@@ -435,6 +466,7 @@ const meta = {
   },
   args: {
     caption: "Library records",
+    csvExportEnabled: false,
     filteringEnabled: false,
     formSerializationEnabled: false,
     operationMode: "client",
@@ -460,6 +492,7 @@ export const BasicDefaults: Story = {
 
 export const RecommendedMergora: Story = {
   args: {
+    csvExportEnabled: true,
     filteringEnabled: true,
     paginationEnabled: true,
     queryAdapterEnabled: true,
@@ -531,6 +564,7 @@ export const NarrowAndRtl: Story = {
     <div dir="rtl" style={{ inlineSize: 320, maxInlineSize: "100%" }}>
       <LibraryGrid
         caption="Library records"
+        csvExportEnabled={false}
         filteringEnabled
         formSerializationEnabled={false}
         operationMode="client"

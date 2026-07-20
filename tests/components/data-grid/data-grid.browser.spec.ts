@@ -73,6 +73,8 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   await expect(page.locator('[data-slot="data-grid-query-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-selection-input"]')).toHaveCount(0);
   await expect(page.locator("[data-story-controlled-form-data]")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Prepare safe CSV" })).toHaveCount(0);
+  await expect(page.locator("[data-story-csv-preview]")).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-region"]')).not.toHaveAttribute(
     "data-operation",
   );
@@ -87,6 +89,7 @@ test("Storybook controls enable independent enhancements without creating illega
     "basic-defaults",
     [
       "filteringEnabled:true",
+      "csvExportEnabled:true",
       "formSerializationEnabled:true",
       "operationMode:manual",
       "operationStatusState:error",
@@ -98,6 +101,9 @@ test("Storybook controls enable independent enhancements without creating illega
     ].join(";"),
   );
   await expect(page.getByRole("searchbox", { name: "Filter records" })).toBeVisible();
+  await page.getByRole("button", { name: "Prepare safe CSV" }).click();
+  await expect(page.locator("[data-story-csv-preview]")).toContainText("Record,State,Owner");
+  await expect(page.locator("[data-story-csv-preview]")).toContainText("Design tokens,Ready,Asha");
   await expect(page.getByRole("navigation", { name: "Library records pagination" })).toBeVisible();
   await expect(page.getByRole("radio")).not.toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-query-summary"]')).toBeVisible();
@@ -129,6 +135,9 @@ test("recommended DataGrid filters, pages, persists query changes, and keeps sel
   const filter = page.getByRole("searchbox", { name: "Filter records" });
   const summary = page.locator('[data-slot="data-grid-query-summary"]');
   const selectionSummary = page.locator('[data-slot="data-grid-selection-summary"]');
+
+  await page.getByRole("button", { name: "Prepare safe CSV" }).click();
+  await expect(page.locator("[data-story-csv-preview]")).toContainText("Record,State,Owner");
 
   await expect(page.getByRole("radio", { name: "Select Icon exports" })).toBeChecked();
   await expect(selectionSummary).toContainText("Selected Icon exports");

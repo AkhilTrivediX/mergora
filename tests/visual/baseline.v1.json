@@ -12,20 +12,14 @@
     "playwrightVersion": "1.61.1",
     "fontManifest": "assets/fonts/manifest.json",
     "acceptedFontDigest": "sha256:7da8d95cfb1606e38b27e734ba9b59447178458bb7a68716aa49cb45d474eafb",
-    "eligibleEvidencePlatforms": [
-      "linux"
-    ]
+    "eligibleEvidencePlatforms": ["linux"]
   },
   "comparison": {
     "threshold": 0,
     "maxDiffPixels": 0,
     "masks": []
   },
-  "projects": [
-    "chromium",
-    "firefox",
-    "webkit"
-  ],
+  "projects": ["chromium", "firefox", "webkit"],
   "modes": [
     {
       "id": "light",
@@ -56,18 +50,14 @@
       "id": "forced-colors",
       "path": "/?theme=light",
       "forcedColors": "active",
-      "projects": [
-        "chromium"
-      ]
+      "projects": ["chromium"]
     }
   ],
   "review": {
     "status": "approved",
     "requiredLabel": "visual-change",
     "explanation": "Reviewed intentional Data Grid operation, touch-target, focus, status, and selection presentation changes; no clipping, RTL, contrast, reduced-motion, or forced-colors regression was observed.",
-    "affectedStories": [
-      "Components/DataGrid"
-    ],
+    "affectedStories": ["Components/DataGrid"],
     "reviewer": "Codex root agent",
     "reviewedAt": "2026-07-20T07:37:10.936Z",
     "reviewBundleDigest": "sha256:3f9c278bc10fd824d0b5387535a487de300c3f1bd56dc830d71b0b6126fdb76e"

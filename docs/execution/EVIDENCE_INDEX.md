@@ -1,8 +1,8 @@
 # Current evidence index
 
-- Updated: 2026-07-20T06:08:04Z
+- Updated: 2026-07-20T07:47:46Z
 - Branch: `feature/foundation`
-- Committed checkpoint: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d`
+- Committed checkpoint: `58d6de0` plus the active safe-CSV integration worktree
 - Evidence scope: the committed checkpoint plus the active, uncommitted integration worktree
 - Publication state: `blocked-unreleased`
 
@@ -65,8 +65,8 @@ or release-bound evidence.
   [`../../registry/generated/package-export-plan.json`](../../registry/generated/package-export-plan.json)
 - Generation tests: [`../../tests/generation/`](../../tests/generation/)
 
-The current generator reports 1,050 deterministic outputs including the artifact manifest itself;
-the manifest contains 1,049 entries for the other generated outputs, including
+The current generator reports 1,051 deterministic outputs including the artifact manifest itself;
+the manifest contains 1,050 entries for the other generated outputs, including
 [`../../registry/generated/documentation-contract-index.v1.json`](../../registry/generated/documentation-contract-index.v1.json).
 All 178 definitions have canonical source and generated package, native-registry, and Shadcn
 surfaces. The release protocol still emits no Stable release bytes.
@@ -94,7 +94,7 @@ Current inventory and evidence counts:
 | Published maturity records                                              |                  0 |
 | Evidence-backed Mergora advantages                                      |                178 |
 | Evidence-backed visual signatures                                       |                178 |
-| Evidence-backed optional enhancements                                   |                247 |
+| Evidence-backed optional enhancements                                   |                256 |
 | Tested Basic / Recommended stories                                      |          178 / 178 |
 | Verified package/source/Shadcn parity                                   |                178 |
 | Verified / partial interaction evidence                                 |           129 / 49 |
@@ -110,7 +110,7 @@ The target maturity field is a requirement, not a release claim. The generated c
 - Aggregate command: `pnpm check`
 - Browser command: `pnpm test:browser`
 
-The current local aggregate passes 198 test files and 1,510 tests, with one intentional skip. Its
+The current local aggregate passes 200 test files and 1,540 tests, with one intentional skip. Its
 serial official-browser audit passes 5/5. The independent full browser command is also green: the
 root tracer records 34 passes and two intentional forced-colors skips from 36 scheduled cases; the
 component catalog records 907 passes and two intentional skips from 909; diagnostics pass 1/1; and
@@ -208,10 +208,11 @@ results are not yet evidence.
 - Baseline policy and record: [`../../tests/visual/baseline.v1.json`](../../tests/visual/baseline.v1.json)
   and [`../../tests/visual/README.md`](../../tests/visual/README.md)
 
-The canonical four-story cross-commit baseline is approved at `2ebc3a7` with a named agent review,
-timestamp, explanation, affected-story list, and SHA-256 review-bundle digest. The reviewed local
-Windows run is diagnostic under policy; a strict exact-commit Linux comparison and catalog-wide
-visual coverage remain incomplete.
+The canonical four-story cross-commit baseline is approved at `5c2fb93` with a named agent review,
+timestamp, explanation, affected-story list, and SHA-256 review-bundle digest. Its 16 eligible
+comparisons across Chromium, Firefox, and WebKit replayed unchanged locally; the two non-Chromium
+forced-colors skips are expected under policy. Exact-commit Linux comparison and catalog-wide visual
+coverage remain incomplete.
 
 ### E-SITE
 

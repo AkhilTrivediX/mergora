@@ -2,7 +2,7 @@
 
 - Updated: 2026-07-20
 - Branch: `feature/foundation`
-- Committed checkpoint: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d`
+- Committed checkpoint: `58d6de0` plus the active safe-CSV integration worktree
 - Current scope: checkpoint plus active integration worktree
 - Release state: no prerelease or Stable release
 
@@ -32,7 +32,7 @@ earlier gate remains failed.
 - Target maturity: 175 Stable, two Beta, and one Experimental.
 - Current implementation status: 178 source-present-unreleased and zero unimplemented.
 - Current publication status: 178 unpublished, zero published maturity records.
-- Matrix evidence: 178 evidence-backed Mergora advantages, 178 visual signatures, 247 optional
+- Matrix evidence: 178 evidence-backed Mergora advantages, 178 visual signatures, 256 optional
   enhancements, 178 tested Basic stories, 178 tested Recommended stories, and 178 verified
   package/source/Shadcn parity records.
 - Remaining matrix evidence: 129 interaction records are verified, 49 are partial, every
@@ -45,13 +45,13 @@ See [`CATALOG_STATUS.md`](CATALOG_STATUS.md) for the full breakdown.
 | Gate                    | Evidence                                           | Current result                                                                                                     | Release limitation                                                               |
 | ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
 | Tokens                  | `packages/tokens/src/generated/docs.json`          | 405 tokens, 12 resolved contexts, 144 contrast records                                                             | Local deterministic evidence only                                                |
-| Generation              | `registry/generated/artifact-manifest.json`        | 1,050 outputs including the manifest; 1,049 manifest entries include the docs contract                             | No Stable release bytes                                                          |
+| Generation              | `registry/generated/artifact-manifest.json`        | 1,051 outputs including the manifest; 1,050 manifest entries include the docs contract                             | No Stable release bytes                                                          |
 | Matrix                  | `registry/generated/implementation-matrix.v1.json` | 178 records, all profile-complete columns populated                                                                | All profiles remain incomplete                                                   |
 | Component cross-browser | `tests/components/playwright.config.ts`            | 909 total: 907 passed, 2 intentional platform skips, 0 failures                                                    | Local active-worktree result; not exact-commit CI or manual device/AT evidence   |
 | Exact tarball consumers | `tests/packed-consumers/evidence.json`             | Seven tarballs; four lanes; full bounded source lifecycle; WRITE/NO-WRITE replay                                   | Public npm provenance, non-Chromium packed runtime, and release binding remain   |
 | Security                | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`      | No open S0/S1; production dependency audit clean                                                                   | Exact-commit review, live release mirror provenance, and release evidence remain |
 | Compatibility           | `tests/compatibility/matrix.v1.json`               | Nine framework, five manager, and Node/OS lanes scheduled                                                          | Exact-commit CI result absent                                                    |
-| Visual                  | `tests/visual/baseline.v1.json`                    | Approved reviewed baseline at `2ebc3a7`; review metadata and digest complete                                       | Four stories only; strict exact-commit Linux and catalog-wide evidence remain    |
+| Visual                  | `tests/visual/baseline.v1.json`                    | Approved reviewed baseline at `5c2fb93`; 16 eligible local replays passed                                          | Four stories only; strict exact-commit Linux and catalog-wide evidence remain    |
 | Site                    | `apps/web`, docs contract, static verifier         | State Lab 2,806 rows; 178 blocked Passports; 46/48 website cases with two policy skips; six Lighthouse routes pass | Exact-commit CI, release-bound public probe, and manual review pending           |
 | Public API              | `content/generated/api-index.json`                 | 178 entries, 530 groups, 3,431 props, 3,431 descriptions, 807 runtime defaults                                     | Local unreleased evidence; immutable/public release association remains absent   |
 | Manual AT               | `node scripts/prepare-manual-evidence.mjs --plan`  | 178 items, 3,253 sessions, 4,124 tasks; all NOT RUN; zero claims                                                   | No completed session                                                             |

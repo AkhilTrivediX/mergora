@@ -29,6 +29,12 @@ const families = [
       "DataGrid",
       "DataGridColumn",
       "DataGridColumnAlignment",
+      "DataGridCsvColumn",
+      "DataGridCsvDelimiter",
+      "DataGridCsvFormulaProtection",
+      "DataGridCsvNewline",
+      "DataGridCsvOptions",
+      "DataGridCsvValue",
       "DataGridCursorPaginationOptions",
       "DataGridCursorPaginationState",
       "DataGridFilteringOptions",
@@ -52,11 +58,15 @@ const families = [
       "DataGridSorting",
       "DataGridSortingChangeDetail",
       "DataGridSortingProps",
+      "createDataGridCsv",
       "normalizeDataGridQuery",
       "parseDataGridQuery",
       "serializeDataGridQuery",
     ],
-    sourcePath: "registry/source/systems/data-grid/data-grid.tsx",
+    sourcePaths: [
+      "registry/source/systems/data-grid/data-grid.tsx",
+      "registry/source/systems/data-grid/data-grid-csv.ts",
+    ],
   },
   {
     id: "stat",
@@ -65,23 +75,25 @@ const families = [
   },
 ] as const;
 
-function sourceFor(family: (typeof families)[number]): { sourcePath: string; text: string } {
-  const { sourcePath } = family;
-  return { sourcePath, text: readFileSync(resolve(workspaceRoot, sourcePath), "utf8") };
+function sourcesFor(
+  family: (typeof families)[number],
+): readonly { sourcePath: string; text: string }[] {
+  const sourcePaths = "sourcePaths" in family ? family.sourcePaths : [family.sourcePath];
+  return sourcePaths.map((sourcePath) => ({
+    sourcePath,
+    text: readFileSync(resolve(workspaceRoot, sourcePath), "utf8"),
+  }));
 }
 
 function docsFor(family: (typeof families)[number]) {
-  const source = sourceFor(family);
   return buildPublicApiDocs(
     {
       id: family.id,
-      normalizedFiles: [
-        {
-          content: source.text,
-          mediaType: "text/typescript-jsx",
-          sourcePath: source.sourcePath,
-        },
-      ],
+      normalizedFiles: sourcesFor(family).map((source) => ({
+        content: source.text,
+        mediaType: "text/typescript-jsx",
+        sourcePath: source.sourcePath,
+      })),
       publicExports: family.publicExports,
     },
     "client-island",
@@ -132,25 +144,27 @@ describe("expanded data-display public API descriptions", () => {
 
   it("documents every exported event, entry, point, and comparison model", () => {
     for (const family of families) {
-      const source = sourceFor(family);
-      const sourceFile = ts.createSourceFile(
-        source.sourcePath,
-        source.text,
-        ts.ScriptTarget.Latest,
-        true,
-        ts.ScriptKind.TSX,
-      );
-      for (const declaration of sourceFile.statements.filter(
-        (statement): statement is ts.InterfaceDeclaration =>
-          ts.isInterfaceDeclaration(statement) &&
-          statement.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword) ===
-            true,
-      )) {
-        for (const member of declaration.members.filter(ts.isPropertySignature)) {
-          expect(
-            descriptionFor(sourceFile, member)?.length,
-            `${family.id}:${declaration.name.text}:${member.name.getText(sourceFile)}`,
-          ).toBeGreaterThanOrEqual(28);
+      for (const source of sourcesFor(family)) {
+        const sourceFile = ts.createSourceFile(
+          source.sourcePath,
+          source.text,
+          ts.ScriptTarget.Latest,
+          true,
+          ts.ScriptKind.TSX,
+        );
+        for (const declaration of sourceFile.statements.filter(
+          (statement): statement is ts.InterfaceDeclaration =>
+            ts.isInterfaceDeclaration(statement) &&
+            statement.modifiers?.some(
+              (modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword,
+            ) === true,
+        )) {
+          for (const member of declaration.members.filter(ts.isPropertySignature)) {
+            expect(
+              descriptionFor(sourceFile, member)?.length,
+              `${family.id}:${declaration.name.text}:${member.name.getText(sourceFile)}`,
+            ).toBeGreaterThanOrEqual(28);
+          }
         }
       }
     }

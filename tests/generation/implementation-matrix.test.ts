@@ -281,6 +281,7 @@ describe("catalog implementation matrix", () => {
     expect(profile).toBeDefined();
 
     const expectedControls = [
+      "csvExportEnabled",
       "filteringEnabled",
       "formSerializationEnabled",
       "operationMode",
