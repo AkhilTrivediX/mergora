@@ -312,6 +312,67 @@ jobs:
           --expected-node 24.12.0
           --expected-os linux
 
+  catalog-visual-coverage:
+    name: Catalog visual coverage (${{ matrix.shard }}/16)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install pinned Chromium and Linux dependencies
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Capture deterministic catalog visual evidence
+        env:
+          MERGORA_CATALOG_VISUAL_COVERAGE: "1"
+          MERGORA_CATALOG_VISUAL_SHARD: ${{ matrix.shard }}/16
+        run: >-
+          pnpm exec playwright test tests/components/catalog-visual-coverage.browser.spec.ts
+          --config tests/components/playwright.config.ts
+          --project chromium
+      - name: Upload catalog visual evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: catalog-visual-coverage-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            artifacts/browser/components
+            artifacts/browser/component-results.json
+          if-no-files-found: warn
+          retention-days: 14
+
   report-nightly:
     name: Report scheduled nightly result
     if: always() && github.event_name == 'schedule'
@@ -322,6 +383,7 @@ jobs:
       - compatibility-frameworks
       - compatibility-node-os
       - compatibility-managers
+      - catalog-visual-coverage
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -333,6 +395,7 @@ jobs:
       NIGHTLY_COMPATIBILITY_FRAMEWORKS: ${{ needs.compatibility-frameworks.result }}
       NIGHTLY_COMPATIBILITY_MANAGERS: ${{ needs.compatibility-managers.result }}
       NIGHTLY_COMPATIBILITY_NODE_OS: ${{ needs.compatibility-node-os.result }}
+      NIGHTLY_CATALOG_VISUAL_COVERAGE: ${{ needs.catalog-visual-coverage.result }}
       NIGHTLY_FULL_MATRIX: ${{ needs.full-matrix.result }}
       NIGHTLY_POLICY: ${{ needs.policy-security-performance.result }}
     steps:
@@ -347,6 +410,7 @@ jobs:
               { id: "compatibility-frameworks", result: process.env.NIGHTLY_COMPATIBILITY_FRAMEWORKS, subsystem: "compatibility" },
               { id: "compatibility-node-os", result: process.env.NIGHTLY_COMPATIBILITY_NODE_OS, subsystem: "compatibility" },
               { id: "compatibility-managers", result: process.env.NIGHTLY_COMPATIBILITY_MANAGERS, subsystem: "compatibility" },
+              { id: "catalog-visual-coverage", result: process.env.NIGHTLY_CATALOG_VISUAL_COVERAGE, subsystem: "visual" },
             ];
             const unsuccessful = results.filter(({ result }) => result !== "success");
             const owner = context.repo.owner;
@@ -385,6 +449,7 @@ jobs:
               "subsystem:compatibility": { color: "5319E7", description: "Compatibility or consumer matrix" },
               "subsystem:full-matrix": { color: "1D76DB", description: "Cross-platform browser and consumer matrix" },
               "subsystem:policy": { color: "D4C5F9", description: "Policy, supply-chain, links, or performance" },
+              "subsystem:visual": { color: "0E8A16", description: "Catalog-wide visual evidence" },
             };
             const subsystemLabels = [...new Set(unsuccessful.map(({ subsystem }) => `subsystem:${subsystem}`))];
             const labels = ["nightly-failure", ...subsystemLabels];
