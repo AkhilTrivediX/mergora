@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.2.0",
+  "itemId": "data-grid",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This Experimental source contract covers the semantic-table tracer and its optional query-operation layer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled overflow region contains a native table with a caption, scoped column headers, native buttons for sorting and pagination, native inputs for filtering and selection, and native hidden inputs for optional form serialization.",
+    "rolePolicy": "Semantic Table mode remains the default. Optional filter, pagination, summary, status, retry, selection, and form outputs are absent when their corresponding APIs are disabled; this phase does not expose an ARIA grid role.",
+    "refTarget": "The public ref targets the labelled HTMLDivElement region."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through the filter, sortable headers, native selection controls, retry action, and pagination controls in document order."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Activates the focused native sort, retry, or pagination button; Space changes the focused native selection control."
+    },
+    {
+      "key": "Arrow keys",
+      "behavior": "Use native radio-group navigation when single-row selection is enabled. No cell-navigation model is claimed in Semantic Table mode."
+    },
+    {
+      "key": "Tab after refresh",
+      "behavior": "Focus remains on an enabled operation control when it survives the refresh and otherwise returns to the labelled grid region."
+    }
+  ],
+  "nonColor": "Text, native state, border geometry, aria-sort, selected controls, and explicit status copy accompany every green or violet signal.",
+  "responsive": "The labelled region remains keyboard-scrollable at narrow widths, controls wrap in logical order, coarse-pointer targets reach 44px, and RTL uses logical properties. A priority-column, row-detail, or item-view alternative remains a completion delta.",
+  "stableSelectors": {
+    "root": "[data-slot=data-grid-region]",
+    "parts": [
+      "[data-slot=data-grid-filter]",
+      "[data-slot=data-grid-filter-input]",
+      "[data-slot=data-grid-pagination]",
+      "[data-slot=data-grid-page-status]",
+      "[data-slot=data-grid-cursor-status]",
+      "[data-slot=data-grid-query-summary]",
+      "[data-slot=data-grid-operation-status]",
+      "[data-slot=data-grid-query-input]",
+      "[data-slot=data-grid-table]",
+      "[data-slot=data-grid-header]",
+      "[data-slot=data-grid-header-row]",
+      "[data-slot=data-grid-column-header]",
+      "[data-slot=data-grid-sort]",
+      "[data-slot=data-grid-body]",
+      "[data-slot=data-grid-empty-row]",
+      "[data-slot=data-grid-row]",
+      "[data-slot=data-grid-selection-cell]",
+      "[data-slot=data-grid-selection-summary]",
+      "[data-slot=data-grid-selection-input]",
+      "[data-slot=data-grid-cell]"
+    ],
+    "attributes": ["data-slot", "data-operation", "data-maturity", "data-selected", "data-state"]
+  },
+  "consumerResponsibilities": [
+    "Provide stable unique row IDs, localized captions, region labels, operation messages, and task-specific row-selection labels.",
+    "In manual mode, apply remote filtering, sorting, and pagination outside the component and return rows and cursor boundaries that match the controlled query.",
+    "Keep query adapters deterministic and side-effect safe; transport, routing, persistence, authorization, and retry effects remain consumer-owned.",
+    "Preserve native table structure and retest long content, 320px reflow, 400% zoom, RTL, touch, forced colors, reduced motion, and supported assistive technology.",
+    "Do not claim Stable or complete Data Grid conformance until the recorded completion delta and Risk Class 3 manual matrix are closed."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-table",
+      "controlled-uncontrolled-query",
+      "client-operation-order",
+      "manual-operation-isolation",
+      "form-serialization-reset",
+      "keyboard",
+      "focus-restoration",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text",
+      "large-data-focus-continuity"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed semantic-table API with controlled or uncontrolled sorting and native radio selection, labelled narrow-screen scrolling, and an optional live selection summary that never exposes TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, adapter persistence, native form/reset behavior, recoverable async status, and optional live query and selection context without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -32,11 +32,21 @@
             "location": "tests/components/data-grid/data-grid.browser.spec.ts"
           }
         ],
-        "enhancementIds": ["selection-summary"]
+        "enhancementIds": [
+          "client-filtering",
+          "pagination",
+          "manual-operations",
+          "query-persistence",
+          "query-summary",
+          "operation-status",
+          "form-serialization",
+          "native-single-selection",
+          "selection-summary"
+        ]
       },
       "visualSignature": {
         "status": "evidence-backed",
-        "summary": "The grid uses a literal Canvas table, Ink rules, strong caption and header hierarchy, shared Violet focus and sort context, restrained Green selected state, bounded corners, and a stable summary rail.",
+        "summary": "The grid uses a literal Canvas table, Ink rules, strong caption and header hierarchy, shared Violet focus and sort context, restrained Green selected state, bounded corners, precise operation controls, and stable query, selection, and recovery rails.",
         "references": [
           {
             "kind": "repository-file",
@@ -68,6 +78,268 @@
         ]
       },
       "optionalEnhancements": [
+        {
+          "id": "client-filtering",
+          "status": "evidence-backed",
+          "summary": "Consumers can opt into accessor-derived or row-specific free-text filtering that runs before client sorting and pagination.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["filteringEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": ["filtering"],
+            "enableWhen": "Set filtering to true or provide DataGridFilteringOptions with getRowText."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No filter label or search input is rendered.",
+            "behavior": "Rows are not filtered and any aggregate filter value is excluded from the effective query.",
+            "events": "No filter query-change or adapter-write event can occur.",
+            "accessibility": "No searchbox, filter label, placeholder, or filter-related summary text is exposed."
+          }
+        },
+        {
+          "id": "pagination",
+          "status": "evidence-backed",
+          "summary": "Consumers can add bounded numbered pagination or consumer-owned cursor windows with deterministic page-size state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["paginationEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": ["pagination"],
+            "enableWhen": "Set pagination to true or provide page or cursor pagination options."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No pagination navigation, position text, buttons, or page-size control is rendered.",
+            "behavior": "Client rows are not sliced and pagination is removed from the effective query.",
+            "events": "No page, page-size, or cursor query-change event can occur.",
+            "accessibility": "No pagination landmark, pagination label, cursor status, or page status is exposed."
+          }
+        },
+        {
+          "id": "manual-operations",
+          "status": "evidence-backed",
+          "summary": "Manual mode delegates ordered rows and page or opaque-cursor windows without performing a second client transform.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["operationMode"],
+          "api": {
+            "kind": "prop",
+            "names": ["operationMode", "query", "onQueryChange"],
+            "enableWhen": "Set operationMode to manual, control the aggregate query, and return consumer-managed rows."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Cursor-only controls and cursor-window status are unavailable; optional numbered client controls remain independently selectable.",
+            "behavior": "The default client mode applies enabled filtering, sorting, and numbered pagination locally in deterministic order.",
+            "events": "No cursor operation is emitted and no consumer-managed remote window is requested.",
+            "accessibility": "No opaque-cursor navigation or cursor-window status is exposed."
+          }
+        },
+        {
+          "id": "query-persistence",
+          "status": "evidence-backed",
+          "summary": "A narrow adapter can restore an uncontrolled query once and receive deterministic committed query writes without coupling the grid to routing or storage.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["queryAdapterEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": ["queryAdapter"],
+            "enableWhen": "Provide a DataGridQueryAdapter; pass false or omit it to disable all adapter I/O."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No adapter-specific component UI is rendered in either mode.",
+            "behavior": "Uncontrolled query state starts from component defaults and remains local unless controlled by the consumer.",
+            "events": "The adapter read and write functions are never invoked.",
+            "accessibility": "No adapter-derived label, status, live region, or hidden value is exposed."
+          }
+        },
+        {
+          "id": "query-summary",
+          "status": "evidence-backed",
+          "summary": "Enabled query operations may expose localized visible-row, match-count, and page context through a built-in or consumer-rendered polite summary.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showQuerySummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderQuerySummary"],
+            "enableWhen": "Enable filtering or pagination and omit renderQuerySummary for the localized default or provide a renderer; pass false to disable it."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No query-summary rail is rendered.",
+            "behavior": "Filtering, sorting, pagination, and query ownership continue unchanged.",
+            "events": "The custom summary renderer is not invoked and no summary-specific update occurs.",
+            "accessibility": "No query output element or polite live-region text is exposed."
+          }
+        },
+        {
+          "id": "operation-status",
+          "status": "evidence-backed",
+          "summary": "Consumers can retain current rows while exposing busy state, recoverable errors, and an optional retry action without layout replacement.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["operationStatusState"],
+          "api": {
+            "kind": "prop",
+            "names": ["operationStatus"],
+            "enableWhen": "Provide an idle, loading, or error status and optionally an error retry callback; pass false or omit it to disable the feature."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No loading or error recovery rail and no retry action is rendered.",
+            "behavior": "Rows and enabled operation controls keep their ordinary state without a component-owned busy mode.",
+            "events": "No retry callback can be invoked.",
+            "accessibility": "The region has no operation aria-busy state and no status or alert role is exposed."
+          }
+        },
+        {
+          "id": "form-serialization",
+          "status": "evidence-backed",
+          "summary": "Consumers can give aggregate query state and native radio selection stable form field names, preserve a source-present selection while its radio is filtered or paged out, and retain native uncontrolled reset behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["formSerializationEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": ["queryName", "selectionName"],
+            "enableWhen": "Provide queryName for a canonical hidden query value and selectionName in single-selection mode for a stable native radio field name."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No hidden query input is rendered; selection radios retain only their internal grouping name when selection is enabled.",
+            "behavior": "Query and selection interaction plus native uncontrolled reset continue, but no consumer-named query or selection field is added; native radio grouping retains only its internal name.",
+            "events": "No serialization-specific callback or event exists in either mode.",
+            "accessibility": "No additional accessibility output is exposed; the omitted hidden query input is non-accessible by design."
+          }
+        },
+        {
+          "id": "native-single-selection",
+          "status": "evidence-backed",
+          "summary": "Consumers can opt into controlled or uncontrolled single-row selection through native labelled radios with stable row identity and native reset behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["selectionMode"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "selectionMode",
+              "selectedRowId",
+              "defaultSelectedRowId",
+              "onSelectedRowIdChange",
+              "getRowLabel"
+            ],
+            "enableWhen": "Set selectionMode to single and optionally control or initialize the selected row; none removes the complete selection path."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection heading, selection cells, native radios, or selected-row treatment is rendered.",
+            "behavior": "The grid owns no selected-row state while sorting and independently enabled query operations continue unchanged.",
+            "events": "No row-selection change callback can fire.",
+            "accessibility": "No row-selection radio, selection-column label, checked state, or selected-row context is exposed."
+          }
+        },
         {
           "id": "selection-summary",
           "status": "evidence-backed",
@@ -107,7 +379,17 @@
           "mode": "basic-enhancements-disabled",
           "modulePath": "apps/storybook/src/DataGrid.stories.tsx",
           "exportName": "BasicDefaults",
-          "enhancementControls": ["showSelectionSummary"],
+          "enhancementControls": [
+            "filteringEnabled",
+            "paginationEnabled",
+            "operationMode",
+            "queryAdapterEnabled",
+            "showQuerySummary",
+            "operationStatusState",
+            "formSerializationEnabled",
+            "selectionMode",
+            "showSelectionSummary"
+          ],
           "references": [
             {
               "kind": "repository-file",
@@ -124,7 +406,17 @@
           "mode": "recommended-enhancements-enabled",
           "modulePath": "apps/storybook/src/DataGrid.stories.tsx",
           "exportName": "RecommendedMergora",
-          "enhancementControls": ["showSelectionSummary"],
+          "enhancementControls": [
+            "filteringEnabled",
+            "paginationEnabled",
+            "operationMode",
+            "queryAdapterEnabled",
+            "showQuerySummary",
+            "operationStatusState",
+            "formSerializationEnabled",
+            "selectionMode",
+            "showSelectionSummary"
+          ],
           "references": [
             {
               "kind": "repository-file",
@@ -139,7 +431,7 @@
       },
       "accessibilityEvidence": {
         "status": "partial",
-        "summary": "Automated native table, caption, scoped header, radio naming, focusable overflow, keyboard, narrow RTL layout, forced-colors, reduced-motion, and axe evidence is current across the component browser matrix; Risk Class 3 manual records remain incomplete.",
+        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
         "references": [
           {
             "kind": "repository-file",
@@ -147,13 +439,13 @@
           },
           {
             "kind": "repository-file",
-            "location": "registry/source/systems/data-grid/contract.draft.json"
+            "location": "registry/source/systems/data-grid/data-grid.contract.json"
           }
         ]
       },
       "interactionEvidence": {
         "status": "verified",
-        "summary": "Native sorting, controlled and uncontrolled selection, empty state, summary updates, and complete disabled enhancement removal are covered for the semantic-table tracer.",
+        "summary": "Native sorting and selection, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
         "references": [
           {
             "kind": "repository-file",
@@ -186,11 +478,11 @@
       "blockers": [
         {
           "code": "production-grid-contract-incomplete",
-          "summary": "Interactive grid mode, editing, virtualization, server operations, responsive alternatives, permissions, and the full Risk Class 3 evidence matrix remain open.",
+          "summary": "Interactive Grid mode, editing, row and column virtualization, column state, advanced selection, detail and tree rows, grouping and aggregation, saved views, safe export, permissions, responsive alternatives, scale evidence, and the full independent Risk Class 3 manual matrix remain open.",
           "references": [
             {
               "kind": "repository-file",
-              "location": "registry/source/systems/data-grid/contract.draft.json"
+              "location": "registry/source/systems/data-grid/data-grid.contract.json"
             }
           ]
         }
@@ -201,7 +493,7 @@
         "references": [
           {
             "kind": "repository-file",
-            "location": "registry/source/systems/data-grid/contract.draft.json"
+            "location": "registry/source/systems/data-grid/data-grid.contract.json"
           }
         ]
       }

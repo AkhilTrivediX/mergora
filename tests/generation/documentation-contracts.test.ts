@@ -156,16 +156,16 @@ describe("documentation contract index", () => {
     expect(canonicalJsonFile(second)).toBe(canonicalJsonFile(first));
     expect(first.inventory).toEqual({
       items: 178,
-      anatomy: { documented: 176, metadataSlotsOnly: 2, unavailable: 0 },
+      anatomy: { documented: 177, metadataSlotsOnly: 1, unavailable: 0 },
       semanticInteractionContracts: {
-        sourceContractUnreleased: 176,
-        draftUnavailable: 2,
+        sourceContractUnreleased: 177,
+        draftUnavailable: 1,
         unavailable: 0,
       },
       stateApplicability: {
-        available: 167,
+        available: 168,
         coverageOnlyUnavailable: 9,
-        unavailable: 2,
+        unavailable: 1,
       },
       recordedEvidence: { itemsWithRecords: 0, records: 0 },
     });
@@ -195,7 +195,7 @@ describe("documentation contract index", () => {
       item.stateApplicability.status === "available" ? item.stateApplicability.states : [],
     );
     const applicable = states.filter((state) => state.applicability === "applicable");
-    expect(applicable).toHaveLength(1717);
+    expect(applicable).toHaveLength(1730);
     expect(applicable.every((state) => state.story?.status === "validated-source-export")).toBe(
       true,
     );
@@ -217,25 +217,53 @@ describe("documentation contract index", () => {
     });
   });
 
-  it("keeps Combobox and Data Grid drafts and state gaps explicitly unavailable", () => {
+  it("keeps the Combobox draft and state gaps explicitly unavailable", () => {
     const index = fixture();
-    for (const id of ["combobox", "data-grid"]) {
-      const item = index.items.find((candidate) => candidate.id === id)!;
-      expect(item.anatomy.status).toBe("metadata-slots-only");
-      expect(item.semanticInteractionContract).toMatchObject({
-        status: "draft-unavailable",
-        contractVersion: null,
-        claim: null,
-        semantics: null,
-        document: null,
-        recordedEvidence: [],
-      });
-      expect(item.stateApplicability).toMatchObject({
-        status: "unavailable",
-        sourcePath: null,
-        states: [],
-      });
-    }
+    const item = index.items.find((candidate) => candidate.id === "combobox")!;
+    expect(item.anatomy.status).toBe("metadata-slots-only");
+    expect(item.semanticInteractionContract).toMatchObject({
+      status: "draft-unavailable",
+      contractVersion: null,
+      claim: null,
+      semantics: null,
+      document: null,
+      recordedEvidence: [],
+    });
+    expect(item.stateApplicability).toMatchObject({
+      status: "unavailable",
+      sourcePath: null,
+      states: [],
+    });
+  });
+
+  it("publishes the Experimental Data Grid source contract without promoting maturity", () => {
+    const index = fixture();
+    const item = index.items.find((candidate) => candidate.id === "data-grid")!;
+    expect(item.implementationStatus).toBe("source-present-unreleased");
+    expect(item.anatomy).toMatchObject({
+      status: "documented",
+      sourcePath: "registry/source/systems/data-grid/data-grid.anatomy.json",
+    });
+    expect(item.semanticInteractionContract).toMatchObject({
+      status: "source-contract-unreleased",
+      sourcePath: "registry/source/systems/data-grid/data-grid.contract.json",
+      contractVersion: "0.2.0",
+      sourceStatus: "source-present-unreleased",
+      recordedEvidence: [],
+    });
+    expect(item.stateApplicability).toMatchObject({
+      status: "available",
+      sourcePath: "registry/source/systems/data-grid/data-grid.stories.json",
+    });
+    expect(
+      item.stateApplicability.status === "available"
+        ? item.stateApplicability.states.find((state) => state.id === "loading")?.story
+        : null,
+    ).toEqual({
+      status: "validated-source-export",
+      modulePath: "apps/storybook/src/DataGrid.stories.tsx",
+      exportName: "LoadingAndErrorRecovery",
+    });
   });
 
   it("keeps newly planned items in the authority without inventing source contracts", () => {

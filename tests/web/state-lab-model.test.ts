@@ -137,7 +137,7 @@ describe("catalog-wide State Lab model", () => {
       modulePath: source.storybook.recommended.modulePath,
     });
 
-    for (const id of ["client-only", "combobox", "data-grid"]) {
+    for (const id of ["client-only", "combobox"]) {
       const unavailable = buildStateLabModel(contractItem(id));
       expect(unavailable.inventoryStatus, id).not.toBe("available");
       expect(unavailable.inventoryReason, id).not.toBeNull();

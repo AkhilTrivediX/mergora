@@ -1,69 +1,181 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
+import { StrictMode, useMemo, useState, type FormEvent, type ReactElement } from "react";
 
 import {
   DataGrid,
   type DataGridColumn,
+  type DataGridOperationStatus,
   type DataGridProps,
+  type DataGridQuery,
 } from "../../../registry/source/systems/data-grid/index.ts";
 import "../../../registry/source/systems/data-grid/data-grid.css";
 import "mergora-tokens/tokens.css";
 
-interface Incident {
+interface LibraryRecord {
   readonly id: string;
   readonly title: string;
-  readonly priority: "Low" | "Medium" | "High";
+  readonly state: "Draft" | "Ready" | "Review";
   readonly owner: string;
 }
 
-const columns: readonly DataGridColumn<Incident>[] = [
-  { id: "title", header: "Incident", accessor: (row) => row.title, sortable: true },
-  { id: "priority", header: "Priority", accessor: (row) => row.priority, sortable: true },
+const columns: readonly DataGridColumn<LibraryRecord>[] = [
+  { id: "title", header: "Record", accessor: (row) => row.title, sortable: true },
+  { id: "state", header: "State", accessor: (row) => row.state, sortable: true },
   { id: "owner", header: "Owner", accessor: (row) => row.owner, sortable: true },
 ];
 
-const rows: readonly Incident[] = [
-  { id: "inc-17", title: "Checkout latency", priority: "High", owner: "Asha" },
-  { id: "inc-21", title: "Export retry", priority: "Medium", owner: "Mina" },
-  { id: "inc-24", title: "Profile image", priority: "Low", owner: "Jon" },
+const rows: readonly LibraryRecord[] = [
+  { id: "artifact-1", title: "Design tokens", state: "Ready", owner: "Asha" },
+  { id: "artifact-2", title: "Icon exports", state: "Review", owner: "Mina" },
+  { id: "artifact-3", title: "Usage notes", state: "Draft", owner: "Jon" },
+  { id: "artifact-4", title: "Motion timings", state: "Ready", owner: "Leila" },
+  { id: "artifact-5", title: "Keyboard map", state: "Review", owner: "Omar" },
+  { id: "artifact-6", title: "Registry schema", state: "Ready", owner: "Noor" },
 ];
 
-interface IncidentGridStoryProps extends Omit<DataGridProps<Incident>, "renderSelectionSummary"> {
-  readonly showSelectionSummary?: boolean;
+interface LibraryGridStoryArgs {
+  readonly caption: string;
+  readonly rows: readonly LibraryRecord[];
+  readonly selectionMode: "none" | "single";
+  readonly showSelectionSummary: boolean;
+  readonly filteringEnabled: boolean;
+  readonly formSerializationEnabled: boolean;
+  readonly operationMode: "client" | "manual";
+  readonly operationStatusState: "off" | "idle" | "loading" | "error";
+  readonly paginationEnabled: boolean;
+  readonly queryAdapterEnabled: boolean;
+  readonly showQuerySummary: boolean;
 }
 
-function IncidentGrid({
-  showSelectionSummary = false,
-  ...props
-}: IncidentGridStoryProps): React.ReactElement {
-  return (
-    <DataGrid<Incident>
-      {...props}
-      {...(showSelectionSummary
+function rowSearchText(row: LibraryRecord): string {
+  return `${row.title} ${row.state} ${row.owner}`;
+}
+
+function selectionProps(
+  selectionMode: LibraryGridStoryArgs["selectionMode"],
+  showSelectionSummary: boolean,
+): Partial<DataGridProps<LibraryRecord>> {
+  if (selectionMode === "none") return { selectionMode: "none" };
+  return {
+    defaultSelectedRowId: "artifact-2",
+    getRowLabel: (row) => `Select ${row.title}`,
+    ...(showSelectionSummary
+      ? {
+          renderSelectionSummary: (selectedRow: LibraryRecord | null) =>
+            selectedRow === null
+              ? "No record selected"
+              : `Selected ${selectedRow.title} · ${selectedRow.state}`,
+        }
+      : {}),
+    selectionMode: "single",
+  };
+}
+
+function LibraryGrid({
+  caption,
+  rows: storyRows,
+  selectionMode,
+  showSelectionSummary,
+  filteringEnabled,
+  formSerializationEnabled,
+  operationMode,
+  operationStatusState,
+  paginationEnabled,
+  queryAdapterEnabled,
+  showQuerySummary,
+}: LibraryGridStoryArgs): ReactElement {
+  const [adapterWrites, setAdapterWrites] = useState(0);
+  const [formData, setFormData] = useState("Not inspected");
+  const [retryRequests, setRetryRequests] = useState(0);
+  const operationStatus: false | DataGridOperationStatus =
+    operationStatusState === "off"
+      ? false
+      : operationStatusState === "error"
         ? {
-            renderSelectionSummary: (selectedRow: Incident | null) =>
-              selectedRow === null
-                ? "No incident selected"
-                : `Selected ${selectedRow.title} · ${selectedRow.priority} priority`,
+            onRetry: () => setRetryRequests((current) => current + 1),
+            state: "error",
           }
+        : { state: operationStatusState };
+  const grid = (
+    <DataGrid<LibraryRecord>
+      caption={caption}
+      columns={columns}
+      filtering={filteringEnabled ? { getRowText: rowSearchText } : false}
+      getRowId={(row) => row.id}
+      operationMode={operationMode}
+      operationStatus={operationStatus}
+      pagination={
+        paginationEnabled
+          ? {
+              mode: "page",
+              pageSizes: [2, 3, 6],
+              ...(operationMode === "manual" ? { totalRows: storyRows.length } : {}),
+            }
+          : false
+      }
+      queryAdapter={
+        queryAdapterEnabled ? { write: () => setAdapterWrites((current) => current + 1) } : false
+      }
+      rows={storyRows}
+      {...(formSerializationEnabled ? { queryName: "libraryQueryControl" } : {})}
+      {...(showQuerySummary ? {} : { renderQuerySummary: false as const })}
+      {...(paginationEnabled
+        ? {
+            defaultQuery: {
+              pagination: { mode: "page" as const, page: 1, pageSize: 2 },
+            },
+          }
+        : {})}
+      {...selectionProps(selectionMode, showSelectionSummary)}
+      {...(formSerializationEnabled && selectionMode === "single"
+        ? { selectionName: "libraryRecordControl" }
         : {})}
     />
   );
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      {formSerializationEnabled ? (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            setFormData(JSON.stringify([...new FormData(event.currentTarget).entries()]));
+          }}
+          style={{ display: "grid", gap: "0.75rem" }}
+        >
+          {grid}
+          <button type="submit">Inspect controlled FormData</button>
+          <output aria-live="polite" data-story-controlled-form-data="">
+            {formData}
+          </output>
+        </form>
+      ) : (
+        grid
+      )}
+      {queryAdapterEnabled ? (
+        <output aria-live="polite" data-story-adapter-writes="">
+          {adapterWrites} persisted {adapterWrites === 1 ? "change" : "changes"}
+        </output>
+      ) : null}
+      {operationStatusState === "error" ? (
+        <output aria-live="polite" data-story-operation-retries="">
+          {retryRequests} retry {retryRequests === 1 ? "request" : "requests"}
+        </output>
+      ) : null}
+    </div>
+  );
 }
 
-function ControlledIncidentGrid(): React.ReactElement {
-  const [selectedRowId, setSelectedRowId] = useState<string | null>("inc-17");
+function ControlledSelectionExample(): ReactElement {
+  const [selectedRowId, setSelectedRowId] = useState<string | null>("artifact-1");
   return (
-    <DataGrid<Incident>
-      caption="Controlled open incidents"
+    <DataGrid<LibraryRecord>
+      caption="Controlled library records"
       columns={columns}
       getRowId={(row) => row.id}
       getRowLabel={(row) => `Select ${row.title}`}
       onSelectedRowIdChange={setSelectedRowId}
       renderSelectionSummary={(selectedRow) =>
-        selectedRow === null
-          ? "No incident selected"
-          : `Controlled selection · ${selectedRow.title}`
+        selectedRow === null ? "No record selected" : `Controlled selection · ${selectedRow.title}`
       }
       rows={rows}
       selectedRowId={selectedRowId}
@@ -72,97 +184,371 @@ function ControlledIncidentGrid(): React.ReactElement {
   );
 }
 
+const initialControlledQuery: DataGridQuery = {
+  filter: "",
+  pagination: { mode: "page", page: 1, pageSize: 2 },
+  sorting: null,
+};
+
+function ControlledQueryExample(): ReactElement {
+  const [query, setQuery] = useState<DataGridQuery>(initialControlledQuery);
+  const [reason, setReason] = useState("initial");
+  const sort =
+    query.sorting === null ? "none" : `${query.sorting.columnId}:${query.sorting.direction}`;
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Controlled library records"
+        columns={columns}
+        filtering={{ getRowText: rowSearchText }}
+        getRowId={(row) => row.id}
+        onQueryChange={(next, detail) => {
+          setQuery(next);
+          setReason(detail.reason);
+        }}
+        pagination={{ pageSizes: [2, 3, 6] }}
+        query={query}
+        rows={rows}
+      />
+      <output aria-live="polite" data-story-controlled-query="">
+        filter={query.filter || "none"} · sort={sort} · reason={reason}
+      </output>
+    </div>
+  );
+}
+
+function manualPageRows(page: number): readonly LibraryRecord[] {
+  return [
+    {
+      id: `remote-${page}-1`,
+      title: `Remote record ${page}1`,
+      state: "Ready",
+      owner: "Remote source",
+    },
+    {
+      id: `remote-${page}-2`,
+      title: `Remote record ${page}2`,
+      state: "Review",
+      owner: "Remote source",
+    },
+  ];
+}
+
+function ManualPageExample(): ReactElement {
+  const [query, setQuery] = useState<DataGridQuery>({
+    filter: "",
+    pagination: { mode: "page", page: 2, pageSize: 1 },
+    sorting: null,
+  });
+  const page = query.pagination?.mode === "page" ? query.pagination.page : 1;
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Library records"
+        columns={columns}
+        getRowId={(row) => row.id}
+        onQueryChange={setQuery}
+        operationMode="manual"
+        pagination={{ mode: "page", pageSizes: [1], totalRows: 6 }}
+        query={query}
+        rows={manualPageRows(page)}
+      />
+      <output aria-live="polite" data-story-manual-request="">
+        Requested page {page}
+      </output>
+    </div>
+  );
+}
+
+function ManualCursorExample(): ReactElement {
+  const [query, setQuery] = useState<DataGridQuery>({
+    filter: "",
+    pagination: { cursor: "opaque-alpha", mode: "cursor", pageSize: 2 },
+    sorting: null,
+  });
+  const cursor = query.pagination?.mode === "cursor" ? query.pagination.cursor : null;
+  const alpha = cursor !== "opaque-beta";
+  const cursorRows = useMemo<readonly LibraryRecord[]>(
+    () =>
+      alpha
+        ? [
+            { id: "cursor-a-1", title: "Cursor record A1", state: "Ready", owner: "Source A" },
+            { id: "cursor-a-2", title: "Cursor record A2", state: "Review", owner: "Source A" },
+          ]
+        : [
+            { id: "cursor-b-1", title: "Cursor record B1", state: "Ready", owner: "Source B" },
+            { id: "cursor-b-2", title: "Cursor record B2", state: "Draft", owner: "Source B" },
+          ],
+    [alpha],
+  );
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Library records"
+        columns={columns}
+        getRowId={(row) => row.id}
+        messages={{ cursorStatus: alpha ? "Batch alpha" : "Batch beta" }}
+        onQueryChange={setQuery}
+        operationMode="manual"
+        pagination={{
+          mode: "cursor",
+          nextCursor: alpha ? "opaque-beta" : null,
+          pageSizes: [2],
+          previousCursor: alpha ? null : "opaque-alpha",
+          totalRows: 4,
+        }}
+        query={query}
+        rows={cursorRows}
+      />
+      <output aria-live="polite" data-story-manual-request="">
+        Requested cursor {alpha ? "alpha" : "beta"}
+      </output>
+    </div>
+  );
+}
+
+function LoadingAndErrorExample(): ReactElement {
+  const [status, setStatus] = useState<DataGridOperationStatus>({
+    message: "Refreshing records",
+    state: "loading",
+  });
+  const retry = (): void => {
+    setStatus({ message: "Refreshing records", state: "loading" });
+    window.setTimeout(() => setStatus({ state: "idle" }), 150);
+  };
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <button
+        type="button"
+        onClick={() =>
+          setStatus({
+            message: "Records could not be refreshed",
+            onRetry: retry,
+            state: "error",
+          })
+        }
+      >
+        Show recoverable error
+      </button>
+      <DataGrid<LibraryRecord>
+        caption="Library records"
+        columns={columns}
+        filtering={{ getRowText: rowSearchText }}
+        getRowId={(row) => row.id}
+        operationStatus={status}
+        pagination={{ pageSizes: [2, 3, 6] }}
+        defaultQuery={{ pagination: { mode: "page", page: 1, pageSize: 2 } }}
+        rows={rows}
+      />
+    </div>
+  );
+}
+
+function AdapterHydrationExample(): ReactElement {
+  const [reads, setReads] = useState(0);
+  const adapter = useMemo(
+    () => ({
+      read: () => {
+        setReads((current) => current + 1);
+        return "filter=Review";
+      },
+      write: () => undefined,
+    }),
+    [],
+  );
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <StrictMode>
+        <DataGrid<LibraryRecord>
+          caption="Hydrated library records"
+          columns={columns}
+          filtering={{ getRowText: rowSearchText }}
+          getRowId={(row) => row.id}
+          queryAdapter={adapter}
+          rows={rows}
+        />
+      </StrictMode>
+      <output aria-live="polite" data-story-adapter-reads="">
+        {reads} hydration {reads === 1 ? "read" : "reads"}
+      </output>
+    </div>
+  );
+}
+
+function FormSerializationExample(): ReactElement {
+  const [submission, setSubmission] = useState("Not inspected");
+  const [queryChanges, setQueryChanges] = useState(0);
+  const [selectionChanges, setSelectionChanges] = useState(0);
+  const [adapterWrites, setAdapterWrites] = useState(0);
+  const inspect = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    setSubmission(JSON.stringify([...new FormData(event.currentTarget).entries()]));
+  };
+  return (
+    <form onSubmit={inspect} style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Library records"
+        columns={columns}
+        defaultSelectedRowId="artifact-1"
+        filtering={{ getRowText: rowSearchText }}
+        getRowId={(row) => row.id}
+        getRowLabel={(row) => `Select ${row.title}`}
+        onQueryChange={() => setQueryChanges((current) => current + 1)}
+        onSelectedRowIdChange={() => setSelectionChanges((current) => current + 1)}
+        queryAdapter={{ write: () => setAdapterWrites((current) => current + 1) }}
+        queryName="libraryQuery"
+        rows={rows}
+        selectionMode="single"
+        selectionName="libraryRecord"
+      />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+        <button type="submit">Inspect FormData</button>
+        <button type="reset">Reset records form</button>
+      </div>
+      <output aria-live="polite" data-story-form-data="">
+        {submission}
+      </output>
+      <output aria-live="polite" data-story-form-events="">
+        {queryChanges} query changes · {selectionChanges} selection changes · {adapterWrites}{" "}
+        adapter writes
+      </output>
+    </form>
+  );
+}
+
 const meta = {
   argTypes: {
+    caption: { control: "text" },
+    filteringEnabled: { control: "boolean" },
+    formSerializationEnabled: { control: "boolean" },
+    operationMode: { control: "inline-radio", options: ["client", "manual"] },
+    operationStatusState: {
+      control: "inline-radio",
+      options: ["off", "idle", "loading", "error"],
+    },
+    paginationEnabled: { control: "boolean" },
+    queryAdapterEnabled: { control: "boolean" },
+    rows: { control: false },
     selectionMode: { control: "inline-radio", options: ["none", "single"] },
+    showQuerySummary: { control: "boolean" },
     showSelectionSummary: { control: "boolean" },
   },
-  title: "Components/Data Grid (Experimental)",
-  component: IncidentGrid,
+  args: {
+    caption: "Library records",
+    filteringEnabled: false,
+    formSerializationEnabled: false,
+    operationMode: "client",
+    operationStatusState: "off",
+    paginationEnabled: false,
+    queryAdapterEnabled: false,
+    rows,
+    selectionMode: "none",
+    showQuerySummary: false,
+    showSelectionSummary: false,
+  },
+  component: LibraryGrid,
   parameters: { layout: "padded", a11y: { test: "error" } },
-} satisfies Meta<typeof IncidentGrid>;
+  title: "Components/Data Grid (Experimental)",
+} satisfies Meta<typeof LibraryGrid>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const BasicDefaults: Story = {
-  args: {
-    caption: "Open incidents",
-    rows,
-    columns,
-    getRowId: (row) => row.id,
-    selectionMode: "none",
-    showSelectionSummary: false,
-  },
   name: "Basic · enhancements disabled",
 };
 
 export const RecommendedMergora: Story = {
   args: {
-    caption: "Open incidents",
-    rows,
-    columns,
-    getRowId: (row) => row.id,
+    filteringEnabled: true,
+    paginationEnabled: true,
+    queryAdapterEnabled: true,
     selectionMode: "single",
-    defaultSelectedRowId: "inc-21",
-    getRowLabel: (row) => `Select ${row.title}`,
+    showQuerySummary: true,
     showSelectionSummary: true,
   },
   name: "Recommended Mergora",
 };
 
 export const ControlledSelection: Story = {
-  args: {
-    caption: "Controlled open incidents",
-    columns,
-    getRowId: (row) => row.id,
-    rows,
-  },
-  render: () => <ControlledIncidentGrid />,
+  render: () => <ControlledSelectionExample />,
 };
 
 export const SemanticTable: Story = {
   args: {
-    caption: "Open incidents",
-    rows,
-    columns,
-    getRowId: (row) => row.id,
     selectionMode: "single",
-    defaultSelectedRowId: "inc-21",
-    getRowLabel: (row) => `Select ${row.title}`,
     showSelectionSummary: true,
   },
 };
 
-export const Empty: Story = {
+export const ClientFilterAndPage: Story = {
   args: {
-    caption: "Open incidents",
-    rows: [],
-    columns,
-    getRowId: (row) => row.id,
-    emptyContent: "No open incidents",
+    filteringEnabled: true,
+    paginationEnabled: true,
+    showQuerySummary: true,
   },
 };
 
+export const ControlledQuery: Story = {
+  render: () => <ControlledQueryExample />,
+};
+
+export const ManualPage: Story = {
+  render: () => <ManualPageExample />,
+};
+
+export const ManualCursor: Story = {
+  render: () => <ManualCursorExample />,
+};
+
+export const LoadingAndErrorRecovery: Story = {
+  render: () => <LoadingAndErrorExample />,
+};
+
+export const AdapterHydration: Story = {
+  render: () => <AdapterHydrationExample />,
+};
+
+export const FormSerializationAndReset: Story = {
+  render: () => <FormSerializationExample />,
+};
+
+export const Empty: Story = {
+  args: { rows: [] },
+  render: (args) => (
+    <DataGrid<LibraryRecord>
+      caption={args.caption}
+      columns={columns}
+      emptyContent="No library records are available"
+      getRowId={(row) => row.id}
+      rows={[]}
+    />
+  ),
+};
+
 export const NarrowAndRtl: Story = {
-  args: {
-    caption: "Open incidents",
-    rows,
-    columns,
-    getRowId: (row) => row.id,
-  },
   render: () => (
     <div dir="rtl" style={{ inlineSize: 320, maxInlineSize: "100%" }}>
-      <IncidentGrid
-        caption="Open incidents"
+      <LibraryGrid
+        caption="Library records"
+        filteringEnabled
+        formSerializationEnabled={false}
+        operationMode="client"
+        operationStatusState="off"
+        paginationEnabled
+        queryAdapterEnabled={false}
         rows={rows}
-        columns={columns}
-        getRowId={(row) => row.id}
         selectionMode="single"
-        defaultSelectedRowId="inc-21"
-        getRowLabel={(row) => `Select ${row.title}`}
+        showQuerySummary
         showSelectionSummary
       />
     </div>
   ),
+};
+
+export const KeyboardAndPreferences: Story = {
+  args: {
+    selectionMode: "single",
+    showSelectionSummary: true,
+  },
 };

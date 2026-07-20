@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "itemId": "data-grid",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "data-grid-region",
+    "stableAttributes": ["data-slot", "data-operation", "data-maturity"]
+  },
+  "parts": [
+    {
+      "name": "filter",
+      "element": "label",
+      "slot": "data-grid-filter"
+    },
+    {
+      "name": "filter-input",
+      "element": "input",
+      "slot": "data-grid-filter-input"
+    },
+    {
+      "name": "table",
+      "element": "table",
+      "slot": "data-grid-table"
+    },
+    {
+      "name": "header",
+      "element": "thead",
+      "slot": "data-grid-header"
+    },
+    {
+      "name": "header-row",
+      "element": "tr",
+      "slot": "data-grid-header-row"
+    },
+    {
+      "name": "column-header",
+      "element": "th",
+      "slot": "data-grid-column-header"
+    },
+    {
+      "name": "sort",
+      "element": "button",
+      "slot": "data-grid-sort"
+    },
+    {
+      "name": "body",
+      "element": "tbody",
+      "slot": "data-grid-body"
+    },
+    {
+      "name": "empty-row",
+      "element": "tr",
+      "slot": "data-grid-empty-row"
+    },
+    {
+      "name": "row",
+      "element": "tr",
+      "slot": "data-grid-row"
+    },
+    {
+      "name": "cell",
+      "element": "td",
+      "slot": "data-grid-cell"
+    },
+    {
+      "name": "selection-cell",
+      "element": "td",
+      "slot": "data-grid-selection-cell"
+    },
+    {
+      "name": "selection-summary",
+      "element": "output",
+      "slot": "data-grid-selection-summary"
+    },
+    {
+      "name": "selection-input",
+      "element": "input",
+      "slot": "data-grid-selection-input"
+    },
+    {
+      "name": "pagination",
+      "element": "nav",
+      "slot": "data-grid-pagination"
+    },
+    {
+      "name": "page-status",
+      "element": "span",
+      "slot": "data-grid-page-status"
+    },
+    {
+      "name": "cursor-status",
+      "element": "span",
+      "slot": "data-grid-cursor-status"
+    },
+    {
+      "name": "query-summary",
+      "element": "output",
+      "slot": "data-grid-query-summary"
+    },
+    {
+      "name": "operation-status",
+      "element": "div",
+      "slot": "data-grid-operation-status"
+    },
+    {
+      "name": "query-input",
+      "element": "input",
+      "slot": "data-grid-query-input"
+    }
+  ]
+}

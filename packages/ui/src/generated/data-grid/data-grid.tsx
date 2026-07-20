@@ -16,8 +16,10 @@ import {
   Fragment,
   forwardRef,
   isValidElement,
+  useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   type HTMLAttributes,
   type ReactElement,
@@ -28,6 +30,8 @@ import {
 export type DataGridColumnAlignment = "start" | "center" | "end";
 export type DataGridSelectionMode = "none" | "single";
 export type DataGridSortDirection = "ascending" | "descending";
+export type DataGridOperationMode = "client" | "manual";
+export type DataGridOperationReason = "filter" | "sort" | "page" | "page-size" | "cursor";
 
 export interface DataGridSorting {
   /** Identifies the sortable column controlling the current row order. */
@@ -36,12 +40,150 @@ export interface DataGridSorting {
   readonly direction: DataGridSortDirection;
 }
 
+export interface DataGridPagePaginationState {
+  /** Selects numbered-page state. */
+  readonly mode: "page";
+  /** One-based requested page number. */
+  readonly page: number;
+  /** Positive number of rows requested per page. */
+  readonly pageSize: number;
+}
+
+export interface DataGridCursorPaginationState {
+  /** Selects opaque-cursor state for consumer-managed data. */
+  readonly mode: "cursor";
+  /** Opaque current-window cursor, with null representing the initial window. */
+  readonly cursor: string | null;
+  /** Positive number of rows requested per result window. */
+  readonly pageSize: number;
+}
+
+export type DataGridPaginationState = DataGridPagePaginationState | DataGridCursorPaginationState;
+
+export interface DataGridQuery {
+  /** Current free-text filter, with an empty string representing no filter. */
+  readonly filter: string;
+  /** Active sort model, or null when source ordering remains unchanged. */
+  readonly sorting: DataGridSorting | null;
+  /** Active page or cursor state, or null when pagination is disabled. */
+  readonly pagination: DataGridPaginationState | null;
+}
+
+export interface DataGridQueryChangeDetail {
+  /** User operation that produced the next query. */
+  readonly reason: DataGridOperationReason;
+  /** Deterministic canonical serialization of the complete next query. */
+  readonly serialized: string;
+}
+
+export interface DataGridQueryAdapter {
+  /** Restores an initial uncontrolled query when no explicit default is supplied. */
+  readonly read?: () => Partial<DataGridQuery> | string | null | undefined;
+  /** Persists each committed query and its deterministic serialization. */
+  readonly write: (query: DataGridQuery, detail: DataGridQueryChangeDetail) => void;
+}
+
+export interface DataGridFilteringOptions<TData extends object> {
+  /** Returns localized searchable text for a complete row instead of accessor-derived text. */
+  readonly getRowText?: (row: TData) => string;
+}
+
+interface DataGridPaginationOptionsBase {
+  /** Positive page-size choices rendered in the optional pagination controls. */
+  readonly pageSizes?: readonly number[];
+  /** Total matching row count supplied by a manual operation when it is known. */
+  readonly totalRows?: number;
+}
+
+export interface DataGridPagePaginationOptions extends DataGridPaginationOptionsBase {
+  /** Selects numbered pagination; omitted mode also selects this default. */
+  readonly mode?: "page";
+}
+
+export interface DataGridCursorPaginationOptions extends DataGridPaginationOptionsBase {
+  /** Selects opaque cursor pagination, which is available only in manual operation mode. */
+  readonly mode: "cursor";
+  /** Cursor requested by the previous-results action; null or omission disables that action. */
+  readonly previousCursor?: string | null;
+  /** Cursor requested by the next-results action; null or omission disables that action. */
+  readonly nextCursor?: string | null;
+}
+
+export type DataGridPaginationOptions =
+  DataGridPagePaginationOptions | DataGridCursorPaginationOptions;
+
+export type DataGridOperationStatus =
+  | {
+      /** Removes operation status UI while retaining the discriminated status model. */
+      readonly state: "idle";
+    }
+  | {
+      /** Marks the existing table busy without replacing its rows. */
+      readonly state: "loading";
+      /** Replaces the localized default loading message. */
+      readonly message?: ReactNode;
+    }
+  | {
+      /** Adds an accessible recovery rail while retaining the existing rows. */
+      readonly state: "error";
+      /** Replaces the localized default error message. */
+      readonly message?: ReactNode;
+      /** Adds a retry action; omission removes the action and its events. */
+      readonly onRetry?: () => void;
+    };
+
+export interface DataGridQuerySummaryContext {
+  /** Canonical query represented by the currently rendered rows and controls. */
+  readonly query: DataGridQuery;
+  /** Number of rows rendered in the current table body. */
+  readonly visibleRowCount: number;
+  /** Complete matching count, or null when a manual source has not supplied one. */
+  readonly totalRowCount: number | null;
+  /** Number of numbered pages, or null outside numbered pagination. */
+  readonly pageCount: number | null;
+}
+
+export interface DataGridMessages {
+  /** Visible and accessible label for the optional filter input. */
+  readonly filterLabel: string;
+  /** Optional hint displayed inside the filter input. */
+  readonly filterPlaceholder: string;
+  /** Names the native row-selection column. */
+  readonly selectionColumnLabel: string;
+  /** Produces a fallback label for each row-selection radio. */
+  readonly selectRowLabel: (visibleRowIndex: number) => string;
+  /** Produces the optional pagination navigation landmark name. */
+  readonly paginationLabel: (caption: string) => string;
+  /** Labels the numbered previous-page action. */
+  readonly previousPageLabel: string;
+  /** Labels the numbered next-page action. */
+  readonly nextPageLabel: string;
+  /** Labels the cursor previous-results action. */
+  readonly previousResultsLabel: string;
+  /** Labels the cursor next-results action. */
+  readonly nextResultsLabel: string;
+  /** Visible label for the page-size selection control. */
+  readonly rowsPerPageLabel: string;
+  /** Produces visible numbered-page position text. */
+  readonly pageStatus: (page: number, pageCount: number) => string;
+  /** Describes an opaque cursor window without exposing the cursor value. */
+  readonly cursorStatus: string;
+  /** Default polite text for an in-progress operation. */
+  readonly loadingLabel: string;
+  /** Default alert text for a failed operation. */
+  readonly errorLabel: string;
+  /** Label for the optional operation retry action. */
+  readonly retryLabel: string;
+  /** Produces the built-in optional query summary. */
+  readonly querySummary: (context: DataGridQuerySummaryContext) => string;
+}
+
 export interface DataGridColumn<TData extends object> {
   /** Provides the stable TanStack column identifier used by sorting state. */
   readonly id: string;
   /** Renders the visible and accessible native column header content. */
   readonly header: ReactNode;
-  /** Returns the canonical value used by default cells and sorting. */
+  /** Returns the canonical value used by default cells, filtering, and sorting. */
   readonly accessor: (row: TData) => unknown;
   /** Replaces default value formatting with consumer-owned cell content. */
   readonly cell?: (value: unknown, row: TData) => ReactNode;
@@ -96,6 +238,8 @@ interface DataGridSelectionDisabledProps {
   readonly getRowLabel?: never;
   /** Renders optional selection context and is excluded when selection is disabled. */
   readonly renderSelectionSummary?: never;
+  /** Supplies a stable native radio name and is excluded when selection is disabled. */
+  readonly selectionName?: never;
 }
 
 interface DataGridSingleSelectionBase<TData extends object> {
@@ -107,6 +251,8 @@ interface DataGridSingleSelectionBase<TData extends object> {
   readonly getRowLabel?: (row: TData) => string;
   /** Renders optional selection context and is excluded when selection is disabled. */
   readonly renderSelectionSummary?: (selectedRow: TData | null) => ReactNode;
+  /** Supplies a stable native radio name for form serialization. */
+  readonly selectionName?: string;
 }
 
 interface DataGridControlledSingleSelectionProps<
@@ -161,8 +307,8 @@ export type DataGridSortingProps =
 
 /**
  * Runtime component props. Use DataGridSelectionProps and DataGridSortingProps when composing
- * typed adapter props; untyped/spread call sites receive the same invariants from the runtime
- * configuration guard before any selection renderer, callback, or state is consumed.
+ * strictly exclusive adapter props; runtime guards preserve the same invariants for JavaScript and
+ * spread-prop call sites.
  */
 export interface DataGridProps<TData extends object> extends DataGridCommonProps<TData> {
   /** Controls row selection; none removes radio controls, summaries, and selection callbacks. */
@@ -177,16 +323,88 @@ export interface DataGridProps<TData extends object> extends DataGridCommonProps
   readonly getRowLabel?: (row: TData) => string;
   /** Renders optional selection context and is excluded when selection is disabled. */
   readonly renderSelectionSummary?: (selectedRow: TData | null) => ReactNode;
-  /** Controls the active sort column and direction, with null representing source order. */
+  /** Supplies a stable native radio name for form serialization. */
+  readonly selectionName?: string;
+  /** Controls the active legacy sort and is excluded when aggregate query ownership is active. */
   readonly sorting?: DataGridSorting | null;
-  /** Initializes uncontrolled sorting and is excluded when sorting is controlled. */
+  /** Initializes uncontrolled legacy sorting and is excluded from aggregate query ownership. */
   readonly defaultSorting?: DataGridSorting | null;
-  /** Reports sortable-header changes without mutating canonical rows. */
+  /** Reports legacy sortable-header changes and is excluded from aggregate query ownership. */
   readonly onSortingChange?: (
     sorting: DataGridSorting | null,
     detail: DataGridSortingChangeDetail,
   ) => void;
+  /** Controls the complete aggregate filter, sort, and pagination query. */
+  readonly query?: DataGridQuery;
+  /** Initializes a partial uncontrolled aggregate query. */
+  readonly defaultQuery?: Partial<DataGridQuery>;
+  /** Reports every aggregate query operation and its deterministic serialization. */
+  readonly onQueryChange?: (query: DataGridQuery, detail: DataGridQueryChangeDetail) => void;
+  /** Adds free-text filtering; false removes its UI, processing, events, and accessibility output. */
+  readonly filtering?: boolean | DataGridFilteringOptions<TData>;
+  /** Adds numbered or cursor pagination; false removes the complete navigation region. */
+  readonly pagination?: boolean | DataGridPaginationOptions;
+  /** Chooses built-in filter/sort/page processing or consumer-managed ordered rows. */
+  readonly operationMode?: DataGridOperationMode;
+  /** Adds initial query restoration and committed-query persistence; false removes all adapter I/O. */
+  readonly queryAdapter?: false | DataGridQueryAdapter;
+  /** Adds loading or error recovery semantics while retaining current rows; false removes the rail. */
+  readonly operationStatus?: false | DataGridOperationStatus;
+  /** Customizes the optional query summary; false removes its UI and live-region output. */
+  readonly renderQuerySummary?: false | ((context: DataGridQuerySummaryContext) => ReactNode);
+  /** Adds one canonical hidden form value containing the serialized aggregate query. */
+  readonly queryName?: string;
+  /** Replaces individual localized labels without changing interaction structure. */
+  readonly messages?: Partial<DataGridMessages>;
 }
+
+const defaultMessages: DataGridMessages = {
+  filterLabel: "Filter records",
+  filterPlaceholder: "",
+  selectionColumnLabel: "Select row",
+  selectRowLabel: (visibleRowIndex) => `Select row ${visibleRowIndex}`,
+  paginationLabel: (caption) => `${caption} pagination`,
+  previousPageLabel: "Previous page",
+  nextPageLabel: "Next page",
+  previousResultsLabel: "Previous results",
+  nextResultsLabel: "Next results",
+  rowsPerPageLabel: "Rows per page",
+  pageStatus: (page, pageCount) => `Page ${page} of ${pageCount}`,
+  cursorStatus: "Current result window",
+  loadingLabel: "Loading records",
+  errorLabel: "Could not load records.",
+  retryLabel: "Retry loading records",
+  querySummary: ({ query, visibleRowCount, totalRowCount, pageCount }) => {
+    if (query.pagination?.mode === "page" && pageCount !== null && totalRowCount !== null) {
+      return `${totalRowCount} records · page ${query.pagination.page} of ${pageCount}`;
+    }
+    if (totalRowCount !== null) return `${totalRowCount} matching records`;
+    return `${visibleRowCount} records shown`;
+  },
+};
+
+function resolveMessages(messages: Partial<DataGridMessages> | undefined): DataGridMessages {
+  return {
+    filterLabel: messages?.filterLabel ?? defaultMessages.filterLabel,
+    filterPlaceholder: messages?.filterPlaceholder ?? defaultMessages.filterPlaceholder,
+    selectionColumnLabel: messages?.selectionColumnLabel ?? defaultMessages.selectionColumnLabel,
+    selectRowLabel: messages?.selectRowLabel ?? defaultMessages.selectRowLabel,
+    paginationLabel: messages?.paginationLabel ?? defaultMessages.paginationLabel,
+    previousPageLabel: messages?.previousPageLabel ?? defaultMessages.previousPageLabel,
+    nextPageLabel: messages?.nextPageLabel ?? defaultMessages.nextPageLabel,
+    previousResultsLabel: messages?.previousResultsLabel ?? defaultMessages.previousResultsLabel,
+    nextResultsLabel: messages?.nextResultsLabel ?? defaultMessages.nextResultsLabel,
+    rowsPerPageLabel: messages?.rowsPerPageLabel ?? defaultMessages.rowsPerPageLabel,
+    pageStatus: messages?.pageStatus ?? defaultMessages.pageStatus,
+    cursorStatus: messages?.cursorStatus ?? defaultMessages.cursorStatus,
+    loadingLabel: messages?.loadingLabel ?? defaultMessages.loadingLabel,
+    errorLabel: messages?.errorLabel ?? defaultMessages.errorLabel,
+    retryLabel: messages?.retryLabel ?? defaultMessages.retryLabel,
+    querySummary: messages?.querySummary ?? defaultMessages.querySummary,
+  };
+}
+
+const defaultPageSizes = [10, 25, 50] as const;
 
 /** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
 export function hasAccessibleContent(value: ReactNode): boolean {
@@ -204,12 +422,149 @@ function classes(...values: readonly (string | undefined | false)[]): string {
   return values.filter((value): value is string => Boolean(value)).join(" ");
 }
 
+function isPositiveInteger(value: unknown): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value > 0;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  try {
+    const prototype = Object.getPrototypeOf(value) as object | null;
+    return prototype === null || Object.getPrototypeOf(prototype) === null;
+  } catch {
+    return false;
+  }
+}
+
+function hasDefinedOwn(props: Readonly<Record<string, unknown>>, key: string): boolean {
+  return Object.hasOwn(props, key) && props[key] !== undefined;
+}
+
+function normalizeSorting(value: unknown): DataGridSorting | null {
+  if (typeof value !== "object" || value === null) return null;
+  const candidate = value as Partial<DataGridSorting>;
+  return typeof candidate.columnId === "string" &&
+    candidate.columnId.trim().length > 0 &&
+    (candidate.direction === "ascending" || candidate.direction === "descending")
+    ? { columnId: candidate.columnId, direction: candidate.direction }
+    : null;
+}
+
+/** Normalizes external, default, or parsed state into one deterministic complete query. */
+export function normalizeDataGridQuery(
+  value: Partial<DataGridQuery> = {},
+  paginationMode: DataGridPaginationState["mode"] | null = value.pagination?.mode ?? null,
+): DataGridQuery {
+  const sourcePagination = value.pagination;
+  const pageSize = isPositiveInteger(sourcePagination?.pageSize)
+    ? sourcePagination.pageSize
+    : defaultPageSizes[0];
+  let pagination: DataGridPaginationState | null = null;
+  if (paginationMode === "page") {
+    pagination = {
+      mode: "page",
+      page:
+        sourcePagination?.mode === "page" && isPositiveInteger(sourcePagination.page)
+          ? sourcePagination.page
+          : 1,
+      pageSize,
+    };
+  } else if (paginationMode === "cursor") {
+    pagination = {
+      mode: "cursor",
+      cursor:
+        sourcePagination?.mode === "cursor" &&
+        typeof sourcePagination.cursor === "string" &&
+        sourcePagination.cursor.length > 0
+          ? sourcePagination.cursor
+          : null,
+      pageSize,
+    };
+  }
+  return {
+    filter: typeof value.filter === "string" ? value.filter : "",
+    sorting: normalizeSorting(value.sorting),
+    pagination,
+  };
+}
+
+/** Serializes query fields in a fixed order for form values and persistence adapters. */
+export function serializeDataGridQuery(query: DataGridQuery): string {
+  const normalized = normalizeDataGridQuery(query, query.pagination?.mode ?? null);
+  const parameters = new URLSearchParams();
+  if (normalized.filter !== "") parameters.set("filter", normalized.filter);
+  if (normalized.sorting !== null) {
+    parameters.set("sort", normalized.sorting.columnId);
+    parameters.set("direction", normalized.sorting.direction);
+  }
+  if (normalized.pagination !== null) {
+    parameters.set("pagination", normalized.pagination.mode);
+    if (normalized.pagination.mode === "page") {
+      parameters.set("page", String(normalized.pagination.page));
+    } else if (normalized.pagination.cursor !== null) {
+      parameters.set("cursor", normalized.pagination.cursor);
+    }
+    parameters.set("pageSize", String(normalized.pagination.pageSize));
+  }
+  return parameters.toString();
+}
+
+/** Parses a serialized query, safely normalizing malformed external values. */
+export function parseDataGridQuery(value: string): DataGridQuery {
+  const parameters = new URLSearchParams(value.startsWith("?") ? value.slice(1) : value);
+  const paginationMode = parameters.get("pagination");
+  const sortColumnId = parameters.get("sort");
+  const sortDirection = parameters.get("direction");
+  const pagination: DataGridPaginationState | null =
+    paginationMode === "page"
+      ? {
+          mode: "page",
+          page: Number(parameters.get("page") ?? 1),
+          pageSize: Number(parameters.get("pageSize") ?? defaultPageSizes[0]),
+        }
+      : paginationMode === "cursor"
+        ? {
+            mode: "cursor",
+            cursor: parameters.get("cursor"),
+            pageSize: Number(parameters.get("pageSize") ?? defaultPageSizes[0]),
+          }
+        : null;
+  return normalizeDataGridQuery(
+    {
+      filter: parameters.get("filter") ?? "",
+      sorting:
+        sortColumnId === null || (sortDirection !== "ascending" && sortDirection !== "descending")
+          ? null
+          : {
+              columnId: sortColumnId,
+              direction: sortDirection,
+            },
+      pagination,
+    },
+    pagination?.mode ?? null,
+  );
+}
+
 function formatCellValue(value: unknown): ReactNode {
   if (value === null || value === undefined) return "—";
   if (typeof value === "string" || typeof value === "number") return value;
   if (typeof value === "bigint" || typeof value === "boolean") return String(value);
   if (value instanceof Date) return value.toISOString();
   return "[value]";
+}
+
+function formatFilterValue(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "bigint" ||
+    typeof value === "boolean"
+  ) {
+    return String(value);
+  }
+  if (value instanceof Date) return value.toISOString();
+  return "";
 }
 
 function toTanStackSorting(value: DataGridSorting | null | undefined): SortingState {
@@ -237,38 +592,411 @@ function sameSorting(left: DataGridSorting | null, right: DataGridSorting | null
   );
 }
 
+function samePagination(
+  left: DataGridPaginationState | null,
+  right: DataGridPaginationState | null,
+): boolean {
+  if (left === right) return true;
+  if (left === null || right === null || left.mode !== right.mode) return false;
+  if (left.pageSize !== right.pageSize) return false;
+  return left.mode === "page" && right.mode === "page"
+    ? left.page === right.page
+    : left.mode === "cursor" && right.mode === "cursor" && left.cursor === right.cursor;
+}
+
+function sameQuery(left: DataGridQuery, right: DataGridQuery): boolean {
+  return (
+    left.filter === right.filter &&
+    sameSorting(left.sorting, right.sorting) &&
+    samePagination(left.pagination, right.pagination)
+  );
+}
+
+function resetPagination(
+  pagination: DataGridPaginationState | null,
+): DataGridPaginationState | null {
+  if (pagination?.mode === "page") return { ...pagination, page: 1 };
+  if (pagination?.mode === "cursor") return { ...pagination, cursor: null };
+  return null;
+}
+
 const selectionOnlyKeys = [
   "selectedRowId",
   "defaultSelectedRowId",
   "onSelectedRowIdChange",
   "getRowLabel",
   "renderSelectionSummary",
+  "selectionName",
 ] as const;
+
+const legacySortingKeys = ["sorting", "defaultSorting", "onSortingChange"] as const;
+
+function hasAggregateQueryOwnership(props: Readonly<Record<string, unknown>>): boolean {
+  return (
+    hasDefinedOwn(props, "query") ||
+    hasDefinedOwn(props, "defaultQuery") ||
+    hasDefinedOwn(props, "onQueryChange") ||
+    (hasDefinedOwn(props, "queryAdapter") && props.queryAdapter !== false) ||
+    hasDefinedOwn(props, "queryName") ||
+    props.filtering === true ||
+    (typeof props.filtering === "object" && props.filtering !== null) ||
+    props.pagination === true ||
+    (typeof props.pagination === "object" && props.pagination !== null) ||
+    props.operationMode === "manual"
+  );
+}
+
+function assertPartialQuery(value: unknown, label: string, complete = false): void {
+  if (!isPlainObject(value)) {
+    throw new TypeError(`Mergora DataGrid ${label} must be a plain query object.`);
+  }
+  const candidate = value as Record<string, unknown>;
+  if (complete && (!Object.hasOwn(candidate, "filter") || candidate.filter === undefined)) {
+    throw new Error(`Mergora DataGrid ${label} requires filter.`);
+  }
+  if (candidate.filter !== undefined && typeof candidate.filter !== "string") {
+    throw new TypeError(`Mergora DataGrid ${label}.filter must be a string.`);
+  }
+  if (complete && (!Object.hasOwn(candidate, "sorting") || candidate.sorting === undefined)) {
+    throw new Error(`Mergora DataGrid ${label} requires sorting.`);
+  }
+  if (candidate.sorting !== undefined && candidate.sorting !== null) {
+    const sorting = candidate.sorting;
+    if (
+      !isPlainObject(sorting) ||
+      typeof sorting.columnId !== "string" ||
+      sorting.columnId.trim().length === 0 ||
+      (sorting.direction !== "ascending" && sorting.direction !== "descending")
+    ) {
+      throw new Error(`Mergora DataGrid ${label}.sorting is invalid.`);
+    }
+  }
+  if (complete && (!Object.hasOwn(candidate, "pagination") || candidate.pagination === undefined)) {
+    throw new Error(`Mergora DataGrid ${label} requires pagination.`);
+  }
+  if (candidate.pagination !== undefined && candidate.pagination !== null) {
+    const pagination = candidate.pagination;
+    if (
+      !isPlainObject(pagination) ||
+      (pagination.mode !== "page" && pagination.mode !== "cursor") ||
+      !isPositiveInteger(pagination.pageSize)
+    ) {
+      throw new Error(`Mergora DataGrid ${label}.pagination is invalid.`);
+    }
+    if (pagination.mode === "page" && !isPositiveInteger(pagination.page)) {
+      throw new Error(`Mergora DataGrid ${label}.pagination.page must be a positive integer.`);
+    }
+    if (
+      pagination.mode === "cursor" &&
+      pagination.cursor !== null &&
+      (typeof pagination.cursor !== "string" || pagination.cursor.length === 0)
+    ) {
+      throw new Error(
+        `Mergora DataGrid ${label}.pagination.cursor must be null or a non-empty string.`,
+      );
+    }
+  }
+}
 
 /** @internal Runtime guard for untyped JavaScript and spread-prop call sites. */
 export function assertDataGridConfiguration(props: Readonly<Record<string, unknown>>): void {
+  if (
+    props.operationMode !== undefined &&
+    props.operationMode !== "client" &&
+    props.operationMode !== "manual"
+  ) {
+    throw new RangeError('Mergora DataGrid operationMode must be "client" or "manual".');
+  }
+  if (
+    props.filtering !== undefined &&
+    typeof props.filtering !== "boolean" &&
+    !isPlainObject(props.filtering)
+  ) {
+    throw new TypeError("Mergora DataGrid filtering must be a boolean or options object.");
+  }
+  if (isPlainObject(props.filtering)) {
+    const filtering = props.filtering;
+    if (filtering.getRowText !== undefined && typeof filtering.getRowText !== "function") {
+      throw new TypeError(
+        "Mergora DataGrid filtering.getRowText must be a function when supplied.",
+      );
+    }
+  }
+  if (
+    props.pagination !== undefined &&
+    typeof props.pagination !== "boolean" &&
+    !isPlainObject(props.pagination)
+  ) {
+    throw new TypeError("Mergora DataGrid pagination must be a boolean or options object.");
+  }
+  if (isPlainObject(props.pagination)) {
+    const pagination = props.pagination;
+    if (
+      pagination.mode !== undefined &&
+      pagination.mode !== "page" &&
+      pagination.mode !== "cursor"
+    ) {
+      throw new RangeError('Mergora DataGrid pagination.mode must be "page" or "cursor".');
+    }
+    if (pagination.pageSizes !== undefined && !Array.isArray(pagination.pageSizes)) {
+      throw new TypeError("Mergora DataGrid pagination.pageSizes must be an array when supplied.");
+    }
+  }
+  if (
+    props.queryAdapter !== undefined &&
+    props.queryAdapter !== false &&
+    !isPlainObject(props.queryAdapter)
+  ) {
+    throw new TypeError("Mergora DataGrid queryAdapter must be false or an adapter object.");
+  }
+  if (isPlainObject(props.queryAdapter)) {
+    const adapter = props.queryAdapter;
+    if (typeof adapter.write !== "function") {
+      throw new TypeError("Mergora DataGrid queryAdapter.write must be a function.");
+    }
+    if (adapter.read !== undefined && typeof adapter.read !== "function") {
+      throw new TypeError("Mergora DataGrid queryAdapter.read must be a function when supplied.");
+    }
+  }
+  if (props.messages !== undefined && !isPlainObject(props.messages)) {
+    throw new TypeError("Mergora DataGrid messages must be an object when supplied.");
+  }
+  if (isPlainObject(props.messages)) {
+    const messages = props.messages;
+    for (const key of [
+      "filterLabel",
+      "selectionColumnLabel",
+      "previousPageLabel",
+      "nextPageLabel",
+      "previousResultsLabel",
+      "nextResultsLabel",
+      "rowsPerPageLabel",
+      "cursorStatus",
+      "loadingLabel",
+      "errorLabel",
+      "retryLabel",
+    ]) {
+      if (
+        messages[key] !== undefined &&
+        (typeof messages[key] !== "string" || messages[key].trim().length === 0)
+      ) {
+        throw new Error(`Mergora DataGrid messages.${key} must be a non-empty string.`);
+      }
+    }
+    if (
+      messages.filterPlaceholder !== undefined &&
+      typeof messages.filterPlaceholder !== "string"
+    ) {
+      throw new TypeError("Mergora DataGrid messages.filterPlaceholder must be a string.");
+    }
+    for (const key of ["selectRowLabel", "paginationLabel", "pageStatus", "querySummary"]) {
+      if (messages[key] !== undefined && typeof messages[key] !== "function") {
+        throw new TypeError(`Mergora DataGrid messages.${key} must be a function.`);
+      }
+    }
+  }
+  if (
+    props.operationStatus !== undefined &&
+    props.operationStatus !== false &&
+    !isPlainObject(props.operationStatus)
+  ) {
+    throw new TypeError("Mergora DataGrid operationStatus must be false or a status object.");
+  }
+  if (isPlainObject(props.operationStatus)) {
+    const status = props.operationStatus;
+    if (status.state !== "idle" && status.state !== "loading" && status.state !== "error") {
+      throw new RangeError(
+        'Mergora DataGrid operationStatus.state must be "idle", "loading", or "error".',
+      );
+    }
+    if (status.onRetry !== undefined && status.state !== "error") {
+      throw new Error("Mergora DataGrid operationStatus.onRetry requires the error state.");
+    }
+    if (status.onRetry !== undefined && typeof status.onRetry !== "function") {
+      throw new TypeError("Mergora DataGrid operationStatus.onRetry must be a function.");
+    }
+  }
+  if (
+    props.renderQuerySummary !== undefined &&
+    props.renderQuerySummary !== false &&
+    typeof props.renderQuerySummary !== "function"
+  ) {
+    throw new TypeError("Mergora DataGrid renderQuerySummary must be false or a function.");
+  }
   const selectionMode = props.selectionMode ?? "none";
   if (selectionMode !== "none" && selectionMode !== "single") {
     throw new RangeError('Mergora DataGrid selectionMode must be "none" or "single".');
   }
   if (selectionMode === "none") {
-    const conflictingKey = selectionOnlyKeys.find((key) => Object.hasOwn(props, key));
+    const conflictingKey = selectionOnlyKeys.find((key) => hasDefinedOwn(props, key));
     if (conflictingKey !== undefined) {
       throw new Error(
         `Mergora DataGrid ${conflictingKey} requires selectionMode="single"; selectionMode="none" owns no selection state, callbacks, or accessibility output.`,
       );
     }
   } else if (
-    Object.hasOwn(props, "selectedRowId") &&
-    Object.hasOwn(props, "defaultSelectedRowId")
+    hasDefinedOwn(props, "selectedRowId") &&
+    hasDefinedOwn(props, "defaultSelectedRowId")
   ) {
     throw new Error(
       "Mergora DataGrid controlled selection cannot be combined with defaultSelectedRowId.",
     );
   }
-  if (Object.hasOwn(props, "sorting") && Object.hasOwn(props, "defaultSorting")) {
+  if (hasDefinedOwn(props, "sorting") && hasDefinedOwn(props, "defaultSorting")) {
     throw new Error("Mergora DataGrid controlled sorting cannot be combined with defaultSorting.");
   }
+  if (hasDefinedOwn(props, "query") && hasDefinedOwn(props, "defaultQuery")) {
+    throw new Error("Mergora DataGrid controlled query cannot be combined with defaultQuery.");
+  }
+  if (hasAggregateQueryOwnership(props)) {
+    const legacyKey = legacySortingKeys.find((key) => hasDefinedOwn(props, key));
+    if (legacyKey !== undefined) {
+      throw new Error(
+        `Mergora DataGrid aggregate query ownership cannot be combined with legacy ${legacyKey}.`,
+      );
+    }
+  }
+  if (props.query !== undefined) assertPartialQuery(props.query, "query", true);
+  if (props.defaultQuery !== undefined) assertPartialQuery(props.defaultQuery, "defaultQuery");
+  if (props.queryName !== undefined) {
+    if (typeof props.queryName !== "string" || props.queryName.trim().length === 0) {
+      throw new Error("Mergora DataGrid queryName must be a non-empty string when supplied.");
+    }
+  }
+  if (props.selectionName !== undefined) {
+    if (typeof props.selectionName !== "string" || props.selectionName.trim().length === 0) {
+      throw new Error("Mergora DataGrid selectionName must be a non-empty string when supplied.");
+    }
+  }
+}
+
+function resolvePaginationOptions(
+  pagination: DataGridProps<object>["pagination"],
+): DataGridPaginationOptions | null {
+  if (pagination === undefined || pagination === false) return null;
+  return pagination === true ? { mode: "page" } : pagination;
+}
+
+function assertSortingColumn<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  sorting: DataGridSorting | null | undefined,
+): void {
+  if (sorting === undefined || sorting === null) return;
+  const sortableColumn = columns.find(
+    (column) => column.id === sorting.columnId && column.sortable === true,
+  );
+  if (sortableColumn === undefined) {
+    throw new Error(
+      `Mergora DataGrid sorting column ${JSON.stringify(sorting.columnId)} must identify a sortable column.`,
+    );
+  }
+}
+
+function validateIdentityAndOperations<TData extends object>(
+  props: DataGridProps<TData>,
+  pagination: DataGridPaginationOptions | null,
+): readonly string[] {
+  if (props.caption.trim().length === 0) {
+    throw new Error("Mergora DataGrid caption must be a non-empty string.");
+  }
+  if (props.regionLabel !== undefined && props.regionLabel.trim().length === 0) {
+    throw new Error("Mergora DataGrid regionLabel must be non-empty when supplied.");
+  }
+  const columnIds = new Set<string>();
+  for (const column of props.columns) {
+    if (column.id.trim().length === 0) {
+      throw new Error("Mergora DataGrid column ids must be non-empty strings.");
+    }
+    if (columnIds.has(column.id)) {
+      throw new Error(`Mergora DataGrid column ids must be unique. Duplicate: ${column.id}.`);
+    }
+    columnIds.add(column.id);
+  }
+  const rowIds = props.rows.map((row) => props.getRowId(row));
+  const uniqueRowIds = new Set<string>();
+  for (const rowId of rowIds) {
+    if (typeof rowId !== "string" || rowId.trim().length === 0) {
+      throw new Error("Mergora DataGrid row ids must be non-empty strings.");
+    }
+    if (uniqueRowIds.has(rowId)) {
+      throw new Error(`Mergora DataGrid row ids must be unique. Duplicate: ${rowId}.`);
+    }
+    uniqueRowIds.add(rowId);
+  }
+  assertSortingColumn(
+    props.columns,
+    props.query?.sorting ?? props.defaultQuery?.sorting ?? props.sorting ?? props.defaultSorting,
+  );
+  const operationMode = props.operationMode ?? "client";
+  if (pagination?.mode === "cursor" && operationMode !== "manual") {
+    throw new Error('Mergora DataGrid cursor pagination requires operationMode="manual".');
+  }
+  if (pagination?.totalRows !== undefined) {
+    if (!Number.isInteger(pagination.totalRows) || pagination.totalRows < 0) {
+      throw new Error("Mergora DataGrid pagination totalRows must be a non-negative integer.");
+    }
+    if (operationMode !== "manual") {
+      throw new Error("Mergora DataGrid pagination totalRows is owned by manual operation mode.");
+    }
+  }
+  if (
+    operationMode === "manual" &&
+    pagination?.mode === "page" &&
+    pagination.totalRows === undefined
+  ) {
+    throw new Error("Mergora DataGrid manual page pagination requires pagination.totalRows.");
+  }
+  if (pagination?.pageSizes !== undefined) {
+    const uniquePageSizes = new Set<number>();
+    for (const size of pagination.pageSizes) {
+      if (!isPositiveInteger(size)) {
+        throw new Error("Mergora DataGrid pagination pageSizes must be positive integers.");
+      }
+      if (uniquePageSizes.has(size)) {
+        throw new Error("Mergora DataGrid pagination pageSizes must be unique.");
+      }
+      uniquePageSizes.add(size);
+    }
+    if (pagination.pageSizes.length === 0) {
+      throw new Error("Mergora DataGrid pagination pageSizes cannot be empty.");
+    }
+  }
+  if (pagination?.mode === "cursor") {
+    for (const [name, cursor] of [
+      ["previousCursor", pagination.previousCursor],
+      ["nextCursor", pagination.nextCursor],
+    ] as const) {
+      if (
+        cursor !== undefined &&
+        cursor !== null &&
+        (typeof cursor !== "string" || cursor.length === 0)
+      ) {
+        throw new Error(
+          `Mergora DataGrid pagination.${name} must be a non-empty string when supplied.`,
+        );
+      }
+    }
+  }
+  return rowIds;
+}
+
+function restoreFocus(element: HTMLElement, fallback: HTMLDivElement | null): void {
+  queueMicrotask(() => {
+    const document = element.ownerDocument;
+    const activeElement = document.activeElement;
+    if (
+      activeElement !== element &&
+      activeElement !== document.body &&
+      activeElement !== document.documentElement
+    ) {
+      return;
+    }
+    if (element.isConnected && !element.matches(":disabled")) {
+      element.focus({ preventScroll: true });
+      if (document.activeElement === element) return;
+    }
+    if (fallback?.isConnected) fallback.focus({ preventScroll: true });
+  });
 }
 
 function DataGridInner<TData extends object>(
@@ -276,10 +1004,14 @@ function DataGridInner<TData extends object>(
   ref: React.ForwardedRef<HTMLDivElement>,
 ): ReactElement {
   assertDataGridConfiguration(props as unknown as Readonly<Record<string, unknown>>);
+  const paginationOptions = resolvePaginationOptions(
+    props.pagination as DataGridProps<object>["pagination"],
+  );
+  const rowIds = validateIdentityAndOperations(props, paginationOptions);
   const {
     rows,
     columns,
-    getRowId,
+    getRowId: _getRowId,
     caption,
     regionLabel,
     selectionMode = "none",
@@ -288,26 +1020,135 @@ function DataGridInner<TData extends object>(
     onSelectedRowIdChange,
     getRowLabel,
     renderSelectionSummary,
+    selectionName,
     sorting,
     defaultSorting = null,
     onSortingChange,
+    query: controlledQuery,
+    defaultQuery,
+    onQueryChange,
+    filtering = false,
+    pagination: _pagination,
+    operationMode = "client",
+    queryAdapter = false,
+    operationStatus = false,
+    renderQuerySummary,
+    queryName,
+    messages,
     emptyContent = "No rows",
     className,
     ...regionProps
   } = props;
-  const radioName = useId();
+  const generatedRadioName = useId();
+  const regionRef = useRef<HTMLDivElement | null>(null);
+  const filteringOptions = typeof filtering === "object" ? filtering : undefined;
+  const filteringEnabled = filtering === true || filteringOptions !== undefined;
+  const aggregateQueryOwnership = hasAggregateQueryOwnership(
+    props as unknown as Readonly<Record<string, unknown>>,
+  );
+  const resolvedMessages = resolveMessages(messages);
+  const paginationMode = paginationOptions?.mode ?? (paginationOptions === null ? null : "page");
+  const initialQueryRef = useRef<DataGridQuery | null>(null);
+  if (initialQueryRef.current === null) {
+    initialQueryRef.current = normalizeDataGridQuery(defaultQuery, paginationMode);
+  }
+  const adapterReadRef = useRef(false);
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
     selectionMode === "single" ? defaultSelectedRowId : null,
   );
   const [uncontrolledSorting, setUncontrolledSorting] = useState<DataGridSorting | null>(
     defaultSorting,
   );
+  const [uncontrolledQuery, setUncontrolledQuery] = useState<DataGridQuery>(
+    initialQueryRef.current,
+  );
+
+  useEffect(() => {
+    if (
+      adapterReadRef.current ||
+      !aggregateQueryOwnership ||
+      defaultQuery !== undefined ||
+      controlledQuery !== undefined ||
+      queryAdapter === false ||
+      queryAdapter.read === undefined
+    ) {
+      return;
+    }
+    adapterReadRef.current = true;
+    const adapterInitialValue = queryAdapter.read();
+    if (isPlainObject(adapterInitialValue)) {
+      assertPartialQuery(adapterInitialValue, "queryAdapter.read() result");
+    } else if (
+      adapterInitialValue !== undefined &&
+      adapterInitialValue !== null &&
+      typeof adapterInitialValue !== "string"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid queryAdapter.read() must return a plain query object, string, null, or undefined.",
+      );
+    }
+    const restoredQuery = normalizeDataGridQuery(
+      typeof adapterInitialValue === "string"
+        ? parseDataGridQuery(adapterInitialValue)
+        : (adapterInitialValue ?? undefined),
+      paginationMode,
+    );
+    assertSortingColumn(columns, restoredQuery.sorting);
+    initialQueryRef.current = restoredQuery;
+    setUncontrolledQuery((current) =>
+      sameQuery(current, restoredQuery) ? current : restoredQuery,
+    );
+  }, [
+    aggregateQueryOwnership,
+    columns,
+    controlledQuery,
+    defaultQuery,
+    paginationMode,
+    queryAdapter,
+  ]);
+
   const currentSelection = selectedRowId === undefined ? uncontrolledSelection : selectedRowId;
-  const currentSorting = sorting === undefined ? uncontrolledSorting : sorting;
-  const data = useMemo(() => [...rows], [rows]);
+  const sourceQuery = controlledQuery ?? uncontrolledQuery;
+  if (
+    paginationMode !== null &&
+    sourceQuery.pagination !== null &&
+    sourceQuery.pagination.mode !== paginationMode
+  ) {
+    throw new Error(
+      `Mergora DataGrid query pagination mode ${JSON.stringify(sourceQuery.pagination.mode)} does not match pagination mode ${JSON.stringify(paginationMode)}.`,
+    );
+  }
+  const normalizedAggregateQuery = normalizeDataGridQuery(sourceQuery, paginationMode);
+  assertSortingColumn(columns, normalizedAggregateQuery.sorting);
+  const currentLegacySorting = sorting === undefined ? uncontrolledSorting : sorting;
+  const currentQuery: DataGridQuery = aggregateQueryOwnership
+    ? {
+        filter: filteringEnabled ? normalizedAggregateQuery.filter : "",
+        sorting: normalizedAggregateQuery.sorting,
+        pagination: paginationOptions === null ? null : normalizedAggregateQuery.pagination,
+      }
+    : { filter: "", sorting: currentLegacySorting, pagination: null };
+  const isLoading = operationStatus !== false && operationStatus.state === "loading";
+  const radioName = selectionName ?? `mrg-data-grid-${generatedRadioName}`;
+  const rowIdByRow = useMemo(
+    () => new Map(rows.map((row, index) => [row, rowIds[index]!] as const)),
+    [rowIds, rows],
+  );
+  const filteredRows = useMemo(() => {
+    if (operationMode === "manual" || !filteringEnabled || currentQuery.filter.trim() === "") {
+      return [...rows];
+    }
+    const term = currentQuery.filter.toLowerCase();
+    return rows.filter((row) => {
+      const searchableText =
+        filteringOptions?.getRowText?.(row) ??
+        columns.map((column) => formatFilterValue(column.accessor(row))).join(" ");
+      return searchableText.toLowerCase().includes(term);
+    });
+  }, [columns, currentQuery.filter, filteringEnabled, filteringOptions, operationMode, rows]);
   const tanStackSorting = useMemo(
-    () => toTanStackSorting(currentSorting),
-    [currentSorting?.columnId, currentSorting?.direction],
+    () => toTanStackSorting(currentQuery.sorting),
+    [currentQuery.sorting?.columnId, currentQuery.sorting?.direction],
   );
   const tableState = useMemo(() => ({ sorting: tanStackSorting }), [tanStackSorting]);
 
@@ -327,45 +1168,182 @@ function DataGridInner<TData extends object>(
     [columns],
   );
 
+  const commitQuery = (nextValue: DataGridQuery, reason: DataGridOperationReason): void => {
+    const next = normalizeDataGridQuery(nextValue, paginationMode);
+    if (sameQuery(currentQuery, next)) return;
+    if (controlledQuery === undefined) setUncontrolledQuery(next);
+    const detail = { reason, serialized: serializeDataGridQuery(next) } as const;
+    onQueryChange?.(next, detail);
+    if (queryAdapter !== false) queryAdapter.write(next, detail);
+  };
+
   const table = useReactTable({
-    data,
+    data: filteredRows,
     columns: columnDefinitions,
-    getRowId,
+    getRowId: (row) => rowIdByRow.get(row)!,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    manualSorting: operationMode === "manual",
     state: tableState,
     onSortingChange: (updater) => {
       const next = fromTanStackSorting(resolveUpdater(updater, tanStackSorting));
-      if (sameSorting(currentSorting, next)) return;
-      if (sorting === undefined) setUncontrolledSorting(next);
-      onSortingChange?.(next, { reason: "header" });
+      if (sameSorting(currentQuery.sorting, next)) return;
+      if (aggregateQueryOwnership) {
+        commitQuery(
+          { ...currentQuery, sorting: next, pagination: resetPagination(currentQuery.pagination) },
+          "sort",
+        );
+      } else {
+        if (sorting === undefined) setUncontrolledSorting(next);
+        onSortingChange?.(next, { reason: "header" });
+      }
     },
   });
 
-  const visibleRows = table.getRowModel().rows;
+  const sortedRows = table.getRowModel().rows;
+  const requestedPagination = currentQuery.pagination;
+  const totalRowCount =
+    operationMode === "client"
+      ? sortedRows.length
+      : paginationOptions?.totalRows === undefined
+        ? null
+        : paginationOptions.totalRows;
+  const pageCount =
+    requestedPagination?.mode === "page"
+      ? Math.max(1, Math.ceil((totalRowCount ?? 0) / requestedPagination.pageSize))
+      : null;
+  const effectivePagination: DataGridPaginationState | null =
+    operationMode === "client" && requestedPagination?.mode === "page" && pageCount !== null
+      ? { ...requestedPagination, page: Math.min(requestedPagination.page, pageCount) }
+      : requestedPagination;
+  const effectiveQuery =
+    effectivePagination === currentQuery.pagination
+      ? currentQuery
+      : { ...currentQuery, pagination: effectivePagination };
+  const visibleRows =
+    operationMode === "client" && effectivePagination?.mode === "page"
+      ? sortedRows.slice(
+          (effectivePagination.page - 1) * effectivePagination.pageSize,
+          effectivePagination.page * effectivePagination.pageSize,
+        )
+      : sortedRows;
   const visibleColumns = table.getVisibleLeafColumns();
   const columnCount = visibleColumns.length + (selectionMode === "single" ? 1 : 0);
+  const selectedSourceRow =
+    currentSelection === null
+      ? null
+      : (rows.find((row) => rowIdByRow.get(row) === currentSelection) ?? null);
+  const hasVisibleSelection =
+    selectedSourceRow !== null && visibleRows.some((row) => row.id === currentSelection);
   const selectionSummary =
     selectionMode === "single" && renderSelectionSummary !== undefined
-      ? renderSelectionSummary(
-          currentSelection === null
-            ? null
-            : (data.find((row) => getRowId(row) === currentSelection) ?? null),
-        )
+      ? renderSelectionSummary(selectedSourceRow)
       : undefined;
   const hasSelectionSummary = hasAccessibleContent(selectionSummary);
+  const querySummaryContext: DataGridQuerySummaryContext = {
+    query: effectiveQuery,
+    visibleRowCount: visibleRows.length,
+    totalRowCount,
+    pageCount,
+  };
+  const querySummaryEnabled =
+    aggregateQueryOwnership &&
+    (filteringEnabled || paginationOptions !== null) &&
+    renderQuerySummary !== false;
+  const querySummary = querySummaryEnabled
+    ? typeof renderQuerySummary === "function"
+      ? renderQuerySummary(querySummaryContext)
+      : resolvedMessages.querySummary(querySummaryContext)
+    : undefined;
+  const hasQuerySummary = hasAccessibleContent(querySummary);
+  const operationMessage =
+    operationStatus !== false && operationStatus.state !== "idle"
+      ? hasAccessibleContent(operationStatus.message)
+        ? operationStatus.message
+        : operationStatus.state === "loading"
+          ? resolvedMessages.loadingLabel
+          : resolvedMessages.errorLabel
+      : undefined;
+  const pageSizes = useMemo(() => {
+    const configured = paginationOptions?.pageSizes ?? defaultPageSizes;
+    const currentSize = effectivePagination?.pageSize;
+    return [...new Set(currentSize === undefined ? configured : [...configured, currentSize])].sort(
+      (left, right) => left - right,
+    );
+  }, [effectivePagination?.pageSize, paginationOptions?.pageSizes]);
+  const cursorPaginationOptions = paginationOptions?.mode === "cursor" ? paginationOptions : null;
+
+  useEffect(() => {
+    const node = regionRef.current;
+    const form = node?.closest("form");
+    if (form === null || form === undefined) return;
+    const handleReset = (event: Event): void => {
+      setTimeout(() => {
+        if (event.defaultPrevented || node?.isConnected !== true) return;
+        if (selectedRowId === undefined && selectionMode === "single") {
+          setUncontrolledSelection(defaultSelectedRowId);
+        }
+        if (aggregateQueryOwnership && controlledQuery === undefined) {
+          setUncontrolledQuery(initialQueryRef.current!);
+        }
+        if (!aggregateQueryOwnership && sorting === undefined) {
+          setUncontrolledSorting(defaultSorting);
+        }
+      }, 0);
+    };
+    form.addEventListener("reset", handleReset);
+    return () => form.removeEventListener("reset", handleReset);
+  }, [
+    aggregateQueryOwnership,
+    controlledQuery,
+    defaultSelectedRowId,
+    defaultSorting,
+    selectedRowId,
+    selectionMode,
+    sorting,
+  ]);
+
+  const setRegionRef = (node: HTMLDivElement | null): void => {
+    regionRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref !== null) ref.current = node;
+  };
 
   return (
     <div
       {...regionProps}
-      ref={ref}
+      ref={setRegionRef}
       role="region"
+      aria-busy={isLoading || undefined}
       aria-label={regionLabel ?? `${caption}: scrollable table`}
       tabIndex={0}
+      data-operation={operationStatus === false ? undefined : operationStatus.state}
       data-slot="data-grid-region"
       data-maturity="experimental"
       className={classes("mrg-data-grid", className)}
     >
+      {filteringEnabled ? (
+        <label className="mrg-data-grid__filter" data-slot="data-grid-filter">
+          <span>{resolvedMessages.filterLabel}</span>
+          <input
+            data-slot="data-grid-filter-input"
+            disabled={isLoading}
+            placeholder={resolvedMessages.filterPlaceholder || undefined}
+            type="search"
+            value={effectiveQuery.filter}
+            onChange={(event) =>
+              commitQuery(
+                {
+                  ...effectiveQuery,
+                  filter: event.currentTarget.value,
+                  pagination: resetPagination(effectiveQuery.pagination),
+                },
+                "filter",
+              )
+            }
+          />
+        </label>
+      ) : null}
       <table data-slot="data-grid-table" className="mrg-data-grid__table">
         <caption>{caption}</caption>
         <thead data-slot="data-grid-header">
@@ -373,7 +1351,9 @@ function DataGridInner<TData extends object>(
             <tr key={headerGroup.id} data-slot="data-grid-header-row">
               {selectionMode === "single" ? (
                 <th scope="col" className="mrg-data-grid__selection-heading">
-                  <span className="mrg-data-grid__visually-hidden">Select row</span>
+                  <span className="mrg-data-grid__visually-hidden">
+                    {resolvedMessages.selectionColumnLabel}
+                  </span>
                 </th>
               ) : null}
               {headerGroup.headers.map((header) => {
@@ -395,7 +1375,12 @@ function DataGridInner<TData extends object>(
                       <button
                         type="button"
                         className="mrg-data-grid__sort"
-                        onClick={header.column.getToggleSortingHandler()}
+                        data-slot="data-grid-sort"
+                        disabled={isLoading}
+                        onClick={(event) => {
+                          header.column.getToggleSortingHandler()?.(event);
+                          restoreFocus(event.currentTarget, regionRef.current);
+                        }}
                         data-sorted={sorted || undefined}
                       >
                         <span>
@@ -422,7 +1407,7 @@ function DataGridInner<TData extends object>(
               </td>
             </tr>
           ) : (
-            visibleRows.map((row) => {
+            visibleRows.map((row, visibleIndex) => {
               const rowId = row.id;
               const selected = currentSelection === rowId;
               return (
@@ -432,17 +1417,22 @@ function DataGridInner<TData extends object>(
                       data-slot="data-grid-selection-cell"
                       className="mrg-data-grid__selection-cell"
                     >
-                      <input
-                        type="radio"
-                        name={radioName}
-                        value={rowId}
-                        checked={selected}
-                        aria-label={getRowLabel?.(row.original) ?? `Select row ${row.index + 1}`}
-                        onChange={() => {
-                          if (selectedRowId === undefined) setUncontrolledSelection(rowId);
-                          onSelectedRowIdChange?.(rowId, { reason: "radio" });
-                        }}
-                      />
+                      <label className="mrg-data-grid__selection-control">
+                        <input
+                          type="radio"
+                          name={radioName}
+                          value={rowId}
+                          checked={selected}
+                          aria-label={
+                            getRowLabel?.(row.original) ??
+                            resolvedMessages.selectRowLabel(visibleIndex + 1)
+                          }
+                          onChange={() => {
+                            if (selectedRowId === undefined) setUncontrolledSelection(rowId);
+                            onSelectedRowIdChange?.(rowId, { reason: "radio" });
+                          }}
+                        />
+                      </label>
                     </td>
                   ) : null}
                   {row.getVisibleCells().map((cell) => {
@@ -464,6 +1454,145 @@ function DataGridInner<TData extends object>(
           )}
         </tbody>
       </table>
+      {paginationOptions !== null && effectivePagination !== null ? (
+        <nav
+          aria-label={resolvedMessages.paginationLabel(caption)}
+          className="mrg-data-grid__pagination"
+          data-slot="data-grid-pagination"
+          data-mode={effectivePagination.mode}
+        >
+          {effectivePagination.mode === "page" ? (
+            <>
+              <button
+                type="button"
+                disabled={effectivePagination.page <= 1 || isLoading}
+                onClick={(event) => {
+                  commitQuery(
+                    {
+                      ...effectiveQuery,
+                      pagination: { ...effectivePagination, page: effectivePagination.page - 1 },
+                    },
+                    "page",
+                  );
+                  restoreFocus(event.currentTarget, regionRef.current);
+                }}
+              >
+                {resolvedMessages.previousPageLabel}
+              </button>
+              <span data-slot="data-grid-page-status">
+                {resolvedMessages.pageStatus(effectivePagination.page, pageCount ?? 1)}
+              </span>
+              <button
+                type="button"
+                disabled={effectivePagination.page >= (pageCount ?? 1) || isLoading}
+                onClick={(event) => {
+                  commitQuery(
+                    {
+                      ...effectiveQuery,
+                      pagination: { ...effectivePagination, page: effectivePagination.page + 1 },
+                    },
+                    "page",
+                  );
+                  restoreFocus(event.currentTarget, regionRef.current);
+                }}
+              >
+                {resolvedMessages.nextPageLabel}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                disabled={cursorPaginationOptions?.previousCursor == null || isLoading}
+                onClick={(event) => {
+                  if (cursorPaginationOptions?.previousCursor == null) return;
+                  commitQuery(
+                    {
+                      ...effectiveQuery,
+                      pagination: {
+                        ...effectivePagination,
+                        cursor: cursorPaginationOptions.previousCursor,
+                      },
+                    },
+                    "cursor",
+                  );
+                  restoreFocus(event.currentTarget, regionRef.current);
+                }}
+              >
+                {resolvedMessages.previousResultsLabel}
+              </button>
+              <span data-slot="data-grid-cursor-status">{resolvedMessages.cursorStatus}</span>
+              <button
+                type="button"
+                disabled={cursorPaginationOptions?.nextCursor == null || isLoading}
+                onClick={(event) => {
+                  if (cursorPaginationOptions?.nextCursor == null) return;
+                  commitQuery(
+                    {
+                      ...effectiveQuery,
+                      pagination: {
+                        ...effectivePagination,
+                        cursor: cursorPaginationOptions.nextCursor,
+                      },
+                    },
+                    "cursor",
+                  );
+                  restoreFocus(event.currentTarget, regionRef.current);
+                }}
+              >
+                {resolvedMessages.nextResultsLabel}
+              </button>
+            </>
+          )}
+          <label className="mrg-data-grid__page-size">
+            <span>{resolvedMessages.rowsPerPageLabel}</span>
+            <select
+              disabled={isLoading}
+              value={effectivePagination.pageSize}
+              onChange={(event) => {
+                const pageSize = Number(event.currentTarget.value);
+                commitQuery(
+                  {
+                    ...effectiveQuery,
+                    pagination:
+                      effectivePagination.mode === "page"
+                        ? { mode: "page", page: 1, pageSize }
+                        : { mode: "cursor", cursor: null, pageSize },
+                  },
+                  "page-size",
+                );
+              }}
+            >
+              {pageSizes.map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  {pageSize}
+                </option>
+              ))}
+            </select>
+          </label>
+        </nav>
+      ) : null}
+      {operationStatus !== false && operationStatus.state !== "idle" ? (
+        <div
+          className="mrg-data-grid__operation-status"
+          data-slot="data-grid-operation-status"
+          data-state={operationStatus.state}
+          role={operationStatus.state === "error" ? "alert" : "status"}
+        >
+          <span>{operationMessage}</span>
+          {operationStatus.state === "error" && operationStatus.onRetry !== undefined ? (
+            <button
+              type="button"
+              onClick={() => {
+                operationStatus.onRetry?.();
+                queueMicrotask(() => regionRef.current?.focus({ preventScroll: true }));
+              }}
+            >
+              {resolvedMessages.retryLabel}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       {hasSelectionSummary ? (
         <output
           aria-live="polite"
@@ -473,6 +1602,31 @@ function DataGridInner<TData extends object>(
           {selectionSummary}
         </output>
       ) : null}
+      {hasQuerySummary ? (
+        <output
+          aria-live="polite"
+          className="mrg-data-grid__query-summary"
+          data-slot="data-grid-query-summary"
+        >
+          {querySummary}
+        </output>
+      ) : null}
+      {selectionMode === "single" && selectedSourceRow !== null && !hasVisibleSelection ? (
+        <input
+          data-slot="data-grid-selection-input"
+          name={radioName}
+          type="hidden"
+          value={rowIdByRow.get(selectedSourceRow)!}
+        />
+      ) : null}
+      {queryName === undefined ? null : (
+        <input
+          data-slot="data-grid-query-input"
+          name={queryName}
+          type="hidden"
+          value={serializeDataGridQuery(effectiveQuery)}
+        />
+      )}
     </div>
   );
 }

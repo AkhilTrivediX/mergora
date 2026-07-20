@@ -376,10 +376,13 @@ describe("deterministic generation graph", () => {
       ),
     ).toBe(true);
     expect(
-      documentationContracts.items
-        .filter((item) => ["combobox", "data-grid"].includes(item.id))
-        .every((item) => item.semanticInteractionContract.status === "draft-unavailable"),
-    ).toBe(true);
+      documentationContracts.items.find((item) => item.id === "combobox")
+        ?.semanticInteractionContract.status,
+    ).toBe("draft-unavailable");
+    expect(
+      documentationContracts.items.find((item) => item.id === "data-grid")
+        ?.semanticInteractionContract.status,
+    ).toBe("source-contract-unreleased");
   });
 });
 
@@ -504,10 +507,23 @@ describe("package and source parity", () => {
       );
     }
     const dataGrid = byPath.get("registry/generated/shadcn/data-grid.json") as {
+      dependencies: string[];
       docs: string;
+      files: { content: string; path: string }[];
     };
+    expect(dataGrid.dependencies).toEqual(["@tanstack/react-table"]);
     expect(dataGrid.docs).toMatch(/^Experimental/u);
     expect(dataGrid.docs).toMatch(/Risk Class 3 contract has not passed/u);
+    const dataGridRuntime = dataGrid.files.find(({ path }) => path.endsWith("/data-grid.tsx"));
+    const dataGridEntry = dataGrid.files.find(({ path }) => path.endsWith("/index.ts"));
+    expect(dataGridRuntime?.content).toContain("export interface DataGridQuery");
+    expect(dataGridRuntime?.content).toContain('data-slot="data-grid-filter-input"');
+    expect(dataGridRuntime?.content).toContain('data-slot="data-grid-operation-status"');
+    expect(dataGridRuntime?.content).toContain('data-slot="data-grid-query-input"');
+    expect(dataGridEntry?.content).toContain("normalizeDataGridQuery");
+    expect(dataGridEntry?.content).toContain("DataGridSelectionProps");
+    expect(dataGridEntry?.content).toContain("DataGridSortingProps");
+    expect(dataGridEntry?.content).toContain("serializeDataGridQuery");
   });
 
   it("has built CSS inputs without unresolved local font or image assets", async () => {

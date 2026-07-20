@@ -29,12 +29,32 @@ const families = [
       "DataGrid",
       "DataGridColumn",
       "DataGridColumnAlignment",
+      "DataGridCursorPaginationOptions",
+      "DataGridCursorPaginationState",
+      "DataGridFilteringOptions",
+      "DataGridMessages",
+      "DataGridOperationMode",
+      "DataGridOperationReason",
+      "DataGridOperationStatus",
+      "DataGridPagePaginationOptions",
+      "DataGridPagePaginationState",
+      "DataGridPaginationOptions",
+      "DataGridPaginationState",
       "DataGridProps",
+      "DataGridQuery",
+      "DataGridQueryAdapter",
+      "DataGridQueryChangeDetail",
+      "DataGridQuerySummaryContext",
       "DataGridSelectionChangeDetail",
       "DataGridSelectionMode",
+      "DataGridSelectionProps",
       "DataGridSortDirection",
       "DataGridSorting",
       "DataGridSortingChangeDetail",
+      "DataGridSortingProps",
+      "normalizeDataGridQuery",
+      "parseDataGridQuery",
+      "serializeDataGridQuery",
     ],
     sourcePath: "registry/source/systems/data-grid/data-grid.tsx",
   },
@@ -152,5 +172,23 @@ describe("expanded data-display public API descriptions", () => {
     );
     expect(descriptions.get("chart:ChartProps.interactive")).toContain("removes their UI");
     expect(descriptions.get("stat:StatProps.comparison")).toContain("removes comparison UI");
+    expect(descriptions.get("data-grid:DataGridProps.filtering")).toContain(
+      "removes its UI, processing, events, and accessibility output",
+    );
+    expect(descriptions.get("data-grid:DataGridProps.pagination")).toContain(
+      "removes the complete navigation region",
+    );
+    expect(descriptions.get("data-grid:DataGridProps.queryAdapter")).toContain(
+      "removes all adapter I/O",
+    );
+    expect(descriptions.get("data-grid:DataGridProps.operationStatus")).toContain(
+      "false removes the rail",
+    );
+    expect(descriptions.get("data-grid:DataGridProps.renderQuerySummary")).toContain(
+      "false removes its UI and live-region output",
+    );
+    expect(descriptions.get("data-grid:DataGridProps.selectionMode")).toContain(
+      "none removes radio controls, summaries, and selection callbacks",
+    );
   });
 });

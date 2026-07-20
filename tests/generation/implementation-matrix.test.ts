@@ -272,6 +272,44 @@ describe("catalog implementation matrix", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("keeps the Experimental Data Grid advantages independently controlled and honestly blocked", () => {
+    const policy = loadMergoraSignaturePolicy(workspaceRoot);
+    const shards = loadImplementationProfileShards(workspaceRoot, policy);
+    const profile = shards
+      .find(({ category }) => category === "advanced-data")
+      ?.profiles.find(({ id }) => id === "data-grid");
+    expect(profile).toBeDefined();
+
+    const expectedControls = [
+      "filteringEnabled",
+      "formSerializationEnabled",
+      "operationMode",
+      "operationStatusState",
+      "paginationEnabled",
+      "queryAdapterEnabled",
+      "selectionMode",
+      "showQuerySummary",
+      "showSelectionSummary",
+    ];
+    expect(
+      profile?.optionalEnhancements
+        .flatMap(({ storybookControlNames }) => storybookControlNames)
+        .sort(),
+    ).toEqual(expectedControls);
+    expect(profile?.optionalEnhancements.every(({ defaultEnabled }) => !defaultEnabled)).toBe(true);
+    expect([...new Set(profile?.storybook.basic.enhancementControls)].sort()).toEqual(
+      expectedControls,
+    );
+    expect([...new Set(profile?.storybook.enhanced.enhancementControls)].sort()).toEqual(
+      expectedControls,
+    );
+    expect(profile?.accessibilityEvidence.status).toBe("partial");
+    expect(profile?.maturityAssessment.status).toBe("not-ready");
+    expect(profile?.blockers.map(({ code }) => code)).toContain(
+      "production-grid-contract-incomplete",
+    );
+  });
+
   it("fails closed for missing, extra, duplicated, or wrong-family profile IDs", () => {
     const policy = loadMergoraSignaturePolicy(workspaceRoot);
     const button = definition();
