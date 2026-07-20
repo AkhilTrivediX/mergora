@@ -130,7 +130,20 @@ jobs:
             let directFeaturePushAuthority = false;
             let labels = process.env.EVENT_LABELS ?? "";
 
-            if (context.eventName !== "pull_request") {
+            if (context.eventName === "pull_request") {
+              // A workflow re-run retains its original event payload. Resolve the PR again so
+              // a subsequently applied reviewed label is honored by the visual policy.
+              const pullNumber = context.payload.pull_request?.number;
+              if (pullNumber !== undefined) {
+                const { data: pull } = await github.rest.pulls.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pullNumber,
+                });
+                baseSha = pull.base.sha;
+                labels = pull.labels.map((label) => label.name ?? "").filter(Boolean).join(",");
+              }
+            } else {
               const associatedPulls = await github.paginate(
                 github.rest.repos.listPullRequestsAssociatedWithCommit,
                 {

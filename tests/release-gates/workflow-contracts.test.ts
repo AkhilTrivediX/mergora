@@ -176,6 +176,9 @@ describe("GitHub workflow contracts", () => {
     const ci = workflows[".github/workflows/ci.yml"];
     expect(ci).toContain("pull-requests: read");
     expect(occurrences(ci, "pull-requests: read")).toBe(1);
+    expect(ci).toContain('if (context.eventName === "pull_request")');
+    expect(ci).toContain("github.rest.pulls.get");
+    expect(ci).toContain("pull_number: pullNumber");
     expect(ci).toContain(
       "github.paginate(\n                github.rest.repos.listPullRequestsAssociatedWithCommit",
     );
