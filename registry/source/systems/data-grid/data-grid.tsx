@@ -237,6 +237,33 @@ export interface DataGridColumnSizingOptions {
   ) => void;
 }
 
+export type DataGridExpandedRowIds = readonly string[];
+
+export interface DataGridDetailRowsChangeDetail {
+  /** Identifies the row whose native disclosure button requested a change. */
+  readonly rowId: string;
+  /** Identifies the native disclosure button as the committed expansion cause. */
+  readonly reason: "native-button";
+  /** Reports whether the named row is expanded in the next canonical row-ID list. */
+  readonly expanded: boolean;
+}
+
+export interface DataGridDetailRowsOptions<TData extends object> {
+  /** Controls the expanded row IDs; order is normalized to the current source-row order. */
+  readonly expandedRowIds?: DataGridExpandedRowIds;
+  /** Initializes uncontrolled expanded row IDs; native form reset restores this value. */
+  readonly defaultExpandedRowIds?: DataGridExpandedRowIds;
+  /** Reports each native disclosure request with the complete next canonical row-ID list. */
+  readonly onExpandedRowIdsChange?: (
+    expandedRowIds: DataGridExpandedRowIds,
+    detail: DataGridDetailRowsChangeDetail,
+  ) => void;
+  /** Renders the consumer-owned detail content in a semantic table row. */
+  readonly renderDetail: (row: TData) => ReactNode;
+  /** Produces a localized native disclosure-button name for each source row. */
+  readonly getDetailLabel?: (row: TData, expanded: boolean) => string;
+}
+
 export type DataGridColumnVisibility = Readonly<{
   /** Stores the visible state for a declared column ID; omitted IDs remain visible. */
   [columnId: string]: boolean;
@@ -311,6 +338,8 @@ interface DataGridCommonProps<TData extends object> extends Omit<
   readonly columnVisibility?: false | DataGridColumnVisibilityOptions;
   /** Enables optional controlled or uncontrolled native column-width controls. */
   readonly columnSizing?: false | DataGridColumnSizingOptions;
+  /** Enables optional controlled or uncontrolled semantic detail rows. */
+  readonly detailRows?: false | DataGridDetailRowsOptions<TData>;
 }
 
 interface DataGridSelectionDisabledProps {
@@ -745,6 +774,37 @@ function sameColumnWidths(left: DataGridColumnWidths, right: DataGridColumnWidth
   );
 }
 
+function resolveExpandedRowIds(
+  rowIds: readonly string[],
+  requested: DataGridExpandedRowIds | undefined,
+): DataGridExpandedRowIds {
+  const requestedIds = new Set(requested ?? []);
+  return rowIds.filter((rowId) => requestedIds.has(rowId));
+}
+
+function sameExpandedRowIds(left: DataGridExpandedRowIds, right: DataGridExpandedRowIds): boolean {
+  return left.length === right.length && left.every((rowId, index) => right[index] === rowId);
+}
+
+function assertExpandedRowIds(
+  rowIds: readonly string[],
+  requested: DataGridExpandedRowIds | undefined,
+  label: string,
+): void {
+  if (requested === undefined) return;
+  const knownRowIds = new Set(rowIds);
+  const uniqueRowIds = new Set<string>();
+  for (const rowId of requested) {
+    if (typeof rowId !== "string" || rowId.trim().length === 0 || !knownRowIds.has(rowId)) {
+      throw new Error(`Mergora DataGrid ${label} contains an unknown non-empty row ID.`);
+    }
+    if (uniqueRowIds.has(rowId)) {
+      throw new Error(`Mergora DataGrid ${label} must not contain duplicate row IDs.`);
+    }
+    uniqueRowIds.add(rowId);
+  }
+}
+
 function assertColumnWidths<TData extends object>(
   columns: readonly DataGridColumn<TData>[],
   requested: DataGridColumnWidths | undefined,
@@ -1023,6 +1083,52 @@ export function assertDataGridConfiguration(props: Readonly<Record<string, unkno
     ) {
       throw new TypeError(
         "Mergora DataGrid columnSizing.onWidthsChange must be a function when supplied.",
+      );
+    }
+  }
+  if (
+    props.detailRows !== undefined &&
+    props.detailRows !== false &&
+    !isPlainObject(props.detailRows)
+  ) {
+    throw new TypeError("Mergora DataGrid detailRows must be false or an options object.");
+  }
+  if (isPlainObject(props.detailRows)) {
+    const detailRows = props.detailRows;
+    if (typeof detailRows.renderDetail !== "function") {
+      throw new TypeError("Mergora DataGrid detailRows.renderDetail must be a function.");
+    }
+    if (detailRows.expandedRowIds !== undefined && !Array.isArray(detailRows.expandedRowIds)) {
+      throw new TypeError("Mergora DataGrid detailRows.expandedRowIds must be an array.");
+    }
+    if (
+      detailRows.defaultExpandedRowIds !== undefined &&
+      !Array.isArray(detailRows.defaultExpandedRowIds)
+    ) {
+      throw new TypeError("Mergora DataGrid detailRows.defaultExpandedRowIds must be an array.");
+    }
+    if (
+      hasDefinedOwn(detailRows, "expandedRowIds") &&
+      hasDefinedOwn(detailRows, "defaultExpandedRowIds")
+    ) {
+      throw new Error(
+        "Mergora DataGrid controlled detail rows cannot be combined with defaultExpandedRowIds.",
+      );
+    }
+    if (
+      detailRows.onExpandedRowIdsChange !== undefined &&
+      typeof detailRows.onExpandedRowIdsChange !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid detailRows.onExpandedRowIdsChange must be a function when supplied.",
+      );
+    }
+    if (
+      detailRows.getDetailLabel !== undefined &&
+      typeof detailRows.getDetailLabel !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid detailRows.getDetailLabel must be a function when supplied.",
       );
     }
   }
@@ -1308,6 +1414,14 @@ function validateIdentityAndOperations<TData extends object>(
     }
     uniqueRowIds.add(rowId);
   }
+  if (props.detailRows !== undefined && props.detailRows !== false) {
+    assertExpandedRowIds(rowIds, props.detailRows.expandedRowIds, "detailRows.expandedRowIds");
+    assertExpandedRowIds(
+      rowIds,
+      props.detailRows.defaultExpandedRowIds,
+      "detailRows.defaultExpandedRowIds",
+    );
+  }
   assertSortingColumn(
     props.columns,
     props.query?.sorting ?? props.defaultQuery?.sorting ?? props.sorting ?? props.defaultSorting,
@@ -1401,6 +1515,7 @@ function DataGridInner<TData extends object>(
     regionLabel,
     columnVisibility = false,
     columnSizing = false,
+    detailRows = false,
     selectionMode = "none",
     selectedRowId,
     defaultSelectedRowId = null,
@@ -1442,6 +1557,7 @@ function DataGridInner<TData extends object>(
   const adapterReadRef = useRef(false);
   const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
   const columnSizingOptions = columnSizing === false ? null : columnSizing;
+  const detailRowsOptions = detailRows === false ? null : detailRows;
   const columnVisibilityAdapterReadRef = useRef(false);
   const initialColumnVisibilityRef = useRef<DataGridColumnVisibility | null>(null);
   if (initialColumnVisibilityRef.current === null) {
@@ -1457,6 +1573,13 @@ function DataGridInner<TData extends object>(
         ? {}
         : resolveColumnWidths(columns, columnSizingOptions.defaultWidths);
   }
+  const initialExpandedRowIdsRef = useRef<DataGridExpandedRowIds | null>(null);
+  if (initialExpandedRowIdsRef.current === null) {
+    initialExpandedRowIdsRef.current =
+      detailRowsOptions === null
+        ? []
+        : resolveExpandedRowIds(rowIds, detailRowsOptions.defaultExpandedRowIds);
+  }
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
     selectionMode === "single" ? defaultSelectedRowId : null,
   );
@@ -1471,6 +1594,8 @@ function DataGridInner<TData extends object>(
   const [uncontrolledColumnWidths, setUncontrolledColumnWidths] = useState<DataGridColumnWidths>(
     initialColumnWidthsRef.current,
   );
+  const [uncontrolledExpandedRowIds, setUncontrolledExpandedRowIds] =
+    useState<DataGridExpandedRowIds>(initialExpandedRowIdsRef.current);
 
   useEffect(() => {
     if (
@@ -1565,6 +1690,13 @@ function DataGridInner<TData extends object>(
     columnSizingOptions === null
       ? {}
       : resolveColumnWidths(columns, columnSizingOptions.widths ?? uncontrolledColumnWidths);
+  const currentExpandedRowIds =
+    detailRowsOptions === null
+      ? []
+      : resolveExpandedRowIds(
+          rowIds,
+          detailRowsOptions.expandedRowIds ?? uncontrolledExpandedRowIds,
+        );
   const sourceQuery = controlledQuery ?? uncontrolledQuery;
   if (
     paginationMode !== null &&
@@ -1724,7 +1856,10 @@ function DataGridInner<TData extends object>(
         )
       : sortedRows;
   const visibleColumns = table.getVisibleLeafColumns();
-  const columnCount = visibleColumns.length + (selectionMode === "single" ? 1 : 0);
+  const columnCount =
+    visibleColumns.length +
+    (selectionMode === "single" ? 1 : 0) +
+    (detailRowsOptions === null ? 0 : 1);
   const selectedSourceRow =
     currentSelection === null
       ? null
@@ -1791,6 +1926,9 @@ function DataGridInner<TData extends object>(
         if (columnSizingOptions !== null && columnSizingOptions.widths === undefined) {
           setUncontrolledColumnWidths(initialColumnWidthsRef.current!);
         }
+        if (detailRowsOptions !== null && detailRowsOptions.expandedRowIds === undefined) {
+          setUncontrolledExpandedRowIds(initialExpandedRowIdsRef.current!);
+        }
       }, 0);
     };
     form.addEventListener("reset", handleReset);
@@ -1802,6 +1940,7 @@ function DataGridInner<TData extends object>(
     defaultSorting,
     columnVisibilityOptions?.visibility,
     columnSizingOptions?.widths,
+    detailRowsOptions?.expandedRowIds,
     selectedRowId,
     selectionMode,
     sorting,
@@ -1827,6 +1966,23 @@ function DataGridInner<TData extends object>(
       columnId,
       reason: "native-range",
       width,
+    });
+  };
+
+  const setRowExpanded = (rowId: string, expanded: boolean): void => {
+    if (detailRowsOptions === null) return;
+    const next = resolveExpandedRowIds(
+      rowIds,
+      expanded
+        ? [...currentExpandedRowIds, rowId]
+        : currentExpandedRowIds.filter((expandedRowId) => expandedRowId !== rowId),
+    );
+    if (sameExpandedRowIds(currentExpandedRowIds, next)) return;
+    if (detailRowsOptions.expandedRowIds === undefined) setUncontrolledExpandedRowIds(next);
+    detailRowsOptions.onExpandedRowIdsChange?.(next, {
+      expanded,
+      reason: "native-button",
+      rowId,
     });
   };
 
@@ -1895,6 +2051,7 @@ function DataGridInner<TData extends object>(
       <table data-slot="data-grid-table" className="mrg-data-grid__table">
         <caption>{caption}</caption>
         <colgroup>
+          {detailRowsOptions !== null ? <col /> : null}
           {selectionMode === "single" ? <col /> : null}
           {visibleColumns.map((column) => {
             const meta = column.columnDef.meta as { width?: string } | undefined;
@@ -1909,6 +2066,11 @@ function DataGridInner<TData extends object>(
         <thead data-slot="data-grid-header">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} data-slot="data-grid-header-row">
+              {detailRowsOptions !== null ? (
+                <th scope="col" data-slot="data-grid-detail-heading">
+                  <span className="mrg-data-grid__visually-hidden">Details</span>
+                </th>
+              ) : null}
               {selectionMode === "single" ? (
                 <th scope="col" className="mrg-data-grid__selection-heading">
                   <span className="mrg-data-grid__visually-hidden">
@@ -2005,45 +2167,81 @@ function DataGridInner<TData extends object>(
             visibleRows.map((row, visibleIndex) => {
               const rowId = row.id;
               const selected = currentSelection === rowId;
+              const expanded = currentExpandedRowIds.includes(rowId);
+              const detailId = `mrg-data-grid-detail-${generatedRadioName}-${rowId}`;
+              const detailLabel =
+                detailRowsOptions?.getDetailLabel?.(row.original, expanded) ??
+                `${expanded ? "Hide" : "Show"} details for ${rowId}`;
               return (
-                <tr key={rowId} data-slot="data-grid-row" data-selected={selected || undefined}>
-                  {selectionMode === "single" ? (
-                    <td
-                      data-slot="data-grid-selection-cell"
-                      className="mrg-data-grid__selection-cell"
-                    >
-                      <label className="mrg-data-grid__selection-control">
-                        <input
-                          type="radio"
-                          name={radioName}
-                          value={rowId}
-                          checked={selected}
-                          aria-label={
-                            getRowLabel?.(row.original) ??
-                            resolvedMessages.selectRowLabel(visibleIndex + 1)
-                          }
-                          onChange={() => {
-                            if (selectedRowId === undefined) setUncontrolledSelection(rowId);
-                            onSelectedRowIdChange?.(rowId, { reason: "radio" });
+                <Fragment key={rowId}>
+                  <tr
+                    data-slot="data-grid-row"
+                    data-expanded={expanded || undefined}
+                    data-selected={selected || undefined}
+                  >
+                    {detailRowsOptions !== null ? (
+                      <td data-slot="data-grid-detail-action-cell">
+                        <button
+                          aria-controls={detailId}
+                          aria-expanded={expanded}
+                          data-slot="data-grid-detail-trigger"
+                          disabled={isLoading}
+                          style={{
+                            minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                            minInlineSize: "var(--mrg-semantic-size-target-preferred)",
                           }}
-                        />
-                      </label>
-                    </td>
-                  ) : null}
-                  {row.getVisibleCells().map((cell) => {
-                    const meta = cell.column.columnDef.meta as
-                      { alignment?: DataGridColumnAlignment } | undefined;
-                    return (
-                      <td
-                        key={cell.id}
-                        data-slot="data-grid-cell"
-                        data-align={meta?.alignment ?? "start"}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          type="button"
+                          onClick={() => setRowExpanded(rowId, !expanded)}
+                        >
+                          {detailLabel}
+                        </button>
                       </td>
-                    );
-                  })}
-                </tr>
+                    ) : null}
+                    {selectionMode === "single" ? (
+                      <td
+                        data-slot="data-grid-selection-cell"
+                        className="mrg-data-grid__selection-cell"
+                      >
+                        <label className="mrg-data-grid__selection-control">
+                          <input
+                            type="radio"
+                            name={radioName}
+                            value={rowId}
+                            checked={selected}
+                            aria-label={
+                              getRowLabel?.(row.original) ??
+                              resolvedMessages.selectRowLabel(visibleIndex + 1)
+                            }
+                            onChange={() => {
+                              if (selectedRowId === undefined) setUncontrolledSelection(rowId);
+                              onSelectedRowIdChange?.(rowId, { reason: "radio" });
+                            }}
+                          />
+                        </label>
+                      </td>
+                    ) : null}
+                    {row.getVisibleCells().map((cell) => {
+                      const meta = cell.column.columnDef.meta as
+                        { alignment?: DataGridColumnAlignment } | undefined;
+                      return (
+                        <td
+                          key={cell.id}
+                          data-slot="data-grid-cell"
+                          data-align={meta?.alignment ?? "start"}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  {detailRowsOptions !== null && expanded ? (
+                    <tr data-slot="data-grid-detail-row">
+                      <td colSpan={columnCount} data-slot="data-grid-detail-content" id={detailId}>
+                        {detailRowsOptions.renderDetail(row.original)}
+                      </td>
+                    </tr>
+                  ) : null}
+                </Fragment>
               );
             })
           )}

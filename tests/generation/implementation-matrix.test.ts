@@ -285,6 +285,7 @@ describe("catalog implementation matrix", () => {
       "columnVisibilityEnabled",
       "columnVisibilityPersistenceEnabled",
       "csvExportEnabled",
+      "detailRowsEnabled",
       "filteringEnabled",
       "formSerializationEnabled",
       "operationMode",

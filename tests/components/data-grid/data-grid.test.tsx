@@ -379,6 +379,54 @@ describe("Data Grid Experimental canonical source", () => {
     ).toThrow(/from 100 to 220/u);
   });
 
+  it("keeps optional detail rows semantic, controlled by row IDs, and absent when disabled", () => {
+    const basic = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(basic).not.toContain("data-grid-detail");
+    expect(basic).not.toContain("Show details");
+
+    const enhanced = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        detailRows={{
+          defaultExpandedRowIds: ["a"],
+          getDetailLabel: (row, expanded) => `${expanded ? "Hide" : "Show"} ${row.name} detail`,
+          renderDetail: (row) => <p>{`Score detail: ${row.score}`}</p>,
+        }}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(enhanced).toContain('data-slot="data-grid-detail-heading"');
+    expect(enhanced).toContain('data-slot="data-grid-detail-trigger"');
+    expect(enhanced).toContain('aria-expanded="true"');
+    expect(enhanced).toContain("Hide Asha detail");
+    expect(enhanced).toContain("Score detail: 9");
+    expect(enhanced).toMatch(/col[Ss]pan="3"/u);
+
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columns={columns}
+          detailRows={{
+            defaultExpandedRowIds: ["missing"],
+            renderDetail: () => null,
+          }}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/unknown non-empty row ID/u);
+  });
+
   it("serializes visibility in declared-column order and rejects malformed adapter input", () => {
     expect(serializeDataGridColumnVisibility(columns, { name: false, score: true })).toBe(
       '[["name",false],["score",true]]',
@@ -631,6 +679,15 @@ describe("Data Grid Experimental canonical source", () => {
         columnSizing: { defaultWidths: { score: 120 }, widths: { score: 120 } },
       }),
     ).toThrow(/controlled column sizing cannot be combined/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        detailRows: {
+          defaultExpandedRowIds: ["a"],
+          expandedRowIds: ["a"],
+          renderDetail: () => null,
+        },
+      }),
+    ).toThrow(/controlled detail rows cannot be combined/u);
     expect(() =>
       renderToStaticMarkup(
         <DataGrid

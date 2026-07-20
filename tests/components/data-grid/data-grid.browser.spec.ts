@@ -74,6 +74,8 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   await expect(page.locator('[data-slot="data-grid-selection-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-column-visibility"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-column-sizing-control"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="data-grid-detail-trigger"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="data-grid-detail-row"]')).toHaveCount(0);
   await expect(page.locator("[data-story-controlled-form-data]")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Prepare safe CSV" })).toHaveCount(0);
   await expect(page.locator("[data-story-csv-preview]")).toHaveCount(0);
@@ -94,6 +96,7 @@ test("Storybook controls enable independent enhancements without creating illega
       "columnVisibilityEnabled:true",
       "columnVisibilityPersistenceEnabled:true",
       "columnSizingEnabled:true",
+      "detailRowsEnabled:true",
       "csvExportEnabled:true",
       "formSerializationEnabled:true",
       "operationMode:manual",
@@ -107,6 +110,7 @@ test("Storybook controls enable independent enhancements without creating illega
   );
   await expect(page.getByRole("searchbox", { name: "Filter records" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Adjust Record width" })).toHaveValue("256");
+  await expect(page.getByRole("button", { name: "Hide details for Icon exports" })).toBeVisible();
   await page.getByText("Visible fields", { exact: true }).click();
   const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
   await expect(ownerVisibility).not.toBeChecked();
@@ -156,20 +160,34 @@ test("recommended DataGrid filters, pages, persists query changes, and keeps sel
 
   await expect(page.getByRole("radio", { name: "Select Icon exports" })).toBeChecked();
   await expect(selectionSummary).toContainText("Selected Icon exports");
-  await expect(page.getByRole("row", { name: /Design tokens/u })).toBeVisible();
-  await expect(page.getByRole("row", { name: /Usage notes/u })).toHaveCount(0);
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Design tokens" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Usage notes" }),
+  ).toHaveCount(0);
 
   await page.getByRole("button", { name: "Next page" }).click();
-  await expect(page.getByRole("row", { name: /Usage notes/u })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Usage notes" }),
+  ).toBeVisible();
   await expect(summary).toContainText("page 2");
   await page.getByRole("button", { name: "Next page" }).click();
-  await expect(page.getByRole("row", { name: /Registry schema/u })).toBeVisible();
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Registry schema" }),
+  ).toBeVisible();
   await expect(page.locator('[data-slot="data-grid-region"]')).toBeFocused();
 
   await filter.fill("Review");
-  await expect(page.getByRole("row", { name: /Icon exports/u })).toBeVisible();
-  await expect(page.getByRole("row", { name: /Keyboard map/u })).toBeVisible();
-  await expect(page.getByRole("row", { name: /Design tokens/u })).toHaveCount(0);
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Icon exports" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Keyboard map" }),
+  ).toBeVisible();
+  await expect(
+    page.locator('[data-slot="data-grid-row"]').filter({ hasText: "Design tokens" }),
+  ).toHaveCount(0);
   await expect(summary).toContainText("2 records");
   await expect(page.locator("[data-story-adapter-writes]")).toHaveText(
     /[1-9]\d* persisted changes?/u,
@@ -233,6 +251,26 @@ test("controlled column sizing reports native range changes without interactive 
   await page.keyboard.press("ArrowRight");
   await expect(recordWidth).toHaveValue("272");
   await expect(page.locator("[data-story-controlled-column-sizing]")).toHaveText("title:272px");
+  await expect(page.getByRole("grid")).toHaveCount(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("controlled detail rows use native disclosure buttons without grid semantics", async ({
+  page,
+}) => {
+  await openStory(page, "controlled-detail-rows");
+  const iconDetails = page.getByRole("button", { name: "Hide details for Icon exports" });
+  await expect(page.locator('[data-slot="data-grid-detail-row"]')).toHaveCount(1);
+  await iconDetails.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator('[data-slot="data-grid-detail-row"]')).toHaveCount(0);
+  await expect(page.locator("[data-story-controlled-detail-rows]")).toHaveText(
+    "artifact-2:collapsed",
+  );
+  await page.getByRole("button", { name: "Show details for Design tokens" }).click();
+  await expect(page.locator('[data-slot="data-grid-detail-content"]')).toContainText(
+    "maintained by Asha",
+  );
   await expect(page.getByRole("grid")).toHaveCount(0);
   expect(await axeViolations(page)).toEqual([]);
 });
@@ -305,6 +343,9 @@ test("loading and error states retain rows, expose recovery, and restore useful 
 test("single selection participates in exact FormData and native reset", async ({ page }) => {
   await openStory(page, "form-serialization-and-reset");
   const filter = page.getByRole("searchbox", { name: "Filter records" });
+  const detailTrigger = page.getByRole("button", { name: "Hide details for Design tokens" });
+  await detailTrigger.click();
+  await expect(page.locator('[data-slot="data-grid-detail-row"]')).toHaveCount(0);
   await page.getByText("Visible fields", { exact: true }).click();
   const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
   await expect(ownerVisibility).not.toBeChecked();
@@ -341,6 +382,7 @@ test("single selection participates in exact FormData and native reset", async (
   await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
   await expect(page.getByRole("radio", { name: "Select Design tokens" })).toBeChecked();
   await expect(recordWidth).toHaveValue("256");
+  await expect(page.getByRole("button", { name: "Hide details for Design tokens" })).toBeVisible();
   await page.getByRole("button", { name: "Inspect FormData" }).click();
   await expect(page.locator("[data-story-form-data]")).toHaveText(
     '[["libraryRecord","artifact-1"],["libraryQuery",""]]',
@@ -426,7 +468,7 @@ test("DataGrid reflows at 320px in RTL and promotes coarse-pointer controls", as
 
   const undersized = await page
     .locator(
-      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-column-sizing-input"], [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
+      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-column-sizing-input"], [data-slot="data-grid-detail-trigger"], [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
     )
     .evaluateAll((elements) =>
       elements

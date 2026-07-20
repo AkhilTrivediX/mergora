@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing and semantic detail rows, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -53,7 +53,8 @@
           "safe-csv-export",
           "column-visibility",
           "column-visibility-persistence",
-          "column-sizing"
+          "column-sizing",
+          "detail-rows"
         ]
       },
       "visualSignature": {
@@ -543,6 +544,49 @@
             "events": "No width callback can fire.",
             "accessibility": "No slider, slider label, min/max/step values, or sizing-specific accessibility output is exposed."
           }
+        },
+        {
+          "id": "detail-rows",
+          "status": "evidence-backed",
+          "summary": "Consumers can independently add controlled or uncontrolled expanded source-row IDs with an individually labelled native disclosure button and consumer-owned detail content in an adjacent semantic table row; native form reset restores the original uncontrolled expansion without adding ARIA-grid behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["detailRowsEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "detailRows",
+              "detailRows.expandedRowIds",
+              "detailRows.defaultExpandedRowIds",
+              "detailRows.onExpandedRowIdsChange",
+              "detailRows.renderDetail",
+              "detailRows.getDetailLabel"
+            ],
+            "enableWhen": "Provide detailRows with renderDetail and optionally control or initialize expanded row IDs; omit it or pass false to retain the concise table."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No details heading, action cell, native disclosure button, detail row, or detail content is rendered.",
+            "behavior": "The grid owns no expanded-row map, detail renderer call, or native reset behavior for details.",
+            "events": "No expanded-row callback can fire.",
+            "accessibility": "No disclosure button, expanded state, controls relationship, details heading, or detail content is exposed."
+          }
         }
       ],
       "storybook": {
@@ -564,7 +608,8 @@
             "csvExportEnabled",
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
-            "columnSizingEnabled"
+            "columnSizingEnabled",
+            "detailRowsEnabled"
           ],
           "references": [
             {
@@ -595,7 +640,8 @@
             "csvExportEnabled",
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
-            "columnSizingEnabled"
+            "columnSizingEnabled",
+            "detailRowsEnabled"
           ],
           "references": [
             {
@@ -611,7 +657,7 @@
       },
       "accessibilityEvidence": {
         "status": "partial",
-        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
+        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, labelled native detail disclosure, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
         "references": [
           {
             "kind": "repository-file",
@@ -625,7 +671,7 @@
       },
       "interactionEvidence": {
         "status": "verified",
-        "summary": "Native sorting and selection, bounded controlled or uncontrolled native column sizing, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, deterministic safe CSV serialization, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
+        "summary": "Native sorting and selection, bounded controlled or uncontrolled native column sizing, controlled or uncontrolled semantic detail rows, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, deterministic safe CSV serialization, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
         "references": [
           {
             "kind": "repository-file",

@@ -72,6 +72,36 @@
       "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
     },
     {
+      "name": "data-grid-detail-heading",
+      "semanticElement": "th",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-detail-action-cell",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-row",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-content",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
       "name": "data-grid-pagination",
       "semanticElement": "nav",
       "refTarget": "HTMLElement",

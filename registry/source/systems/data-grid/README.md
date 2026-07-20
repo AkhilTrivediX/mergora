@@ -103,6 +103,31 @@ without a callback. Set `columnSizing={false}` or omit it to remove every range,
 callback, reset behavior, and sizing-specific accessibility output; existing consumer CSS widths
 remain untouched.
 
+## Optional detail rows
+
+Detail rows are off by default. Enable them only when an adjacent, full-width source-row context is
+more useful than adding more table columns. The grid keeps its native table semantics: each row gets
+a labelled native disclosure button, and expanded content renders in the immediately following table
+row rather than introducing an ARIA grid.
+
+```tsx
+<DataGrid
+  {...props}
+  detailRows={{
+    defaultExpandedRowIds: ["record-1"],
+    getDetailLabel: (record, expanded) =>
+      `${expanded ? "Hide" : "Show"} context for ${record.title}`,
+    renderDetail: (record) => <p>{record.notes}</p>,
+  }}
+/>
+```
+
+`expandedRowIds` controls the current source-row IDs, while `defaultExpandedRowIds` initializes
+uncontrolled state and `onExpandedRowIdsChange` receives only committed native disclosure changes.
+Unknown or duplicate IDs fail before rendering. Native form reset restores uncontrolled expansion
+without a callback. Omit `detailRows` or pass `false` to remove the details heading, buttons,
+expanded state, renderer calls, callbacks, and all detail-specific accessibility output.
+
 ## Mergora query operations
 
 Filtering, numbered pagination, deterministic persistence, a canonical hidden form value, and the

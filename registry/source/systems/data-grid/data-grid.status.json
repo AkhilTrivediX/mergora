@@ -9,7 +9,7 @@
   "promotionDelta": [
     "Implement and verify Interactive Grid mode only where cell-level navigation and editing justify the ARIA grid keyboard model.",
     "Add column resize, reorder, pin or freeze, grouping, and aggregation.",
-    "Add multi-row and range selection where appropriate, bulk actions, expandable detail rows, and tree rows.",
+    "Add multi-row and range selection where appropriate, bulk actions, and tree rows.",
     "Add cell editing with validation, save and cancel, optimistic and pessimistic examples, and recoverable failures.",
     "Add row and column virtualization without broken focus or aria-activedescendant references.",
     "Add saved views and URL-state proof, permissions, and a responsive priority-column, row-detail, or item-view alternative.",
