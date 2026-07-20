@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "mergora-cross-commit-visual-baseline",
   "suiteId": "p1-browser-evidence-workbench",
-  "acceptedCommit": "2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d",
+  "acceptedCommit": "5c2fb9379856f7d6fc87922848cc61a352229dff",
   "source": {
     "fixture": "tests/browser/fixture/src/main.tsx",
     "spec": "tests/browser/visual.spec.ts"
@@ -12,14 +12,20 @@
     "playwrightVersion": "1.61.1",
     "fontManifest": "assets/fonts/manifest.json",
     "acceptedFontDigest": "sha256:7da8d95cfb1606e38b27e734ba9b59447178458bb7a68716aa49cb45d474eafb",
-    "eligibleEvidencePlatforms": ["linux"]
+    "eligibleEvidencePlatforms": [
+      "linux"
+    ]
   },
   "comparison": {
     "threshold": 0,
     "maxDiffPixels": 0,
     "masks": []
   },
-  "projects": ["chromium", "firefox", "webkit"],
+  "projects": [
+    "chromium",
+    "firefox",
+    "webkit"
+  ],
   "modes": [
     {
       "id": "light",
@@ -50,22 +56,21 @@
       "id": "forced-colors",
       "path": "/?theme=light",
       "forcedColors": "active",
-      "projects": ["chromium"]
+      "projects": [
+        "chromium"
+      ]
     }
   ],
   "review": {
     "status": "approved",
     "requiredLabel": "visual-change",
-    "explanation": "Reviewed intentional Mergora typography, token, focus, contrast, and component styling changes across the canonical P1 workbench; no clipping or forced-colors regression was observed.",
+    "explanation": "Reviewed intentional Data Grid operation, touch-target, focus, status, and selection presentation changes; no clipping, RTL, contrast, reduced-motion, or forced-colors regression was observed.",
     "affectedStories": [
-      "Components/Button",
-      "Components/Dialog",
-      "Components/Combobox",
       "Components/DataGrid"
     ],
     "reviewer": "Codex root agent",
-    "reviewedAt": "2026-07-20T06:13:58.602Z",
-    "reviewBundleDigest": "sha256:7c5bb866f66085e9ecb82eacf74a109fe55ffd64ff830189af648f6c78b407c4"
+    "reviewedAt": "2026-07-20T07:37:10.936Z",
+    "reviewBundleDigest": "sha256:3f9c278bc10fd824d0b5387535a487de300c3f1bd56dc830d71b0b6126fdb76e"
   },
   "limitations": [
     "This suite covers the canonical Button, Dialog, Combobox, and Data Grid workbench; it does not claim catalog-wide Storybook visual coverage.",
