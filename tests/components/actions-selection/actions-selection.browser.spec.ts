@@ -339,7 +339,10 @@ test("provider locale drives Hebrew RTL action-menu typeahead", async ({ browser
   // WebKit's axe color-contrast probe cannot resolve the computed colors of this Hebrew RTL
   // popover, even though the same semantic interaction and all other axe rules are valid.
   expect(
-    violations.filter(({ id }) => browserName === "webkit" && id === "color-contrast"),
+    violations.filter((violation) => {
+      const candidate = violation as { readonly id?: unknown };
+      return browserName === "webkit" && candidate.id === "color-contrast";
+    }),
   ).toEqual([]);
 });
 
