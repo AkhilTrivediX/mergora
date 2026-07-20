@@ -33,8 +33,9 @@ their Basic/Recommended, keyboard, semantic, axe, narrow, RTL, forced-colors, re
 touch-relevant assertions as defined by each fixture.
 
 This result is current local automated evidence. It is not an immutable exact-commit CI artifact,
-a real-device run, a screen-reader session, or a reviewed visual baseline. Those remain independent
-release requirements.
+a real-device run, a screen-reader session, or catalog-wide release-eligible visual evidence. The
+separate reviewed four-story Windows baseline remains diagnostic; those broader requirements stay
+independent.
 
 ## Website static-export aggregate
 

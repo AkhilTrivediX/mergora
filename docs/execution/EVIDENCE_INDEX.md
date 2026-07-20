@@ -2,7 +2,7 @@
 
 - Updated: 2026-07-20T06:08:04Z
 - Branch: `feature/foundation`
-- Committed checkpoint: `44a78292339b46ff2a388a4bc0658d689424e853`
+- Committed checkpoint: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d`
 - Evidence scope: the committed checkpoint plus the active, uncommitted integration worktree
 - Publication state: `blocked-unreleased`
 
@@ -208,9 +208,10 @@ results are not yet evidence.
 - Baseline policy and record: [`../../tests/visual/baseline.v1.json`](../../tests/visual/baseline.v1.json)
   and [`../../tests/visual/README.md`](../../tests/visual/README.md)
 
-The cross-commit baseline is provisional at `44a7829`, limited to Button, Dialog, Combobox, and
-Data Grid, and has no reviewer, review date, or review-bundle digest. Catalog-wide visual review is
-not complete.
+The canonical four-story cross-commit baseline is approved at `2ebc3a7` with a named agent review,
+timestamp, explanation, affected-story list, and SHA-256 review-bundle digest. The reviewed local
+Windows run is diagnostic under policy; a strict exact-commit Linux comparison and catalog-wide
+visual coverage remain incomplete.
 
 ### E-SITE
 
@@ -286,7 +287,7 @@ required immediately before any first publish, and no publication was attempted.
 | `BLK-A11Y-001`         | The 3,253-session/4,124-task manual campaign and independent Risk Class 3 review remain wholly not run.                                                                  |
 | `BLK-CLI-001`          | Local routing/lifecycle passes; exact-commit CI and real release-time official-mirror verification remain.                                                               |
 | `BLK-COMPAT-001`       | Compatibility lanes are scheduled but lack exact-commit CI evidence.                                                                                                     |
-| `BLK-VISUAL-001`       | The visual baseline is provisional and limited to four representative stories.                                                                                           |
+| `BLK-VISUAL-001`       | The approved visual baseline is limited to four representative stories and lacks strict exact-commit Linux and catalog-wide evidence.                                    |
 | `BLK-SITE-001`         | Integrated site, complete API descriptions, website browser, and performance gates pass locally; exact-commit CI, manual review, deployment, and release binding remain. |
 | `BLK-PAGES-001`        | Pages Actions source is enabled; exact deployment and post-deploy probes remain absent.                                                                                  |
 | `EXT-PAGES-DOMAIN-001` | The configured Pages URL redirects to an unresolved domain controlled outside this repository.                                                                           |

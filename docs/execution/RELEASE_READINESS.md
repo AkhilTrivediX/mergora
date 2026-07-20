@@ -2,7 +2,7 @@
 
 - Updated: 2026-07-20
 - Branch: `feature/foundation`
-- Committed checkpoint: `44a78292339b46ff2a388a4bc0658d689424e853`
+- Committed checkpoint: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d`
 - Current scope: checkpoint plus active integration worktree
 - Release state: no prerelease or Stable release
 
@@ -51,7 +51,7 @@ See [`CATALOG_STATUS.md`](CATALOG_STATUS.md) for the full breakdown.
 | Exact tarball consumers | `tests/packed-consumers/evidence.json`             | Seven tarballs; four lanes; full bounded source lifecycle; WRITE/NO-WRITE replay                                   | Public npm provenance, non-Chromium packed runtime, and release binding remain   |
 | Security                | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`      | No open S0/S1; production dependency audit clean                                                                   | Exact-commit review, live release mirror provenance, and release evidence remain |
 | Compatibility           | `tests/compatibility/matrix.v1.json`               | Nine framework, five manager, and Node/OS lanes scheduled                                                          | Exact-commit CI result absent                                                    |
-| Visual                  | `tests/visual/baseline.v1.json`                    | Provisional cross-commit baseline at `44a7829`                                                                     | Four stories only; no review digest                                              |
+| Visual                  | `tests/visual/baseline.v1.json`                    | Approved reviewed baseline at `2ebc3a7`; review metadata and digest complete                                       | Four stories only; strict exact-commit Linux and catalog-wide evidence remain    |
 | Site                    | `apps/web`, docs contract, static verifier         | State Lab 2,806 rows; 178 blocked Passports; 46/48 website cases with two policy skips; six Lighthouse routes pass | Exact-commit CI, release-bound public probe, and manual review pending           |
 | Public API              | `content/generated/api-index.json`                 | 178 entries, 530 groups, 3,431 props, 3,431 descriptions, 807 runtime defaults                                     | Local unreleased evidence; immutable/public release association remains absent   |
 | Manual AT               | `node scripts/prepare-manual-evidence.mjs --plan`  | 178 items, 3,253 sessions, 4,124 tasks; all NOT RUN; zero claims                                                   | No completed session                                                             |

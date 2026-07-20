@@ -1,7 +1,7 @@
 # Execution state
 
 - Updated: 2026-07-20T06:08:04Z
-- Commit: `44a78292339b46ff2a388a4bc0658d689424e853` plus active uncommitted integration
+- Commit: `2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d` plus active visual-review integration
 - Branch: `feature/foundation`
 - Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
 - Phase result: gate-failed
@@ -60,6 +60,10 @@
 - Fixed clean-checkout workflow prerequisites for site assembly and nightly performance. Visual
   baseline changes retain PR-label authority and now also support fail-closed exact direct
   `feature/*` pushes backed by immutable approved review metadata instead of requiring PR handling.
+- Reviewed the clean `44a7829` to `2ebc3a7` visual transition across the canonical Button, Dialog,
+  Combobox, and Data Grid workbench. All 16 eligible comparisons changed as expected; the accepted
+  record now includes a named agent reviewer, timestamp, explanation, affected stories, and bundle
+  digest. Its Windows result remains diagnostic and its four-story scope is not catalog-wide.
 - Reverified the complete local `pnpm check` gate: 198 test files passed, 1,510 tests passed, and one
   intentional test was skipped; the serial official-browser audit passed 5/5. Formatting, lint,
   root and all 21 workspace typechecks, generation, Storybook, site, registry, API, documentation,
@@ -104,7 +108,7 @@
 | `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                 | CLI/registry/packed consumers        | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.          |
 | `P7-F-SITE`      | S2 gate                    | `pnpm test:site` and `pnpm test:performance`                            | `apps/web`, generated docs           | Bind the locally green web/static/browser/performance result to the pushed exact commit and a validated deployment.                           |
 | `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                              | manual evidence campaign             | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                          |
-| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                      | Review a clean committed cross-commit bundle and extend coverage beyond the four-story provisional baseline.                                  |
+| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                      | Pass the accepted comparison in exact-commit Linux CI and extend coverage beyond the reviewed four-story baseline.                            |
 | `P10-F-PUBLIC`   | release gate               | Inspect `registry/generated/release-protocol/plan.json`                 | release/publication                  | Keep blocked until all earlier gates pass, package ownership and trusted publishing are verified, and a protected prerelease can be verified. |
 
 ## External blockers
@@ -127,7 +131,7 @@ The phase is not marked externally blocked because substantial independent work 
 | Full browser matrix       | `pnpm test:browser`                               | active worktree | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip) | `tests/browser/`, `tests/components/`, `tests/web/`       |
 | Accessibility             | `pnpm test:a11y`                                  | active worktree | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                          | `tests/browser/`                                          |
 | Compatibility             | `pnpm test:compat`                                | active worktree | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                               | `tests/compatibility/`                                    |
-| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 39/39                                   | `docs/`, `tests/harness/`                                 |
+| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 45/45                                   | `docs/`, `tests/harness/`                                 |
 | Component cross-browser   | complete component Playwright aggregate           | active worktree | 909 total: 907 passed, 2 intentional platform skips, 0 failures                          | `tests/components/`                                       |
 | Exact packed consumers    | WRITE plus immediate NO-WRITE replay              | active worktree | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay      | `tests/packed-consumers/evidence.json`                    |
 | Website implementation    | generated contract and site model inspection      | active worktree | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented    | `registry/generated/documentation-contract-index.v1.json` |
@@ -138,6 +142,6 @@ The phase is not marked externally blocked because substantial independent work 
 | Security and licenses     | production/high audits and license gate           | active worktree | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains           | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
 | npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved    | local npm session, `config/public-packages.json`          |
 | Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                | `tests/compatibility/matrix.v1.json`                      |
-| Visual                    | cross-commit baseline                             | `44a7829`       | provisional, four stories, no accepted review bundle                                     | `tests/visual/baseline.v1.json`                           |
+| Visual                    | reviewed cross-commit baseline                    | `2ebc3a7`       | approved review metadata and digest; four stories; local Windows diagnostic only         | `tests/visual/baseline.v1.json`                           |
 | GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                 | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
 | Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                        | `registry/generated/release-protocol/plan.json`           |

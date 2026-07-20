@@ -88,7 +88,8 @@ not published maturity.
   a fresh all-green exact CI commit, immutable release evidence, or public artifacts.
 - Coordinated website/static/browser, visual, responsive/locale breadth, compatibility, and manual
   gates have not all passed for one exact release commit.
-- The visual baseline is provisional and covers only Button, Dialog, Combobox, and Data Grid.
+- The reviewed visual baseline covers only Button, Dialog, Combobox, and Data Grid; catalog-wide
+  and release-eligible Linux visual evidence remains open.
 - Quality Passports are unreleased skeletons, not immutable public release Passports.
 - Stable promotion, npm publication, registry release, Pages deployment, and public clean-room
   verification have not occurred.
