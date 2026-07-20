@@ -192,6 +192,34 @@ export interface DataGridColumn<TData extends object> {
   readonly alignment?: DataGridColumnAlignment;
   /** Applies a consumer-supplied column width to the native column definition. */
   readonly width?: string;
+  /** Supplies localized control text when this column appears in the optional visibility panel. */
+  readonly visibilityLabel?: string;
+}
+
+export type DataGridColumnVisibility = Readonly<{
+  /** Stores the visible state for a declared column ID; omitted IDs remain visible. */
+  [columnId: string]: boolean;
+}>;
+
+export interface DataGridColumnVisibilityChangeDetail {
+  /** Identifies the column whose visibility a native checkbox changed. */
+  readonly columnId: string;
+  /** Reports the requested next visible state for that column. */
+  readonly visible: boolean;
+}
+
+export interface DataGridColumnVisibilityOptions {
+  /** Controls visible columns by ID; every omitted declared column remains visible. */
+  readonly visibility?: DataGridColumnVisibility;
+  /** Initializes uncontrolled visible columns by ID; every omitted declared column remains visible. */
+  readonly defaultVisibility?: DataGridColumnVisibility;
+  /** Reports an explicit requested column-visibility map and the native checkbox cause. */
+  readonly onVisibilityChange?: (
+    visibility: DataGridColumnVisibility,
+    detail: DataGridColumnVisibilityChangeDetail,
+  ) => void;
+  /** Names the optional native disclosure that contains visibility checkboxes. */
+  readonly label?: string;
 }
 
 export interface DataGridSelectionChangeDetail {
@@ -222,6 +250,8 @@ interface DataGridCommonProps<TData extends object> extends Omit<
   readonly emptyContent?: ReactNode;
   /** Styles the outer scroll region without replacing table semantics. */
   readonly className?: string;
+  /** Enables optional controlled or uncontrolled native column-visibility controls. */
+  readonly columnVisibility?: false | DataGridColumnVisibilityOptions;
 }
 
 interface DataGridSelectionDisabledProps {
@@ -611,6 +641,47 @@ function sameQuery(left: DataGridQuery, right: DataGridQuery): boolean {
   );
 }
 
+function sameColumnVisibility(
+  left: DataGridColumnVisibility,
+  right: DataGridColumnVisibility,
+): boolean {
+  const leftEntries = Object.entries(left);
+  const rightEntries = Object.entries(right);
+  return (
+    leftEntries.length === rightEntries.length &&
+    leftEntries.every(([columnId, visible]) => right[columnId] === visible)
+  );
+}
+
+function resolveColumnVisibility<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnVisibility | undefined,
+): DataGridColumnVisibility {
+  return Object.fromEntries(columns.map((column) => [column.id, requested?.[column.id] ?? true]));
+}
+
+function assertColumnVisibility<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnVisibility | undefined,
+  label: string,
+): void {
+  if (requested === undefined) return;
+  const knownColumnIds = new Set(columns.map((column) => column.id));
+  for (const [columnId, visible] of Object.entries(requested)) {
+    if (!knownColumnIds.has(columnId)) {
+      throw new Error(
+        `Mergora DataGrid ${label} contains unknown column ${JSON.stringify(columnId)}.`,
+      );
+    }
+    if (typeof visible !== "boolean") {
+      throw new TypeError(`Mergora DataGrid ${label}.${columnId} must be a boolean.`);
+    }
+  }
+  if (!Object.values(resolveColumnVisibility(columns, requested)).some(Boolean)) {
+    throw new Error(`Mergora DataGrid ${label} must keep at least one column visible.`);
+  }
+}
+
 function resetPagination(
   pagination: DataGridPaginationState | null,
 ): DataGridPaginationState | null {
@@ -699,6 +770,51 @@ function assertPartialQuery(value: unknown, label: string, complete = false): vo
 
 /** @internal Runtime guard for untyped JavaScript and spread-prop call sites. */
 export function assertDataGridConfiguration(props: Readonly<Record<string, unknown>>): void {
+  if (
+    props.columnVisibility !== undefined &&
+    props.columnVisibility !== false &&
+    !isPlainObject(props.columnVisibility)
+  ) {
+    throw new TypeError("Mergora DataGrid columnVisibility must be false or an options object.");
+  }
+  if (isPlainObject(props.columnVisibility)) {
+    const columnVisibility = props.columnVisibility;
+    if (columnVisibility.visibility !== undefined && !isPlainObject(columnVisibility.visibility)) {
+      throw new TypeError("Mergora DataGrid columnVisibility.visibility must be a plain object.");
+    }
+    if (
+      columnVisibility.defaultVisibility !== undefined &&
+      !isPlainObject(columnVisibility.defaultVisibility)
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnVisibility.defaultVisibility must be a plain object.",
+      );
+    }
+    if (
+      hasDefinedOwn(columnVisibility, "visibility") &&
+      hasDefinedOwn(columnVisibility, "defaultVisibility")
+    ) {
+      throw new Error(
+        "Mergora DataGrid controlled column visibility cannot be combined with defaultVisibility.",
+      );
+    }
+    if (
+      columnVisibility.onVisibilityChange !== undefined &&
+      typeof columnVisibility.onVisibilityChange !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnVisibility.onVisibilityChange must be a function when supplied.",
+      );
+    }
+    if (
+      columnVisibility.label !== undefined &&
+      (typeof columnVisibility.label !== "string" || columnVisibility.label.trim().length === 0)
+    ) {
+      throw new Error(
+        "Mergora DataGrid columnVisibility.label must be a non-empty string when supplied.",
+      );
+    }
+  }
   if (
     props.operationMode !== undefined &&
     props.operationMode !== "client" &&
@@ -910,6 +1026,26 @@ function validateIdentityAndOperations<TData extends object>(
       throw new Error(`Mergora DataGrid column ids must be unique. Duplicate: ${column.id}.`);
     }
     columnIds.add(column.id);
+    if (
+      column.visibilityLabel !== undefined &&
+      (typeof column.visibilityLabel !== "string" || column.visibilityLabel.trim().length === 0)
+    ) {
+      throw new Error(
+        `Mergora DataGrid column ${JSON.stringify(column.id)} visibilityLabel must be a non-empty string when supplied.`,
+      );
+    }
+  }
+  if (props.columnVisibility !== undefined && props.columnVisibility !== false) {
+    assertColumnVisibility(
+      props.columns,
+      props.columnVisibility.visibility,
+      "columnVisibility.visibility",
+    );
+    assertColumnVisibility(
+      props.columns,
+      props.columnVisibility.defaultVisibility,
+      "columnVisibility.defaultVisibility",
+    );
   }
   const rowIds = props.rows.map((row) => props.getRowId(row));
   const uniqueRowIds = new Set<string>();
@@ -1013,6 +1149,7 @@ function DataGridInner<TData extends object>(
     getRowId: _getRowId,
     caption,
     regionLabel,
+    columnVisibility = false,
     selectionMode = "none",
     selectedRowId,
     defaultSelectedRowId = null,
@@ -1052,6 +1189,14 @@ function DataGridInner<TData extends object>(
     initialQueryRef.current = normalizeDataGridQuery(defaultQuery, paginationMode);
   }
   const adapterReadRef = useRef(false);
+  const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
+  const initialColumnVisibilityRef = useRef<DataGridColumnVisibility | null>(null);
+  if (initialColumnVisibilityRef.current === null) {
+    initialColumnVisibilityRef.current = resolveColumnVisibility(
+      columns,
+      columnVisibilityOptions?.defaultVisibility,
+    );
+  }
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
     selectionMode === "single" ? defaultSelectedRowId : null,
   );
@@ -1061,6 +1206,8 @@ function DataGridInner<TData extends object>(
   const [uncontrolledQuery, setUncontrolledQuery] = useState<DataGridQuery>(
     initialQueryRef.current,
   );
+  const [uncontrolledColumnVisibility, setUncontrolledColumnVisibility] =
+    useState<DataGridColumnVisibility>(initialColumnVisibilityRef.current);
 
   useEffect(() => {
     if (
@@ -1107,6 +1254,10 @@ function DataGridInner<TData extends object>(
   ]);
 
   const currentSelection = selectedRowId === undefined ? uncontrolledSelection : selectedRowId;
+  const currentColumnVisibility = resolveColumnVisibility(
+    columns,
+    columnVisibilityOptions?.visibility ?? uncontrolledColumnVisibility,
+  );
   const sourceQuery = controlledQuery ?? uncontrolledQuery;
   if (
     paginationMode !== null &&
@@ -1149,7 +1300,10 @@ function DataGridInner<TData extends object>(
     () => toTanStackSorting(currentQuery.sorting),
     [currentQuery.sorting?.columnId, currentQuery.sorting?.direction],
   );
-  const tableState = useMemo(() => ({ sorting: tanStackSorting }), [tanStackSorting]);
+  const tableState = useMemo(
+    () => ({ columnVisibility: currentColumnVisibility, sorting: tanStackSorting }),
+    [currentColumnVisibility, tanStackSorting],
+  );
 
   const columnDefinitions = useMemo<ColumnDef<TData, unknown>[]>(
     () =>
@@ -1195,6 +1349,26 @@ function DataGridInner<TData extends object>(
       } else {
         if (sorting === undefined) setUncontrolledSorting(next);
         onSortingChange?.(next, { reason: "header" });
+      }
+    },
+    onColumnVisibilityChange: (updater) => {
+      if (columnVisibilityOptions === null) return;
+      const next = resolveColumnVisibility(
+        columns,
+        resolveUpdater(updater, currentColumnVisibility),
+      );
+      if (sameColumnVisibility(currentColumnVisibility, next)) return;
+      if (columnVisibilityOptions.visibility === undefined) {
+        setUncontrolledColumnVisibility(next);
+      }
+      const changedColumn = columns.find(
+        (column) => currentColumnVisibility[column.id] !== next[column.id],
+      );
+      if (changedColumn !== undefined) {
+        columnVisibilityOptions.onVisibilityChange?.(next, {
+          columnId: changedColumn.id,
+          visible: next[changedColumn.id]!,
+        });
       }
     },
   });
@@ -1288,6 +1462,9 @@ function DataGridInner<TData extends object>(
         if (!aggregateQueryOwnership && sorting === undefined) {
           setUncontrolledSorting(defaultSorting);
         }
+        if (columnVisibilityOptions !== null && columnVisibilityOptions.visibility === undefined) {
+          setUncontrolledColumnVisibility(initialColumnVisibilityRef.current!);
+        }
       }, 0);
     };
     form.addEventListener("reset", handleReset);
@@ -1297,6 +1474,7 @@ function DataGridInner<TData extends object>(
     controlledQuery,
     defaultSelectedRowId,
     defaultSorting,
+    columnVisibilityOptions?.visibility,
     selectedRowId,
     selectionMode,
     sorting,
@@ -1306,6 +1484,10 @@ function DataGridInner<TData extends object>(
     regionRef.current = node;
     if (typeof ref === "function") ref(node);
     else if (ref !== null) ref.current = node;
+  };
+
+  const setColumnVisible = (columnId: string, visible: boolean): void => {
+    table.setColumnVisibility({ ...currentColumnVisibility, [columnId]: visible });
   };
 
   return (
@@ -1342,6 +1524,33 @@ function DataGridInner<TData extends object>(
             }
           />
         </label>
+      ) : null}
+      {columnVisibilityOptions !== null ? (
+        <details
+          className="mrg-data-grid__column-visibility"
+          data-slot="data-grid-column-visibility"
+        >
+          <summary data-slot="data-grid-column-visibility-trigger">
+            {columnVisibilityOptions.label ?? "Columns"}
+          </summary>
+          <div data-slot="data-grid-column-visibility-options">
+            {columns.map((column) => {
+              const visible = currentColumnVisibility[column.id] ?? true;
+              const preventLastVisibleColumn = visible && visibleColumns.length <= 1;
+              return (
+                <label key={column.id} className="mrg-data-grid__column-visibility-option">
+                  <input
+                    checked={visible}
+                    disabled={isLoading || preventLastVisibleColumn}
+                    type="checkbox"
+                    onChange={(event) => setColumnVisible(column.id, event.currentTarget.checked)}
+                  />
+                  <span>{column.visibilityLabel ?? column.id}</span>
+                </label>
+              );
+            })}
+          </div>
+        </details>
       ) : null}
       <table data-slot="data-grid-table" className="mrg-data-grid__table">
         <caption>{caption}</caption>

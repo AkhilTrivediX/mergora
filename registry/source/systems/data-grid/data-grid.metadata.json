@@ -42,6 +42,24 @@
       "states": ["enhancement-enabled"]
     },
     {
+      "name": "data-grid-column-visibility",
+      "semanticElement": "details",
+      "refTarget": "HTMLDetailsElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-visibility-trigger",
+      "semanticElement": "summary",
+      "refTarget": "HTMLElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-visibility-options",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
       "name": "data-grid-pagination",
       "semanticElement": "nav",
       "refTarget": "HTMLElement",

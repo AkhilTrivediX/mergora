@@ -521,10 +521,12 @@ describe("package and source parity", () => {
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-filter-input"');
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-operation-status"');
     expect(dataGridRuntime?.content).toContain('data-slot="data-grid-query-input"');
+    expect(dataGridRuntime?.content).toContain('data-slot="data-grid-column-visibility"');
     expect(dataGridCsv?.content).toContain("export function createDataGridCsv");
     expect(dataGridCsv?.content).toContain('formulaProtection ?? "apostrophe"');
     expect(dataGridEntry?.content).toContain("createDataGridCsv");
     expect(dataGridEntry?.content).toContain("DataGridCsvOptions");
+    expect(dataGridEntry?.content).toContain("DataGridColumnVisibilityOptions");
     expect(dataGridEntry?.content).toContain("normalizeDataGridQuery");
     expect(dataGridEntry?.content).toContain("DataGridSelectionProps");
     expect(dataGridEntry?.content).toContain("DataGridSortingProps");

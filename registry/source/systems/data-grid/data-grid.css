@@ -14,6 +14,7 @@
 
   .mrg-data-grid:focus-visible,
   .mrg-data-grid__sort:focus-visible,
+  .mrg-data-grid__column-visibility summary:focus-visible,
   .mrg-data-grid :is(input, select, button):focus-visible {
     box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
       var(--mrg-component-focus-indicator-contrast-background);
@@ -46,6 +47,46 @@
     color: var(--mrg-semantic-color-foreground-primary);
     background: var(--mrg-semantic-color-background-canvas);
     font: inherit;
+  }
+
+  .mrg-data-grid__column-visibility {
+    position: sticky;
+    inset-inline-start: 0;
+    inline-size: min(100%, 26rem);
+    box-sizing: border-box;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+    background: var(--mrg-semantic-color-background-surface);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid__column-visibility summary {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    cursor: pointer;
+  }
+
+  .mrg-data-grid__column-visibility-options {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0 var(--mrg-semantic-space-inline-md) var(--mrg-semantic-space-stack-sm);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+  }
+
+  .mrg-data-grid__column-visibility-option {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+  }
+
+  .mrg-data-grid__column-visibility-option input {
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    accent-color: var(--mrg-semantic-color-brand-action);
   }
 
   .mrg-data-grid__filter input,
@@ -268,6 +309,11 @@
     .mrg-data-grid__operation-status button {
       min-block-size: var(--mrg-semantic-size-target-preferred);
     }
+
+    .mrg-data-grid__column-visibility summary,
+    .mrg-data-grid__column-visibility-option {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
   }
 
   @media (max-width: 30rem) {
@@ -313,8 +359,16 @@
       color: CanvasText;
     }
 
+    .mrg-data-grid__column-visibility,
+    .mrg-data-grid__column-visibility-options {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
     .mrg-data-grid:focus-visible,
     .mrg-data-grid__sort:focus-visible,
+    .mrg-data-grid__column-visibility summary:focus-visible,
     .mrg-data-grid :is(input, select, button):focus-visible {
       box-shadow: none;
       outline-color: Highlight;

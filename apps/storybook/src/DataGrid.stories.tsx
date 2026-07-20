@@ -5,6 +5,7 @@ import {
   createDataGridCsv,
   DataGrid,
   type DataGridColumn,
+  type DataGridColumnVisibility,
   type DataGridCsvColumn,
   type DataGridOperationStatus,
   type DataGridProps,
@@ -21,9 +22,27 @@ interface LibraryRecord {
 }
 
 const columns: readonly DataGridColumn<LibraryRecord>[] = [
-  { id: "title", header: "Record", accessor: (row) => row.title, sortable: true },
-  { id: "state", header: "State", accessor: (row) => row.state, sortable: true },
-  { id: "owner", header: "Owner", accessor: (row) => row.owner, sortable: true },
+  {
+    id: "title",
+    header: "Record",
+    accessor: (row) => row.title,
+    sortable: true,
+    visibilityLabel: "Record",
+  },
+  {
+    id: "state",
+    header: "State",
+    accessor: (row) => row.state,
+    sortable: true,
+    visibilityLabel: "State",
+  },
+  {
+    id: "owner",
+    header: "Owner",
+    accessor: (row) => row.owner,
+    sortable: true,
+    visibilityLabel: "Owner",
+  },
 ];
 
 const csvColumns: readonly DataGridCsvColumn<LibraryRecord>[] = [
@@ -43,6 +62,7 @@ const rows: readonly LibraryRecord[] = [
 
 interface LibraryGridStoryArgs {
   readonly caption: string;
+  readonly columnVisibilityEnabled: boolean;
   readonly csvExportEnabled: boolean;
   readonly rows: readonly LibraryRecord[];
   readonly selectionMode: "none" | "single";
@@ -82,6 +102,7 @@ function selectionProps(
 
 function LibraryGrid({
   caption,
+  columnVisibilityEnabled,
   csvExportEnabled,
   rows: storyRows,
   selectionMode,
@@ -110,6 +131,11 @@ function LibraryGrid({
   const grid = (
     <DataGrid<LibraryRecord>
       caption={caption}
+      columnVisibility={
+        columnVisibilityEnabled
+          ? { defaultVisibility: { owner: false }, label: "Visible fields" }
+          : false
+      }
       columns={columns}
       filtering={filteringEnabled ? { getRowText: rowSearchText } : false}
       getRowId={(row) => row.id}
@@ -211,6 +237,32 @@ function ControlledSelectionExample(): ReactElement {
       selectedRowId={selectedRowId}
       selectionMode="single"
     />
+  );
+}
+
+function ControlledColumnVisibilityExample(): ReactElement {
+  const [visibility, setVisibility] = useState<DataGridColumnVisibility>({ owner: false });
+  const [lastChange, setLastChange] = useState("initial");
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Controlled library records"
+        columnVisibility={{
+          label: "Visible fields",
+          onVisibilityChange: (next, detail) => {
+            setVisibility(next);
+            setLastChange(`${detail.columnId}:${detail.visible ? "visible" : "hidden"}`);
+          },
+          visibility,
+        }}
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={rows}
+      />
+      <output aria-live="polite" data-story-controlled-column-visibility="">
+        {lastChange}
+      </output>
+    </div>
   );
 }
 
@@ -419,6 +471,7 @@ function FormSerializationExample(): ReactElement {
       <DataGrid<LibraryRecord>
         caption="Library records"
         columns={columns}
+        columnVisibility={{ defaultVisibility: { owner: false }, label: "Visible fields" }}
         defaultSelectedRowId="artifact-1"
         filtering={{ getRowText: rowSearchText }}
         getRowId={(row) => row.id}
@@ -449,6 +502,7 @@ function FormSerializationExample(): ReactElement {
 const meta = {
   argTypes: {
     caption: { control: "text" },
+    columnVisibilityEnabled: { control: "boolean" },
     csvExportEnabled: { control: "boolean" },
     filteringEnabled: { control: "boolean" },
     formSerializationEnabled: { control: "boolean" },
@@ -466,6 +520,7 @@ const meta = {
   },
   args: {
     caption: "Library records",
+    columnVisibilityEnabled: false,
     csvExportEnabled: false,
     filteringEnabled: false,
     formSerializationEnabled: false,
@@ -492,6 +547,7 @@ export const BasicDefaults: Story = {
 
 export const RecommendedMergora: Story = {
   args: {
+    columnVisibilityEnabled: true,
     csvExportEnabled: true,
     filteringEnabled: true,
     paginationEnabled: true,
@@ -505,6 +561,10 @@ export const RecommendedMergora: Story = {
 
 export const ControlledSelection: Story = {
   render: () => <ControlledSelectionExample />,
+};
+
+export const ControlledColumnVisibility: Story = {
+  render: () => <ControlledColumnVisibilityExample />,
 };
 
 export const SemanticTable: Story = {
@@ -564,6 +624,7 @@ export const NarrowAndRtl: Story = {
     <div dir="rtl" style={{ inlineSize: 320, maxInlineSize: "100%" }}>
       <LibraryGrid
         caption="Library records"
+        columnVisibilityEnabled
         csvExportEnabled={false}
         filteringEnabled
         formSerializationEnabled={false}

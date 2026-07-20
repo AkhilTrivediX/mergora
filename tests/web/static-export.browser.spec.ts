@@ -248,6 +248,29 @@ test("critical static routes stay readable and quiet @a11y", async ({ page }) =>
   });
 });
 
+test("dense API references load on demand without weakening the documentation route", async ({
+  page,
+}) => {
+  const evidence = collectRuntimeEvidence(page);
+  const response = await page.goto("/systems/data-grid/", { waitUntil: "networkidle" });
+
+  expect(response?.status()).toBe(200);
+  const control = page.getByRole("button", { name: "Load complete API reference" });
+  await expect(control).toBeVisible();
+  await expect(page.getByText("DataGridProps declared prop reference")).toHaveCount(0);
+
+  await control.click();
+  await expect(page.getByRole("heading", { name: "Generated source anatomy" })).toBeVisible();
+  await expect(page.getByText("DataGridProps declared prop reference")).toBeVisible();
+  expect(await seriousOrCriticalViolations(page)).toEqual([]);
+  expect(evidence).toEqual({
+    consoleErrors: [],
+    failedRequests: [],
+    failingResponses: [],
+    pageErrors: [],
+  });
+});
+
 test("blocked Quality Passport keeps human, machine, and print evidence in parity @a11y", async ({
   page,
   request,

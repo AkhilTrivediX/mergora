@@ -5,14 +5,15 @@ import docsIndex from "../../../../content/generated/docs-index.json";
 import catalog from "../../../../registry/generated/catalog.json";
 import documentationContracts from "../../../../registry/generated/documentation-contract-index.v1.json";
 import implementationMatrix from "../../../../registry/generated/implementation-matrix.v1.json";
+import { DeferredApiReference } from "./deferred-api-reference";
 import { InstallBasketButton } from "./install-basket-button";
+import { DeferredSpecimenFrame } from "./deferred-specimen-frame";
 import {
   createInstallBasketCliPlan,
   CURRENT_INSTALL_BASKET_CLI_CONTEXT,
   DEFAULT_INSTALL_BASKET_OPTIONS,
 } from "./install-basket";
-import { SpecimenFrame } from "./specimen-frame";
-import { StateLab } from "./state-lab";
+import { DeferredStateLab } from "./deferred-state-lab";
 import { buildStateLabModel, type DocumentationContractItem } from "./state-lab-model";
 
 interface EvidenceReference {
@@ -289,7 +290,7 @@ export function ItemDocumentation({
             enhancedStory.modulePath !== undefined &&
             enhancedStory.exportName !== null &&
             enhancedStory.exportName !== undefined ? (
-              <SpecimenFrame
+              <DeferredSpecimenFrame
                 basic={{
                   exportName: basicStory.exportName,
                   modulePath: basicStory.modulePath,
@@ -406,7 +407,7 @@ export function ItemDocumentation({
               </p>
             </section>
           ) : (
-            <StateLab model={buildStateLabModel(documentationContract)} />
+            <DeferredStateLab model={buildStateLabModel(documentationContract)} />
           )}
 
           <section id="usage">
@@ -454,21 +455,10 @@ export function ItemDocumentation({
               These generated type surfaces are the public composition boundary. Internal DOM order
               is not implied unless the component contract records it.
             </p>
-            {api === undefined ? null : (
-              <dl className="item-artifacts">
-                {api.groups.map((group) => (
-                  <div key={group.name}>
-                    <dt>{group.name}</dt>
-                    <dd>
-                      <code>{group.sourcePath}</code>
-                      {group.heritage.length === 0
-                        ? " · locally declared surface"
-                        : ` · inherits ${group.heritage.join(" & ")}`}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            )}
+            <p>
+              The detailed generated source anatomy is available with the complete API reference
+              below, without making every documentation route parse its largest prop table up front.
+            </p>
           </section>
 
           <section id="api">
@@ -477,98 +467,7 @@ export function ItemDocumentation({
             {api === undefined ? (
               <p>Prop-level API extraction is not available because the source is still planned.</p>
             ) : (
-              <>
-                <p>{api.message}</p>
-                <p>
-                  Exports: <code>{api.exports.join(", ") || "None recorded"}</code>
-                </p>
-                <p>
-                  {api.summary.propGroups} public prop{" "}
-                  {api.summary.propGroups === 1 ? "surface" : "surfaces"}, {api.summary.props}{" "}
-                  declared props, {api.summary.describedProps} with source descriptions, and{" "}
-                  {api.summary.runtimeDefaults} runtime defaults were extracted deterministically.
-                </p>
-                {api.groups.map((group) => {
-                  const props = api.props.filter((prop) => prop.owner === group.name);
-                  return (
-                    <section className="item-api-group" key={group.name}>
-                      <header>
-                        <div>
-                          <h3>{group.name}</h3>
-                          <code>
-                            {group.declarationKind}
-                            {group.typeParameters.length > 0
-                              ? `<${group.typeParameters.join(", ")}>`
-                              : ""}
-                          </code>
-                        </div>
-                        <small>{group.sourcePath}</small>
-                      </header>
-                      {group.heritage.length > 0 ? (
-                        <p>
-                          Inherits: <code>{group.heritage.join(" & ")}</code>
-                        </p>
-                      ) : null}
-                      {props.length === 0 ? (
-                        <p>
-                          This part adds no locally declared props; its inherited public surface is
-                          shown above.
-                        </p>
-                      ) : (
-                        <div
-                          aria-label={`${group.name} API table, scrollable when needed`}
-                          className="item-api-table-scroll"
-                          role="region"
-                          tabIndex={0}
-                        >
-                          <table className="item-api-table">
-                            <caption>{group.name} declared prop reference</caption>
-                            <thead>
-                              <tr>
-                                <th scope="col">Prop</th>
-                                <th scope="col">Type</th>
-                                <th scope="col">Default</th>
-                                <th scope="col">Contract signals</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {props.map((prop) => (
-                                <tr key={prop.name}>
-                                  <th data-label="Prop" scope="row">
-                                    <code>{prop.name}</code>
-                                    <span>
-                                      {prop.description ?? "Curated description requires review."}
-                                    </span>
-                                  </th>
-                                  <td data-label="Type">
-                                    <code>{prop.type}</code>
-                                  </td>
-                                  <td data-label="Default">
-                                    <code>
-                                      {prop.defaultValue ??
-                                        (prop.required ? "required" : prop.defaultStatus)}
-                                    </code>
-                                  </td>
-                                  <td data-label="Contract signals">
-                                    <span>{statusLabel(prop.runtimeBoundary)}</span>
-                                    <span>{statusLabel(prop.semanticContract)}</span>
-                                    <span>{statusLabel(prop.localizationBehavior)}</span>
-                                    {prop.controlledPair === null ? null : (
-                                      <span>
-                                        paired with <code>{prop.controlledPair}</code>
-                                      </span>
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      )}
-                    </section>
-                  );
-                })}
-              </>
+              <DeferredApiReference id={id} />
             )}
             <dl className="item-artifacts">
               {Object.entries(matrix.packageSourceShadcnParity.artifacts).map(([name, path]) => (

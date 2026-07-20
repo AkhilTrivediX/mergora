@@ -24,6 +24,33 @@ consumer enables those capabilities.
 collection. A supplied sort must identify a column explicitly marked `sortable`. These guards fail
 before row or query callbacks are consumed.
 
+## Optional column visibility
+
+Native column-visibility controls are off by default. Enable them only when readers benefit from
+tailoring a dense semantic table; the enhancement uses a native disclosure and labelled checkboxes,
+so it does not turn the default table into an ARIA grid:
+
+```tsx
+<DataGrid
+  {...props}
+  columnVisibility={{
+    defaultVisibility: { internalNotes: false },
+    label: "Visible fields",
+  }}
+/>
+```
+
+`visibility` controls the map, `defaultVisibility` initializes uncontrolled state, and
+`onVisibilityChange` receives the complete next map plus the changed column. Omitted declared
+columns remain visible. A map cannot mention unknown columns or hide every data column; the final
+visible checkbox is disabled instead. Toggling a field removes its scoped header and each matching
+cell together, while the caption, native table semantics, sorting, selection, query state, and form
+behavior remain intact. Native form reset restores uncontrolled defaults without callbacks.
+
+Set `columnVisibility={false}` or omit it to remove the disclosure, checkboxes, visibility state,
+callbacks, and all related accessibility output. Give a column a localized `visibilityLabel` when
+its stable ID is not suitable for checkbox text.
+
 ## Mergora query operations
 
 Filtering, numbered pagination, deterministic persistence, a canonical hidden form value, and the

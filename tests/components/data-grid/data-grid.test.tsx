@@ -280,6 +280,37 @@ describe("Data Grid Experimental canonical source", () => {
     expect(html).toContain("No scores");
   });
 
+  it("keeps optional column visibility native, atomic, and absent when disabled", () => {
+    const basic = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+        columns={columns}
+        getRowId={(row) => row.id}
+      />,
+    );
+    expect(basic).not.toContain("data-grid-column-visibility");
+    expect(basic).toContain(">Asha<");
+    expect(basic).toContain(">9<");
+
+    const enhanced = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+        columns={columns}
+        columnVisibility={{ defaultVisibility: { score: false }, label: "Visible score fields" }}
+        getRowId={(row) => row.id}
+      />,
+    );
+    expect(enhanced).toContain('data-slot="data-grid-column-visibility"');
+    expect(enhanced).toContain("Visible score fields");
+    expect(enhanced).toContain('type="checkbox"');
+    expect(enhanced).toContain(">name<");
+    expect(enhanced).toContain(">score<");
+    expect(enhanced).toContain(">Asha<");
+    expect(enhanced).not.toContain(">9<");
+  });
+
   it("removes disabled and empty optional selection-summary output from SSR", () => {
     const basic = renderToStaticMarkup(
       <DataGrid
@@ -499,6 +530,34 @@ describe("Data Grid Experimental canonical source", () => {
       /renderSelectionSummary requires selectionMode/u,
     );
     expect(summary).not.toHaveBeenCalled();
+
+    expect(() =>
+      assertDataGridConfiguration({
+        columnVisibility: { defaultVisibility: { score: false }, visibility: { name: true } },
+      }),
+    ).toThrow(/controlled column visibility cannot be combined/u);
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columns={columns}
+          columnVisibility={{ visibility: { missing: true } }}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/unknown column/u);
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columns={columns}
+          columnVisibility={{ visibility: { name: false, score: false } }}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/at least one column visible/u);
   });
 
   it("treats explicit undefined as omission and rejects non-plain option objects", () => {

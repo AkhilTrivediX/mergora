@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, adapter persistence, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or uncontrolled native column visibility with a last-column safeguard, adapter persistence, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -50,7 +50,8 @@
           "form-serialization",
           "native-single-selection",
           "selection-summary",
-          "safe-csv-export"
+          "safe-csv-export",
+          "column-visibility"
         ]
       },
       "visualSignature": {
@@ -416,6 +417,42 @@
             "events": "No export callback or consumer-owned side effect can occur.",
             "accessibility": "No export control, status, preview, announcement, or hidden value is exposed."
           }
+        },
+        {
+          "id": "column-visibility",
+          "status": "evidence-backed",
+          "summary": "Consumers can independently enable a controlled or uncontrolled native disclosure of localized column checkboxes; hidden columns remove their scoped headers and cells atomically, and the last visible data column remains protected.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["columnVisibilityEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": ["columnVisibility", "visibilityLabel"],
+            "enableWhen": "Provide columnVisibility options; omit it or pass false to retain the plain table."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No disclosure, summary, checkbox, or visibility label is rendered.",
+            "behavior": "All declared columns remain visible; no visibility state transition or native reset handling occurs.",
+            "events": "No visibility callback can fire.",
+            "accessibility": "No column-visibility disclosure or checkbox is exposed."
+          }
         }
       ],
       "storybook": {
@@ -434,7 +471,8 @@
             "formSerializationEnabled",
             "selectionMode",
             "showSelectionSummary",
-            "csvExportEnabled"
+            "csvExportEnabled",
+            "columnVisibilityEnabled"
           ],
           "references": [
             {
@@ -462,7 +500,8 @@
             "formSerializationEnabled",
             "selectionMode",
             "showSelectionSummary",
-            "csvExportEnabled"
+            "csvExportEnabled",
+            "columnVisibilityEnabled"
           ],
           "references": [
             {

@@ -43,26 +43,8 @@ export function SpecimenFrame({
   const [stories, setStories] = useState<ResolvedStories | null>(null);
   const [theme, setTheme] = useState("light");
   const [viewport, setViewport] = useState<SpecimenViewport>("responsive");
-  const canvasRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const resetPendingRef = useRef(false);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas === null) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setShouldLoad(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry?.isIntersecting !== true) return;
-      setShouldLoad(true);
-      observer.disconnect();
-    });
-    observer.observe(canvas);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!shouldLoad) return;
@@ -221,9 +203,14 @@ export function SpecimenFrame({
         >
           {resetPending ? "Resetting example" : "Reset example"}
         </button>
+        {shouldLoad ? null : (
+          <button onClick={() => setShouldLoad(true)} type="button">
+            Load live specimen
+          </button>
+        )}
         <a href={qualityLabSource}>Open controls in Quality Lab</a>
       </div>
-      <div className="specimen-frame__canvas" data-viewport={viewport} ref={canvasRef}>
+      <div className="specimen-frame__canvas" data-viewport={viewport}>
         {error === null ? null : (
           <p className="specimen-frame__status" role="alert">
             {error} The evidence labels below remain available.
@@ -233,7 +220,7 @@ export function SpecimenFrame({
           <p aria-live="polite" className="specimen-frame__status">
             {shouldLoad
               ? "Loading the precompiled specimen…"
-              : "The live specimen loads when its canvas enters the viewport."}
+              : "Activate Load live specimen to start the interactive example."}
           </p>
         ) : null}
         {iframeSource === null ? null : (

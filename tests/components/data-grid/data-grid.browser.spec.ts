@@ -72,6 +72,7 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   await expect(page.locator('[data-slot="data-grid-operation-status"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-query-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-selection-input"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="data-grid-column-visibility"]')).toHaveCount(0);
   await expect(page.locator("[data-story-controlled-form-data]")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Prepare safe CSV" })).toHaveCount(0);
   await expect(page.locator("[data-story-csv-preview]")).toHaveCount(0);
@@ -89,6 +90,7 @@ test("Storybook controls enable independent enhancements without creating illega
     "basic-defaults",
     [
       "filteringEnabled:true",
+      "columnVisibilityEnabled:true",
       "csvExportEnabled:true",
       "formSerializationEnabled:true",
       "operationMode:manual",
@@ -101,6 +103,11 @@ test("Storybook controls enable independent enhancements without creating illega
     ].join(";"),
   );
   await expect(page.getByRole("searchbox", { name: "Filter records" })).toBeVisible();
+  await page.getByText("Visible fields", { exact: true }).click();
+  const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
+  await expect(ownerVisibility).not.toBeChecked();
+  await ownerVisibility.check();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toBeVisible();
   await page.getByRole("button", { name: "Prepare safe CSV" }).click();
   await expect(page.locator("[data-story-csv-preview]")).toContainText("Record,State,Owner");
   await expect(page.locator("[data-story-csv-preview]")).toContainText("Design tokens,Ready,Asha");
@@ -138,6 +145,10 @@ test("recommended DataGrid filters, pages, persists query changes, and keeps sel
 
   await page.getByRole("button", { name: "Prepare safe CSV" }).click();
   await expect(page.locator("[data-story-csv-preview]")).toContainText("Record,State,Owner");
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
+  await page.getByText("Visible fields", { exact: true }).click();
+  await page.getByRole("checkbox", { name: "Owner" }).check();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toBeVisible();
 
   await expect(page.getByRole("radio", { name: "Select Icon exports" })).toBeChecked();
   await expect(selectionSummary).toContainText("Selected Icon exports");
@@ -195,6 +206,19 @@ test("controlled query reports filter, sort, and page changes without internal d
   await expect(evidence).toContainText("reason=sort");
 });
 
+test("controlled column visibility reports native checkbox changes without orphan cells", async ({
+  page,
+}) => {
+  await openStory(page, "controlled-column-visibility");
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
+  await page.getByText("Visible fields", { exact: true }).click();
+  await page.getByRole("checkbox", { name: "Owner" }).check();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toBeVisible();
+  await expect(page.locator("[data-story-controlled-column-visibility]")).toHaveText(
+    "owner:visible",
+  );
+});
+
 test("manual page mode never slices consumer-owned rows and delegates page changes", async ({
   page,
 }) => {
@@ -250,6 +274,11 @@ test("loading and error states retain rows, expose recovery, and restore useful 
 test("single selection participates in exact FormData and native reset", async ({ page }) => {
   await openStory(page, "form-serialization-and-reset");
   const filter = page.getByRole("searchbox", { name: "Filter records" });
+  await page.getByText("Visible fields", { exact: true }).click();
+  const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
+  await expect(ownerVisibility).not.toBeChecked();
+  await ownerVisibility.check();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toBeVisible();
   await filter.fill("Review");
   await page.getByRole("button", { name: "Inspect FormData" }).click();
   await expect(page.locator("[data-story-form-data]")).toHaveText(
@@ -267,11 +296,14 @@ test("single selection participates in exact FormData and native reset", async (
   });
   await page.getByRole("button", { name: "Reset records form" }).click();
   await expect(filter).toHaveValue("Review");
+  await expect(ownerVisibility).toBeChecked();
   await expect(page.getByRole("radio", { name: "Select Icon exports" })).toBeChecked();
   await expect(page.locator("[data-story-form-events]")).toHaveText(eventsBeforeReset ?? "");
 
   await page.getByRole("button", { name: "Reset records form" }).click();
   await expect(filter).toHaveValue("");
+  await expect(ownerVisibility).not.toBeChecked();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
   await expect(page.getByRole("radio", { name: "Select Design tokens" })).toBeChecked();
   await page.getByRole("button", { name: "Inspect FormData" }).click();
   await expect(page.locator("[data-story-form-data]")).toHaveText(
