@@ -74,6 +74,7 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   await expect(page.locator('[data-slot="data-grid-selection-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-column-visibility"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-column-sizing-control"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="data-grid-column-ordering-controls"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-detail-trigger"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-detail-row"]')).toHaveCount(0);
   await expect(page.locator("[data-story-controlled-form-data]")).toHaveCount(0);
@@ -119,6 +120,7 @@ test("Storybook controls enable independent enhancements without creating illega
       "columnVisibilityEnabled:true",
       "columnVisibilityPersistenceEnabled:true",
       "columnSizingEnabled:true",
+      "columnOrderingEnabled:true",
       "detailRowsEnabled:true",
       "csvExportEnabled:true",
       "formSerializationEnabled:true",
@@ -133,6 +135,7 @@ test("Storybook controls enable independent enhancements without creating illega
   );
   await expect(page.getByRole("searchbox", { name: "Filter records" })).toBeVisible();
   await expect(page.getByRole("slider", { name: "Adjust Record width" })).toHaveValue("256");
+  await expect(page.getByRole("button", { name: "Move State earlier" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Hide details for Icon exports" })).toBeVisible();
   await page.getByText("Visible fields", { exact: true }).click();
   const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
@@ -278,6 +281,24 @@ test("controlled column sizing reports native range changes without interactive 
   expect(await axeViolations(page)).toEqual([]);
 });
 
+test("controlled column ordering uses native buttons without drag-only semantics", async ({
+  page,
+}) => {
+  await openStory(page, "controlled-column-ordering");
+  const firstRowCells = page
+    .locator('[data-slot="data-grid-row"]')
+    .first()
+    .locator('[data-slot="data-grid-cell"]');
+  await expect(firstRowCells).toHaveText(["Design tokens", "Ready", "Asha"]);
+  const moveRecordLater = page.getByRole("button", { name: "Move Record later" });
+  await moveRecordLater.focus();
+  await page.keyboard.press("Enter");
+  await expect(firstRowCells).toHaveText(["Ready", "Design tokens", "Asha"]);
+  await expect(page.locator("[data-story-controlled-column-ordering]")).toHaveText("title:next");
+  await expect(page.getByRole("grid")).toHaveCount(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("controlled detail rows use native disclosure buttons without grid semantics", async ({
   page,
 }) => {
@@ -397,6 +418,13 @@ test("single selection participates in exact FormData and native reset", async (
   await recordWidth.focus();
   await page.keyboard.press("ArrowRight");
   await expect(recordWidth).toHaveValue("272");
+  const firstRowCells = page
+    .locator('[data-slot="data-grid-row"]')
+    .first()
+    .locator('[data-slot="data-grid-cell"]');
+  await expect(firstRowCells).toHaveText(["Mina", "Icon exports", "Review"]);
+  await page.getByRole("button", { name: "Move Record later" }).click();
+  await expect(firstRowCells).toHaveText(["Mina", "Review", "Icon exports"]);
   await expect(page.locator("[data-story-form-events]")).toHaveText(eventsBeforeReset ?? "");
 
   await page.getByRole("button", { name: "Reset records form" }).click();
@@ -405,6 +433,7 @@ test("single selection participates in exact FormData and native reset", async (
   await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
   await expect(page.getByRole("radio", { name: "Select Design tokens" })).toBeChecked();
   await expect(recordWidth).toHaveValue("256");
+  await expect(firstRowCells).toHaveText(["Design tokens", "Ready"]);
   await expect(page.getByRole("button", { name: "Hide details for Design tokens" })).toBeVisible();
   await page.getByRole("button", { name: "Inspect FormData" }).click();
   await expect(page.locator("[data-story-form-data]")).toHaveText(
@@ -491,7 +520,7 @@ test("DataGrid reflows at 320px in RTL and promotes coarse-pointer controls", as
 
   const undersized = await page
     .locator(
-      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-column-sizing-input"], [data-slot="data-grid-detail-trigger"], [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
+      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-column-sizing-input"], [data-slot="data-grid-column-ordering-controls"] button, [data-slot="data-grid-detail-trigger"], [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
     )
     .evaluateAll((elements) =>
       elements
@@ -524,6 +553,14 @@ test("forced colors retain boundaries and reduced motion removes row transitions
     });
   expect(evidence.background).not.toBe("rgba(0, 0, 0, 0)");
   expect(evidence.transition).toBe("0s");
+  const orderingButtonStyles = await page
+    .getByRole("button", { name: "Move State earlier" })
+    .evaluate((button) => {
+      const styles = getComputedStyle(button);
+      return { background: styles.backgroundColor, border: styles.borderTopColor };
+    });
+  expect(orderingButtonStyles.background).not.toBe("rgba(0, 0, 0, 0)");
+  expect(orderingButtonStyles.border).not.toBe("rgba(0, 0, 0, 0)");
   const violations = await axeViolations(page);
   expect(violations.filter(({ id }) => id !== "color-contrast")).toEqual([]);
   expect(runtimeFailures.get(page) ?? []).toEqual([]);

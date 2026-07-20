@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing, semantic detail rows, and fixed-row large-data virtualization, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing and native button-based column ordering, semantic detail rows, and fixed-row large-data virtualization, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -54,6 +54,7 @@
           "column-visibility",
           "column-visibility-persistence",
           "column-sizing",
+          "column-ordering",
           "detail-rows",
           "large-data-virtualization"
         ]
@@ -547,6 +548,47 @@
           }
         },
         {
+          "id": "column-ordering",
+          "status": "evidence-backed",
+          "summary": "Consumers can independently enable controlled or uncontrolled declared-column ordering through labelled native Earlier and Later buttons, retaining semantic table headers and restoring the original uncontrolled order on native form reset.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["columnOrderingEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "columnOrdering",
+              "columnOrdering.order",
+              "columnOrdering.defaultOrder",
+              "columnOrdering.onOrderChange"
+            ],
+            "enableWhen": "Provide columnOrdering with a complete unique declared-column order to control or initialize it; omit it or pass false to retain declaration order and no ordering controls."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No earlier/later ordering group or ordering buttons are rendered.",
+            "behavior": "Columns render in their declared order; no ordering state or native reset handling is active.",
+            "events": "No column-order callback can fire.",
+            "accessibility": "No ordering group, buttons, disabled state, or ordering-specific accessible name is exposed."
+          }
+        },
+        {
           "id": "detail-rows",
           "status": "evidence-backed",
           "summary": "Consumers can independently add controlled or uncontrolled expanded source-row IDs with an individually labelled native disclosure button and consumer-owned detail content in an adjacent semantic table row; native form reset restores the original uncontrolled expansion without adding ARIA-grid behavior.",
@@ -655,6 +697,7 @@
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
             "columnSizingEnabled",
+            "columnOrderingEnabled",
             "detailRowsEnabled",
             "virtualizationEnabled"
           ],
@@ -688,6 +731,7 @@
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
             "columnSizingEnabled",
+            "columnOrderingEnabled",
             "detailRowsEnabled",
             "virtualizationEnabled"
           ],
@@ -705,7 +749,7 @@
       },
       "accessibilityEvidence": {
         "status": "partial",
-        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, labelled native detail disclosure, bounded fixed-row viewport and optional range status, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
+        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, labelled native column-ordering and detail-disclosure controls, bounded fixed-row viewport and optional range status, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
         "references": [
           {
             "kind": "repository-file",

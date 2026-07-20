@@ -5,6 +5,7 @@ import {
   createDataGridCsv,
   DataGrid,
   type DataGridColumn,
+  type DataGridColumnOrder,
   type DataGridColumnVisibility,
   type DataGridCsvColumn,
   type DataGridOperationStatus,
@@ -65,6 +66,7 @@ const rows: readonly LibraryRecord[] = [
 
 interface LibraryGridStoryArgs {
   readonly caption: string;
+  readonly columnOrderingEnabled: boolean;
   readonly columnSizingEnabled: boolean;
   readonly detailRowsEnabled: boolean;
   readonly columnVisibilityEnabled: boolean;
@@ -118,6 +120,7 @@ function selectionProps(
 
 function LibraryGrid({
   caption,
+  columnOrderingEnabled,
   columnSizingEnabled,
   detailRowsEnabled,
   columnVisibilityEnabled,
@@ -161,6 +164,7 @@ function LibraryGrid({
   const grid = (
     <DataGrid<LibraryRecord>
       caption={caption}
+      columnOrdering={columnOrderingEnabled ? { defaultOrder: ["state", "title", "owner"] } : false}
       columnSizing={columnSizingEnabled ? { defaultWidths: { owner: 160 } } : false}
       detailRows={
         detailRowsEnabled && !virtualizationEnabled
@@ -337,6 +341,31 @@ function ControlledColumnSizingExample(): ReactElement {
         rows={rows}
       />
       <output aria-live="polite" data-story-controlled-column-sizing="">
+        {lastChange}
+      </output>
+    </div>
+  );
+}
+
+function ControlledColumnOrderingExample(): ReactElement {
+  const [order, setOrder] = useState<DataGridColumnOrder>(["title", "state", "owner"]);
+  const [lastChange, setLastChange] = useState("initial");
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Controlled library record order"
+        columnOrdering={{
+          onOrderChange: (next, detail) => {
+            setOrder(next);
+            setLastChange(`${detail.columnId}:${detail.direction}`);
+          },
+          order,
+        }}
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={rows}
+      />
+      <output aria-live="polite" data-story-controlled-column-ordering="">
         {lastChange}
       </output>
     </div>
@@ -644,6 +673,7 @@ function FormSerializationExample(): ReactElement {
     <form onSubmit={inspect} style={{ display: "grid", gap: "0.75rem" }}>
       <DataGrid<LibraryRecord>
         caption="Library records"
+        columnOrdering={{ defaultOrder: ["owner", "title", "state"] }}
         columnSizing={{ defaultWidths: { title: 256 } }}
         columns={columns}
         detailRows={{
@@ -683,6 +713,7 @@ function FormSerializationExample(): ReactElement {
 const meta = {
   argTypes: {
     caption: { control: "text" },
+    columnOrderingEnabled: { control: "boolean" },
     columnSizingEnabled: { control: "boolean" },
     detailRowsEnabled: { control: "boolean" },
     columnVisibilityEnabled: { control: "boolean" },
@@ -705,6 +736,7 @@ const meta = {
   },
   args: {
     caption: "Library records",
+    columnOrderingEnabled: false,
     columnSizingEnabled: false,
     detailRowsEnabled: false,
     columnVisibilityEnabled: false,
@@ -736,6 +768,7 @@ export const BasicDefaults: Story = {
 
 export const RecommendedMergora: Story = {
   args: {
+    columnOrderingEnabled: true,
     columnSizingEnabled: true,
     detailRowsEnabled: true,
     columnVisibilityEnabled: true,
@@ -761,6 +794,10 @@ export const ControlledColumnVisibility: Story = {
 
 export const ControlledColumnSizing: Story = {
   render: () => <ControlledColumnSizingExample />,
+};
+
+export const ControlledColumnOrdering: Story = {
+  render: () => <ControlledColumnOrderingExample />,
 };
 
 export const ControlledDetailRows: Story = {
@@ -832,6 +869,7 @@ export const NarrowAndRtl: Story = {
     <div dir="rtl" style={{ inlineSize: 320, maxInlineSize: "100%" }}>
       <LibraryGrid
         caption="Library records"
+        columnOrderingEnabled
         columnSizingEnabled
         detailRowsEnabled
         columnVisibilityEnabled

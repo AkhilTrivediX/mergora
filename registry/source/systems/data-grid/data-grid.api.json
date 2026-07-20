@@ -35,6 +35,18 @@
     },
     {
       "kind": "type",
+      "name": "DataGridColumnOrder"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnOrderingChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnOrderingOptions"
+    },
+    {
+      "kind": "type",
       "name": "DataGridDetailRowsChangeDetail"
     },
     {
@@ -245,6 +257,11 @@
       "name": "columnSizing",
       "required": false,
       "type": "false | DataGridColumnSizingOptions"
+    },
+    {
+      "name": "columnOrdering",
+      "required": false,
+      "type": "false | DataGridColumnOrderingOptions"
     },
     {
       "name": "detailRows",

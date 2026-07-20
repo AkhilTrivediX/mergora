@@ -218,6 +218,25 @@
     color: var(--mrg-semantic-color-brand-action);
   }
 
+  .mrg-data-grid__column-ordering-controls {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-data-grid__column-ordering-controls button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    padding-inline: var(--mrg-semantic-space-inline-sm);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    cursor: pointer;
+  }
+
   .mrg-data-grid tr[data-selected] td {
     color: var(--mrg-component-data-grid-selection-foreground);
     background: var(--mrg-component-data-grid-selection-background);
@@ -356,6 +375,10 @@
       min-block-size: var(--mrg-semantic-size-target-preferred);
     }
 
+    .mrg-data-grid__column-ordering-controls button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+
     .mrg-data-grid__column-visibility summary,
     .mrg-data-grid__column-visibility-option {
       min-block-size: var(--mrg-semantic-size-target-preferred);
@@ -407,6 +430,12 @@
       border-color: CanvasText;
       background: Canvas;
       color: CanvasText;
+    }
+
+    .mrg-data-grid__column-ordering-controls button {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
     }
 
     .mrg-data-grid__column-visibility,
