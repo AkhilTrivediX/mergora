@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { resolve } from "node:path";
 
@@ -60,7 +60,8 @@ describe("fixed package-manager policy", () => {
     expect(invocation).toEqual({
       executable: manager,
       arguments: expectedArguments,
-      cwd: project.root,
+      // macOS exposes /var through /private/var; subprocesses receive the physical path.
+      cwd: realpathSync.native(project.root),
     });
     expect(invocation?.arguments).not.toContain("--scripts");
     expect(readFileSync(lockPath)).toEqual(lockBefore);

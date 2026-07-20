@@ -702,10 +702,14 @@ function validateSelections(options: ProjectCreateOptions): void {
   }
 }
 
-function pathEquivalent(left: string, right: string): boolean {
-  return process.platform === "win32"
-    ? left.toLocaleLowerCase("en-US") === right.toLocaleLowerCase("en-US")
-    : left === right;
+function hasSymbolicLinkAncestor(path: string): boolean {
+  let current = path;
+  while (true) {
+    if (lstatSync(current).isSymbolicLink()) return true;
+    const parent = dirname(current);
+    if (parent === current) return false;
+    current = parent;
+  }
 }
 
 function destination(options: ProjectCreateOptions): {
@@ -761,13 +765,13 @@ function destination(options: ProjectCreateOptions): {
       exitCode: 5,
     });
   }
-  const parent = realpathSync.native(unresolvedParent);
-  if (!pathEquivalent(parent, unresolvedParent)) {
+  if (hasSymbolicLinkAncestor(unresolvedParent)) {
     throw new CliError("Creation refuses a destination reached through symbolic-link ancestors.", {
       code: "CREATE_PARENT_UNSAFE",
       exitCode: 5,
     });
   }
+  const parent = realpathSync.native(unresolvedParent);
   return { parent, target: resolve(parent, targetName), targetName };
 }
 

@@ -460,13 +460,13 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
     resolve(fixtureDirectory, "src/app/interactive.tsx"),
     `"use client";
 
-export { CompatibilitySurface as InteractiveCompatibilitySurface } from "../type-boundary.js";
+export { CompatibilitySurface as InteractiveCompatibilitySurface } from "../type-boundary";
 `,
   );
   write(
     resolve(fixtureDirectory, "src/app/page.tsx"),
     `import { Button } from "mergora-ui/button";
-import { InteractiveCompatibilitySurface } from "./interactive.js";
+import { InteractiveCompatibilitySurface } from "./interactive";
 
 export default function Page() {
   return <main><Button>Server-safe import</Button><InteractiveCompatibilitySurface /></main>;

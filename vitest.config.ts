@@ -3,7 +3,10 @@ import { fileURLToPath } from "node:url";
 
 import { defineConfig } from "vitest/config";
 
-const workerLimit = Math.max(1, Math.min(8, availableParallelism()));
+const workerLimit =
+  process.platform === "win32" && process.env.CI === "true"
+    ? 2
+    : Math.max(1, Math.min(8, availableParallelism()));
 
 export default defineConfig({
   resolve: {

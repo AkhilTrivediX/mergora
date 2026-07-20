@@ -22,7 +22,7 @@
     "frameworks": {
       "next": {
         "primary": "16.2.10",
-        "react18Compatibility": "15.5.9"
+        "react18Compatibility": "14.2.35"
       },
       "vite": {
         "previousProbe": "7.3.6",
@@ -40,9 +40,9 @@
   },
   "frameworkProfiles": [
     {
-      "id": "next15-r18-ts59",
+      "id": "next14-r18-ts59",
       "framework": "next",
-      "frameworkVersion": "15.5.9",
+      "frameworkVersion": "14.2.35",
       "reactVersion": "18.3.1",
       "reactTypesVersion": "18.3.27",
       "reactDomTypesVersion": "18.3.7",
@@ -51,9 +51,9 @@
       "managerVersion": "11.17.0"
     },
     {
-      "id": "next15-r18-ts60",
+      "id": "next14-r18-ts60",
       "framework": "next",
-      "frameworkVersion": "15.5.9",
+      "frameworkVersion": "14.2.35",
       "reactVersion": "18.3.1",
       "reactTypesVersion": "18.3.27",
       "reactDomTypesVersion": "18.3.7",
