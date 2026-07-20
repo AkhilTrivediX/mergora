@@ -73,6 +73,14 @@ export interface UiPackageManifest {
   readonly version: "0.0.0";
   readonly private: true;
   readonly description: string;
+  readonly license: "MIT";
+  readonly repository: {
+    readonly type: "git";
+    readonly url: "git+https://github.com/AkhilTrivediX/mergora.git";
+    readonly directory: "packages/ui";
+  };
+  readonly homepage: "https://akhiltrivedix.github.io/mergora/";
+  readonly bugs: "https://github.com/AkhilTrivediX/mergora/issues";
   readonly type: "module";
   readonly sideEffects: readonly ["**/*.css"];
   readonly exports: Readonly<Record<string, unknown>>;
@@ -221,7 +229,7 @@ export function buildPackageExportPlan(
               ? ("blocked-unimplemented" as const)
               : ("generated-unreleased" as const),
           emittedExport:
-            source === undefined
+            !packagePlanned || source === undefined
               ? null
               : {
                   types: distTypes(source),
@@ -235,11 +243,17 @@ export function buildPackageExportPlan(
 
 export function buildUiPackageManifest(
   packageMap: PublicPackageMap,
+  definitions: readonly PackageCatalogDefinition[],
   sources: readonly PackageSourceDescriptor[],
 ): UiPackageManifest {
-  const ordered = [...sourceMap(sources).values()].sort((left, right) =>
-    left.id.localeCompare(right.id, "en-US"),
+  const packagePlanned = new Set(
+    definitions
+      .filter((definition) => definition.availabilityIntent.package === "planned")
+      .map((definition) => definition.id),
   );
+  const ordered = [...sourceMap(sources).values()]
+    .filter((source) => packagePlanned.has(source.id))
+    .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
   const exports: Record<string, unknown> = {
     ".": {
       types: "./dist/index.d.ts",
@@ -251,7 +265,11 @@ export function buildUiPackageManifest(
       types: distTypes(source),
       import: distEntry(source),
     };
-    exports[`./${source.id}.css`] = distStyle(source);
+    exports[`./${source.id}.css`] = {
+      types: "./dist/style.d.ts",
+      style: distStyle(source),
+      default: distStyle(source),
+    };
   }
   exports["./package.json"] = "./package.json";
 
@@ -264,6 +282,14 @@ export function buildUiPackageManifest(
     version: "0.0.0",
     private: true,
     description: "Generated Mergora React components from the canonical source registry",
+    license: "MIT",
+    repository: {
+      type: "git",
+      url: "git+https://github.com/AkhilTrivediX/mergora.git",
+      directory: "packages/ui",
+    },
+    homepage: "https://akhiltrivedix.github.io/mergora/",
+    bugs: "https://github.com/AkhilTrivediX/mergora/issues",
     type: "module",
     sideEffects: ["**/*.css"],
     exports,
@@ -298,8 +324,17 @@ export function buildUiPackageManifest(
   };
 }
 
-export function buildUiPackageIndex(sources: readonly PackageSourceDescriptor[]): string {
+export function buildUiPackageIndex(
+  definitions: readonly PackageCatalogDefinition[],
+  sources: readonly PackageSourceDescriptor[],
+): string {
+  const packagePlanned = new Set(
+    definitions
+      .filter((definition) => definition.availabilityIntent.package === "planned")
+      .map((definition) => definition.id),
+  );
   const lines = [...sourceMap(sources).values()]
+    .filter((source) => packagePlanned.has(source.id))
     .sort((left, right) => left.id.localeCompare(right.id, "en-US"))
     .map((source) => {
       const relativeEntry = source.packageEntryPath

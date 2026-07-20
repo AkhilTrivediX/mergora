@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "./scheduler-kit.css",
+    "react",
+    "../../components/button/button.js",
+    "../../components/calendar/calendar.js",
+    "./scheduler-kit-adapter.js",
+    "./scheduler-kit-state.js"
+  ],
+  "entryPath": "registry/source/kits/scheduler-kit/scheduler-kit.tsx",
+  "id": "scheduler-kit",
+  "itemDependencies": ["button", "calendar"],
+  "outputRole": "kit"
+}

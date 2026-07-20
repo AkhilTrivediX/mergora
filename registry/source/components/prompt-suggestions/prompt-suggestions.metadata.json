@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prompt-suggestions",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "disabled",
+    "selected",
+    "focus-visible",
+    "long-content",
+    "narrow",
+    "rtl",
+    "forced-colors"
+  ],
+  "slots": [
+    {
+      "name": "prompt-suggestions",
+      "semanticElement": "button group or labelled listbox",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "selection-mode"]
+    },
+    {
+      "name": "prompt-suggestion",
+      "semanticElement": "button or option button",
+      "refTarget": "internal",
+      "states": ["disabled", "selected", "focus-visible"]
+    }
+  ],
+  "contract": { "id": "prompt-suggestions-accessibility", "version": "0.1.0" },
+  "passport": { "id": "prompt-suggestions-quality-passport", "version": "0.0.0" }
+}

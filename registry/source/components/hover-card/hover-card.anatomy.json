@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "hover-card",
+  "root": {
+    "element": "span containing a native button and portalled supplemental dialog",
+    "ref": "HTMLButtonElement",
+    "slot": "hover-card",
+    "stableAttributes": ["data-slot", "data-pinned"]
+  },
+  "parts": [
+    {
+      "slot": "hover-card-trigger",
+      "element": "button",
+      "stability": "documented"
+    },
+    {
+      "slot": "hover-card-content",
+      "element": "div role=dialog",
+      "stability": "documented"
+    },
+    {
+      "slot": "hover-card-pin-rail",
+      "element": "div status rail",
+      "purpose": "Optionally states persistent preview mode and exposes a close action.",
+      "stability": "documented"
+    }
+  ]
+}

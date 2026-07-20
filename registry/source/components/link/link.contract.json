@@ -9,7 +9,8 @@
   "semantics": [
     "href is required and disabled-link semantics are absent from the public type.",
     "Every resolved target=_blank link receives explicit noopener and noreferrer privacy hardening while preserving consumer rel tokens.",
-    "Current state has text weight and decoration in addition to color."
+    "Current state has text weight and decoration in addition to color.",
+    "externalContext contributes visible announced context only when external is true and disappears when false."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

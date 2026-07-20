@@ -1,141 +1,143 @@
 # Execution state
 
-- Updated: 2026-07-19T05:20:25Z
-- Implementation commit: `075e2146e8bb478436af681515f85c0d9f85f40d` plus the active P3/P4 worktree checkpoint
+- Updated: 2026-07-20T06:08:04Z
+- Commit: `44a78292339b46ff2a388a4bc0658d689424e853` plus active uncommitted integration
 - Branch: `feature/foundation`
-- Pull request: draft [#2](https://github.com/AkhilTrivediX/mergora/pull/2); used as passive Linux/security evidence, not a review bottleneck
-- Active phase: P3 registry/CLI/provenance/safe synchronization and P4 specialist foundations in progress
-- Phase result: gate-failed on the open canonical operation-plan schema boundary, configured
-  package/hybrid routing, complete-lifecycle proof, and unreleased catalog evidence
+- Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
+- Phase result: gate-failed
 
 ## Completed since previous update
 
-- Resumed the full master-plan goal after the interrupted workstation session, revalidated the
-  active branch/public-history privacy boundary, and recovered the in-progress P3 provenance,
-  official browser Contract Audit host, and P4 collection work without discarding partial edits.
-- Preserved the plan-free public history and confirmed that `PLANS/` and `.codex-runs/` are ignored,
-  untracked, absent from the staged checkpoint, and absent from live public history.
-- Renamed the working branch to `feature/foundation`; the obsolete `codex/*` remote branch and PR were
-  removed/replaced. Work continues without waiting for human PR review.
-- Expanded the deterministic generator to 571 artifacts and retained 92 honest
-  `source-present-unreleased` catalog entries without Stable or release claims.
-- Expanded the native release protocol builder/verifier to bind catalog/search, all stable public
-  schemas, Contracts, Passports, quality/consumer evidence, SBOM, mirror manifest, portable release
-  bundle, and checksums. Its generated plan remains correctly `blocked-unreleased`: 92 source
-  definitions are present, 86 are missing, and no stable bytes are emitted.
-- Implemented executable consumer Contracts plus static and host-registered runtime Contract Audit.
-  Reviewed harness IDs can return bounded role/name/state, keyboard, focus, announcement, axe, and
-  geometry evidence; missing, malformed, failed, or timed-out harnesses remain incomplete. The CLI
-  registers no browser harness by default and therefore makes no fabricated runtime pass claim.
-- Implemented transactional rollback, project creation, expanded configuration v1, pinned
-  `shadcn@4.13.0` schema/CLI validation, offline local vendoring, DTCG theme operations, compiled
-  migrations, and strict read-only cleanup with exact category selection.
-- Implemented Semantic Sync Base/Local/Remote classification; JSON/JSONC, CSS, DTCG, text, binary,
-  deletion, keep-region, and conservative structured TS/TSX/JS/JSX adapters; immutable release
-  validation; authoritative-tree-preserving conflict packets; exact-target resolution; and
-  provenance advancement through the transaction engine.
-- Added registered staged-overlay and post-commit validators for media parsing, isolated TypeScript
-  import/type checks, tokens, Contracts, project configuration, and transform context. Validation
-  failure before commit performs no write; post-commit failure performs exact rollback, and recovery
-  cannot bypass a validator that is unavailable after interruption.
-- Routed first-run and repeat `init` writes through the shared durable transaction engine with
-  staging, backups, journal checkpoints, manifest-last commit, exact rollback/recovery, stale-plan
-  refusal, and idempotent no-op behavior.
-- Implemented the bounded immutable acquisition primitive for vendor, verified cache, canonical
-  network, and mirror candidates with exact identity/digest/byte/media checks. Package-to-source
-  transformation now derives only from branded acquired releases with persisted transform context,
-  exact release npm inventory, package ownership guards, and one plan/apply digest.
-- Hardened Stable vendoring around branded acquired releases and frozen snapshots. The reader verifies
-  the complete staged overlay, selection roots, dependency closure, schema/npm byte inventories,
-  Mergora package binding, portable tar topology, two terminating blocks, bounded path/dependency
-  complexity, gzip expansion, aggregate work, and credential absence before any write.
-- Centralized the CLI parser/help/result-envelope contract, fail-closed unknown flags, stable exit
-  normalization, structured redaction, and packed JSON schema validation. Documented flags whose
-  behavior does not yet exist remain rejected.
-- Implemented external registry list/inspect/enroll/remove/verify with bounded fetches, HTTPS and
-  localhost policy, redirect/auth stripping, exact identity acceptance, shadcn/native metadata
-  validation, portable-path enforcement, and transactional configuration writes.
-- Added NumberField, CurrencyField, and PercentageField canonical sources, package/shadcn outputs,
-  Storybook state matrices, localized form/reset behavior, wheel safeguards, keyboard/pointer scrub,
-  RTL/forced-colors coverage, and honest unreleased quality records.
-- Added specialist text/password/search, OTP/PIN, slider/range, color, phone/masked, rating/inline-edit,
-  and Listbox/Select canonical foundations with generated package/native/shadcn output, Storybook
-  matrices, React Aria label/description relationships, bounded uncontrolled selection retention,
-  public disabled-key/change contracts, and honest unreleased quality status.
-- Removed the legacy direct P1 installer, made init display and apply the same authenticated operation
-  plan, required exact expected digests on implemented public mutators, and bound each non-built-in
-  validation label to a fixed executable validator. Add ownership conflicts are now explicit zero-write
-  plans, so a manifest cannot reference a sibling that was omitted by conflict handling.
-- Made Semantic Sync conflict assembly bounded and atomic and added write-ahead choice-resolution
-  journals with exact backup recovery after ordinary failures or process interruption. Rename
-  migrations are explicit acquired-release operations.
-- Fixed clean Linux resolution by giving `mergora-registry` a workspace-only development export and
-  making the direct CLI builder compile its exact runtime workspace dependencies. A missing-dist
-  reproduction built all dependencies and ran the compiled CLI successfully.
-- Implemented the `mergora-mcp` core with 20 deterministic read/plan tools, three resources, bounded
-  NDJSON transport, strict inputs, redacted errors, and no apply/force/consent capability.
-- Stabilized Dialog focus cleanup and geometry tests across repeated WebKit runs without suppressing
-  live in-page warnings.
-- Expanded the exact-tarball consumer matrix to all seven public artifacts. Next and Vite pass source
-  and package modes, packed CLI execution, packed MCP capability smoke, frozen offline reinstall,
-  dependency-tree audit, strict typecheck, and production builds. One evidence refresh plus two clean
-  comparisons matched.
-- Removed the packed CLI test's shared-dist race by compiling each test into an isolated cache tree;
-  corrected OTP clipboard permissions to use the live test origin. Packed CLI and official-browser
-  suites can now run concurrently, and the complete component browser gate is green.
-- Completed an adversarial P3 tranche: 42 malicious registry cases, 14 transaction lifecycle cases,
-  immutable-tamper coverage, retained unequal-overlap/line-ending corpora, and strict cleanup
-  inventory/tamper tests.
-- Passed `pnpm check`: static/workspace/link/schema/generation/shadcn/lint/format gates, 21/21 package
-  typechecks, and 1,011 tests with one intentional platform-specific skip. Passed the serial 21-project
-  build, 27-artifact `/mergora` static export, and browser gates with 178 passes and four intentional
-  forced-colors skips.
-- Repeated the exact packed-consumer proof after freezing the workspace: seven tarballs, four
-  Next/Vite package/source consumers, frozen offline installs, and four MCP smokes each exposing 20
-  tools, three resources, and no apply capability. The two comparisons reproduced evidence SHA-256
-  `A879408D330998A18ACDC1FBC0DA9B41D3289E11AC412CE41FACF89372571738`.
-- Scanned all 311 changed/untracked files and repository history: no credentials, private keys, npm
-  authentication, private machine paths, `PLANS/`, or `.codex-runs/` are present in public changes.
-- Updated the P3 security/data-loss audit. No S0 issue remains; one systemic S1 operation-plan schema
-  boundary and the recorded lifecycle/evidence findings remain open in
-  [`../quality/P3_SECURITY_DATA_LOSS_AUDIT.md`](../quality/P3_SECURITY_DATA_LOSS_AUDIT.md).
+- Reconciled the execution records with the current generated catalog and removed the obsolete
+  92-source/86-missing/571-artifact status.
+- Mapped all 306 Definition of Done identifiers exactly once in `TRACEABILITY.md` using the
+  required `complete`, `partial`, `not-run`, and `blocked` vocabulary.
+- Added `EVIDENCE_INDEX.md` as the common source for current counts, evidence scope, limitations,
+  and blocker IDs.
+- Confirmed the generated authority now contains 178 source-present definitions: 168 catalog entries
+  plus 10 workflow kits, with no unimplemented definition.
+- Confirmed target maturity remains 175 Stable, two Beta, and one Experimental, while every
+  published maturity is null and release publication is blocked.
+- Confirmed the implementation matrix records evidence-backed Mergora advantages and shared visual
+  signatures for all 178 entries, 247 evidence-backed optional enhancements, tested Basic and
+  Recommended stories for every entry, and verified package/source/Shadcn parity for every entry.
+- Confirmed all 178 profiles remain incomplete: 129 interaction records are verified, 49 are
+  partial, and all 178 accessibility records are partial.
+- Updated current generator facts to 1,050 deterministic outputs including the artifact manifest,
+  with 1,049 other outputs enumerated by that manifest, including the authoritative
+  documentation-contract index.
+- Recorded current token evidence: 405 tokens, 12 theme/density contexts, 12 resolved artifacts, and
+  144 contrast records.
+- Recorded the full `pnpm test:browser` matrix on 2026-07-20. The root tracer scheduled 36 cases
+  with 34 passes and two intentional forced-colors skips; the component catalog scheduled 909 with
+  907 passes and two intentional skips; diagnostics passed 1/1; and the website scheduled 48 with
+  46 passes and two intentional forced-colors skips. There were no failures.
+- Recorded the final exact-tarball WRITE run and its immediate NO-WRITE replay: seven tarballs and
+  four Next/Vite package/source lanes are deterministic, and the source lifecycle covers
+  customize/update/conflict/resolve/audit/rollback/recover/remove/vendor/migrate/adopt. Public npm
+  provenance, non-Chromium packed runtime, and manual evidence remain separate.
+- Recorded the generated documentation contract for all 178 items: 2,806 State Lab rows, 178
+  blocked Passport JSON documents, machine-document routes, a real-component homepage specimen,
+  and checked Studio export/import round trips. The strict public API extraction now has 178
+  entries, 530 groups, 3,431 props, 3,431 descriptions, and 807 declared runtime defaults, with no
+  description or review placeholders.
+- Reverified the forced 21-workspace production build at the `/mergora` base path; the production
+  Storybook build and all 956 static site pages complete successfully. Quality Lab assembly also
+  completes, and the static-export verifier validates 4,259 text artifacts.
+- Closed the coordinated static-site browser rerun on the active worktree: 46 cases pass across
+  Chromium, Firefox, and WebKit, with only the two documented non-Chromium forced-colors
+  emulation skips. The strict runtime collector retains zero console, request, response, or page
+  error waivers. Embedded specimens now wait for the exact lazy frame and pinned Storybook render,
+  and Reset performs one initialization-aware in-place remount with a bounded reload fallback.
+- Fixed the sitemap verifier's XML-declaration handling and added six passing regression tests.
+- Closed the six-route local Lighthouse rerun. Home, Quick Start, Button, Data Grid, Quality Button,
+  and Studio score 95-96 for performance and 100 for accessibility, best practices, and SEO; every
+  LCP, total-blocking-time proxy, layout-shift, and route-owned JavaScript budget passes.
+- Fixed the enhanced-contrast cascade at the token compiler: the complete 405-token context now
+  overrides dark mode, including the action foreground, and dark/enhanced/density composition is
+  regression-tested. The Studio preview now preserves component-owned Button colors while keeping
+  its native preview controls independently styled.
+- Fixed clean-checkout workflow prerequisites for site assembly and nightly performance. Visual
+  baseline changes retain PR-label authority and now also support fail-closed exact direct
+  `feature/*` pushes backed by immutable approved review metadata instead of requiring PR handling.
+- Reverified the complete local `pnpm check` gate: 198 test files passed, 1,510 tests passed, and one
+  intentional test was skipped; the serial official-browser audit passed 5/5. Formatting, lint,
+  root and all 21 workspace typechecks, generation, Storybook, site, registry, API, documentation,
+  accessibility, compatibility, dependency, and license gates remain green.
+- Reverified dependency policy: the production audit is clean, the high-threshold full-graph gate
+  records one moderate development-only advisory, and the license check passes.
+- Revalidated the local npm session: `npm whoami` exits successfully. Package ownership,
+  trusted-publishing authority, provenance, and every release gate remain unproved; no publication
+  was attempted.
+- Refreshed the authenticated read-only npm lookups on 2026-07-20: `mergora`, `mergora-ui`,
+  `mergora-tokens`, `mergora-schema`, `mergora-registry`, `mergora-contracts`, and `mergora-mcp`
+  each returned exact `E404`. This is time-bound name-availability evidence only, not ownership,
+  trusted-publishing authority, legal clearance, or publication evidence.
+- Confirmed the manual campaign is preparation only: 178 items schedule 3,253 environment sessions
+  and 4,124 task observations, all `not-run`, with zero evidence claims.
+- Confirmed Pages now uses the Actions source, while the intended `github.io` URL redirects through
+  the other Pages repository's `CNAME` to unresolved `akhiltrivedi.me`; public probing therefore
+  has a narrowly scoped external domain prerequisite as well as the exact-deployment gate.
+- Preserved the privacy boundary: private plan/run material remains ignored and absent from public
+  history; no private plan content was copied into these public records beyond stable identifiers
+  and high-level scope references.
 
 ## Next atomic batch
 
-1. Execute the closed `operation-plan-v1` schema during finalization, dry-run, and apply; repair every
-   invalid public planner shape; and converge init/doctor-fix, create, clean, and resolve-choice on the
-   same authenticated canonical model with fixture coverage for every public planner.
-2. Wire configured package/hybrid mode, enrolled-registry acquisition, Contract/example provisioning,
-   and explicit mode/shadcn/framework migrations through the shared resolver and transaction engine.
-3. Prove the public-style packed lifecycle through customize/update/conflict/resolve/audit/rollback/
-   recover/remove/offline behavior, then expand the manager/framework/OS matrix.
-4. Continue P4 date/time and file families only with generated source/package/shadcn parity and honest
-   unreleased evidence, then complete manual/parity/update/dogfood evidence for all source families.
+1. Commit and push the coherent locally green `feature/*` checkpoint, obtain fresh exact-commit
+   GitHub Actions
+   evidence, and perform a narrow cross-commit visual review without waiting for PR review.
+2. Continue the next dependency-ordered hardening batch: complete Data Grid's Stable-target
+   contract, large-data/virtualization evidence, temporal edge cases, upload adapters, package-shape
+   checks, coverage enforcement, CSP/social metadata, and broader consumer matrices.
+3. Refresh the P3 security/data-loss review and public evidence records against the exact checkpoint.
+   Verify the official mirror only when a real release payload exists.
+4. Execute the required manual AT, touch/mobile, RTL, forced-colors, reduced-motion, and independent
+   Risk Class 3 campaign without promoting an incomplete entry.
 
 ## Active failures
 
-| ID      | Severity | Reproduction/evidence                                     | Owner/path                         | Next action                                                                  |
-| ------- | -------- | --------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------- |
-| P0-F004 | S2 gate  | Draft PR #2 run `29671720924` for `075e214`               | GitHub workflows/rules             | Commit generated outputs/security fixes, push, and repair any fresh failure. |
-| P2-F001 | S2 gate  | Inspect generated maturity blockers for 92 source entries | source families/Passports/evidence | Complete manual/parity/update/dogfood evidence before Stable promotion.      |
-| P3-F002 | S2 gate  | Audit SEC-P3-003 through SEC-P3-005                       | resolver/provenance/migrations     | Close configured routing, mode migrations, and full lifecycle proof.         |
-| P3-F003 | S1 gate  | Audit `SEC-P3-008`; schema is declared but not executed   | canonical public operation plans   | Validate one schema-authenticated plan shape across every public mutator.    |
-| P4-F001 | S2 gate  | Compare required P4/P5 catalog with canonical sources     | component families                 | Continue dependency-ordered specialist and system tranches.                  |
+| ID               | Severity                   | Reproduction command                                                    | Owner/path                           | Next action                                                                                                                                   |
+| ---------------- | -------------------------- | ----------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `P0-F-CI`        | S2 gate                    | Inspect [PR #2 checks](https://github.com/AkhilTrivediX/mergora/pull/2) | `.github/workflows/`, current branch | Push the coherent current checkpoint and fix any reproducible fresh failure.                                                                  |
+| `P2-F-MATURITY`  | promotion gate             | Inspect `registry/generated/implementation-matrix.v1.json`              | component families and evidence      | Close each profile's interaction, accessibility, manual, visual, lifecycle, and release blockers before maturity promotion.                   |
+| `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                 | CLI/registry/packed consumers        | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.          |
+| `P7-F-SITE`      | S2 gate                    | `pnpm test:site` and `pnpm test:performance`                            | `apps/web`, generated docs           | Bind the locally green web/static/browser/performance result to the pushed exact commit and a validated deployment.                           |
+| `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                              | manual evidence campaign             | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                          |
+| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                      | Review a clean committed cross-commit bundle and extend coverage beyond the four-story provisional baseline.                                  |
+| `P10-F-PUBLIC`   | release gate               | Inspect `registry/generated/release-protocol/plan.json`                 | release/publication                  | Keep blocked until all earlier gates pass, package ownership and trusted publishing are verified, and a protected prerelease can be verified. |
 
 ## External blockers
 
-None. npm authentication is available for later read-only and publication checks. Exact package-name
-availability, publish authority, trusted-publishing setup, and public deployment remain release-time
-gates, not reasons to pause independent implementation.
+| ID                     | Exact blocked action                                                  | Independent work remaining                                                                                                     | Required authority                                                                                                                | Verification                                                                                                              |
+| ---------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `EXT-PAGES-DOMAIN-001` | Make the configured public Pages origin reachable for release probes. | Build/deploy verification, CI, documentation, manual evidence, npm preparation, and all non-public maturity work can continue. | Change the `CNAME` in `AkhilTrivediX.github.io` or configure DNS for `akhiltrivedi.me`; both are outside this repository's scope. | The `github.io/mergora/` route either stays reachable or redirects to a resolving domain that serves the validated build. |
+
+The phase is not marked externally blocked because substantial independent work remains.
 
 ## Latest evidence
 
-| Gate                   | Command/run                                                             | Commit/worktree   | Result                                                                                                         |
-| ---------------------- | ----------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------- |
-| Full local quality     | `pnpm check`                                                            | `075e214` + P3/P4 | pass: all static gates, 21/21 typechecks, 1,011 tests; one intentional platform skip                           |
-| Build/static export    | `pnpm build`; `/mergora` static-export verifier                         | `075e214` + P3/P4 | pass: 21 projects and 27 exported text artifacts                                                               |
-| Browser                | `pnpm test:browser`                                                     | `075e214` + P3/P4 | pass: 178; four intentional forced-colors skips                                                                |
-| Exact packed consumers | one refresh plus two `node scripts/verify-p1-consumers.mjs` comparisons | `075e214` + P3/P4 | pass: seven tarballs, Next/Vite x source/package, frozen offline installs/builds, four MCP `20/3/false` smokes |
-| Generation/shadcn      | generator drift check plus pinned shadcn 4.13.0                         | `075e214` + P3/P4 | pass: 571 artifacts; exact 92-item inline/center sample; 86 items remain unimplemented                         |
-| Privacy                | changed-file, credential, history, branch, and remote scan              | `075e214` + P3/P4 | pass: 311 files; no secrets/private paths; plans absent from index and all history                             |
-| Public repository      | GitHub draft PR #2 run `29671720924`                                    | `075e214`         | old generated-drift failure; superseding checkpoint and fresh Linux/security run pending push                  |
+| Gate                      | Command/run                                       | Commit          | Result                                                                                   | Artifact                                                  |
+| ------------------------- | ------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Catalog authority         | generated matrix inspection                       | active worktree | 178/178 source-present; 0 published maturity                                             | `registry/generated/catalog.json`                         |
+| Mergora product standard  | generated matrix inspection                       | active worktree | 178 advantages, 178 signatures, 247 enhancements, 178 Basic and 178 Recommended stories  | `registry/generated/implementation-matrix.v1.json`        |
+| Generation                | latest generator output and manifest inspection   | active worktree | 1,050 outputs including manifest; authoritative docs contract and all delivery surfaces  | `registry/generated/artifact-manifest.json`               |
+| Public API                | `pnpm api:check`                                  | active worktree | 178 entries; 530 groups; 3,431/3,431 props described; 807 runtime defaults               | `content/generated/api-index.json`                        |
+| Local quality             | `pnpm check`                                      | active worktree | 198 files; 1,510 passed; 1 intentional skip; serial official browser audit 5/5           | `tests/`                                                  |
+| Full browser matrix       | `pnpm test:browser`                               | active worktree | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip) | `tests/browser/`, `tests/components/`, `tests/web/`       |
+| Accessibility             | `pnpm test:a11y`                                  | active worktree | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                          | `tests/browser/`                                          |
+| Compatibility             | `pnpm test:compat`                                | active worktree | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                               | `tests/compatibility/`                                    |
+| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 39/39                                   | `docs/`, `tests/harness/`                                 |
+| Component cross-browser   | complete component Playwright aggregate           | active worktree | 909 total: 907 passed, 2 intentional platform skips, 0 failures                          | `tests/components/`                                       |
+| Exact packed consumers    | WRITE plus immediate NO-WRITE replay              | active worktree | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay      | `tests/packed-consumers/evidence.json`                    |
+| Website implementation    | generated contract and site model inspection      | active worktree | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented    | `registry/generated/documentation-contract-index.v1.json` |
+| Production build/export   | forced 21-workspace `/mergora` build and verifier | active worktree | Storybook and 956 pages built; Quality Lab assembled; 4,259 text artifacts verified      | `apps/web/out/`, `apps/web/public/quality-lab/`           |
+| Website browser           | `pnpm test:web-browser`                           | active worktree | 46 passed; 2 documented forced-colors policy skips; 0 failures across three engines      | `tests/web/`                                              |
+| Website performance       | `pnpm test:performance`                           | active worktree | 6/6 routes; performance 95-96; accessibility/best practices/SEO 100                      | `scripts/verify-site-performance.mjs`                     |
+| Manual preparation        | `node scripts/prepare-manual-evidence.mjs --plan` | active worktree | 178 items; 3,253 sessions; 4,124 tasks; all NOT RUN; zero claims                         | `docs/quality/manual/CAMPAIGN.md`                         |
+| Security and licenses     | production/high audits and license gate           | active worktree | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains           | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
+| npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved    | local npm session, `config/public-packages.json`          |
+| Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                | `tests/compatibility/matrix.v1.json`                      |
+| Visual                    | cross-commit baseline                             | `44a7829`       | provisional, four stories, no accepted review bundle                                     | `tests/visual/baseline.v1.json`                           |
+| GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                 | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
+| Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                        | `registry/generated/release-protocol/plan.json`           |

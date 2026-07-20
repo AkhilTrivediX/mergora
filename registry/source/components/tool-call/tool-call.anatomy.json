@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tool-call",
+  "root": {
+    "element": "section",
+    "ref": "HTMLElement",
+    "slot": "tool-call",
+    "stableAttributes": ["data-slot", "data-status"]
+  },
+  "parts": [
+    "tool-call-header",
+    "tool-call-duration",
+    "tool-call-details",
+    "tool-call-error",
+    "tool-call-action"
+  ]
+}

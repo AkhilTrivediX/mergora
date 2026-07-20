@@ -22,5 +22,9 @@
     "The required label is the accessible name and the tooltip never substitutes for it.",
     "Pending remains focusable, exposes busy semantics, and blocks activation.",
     "Every size is at least 44 by 44 CSS pixels."
-  ]
+  ],
+  "compositionPolicy": {
+    "familySignature": "The compact Ink control uses the same Living Green states, Violet focus seam, and optional loading rail as Button.",
+    "enhancement": "tooltip and pending are independent; omitting each removes its title or busy indicator, state, and activation guard respectively."
+  }
 }

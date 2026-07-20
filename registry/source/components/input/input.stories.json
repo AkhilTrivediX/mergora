@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "CompositionWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",

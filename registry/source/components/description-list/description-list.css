@@ -19,17 +19,27 @@
   grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr);
 }
 .mrg-description-term {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
   font-weight: var(--mrg-semantic-font-weight-label);
   margin: 0;
   overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
 }
 .mrg-description-details {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
   margin: 0;
   min-inline-size: 0;
   overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
 }
 @media (forced-colors: active) {
   .mrg-description-list {
     color: CanvasText;
+  }
+  .mrg-description-term,
+  .mrg-description-details {
+    border-color: CanvasText;
   }
 }

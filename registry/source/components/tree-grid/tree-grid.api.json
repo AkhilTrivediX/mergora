@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-grid",
+  "entryExport": "TreeGrid",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "TreeGrid" },
+    { "kind": "type", "name": "TreeGridChangeReason" },
+    { "kind": "type", "name": "TreeGridColumn" },
+    { "kind": "type", "name": "TreeGridFlatRow" },
+    { "kind": "type", "name": "TreeGridMessages" },
+    { "kind": "type", "name": "TreeGridProps" },
+    { "kind": "type", "name": "TreeGridRow" },
+    { "kind": "type", "name": "TreeGridSelectionMode" },
+    { "kind": "type", "name": "TreeGridVirtualWindow" },
+    { "kind": "function", "name": "flattenTreeGridRows" }
+  ],
+  "controlledState": [
+    {
+      "state": "expanded rows",
+      "controlled": "expandedIds",
+      "uncontrolled": "defaultExpandedIds",
+      "callback": "onExpandedIdsChange"
+    },
+    {
+      "state": "selected rows",
+      "controlled": "selectedIds",
+      "uncontrolled": "defaultSelectedIds",
+      "callback": "onSelectedIdsChange"
+    },
+    {
+      "state": "active row",
+      "controlled": "activeRowId",
+      "uncontrolled": "defaultActiveRowId",
+      "callback": "onActiveRowIdChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "hierarchy summary",
+      "api": "showHierarchySummary",
+      "disabled": "false removes the output, description relationship, counts, and accessibility node"
+    },
+    {
+      "name": "change announcements",
+      "api": "announceChanges",
+      "disabled": "false removes the live region and all announcement updates"
+    },
+    {
+      "name": "optional editing",
+      "api": "editable columns and onEditCommit",
+      "disabled": "omitting the callback removes F2 interception, editors, save/cancel UI, pending state, and edit events"
+    },
+    {
+      "name": "bounded virtual window",
+      "api": "virtualWindow and onVirtualWindowChange",
+      "disabled": "false renders every visible hierarchical row without spacers or window events"
+    }
+  ]
+}

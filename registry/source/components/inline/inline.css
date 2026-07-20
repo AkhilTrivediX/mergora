@@ -58,3 +58,7 @@
 .mrg-inline[data-justify="between"] {
   justify-content: space-between;
 }
+
+.mrg-inline[data-wrap="false"] {
+  flex-wrap: nowrap;
+}

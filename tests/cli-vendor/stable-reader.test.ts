@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   acquireImmutableArtifact,
   createStableAcquisitionVendorReader,
+  discoverStableVendorReleaseReference,
   resolveNativeRegistryRelease,
   type AcquisitionRegistryIdentity,
   type ImmutableArtifactRequest,
@@ -69,6 +70,19 @@ afterEach(() => {
 });
 
 describe("Stable acquisition vendor reader", () => {
+  it("discovers the exact release reference only after verifying the closed bundle", () => {
+    const { project, seeded } = fixture();
+
+    expect(discoverStableVendorReleaseReference({ projectRoot: project.root })).toEqual({
+      schemaVersion: 1,
+      artifactKind: "mergora-native-release-reference",
+      registryId: "official",
+      release: seeded.version,
+      catalog: seeded.reference.catalog,
+      manifest: seeded.reference.manifest,
+    });
+  });
+
   it("resolves a complete exact release offline without cache or network", async () => {
     const { project, seeded } = fixture();
     const originalFetch = globalThis.fetch;

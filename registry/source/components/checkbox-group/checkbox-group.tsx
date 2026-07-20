@@ -30,19 +30,33 @@ export interface CheckboxGroupProps extends Omit<
   FieldsetHTMLAttributes<HTMLFieldSetElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Direct CheckboxGroupItem controls rendered inside the native fieldset. */
   readonly children?: ReactNode;
+  /** Visible localized override for generated minimum or maximum errors. */
   readonly constraintMessage?: string;
+  /** Initial distinct selected values for uncontrolled use. */
   readonly defaultValue?: readonly string[];
+  /** Optional persistent group help text linked to every item. */
   readonly description?: ReactNode;
+  /** Consumer error content that takes precedence over generated constraint text. */
   readonly error?: ReactNode;
+  /** Non-empty visible native legend naming the checkbox group. */
   readonly label: ReactNode;
+  /** Stacked, inline, or column visual arrangement; defaults to `stacked`. */
   readonly layout?: CheckboxGroupLayout;
+  /** Optional non-negative maximum enabled selections. */
   readonly maxSelected?: number;
+  /** Non-negative minimum enabled selections; defaults to zero. */
   readonly minSelected?: number;
+  /** Non-empty shared native form name assigned to every checkbox item. */
   readonly name: string;
+  /** Localized custom-validity text for the group's native validation anchor. */
   readonly nativeValidationMessage?: string;
+  /** Receives proposed controlled or committed uncontrolled selected values. */
   readonly onValueChange?: (value: readonly string[]) => void;
+  /** Raises the effective minimum to one for native group validation. */
   readonly required?: boolean;
+  /** Controlled selected values; changes are proposed through `onValueChange`. */
   readonly value?: readonly string[];
 }
 
@@ -369,6 +383,7 @@ export interface CheckboxGroupItemProps extends Omit<
   | "name"
   | "onCheckedChange"
 > {
+  /** Non-empty unique native value identifying this direct group item. */
   readonly value: string;
 }
 

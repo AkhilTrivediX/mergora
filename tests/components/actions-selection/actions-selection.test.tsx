@@ -386,6 +386,10 @@ describe("P2 actions and selection state engines", () => {
     await expect(writeClipboardText("source", {})).rejects.toThrow("unavailable");
   });
 
+  it("removes the legacy clipboard path when fallback is disabled", async () => {
+    await expect(writeClipboardText("source", {}, false)).rejects.toThrow("fallback is disabled");
+  });
+
   it("always removes the fallback textarea when execCommand throws", async () => {
     const remove = vi.fn();
     const textarea = {
@@ -573,6 +577,62 @@ describe("P2 actions and selection server semantics", () => {
     expect(markup).toContain("<legend");
     expect(markup).toContain('type="radio"');
     expect(markup).toContain('checked=""');
+  });
+
+  it("renders optional workbench context only when each enhancement is enabled", () => {
+    const basic = renderToStaticMarkup(
+      <div>
+        <ButtonGroup keyboardHint="Arrow keys move focus" label="Actions">
+          <Button>Save</Button>
+        </ButtonGroup>
+        <Link external externalContext={false} href="https://example.com">
+          Reference
+        </Link>
+        <ToggleGroup defaultValue="preview" label="View" type="single">
+          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        </ToggleGroup>
+        <SegmentedControl defaultValue="source" label="Mode">
+          <SegmentedControlItem value="source">Source</SegmentedControlItem>
+        </SegmentedControl>
+      </div>,
+    );
+    expect(basic).not.toContain("button-group-keyboard-hint");
+    expect(basic).not.toContain("link-external-context");
+    expect(basic).not.toContain("toggle-group-summary");
+    expect(basic).not.toContain("segmented-control-summary");
+
+    const enhanced = renderToStaticMarkup(
+      <div>
+        <ButtonGroup keyboardHint="Arrow keys move focus" label="Actions" mode="toolbar">
+          <Button>Save</Button>
+        </ButtonGroup>
+        <Link external externalContext="New tab" href="https://example.com">
+          Reference
+        </Link>
+        <ToggleGroup
+          defaultValue="preview"
+          label="View"
+          renderSelectionSummary={(values) => `Selected: ${values.join(", ")}`}
+          type="single"
+        >
+          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        </ToggleGroup>
+        <SegmentedControl
+          defaultValue="source"
+          label="Mode"
+          renderSelectionSummary={(value) => `Selected: ${value}`}
+          required
+        >
+          <SegmentedControlItem value="source">Source</SegmentedControlItem>
+        </SegmentedControl>
+      </div>,
+    );
+    expect(enhanced).toContain('data-slot="button-group-keyboard-hint"');
+    expect(enhanced).toContain('aria-describedby="mrg-button-group-');
+    expect(enhanced).toContain('data-slot="link-external-context">New tab');
+    expect(enhanced).toContain('data-slot="toggle-group-summary"');
+    expect(enhanced).toContain('data-slot="segmented-control-summary"');
+    expect(enhanced).toContain('required=""');
   });
 
   it("renders exactly one ToggleGroup tab stop in multi-select and skips selected disabled items", () => {

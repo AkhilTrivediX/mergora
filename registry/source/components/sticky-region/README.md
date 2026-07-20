@@ -28,3 +28,7 @@ Stable slots are `sticky-region-root`, `sticky-region-content`, and `sticky-regi
 Consumers own landmark correctness, heading hierarchy, DOM order, nested scroll/container interactions, and any custom transform/z-index/positioning. Re-run focus-clearance geometry after overriding these seams.
 
 Current status is `source-present-unreleased`. Generation, ResizeObserver cleanup/fallback, start/end and page/contained browser geometry, 256-pixel height, 320-pixel/400%-zoom/200%-text evidence, manual keyboard/screen-reader/touch/forced-colors review, packed consumers, parity, updater fixtures, site dogfooding, and Quality Passport approval remain incomplete. This source record is not a Stable or conformance claim.
+
+## Mergora advantage
+
+Measured sticky focus clearance keeps tabbed descendants from landing beneath localized sticky content. `manageFocusOffset={false}` removes ResizeObserver work, the measured custom property, root scroll padding, and descendant scroll margins while preserving ordinary sticky positioning.

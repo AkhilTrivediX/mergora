@@ -12,8 +12,8 @@
   },
   "focus": {
     "modality": "The indicator uses focus-visible and does not equate focus with selection or hover.",
-    "standard": "A tokenized outline remains outside the target without changing layout.",
-    "strong": "Two contrast layers are provided for unpredictable surfaces.",
+    "standard": "A Deep Violet outline and one-pixel Canvas seam remain outside the target without changing layout.",
+    "strong": "The independently selected strong mode increases both seam and outline geometry for unpredictable surfaces; omitting contrast removes strong geometry without adding UI or accessibility output.",
     "forcedColors": "Shadows are removed and a three-pixel Highlight outline is restored."
   },
   "consumerResponsibilities": [
@@ -26,6 +26,7 @@
       "strict-types",
       "slot-parity",
       "focus-visible-css",
+      "standard-strong-opt-out",
       "forced-colors-css",
       "ssr",
       "packed-consumer",

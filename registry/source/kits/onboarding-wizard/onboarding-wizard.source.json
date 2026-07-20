@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../../components/button/button.js",
+    "../../components/stepper/stepper.js",
+    "./onboarding-wizard.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/onboarding-wizard/onboarding-wizard.tsx",
+  "id": "onboarding-wizard",
+  "itemDependencies": ["button", "stepper"],
+  "outputRole": "kit"
+}

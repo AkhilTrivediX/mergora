@@ -1,0 +1,228 @@
+/* Generated from registry/source/components/filter-builder/filter-builder.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-filter-builder {
+    container-type: inline-size;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-filter-builder__heading,
+  .mrg-filter-builder__drawer-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-filter-builder__heading > strong,
+  .mrg-filter-builder__drawer-heading > strong {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+
+  .mrg-filter-builder__editor {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+  }
+
+  .mrg-filter-builder__filter {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(8rem, 1fr)) auto;
+    gap: var(--mrg-semantic-space-inline-sm);
+    align-items: end;
+    min-inline-size: 0;
+    margin: 0;
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    background: var(--mrg-semantic-color-background-canvas);
+  }
+
+  .mrg-filter-builder__filter[data-invalid] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-filter-builder__filter legend {
+    padding-inline: var(--mrg-semantic-space-inline-xs);
+    color: var(--mrg-semantic-color-brand-violet);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-filter-builder__filter label,
+  .mrg-filter-builder__saved {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-inline-size: 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-filter-builder__saved {
+    max-inline-size: 24rem;
+  }
+
+  .mrg-filter-builder :is(button, input, select) {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-filter-builder :is(input, select) {
+    inline-size: 100%;
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+
+  .mrg-filter-builder button {
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    cursor: pointer;
+  }
+
+  .mrg-filter-builder button:disabled,
+  .mrg-filter-builder :is(input, select):disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-filter-builder :is(button, input, select):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-filter-builder__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-filter-builder__filter-error {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-filter-builder__empty {
+    margin: 0;
+    padding: var(--mrg-semantic-space-inset-md);
+    border-block: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+
+  .mrg-filter-builder__summary {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-success-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+
+  .mrg-filter-builder__summary ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mrg-filter-builder__summary li {
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid currentColor;
+    border-radius: var(--mrg-semantic-radius-compact);
+  }
+
+  .mrg-filter-builder__drawer-trigger,
+  .mrg-filter-builder__drawer {
+    display: none;
+  }
+
+  .mrg-filter-builder__drawer {
+    box-sizing: border-box;
+    inline-size: min(100%, 32rem);
+    max-inline-size: 100%;
+    max-block-size: min(90dvb, 48rem);
+    margin-block: auto 0;
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel) var(--mrg-semantic-radius-panel) 0 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    overflow: auto;
+  }
+
+  .mrg-filter-builder__drawer::backdrop {
+    background: var(--mrg-semantic-color-overlay-scrim);
+  }
+
+  @container (max-width: 34rem) {
+    .mrg-filter-builder:has(.mrg-filter-builder__drawer) .mrg-filter-builder__inline {
+      display: none;
+    }
+
+    .mrg-filter-builder__drawer-trigger,
+    .mrg-filter-builder__drawer[open] {
+      display: grid;
+    }
+
+    .mrg-filter-builder__filter {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .mrg-filter-builder__filter {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-filter-builder *,
+    .mrg-filter-builder *::before,
+    .mrg-filter-builder *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0s !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-filter-builder__filter,
+    .mrg-filter-builder :is(button, input, select),
+    .mrg-filter-builder__summary,
+    .mrg-filter-builder__drawer {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-filter-builder__filter[data-invalid] {
+      border-color: Mark;
+    }
+
+    .mrg-filter-builder :is(button, input, select):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+
+    .mrg-filter-builder__drawer::backdrop {
+      background: Canvas;
+    }
+  }
+}

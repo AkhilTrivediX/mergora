@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "admin-dashboard-shell",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not an authorization boundary, analytics platform, notification service, backend, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Header, navigation, aside, main, breadcrumb, figure with data-table fallback, and native table semantics composed from public Mergora items.",
+    "rolePolicy": "Loading and offline states are persistent status content; failures use alerts; role filtering never replaces backend authorization.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through skip link, navbar, sidebar, chart controls, table controls, and optional notification actions in document order."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Closes the responsive public Navbar or Sidebar surface and returns focus according to those component contracts."
+    },
+    {
+      "key": "Native table and scrolling keys",
+      "behavior": "Remain available for dense activity data and the chart data fallback."
+    }
+  ],
+  "nonColor": "Current routes, roles, notification read state, chart selection, activity status, loading, offline, and error states use text and native state in addition to green or violet signals.",
+  "responsive": "The two-region shell becomes a single column at narrow widths; public navigation supplies a mobile path, logical properties support RTL, and touch targets expand under coarse input.",
+  "stableSelectors": {
+    "root": "[data-slot=admin-dashboard-shell]",
+    "parts": [
+      "admin-dashboard-layout",
+      "admin-dashboard-main",
+      "admin-dashboard-role-context",
+      "admin-dashboard-notifications"
+    ],
+    "attributes": ["aria-current", "data-read"]
+  },
+  "consumerResponsibilities": [
+    "Authorize every route and data operation on the backend; role-based hiding is presentation only.",
+    "Supply secured, abort-aware data and notification adapters with privacy, retention, localization, logging, and failure policy.",
+    "Validate chart meaning, real dense data, responsive routes, assistive technology, touch, zoom, and high-contrast behavior in the complete product."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "role-navigation",
+      "notifications-disabled-path",
+      "chart-data-fallback",
+      "dense-table",
+      "loading-empty-offline-error",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "authorization-security-privacy-review"
+    ],
+    "recordedEvidence": []
+  }
+}

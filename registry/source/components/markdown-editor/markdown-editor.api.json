@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown-editor",
+  "entryExport": "MarkdownEditor",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the shell plus textareaProps for the native editor",
+  "exports": [
+    { "kind": "component", "name": "MarkdownEditor" },
+    { "kind": "type", "name": "MarkdownEditorAdapterContext" },
+    { "kind": "type", "name": "MarkdownEditorChangeReason" },
+    { "kind": "type", "name": "MarkdownEditorPreviewLayout" },
+    { "kind": "type", "name": "MarkdownEditorProps" },
+    { "kind": "type", "name": "MarkdownEditorView" },
+    { "kind": "function", "name": "countMarkdownWords" }
+  ],
+  "controlledState": [
+    {
+      "state": "Markdown source",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange(value, reason)"
+    },
+    {
+      "state": "tabbed view",
+      "controlled": "activeView",
+      "uncontrolled": "defaultActiveView",
+      "callback": "onActiveViewChange"
+    }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    {
+      "name": "previewLayout",
+      "required": false,
+      "default": false,
+      "type": "false | tabs | split"
+    },
+    { "name": "showToolbar", "required": false, "default": false, "type": "boolean" },
+    { "name": "showWordCount", "required": false, "default": false, "type": "boolean" },
+    { "name": "pasteAdapter", "required": false, "type": "abortable consumer clipboard adapter" },
+    { "name": "uploadAdapter", "required": false, "type": "abortable consumer pasted-file adapter" }
+  ],
+  "compositionPolicy": {
+    "form": "The native textarea remains the successful form control, carries required/disabled/read-only state, and resets to defaultValue.",
+    "enhancements": "Toolbar, preview layout, word count, paste handling, and file handling are independently absent unless enabled or supplied."
+  }
+}

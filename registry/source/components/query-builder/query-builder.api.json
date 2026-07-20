@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "query-builder",
+  "entryExport": "QueryBuilder",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "QueryBuilder" },
+    { "kind": "type", "name": "QueryBuilderChangeReason" },
+    { "kind": "type", "name": "QueryBuilderCondition" },
+    { "kind": "type", "name": "QueryBuilderField" },
+    { "kind": "type", "name": "QueryBuilderGroup" },
+    { "kind": "type", "name": "QueryBuilderMessages" },
+    { "kind": "type", "name": "QueryBuilderNode" },
+    { "kind": "type", "name": "QueryBuilderOperator" },
+    { "kind": "type", "name": "QueryBuilderProps" },
+    { "kind": "type", "name": "QueryBuilderValueEditorProps" },
+    { "kind": "function", "name": "createEmptyQueryGroup" },
+    { "kind": "function", "name": "formatQuerySummary" },
+    { "kind": "function", "name": "parseQuery" },
+    { "kind": "function", "name": "serializeQuery" }
+  ],
+  "controlledState": [
+    {
+      "state": "query",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "localized read-only summary",
+      "api": "showSummary and renderSummary",
+      "disabled": "showSummary=false removes the output, renderer call, summary text, and accessibility-tree node"
+    }
+  ]
+}

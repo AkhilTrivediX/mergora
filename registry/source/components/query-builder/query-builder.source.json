@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./query-builder.css", "react"],
+  "entryPath": "registry/source/components/query-builder/query-builder.tsx",
+  "id": "query-builder",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

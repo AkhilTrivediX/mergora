@@ -415,13 +415,86 @@ const GERMAN_ENTRIES = [
   { key: "documentation", textValue: "Dokumentationsqualitätsverantwortliche" },
 ] as const satisfies readonly CollectionEntry[];
 
+interface CollectionStoryArgs {
+  readonly selectionSummary: boolean;
+  readonly virtualization: boolean;
+}
+
+const RECOMMENDED_ENTRIES = Array.from({ length: 120 }, (_, index) => {
+  const number = index + 1;
+  return {
+    description:
+      number % 3 === 0
+        ? `Includes the complete record context for item ${String(number)}.`
+        : undefined,
+    key: `item-${String(number)}`,
+    textValue: `Catalog item ${new Intl.NumberFormat("en-US").format(number)}`,
+  } satisfies CollectionEntry;
+});
+
+function CollectionModes({ selectionSummary, virtualization }: CollectionStoryArgs) {
+  const summaryProps = selectionSummary ? {} : { formatSelectionSummary: false as const };
+  const virtualizationProps = virtualization ? { virtualization: { estimatedItemSize: 52 } } : {};
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Collection modes</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "70ch" }}>
+          Both controls retain native naming, selection, and form behavior while each optional
+          collection enhancement can be removed independently.
+        </p>
+      </header>
+      <div style={columnsStyle}>
+        <Listbox
+          {...summaryProps}
+          {...virtualizationProps}
+          defaultValue={["item-2", "item-9"]}
+          entries={RECOMMENDED_ENTRIES}
+          label="Reference items"
+          name="reference-item"
+          selectionMode="multiple"
+        />
+        <Select
+          {...summaryProps}
+          {...virtualizationProps}
+          defaultValue="item-24"
+          entries={RECOMMENDED_ENTRIES}
+          label="Default reference item"
+          name="default-reference-item"
+        />
+      </div>
+    </Canvas>
+  );
+}
+
 const meta = {
+  argTypes: {
+    selectionSummary: {
+      control: "boolean",
+      description:
+        "Adds bounded selected-value context; false removes its callback and ARIA output.",
+    },
+    virtualization: {
+      control: "boolean",
+      description: "Adds windowed rendering; false leaves the ordinary collection DOM intact.",
+    },
+  },
   parameters: { layout: "fullscreen" },
   title: "P4/Collection foundation",
-} satisfies Meta;
+} satisfies Meta<CollectionStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<CollectionStoryArgs>;
+
+export const BasicDefaults: Story = {
+  args: { selectionSummary: false, virtualization: false },
+  render: (args) => <CollectionModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  args: { selectionSummary: true, virtualization: true },
+  render: (args) => <CollectionModes {...args} />,
+};
 
 export const SelectionWorkbench: Story = {
   render: () => (

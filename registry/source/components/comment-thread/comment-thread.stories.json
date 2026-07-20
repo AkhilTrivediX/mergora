@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "comment-thread",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicCommentThread" },
+    {
+      "id": "optimistic",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCommentThread"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "resolved", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "OptimisticErrorRecovery"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCommentThread"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

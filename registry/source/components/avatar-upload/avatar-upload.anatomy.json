@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "avatar-upload",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "avatar-upload",
+    "stableAttributes": ["data-slot", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "avatar-upload-intake",
+      "element": "structured div",
+      "purpose": "Groups the bounded visual, visible context, and one native FileTrigger.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "avatar-upload-preview",
+      "element": "optional img",
+      "purpose": "Renders the selected or consumer-transformed image from a lifecycle-safe owned object URL.",
+      "stability": "documented"
+    },
+    {
+      "slot": "avatar-upload-metadata",
+      "element": "optional description list",
+      "purpose": "Exposes file name, locale-aware size, and MIME context without decoding untrusted content.",
+      "stability": "documented"
+    },
+    {
+      "slot": "avatar-upload-actions",
+      "element": "optional standard buttons",
+      "purpose": "Provides consumer crop/edit and native selection removal hooks.",
+      "stability": "documented"
+    },
+    {
+      "slot": "avatar-upload-lifecycle",
+      "element": "optional Mergora UploadProgress and retry button",
+      "purpose": "Presents consumer-owned server lifecycle without starting transfer.",
+      "stability": "documented"
+    },
+    {
+      "slot": "avatar-upload-rejection",
+      "element": "optional polite status",
+      "purpose": "Keeps invalid type and size recovery visible and announced.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -28,18 +28,20 @@
   ],
   "consumerResponsibilities": [
     "Provide a visible Label or an explicit accessible name.",
+    "When composing Clear, provide a localized non-empty label when the default English label is not appropriate.",
     "Give each Item a unique string or number id and a stable textValue when its label is not plain text.",
     "Do not place buttons, links, inputs, or other interactive descendants inside an Item.",
     "Localize the trigger label, empty content, description, error message, and item text.",
     "Keep remote filtering cancellable and expose loading, empty, error, and retry states outside this P1 tracer."
   ],
   "evidence": {
-    "automated": "not-tested",
-    "browser": "not-tested",
+    "automated": "pass",
+    "browser": "pass",
     "manualAssistiveTechnology": "not-supplied",
     "packageSourceParity": "not-tested"
   },
   "limitations": [
-    "P1 does not promise virtualization, multiple selection, remote loading orchestration, or rich interactive item descendants."
+    "P1 does not promise virtualization, multiple selection, remote loading orchestration, or rich interactive item descendants.",
+    "Clear is an optional compound part. Omitting it removes the action, its event path, and its accessible name without changing input, selection, form, or popup behavior."
   ]
 }

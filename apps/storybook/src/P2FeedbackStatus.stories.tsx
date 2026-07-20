@@ -46,13 +46,13 @@ const workbenchStyle = {
 } satisfies CSSProperties;
 
 const specimenStyle = {
-  background: "var(--mrg-semantic-color-background-surface)",
-  border: "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default)",
-  borderRadius: "var(--mrg-semantic-radius-panel)",
+  background: "var(--mrg-semantic-color-background-canvas)",
+  borderBlock:
+    "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong)",
   display: "grid",
   gap: "var(--mrg-semantic-space-stack-md)",
   minInlineSize: 0,
-  padding: "var(--mrg-semantic-density-panel-padding)",
+  paddingBlock: "var(--mrg-semantic-density-panel-padding)",
 } satisfies CSSProperties;
 
 const rowStyle = {
@@ -114,6 +114,294 @@ function Canvas({
         content
       )}
     </MergoraProvider>
+  );
+}
+
+interface EnhancementControls {
+  readonly animateSkeleton: boolean;
+  readonly announceAlert: boolean;
+  readonly announceBusyState: boolean;
+  readonly landmarkCallout: boolean;
+  readonly liveStatus: boolean;
+  readonly persistBannerDismissal: boolean;
+  readonly showBadgeSemantics: boolean;
+  readonly showErrorDetails: boolean;
+  readonly showMeterThresholds: boolean;
+  readonly showProgressValue: boolean;
+  readonly showRecoverySuggestions: boolean;
+}
+
+function BasicDefaultsSpecimen({
+  animateSkeleton,
+  announceAlert,
+  announceBusyState,
+  landmarkCallout,
+  liveStatus,
+  persistBannerDismissal,
+  showBadgeSemantics,
+  showErrorDetails,
+  showMeterThresholds,
+  showProgressValue,
+  showRecoverySuggestions,
+}: EnhancementControls) {
+  const persistence = useMemo(() => {
+    if (!persistBannerDismissal) return undefined;
+    if (typeof globalThis.localStorage === "undefined") {
+      return {
+        read: () => undefined,
+        write: () => undefined,
+      };
+    }
+    return createBannerStoragePersistence(globalThis.localStorage, "mergora.story.basic.");
+  }, [persistBannerDismissal]);
+
+  return (
+    <Canvas announcer={announceAlert || announceBusyState}>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Plain feedback defaults</h1>
+        <p style={{ marginBlockEnd: 0 }}>
+          Optional announcements, persistence, contextual rails, extra semantics, and motion are all
+          disabled in this baseline.
+        </p>
+      </header>
+      <section aria-labelledby="basic-static-feedback" style={specimenStyle}>
+        <h2 id="basic-static-feedback" style={{ margin: 0 }}>
+          Static feedback
+        </h2>
+        <Alert
+          {...(announceAlert
+            ? { announcement: "The document remains available.", live: "polite" as const }
+            : { live: "off" as const })}
+          description="The document remains available."
+          title="Document saved"
+        />
+        <Callout
+          {...(landmarkCallout ? { landmarkLabel: "Source review guidance" } : {})}
+          title="Review the source"
+        >
+          The visible note remains deliberately non-live.
+        </Callout>
+        <Banner
+          dismissible={persistBannerDismissal}
+          id="basic-banner"
+          {...(persistBannerDismissal && persistence !== undefined ? { persistence } : {})}
+          title="System notice"
+        >
+          Existing work remains available.
+        </Banner>
+        <div style={rowStyle}>
+          <Badge>Preview</Badge>
+          {showBadgeSemantics ? (
+            <>
+              <Badge kind="status" variant="success">
+                Synchronized
+              </Badge>
+              <Badge count={12} kind="count" label="Unread changes" maximum={9} />
+            </>
+          ) : null}
+          <Status live={liveStatus ? "polite" : "off"}>Ready for review</Status>
+        </div>
+      </section>
+      <section aria-labelledby="basic-measurement" style={specimenStyle}>
+        <h2 id="basic-measurement" style={{ margin: 0 }}>
+          Native measurement
+        </h2>
+        <Progress label="Document processing" showValue={showProgressValue} value={42} />
+        <Meter
+          high={85}
+          label="Workspace capacity"
+          low={55}
+          optimum={35}
+          showThresholdSummary={showMeterThresholds}
+          value={68}
+        />
+      </section>
+      <section aria-labelledby="basic-loading" style={specimenStyle}>
+        <h2 id="basic-loading" style={{ margin: 0 }}>
+          Quiet loading geometry
+        </h2>
+        <BusyRegion
+          {...(announceBusyState
+            ? { announce: true, busyMessage: "Refreshing documents" }
+            : { announce: false })}
+          busy
+          label="Document list"
+        >
+          <div style={rowStyle}>
+            <Spinner />
+            <span>Refreshing documents</span>
+          </div>
+          <Skeleton animated={animateSkeleton} blockSize={18} inlineSize="72%" />
+        </BusyRegion>
+      </section>
+      <section aria-labelledby="basic-recovery" style={specimenStyle}>
+        <h2 id="basic-recovery" style={{ margin: 0 }}>
+          Concise recovery
+        </h2>
+        <EmptyState
+          description="Change the current filter to see more entries."
+          primaryAction={
+            <button style={actionStyle} type="button">
+              Clear filter
+            </button>
+          }
+          {...(showRecoverySuggestions
+            ? {
+                recoverySuggestions: {
+                  items: ["Remove the current filter", "Search by document title"],
+                  label: "Ways to recover",
+                },
+              }
+            : {})}
+          title="No matching entries"
+        />
+        <ErrorState
+          description="Return to the previous page or contact the workspace owner."
+          {...(showErrorDetails ? { technicalDetails: "Request ID: public-example-basic" } : {})}
+          title="This page is unavailable"
+        />
+      </section>
+    </Canvas>
+  );
+}
+
+function RecommendedMergoraSpecimen({
+  animateSkeleton,
+  announceAlert,
+  announceBusyState,
+  landmarkCallout,
+  liveStatus,
+  persistBannerDismissal,
+  showBadgeSemantics,
+  showErrorDetails,
+  showMeterThresholds,
+  showProgressValue,
+  showRecoverySuggestions,
+}: EnhancementControls) {
+  const persistence = useMemo(() => {
+    if (typeof globalThis.localStorage === "undefined") {
+      return {
+        read: () => undefined,
+        write: () => undefined,
+      };
+    }
+    return createBannerStoragePersistence(globalThis.localStorage, "mergora.story.recommended.");
+  }, []);
+
+  return (
+    <Canvas announcer={announceAlert || announceBusyState}>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Recommended Mergora feedback</h1>
+        <p style={{ marginBlockEnd: 0 }}>
+          Each useful enhancement has its own control and disappears cleanly when disabled.
+        </p>
+      </header>
+      <section aria-labelledby="recommended-feedback" style={specimenStyle}>
+        <h2 id="recommended-feedback" style={{ margin: 0 }}>
+          Context and state
+        </h2>
+        <Alert
+          {...(announceAlert
+            ? { announcement: "The review copy is ready.", live: "polite" as const }
+            : { live: "off" as const })}
+          description="Comments and version history remain attached to this copy."
+          title="Review copy ready"
+          variant="success"
+        />
+        <Callout
+          {...(landmarkCallout ? { landmarkLabel: "Editing guidance" } : {})}
+          title="Keep the original available"
+          variant="tip"
+        >
+          Compare changes against the previous copy before replacing it.
+        </Callout>
+        <Banner
+          id="recommended-banner"
+          {...(persistBannerDismissal ? { persistence } : {})}
+          title="New workspace guidance"
+          variant="info"
+        >
+          Dismissal persistence is injected and remains owned by the consumer.
+        </Banner>
+        <div style={rowStyle}>
+          <Badge>Workspace</Badge>
+          {showBadgeSemantics ? (
+            <>
+              <Badge kind="status" variant="success">
+                Synchronized
+              </Badge>
+              <Badge count={128} kind="count" label="Unread changes" maximum={99} />
+            </>
+          ) : null}
+          <Status live={liveStatus ? "polite" : "off"} variant="success">
+            All edits synchronized
+          </Status>
+        </div>
+      </section>
+      <section aria-labelledby="recommended-measurement" style={specimenStyle}>
+        <h2 id="recommended-measurement" style={{ margin: 0 }}>
+          Progress with useful context
+        </h2>
+        <Progress label="Preparing preview" showValue={showProgressValue} value={72} />
+        <Meter
+          high={85}
+          label="Workspace capacity"
+          low={55}
+          optimum={35}
+          showThresholdSummary={showMeterThresholds}
+          value={68}
+        />
+      </section>
+      <section aria-labelledby="recommended-loading" style={specimenStyle}>
+        <h2 id="recommended-loading" style={{ margin: 0 }}>
+          Owned loading state
+        </h2>
+        <BusyRegion
+          announce={announceBusyState}
+          busy
+          busyMessage="Refreshing workspace documents"
+          label="Workspace documents"
+        >
+          <div style={rowStyle}>
+            <Spinner />
+            <span>Refreshing workspace documents</span>
+          </div>
+          <Skeleton animated={animateSkeleton} blockSize={18} inlineSize="72%" />
+          <Skeleton animated={animateSkeleton} blockSize={18} inlineSize="48%" />
+        </BusyRegion>
+      </section>
+      <section aria-labelledby="recommended-recovery" style={specimenStyle}>
+        <h2 id="recommended-recovery" style={{ margin: 0 }}>
+          Recovery without dead ends
+        </h2>
+        <EmptyState
+          context="filtered"
+          description="Adjust the filters or start from the complete document list."
+          primaryAction={
+            <button style={actionStyle} type="button">
+              Clear filters
+            </button>
+          }
+          {...(showRecoverySuggestions
+            ? {
+                recoverySuggestions: {
+                  items: ["Remove the date filter", "Search by document title"],
+                  label: "Ways to recover",
+                },
+              }
+            : {})}
+          secondaryAction={<a href="#all-documents">View every document</a>}
+          title="No documents match"
+        />
+        <ErrorState
+          description="Retry the request; your local edits remain available."
+          onRetry={() => undefined}
+          recoverable
+          {...(showErrorDetails ? { technicalDetails: "Request ID: public-example-18f2" } : {})}
+          title="Could not refresh documents"
+        />
+      </section>
+    </Canvas>
   );
 }
 
@@ -696,13 +984,60 @@ const arabicMessages = {
 } satisfies MergoraMessages;
 
 const meta = {
+  args: {
+    animateSkeleton: true,
+    announceAlert: true,
+    announceBusyState: true,
+    landmarkCallout: true,
+    liveStatus: true,
+    persistBannerDismissal: true,
+    showBadgeSemantics: true,
+    showErrorDetails: true,
+    showMeterThresholds: true,
+    showProgressValue: true,
+    showRecoverySuggestions: true,
+  },
+  argTypes: {
+    animateSkeleton: { control: "boolean" },
+    announceAlert: { control: "boolean" },
+    announceBusyState: { control: "boolean" },
+    landmarkCallout: { control: "boolean" },
+    liveStatus: { control: "boolean" },
+    persistBannerDismissal: { control: "boolean" },
+    showBadgeSemantics: { control: "boolean" },
+    showErrorDetails: { control: "boolean" },
+    showMeterThresholds: { control: "boolean" },
+    showProgressValue: { control: "boolean" },
+    showRecoverySuggestions: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Feedback Status",
-} satisfies Meta;
+} satisfies Meta<EnhancementControls>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<EnhancementControls>;
+
+export const BasicDefaults: Story = {
+  args: {
+    animateSkeleton: false,
+    announceAlert: false,
+    announceBusyState: false,
+    landmarkCallout: false,
+    liveStatus: false,
+    persistBannerDismissal: false,
+    showBadgeSemantics: false,
+    showErrorDetails: false,
+    showMeterThresholds: false,
+    showProgressValue: false,
+    showRecoverySuggestions: false,
+  },
+  render: (args) => <BasicDefaultsSpecimen {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <RecommendedMergoraSpecimen {...args} />,
+};
 
 export const FeedbackWorkbench: Story = { render: () => <Workbench /> };
 

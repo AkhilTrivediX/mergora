@@ -7,14 +7,26 @@ export type HeadingElement = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 export type HeadingSize = "display" | "lg" | "md" | "sm";
 
 interface HeadingBaseProps extends HTMLAttributes<HTMLHeadingElement> {
+  /** Heading content rendered by the selected native heading element. */
   readonly children?: ReactNode;
+  /** Visual scale independent from the required semantic heading level. */
   readonly size?: HeadingSize;
 }
 
 export type HeadingProps = HeadingBaseProps &
   (
-    | { readonly level: HeadingLevel; readonly as?: never }
-    | { readonly as: HeadingElement; readonly level?: never }
+    | {
+        /** Semantic level used to select the corresponding native h1 through h6 element. */
+        readonly level: HeadingLevel;
+        /** Mutually exclusive with level so the semantic element has one source of truth. */
+        readonly as?: never;
+      }
+    | {
+        /** Explicit native h1 through h6 element used as the semantic source of truth. */
+        readonly as: HeadingElement;
+        /** Mutually exclusive with as so the semantic element has one source of truth. */
+        readonly level?: never;
+      }
   );
 
 const levelsByElement: Readonly<Record<HeadingElement, HeadingLevel>> = {

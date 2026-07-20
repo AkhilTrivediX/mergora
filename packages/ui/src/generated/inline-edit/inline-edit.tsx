@@ -29,7 +29,9 @@ export type InlineEditBlurBehavior = "keep-editing" | "save";
 export type InlineEditControl = "input" | "textarea";
 
 export interface InlineEditSaveContext {
+  /** Committed value that was current when this editing session began. */
   readonly previousValue: string;
+  /** Signal aborted when saving is reset, replaced, or the component unmounts. */
   readonly signal: AbortSignal;
 }
 
@@ -60,44 +62,80 @@ export interface InlineEditProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Keeps focus in editing or saves when focus leaves; defaults to keep-editing. */
   readonly blurBehavior?: InlineEditBlurBehavior;
+  /** Localized visible label for the cancel action. */
   readonly cancelLabel?: string;
+  /** Localized polite status announced after cancellation. */
   readonly canceledMessage?: string;
+  /** Native single-line input or multiline textarea editing control. */
   readonly control?: InlineEditControl;
+  /** Initial committed value for uncontrolled use and native form reset. */
   readonly defaultValue?: string;
+  /** Optional visible guidance associated with the editor and edit action. */
   readonly description?: ReactNode;
+  /** Disables editing, saving, cancellation, and hidden form serialization. */
   readonly disabled?: boolean;
+  /** Localized accessible edit-action name; defaults from editLabel and visible label. */
   readonly editAccessibleLabel?: string;
+  /** Localized visible text for the action that enters editing mode. */
   readonly editLabel?: string;
+  /** Localized visible fallback when the committed value is empty. */
   readonly emptyValueLabel?: string;
+  /** Consumer validation error merged with internal save and validation failures. */
   readonly error?: ReactNode;
+  /** Localized recovery message when controlled value changes during an edit or save. */
   readonly externalChangeMessage?: string;
+  /** Native form owner id forwarded to the hidden committed-value input. */
   readonly form?: string;
+  /** Native input attributes used only when control is input; managed value semantics stay internal. */
   readonly inputProps?: InlineEditInputProps;
+  /** Applies invalid styling and aria-invalid alongside visible error content. */
   readonly invalid?: boolean;
+  /** Persistent visible label naming both view and editing modes. */
   readonly label: ReactNode;
+  /** Native form field name enabling hidden committed-value serialization. */
   readonly name?: string;
+  /** Localized polite status announced when a save finds no changes. */
   readonly noChangesMessage?: string;
+  /** Reports explicit cancellation after draft state has been restored. */
   readonly onCancel?: () => void;
+  /** Reports entry into editing mode after the committed value becomes the draft. */
   readonly onEdit?: () => void;
+  /** Optional asynchronous persistence hook receiving the draft and abortable save context. */
   readonly onSave?: (value: string, context: InlineEditSaveContext) => Promise<void> | void;
+  /** Reports a successfully saved committed value after onSave resolves. */
   readonly onValueChange?: (value: string) => void;
+  /** Localized visible and polite status used while a save is pending. */
   readonly pendingLabel?: string;
+  /** Removes editing actions while preserving the committed value and form serialization. */
   readonly readOnly?: boolean;
+  /** Localized visible context replacing the edit action in read-only mode. */
   readonly readOnlyLabel?: string;
+  /** Requires a non-empty draft before save and marks the native editor required. */
   readonly required?: boolean;
+  /** Localized recovery message shown when a required draft is empty. */
   readonly requiredMessage?: string;
+  /** Localized polite status announced after native form reset restores the value. */
   readonly resetMessage?: string;
+  /** Converts a rejected save error into accessible recovery content. */
   readonly resolveSaveError?: (error: unknown) => ReactNode;
+  /** Localized fallback recovery message when saving rejects. */
   readonly saveErrorMessage?: string;
+  /** Localized visible label for the save action. */
   readonly saveLabel?: string;
+  /** Localized polite status announced after a save succeeds. */
   readonly successMessage?: string;
+  /** Native textarea attributes used only in textarea mode; managed value semantics stay internal. */
   readonly textareaProps?: InlineEditTextareaProps;
+  /** Returns accessible draft recovery content, or undefined when the draft is valid. */
   readonly validate?: (value: string) => ReactNode | undefined;
+  /** Controlled committed value; successful saves are proposed through onValueChange. */
   readonly value?: string;
 }
 
 interface ProcessLike {
+  /** Optional runtime environment used only to gate development diagnostics. */
   readonly env?: { readonly NODE_ENV?: string };
 }
 
@@ -131,9 +169,13 @@ function joinClassNames(componentClass: string, consumerClass: string | undefine
 }
 
 export function validateInlineEditValue(input: {
+  /** Whether an empty draft should return requiredMessage before custom validation. */
   readonly required: boolean;
+  /** Accessible recovery content returned for a required empty draft. */
   readonly requiredMessage: ReactNode;
+  /** Optional consumer validator run after built-in required validation. */
   readonly validate?: (value: string) => ReactNode | undefined;
+  /** Complete candidate draft being evaluated before save. */
   readonly value: string;
 }): ReactNode | undefined {
   if (input.required && input.value.length === 0) return input.requiredMessage;

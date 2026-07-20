@@ -3,7 +3,7 @@
   "itemId": "alert",
   "root": {
     "slot": "alert",
-    "element": "div with shared-announcer effect for explicit live modes",
+    "element": "static div with an optional external shared-announcer effect",
     "ref": "HTMLDivElement",
     "stableAttributes": ["data-slot", "data-variant", "data-live"]
   },

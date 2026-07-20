@@ -6,9 +6,11 @@ export type CenterAxis = "inline" | "block" | "both";
 export type CenterMaximum = "none" | "prose" | "content";
 
 export interface CenterProps extends HTMLAttributes<HTMLDivElement> {
+  /** Chooses inline, block, or two-axis centering while keeping the wrapper a native div. */
   readonly axis?: CenterAxis;
   /** Constrains direct children with a semantic max while preserving a 100% narrow bound. */
   readonly maximum?: CenterMaximum;
+  /** Optionally centers descendant text independently from the selected layout axis. */
   readonly text?: "start" | "center";
 }
 

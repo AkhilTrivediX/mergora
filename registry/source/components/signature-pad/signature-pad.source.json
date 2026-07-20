@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./signature-pad.css", "react"],
+  "entryPath": "registry/source/components/signature-pad/signature-pad.tsx",
+  "id": "signature-pad",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

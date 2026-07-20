@@ -147,6 +147,100 @@ describe("P2 form controls canonical records", () => {
 });
 
 describe("field and validation relationships", () => {
+  it("keeps every Mergora form enhancement absent until its component-specific prop is enabled", () => {
+    const plain = renderToStaticMarkup(
+      <Form>
+        <Field label="Workspace">
+          <Input defaultValue="Northstar" />
+        </Field>
+        <Fieldset legend="Checks" />
+        <Textarea defaultValue="Ready" />
+        <ValidationSummary
+          focusKey={1}
+          focusPolicy="none"
+          issues={[{ controlId: "workspace", id: "workspace", message: "Review workspace" }]}
+        />
+      </Form>,
+    );
+
+    expect(plain).not.toContain('data-slot="field-contextual-action"');
+    expect(plain).not.toContain('data-slot="fieldset-selection-summary"');
+    expect(plain).not.toContain('data-slot="form-submission-status"');
+    expect(plain).not.toContain('data-slot="input-clear"');
+    expect(plain).not.toContain('data-slot="textarea-count"');
+    expect(plain).not.toContain('aria-busy="true"');
+    const plainInput = renderToStaticMarkup(<Input defaultValue="Native" />);
+    expect(plainInput).not.toContain("data-clearable");
+    expect(plainInput).not.toContain("data-empty");
+    expect(plainInput).not.toContain('id="mrg-input-');
+    expect(
+      renderToStaticMarkup(
+        <>
+          <Field contextualAction={null} label="Null action">
+            <Input />
+          </Field>
+          <Field contextualAction={false} label="False action">
+            <Input />
+          </Field>
+        </>,
+      ),
+    ).not.toContain('data-slot="field-contextual-action"');
+
+    const enhanced = renderToStaticMarkup(
+      <Form submissionStatus={{ message: "Saving", state: "submitting" }}>
+        <Field contextualAction={<button type="button">Use suggestion</button>} label="Workspace">
+          <Input clearable clearLabel="Clear workspace" defaultValue="Northstar" />
+        </Field>
+        <Fieldset legend="Checks" selectionSummary="1 of 2 selected" />
+        <Textarea autoGrow defaultValue="Ready" showCount />
+      </Form>,
+    );
+
+    expect(enhanced).toContain('data-slot="field-contextual-action"');
+    expect(enhanced).toContain('data-slot="fieldset-selection-summary"');
+    expect(enhanced).toContain('data-slot="form-submission-status"');
+    expect(enhanced).toContain('data-slot="input-clear"');
+    expect(enhanced).toContain('aria-label="Clear workspace"');
+    expect(enhanced).toContain('data-slot="textarea-count"');
+    expect(enhanced).toContain('data-autogrow="true"');
+    expect(enhanced).toContain('aria-busy="true"');
+    expect(enhanced).toContain('role="status"');
+
+    expect(() => renderToStaticMarkup(<Input clearable clearLabel=" " />)).toThrow(/clearLabel/u);
+    expect(() => renderToStaticMarkup(<Input clearable type="checkbox" />)).toThrow(
+      /clearable is not supported/u,
+    );
+  });
+
+  it("suppresses empty submission status content without derived state or live semantics", () => {
+    for (const message of [null, false, "   ", <></>, <span key="empty" />]) {
+      const markup = renderToStaticMarkup(
+        <Form submissionStatus={{ message, state: "submitting" }}>Native form</Form>,
+      );
+      expect(markup).not.toContain('data-slot="form-submission-status"');
+      expect(markup).not.toContain("data-submission-state");
+      expect(markup).not.toContain("aria-live");
+      expect(markup).not.toContain('role="status"');
+      expect(markup).not.toContain('aria-busy="true"');
+    }
+
+    for (const submissionStatus of [false, null] as const) {
+      const markup = renderToStaticMarkup(
+        <Form submissionStatus={submissionStatus}>Native form</Form>,
+      );
+      expect(markup).not.toContain('data-slot="form-submission-status"');
+      expect(markup).not.toContain("data-submission-state");
+      expect(markup).not.toContain("aria-live");
+    }
+
+    const api = readJson<{
+      readonly props: readonly { readonly name: string; readonly type: string }[];
+    }>("form", "form.api.json");
+    expect(api.props.find((prop) => prop.name === "submissionStatus")?.type).toContain(
+      "false | null",
+    );
+  });
+
   it("generates unique IDs for two fields and merges descriptions without duplication", () => {
     expect(mergeFieldIdRefs("alpha beta", "beta gamma", undefined)).toBe("alpha beta gamma");
     const markup = renderToStaticMarkup(
@@ -454,6 +548,33 @@ describe("native form semantics", () => {
     );
     expect(markup.match(/data-slot="native-select-indicator"/gu)).toHaveLength(1);
     expect(markup.match(/data-listbox="true"/gu)).toHaveLength(2);
+  });
+
+  it("removes optional native-select selection context and relationships cleanly", () => {
+    const plain = renderToStaticMarkup(
+      <NativeSelect aria-label="Region">
+        <option value="apac">Asia Pacific</option>
+      </NativeSelect>,
+    );
+    expect(plain).not.toContain("native-select-selection-context");
+    expect(plain).not.toContain("data-selection-context");
+    expect(plain).not.toContain("aria-describedby");
+
+    const enhanced = renderToStaticMarkup(
+      <NativeSelect aria-label="Region" selectionContext="Uses the Asia Pacific window.">
+        <option value="apac">Asia Pacific</option>
+      </NativeSelect>,
+    );
+    expect(enhanced).toContain('data-slot="native-select-selection-context"');
+    expect(enhanced).toContain('data-selection-context="true"');
+    expect(enhanced).toMatch(/aria-describedby="[^"]+-selection-context"/u);
+
+    const empty = renderToStaticMarkup(
+      <NativeSelect aria-label="Region" selectionContext={<> </>}>
+        <option value="apac">Asia Pacific</option>
+      </NativeSelect>,
+    );
+    expect(empty).not.toContain("native-select-selection-context");
   });
 
   it("propagates external form ownership to every compound successful control", () => {

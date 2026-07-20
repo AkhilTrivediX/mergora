@@ -7,7 +7,7 @@
   "riskClass": 1,
   "semantics": {
     "nativeBasis": "code: code",
-    "rolePolicy": "The root is native code and remains selectable. No syntax role or fabricated interactive behavior is added.",
+    "rolePolicy": "The root is native code and remains selectable. Wrapping and bidirectional isolation are independent; no syntax role or fabricated interactive behavior is added.",
     "refTarget": "HTMLElement"
   },
   "keyboard": [
@@ -21,7 +21,7 @@
   "stableSelectors": {
     "root": "[data-slot=code]",
     "parts": [],
-    "attributes": ["data-wrap"]
+    "attributes": ["data-wrap", "data-bidi-isolated"]
   },
   "consumerResponsibilities": [
     "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",

@@ -40,6 +40,17 @@
   text-decoration-thickness: var(--mrg-semantic-border-width-default);
   text-underline-offset: 0.18em;
 }
+.mrg-prose :where(a):not([data-prose-unstyled], [data-prose-unstyled] *):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+.mrg-prose :where(li)::marker {
+  color: var(--mrg-semantic-color-brand-violet);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
 .mrg-prose :where(img, video, table, pre):not([data-prose-unstyled], [data-prose-unstyled] *) {
   max-inline-size: 100%;
 }
@@ -60,5 +71,12 @@
   }
   .mrg-prose :where(a):not([data-prose-unstyled], [data-prose-unstyled] *) {
     color: LinkText;
+  }
+  .mrg-prose :where(a):not([data-prose-unstyled], [data-prose-unstyled] *):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+  .mrg-prose :where(li)::marker {
+    color: CanvasText;
   }
 }

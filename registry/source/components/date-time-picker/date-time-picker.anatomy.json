@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-time-picker",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "date-time-picker",
+    "stableAttributes": ["data-slot", "data-presets"]
+  },
+  "parts": [
+    {
+      "slot": "date-time-field",
+      "element": "Mergora DateTimeField",
+      "purpose": "native local date-time editing",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-picker-presets",
+      "element": "optional button group",
+      "purpose": "consumer-owned local date-time selections",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-field-wall-time",
+      "element": "optional DateTimeField output",
+      "purpose": "resolved or recoverable local-wall-time status",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-field-resolved-value",
+      "element": "optional hidden input",
+      "purpose": "consumer-named resolved instant serialization",
+      "stability": "documented"
+    }
+  ]
+}

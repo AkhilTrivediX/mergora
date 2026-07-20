@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message",
+  "entryExport": "Message",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML article attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "Message" },
+    { "kind": "type", "name": "MessageDeliveryState" },
+    { "kind": "type", "name": "MessageProps" },
+    { "kind": "type", "name": "MessageRole" }
+  ],
+  "props": [
+    { "name": "showRoleContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "roleLabels", "required": false, "type": "Partial<Record<MessageRole, string>>" }
+  ],
+  "compositionPolicy": {
+    "content": "ReactNode content is escaped by React; consumers remain responsible for sanitizing any renderer that creates HTML.",
+    "enhancement": "showRoleContext adds a text-backed role and delivery rail; false removes its UI and accessibility output."
+  }
+}

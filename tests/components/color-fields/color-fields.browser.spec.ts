@@ -9,7 +9,6 @@ const runtimeFailures = new WeakMap<Page, string[]>();
 
 test.use({
   hasTouch: true,
-  permissions: ["clipboard-read", "clipboard-write"],
 });
 
 function guardRuntime(page: Page): string[] {
@@ -47,13 +46,114 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!String(error).includes("Axe is already running") || attempt === 19) throw error;
+        await new Promise((resolveRetry) => setTimeout(resolveRetry, 50));
+      }
+    }
+    return [];
   });
 }
 
 function colorText(page: Page, label: string): Locator {
   return page.getByRole("textbox", { exact: true, name: label });
 }
+
+async function pasteText(page: Page, target: Locator, value: string): Promise<void> {
+  await target.focus();
+  if (page.context().browser()?.browserType().name() !== "chromium") {
+    await target.evaluate((element, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text", text);
+      const event = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData,
+      });
+      if (event.clipboardData?.getData("text") !== text) {
+        Object.defineProperty(event, "clipboardData", { value: clipboardData });
+      }
+      const performDefaultInsertion = element.dispatchEvent(event);
+      if (
+        performDefaultInsertion &&
+        element instanceof HTMLInputElement &&
+        !element.disabled &&
+        !element.readOnly
+      ) {
+        const selectionStart = element.selectionStart ?? element.value.length;
+        const selectionEnd = element.selectionEnd ?? selectionStart;
+        element.setRangeText(text, selectionStart, selectionEnd, "end");
+        element.dispatchEvent(
+          new InputEvent("input", {
+            bubbles: true,
+            composed: true,
+            data: text,
+            inputType: "insertFromPaste",
+          }),
+        );
+      }
+    }, value);
+    return;
+  }
+  await page.context().grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: new URL(page.url()).origin,
+  });
+  await page.evaluate((text) => navigator.clipboard.writeText(text), value);
+  await page.keyboard.press("Control+V");
+}
+
+async function pressComposingEnter(target: Locator): Promise<void> {
+  await target.evaluate((element) => {
+    element.dispatchEvent(
+      new KeyboardEvent("keydown", {
+        bubbles: true,
+        cancelable: true,
+        code: "Enter",
+        isComposing: true,
+        key: "Enter",
+      }),
+    );
+  });
+}
+
+test("basic and recommended color modes remove preview, contrast, and presets independently", async ({
+  page,
+}) => {
+  await openStory(page, "basic-defaults", "Mergora color controls");
+  await expect(page.locator('[data-slot="color-field-preview"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="color-field-contrast"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="color-picker-swatches-section"]')).toHaveCount(0);
+  await expect(page.getByRole("slider", { name: "Saturation and brightness" })).toBeVisible();
+  await expect(page.locator('input[type="hidden"][name="accent-color"]')).toHaveValue("#533a7e");
+  await expect(page.locator('input[type="hidden"][name="interface-color"]')).toHaveValue(
+    "#2f7a57cc",
+  );
+
+  await openStory(page, "recommended-mergora", "Mergora color controls");
+  await expect(page.locator('[data-slot="color-field-preview"]')).toHaveCount(2);
+  await expect(page.locator('[data-slot="color-field-contrast"]')).toHaveCount(2);
+  await expect(page.locator('[data-slot="color-picker-swatches-section"]')).toHaveCount(1);
+  await expect(page.getByRole("option")).toHaveCount(2);
+  const editor = colorText(page, "Accent color");
+  await editor.focus();
+  const focusVisual = await editor.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { boxShadow: style.boxShadow, outlineStyle: style.outlineStyle };
+  });
+  expect(focusVisual.boxShadow).not.toBe("none");
+  expect(focusVisual.outlineStyle).not.toBe("none");
+  await page.getByRole("button", { name: "Inspect canonical values" }).click();
+  expect(
+    JSON.parse((await page.getByTestId("mergora-color-values").textContent()) ?? "{}"),
+  ).toEqual({
+    "accent-color": "#533a7e",
+    "interface-color": "#2f7a57cc",
+  });
+  expect(await axeViolations(page)).toEqual([]);
+});
 
 test("production workbench exposes named alternatives, 44px targets, canonical form data, and reset", async ({
   page,
@@ -114,7 +214,6 @@ test("production workbench exposes named alternatives, 44px targets, canonical f
 });
 
 test("invalid, incomplete, IME, paste, and editor-key paths preserve the last valid color", async ({
-  context,
   page,
 }) => {
   await openStory(page, "validation-and-recovery", "Invalid and incomplete text recovery");
@@ -132,22 +231,16 @@ test("invalid, incomplete, IME, paste, and editor-key paths preserve the last va
   await expect(editor).toHaveValue("#533a7e");
   await expect(editor).not.toHaveAttribute("aria-invalid", "true");
 
-  await editor.dispatchEvent("compositionstart");
   await editor.fill("rgb(10, 20, 30)");
-  await editor.press("Enter");
+  await pressComposingEnter(editor);
   await expect(hidden).toHaveValue("#533a7e");
-  await editor.dispatchEvent("compositionend");
   await editor.press("Enter");
   await expect(editor).toHaveValue("#0a141e");
   await expect(hidden).toHaveValue("#0a141e");
 
-  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
-    origin: "http://127.0.0.1:8147",
-  });
-  await page.evaluate(() => navigator.clipboard.writeText("hsl(210, 50%, 40%)"));
   await editor.focus();
   await editor.press("Control+A");
-  await editor.press("Control+V");
+  await pasteText(page, editor, "hsl(210, 50%, 40%)");
   await editor.press("Enter");
   await expect(editor).toHaveValue("#336699");
   await expect(hidden).toHaveValue("#336699");
@@ -260,7 +353,16 @@ test("disabled/read-only states, RTL, forced colors, reduced motion, and 320px r
     await expect(page.getByRole("slider", { exact: true, name: label })).toBeVisible();
   }
   const area = page.locator('[data-slot="color-picker-area"]');
-  await expect(area).toHaveCSS("forced-color-adjust", "auto");
+  const forcedColorStyle = await area.evaluate((element) => ({
+    forcedColorAdjust: getComputedStyle(element).getPropertyValue("forced-color-adjust"),
+    supportsForcedColorAdjust: CSS.supports("forced-color-adjust", "auto"),
+  }));
+  if (forcedColorStyle.supportsForcedColorAdjust) {
+    expect(forcedColorStyle.forcedColorAdjust).toBe("auto");
+  } else {
+    expect(forcedColorStyle.forcedColorAdjust).toBe("");
+  }
+  expect(await page.evaluate(() => matchMedia("(forced-colors: active)").matches)).toBe(true);
   const overflow = await page.evaluate(() => ({
     body: document.body.scrollWidth - document.body.clientWidth,
     document: document.documentElement.scrollWidth - document.documentElement.clientWidth,

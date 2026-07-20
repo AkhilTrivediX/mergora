@@ -10,6 +10,8 @@ A controlled or uncontrolled single/multiple pressed-button collection with rovi
 - Arrow movement never changes selection; native activation does.
 - Single selection cannot become empty unless allowEmpty is explicit.
 
+Each item uses the family Ink structure, Green pressed rail, and Violet focus seam. `renderSelectionSummary` adds a useful visible live summary for either selection mode; omitting it removes the summary rail and accessibility output completely.
+
 The public ref resolves to `HTMLDivElement`. Stable source styling starts at `data-slot="toggle-group"`; documented child slots are recorded in `toggle-group.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

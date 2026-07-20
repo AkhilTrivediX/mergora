@@ -18,6 +18,8 @@
     "empty",
     "populated",
     "negative",
+    "canonical-preview",
+    "status-rail",
     "rtl"
   ],
   "slots": [
@@ -56,6 +58,24 @@
       "semanticElement": "button",
       "refTarget": "none",
       "states": ["disabled", "pressed"]
+    },
+    {
+      "name": "number-field-insights",
+      "semanticElement": "context rail",
+      "refTarget": "none",
+      "states": ["empty", "populated", "narrow"]
+    },
+    {
+      "name": "number-field-status",
+      "semanticElement": "descriptive currency-bound text",
+      "refTarget": "none",
+      "states": ["bounded", "unbounded"]
+    },
+    {
+      "name": "number-field-canonical-preview",
+      "semanticElement": "major-unit text and data value",
+      "refTarget": "none",
+      "states": ["empty", "populated", "negative"]
     }
   ],
   "contract": { "id": "currency-field-accessibility", "version": "0.1.0" },

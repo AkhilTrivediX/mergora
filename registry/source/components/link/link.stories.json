@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "ActionsWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",

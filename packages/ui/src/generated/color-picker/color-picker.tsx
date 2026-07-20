@@ -49,14 +49,23 @@ import { useMergoraContext } from "../provider/index.js";
 import "./color-picker.css";
 
 export interface ColorPickerMessages {
+  /** Accessible name for the optional opacity channel slider. */
   readonly alphaLabel: string;
+  /** Accessible name for the two-dimensional saturation and brightness area. */
   readonly areaLabel: string;
+  /** Localized visible and accessible brightness-channel label. */
   readonly brightnessLabel: string;
+  /** Visible heading naming the keyboard-operable channel controls. */
   readonly channelHeading: string;
+  /** Localized visible and accessible hue-channel label. */
   readonly hueLabel: string;
+  /** Accessible name for the complete picker control region. */
   readonly pickerLabel: string;
+  /** Localized visible and accessible saturation-channel label. */
   readonly saturationLabel: string;
+  /** Fallback accessible name stem for preset swatch options. */
   readonly swatchLabel: string;
+  /** Accessible name for the preset swatch collection. */
   readonly swatchesLabel: string;
 }
 
@@ -64,29 +73,57 @@ export interface ColorPickerProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Additional IDs merged into the composed exact editor description. */
   readonly "aria-describedby"?: string;
+  /** Additional IDs merged into the composed exact editor error relationship. */
   readonly "aria-errormessage"?: string;
+  /** Explicit invalid state forwarded to the composed exact editor. */
   readonly "aria-invalid"?: AriaAttributes["aria-invalid"];
+  /** Accessible picker and editor name when no visible Field label exists. */
   readonly "aria-label"?: string;
+  /** IDs of visible content that name the picker and exact editor. */
   readonly "aria-labelledby"?: string;
+  /** Allows transparency or requires full opacity; defaults to `allow`. */
   readonly alphaPolicy?: ColorAlphaPolicy;
+  /** Opaque sRGB surface used only for optional reference contrast analysis. */
   readonly contrastBackground?: SrgbColorValue;
+  /** Finite reference ratio above one forwarded to contrast analysis. */
   readonly contrastThreshold?: number;
+  /** Initial valid color for uncontrolled use. */
   readonly defaultValue?: SrgbColorValue;
+  /** Disables area, channels, swatches, and exact text editing. */
   readonly disabled?: boolean;
+  /** Localized overrides for the composed ColorField messages. */
   readonly fieldMessages?: Partial<ColorFieldMessages>;
+  /** Associates the composed hidden canonical control with an external form. */
   readonly form?: string;
+  /** Exact text representation used by the composed ColorField. */
   readonly format?: ColorTextFormat;
+  /** Returns a non-empty accessible label for each preset swatch. */
   readonly getSwatchLabel?: (color: SrgbColorValue, index: number) => string;
+  /** Explicit exact-editor identity, superseded by enclosing Field context. */
   readonly id?: string;
+  /** Ref forwarded to the composed exact text input. */
   readonly inputRef?: Ref<HTMLInputElement>;
+  /** Localized overrides for picker, area, channel, and swatch labels. */
   readonly messages?: Partial<ColorPickerMessages>;
+  /** Native name for the composed hidden canonical color control. */
   readonly name?: string;
+  /** Receives each committed color from area, channels, swatches, or text. */
   readonly onChange?: (value: SrgbColorValue) => void;
+  /** Localized hint displayed while the composed exact editor is empty. */
   readonly placeholder?: string;
+  /** Preserves value and serialization while disabling all picker editing. */
   readonly readOnly?: boolean;
+  /** Applies native required validation to the composed exact editor. */
   readonly required?: boolean;
+  /** Shows reference contrast context; false removes its UI, status, and description relationship. */
+  readonly showContrast?: boolean;
+  /** Shows selected-color preview; false removes its swatch and accessible preview text. */
+  readonly showPreview?: boolean;
+  /** Preset color options; an empty array removes the swatch collection and option semantics. */
   readonly swatches?: readonly SrgbColorValue[];
+  /** Controlled color; changes are proposed through `onChange`. */
   readonly value?: SrgbColorValue;
 }
 
@@ -144,8 +181,11 @@ function setForwardedRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 }
 
 interface ChannelControlProps {
+  /** React Aria color channel controlled by this keyboard-operable slider. */
   readonly channel: ColorChannel;
+  /** Whether the channel slider blocks focus and value changes. */
   readonly disabled: boolean;
+  /** Localized visible and accessible channel name. */
   readonly label: string;
 }
 
@@ -206,6 +246,8 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(
       placeholder,
       readOnly = false,
       required,
+      showContrast = true,
+      showPreview = true,
       style,
       swatches = DEFAULT_SWATCHES,
       value,
@@ -419,6 +461,8 @@ export const ColorPicker = forwardRef<HTMLDivElement, ColorPickerProps>(
             if (next !== null) publish(next);
           }}
           readOnly={readOnly}
+          showContrast={showContrast}
+          showPreview={showPreview}
           value={selectedValue}
         />
       </div>

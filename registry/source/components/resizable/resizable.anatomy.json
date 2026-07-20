@@ -10,7 +10,8 @@
       "data-orientation",
       "data-state",
       "data-collapsible",
-      "data-disabled"
+      "data-disabled",
+      "data-step-controls"
     ]
   },
   "parts": [

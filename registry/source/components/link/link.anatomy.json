@@ -19,6 +19,11 @@
       "stability": "documented"
     },
     {
+      "slot": "link-external-context",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
       "slot": "link-download-indicator",
       "element": "span",
       "stability": "documented"

@@ -8,7 +8,7 @@
   "recordedEvidence": [],
   "promotionDelta": [
     "Generate and verify package, registry, documentation, and subpath outputs.",
-    "Record interrupted enter/exit, Strict Mode cleanup, no-JavaScript, and hydration behavior.",
+    "Record initial-enter and callback opt-outs, interrupted enter/exit, Strict Mode cleanup, no-JavaScript, and hydration behavior.",
     "Verify reduced-motion completion and focus safety in every required browser.",
     "Pass packed consumers, package/source parity, and Semantic Sync update/conflict fixtures.",
     "Complete Risk Class 2 manual assistive-technology evidence and publish a Quality Passport."

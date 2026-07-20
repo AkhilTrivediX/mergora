@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "audit-log",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, evidentiary integrity, legal retention, security completeness, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "named region, optional native filter form, ordered events and actor/action/object/time definition lists",
+    "rolePolicy": "Virtual rows expose set size and position without fabricating grid semantics.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through optional search, action filter, viewport and export action."
+    },
+    {
+      "key": "Page Up / Page Down / Home / End",
+      "behavior": "Native scrolling remains available when virtualization focuses the viewport."
+    }
+  ],
+  "nonColor": "Actor, action, object, exact time, filter count and export scope are text; color is supplementary.",
+  "responsive": "Event definition lists collapse from four to two to one columns; long values wrap and virtual viewport remains bounded.",
+  "stableSelectors": {
+    "root": "[data-slot=audit-log]",
+    "parts": ["audit-log-filters", "audit-log-viewport", "audit-log-events", "audit-log-export"],
+    "attributes": ["aria-posinset", "aria-setsize"]
+  },
+  "security": "CSV fields are quoted and formula-like prefixes are apostrophe-protected. Export is passed to a consumer-owned callback and never uploaded or downloaded automatically.",
+  "consumerResponsibilities": [
+    "Guarantee event immutability, ordering, authorization, integrity, retention and legal policy at the backend.",
+    "Do not expose secrets or sensitive personal data in browser event details.",
+    "Secure the export destination and revalidate spreadsheet safety downstream.",
+    "Localize filters, counts, times and empty states."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "immutable-api",
+      "actor-action-object-time",
+      "filters-off",
+      "export-off",
+      "csv-injection",
+      "virtual-window",
+      "large-data",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "screen-reader-virtual-list",
+      "speech",
+      "switch",
+      "touch",
+      "zoom",
+      "security-privacy-review"
+    ],
+    "recordedEvidence": []
+  }
+}

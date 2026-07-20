@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "category": "authentication",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "authentication-kit",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn authentication blocks compose forms and fields, while consumer-owned async flow switching, abort recovery, password-manager-safe native behavior, MFA/recovery paths, and opt-in rate-limit timing remain application decisions.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/blocks/authentication"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit composes canonical native-form controls across sign-in, sign-up, password reset, passkey, MFA, and recovery-code paths with controlled or uncontrolled flow, abort-aware consumer submission, explicit ownership, and independently selectable recovery context.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/authentication-kit/authentication-kit.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/authentication-kit/authentication-kit.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["flow-navigation", "rate-limit-recovery", "security-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The authentication workbench uses literal white, Ink structure, a measured Green header seam, Violet focus, strong hierarchy, restrained corners, touch-aware targets, and preference fallbacks shared across Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/authentication-kit/authentication-kit.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "flow-navigation",
+          "status": "evidence-backed",
+          "summary": "A labelled navigation exposes only the access and recovery flows the consumer explicitly supplies.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/authentication-kit/authentication-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6AuthenticationKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["flowNavigation"],
+          "api": {
+            "kind": "prop",
+            "names": ["showFlowNavigation", "availableFlows"],
+            "enableWhen": "Set showFlowNavigation to true and provide availableFlows."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No flow navigation or additional flow labels are rendered.",
+            "behavior": "The selected controlled or uncontrolled native form remains usable.",
+            "events": "No navigation activation or onFlowChange callback can occur.",
+            "accessibility": "No navigation landmark, current-page state, list, buttons, or descriptions enter the accessibility tree."
+          }
+        },
+        {
+          "id": "rate-limit-recovery",
+          "status": "evidence-backed",
+          "summary": "A bounded countdown explains when another attempt becomes available and emits one readiness callback without owning the authoritative rate limit.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/authentication-kit/authentication-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["rateLimitRecovery"],
+          "api": {
+            "kind": "prop",
+            "names": ["showRateLimitRecovery", "onRateLimitReady"],
+            "enableWhen": "Set showRateLimitRecovery to true; a rate-limited result supplies the bounded duration."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No countdown or recovery-ready output is rendered.",
+            "behavior": "The authoritative error message remains visible and form behavior is unchanged.",
+            "events": "No timer is installed and onRateLimitReady is never invoked.",
+            "accessibility": "No polite countdown output or timing update enters the accessibility tree."
+          }
+        },
+        {
+          "id": "security-context",
+          "status": "evidence-backed",
+          "summary": "An optional aside makes the consumer-owned credential, session, authorization, and recovery boundary visible beside the form.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/authentication-kit/authentication-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["securityContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSecurityContext"],
+            "enableWhen": "Set showSecurityContext to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No security-boundary aside or copy is rendered.",
+            "behavior": "Authentication fields, validation, submit, and reset remain unchanged.",
+            "events": "No enhancement events or callbacks exist.",
+            "accessibility": "No complementary context heading or prose enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6AuthenticationKit.stories.tsx",
+          "exportName": "BasicAuthenticationKit",
+          "enhancementControls": ["flowNavigation", "rateLimitRecovery", "securityContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6AuthenticationKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6AuthenticationKit.stories.tsx",
+          "exportName": "RecommendedAuthenticationKit",
+          "enhancementControls": ["flowNavigation", "rateLimitRecovery", "securityContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6AuthenticationKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated Chromium, Firefox, and WebKit axe coverage includes basic and enhanced output, read-only reset cancellation, narrow RTL, reduced motion, forced colors, and target sizing; complete Risk Class 3 password-manager/passkey-device and manual assistive-technology evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/authentication-kit/authentication-kit.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused Chromium, Firefox, and WebKit evidence covers enhancement removal, mutable and read-only native reset semantics, controlled and uncontrolled flow ownership, async result recovery, RTL, reduced motion, forced colors, and narrow/touch presentation; password-manager, passkey-device, lifecycle, and failure matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/authentication-kit/authentication-kit.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/authentication-kit/authentication-kit.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "authentication-kit-evidence-incomplete",
+          "summary": "Dependency closure, password-manager/passkey device matrices, security/privacy/legal review, current manual assistive technology, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/authentication-kit/authentication-kit.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "The source workflow and focused evidence exist, but distribution, lifecycle, browser/device, security, privacy, legal, and manual assistive-technology gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/authentication-kit/authentication-kit.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

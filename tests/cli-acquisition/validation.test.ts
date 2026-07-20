@@ -92,6 +92,45 @@ describe("immutable acquisition validation and bounds", () => {
     }
   });
 
+  it("allows explicit loopback HTTP only for local-development registry trust", async () => {
+    const fixture = acquisitionFixture();
+    try {
+      const registry = {
+        id: "local-preview",
+        origin: "http://127.0.0.1:4173/r/v1",
+        trust: "local-development" as const,
+      };
+      const result = await acquireImmutableArtifact({
+        projectRoot: fixture.root,
+        request: {
+          ...fixture.request,
+          registry: { ...registry, identityDigest: sha256(canonicalJson(registry)) },
+        },
+        writeCache: false,
+        transport: async (request) => transportResponse(request, fixture.bytes),
+      });
+      expect(result.resolvedUrl).toBe(`http://127.0.0.1:4173/r/v1/${fixture.request.path}`);
+
+      await expect(
+        acquireImmutableArtifact({
+          projectRoot: fixture.root,
+          request: {
+            ...fixture.request,
+            registry: {
+              ...registry,
+              trust: "enrolled",
+              identityDigest: sha256("different-trust"),
+            },
+          },
+          writeCache: false,
+          transport: async (request) => transportResponse(request, fixture.bytes),
+        }),
+      ).rejects.toMatchObject({ code: "REGISTRY_ORIGIN_UNSAFE" });
+    } finally {
+      fixture.cleanup();
+    }
+  });
+
   it("normalizes transport policy inputs and provides exact validator context", async () => {
     const fixture = acquisitionFixture();
     try {
@@ -133,6 +172,27 @@ describe("immutable acquisition validation and bounds", () => {
           outcome: "success",
         },
       ]);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+
+  it("rejects unsafe authorization values before transport or cache writes", async () => {
+    const fixture = acquisitionFixture();
+    try {
+      let transportCalled = false;
+      await expect(
+        acquireImmutableArtifact({
+          authorization: "Bearer secret\nforwarded: yes",
+          projectRoot: fixture.root,
+          request: fixture.request,
+          transport: async (request) => {
+            transportCalled = true;
+            return transportResponse(request, fixture.bytes);
+          },
+        }),
+      ).rejects.toMatchObject({ code: "REGISTRY_AUTH_INVALID", exitCode: 11 });
+      expect(transportCalled).toBe(false);
     } finally {
       fixture.cleanup();
     }

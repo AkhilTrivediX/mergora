@@ -28,7 +28,15 @@
       "properties": {
         "framework": { "enum": ["next-app", "next-pages", "vite-react", "react"] },
         "language": { "const": "typescript" },
-        "sourceRoot": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "sourceRoot": {
+          "oneOf": [
+            {
+              "const": ".",
+              "description": "Exact sentinel for source files stored at the package root."
+            },
+            { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
+          ]
+        },
         "packageJson": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
         "tsconfig": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
       }

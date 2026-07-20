@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "onboarding-wizard",
+  "entryExport": "OnboardingWizard",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "HTML form attributes except owned children, change, and submit behavior",
+  "exports": [
+    { "kind": "value", "name": "OnboardingWizard" },
+    { "kind": "value", "name": "OnboardingWizardPage" },
+    { "kind": "type", "name": "OnboardingDraft" },
+    { "kind": "type", "name": "OnboardingDraftValue" },
+    { "kind": "type", "name": "OnboardingPersistenceAdapter" },
+    { "kind": "type", "name": "OnboardingRenderContext" },
+    { "kind": "type", "name": "OnboardingSnapshot" },
+    { "kind": "type", "name": "OnboardingStep" },
+    { "kind": "type", "name": "OnboardingValidationError" },
+    { "kind": "type", "name": "OnboardingWizardProps" }
+  ],
+  "props": [
+    { "name": "steps", "required": true, "type": "readonly OnboardingStep[]" },
+    { "name": "renderStep", "required": true, "type": "step renderer" },
+    { "name": "draft", "required": false, "type": "OnboardingDraft" },
+    { "name": "stepId", "required": false, "type": "string" },
+    {
+      "name": "persistence",
+      "required": false,
+      "default": false,
+      "type": "false | OnboardingPersistenceAdapter"
+    },
+    { "name": "showProgressContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceStepChanges", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Stepper and Button while consumer-rendered fields use public canonical controls.",
+    "adapter": "The consumer owns persistence, authorization, backend validation, side effects, analytics, and completion.",
+    "enhancements": "Persistence, progress context, and step announcements remain independent opt-ins."
+  }
+}

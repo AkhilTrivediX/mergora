@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prompt-suggestions",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify all distribution surfaces.",
+    "Pass role, keyboard, touch, localization, packed-consumer, browser, visual, and accessibility gates.",
+    "Record screen-reader, speech, switch, RTL, zoom and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

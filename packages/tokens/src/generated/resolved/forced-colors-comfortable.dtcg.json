@@ -13,7 +13,7 @@
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 4
+          "value": 6
         }
       },
       "successBackground": {
@@ -113,7 +113,7 @@
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 6
+            "value": 8
           }
         }
       },
@@ -179,7 +179,7 @@
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 13
+          "value": 14
         }
       },
       "foreground": {
@@ -192,6 +192,199 @@
       "lineHeight": {
         "$type": "number",
         "$value": 1.6
+      }
+    },
+    "control": {
+      "background": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
+      "backgroundDisabled": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
+      "backgroundHover": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
+      "backgroundPressed": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
+      "backgroundSelected": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.92, 0.06, 150]
+        }
+      },
+      "border": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "ButtonBorder"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.18, 0.018, 150]
+        }
+      },
+      "borderActive": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "LinkText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "borderDisabled": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "GrayText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.36, 0.018, 150]
+        }
+      },
+      "borderHover": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.18, 0.018, 150]
+        }
+      },
+      "borderSelected": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "foreground": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.12, 0.018, 150]
+        }
+      },
+      "foregroundDisabled": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "GrayText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.36, 0.018, 150]
+        }
+      },
+      "foregroundSelected": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "HighlightText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.26, 0.09, 150]
+        }
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
+      "height": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 40
+        }
+      },
+      "paddingBlock": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
+      "paddingInline": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
       }
     },
     "dataGrid": {
@@ -293,7 +486,7 @@
         "$value": {
           "blur": {
             "unit": "px",
-            "value": 32
+            "value": 8
           },
           "color": {
             "alpha": 0.2,
@@ -306,11 +499,11 @@
           },
           "offsetY": {
             "unit": "px",
-            "value": 12
+            "value": 6
           },
           "spread": {
             "unit": "px",
-            "value": -8
+            "value": -2
           }
         }
       },
@@ -347,6 +540,18 @@
       }
     },
     "field": {
+      "actionForeground": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "LinkText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
       "background": {
         "$extensions": {
           "org.mergora.forcedColors": {
@@ -371,11 +576,64 @@
           "components": [0.18, 0.018, 150]
         }
       },
+      "borderActive": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "LinkText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "borderHover": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.18, 0.018, 150]
+        }
+      },
       "borderInvalid": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
         "$type": "color",
         "$value": {
           "colorSpace": "oklch",
           "components": [0.4, 0.16, 25]
+        }
+      },
+      "description": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.27, 0.018, 150]
+        }
+      },
+      "error": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.25, 0.09, 25]
         }
       },
       "foreground": {
@@ -397,6 +655,18 @@
           "value": 40
         }
       },
+      "label": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.12, 0.018, 150]
+        }
+      },
       "placeholder": {
         "$extensions": {
           "org.mergora.forcedColors": {
@@ -413,7 +683,74 @@
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 6
+          "value": 8
+        }
+      },
+      "statusRailDanger": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.4, 0.16, 25]
+        }
+      },
+      "statusRailLoading": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.25, 0.105, 292]
+        }
+      },
+      "statusRailNeutral": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.18, 0.018, 150]
+        }
+      },
+      "statusRailSuccess": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "statusRailWarning": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.43, 0.1, 55]
+        }
+      },
+      "statusRailWidth": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 2
         }
       }
     },
@@ -430,11 +767,23 @@
           "components": [0.25, 0.105, 292]
         }
       },
+      "contrastBackground": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
       "offset": {
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 4
+          "value": 2
         }
       },
       "radius": {
@@ -449,6 +798,229 @@
         "$value": {
           "unit": "px",
           "value": 2
+        }
+      },
+      "widthStrong": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 3
+        }
+      }
+    },
+    "overlay": {
+      "background": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      },
+      "border": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "ButtonBorder"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.18, 0.018, 150]
+        }
+      },
+      "description": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.27, 0.018, 150]
+        }
+      },
+      "elevation": {
+        "$type": "shadow",
+        "$value": [
+          {
+            "blur": {
+              "unit": "px",
+              "value": 8
+            },
+            "color": {
+              "alpha": 0.12,
+              "colorSpace": "oklch",
+              "components": [0.18, 0.018, 150]
+            },
+            "offsetX": {
+              "unit": "px",
+              "value": 0
+            },
+            "offsetY": {
+              "unit": "px",
+              "value": 4
+            },
+            "spread": {
+              "unit": "px",
+              "value": -2
+            }
+          },
+          {
+            "blur": {
+              "unit": "px",
+              "value": 3
+            },
+            "color": {
+              "alpha": 0.08,
+              "colorSpace": "oklch",
+              "components": [0.18, 0.018, 150]
+            },
+            "offsetX": {
+              "unit": "px",
+              "value": 0
+            },
+            "offsetY": {
+              "unit": "px",
+              "value": 1
+            },
+            "spread": {
+              "unit": "px",
+              "value": 0
+            }
+          }
+        ]
+      },
+      "foreground": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "CanvasText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.12, 0.018, 150]
+        }
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "scrim": {
+        "$type": "color",
+        "$value": {
+          "alpha": 0.56,
+          "colorSpace": "oklch",
+          "components": [0.12, 0.018, 150]
+        }
+      },
+      "surface": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
+        }
+      }
+    },
+    "progress": {
+      "complete": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "error": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.4, 0.16, 25]
+        }
+      },
+      "indeterminate": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "LinkText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.25, 0.105, 292]
+        }
+      },
+      "indicator": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "LinkText"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.34, 0.11, 150]
+        }
+      },
+      "paused": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Highlight"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.43, 0.1, 55]
+        }
+      },
+      "radius": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 6
+        }
+      },
+      "track": {
+        "$extensions": {
+          "org.mergora.forcedColors": {
+            "cssSystemColor": "Canvas"
+          }
+        },
+        "$type": "color",
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [1, 0, 0]
         }
       }
     }
@@ -475,6 +1047,13 @@
           "$value": {
             "unit": "px",
             "value": 1
+          }
+        },
+        "emphasis": {
+          "$type": "dimension",
+          "$value": {
+            "unit": "px",
+            "value": 3
           }
         },
         "focus": {
@@ -942,6 +1521,13 @@
           "value": 160
         }
       },
+      "reduced": {
+        "$type": "duration",
+        "$value": {
+          "unit": "ms",
+          "value": 1
+        }
+      },
       "slow": {
         "$type": "duration",
         "$value": {
@@ -1053,21 +1639,21 @@
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 17
+            "value": 18
           }
         },
         "md": {
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 15
+            "value": 16
           }
         },
         "sm": {
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 13
+            "value": 14
           }
         },
         "xl": {
@@ -1097,7 +1683,7 @@
             ],
             "fontSize": {
               "unit": "px",
-              "value": 15
+              "value": 16
             },
             "fontWeight": 400,
             "letterSpacing": {
@@ -1119,7 +1705,7 @@
             ],
             "fontSize": {
               "unit": "px",
-              "value": 13
+              "value": 14
             },
             "fontWeight": 450,
             "letterSpacing": {
@@ -1227,11 +1813,19 @@
       }
     },
     "radius": {
-      "full": {
+      "2xl": {
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 999
+          "value": 16
+        }
+      },
+      "full": {
+        "$description": "Legacy full-radius alias deliberately capped at the Mergora 16px ceiling.",
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
         }
       },
       "lg": {
@@ -1283,7 +1877,7 @@
         "$value": {
           "blur": {
             "unit": "px",
-            "value": 32
+            "value": 8
           },
           "color": {
             "alpha": 0.2,
@@ -1296,11 +1890,11 @@
           },
           "offsetY": {
             "unit": "px",
-            "value": 12
+            "value": 6
           },
           "spread": {
             "unit": "px",
-            "value": -8
+            "value": -2
           }
         }
       },
@@ -1310,7 +1904,7 @@
           {
             "blur": {
               "unit": "px",
-              "value": 12
+              "value": 8
             },
             "color": {
               "alpha": 0.12,
@@ -1605,6 +2199,13 @@
             "value": 1
           }
         },
+        "emphasis": {
+          "$type": "dimension",
+          "$value": {
+            "unit": "px",
+            "value": 3
+          }
+        },
         "focus": {
           "$type": "dimension",
           "$value": {
@@ -1789,6 +2390,18 @@
             "components": [1, 0, 0]
           }
         },
+        "disabled": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [1, 0, 0]
+          }
+        },
         "inverse": {
           "$extensions": {
             "org.mergora.forcedColors": {
@@ -1885,6 +2498,18 @@
           "$value": {
             "colorSpace": "oklch",
             "components": [0.18, 0.018, 150]
+          }
+        },
+        "subtle": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.36, 0.018, 150]
           }
         }
       },
@@ -2035,6 +2660,18 @@
         }
       },
       "focus": {
+        "contrastBackground": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$type": "color",
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [1, 0, 0]
+          }
+        },
         "ring": {
           "$extensions": {
             "org.mergora.forcedColors": {
@@ -2205,6 +2842,82 @@
             }
           }
         },
+        "loading": {
+          "background": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "Canvas"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [0.97, 0.02, 292]
+            }
+          },
+          "border": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "Highlight"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [0.25, 0.105, 292]
+            }
+          },
+          "foreground": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "CanvasText"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [0.25, 0.105, 292]
+            }
+          }
+        },
+        "neutral": {
+          "background": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "Canvas"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [1, 0, 0]
+            }
+          },
+          "border": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "ButtonBorder"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [0.18, 0.018, 150]
+            }
+          },
+          "foreground": {
+            "$extensions": {
+              "org.mergora.forcedColors": {
+                "cssSystemColor": "CanvasText"
+              }
+            },
+            "$type": "color",
+            "$value": {
+              "colorSpace": "oklch",
+              "components": [0.12, 0.018, 150]
+            }
+          }
+        },
         "success": {
           "background": {
             "$type": "color",
@@ -2291,6 +3004,13 @@
           "value": 40
         }
       },
+      "controlPaddingBlock": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
       "controlPaddingInline": {
         "$type": "dimension",
         "$value": {
@@ -2319,7 +3039,7 @@
         "$value": {
           "blur": {
             "unit": "px",
-            "value": 32
+            "value": 8
           },
           "color": {
             "alpha": 0.2,
@@ -2332,11 +3052,11 @@
           },
           "offsetY": {
             "unit": "px",
-            "value": 12
+            "value": 6
           },
           "spread": {
             "unit": "px",
-            "value": -8
+            "value": -2
           }
         }
       },
@@ -2372,7 +3092,7 @@
           {
             "blur": {
               "unit": "px",
-              "value": 12
+              "value": 8
             },
             "color": {
               "alpha": 0.12,
@@ -2449,7 +3169,7 @@
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 4
+          "value": 2
         }
       },
       "radius": {
@@ -2465,10 +3185,28 @@
           "unit": "px",
           "value": 2
         }
+      },
+      "widthStrong": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 3
+        }
       }
     },
     "font": {
       "family": {
+        "code": {
+          "$type": "fontFamily",
+          "$value": [
+            "Commit Mono",
+            "Commit Mono Fallback",
+            "ui-monospace",
+            "SFMono-Regular",
+            "Consolas",
+            "monospace"
+          ]
+        },
         "machine": {
           "$type": "fontFamily",
           "$value": [
@@ -2527,14 +3265,14 @@
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 15
+            "value": 16
           }
         },
         "bodyLarge": {
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 17
+            "value": 18
           }
         },
         "caption": {
@@ -2548,7 +3286,7 @@
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 13
+            "value": 14
           }
         },
         "display": {
@@ -2572,6 +3310,13 @@
             "value": 25
           }
         },
+        "headingSm": {
+          "$type": "dimension",
+          "$value": {
+            "unit": "px",
+            "value": 20
+          }
+        },
         "headingSmall": {
           "$type": "dimension",
           "$value": {
@@ -2583,7 +3328,7 @@
           "$type": "dimension",
           "$value": {
             "unit": "px",
-            "value": 13
+            "value": 14
           }
         }
       },
@@ -2667,6 +3412,13 @@
             "value": 240
           }
         },
+        "reduced": {
+          "$type": "duration",
+          "$value": {
+            "unit": "ms",
+            "value": 1
+          }
+        },
         "transition": {
           "$type": "duration",
           "$value": {
@@ -2705,11 +3457,25 @@
       }
     },
     "radius": {
-      "control": {
+      "compact": {
         "$type": "dimension",
         "$value": {
           "unit": "px",
           "value": 6
+        }
+      },
+      "container": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "control": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
         }
       },
       "overlay": {
@@ -2723,21 +3489,28 @@
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 8
+          "value": 12
         }
       },
       "pill": {
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 999
+          "value": 16
         }
       },
       "status": {
         "$type": "dimension",
         "$value": {
           "unit": "px",
-          "value": 4
+          "value": 6
+        }
+      },
+      "surface": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
         }
       }
     },
@@ -2828,6 +3601,41 @@
           "value": 4
         }
       },
+      "insetLg": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 16
+        }
+      },
+      "insetMd": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 12
+        }
+      },
+      "insetSm": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 8
+        }
+      },
+      "insetXl": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 24
+        }
+      },
+      "insetXs": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 4
+        }
+      },
       "page": {
         "$type": "dimension",
         "$value": {
@@ -2861,6 +3669,13 @@
         "$value": {
           "unit": "px",
           "value": 12
+        }
+      },
+      "stackXl": {
+        "$type": "dimension",
+        "$value": {
+          "unit": "px",
+          "value": 32
         }
       },
       "stackXs": {

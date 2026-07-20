@@ -15,7 +15,8 @@
     "dedupe": "Trimmed identical text or a stable semantic key is suppressed inside the window.",
     "intentionalRepeat": "dedupe=false queues a repeated message with a new deterministic sequence ID.",
     "localization": "Descriptor keys resolve through the nearest provider with an English fallback.",
-    "nesting": "A nested provider reuses the nearest announcer and does not add duplicate live regions."
+    "nesting": "A nested provider reuses the nearest announcer and does not add duplicate live regions.",
+    "providerOptOut": "Without an announcer provider the hook is inert, announce returns false, and no queue or live-region accessibility output exists. dedupe=false independently removes repeat suppression for one call."
   },
   "consumerResponsibilities": [
     "Use assertive priority only for urgent errors requiring immediate attention.",
@@ -30,6 +31,7 @@
       "priority",
       "dedupe",
       "intentional-repeat",
+      "provider-opt-out",
       "localization",
       "ssr",
       "cleanup",

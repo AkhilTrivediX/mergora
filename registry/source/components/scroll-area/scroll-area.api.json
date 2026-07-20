@@ -30,6 +30,7 @@
   ],
   "compositionPolicy": {
     "nativeScrolling": "The browser owns scrolling, scrollbars, touch momentum, keyboard scrolling, and wheel behavior.",
-    "focus": "The root is not a tab stop by default. focusable=true is reserved for independently meaningful overflow regions and requires an accessible name."
+    "focus": "The root is not a tab stop by default. focusable=true is reserved for independently meaningful overflow regions and requires an accessible name.",
+    "enhancement": "focusable and containOverscroll are independent; false removes the region/tab-stop/name output or scroll-chain containment respectively."
   }
 }

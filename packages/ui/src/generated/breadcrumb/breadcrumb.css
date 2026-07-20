@@ -1,5 +1,7 @@
 /* Generated from registry/source/components/breadcrumb/breadcrumb.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-breadcrumb {
+  color: var(--mrg-component-control-foreground);
+  font-family: var(--mrg-semantic-font-family-prose);
   container-type: inline-size;
   max-inline-size: 100%;
   min-inline-size: 0;
@@ -33,16 +35,29 @@
   color: var(--mrg-semantic-color-foreground-primary);
   overflow-wrap: anywhere;
   text-underline-offset: 0.2em;
+  transition: color var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+[data-slot="breadcrumb-link"]:hover {
+  color: var(--mrg-semantic-color-brand-action);
 }
 
 [data-slot="breadcrumb-current"] {
   font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--mrg-component-control-border-selected);
+  text-decoration-thickness: var(--mrg-semantic-border-width-strong);
+  text-underline-offset: var(--mrg-semantic-space-inline-xs);
 }
 
 [data-slot="breadcrumb-link"]:focus-visible,
 [data-slot="breadcrumb-overflow-trigger"]:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 [data-slot="breadcrumb-separator"] {
@@ -60,6 +75,7 @@
   justify-content: center;
   min-block-size: var(--mrg-semantic-size-target-preferred);
   min-inline-size: var(--mrg-semantic-size-target-preferred);
+  border-radius: var(--mrg-component-control-radius);
 }
 
 [data-slot="breadcrumb-overflow-trigger"]::marker {
@@ -67,8 +83,10 @@
 }
 
 [data-slot="breadcrumb-overflow-list"] {
-  background: var(--mrg-semantic-color-background-surface-raised);
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  background: var(--mrg-component-overlay-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+  border-radius: var(--mrg-component-overlay-radius);
+  box-shadow: var(--mrg-component-overlay-elevation);
   display: grid;
   gap: var(--mrg-semantic-space-stack-sm);
   inset-block-start: 100%;
@@ -80,6 +98,18 @@
   padding: var(--mrg-semantic-space-stack-md);
   position: absolute;
   z-index: 1;
+}
+
+[data-slot="breadcrumb-overflow"] details[open] > [data-slot="breadcrumb-overflow-list"] {
+  animation: mrg-breadcrumb-reveal var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-enter);
+}
+
+@keyframes mrg-breadcrumb-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--mrg-semantic-space-inline-xs)));
+  }
 }
 
 [data-slot="breadcrumb-overflow"] details:not([open]) > [data-slot="breadcrumb-overflow-list"] {
@@ -100,9 +130,27 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="breadcrumb-link"] {
+    transition: none;
+  }
+
+  [data-slot="breadcrumb-overflow"] details[open] > [data-slot="breadcrumb-overflow-list"] {
+    animation: none;
+  }
+}
+
 @media (forced-colors: active) {
   [data-slot="breadcrumb-link"]:focus-visible,
   [data-slot="breadcrumb-overflow-trigger"]:focus-visible {
     outline-color: Highlight;
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
+  }
+
+  [data-slot="breadcrumb-overflow-list"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
   }
 }

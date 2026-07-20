@@ -5,4 +5,82 @@
     min-inline-size: 0;
     color: inherit;
   }
+
+  [data-slot="provider"][data-density="comfortable"] {
+    --mrg-semantic-density-control-gap: var(--mrg-primitive-space-2);
+    --mrg-semantic-density-control-height: var(--mrg-primitive-size-10);
+    --mrg-semantic-density-control-padding-block: var(--mrg-primitive-space-2);
+    --mrg-semantic-density-control-padding-inline: var(--mrg-primitive-space-3);
+    --mrg-semantic-density-panel-padding: var(--mrg-primitive-space-4);
+    --mrg-semantic-density-row-height: var(--mrg-primitive-size-10);
+    --mrg-component-button-primary-height: var(--mrg-primitive-size-10);
+    --mrg-component-button-primary-padding-inline: var(--mrg-primitive-space-3);
+    --mrg-component-control-gap: var(--mrg-primitive-space-2);
+    --mrg-component-control-height: var(--mrg-primitive-size-10);
+    --mrg-component-control-padding-block: var(--mrg-primitive-space-2);
+    --mrg-component-control-padding-inline: var(--mrg-primitive-space-3);
+    --mrg-component-data-grid-row-height: var(--mrg-primitive-size-10);
+    --mrg-component-field-height: var(--mrg-primitive-size-10);
+    --mrg-component-overlay-padding: var(--mrg-primitive-space-4);
+  }
+
+  [data-slot="provider"][data-density="compact"] {
+    --mrg-semantic-density-control-gap: var(--mrg-primitive-space-1);
+    --mrg-semantic-density-control-height: var(--mrg-primitive-size-8);
+    --mrg-semantic-density-control-padding-block: var(--mrg-primitive-space-1);
+    --mrg-semantic-density-control-padding-inline: var(--mrg-primitive-space-2);
+    --mrg-semantic-density-panel-padding: var(--mrg-primitive-space-3);
+    --mrg-semantic-density-row-height: var(--mrg-primitive-size-8);
+    --mrg-component-button-primary-height: var(--mrg-primitive-size-8);
+    --mrg-component-button-primary-padding-inline: var(--mrg-primitive-space-2);
+    --mrg-component-control-gap: var(--mrg-primitive-space-1);
+    --mrg-component-control-height: var(--mrg-primitive-size-8);
+    --mrg-component-control-padding-block: var(--mrg-primitive-space-1);
+    --mrg-component-control-padding-inline: var(--mrg-primitive-space-2);
+    --mrg-component-data-grid-row-height: var(--mrg-primitive-size-8);
+    --mrg-component-field-height: var(--mrg-primitive-size-8);
+    --mrg-component-overlay-padding: var(--mrg-primitive-space-3);
+  }
+
+  [data-slot="provider"][data-density="touch"] {
+    --mrg-semantic-density-control-gap: var(--mrg-primitive-space-3);
+    --mrg-semantic-density-control-height: var(--mrg-primitive-size-12);
+    --mrg-semantic-density-control-padding-block: var(--mrg-primitive-space-3);
+    --mrg-semantic-density-control-padding-inline: var(--mrg-primitive-space-4);
+    --mrg-semantic-density-panel-padding: var(--mrg-primitive-space-5);
+    --mrg-semantic-density-row-height: var(--mrg-primitive-size-12);
+    --mrg-component-button-primary-height: var(--mrg-primitive-size-12);
+    --mrg-component-button-primary-padding-inline: var(--mrg-primitive-space-4);
+    --mrg-component-control-gap: var(--mrg-primitive-space-3);
+    --mrg-component-control-height: var(--mrg-primitive-size-12);
+    --mrg-component-control-padding-block: var(--mrg-primitive-space-3);
+    --mrg-component-control-padding-inline: var(--mrg-primitive-space-4);
+    --mrg-component-data-grid-row-height: var(--mrg-primitive-size-12);
+    --mrg-component-field-height: var(--mrg-primitive-size-12);
+    --mrg-component-overlay-padding: var(--mrg-primitive-space-5);
+  }
+
+  [data-slot="provider"][data-reduced-motion="system"],
+  [data-slot="provider"][data-reduced-motion="no-preference"] {
+    --mrg-semantic-motion-duration-feedback: var(--mrg-primitive-duration-fast);
+    --mrg-semantic-motion-duration-transition: var(--mrg-primitive-duration-normal);
+    --mrg-semantic-motion-duration-overlay: var(--mrg-primitive-duration-slow);
+    --mrg-semantic-motion-duration-deliberate: var(--mrg-primitive-duration-deliberate);
+  }
+
+  [data-slot="provider"][data-reduced-motion="reduce"] {
+    --mrg-semantic-motion-duration-feedback: var(--mrg-primitive-duration-reduced);
+    --mrg-semantic-motion-duration-transition: var(--mrg-primitive-duration-reduced);
+    --mrg-semantic-motion-duration-overlay: var(--mrg-primitive-duration-reduced);
+    --mrg-semantic-motion-duration-deliberate: var(--mrg-primitive-duration-reduced);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="provider"][data-reduced-motion="system"] {
+      --mrg-semantic-motion-duration-feedback: var(--mrg-primitive-duration-reduced);
+      --mrg-semantic-motion-duration-transition: var(--mrg-primitive-duration-reduced);
+      --mrg-semantic-motion-duration-overlay: var(--mrg-primitive-duration-reduced);
+      --mrg-semantic-motion-duration-deliberate: var(--mrg-primitive-duration-reduced);
+    }
+  }
 }

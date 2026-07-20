@@ -63,6 +63,23 @@ function config(): Record<string, unknown> {
 }
 
 describe("mergora.json v1 option profile", () => {
+  it("accepts only the exact package-root source sentinel", () => {
+    const packageRoot = config();
+    (packageRoot.project as Record<string, unknown>).sourceRoot = ".";
+
+    expect(validateMergoraConfig(packageRoot).project.sourceRoot).toBe(".");
+
+    for (const unsafe of ["./", "./src", "..", "src/.", "src/../other"]) {
+      const value = config();
+      (value.project as Record<string, unknown>).sourceRoot = unsafe;
+      expect(() => validateMergoraConfig(value), unsafe).toThrow(/unsafe path segment/u);
+    }
+
+    const targetRoot = config();
+    (targetRoot.targets as Record<string, unknown>).components = ".";
+    expect(() => validateMergoraConfig(targetRoot)).toThrow(/unsafe path segment/u);
+  });
+
   it("accepts every schema-declared distribution, theme, and formatting option", () => {
     const value = config();
     value.distribution = { defaultMode: "hybrid", packageName: "@example/mergora-ui" };

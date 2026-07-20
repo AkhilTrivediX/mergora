@@ -253,6 +253,42 @@ describe("immutable acquisition fallback policy", () => {
     }
   });
 
+  it("attaches authorization only to the enrolled canonical origin", async () => {
+    const fixture = acquisitionFixture();
+    try {
+      const calls: { readonly authorization?: string; readonly url: string }[] = [];
+      const result = await acquireImmutableArtifact({
+        authorization: "Bearer private-token",
+        projectRoot: fixture.root,
+        request: fixture.request,
+        mirrorOrigins: ["https://mirror.example.test"],
+        writeCache: false,
+        transport: async (request) => {
+          calls.push({
+            ...(request.authorization === undefined
+              ? {}
+              : { authorization: request.authorization }),
+            url: request.url,
+          });
+          return request.url.startsWith("https://registry.example.test/")
+            ? transportResponse(request, Buffer.alloc(0), { status: 404, contentLength: 0 })
+            : transportResponse(request, fixture.bytes);
+        },
+      });
+
+      expect(result.source).toBe("mirror");
+      expect(calls).toEqual([
+        {
+          authorization: "Bearer private-token",
+          url: `https://registry.example.test/root/${fixture.request.path}`,
+        },
+        { url: `https://mirror.example.test/${fixture.request.path}` },
+      ]);
+    } finally {
+      fixture.cleanup();
+    }
+  });
+
   it("normalizes equivalent mirrors before deduplicating attempts", async () => {
     const fixture = acquisitionFixture();
     try {

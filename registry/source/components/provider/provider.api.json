@@ -52,6 +52,9 @@
   "compositionPolicy": {
     "nestedOverrides": "Only supplied values override the nearest provider; messages merge by stable key.",
     "nativeDirection": "The provider boundary writes lang, dir, density, and preference attributes.",
-    "portalContext": "React context and portal wrapper attributes preserve locale, direction, and density."
+    "familySignature": "Density and reduced-motion selections remap shared Mergora variables only within the selected subtree.",
+    "portalContext": "React context and portal wrapper attributes preserve locale, direction, and density.",
+    "advantage": "One deterministic subtree policy synchronizes native locale/direction, translation formatters, density variables, motion variables, time zone, and portals.",
+    "enhancementOptOut": "asChild=false removes element-merging behavior and renders a neutral div; omitted density, motion, locale, and message overrides inherit independently."
   }
 }

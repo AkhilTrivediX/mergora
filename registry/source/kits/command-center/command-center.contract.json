@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "command-center",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not an authorization boundary, remote search service, analytics system, backend, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Public CommandPalette combobox/listbox semantics inside an optional modal or embedded workbench.",
+    "rolePolicy": "Loading and empty result state are owned by CommandPalette; adapter failures expose retry; result-count announcements are opt-in.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "ArrowDown / ArrowUp",
+      "behavior": "Moves the active command through enabled results using the public CommandPalette contract."
+    },
+    {
+      "key": "Enter",
+      "behavior": "Executes the active command unless IME composition is in progress."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Clears or closes the palette and restores focus according to the public CommandPalette contract."
+    },
+    {
+      "key": "Ctrl/Meta+K",
+      "behavior": "Optionally opens the modal from non-editable content; the listener does not exist when disabled."
+    }
+  ],
+  "nonColor": "Active commands, loading, empty, error, shortcut, preview, and recent-result states use text and native selection in addition to violet or green signals.",
+  "responsive": "The optional mobile entry replaces the desktop modal trigger at narrow widths, logical properties support RTL, and coarse input receives 44 CSS-pixel targets.",
+  "stableSelectors": {
+    "root": "[data-slot=command-center]",
+    "parts": ["command-center-heading", "command-center-result-count"],
+    "attributes": ["aria-activedescendant", "aria-expanded", "aria-busy"]
+  },
+  "consumerResponsibilities": [
+    "Authorize every result and command at execution time; filtering or hiding is not authorization.",
+    "Supply abort-aware search and execution adapters with safe navigation, privacy, logging, rate-limit, offline, timeout, and retry policy.",
+    "Localize visible and spoken strings and validate ranking, keyboard, touch, mobile, zoom, and assistive-technology behavior with real result volumes."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "grouped-async-results",
+      "abort",
+      "recent-disabled-path",
+      "shortcut-ime",
+      "controlled-uncontrolled",
+      "loading-empty-error-retry",
+      "keyboard",
+      "axe",
+      "mobile-entry",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "authorization-security-privacy-review"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -609,6 +609,7 @@ const SAFE_RECORDED_FLAGS = new Set([
   "--dry-run",
   "--json",
   "--keep-files",
+  "--no-format",
   "--no-install",
   "--non-interactive",
   "--offline",
@@ -1912,7 +1913,10 @@ function assertStructuredView(
         (item.mode === "source" &&
           (item.packageClaims.length !== 0 || item.importSubpaths.length !== 0)) ||
         (item.mode === "package" &&
-          (item.files.length !== 0 ||
+          (item.files.some((rawFile) => {
+            const file = plainRecord(rawFile);
+            return file === null || (file.role !== "contract" && file.role !== "example");
+          }) ||
             item.packageClaims.length === 0 ||
             item.importSubpaths.length === 0)))
     ) {

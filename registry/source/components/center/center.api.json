@@ -17,6 +17,7 @@
   ],
   "compositionPolicy": {
     "blockCentering": "Uses available block size supplied by normal layout; the component never invents a fixed height.",
-    "content": "Direct children remain bounded by the available inline size even when a semantic maximum is selected."
+    "content": "Direct children remain bounded by the available inline size even when a semantic maximum is selected.",
+    "enhancement": "maximum=prose or content applies a semantic reading bound to direct children; maximum=none leaves only the available inline bound."
   }
 }

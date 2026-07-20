@@ -11,7 +11,9 @@
       "data-readonly",
       "data-invalid",
       "data-orientation",
-      "data-has-marks"
+      "data-has-marks",
+      "data-intelligent-marks",
+      "data-show-value-bubbles"
     ]
   },
   "parts": [
@@ -55,6 +57,12 @@
       "slot": "slider-marks",
       "element": "div",
       "purpose": "Displays non-interactive, step-aligned visual tick labels.",
+      "stability": "documented"
+    },
+    {
+      "slot": "slider-value-bubble",
+      "element": "aria-hidden span",
+      "purpose": "Optionally keeps a localized visual value beside its thumb without duplicating accessible output.",
       "stability": "documented"
     }
   ]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "comment-thread",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify every distribution surface.",
+    "Pass mutation recovery, mention, long-content, packed-consumer, browser, security, visual and accessibility gates.",
+    "Record current mobile/desktop screen-reader, keyboard, touch, RTL and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

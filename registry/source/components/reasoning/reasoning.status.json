@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "reasoning",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify all distribution surfaces.",
+    "Pass disclosure, streaming, announcement, privacy documentation, packed-consumer, browser and visual gates.",
+    "Record screen-reader verbosity, keyboard, touch, RTL and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

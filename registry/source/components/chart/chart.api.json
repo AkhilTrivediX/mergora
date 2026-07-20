@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chart",
+  "entryExport": "Chart",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Chart"
+    },
+    {
+      "kind": "type",
+      "name": "ChartPoint"
+    },
+    {
+      "kind": "type",
+      "name": "ChartProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "interactive",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "activePointId",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "defaultActivePointId",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "onActivePointChange",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Chart; enhancement output is additive and independently removable.",
+    "enhancement": "Optional native-button data points provide controlled or uncontrolled keyboard exploration while the semantic table fallback remains available. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

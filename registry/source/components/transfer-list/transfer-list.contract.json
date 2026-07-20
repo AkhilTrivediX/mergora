@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "transfer-list",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A fieldset and legend group two labelled native multiple selects with explicit directional move buttons and repeated hidden form values.",
+    "rolePolicy": "Grouping, native selection, button names, membership, validation, disabled, and read-only state remain baseline; summary output is absent when disabled.",
+    "refTarget": "HTMLFieldSetElement"
+  },
+  "keyboard": [
+    {
+      "key": "Arrow keys / platform multiple-select keys",
+      "behavior": "Uses native list selection behavior."
+    },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through source, move actions, and destination."
+    },
+    { "key": "Space / Enter", "behavior": "Activates a focused move button." },
+    {
+      "key": "Alt+ArrowRight / Alt+ArrowLeft",
+      "behavior": "Moves selected enabled source/destination items without leaving the native list."
+    }
+  ],
+  "nonColor": "Native selection, list position, directional button names, and text accompany color.",
+  "responsive": "The dual-list layout becomes one column on narrow containers, retains visible collection counts, and uses logical properties for RTL.",
+  "stableSelectors": {
+    "root": "[data-slot=transfer-list]",
+    "parts": ["[data-slot=transfer-list-summary]"],
+    "attributes": ["data-slot", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "consumerResponsibilities": [
+    "Provide unique stable values and localized source/destination labels.",
+    "Validate submitted membership server-side.",
+    "Do not claim Stable until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "form-reset",
+      "serialization",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

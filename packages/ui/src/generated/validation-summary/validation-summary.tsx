@@ -19,22 +19,34 @@ import { useMergoraContext, type MergoraMessage } from "../provider/index.js";
 import "./validation-summary.css";
 
 export interface ValidationIssue {
+  /** Stable id of the real focusable control that should receive recovery focus. */
   readonly controlId: string;
+  /** Stable unique issue identity used as the rendered list key. */
   readonly id: string;
+  /** Non-empty visible recovery message linked to the target control. */
   readonly message: ReactNode;
 }
 
 export type ValidationFocusPolicy = "none" | "summary" | "first-error";
 
 export interface ValidationSummaryProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Content rendered by an explicitly enabled empty summary. */
   readonly empty?: ReactNode;
+  /** Attempt identity whose changes trigger the configured focus policy once. */
   readonly focusKey?: string | number;
+  /** Moves focus to the summary, first error, or nowhere after an attempt. */
   readonly focusPolicy?: ValidationFocusPolicy;
+  /** Formats the assertive issue-count announcement. */
   readonly formatAnnouncement?: (count: number) => string;
+  /** Visible summary heading; defaults to the localized provider message. */
   readonly heading?: ReactNode;
+  /** Stable non-empty heading ID used to name the focusable summary. */
   readonly headingId?: string;
+  /** Native heading level used for the summary title; defaults to 2. */
   readonly headingLevel?: 2 | 3 | 4 | 5 | 6;
+  /** Validated issues linked to real focusable controls by stable IDs. */
   readonly issues: readonly ValidationIssue[];
+  /** Keeps an empty summary mounted; false removes all summary UI and accessibility output. */
   readonly renderWhenEmpty?: boolean;
 }
 

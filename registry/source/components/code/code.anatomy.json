@@ -5,7 +5,7 @@
     "element": "code",
     "ref": "HTMLElement",
     "slot": "code",
-    "stableAttributes": ["data-slot", "data-wrap"]
+    "stableAttributes": ["data-slot", "data-wrap", "data-bidi-isolated"]
   },
   "parts": []
 }

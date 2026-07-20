@@ -25,35 +25,65 @@ export type ColorTextFormat = "hex" | "hsl" | "rgb";
 export type ColorParseFailureReason = "alpha-not-allowed" | "empty" | "out-of-range" | "syntax";
 
 export interface SrgbColorValue {
+  /** Integer opacity channel from zero through 255. */
   readonly alpha: number;
+  /** Integer blue channel from zero through 255. */
   readonly blue: number;
+  /** Required discriminator preventing accidental cross-space channel interpretation. */
   readonly colorSpace: "srgb";
+  /** Integer green channel from zero through 255. */
   readonly green: number;
+  /** Integer red channel from zero through 255. */
   readonly red: number;
 }
 
 export interface HslColorValue {
+  /** Integer opacity channel from zero through 255. */
   readonly alpha: number;
+  /** Finite hue angle normalized into the zero-to-360-degree circle. */
   readonly hue: number;
+  /** Lightness percentage from zero through 100. */
   readonly lightness: number;
+  /** Saturation percentage from zero through 100. */
   readonly saturation: number;
 }
 
 export type ColorParseResult =
-  | { readonly ok: true; readonly value: SrgbColorValue }
-  | { readonly ok: false; readonly reason: ColorParseFailureReason };
+  | {
+      /** Successful parse discriminator granting access to a validated sRGB value. */
+      readonly ok: true;
+      /** Validated sRGB channels produced from the exact editor text. */
+      readonly value: SrgbColorValue;
+    }
+  | {
+      /** Failed parse discriminator granting access to a recoverable reason. */
+      readonly ok: false;
+      /** Stable empty, syntax, range, or alpha-policy failure reason. */
+      readonly reason: ColorParseFailureReason;
+    };
 
 export interface ColorFieldMessages {
+  /** Recovery text shown when transparency conflicts with the opaque policy. */
   readonly alphaNotAllowed: string;
+  /** Localized interpretation for ratios meeting the configured threshold. */
   readonly contrastAtOrAbove: string;
+  /** Localized interpretation for ratios below the configured threshold. */
   readonly contrastBelow: string;
+  /** Visible label naming the optional reference-contrast output. */
   readonly contrastLabel: string;
+  /** Status text used before a valid color makes contrast computable. */
   readonly contrastUnavailable: string;
+  /** Accessible preview text used when no valid color is selected. */
   readonly emptyPreview: string;
+  /** Recovery text shown when exact editor syntax cannot be parsed. */
   readonly invalidSyntax: string;
+  /** Recovery text shown when parsed channels exceed supported ranges. */
   readonly outOfRange: string;
+  /** Accessible name for the optional selected-color preview. */
   readonly previewLabel: string;
+  /** Native validation recovery text for a required empty editor. */
   readonly required: string;
+  /** Visible caveat explaining the limits of reference contrast analysis. */
   readonly verificationNote: string;
 }
 
@@ -61,30 +91,55 @@ export interface ColorFieldProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Additional IDs merged into the editable input's description relationship. */
   readonly "aria-describedby"?: string;
+  /** Additional IDs merged with generated and enclosing Field error text. */
   readonly "aria-errormessage"?: string;
+  /** Explicit invalid state combined with parse errors and enclosing Field state. */
   readonly "aria-invalid"?: AriaAttributes["aria-invalid"];
+  /** Accessible name used when no visible Field label is available. */
   readonly "aria-label"?: string;
+  /** IDs of visible content that name the editable color input. */
   readonly "aria-labelledby"?: string;
+  /** Allows transparency or requires full opacity; defaults to `opaque`. */
   readonly alphaPolicy?: ColorAlphaPolicy;
+  /** Opaque sRGB surface used only for optional reference contrast analysis. */
   readonly contrastBackground?: SrgbColorValue;
+  /** Finite reference ratio above one; defaults to 4.5. */
   readonly contrastThreshold?: number;
+  /** Initial parsed color for uncontrolled use; defaults to no selection. */
   readonly defaultValue?: SrgbColorValue | null;
+  /** Disables editing and removes the hidden successful form control. */
   readonly disabled?: boolean;
+  /** Associates the hidden canonical form control with an external form by ID. */
   readonly form?: string;
+  /** Exact text representation used for editing; defaults to `hex`. */
   readonly format?: ColorTextFormat;
+  /** Explicit editor identity, superseded by an enclosing Field control ID. */
   readonly id?: string;
+  /** Additional class name applied to the exact text input. */
   readonly inputClassName?: string;
+  /** Ref forwarded to the exact text input rather than the component root. */
   readonly inputRef?: Ref<HTMLInputElement>;
+  /** Inline style applied to the exact text input. */
   readonly inputStyle?: CSSProperties;
+  /** Localized overrides for parse, preview, contrast, and validation messages. */
   readonly messages?: Partial<ColorFieldMessages>;
+  /** Native name for the hidden canonical serialized color control. */
   readonly name?: string;
+  /** Receives committed valid colors or an allowed empty value. */
   readonly onChange?: (value: SrgbColorValue | null) => void;
+  /** Localized hint displayed only while the exact text input is empty. */
   readonly placeholder?: string;
+  /** Preserves value and form serialization while preventing edits. */
   readonly readOnly?: boolean;
+  /** Requires a valid non-empty color and participates in native validation. */
   readonly required?: boolean;
+  /** Shows reference contrast context; false removes its UI, status, and description relationship. */
   readonly showContrast?: boolean;
+  /** Shows selected-color preview; false removes its swatch and accessible preview text. */
   readonly showPreview?: boolean;
+  /** Controlled parsed color; committed edits are proposed through `onChange`. */
   readonly value?: SrgbColorValue | null;
 }
 
@@ -201,7 +256,10 @@ export function createSrgbColor({
   blue,
   green,
   red,
-}: Omit<SrgbColorValue, "colorSpace"> & { readonly alpha?: number }): SrgbColorValue {
+}: Omit<SrgbColorValue, "colorSpace"> & {
+  /** Optional opacity byte defaulting to fully opaque. */
+  readonly alpha?: number;
+}): SrgbColorValue {
   const value = { alpha, blue, colorSpace: "srgb" as const, green, red };
   assertColorValue(value);
   return Object.freeze(value);

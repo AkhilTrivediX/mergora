@@ -5,6 +5,11 @@ import { pathToFileURL } from "node:url";
 import { assertHonestGeneratedArtifact, canonicalJsonFile } from "./canonical.ts";
 import { type GeneratedFile, syncGeneratedFiles } from "./files.ts";
 import {
+  buildImplementationMatrix,
+  loadImplementationProfileShards,
+  loadMergoraSignaturePolicy,
+} from "./implementation-matrix.ts";
+import {
   buildRegistryPlans,
   type GeneratorCatalogDefinition,
   type GeneratorSchemaContracts,
@@ -19,6 +24,8 @@ import {
   buildVerticalSliceApi,
   type PayloadCanonicalSource,
 } from "./source-payloads.ts";
+import { buildPublicApiDocs } from "./public-api-docs.ts";
+import { buildDocumentationContractIndex } from "./documentation-contracts.ts";
 
 interface CatalogModule {
   readonly catalogDefinitions: readonly GeneratorCatalogDefinition[];
@@ -62,9 +69,13 @@ interface PackageBuilderModule {
   ) => unknown;
   readonly buildUiPackageManifest: (
     packageMap: unknown,
+    definitions: readonly GeneratorCatalogDefinition[],
     sources: readonly SourceSnapshotSource[],
   ) => unknown;
-  readonly buildUiPackageIndex: (sources: readonly SourceSnapshotSource[]) => string;
+  readonly buildUiPackageIndex: (
+    definitions: readonly GeneratorCatalogDefinition[],
+    sources: readonly SourceSnapshotSource[],
+  ) => string;
 }
 
 interface PublicPackageMap {
@@ -154,10 +165,46 @@ function asRecords(value: unknown, label: string): readonly Record<string, unkno
 }
 
 function overlaySourceAwareDocs(
+  workspaceRoot: string,
   docs: ReturnType<DocsBuilderModule["buildDocsArtifacts"]>,
+  definitions: readonly GeneratorCatalogDefinition[],
   sources: readonly SourceSnapshotSource[],
+  publicUiPackage: string,
 ) {
   const sourceById = new Map(sources.map((source) => [source.id, source]));
+  const packageIntentById = new Map(
+    definitions.map((definition) => [definition.id, definition.availabilityIntent.package]),
+  );
+  const metadataById = new Map(
+    sources.map((source) => {
+      const metadata = asRecord(
+        JSON.parse(readFileSync(resolve(workspaceRoot, source.metadataPath), "utf8")),
+        `${source.id}/metadata`,
+      );
+      const serverBoundary = metadata.serverBoundary;
+      const directions = metadata.directions;
+      const locales = metadata.locales;
+      if (
+        (serverBoundary !== "server-compatible" &&
+          serverBoundary !== "client-island" &&
+          serverBoundary !== "client-only") ||
+        !Array.isArray(directions) ||
+        !directions.every((value) => value === "ltr" || value === "rtl") ||
+        !Array.isArray(locales) ||
+        !locales.every((value) => typeof value === "string" && value.length > 0)
+      ) {
+        throw new Error(`${source.id} metadata cannot populate the generated discovery graph.`);
+      }
+      return [
+        source.id,
+        {
+          serverBoundary,
+          directions: [...new Set(directions)].sort(),
+          locales: [...new Set(locales)].sort(),
+        },
+      ] as const;
+    }),
+  );
   const docsIndex = asRecord(docs.docs, "docs-index");
   const searchIndex = asRecord(docs.search, "search-index");
   const apiIndex = asRecord(docs.api, "api-index");
@@ -168,6 +215,9 @@ function overlaySourceAwareDocs(
       maturitySemantics: "target-only-no-published-maturity",
       items: asRecords(docsIndex.items, "docs-index/items").map((item) => {
         const source = typeof item.id === "string" ? sourceById.get(item.id) : undefined;
+        const metadata = typeof item.id === "string" ? metadataById.get(item.id) : undefined;
+        const packagePlanned =
+          typeof item.id === "string" && packageIntentById.get(item.id) === "planned";
         return source === undefined
           ? item
           : {
@@ -178,6 +228,23 @@ function overlaySourceAwareDocs(
               evidenceAvailable: false,
               publishedMaturity: null,
               visibleStatus: source.visibleStatus,
+              serverBoundary: metadata?.serverBoundary,
+              directions: metadata?.directions,
+              locales: metadata?.locales,
+              fileTargets: source.normalizedFiles
+                .map(
+                  (file) =>
+                    `components/ui/mergora/${source.id}/${file.sourcePath.split("/").at(-1)!}`,
+                )
+                .sort(),
+              packageImport: packagePlanned ? `${publicUiPackage}/${source.id}` : null,
+              packageStyleImport: packagePlanned ? `${publicUiPackage}/${source.id}.css` : null,
+              registryDependencies: [...source.itemDependencies].sort(),
+              runtimeDependencies: [...source.runtimeDependencies].sort(),
+              distribution: {
+                package: packagePlanned ? "generated-unreleased" : "not-planned",
+                source: "generated-unreleased",
+              },
             };
       }),
     },
@@ -198,6 +265,7 @@ function overlaySourceAwareDocs(
       ...apiIndex,
       entries: asRecords(apiIndex.entries, "api-index/entries").map((entry) => {
         const source = typeof entry.id === "string" ? sourceById.get(entry.id) : undefined;
+        const metadata = typeof entry.id === "string" ? metadataById.get(entry.id) : undefined;
         return source === undefined
           ? entry
           : {
@@ -205,9 +273,9 @@ function overlaySourceAwareDocs(
               status: "source-present-unreleased",
               visibleStatus: source.visibleStatus,
               exports: [...source.publicExports].sort(),
-              props: [],
+              ...buildPublicApiDocs(source, metadata?.serverBoundary ?? "server-compatible"),
               message:
-                "Public exports are generated from canonical source; prop-level extraction remains unreleased.",
+                "Public exports and declared prop surfaces are generated from canonical source. Curated descriptions and semantic review remain explicit per prop.",
             };
       }),
     },
@@ -285,6 +353,14 @@ export async function createGenerationSnapshot(
   }
 
   const source = sourceModule.createSourceTransformationSnapshot(workspaceRoot, definitions);
+  const signaturePolicy = loadMergoraSignaturePolicy(workspaceRoot);
+  const implementationProfiles = loadImplementationProfileShards(workspaceRoot, signaturePolicy);
+  const implementationMatrix = buildImplementationMatrix(
+    definitions,
+    source.sources,
+    implementationProfiles,
+    signaturePolicy,
+  );
   const registry = buildRegistryPlans(definitions, schemaContracts, source.sources);
   const releaseProtocolPlan = buildBlockedReleaseProtocolPlan({
     catalogDefinitions: definitions.length,
@@ -304,15 +380,57 @@ export async function createGenerationSnapshot(
     packageMap,
     source.sources,
   );
-  const packageManifest = packageModule.buildUiPackageManifest(packageMap, source.sources);
-  const docs = overlaySourceAwareDocs(docsModule.buildDocsArtifacts(definitions), source.sources);
+  const packageManifest = packageModule.buildUiPackageManifest(
+    packageMap,
+    definitions,
+    source.sources,
+  );
+  const packagePlannedIds = new Set(
+    definitions
+      .filter((definition) => definition.availabilityIntent.package === "planned")
+      .map((definition) => definition.id),
+  );
+  const packageSourcePaths = new Set(
+    source.sources
+      .filter((item) => packagePlannedIds.has(item.id))
+      .flatMap((item) => item.normalizedFiles.map((file) => file.packagePath)),
+  );
+  const allSourcePaths = new Set(
+    source.sources.flatMap((item) => item.normalizedFiles.map((file) => file.packagePath)),
+  );
+  for (const file of source.files) {
+    if (!allSourcePaths.has(file.path)) {
+      throw new Error(
+        `Source transformer emitted unowned package file ${JSON.stringify(file.path)}.`,
+      );
+    }
+  }
+  const plannedPackageSourceFiles = source.files.filter((file) =>
+    packageSourcePaths.has(file.path),
+  );
+  const docs = overlaySourceAwareDocs(
+    workspaceRoot,
+    docsModule.buildDocsArtifacts(definitions),
+    definitions,
+    source.sources,
+    packageMap.public.ui,
+  );
   const passports = overlaySourceAwarePassports(
     passportModule.buildQualityPassportSkeletons(definitions, schemaContracts.qualityPassport),
     source.sources,
   );
+  const documentationContractIndex = buildDocumentationContractIndex(
+    workspaceRoot,
+    registry.catalog,
+    source.sources,
+    implementationMatrix,
+    passports,
+  );
 
   const artifactValues: readonly (readonly [string, unknown])[] = [
     ["registry/generated/catalog.json", registry.catalog],
+    ["registry/generated/documentation-contract-index.v1.json", documentationContractIndex],
+    ["registry/generated/implementation-matrix.v1.json", implementationMatrix],
     ["registry/generated/index-plan.json", registry.index],
     ["registry/generated/release-protocol/plan.json", releaseProtocolPlan],
     ["registry/generated/package-export-plan.json", packageExports],
@@ -346,7 +464,7 @@ export async function createGenerationSnapshot(
   ];
   const planningFiles = artifactValues.map(([path, value]) => generatedFile(path, value));
   const packageFiles: readonly GeneratedFile[] = [
-    ...source.files,
+    ...plannedPackageSourceFiles,
     {
       path: "packages/cli/src/generated-public-package-map.ts",
       content: [
@@ -359,7 +477,7 @@ export async function createGenerationSnapshot(
     },
     {
       path: "packages/ui/src/index.ts",
-      content: packageModule.buildUiPackageIndex(source.sources),
+      content: packageModule.buildUiPackageIndex(definitions, source.sources),
     },
     prettyGeneratedJsonFile("packages/ui/package.json", packageManifest),
   ];
@@ -376,6 +494,7 @@ export async function createGenerationSnapshot(
     inputs: {
       catalogDefinitions: definitions.length,
       canonicalSources: source.sources.length,
+      implementationProfileShards: implementationProfiles.length,
       packageMap: "config/public-packages.json",
       schemaContracts,
     },

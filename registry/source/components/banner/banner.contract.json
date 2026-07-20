@@ -5,12 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 2,
-  "summary": "A persistent page/site aside with exclusive controlled or adapter-persisted dismissal, visible severity, intrinsic reflow, actions, and a native dismiss button.",
+  "summary": "A Canvas-and-Ink page/site banner with intrinsic reflow and independently optional dismissal persistence.",
   "semantics": [
     "The named aside owns its accessible name and remains non-live; unsafe role, naming, visibility, and live-region overrides are rejected while page/site scope stays metadata.",
     "Controlled dismissal only proposes changes. Uncontrolled dismissal alone accepts a default and injected persistence, and persistence writes occur only after committed internal transitions.",
     "A synchronous persistence read resolves in a pre-paint layout effect while pending markup is visually suppressed; failures fall back to the supplied default and are reported without escaping the component.",
-    "A 44 CSS-pixel native dismiss button, visible severity text, non-sticky layout, and container-relative reflow avoid focus obstruction, viewport assumptions, and color-only meaning."
+    "A 44 CSS-pixel native dismiss button, visible severity text, non-sticky layout, and container-relative reflow avoid focus obstruction, viewport assumptions, and color-only meaning.",
+    "Omitting persistence removes adapter reads, writes, pending state, and persistence errors; dismissible=false independently removes the button, event path, and accessible name."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

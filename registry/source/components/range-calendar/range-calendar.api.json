@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-calendar",
+  "entryExport": "RangeCalendar",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "RangeCalendar" },
+    { "kind": "type", "name": "RangeCalendarProps" },
+    { "kind": "type", "name": "RangeCalendarUnavailableSpanIssue" },
+    { "kind": "type", "name": "RangeCalendarValue" }
+  ],
+  "controlledState": [
+    {
+      "state": "range",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "showDurationSummary", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "showAvailabilityExplanations",
+      "required": false,
+      "default": false,
+      "type": "boolean"
+    },
+    {
+      "name": "unavailableDates",
+      "required": false,
+      "default": [],
+      "type": "readonly CalendarUnavailableDate[]"
+    },
+    { "name": "showRangePreview", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "rangePreviewSummary",
+      "required": false,
+      "type": "ReactNode | (days, value) => ReactNode"
+    },
+    {
+      "name": "getUnavailableSpanError",
+      "required": false,
+      "type": "(issue: RangeCalendarUnavailableSpanIssue) => string"
+    }
+  ],
+  "compositionPolicy": {
+    "range": "Start and end calendars have explicit labels and bounds and share one controlled or uncontrolled range.",
+    "duration": "Inclusive duration is calculated and exposed only when enabled and complete.",
+    "availability": "Any candidate or externally controlled range crossing an unavailable date is rejected or reported with recoverable guidance; consumer reason text remains independently gated.",
+    "preview": "Range highlight attributes, focus and pointer preview events, and the live preview summary exist only when showRangePreview is true."
+  }
+}

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { release as osRelease, platform as osPlatform } from "node:os";
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -14,6 +14,7 @@ import { captureVisual } from "../../../packages/test-utils/src/runtime-contract
 
 const workspaceRoot = fileURLToPath(new URL("../../..", import.meta.url));
 const evidenceRoot = resolve(workspaceRoot, "artifacts", "browser-evidence");
+const fixtureWorkspaceRoot = resolve(process.env.MERGORA_VISUAL_FIXTURE_ROOT ?? workspaceRoot);
 
 function exactVersion(value: string, subject: string): string {
   const match = value.match(/\d+(?:\.\d+)+/u);
@@ -51,8 +52,12 @@ async function writeVisualArtifact(write: VisualArtifactWrite): Promise<void> {
         artifact: write.artifact,
         digest: write.digest,
         request: write.request,
+        source: {
+          phase: process.env.MERGORA_VISUAL_PHASE ?? "standalone",
+          sourceId: process.env.MERGORA_VISUAL_SOURCE_ID ?? "working-tree",
+        },
         limitations: [
-          "This automated capture is not a reviewed visual baseline.",
+          "Review and release eligibility are declared only by the cross-commit run summary, never by an isolated capture.",
           "This automated capture is not manual assistive-technology evidence.",
         ],
       },
@@ -64,8 +69,36 @@ async function writeVisualArtifact(write: VisualArtifactWrite): Promise<void> {
 }
 
 async function fontManifestDigest(): Promise<string> {
-  const bytes = await readFile(resolve(workspaceRoot, "assets", "fonts", "manifest.json"));
-  return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+  const manifestPath = resolve(fixtureWorkspaceRoot, "assets", "fonts", "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as {
+    readonly families?: readonly {
+      readonly asset?: string;
+      readonly family?: string;
+      readonly sha256?: string;
+    }[];
+  };
+  if (!Array.isArray(manifest.families) || manifest.families.length === 0) {
+    throw new Error(`Font manifest has no family records: ${manifestPath}`);
+  }
+
+  const records = [];
+  for (const family of manifest.families) {
+    if (
+      typeof family.asset !== "string" ||
+      typeof family.family !== "string" ||
+      !/^[a-f0-9]{64}$/u.test(family.sha256 ?? "")
+    ) {
+      throw new Error(`Font manifest family record is incomplete: ${manifestPath}`);
+    }
+    const bytes = await readFile(resolve(fixtureWorkspaceRoot, "assets", "fonts", family.asset));
+    const actualDigest = createHash("sha256").update(bytes).digest("hex");
+    if (actualDigest !== family.sha256) {
+      throw new Error(`Font bytes do not match the manifest digest: ${family.asset}`);
+    }
+    records.push({ asset: family.asset, family: family.family, sha256: actualDigest });
+  }
+  records.sort((left, right) => left.family.localeCompare(right.family));
+  return `sha256:${createHash("sha256").update(JSON.stringify(records)).digest("hex")}`;
 }
 
 function operatingSystem(): string {
@@ -80,8 +113,9 @@ export interface CaptureFixtureVisualOptions {
   readonly browser: Browser;
   readonly mode: string;
   readonly page: Page;
+  readonly phase: "baseline" | "candidate" | "standalone";
   readonly projectName: string;
-  readonly sequence: "first" | "second";
+  readonly runId: string;
   readonly width: number;
   readonly height: number;
 }
@@ -90,26 +124,28 @@ export async function captureFixtureVisual({
   browser,
   mode: rawMode,
   page,
+  phase,
   projectName: rawProjectName,
-  sequence,
+  runId: rawRunId,
   width,
   height,
 }: CaptureFixtureVisualOptions) {
   const mode = safeSegment(rawMode, "Visual mode");
   const projectName = safeSegment(rawProjectName, "Playwright project name");
-  const artifact = `artifacts/browser-evidence/visual/${projectName}/${mode}-${sequence}.png`;
+  const runId = safeSegment(rawRunId, "Visual run id");
+  const artifact = `artifacts/browser-evidence/visual-regression/${runId}/${phase}/${projectName}/${mode}.png`;
   const adapter = createPlaywrightVisualCaptureAdapter({ writeArtifact: writeVisualArtifact });
 
   return captureVisual(
     adapter,
     {
       page,
-      referenceId: `p1-tracer-${mode}-${projectName}-${sequence}`,
+      referenceId: `p1-tracer-${mode}-${projectName}-${phase}`,
       artifact,
     },
     {
       itemId: "p1-tracer",
-      stateId: `${mode}-${sequence}`,
+      stateId: `${mode}-${phase}`,
       environmentId: `${projectName}-${width}x${height}`,
       os: operatingSystem(),
       osVersion: exactVersion(osRelease(), "Operating system"),
@@ -121,6 +157,31 @@ export async function captureFixtureVisual({
       masks: [],
     },
   );
+}
+
+export async function stageFixtureVisualBaseline(options: {
+  readonly mode: string;
+  readonly projectName: string;
+  readonly runId: string;
+  readonly snapshotPath: string;
+}): Promise<{ readonly artifact: string; readonly digest: string }> {
+  const mode = safeSegment(options.mode, "Visual mode");
+  const projectName = safeSegment(options.projectName, "Playwright project name");
+  const runId = safeSegment(options.runId, "Visual run id");
+  const artifact = `artifacts/browser-evidence/visual-regression/${runId}/baseline/${projectName}/${mode}.png`;
+  const source = absoluteArtifactPath(artifact);
+  const snapshotPath = resolve(options.snapshotPath);
+  const allowedPrefix = `${evidenceRoot}${sep}`;
+  if (!snapshotPath.startsWith(allowedPrefix)) {
+    throw new Error(`Playwright visual snapshots must remain under ${evidenceRoot}`);
+  }
+  const bytes = await readFile(source);
+  await mkdir(dirname(snapshotPath), { recursive: true });
+  await copyFile(source, snapshotPath);
+  return {
+    artifact,
+    digest: `sha256:${createHash("sha256").update(bytes).digest("hex")}`,
+  };
 }
 
 export async function persistJsonEvidence(

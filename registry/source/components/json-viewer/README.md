@@ -6,6 +6,10 @@ Exposes JSON as a labelled ARIA tree with roving focus, controlled expansion, pa
 <JsonViewer label="Registry response" value={{ ok: true, items: ["button"] }} />
 ```
 
+## Mergora advantage
+
+Controlled path selection, expansion, localized value types, and selected path/value copy make structured data navigable rather than merely syntax-colored. Set `copyable={false}` and `showActivePath={false}` independently to remove the toolbar controls, copy events, status announcements, and visible path context while retaining the labelled ARIA tree.
+
 ## Contract
 
 The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion; toolbar buttons copy the selected path or value.

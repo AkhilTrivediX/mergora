@@ -22,7 +22,7 @@
       "name": "client-only",
       "semanticElement": "no DOM (React Fragment)",
       "refTarget": "none",
-      "states": ["server-fallback", "hydrating-fallback", "client-ready"]
+      "states": ["server-fallback", "hydrating-fallback", "client-ready", "client-ready-hook"]
     }
   ],
   "contract": { "id": "client-only-accessibility", "version": "0.1.0" },

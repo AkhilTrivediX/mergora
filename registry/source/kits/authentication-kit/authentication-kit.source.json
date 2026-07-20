@@ -1,0 +1,15 @@
+{
+  "declaredImports": [
+    "../../components/button/button.js",
+    "../../components/field/field.js",
+    "../../components/input/input.js",
+    "../../components/otp-field/otp-field.js",
+    "../../components/password-field/password-field.js",
+    "./authentication-kit.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/authentication-kit/authentication-kit.tsx",
+  "id": "authentication-kit",
+  "itemDependencies": ["button", "field", "input", "otp-field", "password-field"],
+  "outputRole": "kit"
+}

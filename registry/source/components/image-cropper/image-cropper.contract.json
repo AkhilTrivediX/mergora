@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "image-cropper",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, pixel-export, image-security, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "An informative native img is paired with a focusable named crop group, native range zoom, and optional native number fields.",
+    "naming": "Visible label and description name the crop region; numeric labels are visible and localizable.",
+    "roleOverride": "No misleading two-dimensional slider role is applied; the crop group describes its custom arrow-key model.",
+    "refTarget": "HTMLDivElement composite shell"
+  },
+  "interaction": {
+    "keyboard": "Arrows move one step, Shift+Arrow moves ten steps, Home moves to block/inline start, End moves to block/inline end; native zoom and optional number fields remain available.",
+    "pointer": "Direct manipulation captures one primary pointer and commits normalized coordinates; pointer cancellation ends the gesture without a hidden action.",
+    "touch": "touch-action is limited to the crop stage; numeric and range alternatives remain available when enabled.",
+    "speech": "Visible coordinate labels and Zoom are deterministic voice targets.",
+    "switchAccess": "Optional numeric controls provide sequential non-spatial adjustment."
+  },
+  "formBehavior": "Optional name serializes a normalized JSON crop plan. Reset restores the initial default plan; no pixel bytes or transformed image are submitted.",
+  "preferences": {
+    "forcedColors": "System boundaries and Highlight focus remain; obscuring shade and guide lines disappear.",
+    "reducedMotion": "Crop changes are immediate and all descendant motion duration is removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Preview moves below the stage and numeric fields auto-fit."
+  },
+  "consumerResponsibilities": [
+    "Authorize, decode, orient, color-manage, and validate source image bytes outside the component.",
+    "Translate normalized crop values into pixels with a reviewed imaging pipeline and preserve the original for recovery.",
+    "Enable a numeric or equivalent non-spatial path for workflows requiring exact crop editing."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-uncontrolled",
+      "pointer-keyboard-numeric-parity",
+      "form-reset-serialization",
+      "narrow-rtl-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "all-desktop-at-pairs",
+      "voiceover-ios-touch",
+      "talkback-chrome-touch",
+      "speech-and-switch",
+      "zoom-reflow"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "No rotation, EXIF orientation, pixel export, image decoding, metadata stripping, or server upload is implemented.",
+    "Complete Risk Class 3 manual, packed-consumer, and parity evidence remains unrecorded."
+  ]
+}

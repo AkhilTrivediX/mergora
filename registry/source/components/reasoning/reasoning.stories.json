@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "reasoning",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicReasoning" },
+    {
+      "id": "streaming",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedReasoning"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "controlled", "applicability": { "status": "applicable" }, "story": "ControlledState" },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

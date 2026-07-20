@@ -13,3 +13,7 @@ Use `width="prose"` for long-form reading, `wide` for dense work surfaces, and `
 The root slot is `[data-slot="container"]`; `data-width`, `data-gutter`, `data-safe-area`, and `data-query-container` are documented styling hooks. Consumer CSS must use logical properties and must not introduce clipping that hides focus indicators.
 
 Current status is `source-present-unreleased`. Package output, browser reflow/safe-area evidence, packed-consumer parity, updater fixtures, manual review, public-site dogfooding, and an approved Quality Passport remain required before promotion.
+
+## Mergora advantage
+
+Safe-area-aware logical gutters and anonymous inline-size containment are independent capabilities. `safeArea={false}` removes environment-inset calculations; `queryContainer={false}` removes container-query behavior. Neither capability adds UI, events, or accessibility nodes.

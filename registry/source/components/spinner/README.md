@@ -4,6 +4,10 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 Spinner is always decorative and accessibility-hidden. BusyRegion owns the actual busy relationship and name.
 
+## Mergora signature and advantage
+
+The compact Living Green and Deep Violet visual identifies Mergora loading state while a static two-pattern fallback preserves meaning under reduced motion. Beyond an ordinary decorative Shadcn-style spinner, `BusyRegion` owns a real named `aria-busy` relationship and can announce only the start of a busy period through the shared announcer. `announce={false}` removes the announcement effect, dedupe event, and announcement output while preserving the named busy region; Spinner itself always remains decorative.
+
 ## Contract
 
 - Spinner accepts no accessible name, role, focus target, or child content. It remains decorative and independent from both BusyRegion ownership and Skeleton layout geometry.

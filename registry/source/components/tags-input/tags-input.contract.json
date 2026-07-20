@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tags-input",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled native text entry is paired with named tag removal buttons and repeated hidden form values.",
+    "rolePolicy": "Entry, removal, validation, serialization, disabled, and read-only state remain baseline; duplicate recovery output and focus behavior are absent when disabled.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Enter or a configured single-key delimiter",
+      "behavior": "Adds a non-empty, valid, unique tag."
+    },
+    { "key": "Backspace on empty entry", "behavior": "Removes the last tag when editable." },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through native entry, optional reorder controls, and remove controls."
+    }
+  ],
+  "nonColor": "Tag text, borders, remove names, and recovery text accompany color.",
+  "responsive": "Tokens wrap and the entry reflows using logical properties on narrow and RTL layouts.",
+  "stableSelectors": {
+    "root": "[data-slot=tags-input]",
+    "parts": ["[data-slot=tags-input-duplicate-recovery]"],
+    "attributes": ["data-slot", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "consumerResponsibilities": [
+    "Validate tag syntax and authorization server-side.",
+    "Localize messages and set a suitable maximum.",
+    "Choose delimiters that do not conflict with expected tag content and provide a localized validateTag recovery message.",
+    "Do not claim Stable until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "form-reset",
+      "serialization",
+      "keyboard",
+      "focus-recovery",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

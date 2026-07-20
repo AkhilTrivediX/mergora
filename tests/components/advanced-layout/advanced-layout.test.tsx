@@ -93,7 +93,29 @@ describe("P2 advanced layout records", () => {
     }
   });
 
-  it("uses semantic tokens, logical edges, and no literal palette or motion", () => {
+  it("records plain and recommended Mergora modes plus exact disabled enhancement behavior", () => {
+    const storySource = readFileSync(
+      resolve(root, "apps/storybook/src/P2AdvancedLayout.stories.tsx"),
+      "utf8",
+    );
+    expect(storySource).toContain("export const BasicDefaults");
+    expect(storySource).toContain("export const RecommendedMergora");
+    expect(storySource).toContain("showStepControls");
+    expect(storySource).toContain("manageFocusOffset");
+
+    for (const itemId of itemIds) {
+      const storyNames = readJson<StoryStateMatrix>(
+        itemId,
+        `${itemId}.stories.json`,
+      ).states.flatMap((state) => ("story" in state ? [state.story] : []));
+      expect(storyNames, `${itemId} basic story`).toContain("BasicDefaults");
+      expect(storyNames, `${itemId} enhanced story`).toContain("RecommendedMergora");
+      expect(readItem(itemId, "README.md")).toContain("## Mergora advantage");
+      expect(readItem(itemId, `${itemId}.api.json`)).toMatch(/enhancement/iu);
+    }
+  });
+
+  it("uses semantic tokens, logical edges, and tokenized reduced-motion-safe feedback", () => {
     const tokenCss = readFileSync(
       resolve(root, "packages/tokens/src/generated/tokens.css"),
       "utf8",
@@ -120,7 +142,14 @@ describe("P2 advanced layout records", () => {
       }
       expect(css).not.toMatch(/^\s*(?:margin|padding|inset|border)-(?:left|right)\s*:/mu);
       expect(css).not.toMatch(/#[0-9a-f]{3,8}|(?:oklch|rgb|hsl)\(/iu);
-      expect(css).not.toMatch(/\b(?:animation|transition)\s*:/u);
+      expect(css).not.toMatch(/(?:linear|radial|conic)-gradient|backdrop-filter/iu);
+      expect(css).not.toMatch(/border-radius\s*:\s*(?:1[7-9]|[2-9]\d)px/iu);
+      expect(css).not.toMatch(/\b(?:animation-duration|transition-duration)\s*:\s*\d/u);
+      if (/\btransition\s*:/u.test(css)) {
+        expect(css).toContain("var(--mrg-semantic-motion-duration-");
+        expect(css).toContain("@media (prefers-reduced-motion: reduce)");
+        expect(css).toContain("var(--mrg-semantic-motion-duration-reduced)");
+      }
     }
   });
 });
@@ -180,6 +209,17 @@ describe("P2 advanced layout server semantics", () => {
     expect(markup).toContain('aria-valuenow="40"');
     expect(markup).toContain('role="group"');
     expect(markup.match(/<button/g)?.length).toBe(3);
+
+    const plainMarkup = renderToStaticMarkup(
+      <Resizable.Root defaultValue={40} showStepControls={false}>
+        <Resizable.Primary>Source</Resizable.Primary>
+        <Resizable.Handle aria-label="Resize source and preview" />
+        <Resizable.Secondary>Preview</Resizable.Secondary>
+      </Resizable.Root>,
+    );
+    expect(plainMarkup).not.toContain('data-step-controls="true"');
+    expect(plainMarkup).not.toContain('role="group"');
+    expect(plainMarkup).not.toContain("<button");
   });
 
   it("renders indexed SplitPane panels, separators, named regions, and nested-safe IDs", () => {
@@ -201,6 +241,17 @@ describe("P2 advanced layout server semantics", () => {
     expect(markup.match(/role="region"/g)?.length).toBe(2);
     expect(markup).toContain('data-stack-at="narrow"');
     expect(markup).toContain("aria-controls=");
+
+    const plainMarkup = renderToStaticMarkup(
+      <SplitPane.Root defaultValue={[40, 60]} showStepControls={false} stackAt="never">
+        <SplitPane.Panel index={0}>Outline</SplitPane.Panel>
+        <SplitPane.Handle aria-label="Resize outline" index={0} />
+        <SplitPane.Panel index={1}>Document</SplitPane.Panel>
+      </SplitPane.Root>,
+    );
+    expect(plainMarkup).not.toContain('data-step-controls="true"');
+    expect(plainMarkup).not.toContain('role="group"');
+    expect(plainMarkup).not.toContain("<button");
   });
 
   it("inherits stable provider messages and locale while explicit root messages win", () => {
@@ -251,5 +302,14 @@ describe("P2 advanced layout server semantics", () => {
     expect(markup).toContain("<header");
     expect(markup).toContain('data-slot="sticky-region-body"');
     expect(markup).not.toContain('tabindex="0"');
+
+    const unmanaged = renderToStaticMarkup(
+      <StickyRegion.Root estimatedSize={-1} manageFocusOffset={false}>
+        <StickyRegion.Content>Header</StickyRegion.Content>
+        <StickyRegion.Body>Body</StickyRegion.Body>
+      </StickyRegion.Root>,
+    );
+    expect(unmanaged).not.toContain("data-manage-focus-offset");
+    expect(unmanaged).not.toContain("--mrg-sticky-region-size");
   });
 });

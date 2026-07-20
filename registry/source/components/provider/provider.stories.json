@@ -4,6 +4,14 @@
   "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
   "stories": [
     {
+      "id": "basic-defaults",
+      "covers": ["neutral-div", "as-child-disabled", "comfortable", "system-motion"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["as-child-enabled", "touch-density", "subtree-motion", "context-signature"]
+    },
+    {
       "id": "nested-provider-and-direction",
       "covers": ["nested-overrides", "message-merge", "locale", "time-zone", "density", "rtl"]
     },

@@ -28,7 +28,7 @@
       "name": "layer",
       "semanticElement": "div or consumer element",
       "refTarget": "HTMLElement",
-      "states": ["active", "modal", "dismissible", "top"]
+      "states": ["active", "modal", "dismissible", "environment-managed", "top"]
     }
   ],
   "contract": { "id": "layer-manager-accessibility", "version": "0.1.0" },

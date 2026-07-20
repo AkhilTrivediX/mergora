@@ -13,7 +13,8 @@
   "ssrHydration": {
     "server": "Non-disabled portals render only fallback; no document global is read.",
     "firstClientRender": "Matches the server fallback exactly, then portals after the mount effect.",
-    "disabled": "Inline mode remains deterministic on server and client."
+    "disabled": "Inline mode remains deterministic on server and client and performs no portal movement or target lookup.",
+    "fallbackOptOut": "A null fallback emits no temporary DOM or accessibility output before mount."
   },
   "consumerResponsibilities": [
     "Provide an accessible fallback when server-visible information or status is required.",
@@ -26,6 +27,8 @@
       "strict-types",
       "ssr",
       "hydration",
+      "fallback-opt-out",
+      "inline-opt-out",
       "custom-container",
       "nested-portals",
       "direction",

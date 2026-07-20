@@ -3,7 +3,7 @@
   "itemId": "badge",
   "root": {
     "slot": "badge",
-    "element": "noninteractive span",
+    "element": "noninteractive category, status, or count span",
     "ref": "HTMLSpanElement",
     "stableAttributes": ["data-slot", "data-kind", "data-variant", "data-overflow"]
   },

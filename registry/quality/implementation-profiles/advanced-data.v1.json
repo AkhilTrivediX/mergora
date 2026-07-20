@@ -1,0 +1,1325 @@
+{
+  "schemaVersion": 1,
+  "category": "advanced-data",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "data-grid",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn documentation composes TanStack Table into a Data Table with consumer-authored columns, sorting, filtering, pagination, visibility, and selection.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/data-table"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora owns a typed semantic-table API with controlled or uncontrolled sorting and native radio selection, labelled narrow-screen scrolling, and an optional live selection summary that never exposes TanStack types.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/systems/data-grid/data-grid.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selection-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The grid uses a literal Canvas table, Ink rules, strong caption and header hierarchy, shared Violet focus and sort context, restrained Green selected state, bounded corners, and a stable summary rail.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/systems/data-grid/data-grid.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "status-rail",
+          "selected-pressed-identity",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-feedback"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-summary",
+          "status": "evidence-backed",
+          "summary": "Consumers can render domain-appropriate selected-row context in a polite live status rail while retaining source-row typing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showSelectionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderSelectionSummary"],
+            "enableWhen": "Provide renderSelectionSummary, normally with selectionMode single."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection-summary rail is rendered.",
+            "behavior": "Native table sorting and optional radio selection continue unchanged.",
+            "events": "The selection-summary renderer is not invoked.",
+            "accessibility": "No output element or polite live region is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/DataGrid.stories.tsx",
+          "exportName": "BasicDefaults",
+          "enhancementControls": ["showSelectionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/DataGrid.stories.tsx",
+          "exportName": "RecommendedMergora",
+          "enhancementControls": ["showSelectionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native table, caption, scoped header, radio naming, focusable overflow, keyboard, narrow RTL layout, forced-colors, reduced-motion, and axe evidence is current across the component browser matrix; Risk Class 3 manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/systems/data-grid/contract.draft.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native sorting, controlled and uncontrolled selection, empty state, summary updates, and complete disabled enhancement removal are covered for the semantic-table tracer.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "production-grid-contract-incomplete",
+          "summary": "Interactive grid mode, editing, virtualization, server operations, responsive alternatives, permissions, and the full Risk Class 3 evidence matrix remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/contract.draft.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/systems/data-grid/contract.draft.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "query-builder",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn has no first-party nested query-builder component; consumers typically compose form controls and own schema, reordering, validation, serialization, and summaries.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides a schema-bound nested query tree with deterministic serialization, non-drag reordering, recovery-focused validation, native form/reset behavior, and an optional localizable canonical summary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/query-builder/query-builder.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["canonical-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas fieldsets, Ink rules, strong legends, Violet nested-group context, Green validation/summary state, shared focus geometry, bounded corners, logical narrow layout, and preference fallbacks form a precise workbench hierarchy.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/query-builder/query-builder.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "status-rail",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-status-success-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "canonical-summary",
+          "status": "evidence-backed",
+          "summary": "Consumers may expose a domain-localized human explanation of the complete nested query without changing the editable query model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/query-builder/query-builder.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showQuerySummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSummary", "renderSummary"],
+            "enableWhen": "Set showSummary true and optionally provide renderSummary."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No summary rail is rendered.",
+            "behavior": "Nested editing, validation, serialization, form submission, and reordering continue unchanged.",
+            "events": "renderSummary is not invoked and no summary-specific state update occurs.",
+            "accessibility": "No output element or additional summary text is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "BasicQueryBuilder",
+          "enhancementControls": ["showQuerySummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "RecommendedQueryBuilder",
+          "enhancementControls": ["showQuerySummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated nested semantics, native keyboard order, validation, form, narrow, RTL, forced-colors, reduced-motion, and axe evidence is current; Risk Class 3 manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/query-builder/query-builder.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled/uncontrolled state, add/remove, nested groups, non-drag movement, validation, serialization, form reset, and exact summary isolation have focused automated evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-risk-three-evidence-missing",
+          "summary": "Required desktop/mobile screen-reader, speech, switch, touch, zoom, and localization sessions are not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/query-builder/query-builder.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/query-builder/query-builder.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "filter-builder",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn has no first-party filter-builder system; consumers compose fields, badges, dialogs, and URL state without a shared serialization or mobile contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines a concise native filter editor with deterministic Unicode-safe URL state, saved-filter application, a decision-safe active summary, and a focus-restoring mobile dialog, all independently selectable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/filter-builder/filter-builder.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["filter-context-suite"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Canvas fieldsets, Ink boundaries, strong filter legends, Violet context, Green active-summary state, shared focus, restrained corners, native modal structure, and logical responsive stacking repeat the Mergora workbench language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/filter-builder/filter-builder.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "status-rail",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-status-success-background",
+          "--mrg-semantic-color-overlay-scrim",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "filter-context-suite",
+          "status": "evidence-backed",
+          "summary": "Active summary, saved filters, URL synchronization, and mobile drawer are four separate switches with exact removal contracts.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/filter-builder/filter-builder.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "showFilterSummary",
+            "savedFiltersEnabled",
+            "urlAdapterEnabled",
+            "mobileDrawerEnabled"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showActiveSummary",
+              "renderFilterSummary",
+              "savedFilters",
+              "urlAdapter",
+              "mobileDrawer"
+            ],
+            "enableWhen": "Enable only the summary, saved-filter, URL, and mobile-dialog capabilities the workflow needs."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Each false value independently removes its summary, selector, or drawer UI; urlAdapter=false adds no UI.",
+            "behavior": "The plain inline filter editor remains fully operable without persistence or overlay behavior.",
+            "events": "Disabled summary renderers, saved-filter applies, URL reads/writes, and drawer open/close paths cannot fire.",
+            "accessibility": "Disabled enhancements expose no output, saved selector, dialog/trigger, live text, or extra relationships."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "BasicFilterBuilder",
+          "enhancementControls": [
+            "showFilterSummary",
+            "savedFiltersEnabled",
+            "urlAdapterEnabled",
+            "mobileDrawerEnabled"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "RecommendedFilterBuilder",
+          "enhancementControls": [
+            "showFilterSummary",
+            "savedFiltersEnabled",
+            "urlAdapterEnabled",
+            "mobileDrawerEnabled"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native fieldset, modal dismissal/focus return, keyboard, narrow, RTL, forced-colors, reduced-motion, and axe evidence is current; Risk Class 3 manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/filter-builder/filter-builder.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Filter mutation, Unicode URL round-trip, saved application, form reset, mobile-dialog focus, and exact independent enhancement removal have focused automated evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-risk-three-evidence-missing",
+          "summary": "Required desktop/mobile screen-reader, speech, switch, touch, zoom, and nested-overlay sessions are not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/filter-builder/filter-builder.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/filter-builder/filter-builder.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sortable-list",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn has no first-party sortable-list component; common compositions add a drag library but leave non-drag movement, cancellation, announcements, undo, and virtualization to consumers.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora treats drag as additive to visible move controls and a cancellable keyboard pickup model, with optional destination selection, localized announcements, undo, and bounded virtualization.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sortable-list/sortable-list.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["reorder-assistance-suite"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas list rows, Ink structure, strong item/position hierarchy, Green committed context, Violet grabbed/focus state, target-sized handles, restrained corners, and immediate reduced-motion fallbacks provide a consistent spatial identity.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sortable-list/sortable-list.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-motion-duration-feedback",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "reorder-assistance-suite",
+          "status": "evidence-backed",
+          "summary": "Destination controls, announcements, undo, and bounded virtualization can be selected independently while visible Move Up/Down remains the non-drag baseline.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sortable-list/sortable-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "destinationControls",
+            "announceMoves",
+            "undoable",
+            "virtualized"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showDestinationControls",
+              "announceMoves",
+              "undoable",
+              "virtualWindow",
+              "onVirtualWindowChange"
+            ],
+            "enableWhen": "Enable each assistance or scale feature independently for the collection."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Destination selects, live status, Undo, and virtual spacers/window controls are each absent when disabled.",
+            "behavior": "Pointer drag, cancellable keyboard pickup, and visible Move Up/Down remain available over the full list.",
+            "events": "No destination, announcement, undo, or window callbacks/state paths occur for disabled features.",
+            "accessibility": "No destination labels/options, live region, Undo control, virtual spacers, or duplicate position output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "BasicSortableList",
+          "enhancementControls": [
+            "destinationControls",
+            "announceMoves",
+            "undoable",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "RecommendedSortableList",
+          "enhancementControls": [
+            "destinationControls",
+            "announceMoves",
+            "undoable",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated ordered-list semantics, keyboard pickup/drop/cancel, non-drag actions, focus recovery, narrow, RTL, forced-colors, reduced-motion, and axe evidence is current; manual Risk Class 3 evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sortable-list/sortable-list.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Pure movement, button/destination movement, keyboard cancellation, native pointer drop and Escape cancellation without mutation, undo, controlled/uncontrolled ownership, reset, and exact enhancement isolation have focused automated evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-risk-three-evidence-missing",
+          "summary": "Required desktop/mobile screen-reader, speech, switch, touch, zoom, pointer-cancellation, and scale sessions are not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sortable-list/sortable-list.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sortable-list/sortable-list.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tree-grid",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn has no first-party ARIA treegrid; a Data Table composition does not supply hierarchical row semantics, direction-aware APG navigation, editing recovery, or virtual focus policy.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/data-table"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora owns a one-tab-stop hierarchical treegrid with controlled expansion/selection/active row, direction-aware two-dimensional navigation, optional recoverable editing, preserved form state, bounded virtualization, and an optional hierarchy summary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-grid/tree-grid.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["treegrid-context-suite"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas cells, Ink rules, sticky strong headers, Green selection/status, Violet active hierarchy seams, shared focus geometry, restrained corners, logical indentation, and visible narrow overflow repeat the workbench language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-grid/tree-grid.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "status-rail",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-layer-sticky"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "treegrid-context-suite",
+          "status": "evidence-backed",
+          "summary": "Hierarchy summary, change announcements, editing, and bounded virtualization are independently selected around the same APG navigation core.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tree-grid/tree-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "showTreeSummary",
+            "announceMoves",
+            "treeEditing",
+            "virtualized"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showHierarchySummary",
+              "announceChanges",
+              "onEditCommit",
+              "virtualWindow",
+              "onVirtualWindowChange"
+            ],
+            "enableWhen": "Enable only the contextual, editing, announcement, and scale capabilities required by the grid."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Summary, live status, editor/save/error UI, and virtual spacers/window controls are independently absent.",
+            "behavior": "Hierarchical expansion, selection, and two-dimensional navigation remain available over all visible rows.",
+            "events": "Disabled summary, announcement, edit/persistence, and virtual-window paths cannot fire.",
+            "accessibility": "No summary relationship, live region, edit stops/states, or virtual spacer output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "BasicTreeGrid",
+          "enhancementControls": ["showTreeSummary", "announceMoves", "treeEditing", "virtualized"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "RecommendedTreeGrid",
+          "enhancementControls": ["showTreeSummary", "announceMoves", "treeEditing", "virtualized"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated treegrid role/state, APG keyboard, selection, focus recovery, editing, preferred coarse-pointer targets, narrow overflow, RTL, forced-colors, reduced-motion, and axe evidence is current; manual APG interoperability and Risk Class 3 records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-grid/tree-grid.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Flattening, expansion, controlled/uncontrolled selection, direction-aware grid movement, edit cancellation/recovery, form reset, virtualization bounds, and exact enhancement isolation have focused automated evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-apg-risk-three-evidence-missing",
+          "summary": "Complete APG desktop/mobile screen-reader, speech, switch, touch, zoom, editing, and large-data sessions are not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tree-grid/tree-grid.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-grid/tree-grid.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "kanban",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn has no first-party Kanban system; common card-and-drag compositions leave keyboard cancellation, non-drag movement, WIP policy, mobile parity, persistence recovery, and virtualization to consumers.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora makes pointer drag additive to explicit move controls and cancellable direction-aware keyboard movement, with independently selected WIP context, mobile list parity, announcements, undo, server rollback/retry, and bounded virtualization.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kanban/kanban.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["kanban-production-suite"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas columns/cards, Ink boundaries, strong headings, Green capacity seams, Violet Beta/grabbed/focus state, target-sized handles, restrained corners, and logical mobile/RTL structure repeat the Mergora workbench language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kanban/kanban.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-motion-duration-feedback"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "kanban-production-suite",
+          "status": "evidence-backed",
+          "summary": "WIP status, mobile list presentation, announcements, undo, server persistence, and bounded virtualization are independently selectable around the explicit non-drag baseline.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/kanban/kanban.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "showWipStatus",
+            "mobileListAlternative",
+            "announceMoves",
+            "undoable",
+            "serverAdapterEnabled",
+            "virtualized"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showWipStatus",
+              "mobileListAlternative",
+              "announceMoves",
+              "undoable",
+              "serverAdapter",
+              "virtualization"
+            ],
+            "enableWhen": "Enable each contextual, mobile, feedback, recovery, persistence, or scale capability independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Capacity text, view controls, live status, Undo, pending/error/retry UI, and virtual window output are independently absent.",
+            "behavior": "Pointer drag, cancellable keyboard movement, visible move buttons, destination controls, and WIP rejection remain usable.",
+            "events": "No disabled view, announcement, undo, server, rollback/retry, or window callback path can fire.",
+            "accessibility": "No WIP text, presentation group, live region, Undo/retry control, busy state, or virtual spacer output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "BasicKanban",
+          "enhancementControls": [
+            "showWipStatus",
+            "mobileListAlternative",
+            "announceMoves",
+            "undoable",
+            "serverAdapterEnabled",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedData.stories.tsx",
+          "exportName": "RecommendedKanban",
+          "enhancementControls": [
+            "showWipStatus",
+            "mobileListAlternative",
+            "announceMoves",
+            "undoable",
+            "serverAdapterEnabled",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedData.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated ordered-list semantics, keyboard pickup/drop/cancel, explicit alternatives, WIP rejection, mobile presentation, narrow, RTL, forced-colors, reduced-motion, and axe evidence is current; required physical mobile and Risk Class 3 manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kanban/kanban.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Pure cross-column movement, native pointer drop and Escape cancellation without mutation, non-drag controls, direction-aware keyboard cancellation, WIP limits, mobile list, server rollback/retry, undo, virtualization, and exact enhancement isolation have focused automated evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-data/advanced-data.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "physical-mobile-at-review-missing",
+          "summary": "Kanban must remain Beta until physical iOS VoiceOver and Android TalkBack move workflows pass and are reviewed.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/kanban/kanban.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "manual-risk-three-evidence-missing",
+          "summary": "Required screen-reader, speech, switch, touch, zoom, server-recovery, and large-board sessions are not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/kanban/kanban.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "beta-candidate",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kanban/kanban.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

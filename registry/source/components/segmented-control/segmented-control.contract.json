@@ -9,7 +9,8 @@
   "semantics": [
     "The fieldset and legend provide native group naming.",
     "Home, End, and arrows move and select while skipping disabled options.",
-    "The horizontal scroller preserves touch and keyboard access at narrow widths."
+    "The horizontal scroller preserves touch and keyboard access at narrow widths.",
+    "Uncontrolled form reset restores defaultValue, required maps to the native radios, and renderSelectionSummary is an optional live output that disappears when omitted."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

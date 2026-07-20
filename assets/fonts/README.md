@@ -38,6 +38,12 @@ Only prose uses Schibsted Grotesk. Commit Mono is limited to code, commands, ver
 
 ## Loading and metrics
 
-Preload only `schibsted-grotesk-latin-ext-wght.woff2`, because prose is visible at first paint. Load Commit Mono on demand with code specimens; preloading it would compete with primary content. Both faces use `font-display: swap`.
+The reusable token package keeps the complete `schibsted-grotesk-latin-ext-wght.woff2` face and uses `font-display: swap`. The static documentation site preloads the deterministic 37,980-byte `schibsted-grotesk-site-basic-wght.woff2` subset with `font-display: optional`, then falls through to the complete non-preloaded face for glyphs outside its English-first paint range. This avoids making the full Latin Extended face a rendering dependency while retaining the documented locale fallback. Commit Mono remains on demand so code specimens do not compete with primary content.
+
+Rebuild the site subset from the reviewed complete face with the pinned tools in `requirements.txt`:
+
+```powershell
+python assets/fonts/rebuild_site_schibsted.py
+```
 
 The generated CSS includes metric-compatible local fallback faces. Schibsted Grotesk is matched against Arial and Commit Mono against Consolas using x-height-based `size-adjust` plus target ascent, descent, and line-gap overrides. These values are recorded in the manifest so layout-shift behavior is reviewable and compiler-generated, not browser- or machine-dependent.

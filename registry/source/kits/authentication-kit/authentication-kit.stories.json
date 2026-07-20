@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "authentication-kit",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicAuthenticationKit"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAuthenticationKit"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledAuthenticationKit"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "AuthenticationStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "AuthenticationStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "AuthenticationStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "AuthenticationStateMatrix"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAuthentication"
+    },
+    {
+      "id": "rtl",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAuthentication"
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAuthentication"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAuthentication"
+    }
+  ]
+}

@@ -4,6 +4,10 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 ErrorState separates recoverable and unrecoverable workflows without accepting raw Error objects.
 
+## Mergora signature and advantage
+
+ErrorState uses a literal Canvas and Ink boundary with a restrained danger seam, compact symbol, strong title, and the shared violet focus geometry. Beyond a baseline error Alert, retry is a discriminated recoverable mode, technical details are an explicit native disclosure, and announcements use the shared announcer without moving actions into a live region. Unrecoverable mode removes retry UI, callback behavior, and focus output; omitting `technicalDetails` removes the disclosure and its accessible summary; `live="off"` removes announcement behavior and live output independently.
+
 ## Contract
 
 - Recoverable mode requires onRetry and renders a native 44 CSS-pixel retry button; unrecoverable mode rejects retry props.

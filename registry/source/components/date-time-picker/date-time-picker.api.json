@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-time-picker",
+  "entryExport": "DateTimePicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "DateTimePicker" },
+    { "kind": "type", "name": "DateTimePickerPreset" },
+    { "kind": "type", "name": "DateTimePickerProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "local-date-time",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "presets",
+      "required": false,
+      "default": false,
+      "type": "false | readonly DateTimePickerPreset[]"
+    },
+    { "name": "showTimeZoneContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "timeZone", "required": false, "type": "IANA time-zone label" },
+    {
+      "name": "wallTimeAdapter",
+      "required": false,
+      "default": false,
+      "type": "false | DateTimeWallTimeAdapter"
+    },
+    {
+      "name": "ambiguityPolicy",
+      "required": false,
+      "default": "reject",
+      "type": "earlier | later | reject"
+    },
+    { "name": "resolvedName", "required": false, "type": "hidden resolved-instant form name" },
+    {
+      "name": "getWallTimeMessage",
+      "required": false,
+      "type": "(status: DateTimeWallTimeStatus) => string"
+    },
+    {
+      "name": "onWallTimeResolutionChange",
+      "required": false,
+      "type": "(status: DateTimeWallTimeStatus | null) => void"
+    }
+  ],
+  "compositionPolicy": {
+    "model": "The value remains local and unzoned; zone context is descriptive rather than a silent conversion engine.",
+    "presets": "Preset controls and their callback are absent unless a non-empty collection is supplied.",
+    "native": "DateTimeField retains native validation, mobile editing, reset, and serialization.",
+    "wallTime": "The optional adapter, explicit zone, ambiguity policy, validation status, callback, and resolved-instant serialization are forwarded without adding a timezone dependency."
+  }
+}

@@ -35,8 +35,7 @@
 .mrg-checkbox [data-slot="checkbox-indicator"] {
   align-items: center;
   background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
   border-radius: var(--mrg-semantic-radius-status);
   block-size: var(--mrg-semantic-size-target-minimum);
   display: flex;
@@ -70,8 +69,11 @@
 }
 
 .mrg-checkbox [data-slot="checkbox-input"]:focus-visible + [data-slot="checkbox-indicator"] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-checkbox [data-slot="checkbox-label"] {
@@ -117,6 +119,11 @@
 }
 
 @media (forced-colors: active) {
+  .mrg-checkbox [data-slot="checkbox-input"]:focus-visible + [data-slot="checkbox-indicator"] {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
   .mrg-checkbox [data-slot="checkbox-indicator"] {
     background: Field;
     border-color: FieldText;

@@ -64,9 +64,14 @@ Command behavior is intentionally narrow:
 - `remove` deletes only a live file whose bytes equal its verified immutable base. An already
   locally deleted owned target prunes provenance; customized or missing/corrupt-base targets cause
   a no-write conflict. `--keep-files` explicitly detaches ownership and retains source.
-- `adopt` writes provenance and bases only when every expected local file exactly matches the
-  selected payload and transform mapping. Missing or divergent source is a conflict, including the
-  all-missing zero-mutation case.
+- bundled `adopt` writes provenance and bases only when every expected local file exactly matches
+  the selected payload and transform mapping. Missing or divergent source is a conflict, including
+  the all-missing zero-mutation case.
+- `adopt --from shadcn` binds one enrolled `shadcn-v1` identity and exact catalog digest to the
+  compiled `components.json` target/import mapping. Exact files become clean ownership; the narrow
+  `--allow-local-divergence` path records distinct Base and Local digests while leaving source and
+  `components.json` unchanged. Contracts, Passports, license, risk, and quality remain explicitly
+  not supplied.
 - dependency removal occurs only for the last Mergora owner and only while the declaration still
   equals the recorded owned value.
 
@@ -155,5 +160,6 @@ for Next and Vite in package and source modes. One complete run refreshed the di
 an immediate second complete run matched it. Both source consumers installed the current seven-item
 dependency closure, performed a frozen offline reinstall, passed their installed dependency-tree
 audit and strict typecheck, and produced a production build. This closes the bounded packed proof;
-it does not add the still-missing P3.5 Semantic Sync, audit, public registry, mirror, or full release
-scenario evidence.
+the current worktree additionally implements Semantic Sync, Contract Audit, enrolled-current Stable
+routing, verified offline vendor routing, and Shadcn protocol/adoption paths. Exact-commit CI, a real
+released official-mirror payload, and the full public release scenario remain separate evidence.

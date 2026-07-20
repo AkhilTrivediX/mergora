@@ -1,0 +1,163 @@
+/* Generated from registry/source/components/transfer-list/transfer-list.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-transfer-list {
+    border: 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-sm);
+    inline-size: 100%;
+    margin: 0;
+    min-inline-size: 0;
+    padding: 0;
+  }
+  .mrg-transfer-list > legend {
+    font-weight: var(--mrg-semantic-font-weight-label);
+    padding: 0;
+  }
+  .mrg-transfer-list__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    max-inline-size: 70ch;
+  }
+  .mrg-transfer-list__workbench {
+    align-items: center;
+    display: grid;
+    gap: var(--mrg-semantic-space-inline-sm);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+  .mrg-transfer-list__collection {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-inline-size: 0;
+  }
+  .mrg-transfer-list__collection-heading {
+    align-items: baseline;
+    display: flex;
+    font-size: var(--mrg-semantic-font-size-label);
+    gap: var(--mrg-semantic-space-inline-sm);
+    justify-content: space-between;
+  }
+  .mrg-transfer-list__collection-heading > span {
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+  .mrg-transfer-list input[type="search"] {
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-transfer-list select {
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+    inline-size: 100%;
+    min-block-size: 10rem;
+    padding: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-transfer-list option {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-inset-sm);
+  }
+  .mrg-transfer-list__actions {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+  .mrg-transfer-list__actions button {
+    align-items: center;
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: inherit;
+    display: inline-flex;
+    font: inherit;
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    justify-content: center;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+  .mrg-transfer-list select:focus-visible,
+  .mrg-transfer-list input[type="search"]:focus-visible,
+  .mrg-transfer-list button:focus-visible,
+  .mrg-transfer-list__validation-proxy:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+  .mrg-transfer-list button:disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+  .mrg-transfer-list__validation-proxy {
+    block-size: 1px;
+    inline-size: 1px;
+    opacity: 0;
+    position: absolute;
+  }
+  .mrg-transfer-list__summary {
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    padding-block-start: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-transfer-list__error {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-transfer-list[data-invalid] select {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+  @container (max-width: 32rem) {
+    .mrg-transfer-list__workbench {
+      align-items: stretch;
+      grid-template-columns: 1fr;
+    }
+    .mrg-transfer-list__actions {
+      grid-template-columns: 1fr 1fr;
+    }
+    .mrg-transfer-list__actions button {
+      inline-size: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-transfer-list select {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-transfer-list select,
+    .mrg-transfer-list input[type="search"],
+    .mrg-transfer-list__actions button {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+    .mrg-transfer-list select:focus-visible,
+    .mrg-transfer-list input[type="search"]:focus-visible,
+    .mrg-transfer-list button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-transfer-list button:disabled {
+      color: GrayText;
+    }
+    .mrg-transfer-list__summary,
+    .mrg-transfer-list__error {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+}

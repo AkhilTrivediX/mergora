@@ -24,20 +24,38 @@ interface SharedTextareaProps extends Omit<
   TextareaHTMLAttributes<HTMLTextAreaElement>,
   "maxLength"
 > {
+  /** Grows the textarea to its content up to `maxRows`; defaults to false. */
   readonly autoGrow?: boolean;
+  /** Formats the optional visible character count. */
   readonly formatCount?: (current: number, maximum: number | undefined) => string;
+  /** Localized native validation message used when the grapheme limit is exceeded. */
   readonly graphemeLimitMessage?: string;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Positive visual row cap used by auto-grow behavior; defaults to 8. */
   readonly maxRows?: number;
+  /** Additional class name applied to the outer Textarea wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer Textarea wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Shows a localized character count linked to the textarea; defaults to false. */
   readonly showCount?: boolean;
 }
 
 export type TextareaProps = SharedTextareaProps &
   (
-    | { readonly maxGraphemes?: undefined; readonly maxLength?: number }
-    | { readonly maxGraphemes: number; readonly maxLength?: never }
+    | {
+        /** Omit to use native UTF-16 `maxLength` semantics instead. */
+        readonly maxGraphemes?: undefined;
+        /** Optional native UTF-16 length limit when grapheme limiting is disabled. */
+        readonly maxLength?: number;
+      }
+    | {
+        /** Non-negative user-perceived character limit enforced without truncation. */
+        readonly maxGraphemes: number;
+        /** Unavailable because grapheme and native UTF-16 limits cannot be combined. */
+        readonly maxLength?: never;
+      }
   );
 
 export function formatTextareaCount(

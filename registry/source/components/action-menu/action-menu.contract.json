@@ -5,13 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 2,
-  "summary": "A React Aria anchored menu with shared-layer registration, typeahead, focus return, and an explicit destructive confirmation step.",
+  "summary": "A React Aria anchored menu with shared-layer registration, typeahead, focus return, and an optional explicit destructive confirmation step.",
   "semantics": [
     "React Aria owns portal positioning, collision, collection typeahead, dismissal, and focus return; Mergora LayerManager records the active layer without adding a second Escape handler.",
     "The nearest MergoraProvider locale is passed to React Aria I18nProvider for locale-correct collection matching and typeahead.",
     "Direction remains independent from locale: public start/end maps to physical left/right placement before crossing the React Aria portal.",
     "Consumer item ids are validated as non-empty and unique collection keys; description IDREFs use generated index-based DOM ids rather than raw keys.",
-    "Destructive actions require a second activation with explicit confirmation text."
+    "Destructive actions require a second activation with explicit confirmation text by default; confirmDestructiveActions=false removes that enhancement completely."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

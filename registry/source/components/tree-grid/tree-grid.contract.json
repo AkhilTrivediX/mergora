@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tree-grid",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, APG interoperability-complete, large-data performance, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A named role=treegrid contains owned column headers, hierarchical rows, and roving gridcells with real row, column, level, set, expansion, selection, disabled, busy, and read-only state.",
+    "focusModel": "One gridcell is tabbable; focus and selection remain distinct across expansion, editing, and bounded virtualization.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Enters or exits through the one active gridcell; editors add native internal stops only while active."
+    },
+    {
+      "key": "Arrow Up / Arrow Down",
+      "behavior": "Moves to the same logical column in the previous or next visible row."
+    },
+    {
+      "key": "Arrow Right / Arrow Left",
+      "behavior": "Follows inherited direction; at the hierarchy cell it expands, collapses, or reaches parent/child, and otherwise moves between cells."
+    },
+    {
+      "key": "Home / End",
+      "behavior": "Moves to the first or last cell in the row; Ctrl moves to the first or last cell in the grid."
+    },
+    {
+      "key": "Page Up / Page Down",
+      "behavior": "Moves one bounded visible page or ten rows while preserving the logical column."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Toggles row selection only when a selection mode is active."
+    },
+    {
+      "key": "* / Ctrl+A / printable characters",
+      "behavior": "Expands sibling branches, selects all eligible visible rows in multiple mode, or performs wraparound row-label typeahead."
+    },
+    {
+      "key": "F2",
+      "behavior": "Starts editing only for an editable column with an onEditCommit callback."
+    },
+    {
+      "key": "Enter / Escape while editing",
+      "behavior": "Saves or cancels and restores the originating gridcell focus."
+    }
+  ],
+  "enhancementIsolation": {
+    "summaryFalse": "No summary output, aria-describedby relationship, count work, or accessibility node exists.",
+    "announcementsFalse": "No live region or announcement update exists.",
+    "editingOmitted": "F2 is not prevented; no editor, buttons, pending state, error, or edit callback exists.",
+    "virtualFalse": "Every visible hierarchical row renders; no spacers or window callback exists."
+  },
+  "preferences": {
+    "forcedColors": "Grid structure, selected/active states, editors, errors, controls, and focus map to system colors.",
+    "reducedMotion": "Focus recovery scrolls with behavior auto and no meaning depends on motion.",
+    "rtl": "Logical indentation and horizontal tree/cell navigation mirror from inherited direction."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "apg-keyboard",
+      "controlled-uncontrolled",
+      "selection",
+      "editing-recovery",
+      "virtual-window",
+      "form-reset",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch-device",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased evidence does not yet include generated parity, packed consumers, large-data performance, APG assistive-technology interoperability, or manual sessions.",
+    "Consumers own data loading, durable edits, authorization, virtual-window policy, and narrow non-tabular detail alternatives."
+  ]
+}

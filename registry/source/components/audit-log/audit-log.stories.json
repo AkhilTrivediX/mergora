@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "audit-log",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicAuditLog" },
+    {
+      "id": "filtered",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAuditLog"
+    },
+    {
+      "id": "virtualized",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAuditLog"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "export", "applicability": { "status": "applicable" }, "story": "RecommendedAuditLog" },
+    {
+      "id": "long-content",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

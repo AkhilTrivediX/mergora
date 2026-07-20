@@ -7,7 +7,7 @@
   "riskClass": 3,
   "semantics": {
     "nativeBasis": "json-viewer: div role=region; json-tree: div role=tree; json-tree-item: div role=treeitem; json-copy-path: button; json-copy-value: button",
-    "rolePolicy": "The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion; toolbar buttons copy the selected path or value.",
+    "rolePolicy": "The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion. Copy controls and visible active-path context are independent and disappear when disabled.",
     "refTarget": "HTMLDivElement"
   },
   "keyboard": [
@@ -52,6 +52,8 @@
     ],
     "attributes": [
       "data-virtualized",
+      "data-copyable",
+      "data-show-active-path",
       "data-expanded",
       "data-selected",
       "data-type",
@@ -62,7 +64,8 @@
   "consumerResponsibilities": [
     "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
     "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
-    "The tree intentionally uses bounded native scrolling. Virtualization is not implemented or claimed; Class 3 scale, mobile AT, voice, switch, and independent manual evidence remain promotion gates."
+    "The tree intentionally uses bounded native scrolling. Virtualization is not implemented or claimed; Class 3 scale, mobile AT, voice, switch, and independent manual evidence remain promotion gates.",
+    "When copyable or showActivePath is false, do not rely on the corresponding toolbar controls, events, status announcement, or visible path context; each is absent."
   ],
   "evidenceRequirements": {
     "automated": [

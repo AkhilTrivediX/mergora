@@ -76,6 +76,35 @@ describe("P2 context infrastructure machine contracts", () => {
     }
   });
 
+  it.each(items)("documents a Mergora advantage and exact enhancement opt-out for %s", (item) => {
+    const api = readJson(item, "api") as {
+      compositionPolicy: { advantage?: string; enhancementOptOut?: string };
+    };
+
+    expect(api.compositionPolicy.advantage).toMatch(/\S/u);
+    expect(api.compositionPolicy.enhancementOptOut).toMatch(/\S/u);
+  });
+
+  it.each(items)("maps %s to basic and recommended Storybook proof", (item) => {
+    const stories = readJson(item, "stories") as {
+      canonicalStoryFile: string;
+      stories?: { id: string }[];
+      states?: { story?: string }[];
+    };
+    const source = readFileSync(resolve(stories.canonicalStoryFile), "utf8");
+
+    expect(source).toContain("export const BasicDefaults");
+    expect(source).toContain("export const RecommendedMergora");
+    if (stories.stories !== undefined) {
+      expect(stories.stories.map(({ id }) => id)).toEqual(
+        expect.arrayContaining(["basic-defaults", "recommended-mergora"]),
+      );
+    } else {
+      expect(stories.states?.some(({ story }) => story === "BasicDefaults")).toBe(true);
+      expect(stories.states?.some(({ story }) => story === "RecommendedMergora")).toBe(true);
+    }
+  });
+
   it.each(items)("declares the exact entry import graph for %s", (item) => {
     const manifest = readJson(item, "source") as {
       declaredImports: string[];
@@ -104,17 +133,33 @@ describe("P2 context infrastructure machine contracts", () => {
 
   it("uses semantic focus tokens and explicit user-preference branches", () => {
     const focus = readFileSync(resolve(directoryFor("focus-ring"), "focus-ring.css"), "utf8");
+    const provider = readFileSync(resolve(directoryFor("provider"), "provider.css"), "utf8");
     const hidden = readFileSync(
       resolve(directoryFor("visually-hidden"), "visually-hidden.css"),
       "utf8",
     );
     const presence = readFileSync(resolve(directoryFor("presence"), "presence.css"), "utf8");
+    const direction = readFileSync(resolve(directoryFor("direction"), "direction.css"), "utf8");
 
     expect(focus).toContain("var(--mrg-component-focus-indicator-color)");
+    expect(focus).toContain("var(--mrg-component-focus-indicator-contrast-background)");
+    expect(focus).toContain("var(--mrg-component-focus-indicator-width-strong)");
     expect(focus).toContain("@media (forced-colors: active)");
+    expect(focus).not.toContain("transition:");
+    expect(provider).toContain('[data-density="comfortable"]');
+    expect(provider).toContain('[data-density="compact"]');
+    expect(provider).toContain('[data-density="touch"]');
+    expect(provider).toContain('[data-reduced-motion="reduce"]');
+    expect(provider).toContain("@media (prefers-reduced-motion: reduce)");
+    expect(provider).toContain("var(--mrg-primitive-duration-reduced)");
+    expect(hidden).toContain("var(--mrg-component-focus-indicator-contrast-background)");
+    expect(hidden).toContain("box-shadow: none");
     expect(hidden).toContain("@media (forced-colors: active)");
     expect(presence).toContain("@media (prefers-reduced-motion: reduce)");
-    for (const css of [focus, hidden, presence]) {
+    expect(presence).toContain("var(--mrg-semantic-motion-duration-reduced)");
+    expect(direction).toContain('[data-bidi-isolate="true"]');
+    expect(direction).toContain("unicode-bidi: isolate");
+    for (const css of [direction, focus, hidden, presence, provider]) {
       expect(css).not.toMatch(/#[0-9a-f]{3,8}\b/iu);
     }
   });
@@ -124,6 +169,7 @@ describe("P2 context infrastructure machine contracts", () => {
     const slot = readFileSync(resolve(directoryFor("slot"), "slot.tsx"), "utf8");
 
     expect(client).toContain("return <>{mounted ? children : fallback}</>");
+    expect(client).toContain("readyCallback.current?.()");
     expect(client).not.toMatch(/<(?:span|div)[\s>]/u);
     expect(slot).toContain('slotProps["data-slot"] ?? childProps["data-slot"] ?? "slot"');
   });

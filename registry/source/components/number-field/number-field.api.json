@@ -13,6 +13,7 @@
     { "kind": "type", "name": "NumberFieldProps" },
     { "kind": "type", "name": "NumericFieldBaseProps" },
     { "kind": "type", "name": "NumericFieldKind" },
+    { "kind": "type", "name": "NumericFieldStatusRail" },
     { "kind": "type", "name": "StepNumericValueOptions" }
   ],
   "controlledState": ["value"],
@@ -28,11 +29,14 @@
     { "name": "allowWheel", "required": false, "default": false, "type": "boolean" },
     { "name": "showStepper", "required": false, "default": true, "type": "boolean" },
     { "name": "scrub", "required": false, "default": false, "type": "boolean" },
-    { "name": "scrubSensitivity", "required": false, "default": 8, "type": "CSS pixels per step" }
+    { "name": "scrubSensitivity", "required": false, "default": 8, "type": "CSS pixels per step" },
+    { "name": "showCanonicalPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "statusRail", "required": false, "default": false, "type": "false | auto" }
   ],
   "compositionPolicy": {
     "field": "Field owns the integrated label, control ID, description, error, required, and invalid relationships.",
     "value": "Public values and hidden form values are canonical JavaScript numbers; only visible editing and formatting are localized.",
-    "focus": "Focused text remains user-authored until commit; blur validates instead of silently clamping or snapping."
+    "focus": "Focused text remains user-authored until commit; blur validates instead of silently clamping or snapping.",
+    "enhancements": "showCanonicalPreview exposes the exact callback/form number without a live announcement; statusRail=auto adds localized bound context to aria-describedby. Each optional surface is absent when disabled."
   }
 }

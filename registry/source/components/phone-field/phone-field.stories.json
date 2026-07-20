@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "itemId": "phone-field",
   "states": [
-    { "id": "default", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
     { "id": "active", "applicability": { "status": "applicable" }, "story": "PhoneWorkbench" },
     {

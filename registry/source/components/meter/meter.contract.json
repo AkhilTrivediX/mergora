@@ -5,12 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 1,
-  "summary": "A visibly labelled native meter with validated range, thresholds, optimum, and localized value text.",
+  "summary": "A visibly labelled native meter with validated range semantics and an independently optional threshold-context rail.",
   "semantics": [
     "Minimum is below maximum and value, low, high, and optimum stay within range; low cannot exceed high.",
     "The visible formatted value and aria-valuetext are identical and locale-aware.",
     "A meaningful visible label owns the accessible name; role, generic name props, and aria value overrides are rejected at type and runtime boundaries.",
-    "Native meter semantics and a thicker visual track remain distinct from task progress."
+    "Native meter semantics and a thicker visual track remain distinct from task progress.",
+    "showThresholdSummary links configured boundaries with aria-describedby; false removes the rail, additional formatter calls, and generated description relationship."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

@@ -5,7 +5,14 @@
     "element": "div role=region",
     "ref": "HTMLDivElement",
     "slot": "diff-viewer",
-    "stableAttributes": ["data-slot", "data-mode", "data-wrap"]
+    "stableAttributes": [
+      "data-slot",
+      "data-mode",
+      "data-wrap",
+      "data-copyable",
+      "data-line-navigation",
+      "data-show-summary"
+    ]
   },
   "parts": [
     {

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-grid",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "controlled",
+    "uncontrolled",
+    "expanded",
+    "collapsed",
+    "selected",
+    "disabled",
+    "loading",
+    "error",
+    "editing",
+    "virtualized",
+    "empty",
+    "rtl",
+    "narrow",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "tree-grid",
+      "semanticElement": "div role=region containing role=treegrid",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "controlled", "uncontrolled", "empty", "virtualized"]
+    },
+    {
+      "name": "tree-grid-row",
+      "semanticElement": "div role=row",
+      "refTarget": "HTMLDivElement",
+      "states": ["expanded", "collapsed", "selected", "disabled", "loading", "error"]
+    },
+    {
+      "name": "tree-grid-cell",
+      "semanticElement": "div role=gridcell",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "editing"]
+    },
+    {
+      "name": "tree-grid-summary",
+      "semanticElement": "optional output",
+      "refTarget": "none",
+      "states": ["default"]
+    },
+    {
+      "name": "tree-grid-announcer",
+      "semanticElement": "optional status",
+      "refTarget": "none",
+      "states": ["expanded", "collapsed", "selected", "editing"]
+    }
+  ],
+  "contract": { "id": "tree-grid-accessibility", "version": "0.1.0" },
+  "passport": { "id": "tree-grid-quality-passport", "version": "0.0.0" }
+}

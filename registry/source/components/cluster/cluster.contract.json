@@ -12,7 +12,7 @@
   },
   "layout": {
     "intrinsic": "A wrapping flex row uses semantic inline gaps and zero minimum inline sizes.",
-    "orphan": "start preserves a logical leading-edge orphan; fill grows only the final child.",
+    "orphan": "start preserves a logical leading-edge orphan and disables growth; fill grows only the final child.",
     "readingOrder": "No order property is used, so DOM, focus, and visual sequence stay aligned."
   },
   "stableSelectors": {

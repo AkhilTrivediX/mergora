@@ -29,6 +29,12 @@
       "semanticElement": "button aria-pressed",
       "refTarget": "HTMLButtonElement",
       "states": []
+    },
+    {
+      "name": "toggle-group-summary",
+      "semanticElement": "output aria-live=polite",
+      "refTarget": "none",
+      "states": ["optional-summary"]
     }
   ],
   "contract": {

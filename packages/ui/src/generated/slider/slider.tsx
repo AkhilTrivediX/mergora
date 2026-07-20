@@ -34,13 +34,27 @@ import "./slider.css";
 export type SliderOrientation = "horizontal" | "vertical";
 
 export interface SliderMark {
+  /** Non-empty localized text rendered at the associated domain position. */
   readonly label: string;
+  /** Finite in-domain value aligned exactly to the configured step. */
   readonly value: number;
 }
 
+export type SliderIntelligentMarkStrategy = "even" | "meaningful";
+
+export interface SliderIntelligentMarksOptions {
+  /** Maximum number of visible marks, including both endpoints. */
+  readonly maximumVisible?: number;
+  /** Meaningful chooses a human-scale interval; even fills the available mark budget. */
+  readonly strategy?: SliderIntelligentMarkStrategy;
+}
+
 export interface SliderDomain {
+  /** Finite inclusive upper endpoint reachable by whole steps. */
   readonly maximum: number;
+  /** Finite inclusive lower endpoint strictly below maximum. */
   readonly minimum: number;
+  /** Positive finite discrete interval spanning the complete domain. */
   readonly step: number;
 }
 
@@ -59,30 +73,55 @@ export interface SliderBaseProps<T extends number | number[]> extends Omit<
   | "style"
   | "value"
 > {
+  /** IDs of persistent error text associated with every slider thumb. */
   readonly "aria-errormessage"?: string | undefined;
+  /** Class name applied to the visual slider root. */
   readonly className?: string;
+  /** Keeps ordered thumbs from crossing; currently only `clamp` is supported. */
   readonly collisionBehavior?: "clamp";
+  /** Initial value or values for uncontrolled use. */
   readonly defaultValue?: T;
+  /** Disables every thumb and prevents native value changes. */
   readonly disabled?: boolean;
+  /** Associates every hidden range input with an external form by ID. */
   readonly form?: string;
+  /** Intl options used for output, marks, bubbles, and accessible values. */
   readonly formatOptions?: Intl.NumberFormatOptions;
+  /** Derives bounded localized marks; false removes generation and permits independent manual marks. */
+  readonly intelligentMarks?: false | SliderIntelligentMarksOptions;
+  /** Marks every thumb invalid and merges enclosing Field error relationships. */
   readonly invalid?: boolean;
+  /** Curated labelled positions; omitting them removes manual mark UI and semantics. */
   readonly marks?: readonly SliderMark[];
+  /** Finite upper domain endpoint; defaults to 100. */
   readonly maxValue?: number;
+  /** Finite lower domain endpoint; defaults to 0. */
   readonly minValue?: number;
+  /** Distinct native form names corresponding one-to-one with the thumbs. */
   readonly names?: readonly string[];
+  /** Receives each value change during interaction. */
   readonly onChange?: (value: T) => void;
+  /** Receives the final value when an interaction ends. */
   readonly onChangeEnd?: (value: T) => void;
+  /** Track direction; defaults to `horizontal`. */
   readonly orientation?: SliderOrientation;
   /** Keeps each thumb focusable and successful in forms while preventing user changes. */
   readonly readOnly?: boolean;
   /** Localized fallback announced by browsers that do not expose aria-readonly on native ranges. */
   readonly readOnlyMessage?: string;
+  /** Renders localized thumb bubbles; false removes their visual output entirely. */
+  readonly showValueBubbles?: boolean;
+  /** Renders the localized aggregate output; false removes the output element entirely. */
   readonly showOutput?: boolean;
+  /** Positive discrete interval that must exactly span the domain; defaults to 1. */
   readonly step?: number;
+  /** Inline style applied to the visual slider root. */
   readonly style?: CSSProperties;
+  /** Positive number of semantic thumbs rendered by the shared base. */
   readonly thumbCount: number;
+  /** Optional accessible names corresponding one-to-one with the thumbs. */
   readonly thumbLabels?: readonly string[];
+  /** Controlled value or values aligned to the configured domain and step. */
   readonly value?: T;
 }
 
@@ -90,9 +129,13 @@ export interface SliderProps extends Omit<
   SliderBaseProps<number>,
   "collisionBehavior" | "defaultValue" | "names" | "thumbCount" | "thumbLabels" | "value"
 > {
+  /** Initial single-thumb value for uncontrolled use; defaults to the minimum. */
   readonly defaultValue?: number;
+  /** Native form name assigned to the slider's hidden range input. */
   readonly name?: string;
+  /** Accessible name for the single slider thumb. */
   readonly thumbLabel?: string;
+  /** Controlled single-thumb value aligned to the configured domain and step. */
   readonly value?: number;
 }
 
@@ -168,6 +211,65 @@ export function normalizeSliderMarks(
       return { label: mark.label, value: mark.value };
     })
     .sort((a, b) => a.value - b.value);
+}
+
+function assertMaximumVisible(value: number): void {
+  if (!Number.isSafeInteger(value) || value < 2 || value > 12) {
+    throw new RangeError(
+      "Mergora Slider intelligentMarks.maximumVisible must be an integer from 2 through 12.",
+    );
+  }
+}
+
+function meaningfulStepInterval(target: number): number {
+  if (target <= 1) return 1;
+  const magnitude = 10 ** Math.floor(Math.log10(target));
+  for (const factor of [1, 2, 2.5, 5, 10]) {
+    const candidate = Math.round(factor * magnitude);
+    if (candidate >= target) return candidate;
+  }
+  return Math.ceil(target);
+}
+
+function valueAtStepIndex(index: number, totalSteps: number, domain: SliderDomain): number {
+  if (index === 0) return domain.minimum;
+  if (index === totalSteps) return domain.maximum;
+  return Number((domain.minimum + domain.step * index).toPrecision(15));
+}
+
+/** Creates a small immutable mark set without changing the slider's canonical value model. */
+export function deriveIntelligentSliderMarks(
+  domain: SliderDomain,
+  options: SliderIntelligentMarksOptions = {},
+  locale = "en-US",
+  formatOptions: Intl.NumberFormatOptions = {},
+): readonly SliderMark[] {
+  const maximumVisible = options.maximumVisible ?? 7;
+  const strategy = options.strategy ?? "meaningful";
+  assertMaximumVisible(maximumVisible);
+  if (strategy !== "even" && strategy !== "meaningful") {
+    throw new RangeError(
+      'Mergora Slider intelligentMarks.strategy must be "meaningful" or "even".',
+    );
+  }
+  const totalSteps = Math.round((domain.maximum - domain.minimum) / domain.step);
+  const markCount = Math.min(maximumVisible, totalSteps + 1);
+  const indices = new Set<number>([0, totalSteps]);
+  if (strategy === "even") {
+    for (let index = 1; index < markCount - 1; index += 1) {
+      indices.add(Math.round((index * totalSteps) / (markCount - 1)));
+    }
+  } else {
+    const interval = meaningfulStepInterval(totalSteps / Math.max(1, maximumVisible - 1));
+    for (let index = interval; index < totalSteps; index += interval) indices.add(index);
+  }
+  const formatter = new Intl.NumberFormat(locale, formatOptions);
+  return [...indices]
+    .sort((a, b) => a - b)
+    .map((index) => {
+      const value = valueAtStepIndex(index, totalSteps, domain);
+      return { label: formatter.format(value), value };
+    });
 }
 
 export function assertSliderValues(values: readonly number[], domain: SliderDomain): void {
@@ -251,6 +353,7 @@ function SliderBaseInner<T extends number | number[]>(
     form,
     formatOptions,
     id,
+    intelligentMarks = false,
     invalid,
     marks,
     maxValue = 100,
@@ -261,6 +364,7 @@ function SliderBaseInner<T extends number | number[]>(
     orientation = "horizontal",
     readOnly = false,
     readOnlyMessage: readOnlyMessageProp,
+    showValueBubbles = false,
     showOutput = true,
     step = 1,
     style,
@@ -280,7 +384,16 @@ function SliderBaseInner<T extends number | number[]>(
   const domain = resolveSliderDomain(minValue, maxValue, step);
   assertBaseProps(props, domain);
   nonEmpty(readOnlyMessageProp, "readOnlyMessage");
-  const normalizedMarks = normalizeSliderMarks(marks, domain);
+  if (intelligentMarks !== false && marks !== undefined) {
+    throw new RangeError(
+      "Mergora Slider cannot combine intelligentMarks with manual marks; set intelligentMarks to false to use marks.",
+    );
+  }
+  const intelligentMarkOptions = intelligentMarks === false ? undefined : intelligentMarks;
+  const normalizedMarks =
+    intelligentMarkOptions === undefined
+      ? normalizeSliderMarks(marks, domain)
+      : deriveIntelligentSliderMarks(domain, intelligentMarkOptions, locale, formatOptions);
   const resolvedInvalid = invalid ?? field?.invalid ?? false;
   const describedBy = mergeFieldIdRefs(
     ariaDescribedBy,
@@ -354,8 +467,12 @@ function SliderBaseInner<T extends number | number[]>(
       data-disabled={disabled || undefined}
       data-has-marks={normalizedMarks.length > 0 || undefined}
       data-invalid={resolvedInvalid || undefined}
+      data-intelligent-marks={
+        intelligentMarkOptions?.strategy ?? (intelligentMarks ? "meaningful" : undefined)
+      }
       data-orientation={orientation}
       data-readonly={readOnly || undefined}
+      data-show-value-bubbles={showValueBubbles || undefined}
       data-slot={thumbCount > 1 ? "range-slider" : "slider"}
       onKeyDownCapture={readOnly ? preventKeyboardChange : undefined}
       onMouseDownCapture={readOnly ? preventPointerChange : undefined}
@@ -419,12 +536,28 @@ function SliderBaseInner<T extends number | number[]>(
                     : {})}
                   {...(names?.[index] === undefined ? {} : { name: names[index] })}
                   className="mrg-slider-thumb"
+                  data-thumb-edge={
+                    index === 0 ? "minimum" : index === thumbCount - 1 ? "maximum" : "intermediate"
+                  }
+                  data-thumb-index={index}
                   data-slot="slider-thumb"
                   inputRef={thumbInputRefs[index]!}
                   index={index}
                   isInvalid={resolvedInvalid}
                   key={index}
-                />
+                >
+                  {!showValueBubbles
+                    ? null
+                    : ({ state }) => (
+                        <span
+                          aria-hidden="true"
+                          className="mrg-slider-value-bubble"
+                          data-slot="slider-value-bubble"
+                        >
+                          {state.getThumbValueLabel(index)}
+                        </span>
+                      )}
+                </AriaSliderThumb>
               );
             })}
             {normalizedMarks.length === 0 ? null : (

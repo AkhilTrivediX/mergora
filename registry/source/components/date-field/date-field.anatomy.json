@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-field",
+  "root": {
+    "element": "input type=date",
+    "ref": "HTMLInputElement",
+    "slot": "date-field",
+    "stableAttributes": ["data-slot", "name", "form", "required", "disabled", "readOnly"]
+  },
+  "parts": [
+    {
+      "slot": "date-field",
+      "element": "input type=date",
+      "purpose": "native date editing and successful form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-field-context",
+      "element": "optional described text",
+      "purpose": "localized full-date context",
+      "stability": "documented"
+    }
+  ]
+}

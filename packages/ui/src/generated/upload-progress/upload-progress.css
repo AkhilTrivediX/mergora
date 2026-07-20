@@ -1,0 +1,64 @@
+/* Generated from registry/source/components/upload-progress/upload-progress.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-upload-progress {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-upload-progress [data-slot="upload-progress-state"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+}
+
+.mrg-upload-progress [data-slot="upload-progress-message"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  max-inline-size: 65ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-upload-progress[data-status="error"] [data-slot="upload-progress-state"],
+.mrg-upload-progress[data-status="cancelled"] [data-slot="upload-progress-state"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-upload-progress[data-status="complete"] [data-slot="upload-progress-state"] {
+  color: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-upload-progress-announcement {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-upload-progress *,
+  .mrg-upload-progress *::before,
+  .mrg-upload-progress *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-upload-progress [data-slot="upload-progress-state"],
+  .mrg-upload-progress [data-slot="upload-progress-message"] {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-upload-progress[data-status="error"] [data-slot="upload-progress-state"],
+  .mrg-upload-progress[data-status="cancelled"] [data-slot="upload-progress-state"] {
+    color: Mark;
+  }
+
+  .mrg-upload-progress[data-status="complete"] [data-slot="upload-progress-state"] {
+    color: Highlight;
+  }
+}

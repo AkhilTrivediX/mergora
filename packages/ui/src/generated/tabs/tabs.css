@@ -1,11 +1,15 @@
 /* Generated from registry/source/components/tabs/tabs.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-tabs {
+  color: var(--mrg-component-control-foreground);
   display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
   gap: var(--mrg-semantic-space-stack-lg);
   min-inline-size: 0;
 }
 
 .mrg-tabs__list {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-component-control-border);
   display: flex;
   gap: var(--mrg-semantic-space-inline-xs);
   max-inline-size: 100%;
@@ -43,6 +47,17 @@
   padding-inline: var(--mrg-semantic-density-control-padding-inline);
   text-decoration: none;
   white-space: nowrap;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-transition) var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-tabs__tab[data-hovered]:not([data-disabled]) {
+  background: var(--mrg-component-control-background-hover);
+  color: var(--mrg-component-control-foreground);
 }
 
 .mrg-tabs[data-orientation="vertical"] .mrg-tabs__tab {
@@ -53,13 +68,17 @@
 }
 
 .mrg-tabs__tab[data-selected] {
-  border-color: var(--mrg-semantic-color-border-interactive);
-  color: var(--mrg-semantic-color-foreground-primary);
+  background: var(--mrg-component-control-background-selected);
+  border-color: var(--mrg-component-control-border-selected);
+  color: var(--mrg-component-control-foreground-selected);
 }
 
 .mrg-tabs__tab[data-focus-visible] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-tabs__tab[data-disabled] {
@@ -77,8 +96,25 @@
 }
 
 .mrg-tabs__panel[data-focus-visible] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-tabs__keyboard-hint {
+  border-inline-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-brand-violet);
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding-inline-start: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-tabs__tab {
+    transition: none;
+  }
 }
 
 @media (forced-colors: active) {
@@ -89,5 +125,10 @@
   .mrg-tabs__tab[data-focus-visible],
   .mrg-tabs__panel[data-focus-visible] {
     outline-color: Highlight;
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
+  }
+
+  .mrg-tabs__keyboard-hint {
+    border-inline-start-color: Highlight;
   }
 }

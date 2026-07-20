@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scheduler-kit",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Retain explicit Beta maturity and regenerate package/source/native/Shadcn dependency closure.",
+    "Pass DST gap/fold, leap/day/month boundary, conflict, recurrence-adapter, offline/retry, lifecycle and packed-consumer fixtures.",
+    "Complete supported-browser, visual, performance and Risk Class 3 manual assistive-technology/temporal review.",
+    "Dogfood generated public output and approve a Beta Quality Passport."
+  ]
+}

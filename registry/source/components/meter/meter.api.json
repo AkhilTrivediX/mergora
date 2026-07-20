@@ -12,6 +12,7 @@
     "A visible label wraps one native meter with finite ordered minimum, maximum, low, high, optimum, and value constraints.",
     "Visible and aria-valuetext formatting share one localized string.",
     "Role, generic accessible-name props, and aria value overrides are rejected at type and runtime boundaries because the visible label and native meter model own them.",
-    "Meter remains visually and semantically distinct from task progress."
+    "Meter remains visually and semantically distinct from task progress.",
+    "showThresholdSummary opt-in renders only configured low, high, and optimum context and adds aria-describedby; false removes the rail, formatting work, and description relationship."
   ]
 }

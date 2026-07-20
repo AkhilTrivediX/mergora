@@ -13,6 +13,7 @@
     "Verify native form submission, reset, disabled omission, read-only success, and external form association.",
     "Record horizontal, vertical, RTL, narrow, zoom, forced-colors, and coarse-pointer geometry.",
     "Complete localized unit, currency, percent, and non-Latin value-text fixtures.",
+    "Verify intelligent mark density, visual value bubbles, and complete disabled-enhancement absence across generated consumers.",
     "Publish current manual assistive-technology evidence and an approved Quality Passport."
   ]
 }

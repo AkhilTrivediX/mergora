@@ -15,7 +15,8 @@
     "escape": "Only the top layer is considered; if dismissible it receives one escape detail, otherwise lower layers remain unchanged.",
     "inert": "Every registered application root outside the top environment-managed modal is inert until the final such modal unregisters; external behavior owners may opt out without leaving the shared stack.",
     "scroll": "For environment-managed modals, the manager records scroll coordinates and every touched body style, compensates the scrollbar, and restores exact prior values. Externally managed modals do not duplicate these effects.",
-    "cleanup": "Layer, root, key listener, inert state, and scroll lock all clean up under Strict Mode; unchanged native modal ownership is not torn down for unrelated non-modal stack changes."
+    "cleanup": "Layer, root, key listener, inert state, and scroll lock all clean up under Strict Mode; unchanged native modal ownership is not torn down for unrelated non-modal stack changes.",
+    "environmentOptOut": "manageEnvironment=false omits inerting, body styles, scroll locking, and cleanup while preserving shared stack and Escape order; modal=false also omits modal membership."
   },
   "consumerResponsibilities": [
     "Portal modal layers outside LayerManager.Application so the modal is never inside an inert ancestor.",
@@ -32,6 +33,7 @@
       "non-dismissible-top",
       "inert-restore",
       "scroll-restore",
+      "environment-ownership-opt-out",
       "strict-mode-cleanup",
       "ssr",
       "hydration",

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "onboarding-wizard",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicOnboardingWizard"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedOnboardingWizard"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledOnboardingWizard"
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "OnboardingStateMatrix"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "OnboardingStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "OnboardingStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedOnboardingWizard"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "OnboardingStateMatrix"
+    },
+    {
+      "id": "reset",
+      "applicability": { "status": "applicable" },
+      "story": "OnboardingFormLifecycle"
+    },
+    { "id": "narrow", "applicability": { "status": "applicable" }, "story": "NarrowRtlOnboarding" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlOnboarding" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlOnboarding"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlOnboarding"
+    }
+  ]
+}

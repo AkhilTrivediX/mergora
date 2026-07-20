@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "emoji-picker",
+  "entryExport": "EmojiPicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "component", "name": "EmojiPicker" },
+    { "kind": "type", "name": "EmojiPickerItem" },
+    { "kind": "type", "name": "EmojiPickerMessages" },
+    { "kind": "type", "name": "EmojiPickerProps" },
+    { "kind": "type", "name": "EmojiSkinTone" },
+    { "kind": "function", "name": "filterEmojiItems" }
+  ],
+  "controlledState": [
+    {
+      "state": "selected emoji id",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    },
+    {
+      "state": "skin tone",
+      "controlled": "skinTone",
+      "uncontrolled": "defaultSkinTone",
+      "callback": "onSkinToneChange"
+    },
+    {
+      "state": "search query",
+      "controlled": "searchValue",
+      "uncontrolled": "defaultSearchValue",
+      "callback": "onSearchValueChange"
+    },
+    {
+      "state": "category filter",
+      "controlled": "category",
+      "uncontrolled": "defaultCategory",
+      "callback": "onCategoryChange"
+    }
+  ],
+  "props": [
+    { "name": "items", "required": true, "type": "readonly EmojiPickerItem[]" },
+    { "name": "searchable", "required": false, "default": false, "type": "boolean" },
+    { "name": "searchValue", "required": false, "type": "string" },
+    { "name": "defaultSearchValue", "required": false, "default": "", "type": "string" },
+    { "name": "showCategories", "required": false, "default": false, "type": "boolean" },
+    { "name": "category", "required": false, "type": "string" },
+    { "name": "defaultCategory", "required": false, "default": "", "type": "string" },
+    { "name": "showRecents", "required": false, "default": false, "type": "boolean" },
+    { "name": "showSkinToneSelector", "required": false, "default": false, "type": "boolean" },
+    { "name": "showResultSummary", "required": false, "default": false, "type": "boolean" },
+    { "name": "messages", "required": false, "type": "localizable visible and spoken strings" }
+  ],
+  "compositionPolicy": {
+    "grid": "One roving grid implements spatial arrows, row Home/End, Ctrl+Home/End, touch buttons, selected state, labels, and RTL mirroring.",
+    "enhancements": "Search, category filtering, recency ordering/events, skin tone selection/events, and result live output are independently absent unless enabled."
+  }
+}

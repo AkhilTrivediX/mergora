@@ -220,6 +220,45 @@ describe("P4 phone and masked-field registry records", () => {
 });
 
 describe("PhoneField value and form contracts", () => {
+  it("keeps canonical serialization and extension capture independently absent by default", () => {
+    const plain = renderToStaticMarkup(
+      <>
+        <PhoneField
+          adapter={phoneAdapter}
+          country={{ callingCode: "+1", code: "US", label: "United States" }}
+          defaultValue="4155552671"
+        />
+        <MaskedField adapter={maskAdapter} defaultValue="AB2048QZ" />
+      </>,
+    );
+    expect(plain).not.toContain('data-slot="phone-field-canonical-input"');
+    expect(plain).not.toContain('data-slot="phone-field-extension"');
+    expect(plain).not.toContain('data-slot="masked-field-serialized-input"');
+
+    const enhanced = renderToStaticMarkup(
+      <>
+        <PhoneField
+          adapter={phoneAdapter}
+          country={{ callingCode: "+1", code: "US", label: "United States" }}
+          defaultValue="4155552671"
+          extension
+          extensionLabel="Extension"
+          extensionName="extension"
+          name="phone"
+        />
+        <MaskedField
+          adapter={maskAdapter}
+          defaultValue="AB2048QZ"
+          name="inventory"
+          serialization="raw"
+        />
+      </>,
+    );
+    expect(enhanced).toContain('data-slot="phone-field-canonical-input"');
+    expect(enhanced).toContain('data-slot="phone-field-extension"');
+    expect(enhanced).toContain('data-slot="masked-field-serialized-input"');
+  });
+
   it("renders explicit country text, native tel semantics, canonical E.164, and extension", () => {
     const markup = renderToStaticMarkup(
       <MergoraProvider>

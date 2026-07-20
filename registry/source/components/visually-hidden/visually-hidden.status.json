@@ -8,7 +8,7 @@
   "recordedEvidence": [],
   "promotionDelta": [
     "Generate and verify package, registry, documentation, and subpath outputs.",
-    "Record focus reveal, 400% zoom, text-spacing, RTL, and forced-colors browser evidence.",
+    "Record focus-reveal opt-in/opt-out, 400% zoom, text-spacing, RTL, and forced-colors browser evidence.",
     "Pass packed Next.js and Vite consumers plus package/source parity.",
     "Complete current keyboard and desktop screen-reader manual evidence.",
     "Add Semantic Sync update and conflict fixtures and publish an approved Quality Passport."

@@ -16,9 +16,18 @@ interface VisuallyHiddenOwnProps {
 /** Valid native props follow the selected element. The default element is span. */
 export type VisuallyHiddenProps = VisuallyHiddenOwnProps &
   (
-    | ({ readonly as?: "span" } & HTMLAttributes<HTMLSpanElement>)
-    | ({ readonly as: "div" } & HTMLAttributes<HTMLDivElement>)
-    | ({ readonly as: "a" } & AnchorHTMLAttributes<HTMLAnchorElement>)
+    | ({
+        /** Selects the native span, div, or anchor contract; span is the default. */
+        readonly as?: "span";
+      } & HTMLAttributes<HTMLSpanElement>)
+    | ({
+        /** Selects the native span, div, or anchor contract; span is the default. */
+        readonly as: "div";
+      } & HTMLAttributes<HTMLDivElement>)
+    | ({
+        /** Selects the native span, div, or anchor contract; span is the default. */
+        readonly as: "a";
+      } & AnchorHTMLAttributes<HTMLAnchorElement>)
   );
 
 function joinClassNames(className: string | undefined): string {

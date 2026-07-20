@@ -12,6 +12,11 @@
       "slot": "toggle-group-item",
       "element": "button aria-pressed",
       "stability": "documented"
+    },
+    {
+      "slot": "toggle-group-summary",
+      "element": "output aria-live=polite",
+      "stability": "documented"
     }
   ]
 }

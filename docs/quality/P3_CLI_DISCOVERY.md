@@ -100,11 +100,13 @@ status remains readable.
 At this historical freeze, P3.3 transaction/provenance work had not landed. P3.3/P3.4 subsequently
 replaced compatibility `add` with reviewed multi-file transactions, immutable bases, v1 manifest
 ownership, fixed package-manager invocation, conservative recovery, exact adoption, and
-ownership-safe removal. P3.5 remains the current boundary: three-way update, conflict resolution,
-upstream refresh, migrations, and completed-transaction rollback are not claimed by the transaction
-tranche.
+ownership-safe removal. The current worktree additionally implements three-way Semantic Update,
+conflict resolution, exact upstream refresh, Shadcn and source/package migrations, completed-
+transaction rollback, enrolled-current Stable routing, and verified offline Stable vendor routing.
+The historical counts above remain freeze evidence rather than a description of current breadth;
+the full current CLI gate passes 474 tests with one intentional cleanup-policy skip.
 
-The published config-v1 schema currently requires a named `project.sourceRoot`; consequently this
-tranche rejects otherwise valid React applications whose sources live directly at the package
-root. Schema and CLI support for `"."` must land together rather than producing a config that the
-published validator rejects.
+The config-v1 schema and CLI now use the exact `"."` sentinel for React applications whose sources
+live directly at the package root. Other current-directory spellings and embedded `.` or `..`
+segments remain invalid, and generated target and global-CSS paths stay canonical without a `./`
+prefix.

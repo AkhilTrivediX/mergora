@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-center",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicCommandCenter" },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCommandCenter"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledCommandCenter"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlWorkflowKits" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    }
+  ]
+}

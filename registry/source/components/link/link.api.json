@@ -18,9 +18,21 @@
     }
   ],
   "controlledState": [],
+  "props": [
+    {
+      "default": false,
+      "name": "externalContext",
+      "required": false,
+      "type": "string | false"
+    }
+  ],
   "nativePolicy": [
     "href is required and disabled-link semantics are absent from the public type.",
     "External links receive noopener and noreferrer while preserving consumer rel tokens.",
     "Current state has text weight and decoration in addition to color."
-  ]
+  ],
+  "compositionPolicy": {
+    "familySignature": "Ink typography, Action Green underlines, and the shared Violet focus seam keep navigation in the Living Workbench family.",
+    "enhancement": "externalContext adds visible and announced new-context text only for external links; false removes the text, slot, and accessible-name contribution."
+  }
 }

@@ -29,6 +29,12 @@
       "states": []
     },
     {
+      "name": "link-external-context",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["external-context"]
+    },
+    {
       "name": "link-download-indicator",
       "semanticElement": "span",
       "refTarget": "none",

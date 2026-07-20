@@ -45,7 +45,7 @@
 
 .mrg-split-pane__handle {
   align-items: center;
-  background: var(--mrg-semantic-color-background-surface);
+  background: var(--mrg-semantic-color-background-canvas);
   display: flex;
   flex: 0 0 auto;
   gap: var(--mrg-semantic-space-inline-xs);
@@ -66,10 +66,9 @@
 
 .mrg-split-pane__separator {
   align-items: center;
-  background: var(--mrg-semantic-color-background-surface-sunken);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: var(--mrg-semantic-radius-control);
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
   box-sizing: border-box;
   cursor: col-resize;
   display: flex;
@@ -78,6 +77,11 @@
   min-block-size: var(--mrg-semantic-size-target-preferred);
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   touch-action: none;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
 }
 
 .mrg-split-pane__separator[data-orientation="vertical"] {
@@ -86,13 +90,16 @@
 
 .mrg-split-pane__separator:focus-visible,
 .mrg-split-pane__controls button:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-offset)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-split-pane__grip {
-  background: var(--mrg-semantic-color-border-strong);
-  border-radius: var(--mrg-semantic-radius-pill);
+  background: var(--mrg-semantic-color-brand-living);
+  border-radius: var(--mrg-semantic-radius-compact);
   block-size: var(--mrg-semantic-space-stack-lg);
   inline-size: var(--mrg-semantic-border-width-strong);
 }
@@ -115,23 +122,47 @@
 
 .mrg-split-pane__controls button {
   align-items: center;
-  background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: var(--mrg-semantic-radius-control);
-  color: var(--mrg-semantic-color-foreground-primary);
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
+  color: var(--mrg-component-control-foreground);
   display: inline-flex;
   font: inherit;
   justify-content: center;
   min-block-size: var(--mrg-semantic-size-target-preferred);
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   padding: 0;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-split-pane__separator:hover,
+.mrg-split-pane__controls button:hover:not(:disabled) {
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-split-pane__separator:active,
+.mrg-split-pane__controls button:active:not(:disabled) {
+  background: var(--mrg-component-control-background-pressed);
+  border-color: var(--mrg-component-control-border-active);
 }
 
 .mrg-split-pane__controls button:disabled {
-  border-color: var(--mrg-semantic-color-border-disabled);
-  color: var(--mrg-semantic-color-foreground-disabled);
+  background: var(--mrg-component-control-background-disabled);
+  border-color: var(--mrg-component-control-border-disabled);
+  color: var(--mrg-component-control-foreground-disabled);
   cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-split-pane__separator,
+  .mrg-split-pane__controls button {
+    transition-duration: var(--mrg-semantic-motion-duration-reduced);
+  }
 }
 
 .mrg-split-pane[data-disabled="true"] .mrg-split-pane__separator {
@@ -165,6 +196,7 @@
 
   .mrg-split-pane__separator:focus-visible,
   .mrg-split-pane__controls button:focus-visible {
+    box-shadow: none;
     outline-color: Highlight;
   }
 

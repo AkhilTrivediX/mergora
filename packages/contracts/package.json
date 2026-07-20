@@ -3,6 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "description": "Versioned declarative Mergora quality contracts and deterministic audit runtime",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/contracts"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
   "type": "module",
   "sideEffects": false,
   "exports": {

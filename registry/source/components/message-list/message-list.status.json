@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message-list",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate all distribution surfaces and prove parity.",
+    "Pass large-list performance, follow/output, user-scroll, announcement, packed-consumer, browser and visual gates.",
+    "Record desktop/mobile screen-reader, touch, keyboard, zoom, RTL and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

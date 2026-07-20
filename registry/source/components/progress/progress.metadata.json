@@ -8,7 +8,14 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["default", "loading", "populated", "partial"],
+  "stateGroups": [
+    "default",
+    "loading",
+    "populated",
+    "partial",
+    "plain-baseline",
+    "recommended-mergora"
+  ],
   "slots": [
     {
       "name": "progress",
@@ -21,6 +28,12 @@
       "semanticElement": "span",
       "refTarget": "HTMLSpanElement",
       "states": []
+    },
+    {
+      "name": "progress-value",
+      "semanticElement": "optional visible localized value",
+      "refTarget": "HTMLSpanElement",
+      "states": ["visible", "absent"]
     },
     {
       "name": "progress-track",

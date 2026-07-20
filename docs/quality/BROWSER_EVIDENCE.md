@@ -1,10 +1,70 @@
-# P1 browser evidence runner
+# Browser evidence
+
+- Updated: 2026-07-20T06:08:04Z
+
+## Full local browser-command result
+
+The current `pnpm test:browser` command completed without failures:
+
+| Scope             | Scheduled | Passed | Intentional platform skips | Failed |
+| ----------------- | --------: | -----: | -------------------------: | -----: |
+| Root tracer       |        36 |     34 |                          2 |      0 |
+| Component catalog |       909 |    907 |                          2 |      0 |
+| Diagnostics       |         1 |      1 |                          0 |      0 |
+| Website export    |        48 |     46 |                          2 |      0 |
+
+The root and website skips are the intentional Firefox/WebKit forced-colors cases. The component
+skips are the Firefox/WebKit instances of the Chromium-only mobile-touch-emulation case. There are
+no missing-browser, quarantine, retry-exhaustion, or failure-derived skips.
+
+## Full component-catalog aggregate
+
+The integrated component Playwright run completed on 2026-07-20 against the active worktree:
+
+| Configuration                           | Scheduled | Passed | Intentional platform skips | Failed |
+| --------------------------------------- | --------: | -----: | -------------------------: | -----: |
+| `tests/components/playwright.config.ts` |       909 |    907 |                          2 |      0 |
+
+The aggregate runs Chromium, Firefox, and WebKit. Both skips are the Firefox and WebKit instances
+of the same data-display mobile-touch case; the test explicitly uses Playwright mobile device/touch
+emulation that is supported only in Chromium. There are no quarantine, missing-browser,
+failure-derived, or retry-exhaustion skips. The aggregate covers the catalog family fixtures and
+their Basic/Recommended, keyboard, semantic, axe, narrow, RTL, forced-colors, reduced-motion, and
+touch-relevant assertions as defined by each fixture.
+
+This result is current local automated evidence. It is not an immutable exact-commit CI artifact,
+a real-device run, a screen-reader session, or a reviewed visual baseline. Those remain independent
+release requirements.
+
+## Website static-export aggregate
+
+The current production-export website suite completed on 2026-07-20:
+
+| Configuration                    | Scheduled | Passed | Intentional platform skips | Failed |
+| -------------------------------- | --------: | -----: | -------------------------: | -----: |
+| `tests/web/playwright.config.ts` |        48 |     46 |                          2 |      0 |
+
+Both skips are the Firefox and WebKit instances of the Chromium-only forced-colors emulation case.
+The suite keeps strict console, page-error, failed-request, and failing-response collection without
+filters. Embedded Quality Lab frames must enter the lazy-load viewport, commit the requested URL,
+finish the pinned Storybook render, and reach network idle. Specimen Reset waits for the pinned
+preview, exposes pending and disabled semantics, resets args, and remounts in place; Firefox stress
+evidence passes five of five. This remains local active-worktree evidence until the same result is
+attached to an exact CI commit.
+
+The browser run uses the forced 21-workspace `/mergora` production build. Storybook and all 956
+static pages build, Quality Lab assembly completes, and the static-export verifier validates 4,259
+text artifacts. The sitemap verifier's XML-declaration fix has six passing regression tests. The
+separate six-route Lighthouse run scores 95-96 for performance and 100 for accessibility, best
+practices, and SEO on every route.
+
+## P1 tracer runner
 
 The P1 runner exercises the canonical Button, Dialog, Combobox, and constrained Data Grid tracer in
 real Playwright browsers. It records reproducible automated facts; it does not promote an item to
 Stable, replace manual assistive-technology review, or claim WCAG conformance.
 
-## Commands
+### Commands
 
 ```bash
 pnpm test:browser
@@ -18,14 +78,14 @@ pnpm test:visual
 token build failure, missing font, page or console error, failed resource, invalid evidence shape,
 or failed assertion exits non-zero. Console errors and warnings are both treated as fixture failures.
 
-## Current P1 qualification
+### Last recorded P1 qualification
 
-The current suite shape produces these exact results on the pinned local toolchain:
+The last recorded P1-only suite run produced these exact results on the pinned local toolchain:
 
 | Command             | Scheduled | Passed | Explicit policy skips |
 | ------------------- | --------: | -----: | --------------------: |
-| `pnpm test:browser` |        36 |     32 |                     4 |
-| `pnpm test:a11y`    |        12 |     10 |                     2 |
+| `pnpm test:browser` |        36 |     34 |                     2 |
+| `pnpm test:a11y`    |        12 |     12 |                     0 |
 | `pnpm test:visual`  |        18 |     16 |                     2 |
 
 Every policy skip is a Firefox or WebKit instance of a Chromium-only forced-colors test. There are
@@ -38,7 +98,7 @@ shape rather than a test-only token copy. Component implementations come directl
 The load gate explicitly requests both self-hosted families, verifies their WOFF2 resource entries
 and `FontFaceSet` status, and lets each engine's font-decoder warning fail the run.
 
-## What is exercised
+### What is exercised
 
 | Area            | Current automated evidence                                                                                                                                                              |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -53,7 +113,7 @@ and `FontFaceSet` status, and lets each engine's font-decoder warning fail the r
 The fixture uses prepared data and performs no network request beyond its local Vite origin. It has
 no clock, randomness, animation-dependent content, or screenshot mask.
 
-## Evidence artifacts
+### Evidence artifacts
 
 Local runs write ignored artifacts beneath `artifacts/browser-evidence/`:
 
@@ -69,7 +129,7 @@ trace, and screenshots live under `artifacts/browser/`. CI must publish these di
 immutable run artifact before a Quality Passport may link to them; a local path is not public
 release evidence.
 
-## Honest boundaries
+### Honest boundaries
 
 - Same-run byte equality is a deterministic capture smoke check, not a reviewed visual regression
   baseline. Baseline approval, narrow diffs, ownership, and expiry policy still have to be wired to

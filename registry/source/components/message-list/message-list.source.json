@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./message-list.css", "react"],
+  "entryPath": "registry/source/components/message-list/message-list.tsx",
+  "id": "message-list",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

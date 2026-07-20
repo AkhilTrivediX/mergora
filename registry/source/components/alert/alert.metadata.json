@@ -8,7 +8,14 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["default", "success", "warning", "error"],
+  "stateGroups": [
+    "default",
+    "success",
+    "warning",
+    "error",
+    "plain-baseline",
+    "recommended-mergora"
+  ],
   "slots": [
     {
       "name": "alert",

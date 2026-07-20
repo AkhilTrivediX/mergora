@@ -12,7 +12,9 @@ import {
   type Updater,
 } from "@tanstack/react-table";
 import {
+  Fragment,
   forwardRef,
+  isValidElement,
   useId,
   useMemo,
   useState,
@@ -27,50 +29,174 @@ export type DataGridSelectionMode = "none" | "single";
 export type DataGridSortDirection = "ascending" | "descending";
 
 export interface DataGridSorting {
+  /** Identifies the sortable column controlling the current row order. */
   readonly columnId: string;
+  /** Selects ascending or descending order for the active sort column. */
   readonly direction: DataGridSortDirection;
 }
 
 export interface DataGridColumn<TData extends object> {
+  /** Provides the stable TanStack column identifier used by sorting state. */
   readonly id: string;
+  /** Renders the visible and accessible native column header content. */
   readonly header: ReactNode;
+  /** Returns the canonical value used by default cells and sorting. */
   readonly accessor: (row: TData) => unknown;
+  /** Replaces default value formatting with consumer-owned cell content. */
   readonly cell?: (value: unknown, row: TData) => ReactNode;
+  /** Enables native header-button sorting for this individual column. */
   readonly sortable?: boolean;
+  /** Aligns header and body cells using logical start, center, or end. */
   readonly alignment?: DataGridColumnAlignment;
+  /** Applies a consumer-supplied column width to the native column definition. */
   readonly width?: string;
 }
 
 export interface DataGridSelectionChangeDetail {
+  /** Identifies the native radio control as the row-selection cause. */
   readonly reason: "radio";
 }
 
 export interface DataGridSortingChangeDetail {
+  /** Identifies the sortable column header as the ordering-change cause. */
   readonly reason: "header";
 }
 
-export interface DataGridProps<TData extends object> extends Omit<
+interface DataGridCommonProps<TData extends object> extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "onChange"
 > {
+  /** Supplies canonical rows without allowing the grid to mutate consumer data. */
   readonly rows: readonly TData[];
+  /** Defines native headers, accessors, optional cells, alignment, widths, and sorting. */
   readonly columns: readonly DataGridColumn<TData>[];
+  /** Returns a non-empty stable row identity used by rendering and selection. */
   readonly getRowId: (row: TData) => string;
+  /** Provides the native table caption and primary accessible table name. */
   readonly caption: string;
+  /** Optionally names the surrounding horizontally scrollable region. */
   readonly regionLabel?: string;
-  readonly selectionMode?: DataGridSelectionMode;
-  readonly selectedRowId?: string | null;
-  readonly defaultSelectedRowId?: string | null;
+  /** Replaces default empty-table content while retaining native table structure. */
+  readonly emptyContent?: ReactNode;
+  /** Styles the outer scroll region without replacing table semantics. */
+  readonly className?: string;
+}
+
+interface DataGridSelectionDisabledProps {
+  /** Controls row selection; none removes radio controls, summaries, and selection callbacks. */
+  readonly selectionMode?: "none";
+  /** Controls selection only in single-selection mode and is excluded when selection is disabled. */
+  readonly selectedRowId?: never;
+  /** Initializes uncontrolled selection and is excluded when selection is disabled. */
+  readonly defaultSelectedRowId?: never;
+  /** Reports radio selection and is excluded when selection is disabled. */
+  readonly onSelectedRowIdChange?: never;
+  /** Provides row labels for selection and is excluded when selection is disabled. */
+  readonly getRowLabel?: never;
+  /** Renders optional selection context and is excluded when selection is disabled. */
+  readonly renderSelectionSummary?: never;
+}
+
+interface DataGridSingleSelectionBase<TData extends object> {
+  /** Controls row selection; none removes radio controls, summaries, and selection callbacks. */
+  readonly selectionMode: "single";
+  /** Reports radio selection and is excluded when selection is disabled. */
   readonly onSelectedRowIdChange?: (rowId: string, detail: DataGridSelectionChangeDetail) => void;
+  /** Provides row labels for selection and is excluded when selection is disabled. */
   readonly getRowLabel?: (row: TData) => string;
-  readonly sorting?: DataGridSorting | null;
-  readonly defaultSorting?: DataGridSorting | null;
+  /** Renders optional selection context and is excluded when selection is disabled. */
+  readonly renderSelectionSummary?: (selectedRow: TData | null) => ReactNode;
+}
+
+interface DataGridControlledSingleSelectionProps<
+  TData extends object,
+> extends DataGridSingleSelectionBase<TData> {
+  /** Controls selection only in single-selection mode and is excluded when selection is disabled. */
+  readonly selectedRowId: string | null;
+  /** Initializes uncontrolled selection and is excluded when selection is disabled. */
+  readonly defaultSelectedRowId?: never;
+}
+
+interface DataGridUncontrolledSingleSelectionProps<
+  TData extends object,
+> extends DataGridSingleSelectionBase<TData> {
+  /** Controls selection only in single-selection mode and is excluded when selection is disabled. */
+  readonly selectedRowId?: never;
+  /** Initializes uncontrolled selection and is excluded when selection is disabled. */
+  readonly defaultSelectedRowId?: string | null;
+}
+
+export type DataGridSelectionProps<TData extends object> =
+  | DataGridSelectionDisabledProps
+  | DataGridControlledSingleSelectionProps<TData>
+  | DataGridUncontrolledSingleSelectionProps<TData>;
+
+interface DataGridControlledSortingProps {
+  /** Controls the active sort column and direction, with null representing source order. */
+  readonly sorting: DataGridSorting | null;
+  /** Initializes uncontrolled sorting and is excluded when sorting is controlled. */
+  readonly defaultSorting?: never;
+  /** Reports sortable-header changes without mutating canonical rows. */
   readonly onSortingChange?: (
     sorting: DataGridSorting | null,
     detail: DataGridSortingChangeDetail,
   ) => void;
-  readonly emptyContent?: ReactNode;
-  readonly className?: string;
+}
+
+interface DataGridUncontrolledSortingProps {
+  /** Controls the active sort column and direction, with null representing source order. */
+  readonly sorting?: never;
+  /** Initializes uncontrolled sorting and is excluded when sorting is controlled. */
+  readonly defaultSorting?: DataGridSorting | null;
+  /** Reports sortable-header changes without mutating canonical rows. */
+  readonly onSortingChange?: (
+    sorting: DataGridSorting | null,
+    detail: DataGridSortingChangeDetail,
+  ) => void;
+}
+
+export type DataGridSortingProps =
+  DataGridControlledSortingProps | DataGridUncontrolledSortingProps;
+
+/**
+ * Runtime component props. Use DataGridSelectionProps and DataGridSortingProps when composing
+ * typed adapter props; untyped/spread call sites receive the same invariants from the runtime
+ * configuration guard before any selection renderer, callback, or state is consumed.
+ */
+export interface DataGridProps<TData extends object> extends DataGridCommonProps<TData> {
+  /** Controls row selection; none removes radio controls, summaries, and selection callbacks. */
+  readonly selectionMode?: DataGridSelectionMode;
+  /** Controls selection only in single-selection mode and is excluded when selection is disabled. */
+  readonly selectedRowId?: string | null;
+  /** Initializes uncontrolled selection and is excluded when selection is disabled. */
+  readonly defaultSelectedRowId?: string | null;
+  /** Reports radio selection and is excluded when selection is disabled. */
+  readonly onSelectedRowIdChange?: (rowId: string, detail: DataGridSelectionChangeDetail) => void;
+  /** Provides row labels for selection and is excluded when selection is disabled. */
+  readonly getRowLabel?: (row: TData) => string;
+  /** Renders optional selection context and is excluded when selection is disabled. */
+  readonly renderSelectionSummary?: (selectedRow: TData | null) => ReactNode;
+  /** Controls the active sort column and direction, with null representing source order. */
+  readonly sorting?: DataGridSorting | null;
+  /** Initializes uncontrolled sorting and is excluded when sorting is controlled. */
+  readonly defaultSorting?: DataGridSorting | null;
+  /** Reports sortable-header changes without mutating canonical rows. */
+  readonly onSortingChange?: (
+    sorting: DataGridSorting | null,
+    detail: DataGridSortingChangeDetail,
+  ) => void;
+}
+
+/** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
+export function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
 }
 
 function classes(...values: readonly (string | undefined | false)[]): string {
@@ -110,8 +236,46 @@ function sameSorting(left: DataGridSorting | null, right: DataGridSorting | null
   );
 }
 
+const selectionOnlyKeys = [
+  "selectedRowId",
+  "defaultSelectedRowId",
+  "onSelectedRowIdChange",
+  "getRowLabel",
+  "renderSelectionSummary",
+] as const;
+
+/** @internal Runtime guard for untyped JavaScript and spread-prop call sites. */
+export function assertDataGridConfiguration(props: Readonly<Record<string, unknown>>): void {
+  const selectionMode = props.selectionMode ?? "none";
+  if (selectionMode !== "none" && selectionMode !== "single") {
+    throw new RangeError('Mergora DataGrid selectionMode must be "none" or "single".');
+  }
+  if (selectionMode === "none") {
+    const conflictingKey = selectionOnlyKeys.find((key) => Object.hasOwn(props, key));
+    if (conflictingKey !== undefined) {
+      throw new Error(
+        `Mergora DataGrid ${conflictingKey} requires selectionMode="single"; selectionMode="none" owns no selection state, callbacks, or accessibility output.`,
+      );
+    }
+  } else if (
+    Object.hasOwn(props, "selectedRowId") &&
+    Object.hasOwn(props, "defaultSelectedRowId")
+  ) {
+    throw new Error(
+      "Mergora DataGrid controlled selection cannot be combined with defaultSelectedRowId.",
+    );
+  }
+  if (Object.hasOwn(props, "sorting") && Object.hasOwn(props, "defaultSorting")) {
+    throw new Error("Mergora DataGrid controlled sorting cannot be combined with defaultSorting.");
+  }
+}
+
 function DataGridInner<TData extends object>(
-  {
+  props: DataGridProps<TData>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+): ReactElement {
+  assertDataGridConfiguration(props as unknown as Readonly<Record<string, unknown>>);
+  const {
     rows,
     columns,
     getRowId,
@@ -122,18 +286,17 @@ function DataGridInner<TData extends object>(
     defaultSelectedRowId = null,
     onSelectedRowIdChange,
     getRowLabel,
+    renderSelectionSummary,
     sorting,
     defaultSorting = null,
     onSortingChange,
     emptyContent = "No rows",
     className,
     ...regionProps
-  }: DataGridProps<TData>,
-  ref: React.ForwardedRef<HTMLDivElement>,
-): ReactElement {
+  } = props;
   const radioName = useId();
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
-    defaultSelectedRowId,
+    selectionMode === "single" ? defaultSelectedRowId : null,
   );
   const [uncontrolledSorting, setUncontrolledSorting] = useState<DataGridSorting | null>(
     defaultSorting,
@@ -181,6 +344,15 @@ function DataGridInner<TData extends object>(
   const visibleRows = table.getRowModel().rows;
   const visibleColumns = table.getVisibleLeafColumns();
   const columnCount = visibleColumns.length + (selectionMode === "single" ? 1 : 0);
+  const selectionSummary =
+    selectionMode === "single" && renderSelectionSummary !== undefined
+      ? renderSelectionSummary(
+          currentSelection === null
+            ? null
+            : (data.find((row) => getRowId(row) === currentSelection) ?? null),
+        )
+      : undefined;
+  const hasSelectionSummary = hasAccessibleContent(selectionSummary);
 
   return (
     <div
@@ -291,6 +463,15 @@ function DataGridInner<TData extends object>(
           )}
         </tbody>
       </table>
+      {hasSelectionSummary ? (
+        <output
+          aria-live="polite"
+          className="mrg-data-grid__selection-summary"
+          data-slot="data-grid-selection-summary"
+        >
+          {selectionSummary}
+        </output>
+      ) : null}
     </div>
   );
 }

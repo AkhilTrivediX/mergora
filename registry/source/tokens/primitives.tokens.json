@@ -109,9 +109,9 @@
       "size": {
         "$type": "dimension",
         "xs": { "$value": { "value": 12, "unit": "px" } },
-        "sm": { "$value": { "value": 13, "unit": "px" } },
-        "md": { "$value": { "value": 15, "unit": "px" } },
-        "lg": { "$value": { "value": 17, "unit": "px" } },
+        "sm": { "$value": { "value": 14, "unit": "px" } },
+        "md": { "$value": { "value": 16, "unit": "px" } },
+        "lg": { "$value": { "value": 18, "unit": "px" } },
         "xl": { "$value": { "value": 20, "unit": "px" } },
         "2xl": { "$value": { "value": 25, "unit": "px" } },
         "3xl": { "$value": { "value": 32, "unit": "px" } },
@@ -140,7 +140,7 @@
               "Arial",
               "sans-serif"
             ],
-            "fontSize": { "value": 15, "unit": "px" },
+            "fontSize": { "value": 16, "unit": "px" },
             "fontWeight": 400,
             "letterSpacing": { "value": 0, "unit": "px" },
             "lineHeight": 1.55
@@ -169,7 +169,7 @@
               "Consolas",
               "monospace"
             ],
-            "fontSize": { "value": 13, "unit": "px" },
+            "fontSize": { "value": 14, "unit": "px" },
             "fontWeight": 450,
             "letterSpacing": { "value": 0.1, "unit": "px" },
             "lineHeight": 1.6
@@ -215,14 +215,19 @@
       "md": { "$value": { "value": 6, "unit": "px" } },
       "lg": { "$value": { "value": 8, "unit": "px" } },
       "xl": { "$value": { "value": 12, "unit": "px" } },
-      "full": { "$value": { "value": 999, "unit": "px" } }
+      "2xl": { "$value": { "value": 16, "unit": "px" } },
+      "full": {
+        "$description": "Legacy full-radius alias deliberately capped at the Mergora 16px ceiling.",
+        "$value": { "value": 16, "unit": "px" }
+      }
     },
     "border": {
       "width": {
         "$type": "dimension",
         "default": { "$value": { "value": 1, "unit": "px" } },
         "strong": { "$value": { "value": 2, "unit": "px" } },
-        "focus": { "$value": { "value": 2, "unit": "px" } }
+        "focus": { "$value": { "value": 2, "unit": "px" } },
+        "emphasis": { "$value": { "value": 3, "unit": "px" } }
       },
       "example": {
         "$type": "border",
@@ -259,7 +264,7 @@
             "color": { "colorSpace": "oklch", "components": [0.18, 0.018, 150], "alpha": 0.12 },
             "offsetX": { "value": 0, "unit": "px" },
             "offsetY": { "value": 4, "unit": "px" },
-            "blur": { "value": 12, "unit": "px" },
+            "blur": { "value": 8, "unit": "px" },
             "spread": { "value": -2, "unit": "px" }
           },
           {
@@ -275,9 +280,9 @@
         "$value": {
           "color": { "colorSpace": "oklch", "components": [0.12, 0.018, 150], "alpha": 0.2 },
           "offsetX": { "value": 0, "unit": "px" },
-          "offsetY": { "value": 12, "unit": "px" },
-          "blur": { "value": 32, "unit": "px" },
-          "spread": { "value": -8, "unit": "px" }
+          "offsetY": { "value": 6, "unit": "px" },
+          "blur": { "value": 8, "unit": "px" },
+          "spread": { "value": -2, "unit": "px" }
         }
       }
     },
@@ -302,6 +307,7 @@
     "duration": {
       "$type": "duration",
       "instant": { "$value": { "value": 0, "unit": "ms" } },
+      "reduced": { "$value": { "value": 1, "unit": "ms" } },
       "fast": { "$value": { "value": 80, "unit": "ms" } },
       "normal": { "$value": { "value": 160, "unit": "ms" } },
       "slow": { "$value": { "value": 240, "unit": "ms" } },

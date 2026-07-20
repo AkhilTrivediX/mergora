@@ -41,7 +41,8 @@
     "controlled": "value owns layout; onValueChange reports proposals and onValueCommit reports discrete or completed pointer changes.",
     "uncontrolled": "defaultValue owns initial layout and an optional persistence adapter restores after hydration.",
     "persistence": "The synchronous adapter is called only in an effect or on committed client interactions; read/write errors are routed to onPersistenceError and never occur during SSR.",
-    "collapse": "Collapsed panels are absent from desktop layout and accessibility exposure, but reappear in narrow sequential mode so a hidden handle cannot strand their content."
+    "collapse": "Collapsed panels are absent from desktop layout and accessibility exposure, but reappear in narrow sequential mode so a hidden handle cannot strand their content.",
+    "stepControls": "showStepControls=false omits every adjacent button group, event, label, and accessibility node while preserving each separator."
   },
   "responsive": {
     "containerQuery": "stackAt=narrow switches the layout child at a 36rem root container, not a viewport breakpoint.",

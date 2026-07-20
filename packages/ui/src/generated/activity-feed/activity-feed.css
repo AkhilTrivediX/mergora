@@ -1,0 +1,126 @@
+/* Generated from registry/source/components/activity-feed/activity-feed.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-activity-feed {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-activity-feed__list {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mrg-activity-feed__event {
+    display: grid;
+    grid-template-columns: var(--mrg-semantic-size-icon-sm) minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-inline-md);
+    padding-block: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+  .mrg-activity-feed__mark {
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    margin-block-start: var(--mrg-semantic-space-inset-xs);
+    border: var(--mrg-semantic-border-width-emphasis) solid var(--mrg-semantic-color-brand-action);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-canvas);
+  }
+  .mrg-activity-feed__action {
+    overflow-wrap: anywhere;
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+  .mrg-activity-feed time {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-activity-feed__context {
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-activity-feed__loading,
+  .mrg-activity-feed__error,
+  .mrg-activity-feed__summary {
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-compact);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-activity-feed__loading {
+    color: var(--mrg-semantic-color-status-loading-foreground);
+    background: var(--mrg-semantic-color-status-loading-background);
+  }
+  .mrg-activity-feed__error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+  .mrg-activity-feed__summary {
+    border-color: var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    background: var(--mrg-semantic-color-status-info-background);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-activity-feed__more,
+  .mrg-activity-feed__error button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+  .mrg-activity-feed :is(button):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  .mrg-activity-feed__empty {
+    padding-block: var(--mrg-semantic-space-stack-lg);
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center;
+  }
+  @media (pointer: coarse) {
+    .mrg-activity-feed__more,
+    .mrg-activity-feed__error button {
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-activity-feed {
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-activity-feed__event {
+      border-color: CanvasText;
+    }
+    .mrg-activity-feed__mark,
+    .mrg-activity-feed__loading,
+    .mrg-activity-feed__error,
+    .mrg-activity-feed__summary,
+    .mrg-activity-feed__more,
+    .mrg-activity-feed__error button {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-activity-feed :is(button):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

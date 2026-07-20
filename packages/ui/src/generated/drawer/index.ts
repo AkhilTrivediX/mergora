@@ -1,0 +1,28 @@
+// Generated from registry/source/components/drawer/index.ts by @mergora-internal/source-transformer. Do not edit.
+export {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerRoot,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./drawer.js";
+export type {
+  DrawerCloseProps,
+  DrawerContentProps,
+  DrawerDescriptionProps,
+  DrawerFooterProps,
+  DrawerHeaderProps,
+  DrawerOpenChangeDetails,
+  DrawerOpenChangeReason,
+  DrawerOverlayProps,
+  DrawerRootProps,
+  DrawerSide,
+  DrawerSize,
+  DrawerTitleProps,
+  DrawerTriggerProps,
+} from "./drawer.js";

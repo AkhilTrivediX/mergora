@@ -1,0 +1,119 @@
+/* Generated from registry/source/components/year-picker/year-picker.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-year-picker {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-year-picker-control {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  padding: var(--mrg-semantic-density-control-padding-block)
+    var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-year-picker-control:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-year-picker-control:invalid {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-year-picker [data-slot="year-picker-range"] {
+  border-inline-start: var(--mrg-semantic-border-width-emphasis) solid
+    var(--mrg-semantic-color-brand-violet);
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding-inline-start: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-year-picker [data-slot="year-picker-window"] {
+  align-items: center;
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-sm);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.mrg-year-picker [data-slot="year-picker-window"] button {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: inherit;
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: var(--mrg-semantic-size-target-minimum);
+}
+
+.mrg-year-picker [data-slot="year-picker-window"] button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-year-picker [data-slot="year-picker-window-label"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-align: center;
+}
+
+@media (pointer: coarse) {
+  .mrg-year-picker-control {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+
+  .mrg-year-picker [data-slot="year-picker-window"] button {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-year-picker-control {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-year-picker-control:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-year-picker [data-slot="year-picker-range"] {
+    border-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-year-picker [data-slot="year-picker-window"] button {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mrg-year-picker [data-slot="year-picker-window"] button:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-year-picker [data-slot="year-picker-window-label"] {
+    color: CanvasText;
+  }
+}

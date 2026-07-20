@@ -22,11 +22,14 @@
       "default": 2,
       "type": "maximum displayed percentage fraction digits"
     },
-    { "name": "formatOptions", "required": false, "type": "non-style Intl.NumberFormatOptions" }
+    { "name": "formatOptions", "required": false, "type": "non-style Intl.NumberFormatOptions" },
+    { "name": "showCanonicalPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "statusRail", "required": false, "default": false, "type": "false | auto" }
   ],
   "compositionPolicy": {
     "scale": "The canonical value is always a fraction: 1 is 100%, 0.125 is 12.5%, and -0.2 is -20% when permitted by bounds.",
     "value": "JavaScript and hidden form values use the fraction; only the visible percentage is localized and scaled by Intl.",
-    "bounds": "The 0-to-1 default range is a convenience and can be explicitly extended for growth, variance, or signed-rate domains."
+    "bounds": "The 0-to-1 default range is a convenience and can be explicitly extended for growth, variance, or signed-rate domains.",
+    "enhancements": "showCanonicalPreview makes the fractional storage value explicit while statusRail=auto exposes localized percent bounds; both disappear completely when disabled."
   }
 }

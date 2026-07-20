@@ -10,6 +10,13 @@
   "parts": [
     { "slot": "meter-label", "element": "span", "stability": "documented" },
     { "slot": "meter-value", "element": "span", "stability": "documented" },
+    {
+      "slot": "meter-thresholds",
+      "element": "optional aria-describedby threshold summary",
+      "stability": "documented"
+    },
+    { "slot": "meter-threshold", "element": "span", "stability": "documented" },
+    { "slot": "meter-threshold-label", "element": "span", "stability": "documented" },
     { "slot": "meter-track", "element": "meter", "stability": "documented" }
   ]
 }

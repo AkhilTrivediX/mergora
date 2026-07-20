@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./autocomplete.css", "react"],
+  "entryPath": "registry/source/components/autocomplete/autocomplete.tsx",
+  "id": "autocomplete",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

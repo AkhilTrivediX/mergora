@@ -10,6 +10,8 @@ A native clipboard action with an explicit fallback and persistent success or re
 - Status remains present until the next attempt and focus stays on the native button.
 - The fallback removes its temporary textarea in a `finally` path after success, false returns, or thrown browser errors.
 
+Persistent Green success, Violet loading, and danger rejection rails reuse the Mergora status language without moving focus. `allowFallback` defaults to `true`; set it to `false` to remove the temporary-textarea recovery path while retaining explicit visible and announced failure feedback.
+
 The public ref resolves to `HTMLButtonElement`. Stable source styling starts at `data-slot="copy-button"`; documented child slots are recorded in `copy-button.anatomy.json`. User-facing labels and status messages resolve through the stable `copyButton.copy`, `copyButton.copying`, `copyButton.copied`, and `copyButton.error` provider message keys. Explicit label props take precedence.
 
 ## Source records

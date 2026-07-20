@@ -10,6 +10,8 @@ A real anchor for navigation with current, external, download, and standalone ta
 - Every resolved `target="_blank"` link receives `noopener noreferrer` while preserving consumer rel tokens. `noreferrer` is intentional privacy hardening and implies `noopener` in current browsers; both tokens remain explicit for auditability.
 - Current state has text weight and decoration in addition to color.
 
+Ink typography, Action Green underline, and the Violet two-layer focus seam form the Mergora signature. `externalContext` can add visible and announced text such as `"New tab"` alongside the safely hardened external link. `externalContext={false}` removes that text, slot, and accessible-name contribution completely.
+
 The public ref resolves to `HTMLAnchorElement`. Stable source styling starts at `data-slot="link"`; documented child slots are recorded in `link.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

@@ -42,6 +42,7 @@ export type CollectionChangeValue<M extends CollectionSelectionMode> = M extends
   : CollectionKey[];
 
 export interface CollectionItem<T = unknown> {
+  /** Optional discriminator; omitted entries are treated as individual items. */
   readonly type?: "item";
   /** Stable identity and canonical form value. String and number spellings may not collide. */
   readonly key: CollectionKey;
@@ -49,16 +50,24 @@ export interface CollectionItem<T = unknown> {
   readonly textValue: string;
   /** Rich enhanced-mode rendering. Native Select intentionally uses textValue instead. */
   readonly label?: ReactNode;
+  /** Optional supporting content announced with the item's accessible label. */
   readonly description?: ReactNode;
+  /** Removes the item from selection and keyboard activation. */
   readonly disabled?: boolean;
+  /** Consumer-owned model retained with this collection item. */
   readonly value?: T;
 }
 
 export interface CollectionSection<T = unknown> {
+  /** Required discriminator identifying this entry as a grouped section. */
   readonly type: "section";
+  /** Stable section identity that must not collide with item or section keys. */
   readonly key: CollectionKey;
+  /** Plain localized section text used for validation and accessible fallbacks. */
   readonly textValue: string;
+  /** Rich visible section heading; defaults to textValue. */
   readonly label?: ReactNode;
+  /** Ordered selectable items contained in this section. */
   readonly items: readonly CollectionItem<T>[];
 }
 
@@ -67,35 +76,51 @@ export type CollectionEntry<T = unknown> = CollectionItem<T> | CollectionSection
 export interface CollectionVirtualizationOptions {
   /** Estimated pixel size only; measured content remains authoritative. */
   readonly estimatedItemSize?: number;
+  /** Estimated section-heading size; measured content remains authoritative. */
   readonly estimatedSectionHeaderSize?: number;
 }
 
 export type CollectionAsyncStatus = "idle" | "loading" | "loading-more" | "error";
 
 export interface CollectionAsyncState {
+  /** Current remote-loading lifecycle state rendered by the collection. */
   readonly status: CollectionAsyncStatus;
+  /** Localized recovery message required while status is error. */
   readonly errorMessage?: string;
+  /** Whether another page is available and the load-more control should render. */
   readonly hasMore?: boolean;
+  /** Recovery callback required by the rendered error state. */
   readonly onRetry?: () => void;
+  /** Requests another page when hasMore renders the load-more control. */
   readonly onLoadMore?: () => void;
 }
 
 export interface CollectionMessages {
+  /** Localized content shown when the materialized collection is empty. */
   readonly empty: string;
+  /** Localized content shown while the initial collection request is pending. */
   readonly loading: string;
+  /** Localized label shown while an additional page is pending. */
   readonly loadingMore: string;
+  /** Localized action label used to request an additional page. */
   readonly loadMore: string;
+  /** Localized action label used to retry a failed request. */
   readonly retry: string;
 }
 
 export interface CollectionSelectionSummaryContext {
+  /** Complete number of currently selected entries. */
   readonly count: number;
+  /** Active Mergora locale used for list and number formatting. */
   readonly locale: string;
+  /** Bounded ordered text values available to the summary formatter. */
   readonly visibleTextValues: readonly string[];
+  /** Number of selected entries omitted from visibleTextValues. */
   readonly omittedCount: number;
 }
 
 export interface CollectionPage<T = unknown> {
+  /** Materialized entries returned for this page in their display order. */
   readonly entries: readonly CollectionEntry<T>[];
   /** Null means the complete remote collection has been loaded. */
   readonly cursor: string | null;
@@ -104,26 +129,41 @@ export interface CollectionPage<T = unknown> {
 export type CollectionLoadReason = "initial" | "retry" | "load-more";
 
 export interface CollectionLoadContext {
+  /** Cursor to request, or null for the first page or full reload. */
   readonly cursor: string | null;
+  /** Initial, retry, or load-more operation that initiated this request. */
   readonly reason: CollectionLoadReason;
+  /** Monotonically increasing identity for suppressing stale request results. */
   readonly requestId: number;
+  /** Abort signal cancelled when this request is replaced or the hook unmounts. */
   readonly signal: AbortSignal;
 }
 
 export interface UseCollectionLoaderOptions<T = unknown> {
+  /** Consumer-owned asynchronous page loader receiving cursor, reason, request identity, and signal. */
   readonly load: (context: CollectionLoadContext) => Promise<CollectionPage<T>>;
+  /** Already available entries retained before the first remote page arrives. */
   readonly initialEntries?: readonly CollectionEntry<T>[];
+  /** Initial next-page cursor, or null when initialEntries are complete. */
   readonly initialCursor?: string | null;
+  /** Starts an initial load after mount; false leaves loading under consumer control. */
   readonly autoLoad?: boolean;
+  /** Converts an unknown request failure into bounded localized recovery text. */
   readonly getErrorMessage?: (error: unknown) => string;
 }
 
 export interface CollectionLoaderResult<T = unknown> {
+  /** Current validated entries accumulated from successful pages. */
   readonly entries: readonly CollectionEntry<T>[];
+  /** Render-ready async state with valid retry and load-more callbacks. */
   readonly asyncState: CollectionAsyncState;
+  /** Aborts the current request without clearing successfully loaded entries. */
   readonly abort: () => void;
+  /** Requests the current next-page cursor when one is available. */
   readonly loadMore: () => void;
+  /** Clears accumulated remote entries and loads from the first page. */
   readonly reload: () => void;
+  /** Repeats the operation that most recently failed. */
   readonly retry: () => void;
 }
 
@@ -474,30 +514,56 @@ export function useCollectionLoader<T = unknown>(
 }
 
 export interface ListboxProps<T = unknown, M extends CollectionSelectionMode = "single"> {
+  /** Validated ordered item and section models rendered by the listbox. */
   readonly entries: readonly CollectionEntry<T>[];
+  /** Persistent visible label that supplies the listbox accessible name. */
   readonly label: ReactNode;
+  /** Single or multiple selection semantics; defaults to single. */
   readonly selectionMode?: M;
+  /** Controlled canonical selected key or key array matching selectionMode. */
   readonly value?: CollectionValue<M>;
+  /** Initial canonical selected key or key array for uncontrolled use and form reset. */
   readonly defaultValue?: CollectionValue<M>;
+  /** Reports the complete canonical selection after a user change. */
   readonly onValueChange?: (value: CollectionChangeValue<M>) => void;
+  /** Optional visible guidance associated with the listbox through aria-describedby. */
   readonly description?: ReactNode;
+  /** Optional visible validation message rendered as an alert. */
   readonly errorMessage?: ReactNode;
+  /** Applies invalid styling and aria-invalid when no explicit aria-invalid is supplied. */
   readonly invalid?: boolean;
+  /** Requires a non-empty selection and exposes required semantics. */
   readonly required?: boolean;
+  /** Disables selection, native hidden controls, and collection items. */
   readonly disabled?: boolean;
+  /** Preserves focus and navigation while blocking selection changes. */
   readonly readOnly?: boolean;
+  /** Native form field name used by one hidden input per selected key. */
   readonly name?: string;
+  /** Native form owner id for hidden selection inputs and uncontrolled reset behavior. */
   readonly form?: string;
+  /** Optional loading and recovery state; omitting it removes async controls and status output. */
   readonly asyncState?: CollectionAsyncState;
+  /** Localized overrides for empty, loading, load-more, and retry copy. */
   readonly messages?: Partial<CollectionMessages>;
+  /** Enables measured collection virtualization; omitting it uses the normal listbox tree. */
   readonly virtualization?: CollectionVirtualizationOptions;
-  readonly formatSelectionSummary?: (context: CollectionSelectionSummaryContext) => string;
+  /** Pass false to remove the summary callback, text, id, and aria-describedby contribution. */
+  readonly formatSelectionSummary?:
+    false | ((context: CollectionSelectionSummaryContext) => string);
+  /** Stable listbox id used to derive associated label, description, error, and summary ids. */
   readonly id?: string;
+  /** Class name applied directly to the focusable listbox element. */
   readonly className?: string;
+  /** Inline style applied directly to the focusable listbox element. */
   readonly style?: CSSProperties;
+  /** Class name applied to the outer field wrapper. */
   readonly rootClassName?: string;
+  /** Additional description ids merged with component-owned description and summary ids. */
   readonly "aria-describedby"?: string;
+  /** Explicit validation-message id; defaults to the component-owned error element. */
   readonly "aria-errormessage"?: string;
+  /** Explicit ARIA invalid state overriding the invalid boolean. */
   readonly "aria-invalid"?: AriaAttributes["aria-invalid"];
 }
 
@@ -609,7 +675,7 @@ function ListboxInner<T, M extends CollectionSelectionMode>(
     entries,
     errorMessage,
     form,
-    formatSelectionSummary = formatCollectionSelectionSummary,
+    formatSelectionSummary,
     id,
     invalid = false,
     label,
@@ -724,12 +790,17 @@ function ListboxInner<T, M extends CollectionSelectionMode>(
       ),
     [disabled, materializedEntries],
   );
-  const selectedText = selectedTextValues(materializedEntries, selectedKeys);
+  const resolvedSummaryFormatter =
+    formatSelectionSummary === undefined
+      ? formatCollectionSelectionSummary
+      : formatSelectionSummary;
+  const selectedText =
+    resolvedSummaryFormatter === false ? [] : selectedTextValues(materializedEntries, selectedKeys);
   const visibleTextValues = selectedText.slice(0, MAX_SUMMARY_ITEMS);
   const summary =
-    selectedText.length === 0
+    resolvedSummaryFormatter === false || selectedText.length === 0
       ? null
-      : formatSelectionSummary({
+      : resolvedSummaryFormatter({
           count: selectedText.length,
           locale,
           omittedCount: Math.max(0, selectedText.length - visibleTextValues.length),
@@ -938,6 +1009,7 @@ function ListboxInner<T, M extends CollectionSelectionMode>(
   );
 }
 
+/** Generic ref-aware call signature preserved by the forwarded Listbox implementation. */
 export interface ListboxComponent {
   <T = unknown, M extends CollectionSelectionMode = "single">(
     props: ListboxProps<T, M> & RefAttributes<HTMLDivElement>,

@@ -12,6 +12,7 @@
       "data-minimum",
       "data-gap",
       "data-align",
+      "data-equal-rows",
       "data-list-style"
     ]
   },

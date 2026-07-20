@@ -14,3 +14,7 @@ When using `ul` or `ol`, render `li` children. Native markers and logical indent
 The root slot is `[data-slot="stack"]`, with documented `data-element`, `data-gap`, `data-align`, and `data-list-style` hooks. Children receive no role or reordered presentation, so DOM and reading order remain aligned.
 
 Current status is `source-present-unreleased`. Generated distributions, browser reflow/semantic evidence, packed-consumer parity, updater fixtures, manual review, site dogfooding, and an approved Quality Passport remain promotion requirements.
+
+## Mergora advantage
+
+`separated` adds crisp tokenized rules between direct children without extra DOM, roles, or reordered content, including a forced-colors mapping. `separated={false}` removes those rules completely while semantic list rendering and spacing remain intact.

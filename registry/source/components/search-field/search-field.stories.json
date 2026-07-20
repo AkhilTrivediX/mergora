@@ -8,7 +8,7 @@
     {
       "id": "focus-visible",
       "applicability": { "status": "applicable" },
-      "story": "SearchWorkbench"
+      "story": "BasicDefaults"
     },
     { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
     { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },

@@ -41,7 +41,8 @@ export interface DistributionReleasePin {
 export interface DistributionSourceFile {
   readonly logicalPath: string;
   readonly target: string;
-  readonly role: "component" | "hook" | "lib" | "system" | "kit" | "style" | "token";
+  readonly role:
+    "component" | "hook" | "lib" | "system" | "kit" | "style" | "token" | "contract" | "example";
   readonly base: DistributionDigest;
   readonly installed: DistributionDigest | null;
   readonly mediaType: string;
@@ -95,7 +96,8 @@ export interface SourceDistributionItem extends DistributionItemBase {
 
 export interface PackageDistributionItem extends DistributionItemBase {
   readonly mode: "package";
-  readonly files: readonly [];
+  /** Selected project-side examples and Contracts only; package internals remain archive-owned. */
+  readonly files: readonly DistributionSourceFile[];
   readonly packageClaims: readonly string[];
   readonly importSubpaths: readonly string[];
 }
@@ -358,9 +360,9 @@ function parsePackages(
 ): Record<string, DistributionPackageArtifact> {
   const source = record(value, label);
   const entries = Object.entries(source);
-  if (entries.length === 0 || entries.length > 64) {
+  if (entries.length > 64) {
     throw distributionError(
-      `${label} must inventory 1-64 fixed release artifacts.`,
+      `${label} must inventory at most 64 fixed release artifacts. Source-only releases may inventory none.`,
       "DISTRIBUTION_PACKAGE_INVALID",
     );
   }
@@ -535,9 +537,19 @@ function parseFile(value: unknown, label: string): DistributionSourceFile {
     label,
   );
   if (
-    !(["component", "hook", "lib", "system", "kit", "style", "token"] as const).includes(
-      source.role as DistributionSourceFile["role"],
-    ) ||
+    !(
+      [
+        "component",
+        "hook",
+        "lib",
+        "system",
+        "kit",
+        "style",
+        "token",
+        "contract",
+        "example",
+      ] as const
+    ).includes(source.role as DistributionSourceFile["role"]) ||
     source.executable !== false ||
     (source.tombstone !== undefined && typeof source.tombstone !== "boolean")
   ) {
@@ -704,9 +716,9 @@ function parseItem(
       );
     }
   } else {
-    if (files.length !== 0) {
+    if (files.some(({ role }) => role !== "contract" && role !== "example")) {
       throw distributionError(
-        `Package item ${key} cannot create source-file provenance for package internals.`,
+        `Package item ${key} can own only selected Contract and example artifacts outside package internals.`,
         "DISTRIBUTION_OWNERSHIP_CONFLICT",
         key,
         6,
@@ -792,7 +804,7 @@ function parseItem(
   };
   return source.mode === "source"
     ? { ...base, mode: "source", files, packageClaims: [], importSubpaths: [] }
-    : { ...base, mode: "package", files: [], packageClaims, importSubpaths };
+    : { ...base, mode: "package", files, packageClaims, importSubpaths };
 }
 
 function parseDependencyOwnership(key: string, value: unknown): DistributionDependencyOwnership {

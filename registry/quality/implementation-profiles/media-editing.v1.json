@@ -1,0 +1,1859 @@
+{
+  "schemaVersion": 1,
+  "category": "media-editing",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "attachment",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Attachment presents file identity, metadata, and actions; safety guidance and lifecycle context remain application composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/attachment"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds an independently selectable safety explanation that keeps unverified or unsafe file handling explicit without forcing upload or scanning behavior.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/attachment/attachment.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["safety-guidance"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal-white workbench row uses ink dividers, strong file hierarchy, violet context, a stable status rail, shared focus seams, restrained corners, and reduced-motion handling.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/attachment/attachment.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "violet-context-signal",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "safety-guidance",
+          "status": "evidence-backed",
+          "summary": "Consumers can disclose file safety state and recovery guidance without coupling the component to a scanner, uploader, or storage provider.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/attachment/attachment.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["attachmentSafety"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSafetyGuidance", "safety", "safetyGuidance"],
+            "enableWhen": "Set showSafetyGuidance true and provide the consumer-owned safety state and guidance."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No safety badge or guidance region is rendered.",
+            "behavior": "File identity and ordinary actions remain unchanged.",
+            "events": "No safety-specific callback or policy evaluation occurs.",
+            "accessibility": "No safety description or related status text enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicAttachment",
+          "enhancementControls": ["attachmentSafety"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedAttachment",
+          "enhancementControls": ["attachmentSafety"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, axe, narrow, RTL, forced-colors, and reduced-motion evidence is present; manual screen-reader and touch-device records remain outstanding.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/attachment/attachment.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Action semantics, optional-region removal, touch sizing, narrow layout, and state rendering have focused automated coverage.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Manual screen-reader and representative touch-device evidence is not recorded yet.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/attachment/attachment.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/attachment/attachment.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "emoji-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no first-party emoji picker, so consumers typically compose popover, input, and collection primitives or add a separate dependency.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora supplies dependency-free, consumer-data-owned emoji search over a localized ARIA grid while retaining spatial keyboard navigation and bounded recent selection.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/emoji-picker/emoji-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["emoji-search"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The picker uses a precise white workbench grid, ink cells, green selection, violet context controls, shared focus seams, compact hierarchy, and coarse-pointer sizing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/emoji-picker/emoji-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "selected-pressed-identity",
+          "workbench-structure",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "emoji-search",
+          "status": "evidence-backed",
+          "summary": "Optional localized search filters consumer-supplied emoji labels and keywords without storage, telemetry, or a bundled data set.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/emoji-picker/emoji-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["emojiSearch"],
+          "api": {
+            "kind": "prop",
+            "names": ["searchable", "searchValue", "defaultSearchValue", "onSearchValueChange"],
+            "enableWhen": "Set searchable true and optionally control the search value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No search label, input, or empty-search recovery is rendered.",
+            "behavior": "The complete supplied emoji collection remains directly navigable.",
+            "events": "No search change callback is emitted.",
+            "accessibility": "No search control or search-result context enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicEmojiPicker",
+          "enhancementControls": ["emojiSearch"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedEmojiPicker",
+          "enhancementControls": ["emojiSearch"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "ARIA grid semantics, roving spatial keyboard behavior, RTL, axe, forced colors, reduced motion, and narrow layout are automated; manual screen-reader and touch-device records remain outstanding.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/emoji-picker/emoji-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled selection, search filtering, categories, recents, tones, Home and End, spatial arrows, RTL mapping, and enhancement removal have focused evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual assistive-technology records remain incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/emoji-picker/emoji-picker.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/emoji-picker/emoji-picker.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/emoji-picker/emoji-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "image",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn applications commonly compose a native image with Aspect Ratio; load-state policy, explicit fallback recovery, and informative-versus-decorative typing remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/aspect-ratio"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides an optional stable load-status rail plus a consumer-owned source-policy boundary and discriminated informative/decorative semantics.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image/image.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "enhancementIds": ["load-status"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The image frame uses a literal-white surface, ink outline, restrained corners, violet loading context, green ready state, and a non-jumping status rail with forced-colors mappings.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image/image.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "green-state-signal",
+          "violet-context-signal",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "load-status",
+          "status": "evidence-backed",
+          "summary": "An optional stable rail explains loading, ready, failed, or source-policy-rejected states without causing layout jumps.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image/image.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["imageStatus"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showStatusRail",
+              "loadingLabel",
+              "errorLabel",
+              "rejectedLabel",
+              "onLoadStateChange"
+            ],
+            "enableWhen": "Set showStatusRail true and optionally customize status copy or observe state changes."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No load-state status rail is rendered.",
+            "behavior": "Native image loading, fallback replacement, and source policy still operate.",
+            "events": "No status-rail-specific event is emitted; onLoadStateChange remains consumer-selectable.",
+            "accessibility": "No load-state status region or announcement is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicImage",
+          "enhancementControls": ["imageStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedImage",
+          "enhancementControls": ["imageStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Informative and decorative image typing, fallback semantics, axe, narrow layout, RTL, forced colors, and reduced motion are automated; manual screen-reader records remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image/image.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Loading, ready, native error, rejected-source fallback, and optional status removal are represented in focused tests and stories.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual assistive-technology evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image/image.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image/image.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image/image.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-cropper",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no first-party image cropper, so crop geometry, input modality parity, preview, and serialization are application-owned.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora exposes the same normalized crop geometry through pointer movement, RTL-aware keyboard commands, and optional exact numeric editing while preserving a successful hidden form value.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image-cropper/image-cropper.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["numeric-crop-controls"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A measured white inspection workbench uses ink framing, violet crop context, green active confirmation, a distinctive focus seam, touch-sized controls, and restrained geometry.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image-cropper/image-cropper.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "numeric-crop-controls",
+          "status": "evidence-backed",
+          "summary": "Optional labeled numeric inputs expose exact horizontal, vertical, width, height, and zoom adjustments alongside direct manipulation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image-cropper/image-cropper.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["cropNumeric"],
+          "api": {
+            "kind": "prop",
+            "names": ["showNumericControls"],
+            "enableWhen": "Set showNumericControls true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No numeric crop-control fieldset is rendered.",
+            "behavior": "Pointer and keyboard crop movement, zoom bounds, and serialization continue unchanged.",
+            "events": "No numeric-input change events are produced.",
+            "accessibility": "No numeric labels, spinbuttons, or fieldset grouping enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicImageCropper",
+          "enhancementControls": ["cropNumeric"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedImageCropper",
+          "enhancementControls": ["cropNumeric"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Keyboard, RTL, labeled numeric controls, axe, forced colors, reduced motion, and narrow layout are automated; manual screen-reader and touch-device records remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image-cropper/image-cropper.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled geometry, keyboard increments, real pointer capture, movement and cancellation, canonical numeric updates, reset, preview, and guide removal have focused browser evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual assistive-technology and representative touch-device evidence are not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image-cropper/image-cropper.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/image-cropper/image-cropper.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/image-cropper/image-cropper.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "markdown",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Typography supplies prose styles, while parsing, sanitization ownership, streaming context, and renderer trust boundaries remain consumer decisions.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora makes the rendering trust boundary visible and safe by default: without an explicit React renderer, source is shown literally and never passed to innerHTML.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown/markdown.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "enhancementIds": ["renderer-boundary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal-white prose and code surfaces use ink structure, strong reading hierarchy, violet provenance context, a stable streaming rail, and restrained corners.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown/markdown.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "violet-context-signal",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "renderer-boundary",
+          "status": "evidence-backed",
+          "summary": "An optional visible boundary identifies consumer-rendered output and communicates that parsing and sanitization remain adapter responsibilities.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown/markdown.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["markdownBoundary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showRendererBoundary", "rendererBoundaryLabel"],
+            "enableWhen": "Set showRendererBoundary true when supplying a renderer."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No renderer-boundary label or provenance rail is rendered.",
+            "behavior": "The selected literal or consumer React rendering path is unchanged.",
+            "events": "No boundary-specific callback or processing occurs.",
+            "accessibility": "No renderer-boundary context is added to the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicMarkdown",
+          "enhancementControls": ["markdownBoundary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedMarkdown",
+          "enhancementControls": ["markdownBoundary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Safe literal output, consumer React rendering, streaming context, axe, forced colors, reduced motion, RTL, and narrow layout are automated; manual screen-reader records remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown/markdown.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Literal fallback, renderer boundary, streaming summary, and clean removal of optional output have focused component and browser evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual screen-reader evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown/markdown.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown/markdown.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown/markdown.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "markdown-editor",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no first-party Markdown editor; consumers generally compose Textarea, Tabs, buttons, and their own preview and paste/upload policies.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps a native successful textarea as the source of truth while offering an independently selectable, consumer-rendered split or tab preview and IME-safe editing shortcuts.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown-editor/markdown-editor.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["editor-preview"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The editor uses a white structured workbench, ink separators, strong label hierarchy, green active state, violet preview context, shared focus treatment, and reduced-motion-safe controls.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown-editor/markdown-editor.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "editor-preview",
+          "status": "evidence-backed",
+          "summary": "Consumers can add a tabbed or split React preview without replacing the native form textarea or importing a parser into the component.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown-editor/markdown-editor.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["editorPreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["previewLayout", "renderPreview"],
+            "enableWhen": "Set previewLayout to tabs or split and provide renderPreview."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No preview tab, preview pane, or preview toolbar is rendered.",
+            "behavior": "The native textarea remains editable, successful, resettable, and serializable.",
+            "events": "The preview renderer is never called and no preview selection event occurs.",
+            "accessibility": "No tablist, tab, or preview region enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicMarkdownEditor",
+          "enhancementControls": ["editorPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedMarkdownEditor",
+          "enhancementControls": ["editorPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native label, description, validation, keyboard shortcut, tab semantics, form reset, axe, RTL, forced colors, reduced motion, and narrow layout are automated; manual assistive-technology records remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown-editor/markdown-editor.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled editing, native submission and reset, IME-safe bold/italic shortcuts, preview, toolbar, word count, and abortable consumer paste/upload adapters have focused evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown-editor/markdown-editor.contract.json"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual assistive-technology evidence is not yet complete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown-editor/markdown-editor.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/markdown-editor/markdown-editor.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/markdown-editor/markdown-editor.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "media-player",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no first-party media player; applications rely on native media controls or assemble custom playback, captions, chapters, and transcripts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native audio/video controls and consumer-owned sources while adding an optional transcript disclosure linked into the player's accessible description.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/media-player/media-player.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "enhancementIds": ["media-transcript"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The native player is framed by literal-white ink structure, strong context hierarchy, violet chapter context, green active signals, touch-sized actions, and restrained details regions.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/media-player/media-player.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "media-transcript",
+          "status": "evidence-backed",
+          "summary": "An optional native details disclosure exposes consumer-supplied transcript content and associates it with the media element.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/media-player/media-player.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["mediaTranscript"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTranscript", "transcript"],
+            "enableWhen": "Set showTranscript true and supply transcript content."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No transcript disclosure, summary, or content region is rendered.",
+            "behavior": "Native playback, captions, and any independently enabled chapters continue unchanged.",
+            "events": "No transcript disclosure toggle event can occur.",
+            "accessibility": "The media element is not described by transcript content and no disclosure enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicMediaPlayer",
+          "enhancementControls": ["mediaTranscript"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedMediaPlayer",
+          "enhancementControls": ["mediaTranscript"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native controls, text tracks, transcript association, chapter buttons, throttled live updates, axe, forced colors, reduced motion, RTL, and narrow layout are automated; manual caption and screen-reader records remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/media-player/media-player.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native playback ownership, source rejection, transcript disclosure, chapter seeking, and optional live time announcements are represented in focused source and browser evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/media-player/media-player.contract.json"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual caption, screen-reader, and touch-device evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/media-player/media-player.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/media-player/media-player.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/media-player/media-player.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rich-text-editor",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no maintained rich-text editing engine; production use generally requires a dedicated engine and application-owned serialization policy.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides a deliberately narrow, identified and versioned adapter shell that owns form serialization and validation without pretending a homemade contenteditable surface is a production editor.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["adapter-boundary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The Labs shell uses a literal-white ink frame, clear type hierarchy, violet adapter provenance, green ready status, a stable rail, shared focus integration, and restrained corners.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "status-rail",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "adapter-boundary",
+          "status": "evidence-backed",
+          "summary": "An optional visible provenance rail names the active adapter and version so engine ownership is inspectable instead of implicit.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/rich-text-editor/rich-text-editor.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["richAdapterBoundary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showAdapterBoundary"],
+            "enableWhen": "Set showAdapterBoundary true while supplying an identified RichTextEditorAdapter."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No adapter identity or version rail is rendered.",
+            "behavior": "The consumer adapter surface and serialized form value remain unchanged.",
+            "events": "No adapter-boundary-specific event occurs.",
+            "accessibility": "No adapter provenance description enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicRichTextEditor",
+          "enhancementControls": ["richAdapterBoundary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedRichTextEditor",
+          "enhancementControls": ["richAdapterBoundary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Shell labeling, description, validation, successful serialization, reset, axe, RTL, forced colors, reduced motion, and narrow layout are covered; editor-engine semantics remain adapter-owned and require adapter-specific manual evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Controlled serialization, form reset, validation, adapter identity, and clean optional-output removal are covered; production engine keyboard, clipboard, history, and selection behavior is intentionally not claimed by the shell.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "maintained-engine-adapter-evidence-missing",
+          "summary": "A production maintained-engine adapter, compatibility matrix, and engine-specific manual accessibility evidence are not yet supplied.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/rich-text-editor/rich-text-editor.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "experimental-candidate",
+        "rationale": "The adapter shell honestly satisfies the planned Labs boundary, but no production engine or broad editing behavior is claimed until adapter and manual evidence exist.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/rich-text-editor/rich-text-editor.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "signature-pad",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no first-party signature control; pointer drawing, keyboard alternatives, form serialization, undo, and legal context are application-owned.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds a keyboard-operable normalized vector signature path, undo and reset, with independently selectable typed and file alternatives rather than making canvas input mandatory.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/signature-pad/signature-pad.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["keyboard-signing"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal-white signing workbench uses ink borders, green completed state, violet alternative context, a distinct canvas focus seam, touch-sized controls, status structure, and restrained corners.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/signature-pad/signature-pad.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "selected-pressed-identity",
+          "status-rail",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "keyboard-signing",
+          "status": "evidence-backed",
+          "summary": "Optional visible instructions complement the canvas keyboard model: arrows move a normalized cursor, Space toggles drawing, and undo and clear remain native buttons.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/signature-pad/signature-pad.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["signatureKeyboard"],
+          "api": {
+            "kind": "prop",
+            "names": ["showKeyboardControls"],
+            "enableWhen": "Set showKeyboardControls true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No visible keyboard-instruction rail is rendered.",
+            "behavior": "Canvas keyboard operability remains available as a baseline accessible input path.",
+            "events": "No instruction-specific event occurs; signing events are unchanged.",
+            "accessibility": "No extra keyboard-instruction description is associated with the canvas."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "BasicSignaturePad",
+          "enhancementControls": ["signatureKeyboard"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx",
+          "exportName": "RecommendedSignaturePad",
+          "enhancementControls": ["signatureKeyboard"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5MediaEditingComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/media-editing-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Canvas naming, keyboard cursor and marking, visible alternatives, native file input, status announcements, form reset, axe, RTL, forced colors, reduced motion, and narrow layout are automated; manual screen-reader and touch-device records remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/signature-pad/signature-pad.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Real pointer capture and cancellation, keyboard signing, normalized vector storage, undo, clear, typed/file alternatives, controlled/uncontrolled use, serialization, and reset have focused browser evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/media-editing/media-editing.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/signature-pad/signature-pad.contract.json"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-evidence-pending",
+          "summary": "Manual screen-reader and representative touch-device evidence are not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/signature-pad/signature-pad.contract.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/signature-pad/signature-pad.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/signature-pad/signature-pad.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

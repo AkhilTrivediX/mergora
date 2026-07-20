@@ -13,7 +13,9 @@
 </MergoraProvider>
 ```
 
-Nested providers inherit unspecified values and merge messages by key. The default boundary is a `div` with native `lang` and `dir`; `asChild` merges those attributes into one concrete child when an extra wrapper would affect layout. Portal content receives the same React context and repeats the native direction, locale, and density attributes at its target.
+Nested providers inherit unspecified values and merge messages by key. The default boundary is a `div` with native `lang` and `dir`; `asChild` is an independent composition enhancement that merges those attributes into one concrete child when an extra wrapper would affect layout. With `asChild={false}` the merge behavior is absent and a neutral provider `div` is rendered; roles, names, events, and focus behavior are never inferred in either mode. Portal content receives the same React context and repeats the native direction, locale, and density attributes at its target.
+
+Density and motion are real subtree policies, not metadata-only flags. Each provider boundary remaps the shared semantic and component sizing variables for `comfortable`, `compact`, or `touch`, including the 48px touch control and row target. `reducedMotion="reduce"` collapses state-motion durations to the one-millisecond completion fallback; `system` follows `prefers-reduced-motion`; and the explicit `no-preference` policy leaves the normal durations in place. These policies are independent, so consumers can opt into touch geometry without enabling motion or localization behavior.
 
 Every built-in message uses a documented stable key. String translations may reorder named
 placeholders such as `{count}`. A message can instead be a formatter receiving `{ locale, values }`

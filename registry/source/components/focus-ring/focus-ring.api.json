@@ -15,6 +15,9 @@
   "compositionPolicy": {
     "semantics": "The child remains the only rendered semantic element.",
     "modality": "The CSS strategy uses focus-visible and never suppresses the browser outline without replacement.",
-    "forcedColors": "System Highlight supplies an explicit outline and shadows are removed."
+    "familySignature": "Deep Violet remains distinct from green selection through an explicit Canvas seam; strong mode increases both layers independently.",
+    "advantage": "A two-cue Deep Violet and Canvas treatment remains distinct from green selection and maps explicitly to system Highlight.",
+    "forcedColors": "System Highlight supplies an explicit outline and the Canvas seam is removed.",
+    "enhancementOptOut": "Leaving contrast unset selects standard geometry; no strong-mode UI, behavior, event, motion, or accessibility output remains."
   }
 }

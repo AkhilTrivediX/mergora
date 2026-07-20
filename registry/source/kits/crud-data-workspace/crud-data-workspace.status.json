@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "crud-data-workspace",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package, editable source, native registry, Shadcn, and dependency-closure outputs.",
+    "Pass clean-consumer install/update/remove, packed Next/Vite, lifecycle, large-data, transactional failure, conflict, rollback, browser, and visual gates.",
+    "Record current desktop/mobile assistive-technology, touch, keyboard, zoom, localization, transaction, authorization, security, privacy, and legal review evidence."
+  ]
+}

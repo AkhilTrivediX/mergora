@@ -19,11 +19,18 @@ export interface FieldsetProps extends Omit<
   FieldsetHTMLAttributes<HTMLFieldSetElement>,
   "children"
 > {
+  /** Native fieldset content rendered after description and before status text. */
   readonly children?: ReactNode;
+  /** Optional persistent group help text included in `aria-describedby`. */
   readonly description?: ReactNode;
+  /** Optional persistent group error included in the invalid description chain. */
   readonly error?: ReactNode;
+  /** Stacked, column, or inline visual arrangement; defaults to `stacked`. */
   readonly layout?: FieldsetLayout;
+  /** Non-empty first-child native legend that names the fieldset. */
   readonly legend: ReactNode;
+  /** Optional persistent context such as the current selection count. */
+  readonly selectionSummary?: ReactNode;
 }
 
 interface ProcessLike {
@@ -59,6 +66,7 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(function 
     error,
     layout = "stacked",
     legend,
+    selectionSummary,
     ...nativeProps
   },
   ref,
@@ -66,9 +74,13 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(function 
   const generatedId = useId().replaceAll(":", "");
   const hasDescription = hasAccessibleContent(description);
   const hasError = hasAccessibleContent(error);
+  const hasSelectionSummary = hasAccessibleContent(selectionSummary);
   const descriptionId = hasDescription ? `mrg-fieldset-${generatedId}-description` : undefined;
   const errorId = hasError ? `mrg-fieldset-${generatedId}-error` : undefined;
-  const describedBy = mergeFieldIdRefs(ariaDescribedBy, descriptionId, errorId);
+  const summaryId = hasSelectionSummary
+    ? `mrg-fieldset-${generatedId}-selection-summary`
+    : undefined;
+  const describedBy = mergeFieldIdRefs(ariaDescribedBy, descriptionId, summaryId, errorId);
   const explicitAriaInvalid = nativeProps["aria-invalid"];
   const resolvedAriaInvalid =
     explicitAriaInvalid === undefined ? hasError || undefined : explicitAriaInvalid;
@@ -105,6 +117,11 @@ export const Fieldset = forwardRef<HTMLFieldSetElement, FieldsetProps>(function 
         </p>
       )}
       <div data-slot="fieldset-content">{children}</div>
+      {!hasSelectionSummary ? null : (
+        <p data-slot="fieldset-selection-summary" id={summaryId}>
+          {selectionSummary}
+        </p>
+      )}
       {!hasError ? null : (
         <p data-slot="fieldset-error" id={errorId}>
           {error}

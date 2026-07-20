@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./virtual-list.css", "react"],
+  "entryPath": "registry/source/components/virtual-list/virtual-list.tsx",
+  "id": "virtual-list",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "emoji-picker",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, complete Unicode dataset, large-data virtualization, package-parity, or recorded manual Risk Class 3 claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native search/select controls precede a named ARIA grid containing row-owned button gridcells with one roving tab stop.",
+    "naming": "Every emoji uses a localized text label plus optional tone label; visible control labels and empty recovery are localizable.",
+    "roleOverride": "Grid is used because spatial arrow navigation is implemented; category and skin tone remain native selects.",
+    "refTarget": "HTMLDivElement composite shell"
+  },
+  "interaction": {
+    "keyboard": "Arrows move spatially and mirror inline direction in RTL; Home/End move within a row and Ctrl+Home/End move to collection bounds; Enter/Space remain native button activation.",
+    "pointer": "Every emoji is an explicit preferred-size button; no hover-only detail is required.",
+    "touch": "Grid cells retain preferred targets and the grid scrolls rather than shrinking labels into inaccessible controls.",
+    "speech": "Localized emoji, search, category, tone, and clear-filter labels create voice targets.",
+    "switchAccess": "One roving grid stop plus native controls limits scan cost while retaining direct selection."
+  },
+  "preferences": {
+    "forcedColors": "Canvas, ButtonText, Highlight selected state, and Highlight focus preserve controls and selection.",
+    "reducedMotion": "Filtering and selection are immediate with no animated reordering."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Controls stack and the essential grid axis remains natively scrollable."
+  },
+  "internationalization": {
+    "normalization": "Search uses NFKC plus locale-aware lowercase without altering item identity.",
+    "direction": "Inline arrow movement mirrors in RTL; emoji glyphs themselves do not mirror.",
+    "storage": "Recent ids are consumer data; Mergora writes no local storage, cookies, or telemetry."
+  },
+  "consumerResponsibilities": [
+    "Supply a licensed, versioned Unicode/CLDR-derived dataset with localized labels, categories, keywords, and supported tone variants.",
+    "Persist recent selections only with an explicit privacy and retention policy.",
+    "Use a bounded/virtualized dataset adapter before shipping very large collections and re-run the complete grid accessibility matrix."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-uncontrolled",
+      "grid-keyboard-rtl",
+      "search-category-empty-recovery",
+      "recency-event-isolation",
+      "tone-labels",
+      "narrow-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "all-desktop-at-pairs",
+      "voiceover-ios-grid",
+      "talkback-chrome-grid",
+      "speech-and-switch",
+      "japanese-ime-search",
+      "zoom-reflow"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The component ships no complete Unicode/CLDR dataset and does not virtualize a large collection in this source checkpoint.",
+    "Complete Risk Class 3 manual, packed-consumer, and parity evidence remains unrecorded."
+  ]
+}

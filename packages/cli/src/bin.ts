@@ -1,20 +1,13 @@
 #!/usr/bin/env node
 
+import { isCliCommand, isJsonResultStatus, type CliFlag } from "./command-contract.js";
 import {
-  allowedCliFlags,
-  cliFlagKind,
-  isCliCommand,
-  isJsonResultStatus,
-  type CliCommand,
-  type CliFlag,
-} from "./command-contract.js";
-
-class CommandUsageError extends Error {
-  public constructor(message: string) {
-    super(message);
-    this.name = "CommandUsageError";
-  }
-}
+  assertAllowedCliInvocation,
+  CommandUsageError,
+  parseArguments,
+  type ParsedArguments,
+} from "./argument-parser.js";
+import { renderSemanticSourceDiff } from "./semantic-diff-renderer.js";
 
 const HELP = `Mergora CLI
 
@@ -51,13 +44,18 @@ Common options:
   --cwd <path>         Explicit project root candidate (--root remains an add alias)
   --config <path>      Explicit project-relative config (currently mergora.json)
   --registry <id>      Select an already enrolled registry; never enrolls an origin
-  --ui-version <range> Resolve the exact referenced UI release against an npm SemVer range
+  --ui-version <range> Constrain an exact reference or discovered current Stable release
   --json               Emit one versioned JSON result envelope
   --dry-run            Resolve and emit the exact plan without writing
   --plan               Alias for a read-only exact plan
   --yes                Accept an ordinary conflict-free exact plan
   --non-interactive    Never prompt; missing consent fails safely
   --offline            Forbid network access and require verified local evidence
+  --mode <source|package>
+                       Override this add/update operation and persist mode per item
+  --no-format          Skip formatting but retain parse/semantic validation
+  --with-contracts     Include local audit Contracts (default for Stable native items)
+  --with-examples      Include explicitly declared native example files
   --include-npm-tarballs
                       Include the release's exact verified npm package archives
   --no-install         Skip package-manager invocation and report required work
@@ -89,17 +87,18 @@ Creates only mergora.json, the empty portable manifest, and narrow local-state
                       [--ui-version <version-or-range>] [--allow-prerelease]
                       [--offline] [--json]
 
-An exact native release reference never falls back to bundled unreleased data.
-Offline acquisition requires the referenced artifacts in the verified cache or
-a checksum-verified Stable vendor bundle.`,
+An explicit native release reference takes precedence. An enrolled native registry
+otherwise discovers one identity-checked current Stable release. Offline official
+acquisition automatically selects one checksum-verified Stable vendor bundle.`,
   view: `Usage: mergora view <item...> [--files] [--source <logical-path>]
                     [--release-file <project-relative-path>] [--cwd <path>]
                     [--registry <enrolled-id>]
                     [--ui-version <version-or-range>] [--allow-prerelease]
                     [--offline] [--json]
 
-An exact native release reference acquires the requested dependency closure and
-never falls back to bundled unreleased data.`,
+An explicit native release reference takes precedence. Enrolled native discovery
+and offline Stable-vendor selection remain digest-bound and never fall back across
+registry identities.`,
   docs: `Usage: mergora docs <item|topic> [--format <markdown|json|url>] [--open]
 
 --open is ignored in CI/non-interactive mode and never sends project data.`,
@@ -127,20 +126,29 @@ data-mergora-audit-root="button" and its data-mergora-audit-announcer="button" s
                    [--release-file <project-relative-path>] [--no-install] [--offline]
                    [--registry <enrolled-id>]
                    [--ui-version <version-or-range>] [--allow-prerelease]
+                   [--mode <source|package>] [--no-format]
+                   [--with-contracts] [--with-examples]
                    [--plan|--dry-run] [--yes] [--json]
 
 Stages the complete dependency closure, validates it, backs up every authoritative
 target, commits the provenance manifest last, and rolls back on failure.`,
   remove: `Usage: mergora remove <item...> [--cwd <path>] [--keep-files]
+                      [--mode <source|package>]
                       [--no-install] [--plan|--dry-run] [--yes] [--json]
 
-Deletes source only when live bytes equal a verified owned base. --keep-files
-detaches provenance without deleting source.`,
+Deletes project-side artifacts only when live bytes equal a verified owned base.
+Package dependencies are removed only when exact ownership permits it. --keep-files
+detaches provenance without deleting owned source, Contract, or example bytes.`,
   adopt: `Usage: mergora adopt <item...> [--cwd <path>] [--target <relative-path>]
                      [--plan|--dry-run] [--yes] [--json]
+       mergora adopt --from shadcn <item...> [--registry <enrolled-id>]
+                     [--allow-local-divergence] [--offline]
+                     [--plan|--dry-run] [--yes] [--json]
 
-Records provenance only when every existing source file exactly matches the explicit
-bundled payload and transform mapping. Divergent or ambiguous source is refused.`,
+Bundled adoption requires an exact known match. Shadcn adoption retrieves one exact
+enrolled shadcn-v1 catalog, applies the compiled components.json alias/style mapping,
+and never replaces live source. --allow-local-divergence records L relative to proven
+B; ambiguous registry, item, dependency, or target ancestry is refused.`,
   rollback: `Usage: mergora rollback <transaction-id>|--last [--cwd <path>]
                         [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
 
@@ -152,18 +160,21 @@ the completed transaction's post-state. The restoration is itself transactional.
 Classifies recorded pre/post digests. Auto recovery is conservative; ambiguous live
 state is never changed.`,
   diff: `Usage: mergora diff [item...] [--cwd <path>] [--release-file <path>]
-                    [--local|--upstream] [--stat|--name-only] [--format json]
+                    [--local|--upstream] [--stat|--name-only]
+                    [--format <unified|side-by-side|json>] [--context <0-1000>]
                     [--ui-version <version-or-range>] [--allow-prerelease]
 
 Reads immutable Base and live Local bytes without writing. --upstream requires an
 explicitly acquired project-relative release snapshot and adds the B/L/R proposal.`,
-  update: `Usage: mergora update <item...>|--all --release-file <path> [--cwd <path>]
+  update: `Usage: mergora update <item...>|--all [--release-file <path>] [--cwd <path>]
                       [--registry <enrolled-id>]
                       [--ui-version <version-or-range>] [--allow-prerelease]
+                      [--mode <source|package>] [--no-format]
                       [--no-install] [--offline] [--plan|--dry-run] [--yes] [--json]
 
-Accepts either the legacy immutable Semantic Sync snapshot or a schema-discriminated
-official native release reference. Acquired releases never fall back to bundled data.
+Accepts a legacy immutable Semantic Sync snapshot, an explicit native reference, an
+enrolled current Stable discovery, or an offline verified Stable vendor reference.
+Acquired releases never fall back to bundled data.
 It plans exact B/L/R merges and changes no authoritative bytes on conflict.`,
   resolve: `Usage: mergora resolve <transaction-id> [--list]
                        [--take-local <target>|--take-upstream <target>|
@@ -181,7 +192,9 @@ multiple targets. --apply rechecks every live/base/snapshot precondition.`,
        mergora registry verify <id> [--offline]
 
 Enrollment is bound to the retrieved identity digest; --yes alone never accepts a
-new origin. Offline inspection and verification perform no fetch.`,
+new origin. --auth-env names a variable whose value is the complete Authorization
+header (for example, "Bearer …"); its value is never logged, cached, persisted, or
+sent to mirrors/cross-origin redirects. Offline inspection and verification perform no fetch.`,
   theme: `Usage: mergora theme list [--cwd <path>]
        mergora theme preview <preset-or-file> [--cwd <path>]
        mergora theme export <preset-or-file> --format <dtcg|css|tailwind>
@@ -193,10 +206,19 @@ new origin. Offline inspection and verification perform no fetch.`,
 Official accessibility failures are blocked. Custom failures require every exact
 issue ID; repeat --acknowledge for multiple issues. There is no blanket bypass.`,
   migrate: `Usage: mergora migrate <config|shadcn> [--plan|--dry-run] [--yes]
-       mergora migrate <framework|mode|id> <built-in-id> [item...] [--plan|--dry-run]
+       mergora migrate <framework|id> <built-in-id> [--plan|--dry-run]
+       mergora migrate mode <item...> --to <source|package> [--release-file <path>]
+                      [--offline] [--no-install] [--plan|--dry-run] [--yes]
+       mergora migrate mode <mode-source-to-package-v1|mode-package-to-source-v1>
+                      <item...> [--release-file <path>] [--plan|--dry-run] [--yes]
 
 Only migration IDs compiled into this CLI are accepted. Unsafe transformations
-return a deterministic manual checklist and perform no mutation.`,
+return a deterministic manual checklist and perform no mutation. The shadcn adapter
+imports only a compatible alias prefix and Tailwind CSS entry, retains components.json,
+and refuses to reinterpret installed Mergora ownership. Mode migration acquires one
+exact matching release, rewrites only parsed TypeScript module literals, validates
+package archives and consumer imports, and commits source, dependency, base, and
+manifest ownership atomically. Source adoption remains explicit.`,
   vendor: `Usage: mergora vendor <item...>|--all-installed [--cwd <path>]
                       [--plan|--dry-run] [--yes] [--json]
        mergora vendor <item...>|--all --release-file <path> [--offline]
@@ -221,78 +243,6 @@ the current manifest, referenced bases, vendor bundles, and active conflicts are
 never candidates; apply requires consent and preserves an append-only local journal.`,
 };
 
-interface ParsedArguments {
-  readonly command: CliCommand;
-  readonly positionals: readonly string[];
-  readonly flags: ReadonlyMap<CliFlag, readonly string[]>;
-}
-
-function normalizeArguments(arguments_: readonly string[]): readonly string[] {
-  const result: string[] = [];
-  for (const argument of arguments_) {
-    if (argument.startsWith("--") && argument.includes("=")) {
-      const index = argument.indexOf("=");
-      result.push(argument.slice(0, index), argument.slice(index + 1));
-    } else result.push(argument);
-  }
-  return result;
-}
-
-function parseArguments(arguments_: readonly string[]): ParsedArguments {
-  const normalized = normalizeArguments(arguments_);
-  let command: string | undefined;
-  let positionalOnly = false;
-  const positionals: string[] = [];
-  const flags = new Map<CliFlag, string[]>();
-  for (let index = 0; index < normalized.length; index += 1) {
-    const argument = normalized[index]!;
-    if (!positionalOnly && argument === "--") {
-      positionalOnly = true;
-      continue;
-    }
-    if (!positionalOnly && (argument === "-h" || argument === "--help")) {
-      const values = flags.get("help") ?? [];
-      values.push("true");
-      flags.set("help", values);
-      continue;
-    }
-    if (!positionalOnly && argument.startsWith("--")) {
-      const name = argument.slice(2);
-      const kind = cliFlagKind(name);
-      const flag = name as CliFlag;
-      if (kind === "boolean") {
-        const values = flags.get(flag) ?? [];
-        values.push("true");
-        flags.set(flag, values);
-      } else if (kind === "value") {
-        const value = normalized[index + 1];
-        if (value === undefined || value.startsWith("--")) {
-          throw new CommandUsageError(`--${name} requires a value.`);
-        }
-        const values = flags.get(flag) ?? [];
-        values.push(value);
-        flags.set(flag, values);
-        index += 1;
-      } else throw new CommandUsageError(`Unknown option ${JSON.stringify(argument)}.`);
-      continue;
-    }
-    if (!positionalOnly && argument.startsWith("-") && argument !== "-") {
-      if (argument === "-v") {
-        if (command !== undefined)
-          throw new CommandUsageError("-v must be used without a command.");
-        command = "--version";
-      } else throw new CommandUsageError(`Unknown short option ${JSON.stringify(argument)}.`);
-      continue;
-    }
-    if (command === undefined) command = argument;
-    else positionals.push(argument);
-  }
-  if (command === undefined) throw new CommandUsageError("A command is required.");
-  if (!isCliCommand(command))
-    throw new CommandUsageError(`Unknown command ${JSON.stringify(command)}.`);
-  return { command, positionals, flags };
-}
-
 function hasFlag(parsed: ParsedArguments, name: CliFlag): boolean {
   return parsed.flags.has(name);
 }
@@ -306,14 +256,6 @@ function flagValue(parsed: ParsedArguments, name: CliFlag): string | undefined {
 
 function flagValues(parsed: ParsedArguments, name: CliFlag): readonly string[] {
   return parsed.flags.get(name) ?? [];
-}
-
-function assertAllowedFlags(parsed: ParsedArguments, allowed: readonly CliFlag[]): void {
-  const set = new Set(allowed);
-  for (const name of parsed.flags.keys()) {
-    if (!set.has(name))
-      throw new CommandUsageError(`--${name} is not valid for ${parsed.command}.`);
-  }
 }
 
 function projectRoot(parsed: ParsedArguments): string {
@@ -359,6 +301,18 @@ function parseAuditTimeout(value: string | undefined): number | undefined {
   return timeout;
 }
 
+function parseDiffContext(value: string | undefined): number {
+  if (value === undefined) return 3;
+  if (!/^(?:0|[1-9][0-9]*)$/u.test(value)) {
+    throw new CommandUsageError("--context must be an integer from 0 through 1000.");
+  }
+  const context = Number(value);
+  if (!Number.isSafeInteger(context) || context > 1_000) {
+    throw new CommandUsageError("--context must be an integer from 0 through 1000.");
+  }
+  return context;
+}
+
 function parseFramework(
   value: string | undefined,
 ): "next-app" | "next-pages" | "vite-react" | "react" | undefined {
@@ -380,6 +334,18 @@ function parseDistributionMode(
   if (value === undefined) return undefined;
   if (value !== "source" && value !== "package" && value !== "hybrid") {
     throw new CommandUsageError("--mode must be source, package, or hybrid.");
+  }
+  return value;
+}
+
+function parseOperationDistributionMode(
+  value: string | undefined,
+): "source" | "package" | undefined {
+  if (value === undefined) return undefined;
+  if (value !== "source" && value !== "package") {
+    throw new CommandUsageError(
+      "Operation --mode must be source or package; hybrid is a configured default only.",
+    );
   }
   return value;
 }
@@ -486,6 +452,10 @@ function sourceCommandOptions(parsed: ParsedArguments, root: string) {
     projectRoot: root,
     itemIds: parsed.positionals,
     targetDirectory: flagValue(parsed, "target"),
+    distributionMode: parseOperationDistributionMode(flagValue(parsed, "mode")),
+    noFormat: hasFlag(parsed, "no-format"),
+    withContracts: hasFlag(parsed, "with-contracts"),
+    withExamples: hasFlag(parsed, "with-examples"),
     noInstall: hasFlag(parsed, "no-install"),
     offline: hasFlag(parsed, "offline"),
     packageManager: parseManager(flagValue(parsed, "package-manager")),
@@ -599,7 +569,20 @@ async function readNativeReleaseReference(
   allowLegacySnapshot: boolean,
 ): Promise<NativeReleaseReference | null> {
   const releaseFile = flagValue(parsed, "release-file");
-  if (releaseFile === undefined) return null;
+  if (releaseFile === undefined) {
+    const automatic = await api.resolveAutomaticNativeReleaseReference({
+      projectRoot: root,
+      registryId: selectedRegistryId(parsed),
+      offline: hasFlag(parsed, "offline"),
+    });
+    if (automatic === null && flagValue(parsed, "ui-version") !== undefined) {
+      throw new api.CliError(
+        "The official unreleased route cannot resolve --ui-version without an exact release reference or verified Stable vendor bundle.",
+        { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: "official" },
+      );
+    }
+    return automatic;
+  }
   const { readProjectFile } = await import("./source-operations.js");
   const bytes = readProjectFile(root, releaseFile);
   if (bytes === null) {
@@ -755,6 +738,9 @@ async function acquireNativeRelease(
   reference: NativeReleaseReference,
   itemIds: readonly string[],
   validateDocument?: import("./acquisition-resolver.js").NativeRegistryDocumentValidator,
+  selection?: {
+    readonly contractSelection?: "all" | "none" | "stable" | undefined;
+  },
 ) {
   api.resolveImmutableReleaseVersion([reference.release], flagValue(parsed, "ui-version"), {
     allowPrereleases: hasFlag(parsed, "allow-prerelease"),
@@ -788,10 +774,15 @@ async function acquireNativeRelease(
       { code: "REGISTRY_NATIVE_PROTOCOL_REQUIRED", exitCode: 7, target: registryId },
     );
   }
-  if (configured.authEnvironmentVariable !== undefined && !hasFlag(parsed, "offline")) {
+  const offline = hasFlag(parsed, "offline");
+  const authorization =
+    configured.authEnvironmentVariable === undefined || offline
+      ? undefined
+      : process.env[configured.authEnvironmentVariable];
+  if (configured.authEnvironmentVariable !== undefined && !offline && authorization === undefined) {
     throw new api.CliError(
-      `Registry ${JSON.stringify(registryId)} requires authenticated immutable acquisition, which is not available in this CLI build.`,
-      { code: "REGISTRY_AUTH_ACQUISITION_UNSUPPORTED", exitCode: 11, target: registryId },
+      `Registry ${JSON.stringify(registryId)} requires the configured authorization environment variable.`,
+      { code: "REGISTRY_AUTH_REQUIRED", exitCode: 11, target: registryId },
     );
   }
   const origin = configured.origin;
@@ -823,7 +814,11 @@ async function acquireNativeRelease(
       bytes: reference.manifest.bytes,
     },
     itemIds: registryItemReferences(itemIds, registryId),
-    offline: hasFlag(parsed, "offline"),
+    ...(selection?.contractSelection === undefined
+      ? {}
+      : { contractSelection: selection.contractSelection }),
+    offline,
+    ...(authorization === undefined ? {} : { authorization }),
     ...(vendor === undefined ? {} : { vendor }),
     ...(validateDocument === undefined ? {} : { validateDocument }),
   });
@@ -987,6 +982,21 @@ function createStableNpmTarballFetcher(api: Api): import("./vendor.js").StableNp
   };
 }
 
+async function acquirePackageOperationEvidence(
+  parsed: ParsedArguments,
+  root: string,
+  api: Api,
+  acquiredRelease: import("./acquisition-resolver.js").AcquiredNativeRegistryRelease,
+) {
+  return api.acquireDistributionPackageEvidence({
+    projectRoot: root,
+    acquiredRelease,
+    offline: hasFlag(parsed, "offline"),
+    vendorReader: api.createStableNpmTarballVendorReader({ projectRoot: root }),
+    ...(hasFlag(parsed, "offline") ? {} : { fetcher: createStableNpmTarballFetcher(api) }),
+  });
+}
+
 function operationWrites(plan: import("./transaction-engine.js").OperationPlan): boolean {
   return (
     plan.estimatedBytes.write > 0 ||
@@ -1006,22 +1016,15 @@ function assertConflictFree(plan: import("./transaction-engine.js").OperationPla
 }
 
 async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput> {
-  const subcommand =
-    parsed.command === "theme" || parsed.command === "registry"
-      ? parsed.positionals[0]
-      : parsed.command === "vendor"
-        ? parsed.positionals[0] === "verify"
-          ? "verify"
-          : "create"
-        : undefined;
-  assertAllowedFlags(parsed, allowedCliFlags(parsed.command, subcommand));
+  assertAllowedCliInvocation(parsed);
   colorMode(parsed);
   const root = projectRoot(parsed);
   const explicitlySelectedRegistry = flagValue(parsed, "registry");
   if (
     explicitlySelectedRegistry !== undefined &&
     selectedRegistryId(parsed) !== "official" &&
-    (["init", "docs", "info", "remove", "adopt"] as const).includes(parsed.command as never)
+    (["init", "docs", "info", "remove", "adopt"] as const).includes(parsed.command as never) &&
+    !(parsed.command === "adopt" && flagValue(parsed, "from") === "shadcn")
   ) {
     throw new api.CliError(
       `--registry ${explicitlySelectedRegistry} is not supported by ${parsed.command}; this command will not fall back to official ownership.`,
@@ -1030,7 +1033,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
   }
   if (
     flagValue(parsed, "ui-version") !== undefined &&
-    flagValue(parsed, "release-file") === undefined
+    flagValue(parsed, "release-file") === undefined &&
+    (parsed.command === "diff" || parsed.command === "vendor")
   ) {
     throw new CommandUsageError(
       "--ui-version requires --release-file with a verified exact release reference.",
@@ -1267,6 +1271,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       if (format !== undefined && !["json", "unified", "side-by-side"].includes(format)) {
         throw new CommandUsageError("diff --format must be unified, side-by-side, or json.");
       }
+      if (hasFlag(parsed, "local") && hasFlag(parsed, "upstream")) {
+        throw new CommandUsageError("diff accepts either --local or --upstream, not both.");
+      }
+      const contextLines = parseDiffContext(flagValue(parsed, "context"));
       const releaseFile = flagValue(parsed, "release-file");
       const wantsUpstream = hasFlag(parsed, "upstream") || releaseFile !== undefined;
       if (hasFlag(parsed, "upstream") && releaseFile === undefined) {
@@ -1281,7 +1289,10 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         result,
         status: result.hasDifferences ? "differences" : "no-differences",
         text: renderSemanticDiff(result, {
+          contextLines,
+          format: format === "side-by-side" ? "side-by-side" : "unified",
           nameOnly: hasFlag(parsed, "name-only"),
+          projectRoot: root,
           statOnly: hasFlag(parsed, "stat"),
         }),
       };
@@ -1384,25 +1395,45 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       if (hasFlag(parsed, "all") === parsed.positionals.length > 0) {
         throw new CommandUsageError("update requires explicit items or --all, but not both.");
       }
-      const releaseReference = await readNativeReleaseReference(parsed, root, api, true);
       const registryId = selectedRegistryId(parsed);
+      const releaseReference = await readNativeReleaseReference(parsed, root, api, true);
+      const legacyRelease =
+        releaseReference === null && flagValue(parsed, "release-file") !== undefined
+          ? immutableRelease(parsed, root, api)
+          : null;
+      const route = api.resolveDistributionUpdateRoute({
+        projectRoot: root,
+        itemIds: hasFlag(parsed, "all") ? undefined : parsed.positionals,
+        registryId,
+        explicitMode: parseOperationDistributionMode(flagValue(parsed, "mode")),
+      });
       if (releaseReference === null && registryId !== "official") {
         throw new api.CliError(
           `Registry ${JSON.stringify(registryId)} update requires a native exact --release-file and never accepts legacy official snapshots.`,
           { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
         );
       }
-      const acquisitionItems = hasFlag(parsed, "all")
-        ? api
-            .projectStatus(root)
-            .items.map(({ id }) => id)
-            .filter((id) => id.startsWith(`${registryId}:`))
-        : registryItemReferences(parsed.positionals, registryId);
+      if (releaseReference === null && route.mode === "package") {
+        throw new api.CliError(
+          "Package-mode update requires a native exact --release-file with immutable package inventory.",
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4 },
+        );
+      }
+      const acquisitionItems = route.itemIds;
       const acquiredRelease =
         releaseReference === null
           ? null
-          : await acquireNativeRelease(parsed, root, api, releaseReference, acquisitionItems);
-      const release = acquiredRelease === null ? immutableRelease(parsed, root, api) : null;
+          : await acquireNativeRelease(
+              parsed,
+              root,
+              api,
+              releaseReference,
+              acquisitionItems,
+              undefined,
+              { contractSelection: "all" },
+            );
+      const release =
+        acquiredRelease === null ? (legacyRelease ?? immutableRelease(parsed, root, api)) : null;
       const releaseVersion = acquiredRelease?.release ?? release!.release;
       const requestedTarget = flagValue(parsed, "to");
       if (requestedTarget !== undefined && requestedTarget !== releaseVersion) {
@@ -1414,6 +1445,8 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       const sharedOptions = {
         projectRoot: root,
         noInstall: hasFlag(parsed, "no-install"),
+        noFormat: hasFlag(parsed, "no-format"),
+        distributionMode: route.mode,
         offline: hasFlag(parsed, "offline"),
         packageManager: parseManager(flagValue(parsed, "package-manager")),
         commandArguments: [
@@ -1440,10 +1473,26 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
               release: release!,
             }
           : null;
+      const packageOptions =
+        route.mode === "package"
+          ? {
+              ...sharedOptions,
+              itemIds: acquisitionItems,
+              acquiredRelease: acquiredRelease!,
+              packageEvidence: await acquirePackageOperationEvidence(
+                parsed,
+                root,
+                api,
+                acquiredRelease!,
+              ),
+            }
+          : null;
       const plan =
-        acquiredOptions === null
-          ? api.planSemanticUpdate(legacyOptions!)
-          : api.planAcquiredSemanticUpdate(acquiredOptions);
+        packageOptions !== null
+          ? api.planPackageDistributionUpdate(packageOptions)
+          : acquiredOptions === null
+            ? api.planSemanticUpdate(legacyOptions!)
+            : api.planAcquiredSemanticUpdate(acquiredOptions);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
@@ -1468,9 +1517,19 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         });
       }
       const result =
-        acquiredOptions === null
-          ? await api.applySemanticUpdate(legacyOptions!, plan.planDigest)
-          : await api.applyAcquiredSemanticUpdate(acquiredOptions, plan.planDigest);
+        packageOptions !== null
+          ? api.applyPackageDistributionUpdate(packageOptions, plan.planDigest)
+          : acquiredOptions === null
+            ? await api.applySemanticUpdate(legacyOptions!, plan.planDigest)
+            : await api.applyAcquiredSemanticUpdate(acquiredOptions, plan.planDigest);
+      if (result.mode === "package-transaction") {
+        return {
+          result,
+          status: result.transaction.state,
+          warnings: plan.warnings,
+          text: `Package update ${result.items.join(", ")}: ${result.transaction.state}; transaction ${result.transaction.transactionId ?? "no-op"}; plan ${result.planDigest}.`,
+        };
+      }
       return {
         result,
         status: result.status,
@@ -1483,12 +1542,40 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       };
     }
     case "add": {
+      const targetDirectory = flagValue(parsed, "target");
+      if (targetDirectory !== undefined) {
+        api.assertPortableRelativePath(targetDirectory, "Source target directory");
+      }
+      const distributionMode = api.resolveDistributionAddMode({
+        projectRoot: root,
+        explicitMode: parseOperationDistributionMode(flagValue(parsed, "mode")),
+      });
+      if (distributionMode === "package" && flagValue(parsed, "target") !== undefined) {
+        throw new CommandUsageError(
+          "Package mode does not accept --target because it never materializes component source.",
+        );
+      }
       const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
       const registryId = selectedRegistryId(parsed);
       if (releaseReference === null && registryId !== "official") {
         throw new api.CliError(
           `Registry ${JSON.stringify(registryId)} add requires an exact --release-file and never falls back to bundled official data.`,
           { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4, target: registryId },
+        );
+      }
+      if (releaseReference === null && distributionMode === "package") {
+        throw new api.CliError(
+          "Package-mode add requires a native exact --release-file with immutable package inventory.",
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4 },
+        );
+      }
+      if (
+        releaseReference === null &&
+        (hasFlag(parsed, "with-contracts") || hasFlag(parsed, "with-examples"))
+      ) {
+        throw new api.CliError(
+          "--with-contracts and --with-examples require an exact native --release-file; unreleased bundled metadata is not an installable Contract or example artifact.",
+          { code: "REGISTRY_RELEASE_REFERENCE_REQUIRED", exitCode: 4 },
         );
       }
       const requestedItems =
@@ -1498,16 +1585,42 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       const acquiredRelease =
         releaseReference === null
           ? null
-          : await acquireNativeRelease(parsed, root, api, releaseReference, requestedItems);
+          : await acquireNativeRelease(
+              parsed,
+              root,
+              api,
+              releaseReference,
+              requestedItems,
+              undefined,
+              {
+                contractSelection: hasFlag(parsed, "with-contracts") ? "all" : "stable",
+              },
+            );
       const options = {
         ...sourceCommandOptions(parsed, root),
+        distributionMode,
         itemIds: requestedItems,
       };
       const acquiredOptions = acquiredRelease === null ? null : { ...options, acquiredRelease };
+      const packageOptions =
+        distributionMode === "package"
+          ? {
+              ...options,
+              acquiredRelease: acquiredRelease!,
+              packageEvidence: await acquirePackageOperationEvidence(
+                parsed,
+                root,
+                api,
+                acquiredRelease!,
+              ),
+            }
+          : null;
       const plan =
-        acquiredOptions === null
-          ? api.planSourceAdd(options)
-          : api.planAcquiredSourceAdd(acquiredOptions);
+        packageOptions !== null
+          ? api.planPackageDistributionAdd(packageOptions)
+          : acquiredOptions === null
+            ? api.planSourceAdd(options)
+            : api.planAcquiredSourceAdd(acquiredOptions);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
@@ -1533,22 +1646,37 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         );
       }
       const result =
-        acquiredOptions === null
-          ? api.applySourceAdd(options, plan.planDigest)
-          : api.applyAcquiredSourceAdd(acquiredOptions, plan.planDigest);
+        packageOptions !== null
+          ? api.applyPackageDistributionAdd(packageOptions, plan.planDigest)
+          : acquiredOptions === null
+            ? api.applySourceAdd(options, plan.planDigest)
+            : api.applyAcquiredSourceAdd(acquiredOptions, plan.planDigest);
       return {
         result,
         status: result.transaction.state,
         warnings: plan.warnings,
-        text: renderSourceResult(result),
+        text:
+          result.mode === "package-transaction"
+            ? `Package add ${result.items.join(", ")}: ${result.transaction.state}; transaction ${result.transaction.transactionId ?? "no-op"}; plan ${result.planDigest}.`
+            : renderSourceResult(result),
       };
     }
     case "remove": {
+      const distributionMode = api.resolveDistributionRemoveMode({
+        projectRoot: root,
+        itemIds: parsed.positionals,
+        registryId: selectedRegistryId(parsed),
+        explicitMode: parseOperationDistributionMode(flagValue(parsed, "mode")),
+      });
       const options = {
         ...sourceCommandOptions(parsed, root),
         keepFiles: hasFlag(parsed, "keep-files"),
       };
-      const plan = api.planSourceRemove(options);
+      const packageOptions = distributionMode === "package" ? options : null;
+      const plan =
+        packageOptions === null
+          ? api.planSourceRemove(options)
+          : api.planPackageDistributionRemove(packageOptions);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
         return {
           result: plan,
@@ -1573,15 +1701,79 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
           { code: "CONSENT_REQUIRED", exitCode: 12 },
         );
       }
-      const result = api.applySourceRemove(options, plan.planDigest);
+      const result =
+        packageOptions === null
+          ? api.applySourceRemove(options, plan.planDigest)
+          : api.applyPackageDistributionRemove(packageOptions, plan.planDigest);
       return {
         result,
         status: result.transaction.state,
         warnings: plan.warnings,
-        text: renderSourceResult(result),
+        text:
+          result.mode === "package-transaction"
+            ? `Package remove ${result.items.join(", ")}: ${result.transaction.state}; transaction ${result.transaction.transactionId ?? "no-op"}; plan ${result.planDigest}.`
+            : renderSourceResult(result),
       };
     }
     case "adopt": {
+      const from = flagValue(parsed, "from");
+      if (from !== undefined && from !== "shadcn") {
+        throw new CommandUsageError("adopt --from currently supports only shadcn.");
+      }
+      if (from === "shadcn") {
+        if (flagValue(parsed, "target") !== undefined) {
+          throw new CommandUsageError(
+            "adopt --from shadcn derives exact targets from components.json and cannot use --target.",
+          );
+        }
+        const options = {
+          projectRoot: root,
+          itemIds: parsed.positionals,
+          registryId: flagValue(parsed, "registry"),
+          allowLocalDivergence: hasFlag(parsed, "allow-local-divergence"),
+          offline: hasFlag(parsed, "offline"),
+          commandArguments: [
+            parsed.command,
+            ...parsed.positionals,
+            ...[...parsed.flags.keys()].map((name) => `--${name}`),
+          ],
+        };
+        const plan = await api.planShadcnAdoption(options);
+        if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
+          return {
+            result: plan,
+            status:
+              plan.conflicts.length > 0 ? "conflict" : operationWrites(plan) ? "planned" : "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        assertConflictFree(plan, api);
+        if (!operationWrites(plan)) {
+          return {
+            result: plan,
+            status: "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        if (!(await confirmPlan(parsed, operationPromptSummary(plan)))) {
+          throw new api.CliError(
+            "Shadcn adoption consent is required; review --plan and pass --yes.",
+            { code: "CONSENT_REQUIRED", exitCode: 12 },
+          );
+        }
+        const result = await api.applyShadcnAdoption(options, plan.planDigest);
+        return {
+          result,
+          status: result.transaction.state,
+          warnings: plan.warnings,
+          text: renderSourceResult(result),
+        };
+      }
+      if (hasFlag(parsed, "allow-local-divergence")) {
+        throw new CommandUsageError("--allow-local-divergence requires adopt --from shadcn.");
+      }
       const options = sourceCommandOptions(parsed, root);
       const plan = api.planSourceAdopt(options);
       if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
@@ -1826,7 +2018,103 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
       ) {
         throw new CommandUsageError("migrate requires config, shadcn, framework, mode, or id.");
       }
-      const requiresId = target === "framework" || target === "mode" || target === "id";
+      if (target === "mode") {
+        const legacyId = parsed.positionals[1];
+        const legacyDirection =
+          legacyId === "mode-source-to-package-v1"
+            ? "package"
+            : legacyId === "mode-package-to-source-v1"
+              ? "source"
+              : null;
+        const rawRequestedDirection = flagValue(parsed, "to");
+        if (
+          rawRequestedDirection !== undefined &&
+          rawRequestedDirection !== "source" &&
+          rawRequestedDirection !== "package"
+        ) {
+          throw new CommandUsageError("migrate mode --to must be source or package.");
+        }
+        const requestedDirection = rawRequestedDirection as "source" | "package" | undefined;
+        if (
+          legacyDirection !== null &&
+          requestedDirection !== undefined &&
+          legacyDirection !== requestedDirection
+        ) {
+          throw new CommandUsageError(
+            `Migration ${legacyId} conflicts with --to ${requestedDirection}.`,
+          );
+        }
+        const to = legacyDirection ?? requestedDirection;
+        if (to === undefined) {
+          throw new CommandUsageError("migrate mode requires --to source|package.");
+        }
+        const requestedItems = parsed.positionals.slice(legacyDirection === null ? 1 : 2);
+        if (requestedItems.length === 0) {
+          throw new CommandUsageError("migrate mode requires one or more installed items.");
+        }
+        const releaseReference = await readNativeReleaseReference(parsed, root, api, false);
+        if (releaseReference === null) {
+          throw new CommandUsageError(
+            "migrate mode requires --release-file with an exact native release reference.",
+          );
+        }
+        const registryId = selectedRegistryId(parsed);
+        const acquiredRelease = await acquireNativeRelease(
+          parsed,
+          root,
+          api,
+          releaseReference,
+          registryItemReferences(requestedItems, registryId),
+        );
+        const options = {
+          projectRoot: root,
+          itemIds: acquiredRelease.resolvedItems,
+          to,
+          acquiredReleases: [acquiredRelease],
+          packageEvidence: [
+            await acquirePackageOperationEvidence(parsed, root, api, acquiredRelease),
+          ],
+          noInstall: hasFlag(parsed, "no-install"),
+          offline: hasFlag(parsed, "offline"),
+          packageManager: parseManager(flagValue(parsed, "package-manager")),
+          commandArguments: [
+            parsed.command,
+            ...parsed.positionals,
+            ...[...parsed.flags.keys()].map((name) => `--${name}`),
+          ],
+        };
+        const plan = api.planProjectDistributionModeMigration(options);
+        if (hasFlag(parsed, "dry-run") || hasFlag(parsed, "plan")) {
+          return {
+            result: plan,
+            status: operationWrites(plan) ? "planned" : "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        if (!operationWrites(plan)) {
+          return {
+            result: plan,
+            status: "no-op",
+            warnings: plan.warnings,
+            text: renderOperationPlan(plan),
+          };
+        }
+        if (!(await confirmPlan(parsed, operationPromptSummary(plan)))) {
+          throw new api.CliError(
+            "Mode migration consent is required; review --plan and pass --yes.",
+            { code: "CONSENT_REQUIRED", exitCode: 12 },
+          );
+        }
+        const result = api.applyProjectDistributionModeMigration(options, plan.planDigest);
+        return {
+          result,
+          status: result.transaction.state,
+          warnings: plan.warnings,
+          text: `Mode migration ${result.from} to ${result.to} committed for ${result.items.join(", ")}; transaction ${result.transaction.transactionId ?? "no-op"}; plan ${result.planDigest}.`,
+        };
+      }
+      const requiresId = target === "framework" || target === "id";
       if (
         (requiresId && parsed.positionals.length < 2) ||
         (!requiresId && parsed.positionals.length > 1)
@@ -1842,7 +2130,7 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
         projectRoot: root,
         target: migrationTarget,
         migrationId: requiresId ? parsed.positionals[1] : undefined,
-        itemIds: target === "mode" ? parsed.positionals.slice(2) : [],
+        itemIds: [],
         commandArguments: [
           parsed.command,
           ...parsed.positionals,
@@ -2355,24 +2643,21 @@ async function execute(parsed: ParsedArguments, api: Api): Promise<CommandOutput
 
 function renderSemanticDiff(
   result: import("./semantic-update.js").SemanticSourceDiff,
-  options: { readonly nameOnly: boolean; readonly statOnly: boolean },
+  options: {
+    readonly contextLines: number;
+    readonly format: "side-by-side" | "unified";
+    readonly nameOnly: boolean;
+    readonly projectRoot: string;
+    readonly statOnly: boolean;
+  },
 ): string {
   if (options.nameOnly) return result.nameOnly.join("\n") || "No differences.";
   const summary = `${String(result.stat.files)} files, +${String(result.stat.linesAdded ?? result.stat.bytesAdded)}/-${String(result.stat.linesRemoved ?? result.stat.bytesRemoved)}${result.stat.linesAdded === null ? " bytes" : " lines"}`;
   if (options.statOnly) return summary;
-  const lines = [
-    `Semantic diff: ${result.hasDifferences ? summary : "no local differences"}`,
-    `Target release: ${result.targetRelease ?? "local-only"}`,
-  ];
-  for (const file of result.files) {
-    lines.push(
-      `${file.localChange}\t${file.target}\tB=${file.baseDigest ?? "none"}\tL=${file.localDigest ?? "none"}${file.planned === null ? "" : `\tplanned=${file.planned.status}\tR=${file.planned.remoteDigest ?? "none"}`}`,
-    );
-    for (const conflict of file.planned?.conflicts ?? []) {
-      lines.push(`conflict\t${file.target}\t${conflict.id}\t${conflict.detail}`);
-    }
-  }
-  return lines.join("\n");
+  return renderSemanticSourceDiff(options.projectRoot, result, {
+    contextLines: options.contextLines,
+    format: options.format,
+  });
 }
 
 function renderSemanticResolutionList(

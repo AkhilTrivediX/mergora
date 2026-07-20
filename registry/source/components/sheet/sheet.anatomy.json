@@ -16,10 +16,18 @@
   "relationships": [
     "Root owns side and size so Overlay and Content expose synchronized states.",
     "Content retains dialog naming and description requirements.",
-    "Footer stays visible or scroll-reachable without obscuring focus."
+    "Footer stays visible or scroll-reachable without obscuring focus.",
+    "Content optionally renders consumer-controlled native progress before the workflow content."
   ],
   "behaviorOwnership": {
-    "mergora": ["logical edge", "size", "safe-area layout", "mobile adaptation", "stable slots"],
+    "mergora": [
+      "logical edge",
+      "size",
+      "optional native progress",
+      "safe-area layout",
+      "mobile adaptation",
+      "stable slots"
+    ],
     "dialog": ["canonical modal behavior"],
     "reactAria": ["focus", "dismissal", "portal", "background", "restoration"]
   }

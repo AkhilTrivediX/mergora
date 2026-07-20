@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "autocomplete",
+  "root": {
+    "element": "div",
+    "ref": "HTMLInputElement",
+    "slot": "autocomplete",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid"]
+  },
+  "parts": [
+    { "element": "input", "slot": "autocomplete-input" },
+    { "element": "ul", "slot": "autocomplete-listbox" },
+    { "element": "output", "slot": "autocomplete-match-context" }
+  ]
+}

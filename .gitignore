@@ -10,6 +10,11 @@ test-results/
 artifacts/
 PLANS/
 .codex-runs/
+credentials.json
+credentials.*.json
+*.credentials.json
+.npmrc.local
+.secrets/
 *.tsbuildinfo
 
 .env

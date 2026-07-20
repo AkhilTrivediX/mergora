@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "stepper",
+  "entryExport": "Stepper",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML nav attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "Stepper" },
+    { "kind": "type", "name": "StepperMode" },
+    { "kind": "type", "name": "StepperProgressContext" },
+    { "kind": "type", "name": "StepperProps" },
+    { "kind": "type", "name": "StepperStep" },
+    { "kind": "type", "name": "StepperStepState" }
+  ],
+  "controlledState": [
+    {
+      "state": "current step",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "native progress",
+      "api": "showProgressBar",
+      "disabled": "false removes progress UI and semantics"
+    },
+    {
+      "name": "progress context and announcements",
+      "api": "renderProgressSummary, announceStepChanges",
+      "disabled": "each option independently removes its formatter, output, or live region"
+    }
+  ]
+}

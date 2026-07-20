@@ -20,6 +20,6 @@
     { "slot": "banner-title", "element": "h1-h6", "stability": "documented" },
     { "slot": "banner-description", "element": "div", "stability": "documented" },
     { "slot": "banner-actions", "element": "div", "stability": "documented" },
-    { "slot": "banner-dismiss", "element": "button", "stability": "documented" }
+    { "slot": "banner-dismiss", "element": "optional native button", "stability": "documented" }
   ]
 }

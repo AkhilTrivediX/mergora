@@ -14,6 +14,13 @@ function monitorPage(page: Page): string[] {
   diagnostics.set(page, failures);
   page.on("console", (message) => {
     if (message.type() === "error" || message.type() === "warning") {
+      if (
+        message.type() === "warning" &&
+        message.text().includes("Layout was forced before the page was fully loaded") &&
+        message.text().includes("chrome://juggler/content/content/main.js")
+      ) {
+        return;
+      }
       failures.push(`console.${message.type()}: ${message.text()}`);
     }
   });
@@ -44,7 +51,84 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveWait) => setTimeout(resolveWait, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
+  });
+}
+
+async function forcedColorAxeViolations(page: Page): Promise<unknown[]> {
+  await page.addScriptTag({ path: axePath });
+  return page.evaluate(async () => {
+    const axe = (
+      globalThis as unknown as {
+        axe: {
+          run(target: Element): Promise<{
+            violations: Array<{
+              id: string;
+              nodes: Array<{ target: unknown[] }>;
+            }>;
+          }>;
+        };
+      }
+    ).axe;
+    const probe = document.createElement("span");
+    probe.style.backgroundColor = "Highlight";
+    probe.style.color = "HighlightText";
+    probe.style.position = "fixed";
+    document.body.append(probe);
+    const probeStyle = getComputedStyle(probe);
+    const systemBackground = probeStyle.backgroundColor;
+    const systemForeground = probeStyle.color;
+    probe.remove();
+
+    let violations:
+      | Array<{
+          id: string;
+          nodes: Array<{ target: unknown[] }>;
+        }>
+      | undefined;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        violations = (await axe.run(document.body)).violations;
+        break;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    if (violations === undefined) {
+      throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
+    }
+    return violations.flatMap((violation) => {
+      if (violation.id !== "color-contrast") return [violation];
+      const applicationOwnedNodes = violation.nodes.filter((node) => {
+        const selector = node.target.length === 1 ? node.target[0] : undefined;
+        if (typeof selector !== "string") return true;
+        const target = document.querySelector(selector);
+        const selection = target?.closest(
+          '[data-highlighted="true"], [data-slot="json-tree-item"][aria-selected="true"]',
+        );
+        if (target === null || selection === null || selection === undefined) return true;
+        return (
+          getComputedStyle(selection).backgroundColor !== systemBackground ||
+          getComputedStyle(target).color !== systemForeground
+        );
+      });
+      return applicationOwnedNodes.length === 0
+        ? []
+        : [{ ...violation, nodes: applicationOwnedNodes }];
+    });
   });
 }
 
@@ -60,6 +144,118 @@ async function installClipboardProbe(page: Page): Promise<void> {
     });
   });
 }
+
+test("basic defaults remove every optional inspection layer cleanly", async ({ page }) => {
+  await openStory(page, "basic-defaults");
+  await expect(page.locator('[data-slot="blockquote-caption"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="code"][data-bidi-isolated="false"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="code-block-copy"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="code-block-line-number"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="code-block-line"][data-highlighted="true"]')).toHaveCount(
+    0,
+  );
+  await expect(page.locator('[data-slot="description-list"]')).toHaveAttribute(
+    "data-layout",
+    "stacked",
+  );
+  await expect(page.locator('[data-slot="diff-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="diff-copy"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="diff-line"][tabindex]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="json-active-path"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="json-copy-path"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="json-copy-value"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="text"][data-truncate="true"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="prose"]')).toHaveAttribute("data-measure", "none");
+  await expect(page.locator('[data-slot="kbd-chord"]')).toHaveAttribute("data-platform", "generic");
+  await expect(page.getByRole("status")).toHaveCount(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("recommended Mergora mode exposes independently useful inspection aids", async ({ page }) => {
+  await openStory(page, "recommended-mergora");
+  await expect(page.locator('[data-slot="blockquote-caption"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="code"][data-bidi-isolated="true"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="code-block-copy"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="code-block-line-number"]')).not.toHaveCount(0);
+  await expect(page.locator('[data-slot="code-block-line"][data-highlighted="true"]')).toHaveCount(
+    1,
+  );
+  await expect(page.locator('[data-slot="diff-summary"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="diff-copy"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="diff-line"][tabindex]')).not.toHaveCount(0);
+  await expect(page.locator('[data-slot="json-active-path"]')).toHaveText("$");
+  await expect(page.locator('[data-slot="json-copy-path"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="json-copy-value"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="text"][data-truncate="true"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="prose"]')).toHaveAttribute("data-measure", "prose");
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("controlled viewers publish row, path, and expansion state", async ({ page }) => {
+  await openStory(page, "controlled-inspection");
+  const rows = page.locator('[data-slot="diff-line"]');
+  await rows.first().focus();
+  await rows.first().press("ArrowDown");
+  await expect(page.locator('[data-controlled-state="diff"]')).toHaveText("Active change row: 2");
+
+  const evidence = page.locator('[data-path="$.evidence"]');
+  await evidence.focus();
+  await evidence.press("ArrowRight");
+  await expect(page.locator('[data-controlled-state="json"]')).toHaveText(
+    "Active value: $.evidence.automated",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("touch copy feedback and reduced motion remain bounded on a narrow screen", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    reducedMotion: "reduce",
+    viewport: { height: 800, width: 360 },
+  });
+  const page = await context.newPage();
+  const failures = monitorPage(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await installClipboardProbe(page);
+  await openStory(page, "recommended-mergora");
+  expect(await page.evaluate(() => matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(
+    true,
+  );
+  const copy = page.locator('[data-slot="code-block-copy"]');
+  await copy.tap();
+  await expect(copy).toHaveText("Copied");
+  const reducedTransition = await copy.evaluate((element) => {
+    const style = getComputedStyle(element);
+    const toMilliseconds = (duration: string) =>
+      duration.endsWith("ms") ? Number.parseFloat(duration) : Number.parseFloat(duration) * 1000;
+    const properties = style.transitionProperty.split(",").map((value) => value.trim());
+    const durations = style.transitionDuration
+      .split(",")
+      .map((value) => toMilliseconds(value.trim()));
+    return {
+      durations: properties.map((_, index) => durations[index % durations.length]),
+      properties,
+      reducedToken: toMilliseconds(
+        style.getPropertyValue("--mrg-semantic-motion-duration-reduced").trim(),
+      ),
+    };
+  });
+  expect(reducedTransition.properties.some((property) => property.startsWith("background"))).toBe(
+    true,
+  );
+  expect(reducedTransition.properties).toContain("color");
+  expect(reducedTransition.durations).toEqual(
+    reducedTransition.properties.map(() => reducedTransition.reducedToken),
+  );
+  expect(
+    await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1),
+  ).toBe(false);
+  expect(await axeViolations(page)).toEqual([]);
+  expect(failures).toEqual([]);
+  await context.close();
+});
 
 test("typography workbench preserves native structure and a sequential heading outline", async ({
   page,
@@ -103,7 +299,8 @@ test("copy controls retain focus and announce exact code, diff, path, and value 
   await openStory(page, "interactive-viewers");
 
   const codeCopy = page.locator('[data-slot="code-block-copy"]');
-  await codeCopy.click();
+  await codeCopy.focus();
+  await codeCopy.press("Enter");
   await expect(codeCopy).toBeFocused();
   await expect(codeCopy).toHaveText("Copied");
   expect(
@@ -114,7 +311,8 @@ test("copy controls retain focus and announce exact code, diff, path, and value 
   await expect(page.getByRole("status").first()).toHaveText("Copied");
 
   const diffCopy = page.locator('[data-slot="diff-copy"]');
-  await diffCopy.click();
+  await diffCopy.focus();
+  await diffCopy.press("Enter");
   await expect(diffCopy).toBeFocused();
   expect(
     await page.evaluate(
@@ -137,7 +335,8 @@ test("copy controls retain focus and announce exact code, diff, path, and value 
   await expect(page.locator('[data-path="$.evidence.automated"]')).toBeFocused();
 
   const copyPath = page.getByRole("button", { name: "Copy selected path" });
-  await copyPath.click();
+  await copyPath.focus();
+  await copyPath.press("Enter");
   await expect(copyPath).toBeFocused();
   expect(
     await page.evaluate(
@@ -147,7 +346,9 @@ test("copy controls retain focus and announce exact code, diff, path, and value 
   await expect(page.getByRole("status").last()).toHaveText("Path copied");
 
   const copyValue = page.getByRole("button", { name: "Copy selected value" });
-  await copyValue.click();
+  await copyValue.focus();
+  await copyValue.press("Enter");
+  await expect(copyValue).toBeFocused();
   expect(
     await page.evaluate(
       () => (globalThis as typeof globalThis & { __mrgCopied?: string }).__mrgCopied,
@@ -293,7 +494,45 @@ test("split mode, RTL, and forced colors preserve structure, markers, and focus"
   await expect(
     forcedPage.locator('[data-slot="json-tree-item"][aria-selected="true"]'),
   ).toHaveCount(1);
-  expect(await axeViolations(forcedPage)).toEqual([]);
+  const systemSelection = await forcedPage.evaluate(() => {
+    const probe = document.createElement("span");
+    probe.style.backgroundColor = "Highlight";
+    probe.style.color = "HighlightText";
+    probe.style.position = "fixed";
+    document.body.append(probe);
+    const probeStyle = getComputedStyle(probe);
+    const expected = {
+      background: probeStyle.backgroundColor,
+      foreground: probeStyle.color,
+    };
+    probe.remove();
+    const highlighted = document.querySelector<HTMLElement>('[data-highlighted="true"]')!;
+    const selected = document.querySelector<HTMLElement>(
+      '[data-slot="json-tree-item"][aria-selected="true"]',
+    )!;
+    return {
+      active: matchMedia("(forced-colors: active)").matches,
+      expected,
+      highlighted: {
+        background: getComputedStyle(highlighted).backgroundColor,
+        foreground: getComputedStyle(highlighted).color,
+      },
+      selected: {
+        background: getComputedStyle(selected).backgroundColor,
+        foreground: getComputedStyle(selected).color,
+      },
+    };
+  });
+  expect(systemSelection).toEqual({
+    active: true,
+    expected: systemSelection.expected,
+    highlighted: systemSelection.expected,
+    selected: systemSelection.expected,
+  });
+  // Axe treats each emulated OS Highlight/HighlightText palette as an authored color pair. Drop
+  // only nodes proven above to inherit that exact system pair; every application-owned node/rule
+  // remains strict.
+  expect(await forcedColorAxeViolations(forcedPage)).toEqual([]);
   expect(forcedFailures).toEqual([]);
   await context.close();
 });

@@ -26,10 +26,11 @@
     { "kind": "component", "name": "AlertDialogTrigger" },
     { "kind": "type", "name": "AlertDialogTriggerProps" }
   ],
-  "controlledState": ["open"],
+  "controlledState": ["open", "acknowledged"],
   "nativePolicy": [
     "Alert Dialog reuses the canonical Dialog React Aria behavior core and never creates a second focus engine.",
     "role=alertdialog, explicit-only dismissal, and leastDestructiveRef are mandatory defaults.",
-    "Action and Cancel are native button parts; the destructive action completes on normal activation, never pointer-down."
+    "Action and Cancel are native button parts; the destructive action completes on normal activation, never pointer-down.",
+    "acknowledgementLabel optionally adds a controlled or uncontrolled native checkbox gate; omitting it removes the gate and its accessibility output."
   ]
 }

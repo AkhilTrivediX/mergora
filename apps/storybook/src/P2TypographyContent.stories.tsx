@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import "mergora-tokens/tokens.css";
@@ -16,8 +16,8 @@ import {
 } from "../../../registry/source/components/diff-viewer/diff-viewer";
 import { Heading } from "../../../registry/source/components/heading/heading";
 import { JsonViewer } from "../../../registry/source/components/json-viewer/json-viewer";
-import { Kbd, KbdChord } from "../../../registry/source/components/kbd/kbd";
-import { Prose } from "../../../registry/source/components/prose/prose";
+import { Kbd, KbdChord, type KbdPlatform } from "../../../registry/source/components/kbd/kbd";
+import { Prose, type ProseMeasure } from "../../../registry/source/components/prose/prose";
 import {
   MergoraProvider,
   type MergoraMessages,
@@ -152,15 +152,259 @@ const arabicMessages = {
   "kbd.chordLabel": ({ values }) => (Array.isArray(values.keys) ? values.keys.join(" زائد ") : ""),
 } satisfies MergoraMessages;
 
+interface TypographyContentStoryArgs {
+  readonly bidiIsolation: boolean;
+  readonly citationContext: boolean;
+  readonly codeCopy: boolean;
+  readonly codeHighlights: boolean;
+  readonly descriptionLayout: "columns" | "responsive" | "stacked";
+  readonly diffCopy: boolean;
+  readonly diffNavigation: boolean;
+  readonly diffSummary: boolean;
+  readonly headingScale: boolean;
+  readonly jsonCopy: boolean;
+  readonly jsonPath: boolean;
+  readonly keyPlatform: KbdPlatform;
+  readonly proseMeasure: ProseMeasure;
+  readonly textRecovery: boolean;
+}
+
 const meta = {
-  component: Text,
+  args: {
+    bidiIsolation: true,
+    citationContext: true,
+    codeCopy: true,
+    codeHighlights: true,
+    descriptionLayout: "responsive",
+    diffCopy: true,
+    diffNavigation: true,
+    diffSummary: true,
+    headingScale: true,
+    jsonCopy: true,
+    jsonPath: true,
+    keyPlatform: "generic",
+    proseMeasure: "prose",
+    textRecovery: true,
+  },
+  argTypes: {
+    bidiIsolation: { control: "boolean", name: "Code: isolate bidirectional text" },
+    citationContext: { control: "boolean", name: "Blockquote: source context" },
+    codeCopy: { control: "boolean", name: "Code block: copy control" },
+    codeHighlights: { control: "boolean", name: "Code block: line evidence" },
+    descriptionLayout: {
+      control: "inline-radio",
+      name: "Description list: layout",
+      options: ["stacked", "columns", "responsive"],
+    },
+    diffCopy: { control: "boolean", name: "Diff: copy control" },
+    diffNavigation: { control: "boolean", name: "Diff: row navigation" },
+    diffSummary: { control: "boolean", name: "Diff: change summary" },
+    headingScale: { control: "boolean", name: "Heading: independent visual scale" },
+    jsonCopy: { control: "boolean", name: "JSON: copy controls" },
+    jsonPath: { control: "boolean", name: "JSON: active path" },
+    keyPlatform: {
+      control: "inline-radio",
+      name: "Keyboard chord: platform",
+      options: ["generic", "mac", "windows", "linux"],
+    },
+    proseMeasure: {
+      control: "inline-radio",
+      name: "Prose: reading measure",
+      options: ["none", "prose", "wide"],
+    },
+    textRecovery: { control: "boolean", name: "Text: truncation recovery" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Typography Content",
-} satisfies Meta<typeof Text>;
+} satisfies Meta<TypographyContentStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<TypographyContentStoryArgs>;
+
+function TypographyFamilySpecimen({
+  args,
+  title,
+}: {
+  readonly args: TypographyContentStoryArgs;
+  readonly title: string;
+}) {
+  const longReference = "archive.example.org/collections/field-notes/immutable/7f3a24b8c9d0e1f2";
+  return (
+    <Canvas>
+      <header style={railStyle}>
+        <Heading level={1} {...(args.headingScale ? { size: "lg" as const } : {})}>
+          {title}
+        </Heading>
+        <Text as="p" size="lg">
+          Semantic content stays concise by default; each inspection aid can be added or removed on
+          its own.
+        </Text>
+      </header>
+
+      <section aria-labelledby="family-authored-content" style={railStyle}>
+        <Heading id="family-authored-content" level={2}>
+          Authored content
+        </Heading>
+        <Prose measure={args.proseMeasure}>
+          <p>
+            A dependable guide keeps the main instruction readable and lets embedded controls opt
+            out of inherited prose styles.
+          </p>
+          <p>
+            Keep machine values such as <Code isolateBidi={args.bidiIsolation}>dir=auto</Code>{" "}
+            selectable when the surrounding sentence changes direction.
+          </p>
+        </Prose>
+        <div style={{ inlineSize: "18rem", maxInlineSize: "100%" }}>
+          {args.textRecovery ? (
+            <Text fullValue={longReference} truncate>
+              {longReference}
+            </Text>
+          ) : (
+            <Text>{longReference}</Text>
+          )}
+        </div>
+      </section>
+
+      <section aria-labelledby="family-reference-content" style={railStyle}>
+        <Heading id="family-reference-content" level={2}>
+          Reference content
+        </Heading>
+        <div style={splitStyle}>
+          <Blockquote
+            {...(args.citationContext
+              ? {
+                  attribution: "Documentation team",
+                  citeUrl: "https://example.com/guides/clear-errors",
+                  sourceTitle: "Clear error writing guide",
+                }
+              : {})}
+          >
+            <p>A useful error names what happened and the next safe action.</p>
+          </Blockquote>
+          <DescriptionList layout={args.descriptionLayout}>
+            <DescriptionTerm>Reading mode</DescriptionTerm>
+            <DescriptionDetails>Comfortable measure with natural wrapping.</DescriptionDetails>
+            <DescriptionTerm>Shortcut</DescriptionTerm>
+            <DescriptionDetails>
+              <KbdChord keys={[{ key: "Control" }, { key: "K" }]} platform={args.keyPlatform} />
+            </DescriptionDetails>
+          </DescriptionList>
+        </div>
+      </section>
+
+      <section aria-labelledby="family-machine-content" style={railStyle}>
+        <Heading id="family-machine-content" level={2}>
+          Inspectable machine content
+        </Heading>
+        <CodeBlock
+          code={sampleCode}
+          copyable={args.codeCopy}
+          highlightedLines={args.codeHighlights ? [3] : []}
+          label="Save action example"
+          language="tsx"
+          showLineNumbers={args.codeHighlights}
+        />
+        <DiffViewer
+          copyable={args.diffCopy}
+          label="Preference changes"
+          lineNavigation={args.diffNavigation}
+          lines={diffLines}
+          showSummary={args.diffSummary}
+        />
+        <JsonViewer
+          copyable={args.jsonCopy}
+          defaultExpandedDepth={2}
+          label="Reader preferences"
+          showActivePath={args.jsonPath}
+          value={jsonValue}
+        />
+      </section>
+    </Canvas>
+  );
+}
+
+const basicArgs: TypographyContentStoryArgs = {
+  bidiIsolation: false,
+  citationContext: false,
+  codeCopy: false,
+  codeHighlights: false,
+  descriptionLayout: "stacked",
+  diffCopy: false,
+  diffNavigation: false,
+  diffSummary: false,
+  headingScale: false,
+  jsonCopy: false,
+  jsonPath: false,
+  keyPlatform: "generic",
+  proseMeasure: "none",
+  textRecovery: false,
+};
+
+const recommendedArgs: TypographyContentStoryArgs = {
+  bidiIsolation: true,
+  citationContext: true,
+  codeCopy: true,
+  codeHighlights: true,
+  descriptionLayout: "responsive",
+  diffCopy: true,
+  diffNavigation: true,
+  diffSummary: true,
+  headingScale: true,
+  jsonCopy: true,
+  jsonPath: true,
+  keyPlatform: "mac",
+  proseMeasure: "prose",
+  textRecovery: true,
+};
+
+export const BasicDefaults: Story = {
+  args: basicArgs,
+  render: (args) => <TypographyFamilySpecimen args={args} title="Plain semantic defaults" />,
+};
+
+export const RecommendedMergora: Story = {
+  args: recommendedArgs,
+  render: (args) => <TypographyFamilySpecimen args={args} title="Mergora inspection workbench" />,
+};
+
+function ControlledInspectionSpecimen() {
+  const [activeLine, setActiveLine] = useState(0);
+  const [activePath, setActivePath] = useState("$.evidence");
+  const [expandedPaths, setExpandedPaths] = useState<readonly string[]>(["$", "$.evidence"]);
+  return (
+    <Canvas>
+      <Heading level={1} size="lg">
+        Controlled inspection state
+      </Heading>
+      <Text aria-live="polite" as="p" data-controlled-state="diff">
+        Active change row: {activeLine + 1}
+      </Text>
+      <DiffViewer
+        activeLine={activeLine}
+        label="Controlled preference changes"
+        lines={diffLines}
+        onActiveLineChange={(index) => setActiveLine(index)}
+      />
+      <Text aria-live="polite" as="p" data-controlled-state="json">
+        Active value: {activePath}
+      </Text>
+      <JsonViewer
+        activePath={activePath}
+        expandedPaths={expandedPaths}
+        label="Controlled reader preferences"
+        onActivePathChange={(path) => setActivePath(path)}
+        onExpandedPathsChange={setExpandedPaths}
+        value={jsonValue}
+      />
+    </Canvas>
+  );
+}
+
+export const ControlledInspection: Story = {
+  render: () => <ControlledInspectionSpecimen />,
+};
 
 export const TypographyWorkbench: Story = {
   render: () => (

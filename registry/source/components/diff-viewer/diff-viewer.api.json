@@ -67,6 +67,21 @@
       "type": "See exported TypeScript declaration."
     },
     {
+      "name": "lineNavigation",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "showSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
       "name": "copyLabel",
       "required": false,
       "type": "See exported TypeScript declaration."
@@ -83,7 +98,7 @@
     }
   ],
   "compositionPolicy": {
-    "semantics": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text; one row is in the tab order and vertical/Home/End/Page keys navigate rows.",
+    "semantics": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text. Summary, copy, and roving row navigation are independent; disabling them removes their UI, handlers, focus model, callbacks, and announcements.",
     "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
   }
 }

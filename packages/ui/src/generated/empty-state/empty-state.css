@@ -1,10 +1,11 @@
 /* Generated from registry/source/components/empty-state/empty-state.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-empty-state {
   align-items: center;
-  background: var(--mrg-semantic-color-background-surface);
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
   border-radius: var(--mrg-semantic-radius-panel);
   box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
   display: flex;
   flex-direction: column;
   gap: var(--mrg-semantic-space-stack-md);
@@ -15,28 +16,59 @@
   text-align: center;
 }
 
-[data-slot="empty-state-icon"] {
+.mrg-empty-state [data-slot="empty-state-icon"] {
   align-items: center;
-  background: var(--mrg-semantic-color-background-surface-sunken);
-  border-radius: var(--mrg-semantic-radius-pill);
+  background: var(--mrg-semantic-color-accent-background-subtle);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-accent-foreground-on-subtle);
   display: inline-flex;
   inline-size: var(--mrg-semantic-size-target-preferred);
   justify-content: center;
   min-block-size: var(--mrg-semantic-size-target-preferred);
 }
 
-[data-slot="empty-state-title"] {
+.mrg-empty-state [data-slot="empty-state-title"] {
   font-size: var(--mrg-semantic-font-size-heading-medium);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
   margin: 0;
+  text-wrap: balance;
 }
 
-[data-slot="empty-state-description"],
-[data-slot="empty-state-body"] {
-  max-inline-size: 62ch;
+.mrg-empty-state
+  :is(
+    [data-slot="empty-state-description"],
+    [data-slot="empty-state-body"],
+    [data-slot="empty-state-suggestions"]
+  ) {
+  max-inline-size: var(--mrg-semantic-size-content-prose);
   overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
-[data-slot="empty-state-actions"] {
+.mrg-empty-state [data-slot="empty-state-suggestions"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  inline-size: min(100%, var(--mrg-semantic-size-content-prose));
+  padding-block: var(--mrg-semantic-space-stack-sm);
+  text-align: start;
+}
+
+.mrg-empty-state [data-slot="empty-state-suggestions-label"] {
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-empty-state [data-slot="empty-state-suggestions"] ul {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  margin-block-end: 0;
+  padding-inline-start: var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-empty-state [data-slot="empty-state-actions"] {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
@@ -48,7 +80,8 @@
   .mrg-empty-state {
     padding-inline: var(--mrg-semantic-space-inline-lg);
   }
-  [data-slot="empty-state-actions"] {
+
+  .mrg-empty-state [data-slot="empty-state-actions"] {
     align-items: stretch;
     flex-direction: column;
     inline-size: 100%;
@@ -56,7 +89,10 @@
 }
 
 @media (forced-colors: active) {
-  .mrg-empty-state {
+  .mrg-empty-state,
+  .mrg-empty-state [data-slot="empty-state-icon"] {
+    background: Canvas;
     border-color: CanvasText;
+    color: CanvasText;
   }
 }

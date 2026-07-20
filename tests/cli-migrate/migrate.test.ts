@@ -136,6 +136,86 @@ describe("trusted migration planning", () => {
     ).toHaveLength(4);
   });
 
+  it("transactionally imports only compatible shadcn project settings and retains components.json", () => {
+    const fixture = project();
+    const configPath = resolve(fixture.root, "mergora.json");
+    const config = validateMergoraConfig(JSON.parse(readFileSync(configPath, "utf8")) as unknown);
+    const componentsPath = resolve(fixture.root, "components.json");
+    const components = {
+      $schema: "https://ui.shadcn.com/schema.json",
+      style: "new-york",
+      rsc: true,
+      tsx: true,
+      tailwind: {
+        config: "",
+        css: config.styling.globalCss,
+        baseColor: "neutral",
+        cssVariables: true,
+        prefix: "",
+      },
+      iconLibrary: "lucide",
+      aliases: {
+        components: "~/components",
+        utils: "~/lib/utils",
+        ui: "~/components/ui",
+        lib: "~/lib",
+        hooks: "~/hooks",
+      },
+      registries: {},
+    };
+    const beforeComponents = `${JSON.stringify(components, null, 2)}\n`;
+    writeFileSync(componentsPath, beforeComponents, "utf8");
+
+    const options = { projectRoot: fixture.root, target: "shadcn" as const };
+    const plan = planMigration(options);
+
+    expect(validateSchemaDocument("operation-plan", plan).errors).toEqual([]);
+    expect(plan.migrations[0]?.adapter).toBe("config-v1");
+    expect(plan.fileOperations).toEqual([
+      expect.objectContaining({ target: "mergora.json", operation: "structured-patch" }),
+    ]);
+    expect(plan.warnings.join(" ")).toContain("components.json file is retained");
+
+    const result = applyMigration(options, plan.planDigest);
+    const migrated = validateMergoraConfig(JSON.parse(readFileSync(configPath, "utf8")) as unknown);
+    expect(result.transaction.state).toBe("committed");
+    expect(migrated.aliases).toMatchObject({
+      components: "~/components/mergora",
+      hooks: "~/hooks/mergora",
+      lib: "~/lib/mergora",
+    });
+    expect(migrated.styling.globalCss).toBe(config.styling.globalCss);
+    expect(readFileSync(componentsPath, "utf8")).toBe(beforeComponents);
+  });
+
+  it("refuses to reinterpret installed Mergora ownership during shadcn settings migration", () => {
+    const fixture = project();
+    const config = validateMergoraConfig(
+      JSON.parse(readFileSync(resolve(fixture.root, "mergora.json"), "utf8")) as unknown,
+    );
+    writeFileSync(
+      resolve(fixture.root, "components.json"),
+      `${JSON.stringify({
+        $schema: "https://ui.shadcn.com/schema.json",
+        tsx: true,
+        tailwind: { css: config.styling.globalCss },
+        aliases: { components: "@/components", lib: "@/lib", hooks: "@/hooks" },
+      })}\n`,
+      "utf8",
+    );
+    const manifestPath = resolve(fixture.root, ".mergora/manifest.json");
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
+      items: Record<string, unknown>;
+    };
+    manifest.items["official:button"] = {};
+    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+    const plan = planMigration({ projectRoot: fixture.root, target: "shadcn" });
+    expect(plan.migrations[0]?.adapter).toBe("manual-checklist");
+    expect(plan.items.map(({ id }) => id)).toEqual(["official:button"]);
+    expect(plan.fileOperations).toEqual([]);
+  });
+
   it("rejects any external or mismatched migration ID", () => {
     const fixture = project();
     expect(listBuiltInMigrations()).toEqual([...listBuiltInMigrations()].sort());

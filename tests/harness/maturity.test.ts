@@ -1,14 +1,19 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  MANUAL_EVIDENCE_LANES,
+  RISK_CLASS_POLICIES,
   STABLE_ARTIFACT_IDS,
   aggregateEvidence,
   scheduleQualityChecks,
   validateMaturityCandidate,
   validateRiskInheritance,
   type ContextEvidenceRecord,
+  type ManualCoverageId,
   type ManualEvidenceRecord,
+  type ManualEvidenceLaneId,
   type MaturityCandidate,
+  type RiskClass,
 } from "../../packages/test-utils/src/index.js";
 
 const sourceDigest = `sha256:${"a".repeat(64)}`;
@@ -38,12 +43,40 @@ function evidenceRecord(
   } as ContextEvidenceRecord;
 }
 
-function manualRecord(): ManualEvidenceRecord {
+type PolicyLane = (typeof MANUAL_EVIDENCE_LANES)[number];
+
+function exactVersions(lane: PolicyLane): {
+  readonly os: string;
+  readonly browser: string;
+  readonly assistiveTechnology: string;
+} {
+  const previous = "versionSlot" in lane && lane.versionSlot === "previous";
+  const os =
+    lane.environment.os === "Windows"
+      ? "11.0"
+      : lane.environment.os === "macOS"
+        ? previous
+          ? "14.0"
+          : "15.0"
+        : previous
+          ? "17.0"
+          : "18.0";
+  const assistiveTechnology =
+    lane.environment.assistiveTechnology === "JAWS" ? (previous ? "2025.1" : "2026.1") : "2026.1";
+  return { os, browser: "126.0", assistiveTechnology };
+}
+
+function manualRecord(
+  lane: PolicyLane,
+  coverageIds: readonly ManualCoverageId[],
+  riskClass: RiskClass,
+): ManualEvidenceRecord {
+  const versions = exactVersions(lane);
   return {
     schemaVersion: 1,
-    recordId: "button-manual-release-1",
+    recordId: `${lane.id}-release-1`,
     itemId: "button",
-    riskClass: 1,
+    riskClass,
     releaseId: "release-1",
     sourceDigest,
     behaviorDependencyDigest: behaviorDigest,
@@ -54,48 +87,64 @@ function manualRecord(): ManualEvidenceRecord {
     tester: { id: "tester-1", name: "Test Operator" },
     reviewer: { id: "reviewer-1", name: "Review Operator" },
     environment: {
-      os: "Windows",
-      osVersion: "11.0",
-      browser: "Chromium",
-      browserVersion: "126.0",
-      assistiveTechnology: { name: "Screen Reader", version: "2024.1" },
-      input: "keyboard",
-      locale: "en-US",
-      direction: "ltr",
-      viewport: { width: 1280, height: 800 },
-      zoomPercent: 100,
-      theme: "light",
-      motion: "reduce",
+      laneId: lane.id,
+      os: lane.environment.os,
+      osVersion: versions.os,
+      browser: lane.environment.browser,
+      browserVersion: versions.browser,
+      ...(lane.environment.assistiveTechnology === null
+        ? {}
+        : {
+            assistiveTechnology: {
+              name: lane.environment.assistiveTechnology,
+              version: versions.assistiveTechnology,
+            },
+          }),
+      input: lane.environment.input,
+      locale: lane.environment.locale,
+      direction: lane.environment.direction,
+      viewport: lane.environment.viewport,
+      zoomPercent: lane.environment.zoomPercent,
+      theme: lane.environment.theme,
+      motion: lane.environment.motion,
     },
-    coverage: [
-      {
-        coverageId: "desktop-screen-reader-semantic-engine-a",
-        outcome: "pass",
-      },
-      {
-        coverageId: "desktop-screen-reader-semantic-engine-b",
-        outcome: "pass",
-      },
-      { coverageId: "keyboard-manual-visual", outcome: "pass" },
-    ],
+    coverage: coverageIds
+      .map((coverageId) => ({ coverageId, outcome: "pass" as const }))
+      .sort((left, right) => left.coverageId.localeCompare(right.coverageId)),
     tasks: [
       {
-        id: "activate-button",
-        instruction: "Focus and activate the button.",
-        expected: "The action runs once and focus remains visible.",
-        observed: "The action ran once and focus remained visible.",
+        id: "complete-primary-task",
+        instruction: "Complete the primary task in the named lane.",
+        expected: "The task remains operable and accurately announced.",
+        observed: "The task remained operable and accurately announced.",
         outcome: "pass",
       },
     ],
     overallOutcome: "pass",
     artifacts: [
       {
-        id: "manual-transcript",
-        artifact: "evidence/manual-transcript.txt",
+        id: `${lane.id}-artifact`,
+        artifact: `evidence/${lane.id}.json`,
         digest: artifactDigest,
       },
     ],
   };
+}
+
+function manualRecords(riskClass: RiskClass): readonly ManualEvidenceRecord[] {
+  const groupedClaims = new Map<ManualEvidenceLaneId, ManualCoverageId[]>();
+  for (const claim of RISK_CLASS_POLICIES[riskClass].requiredManualLaneClaims) {
+    const coverage = groupedClaims.get(claim.laneId) ?? [];
+    coverage.push(claim.coverageId);
+    groupedClaims.set(claim.laneId, coverage);
+  }
+  return [...groupedClaims.entries()]
+    .map(([laneId, coverageIds]) => {
+      const lane = MANUAL_EVIDENCE_LANES.find((entry) => entry.id === laneId);
+      if (lane === undefined) throw new Error(`missing manual policy lane ${laneId}`);
+      return manualRecord(lane, coverageIds, riskClass);
+    })
+    .sort((left, right) => left.environment.laneId.localeCompare(right.environment.laneId));
 }
 
 function stableCandidate(): MaturityCandidate {
@@ -152,7 +201,7 @@ function stableCandidate(): MaturityCandidate {
       generatedAt: "2026-07-18T01:00:00.000Z",
       records,
     },
-    manualEvidence: [manualRecord()],
+    manualEvidence: manualRecords(1),
     defects: [],
     limitations: [],
   };
@@ -215,6 +264,126 @@ describe("Stable maturity gate", () => {
     expect(result.eligible).toBe(false);
     expect(result.issues.map((entry) => entry.code)).toContain("maturity.unowned-conditional");
   });
+
+  it("does not let one environment satisfy both semantic engines", () => {
+    const candidate = stableCandidate();
+    const keyboard = candidate.manualEvidence.find(
+      (record) => record.environment.laneId === "windows-keyboard-edge",
+    );
+    const engineA = candidate.manualEvidence.find(
+      (record) => record.environment.laneId === "windows-nvda-firefox",
+    );
+    if (keyboard === undefined || engineA === undefined) throw new Error("expected base records");
+
+    const result = validateMaturityCandidate({
+      ...candidate,
+      manualEvidence: [
+        keyboard,
+        {
+          ...engineA,
+          coverage: [
+            {
+              coverageId: "desktop-screen-reader-semantic-engine-a",
+              outcome: "pass",
+            },
+            {
+              coverageId: "desktop-screen-reader-semantic-engine-b",
+              outcome: "pass",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result.eligible).toBe(false);
+    expect(result.issues.map((entry) => entry.code)).toContain("maturity.manual.lane-coverage");
+    expect(result.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          code: "maturity.missing-manual-coverage",
+          message: expect.stringContaining("macos-current-voiceover-safari"),
+        }),
+      ]),
+    );
+  });
+
+  it("does not count a record whose candidate digests or artifacts are invalid", () => {
+    const candidate = stableCandidate();
+    const result = validateMaturityCandidate({
+      ...candidate,
+      manualEvidence: candidate.manualEvidence.map((record) =>
+        record.environment.laneId === "windows-nvda-firefox"
+          ? {
+              ...record,
+              sourceDigest: `sha256:${"e".repeat(64)}`,
+              artifacts: [
+                {
+                  id: "manual-transcript",
+                  artifact: "C:\\private\\record.txt",
+                  digest: "latest",
+                },
+              ],
+            }
+          : record,
+      ),
+    });
+
+    expect(result.eligible).toBe(false);
+    expect(result.issues.map((entry) => entry.code)).toEqual(
+      expect.arrayContaining([
+        "maturity.manual-binding",
+        "maturity.manual.invalid-artifact",
+        "maturity.missing-manual-coverage",
+      ]),
+    );
+  });
+
+  it("requires current and previous support lanes to use different exact versions", () => {
+    const candidate = stableCandidate();
+    const current = candidate.manualEvidence.find(
+      (record) => record.environment.laneId === "macos-current-voiceover-safari",
+    );
+    if (current === undefined) throw new Error("expected current macOS record");
+    const result = validateMaturityCandidate({
+      ...candidate,
+      manualEvidence: candidate.manualEvidence.map((record) =>
+        record.environment.laneId === "macos-previous-voiceover-safari"
+          ? {
+              ...record,
+              environment: {
+                ...record.environment,
+                osVersion: current.environment.osVersion,
+              },
+            }
+          : record,
+      ),
+    });
+
+    expect(result.eligible).toBe(false);
+    expect(result.issues.map((entry) => entry.code)).toContain(
+      "maturity.manual-version-slot-collision",
+    );
+  });
+
+  it("invalidates a Risk Class 3 lane when the tester self-reviews", () => {
+    const candidate = stableCandidate();
+    const classThreeRecords = manualRecords(3);
+    const result = validateMaturityCandidate({
+      ...candidate,
+      riskClass: 3,
+      manualEvidence: classThreeRecords.map((record, index) =>
+        index === 0 ? { ...record, reviewer: record.tester } : record,
+      ),
+    });
+
+    expect(result.eligible).toBe(false);
+    expect(result.issues.map((entry) => entry.code)).toEqual(
+      expect.arrayContaining([
+        "maturity.manual.independent-review",
+        "maturity.missing-manual-coverage",
+      ]),
+    );
+  });
 });
 
 describe("risk scheduling", () => {
@@ -230,5 +399,9 @@ describe("risk scheduling", () => {
     expect(schedule.nightly).toContain("performance-scale");
     expect(schedule.releaseCandidate).toContain("interruption-recovery");
     expect(schedule.manualCoverage).toContain("voice-control");
+    expect(schedule.manualLaneClaims).toContainEqual({
+      laneId: "android-switch-access-chrome",
+      coverageId: "switch-control",
+    });
   });
 });

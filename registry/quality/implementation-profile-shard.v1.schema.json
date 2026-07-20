@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/schemas/implementation-profile-shard-v1.schema.json",
+  "title": "Mergora implementation profile shard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "category", "auditPendingIds", "profiles"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "category": { "$ref": "#/$defs/id" },
+    "auditPendingIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/id" }
+    },
+    "profiles": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/profile" }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4000
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "location"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "repository-file",
+            "generated-artifact",
+            "official-documentation",
+            "manual-record"
+          ]
+        },
+        "location": { "$ref": "#/$defs/nonEmptyString" }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reference" }
+    },
+    "deliveryStatus": {
+      "enum": ["planned", "implemented-unverified", "evidence-backed", "blocked"]
+    },
+    "statement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": { "$ref": "#/$defs/deliveryStatus" },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["comparison", "summary", "references"],
+      "properties": {
+        "comparison": {
+          "enum": ["direct-component", "common-composition", "no-direct-equivalent"]
+        },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reference" }
+        }
+      }
+    },
+    "advantage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references", "enhancementIds"],
+      "properties": {
+        "status": { "$ref": "#/$defs/deliveryStatus" },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" },
+        "enhancementIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        }
+      }
+    },
+    "visualSignature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references", "patternIds", "tokenReferences"],
+      "properties": {
+        "status": { "$ref": "#/$defs/deliveryStatus" },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" },
+        "patternIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/id" }
+        },
+        "tokenReferences": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^--mrg-semantic-[a-z0-9]+(?:-[a-z0-9]+)*$"
+          }
+        }
+      }
+    },
+    "enhancement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "summary",
+        "references",
+        "storybookControlNames",
+        "api",
+        "defaultEnabled",
+        "disabledBehavior"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "status": { "$ref": "#/$defs/deliveryStatus" },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" },
+        "storybookControlNames": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        },
+        "api": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "names", "enableWhen"],
+          "properties": {
+            "kind": { "enum": ["prop", "compound-part", "hook", "composition"] },
+            "names": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/nonEmptyString" }
+            },
+            "enableWhen": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        },
+        "defaultEnabled": { "type": "boolean" },
+        "disabledBehavior": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ui", "behavior", "events", "accessibility"],
+          "properties": {
+            "ui": { "$ref": "#/$defs/nonEmptyString" },
+            "behavior": { "$ref": "#/$defs/nonEmptyString" },
+            "events": { "$ref": "#/$defs/nonEmptyString" },
+            "accessibility": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        }
+      }
+    },
+    "storybookEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "mode",
+        "modulePath",
+        "exportName",
+        "enhancementControls",
+        "references"
+      ],
+      "properties": {
+        "status": { "enum": ["missing", "declared", "tested", "blocked"] },
+        "mode": {
+          "enum": ["basic-enhancements-disabled", "recommended-enhancements-enabled"]
+        },
+        "modulePath": { "type": ["string", "null"] },
+        "exportName": { "type": ["string", "null"] },
+        "enhancementControls": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/nonEmptyString" }
+        },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": { "enum": ["not-verified", "partial", "verified", "blocked"] },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "summary", "references"],
+      "properties": {
+        "code": { "$ref": "#/$defs/id" },
+        "summary": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "maturityAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "rationale", "references"],
+      "properties": {
+        "status": {
+          "enum": [
+            "not-ready",
+            "experimental-candidate",
+            "beta-candidate",
+            "ready-for-promotion-review",
+            "deprecated-candidate",
+            "blocked"
+          ]
+        },
+        "rationale": { "$ref": "#/$defs/nonEmptyString" },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "ordinaryShadcnBaseline",
+        "mergoraAdvantage",
+        "visualSignature",
+        "optionalEnhancements",
+        "storybook",
+        "accessibilityEvidence",
+        "interactionEvidence",
+        "parityEvidence",
+        "blockers",
+        "maturityAssessment"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "ordinaryShadcnBaseline": { "$ref": "#/$defs/baseline" },
+        "mergoraAdvantage": { "$ref": "#/$defs/advantage" },
+        "visualSignature": { "$ref": "#/$defs/visualSignature" },
+        "optionalEnhancements": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/enhancement" }
+        },
+        "storybook": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basic", "enhanced"],
+          "properties": {
+            "basic": { "$ref": "#/$defs/storybookEvidence" },
+            "enhanced": { "$ref": "#/$defs/storybookEvidence" }
+          }
+        },
+        "accessibilityEvidence": { "$ref": "#/$defs/assessment" },
+        "interactionEvidence": { "$ref": "#/$defs/assessment" },
+        "parityEvidence": { "$ref": "#/$defs/assessment" },
+        "blockers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/blocker" }
+        },
+        "maturityAssessment": { "$ref": "#/$defs/maturityAssessment" }
+      }
+    }
+  }
+}

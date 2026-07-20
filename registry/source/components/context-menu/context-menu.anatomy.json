@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "context-menu",
+  "root": {
+    "element": "span containing a native button target and portalled menu",
+    "ref": "HTMLButtonElement",
+    "slot": "context-menu",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "context-menu-invocation-hint",
+      "element": "span associated with the target by aria-describedby",
+      "stability": "documented"
+    },
+    {
+      "slot": "dropdown-menu-content",
+      "element": "div role=menu",
+      "stability": "documented"
+    }
+  ]
+}

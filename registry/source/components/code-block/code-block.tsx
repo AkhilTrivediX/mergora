@@ -8,17 +8,31 @@ import "./code-block.css";
 export type CodeBlockStatus = "idle" | "copied" | "error";
 
 export interface CodeBlockProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Exact source text rendered line by line and written by the optional copy action. */
   readonly code: string;
+  /** Localized status announced after a successful clipboard write. */
   readonly copiedLabel?: string;
+  /** Adds the clipboard action and its private live status when enabled. */
+  readonly copyable?: boolean;
+  /** Localized status announced when the clipboard write fails. */
   readonly copyErrorLabel?: string;
+  /** Localized accessible label for the clipboard action. */
   readonly copyLabel?: string;
+  /** Optional visible filename shown in place of the region label. */
   readonly filename?: string;
+  /** One-based line numbers receiving a visible and screen-reader highlight cue. */
   readonly highlightedLines?: readonly number[];
+  /** Accessible name for the code region and source viewport. */
   readonly label: string;
+  /** Optional language identifier displayed as source context. */
   readonly language?: string;
+  /** Called only after the exact source text is written successfully. */
   readonly onCopyComplete?: (code: string) => void;
+  /** Replaces each line's visual content without changing copy-source bytes or numbering. */
   readonly renderLine?: (line: string, lineNumber: number) => ReactNode;
+  /** Shows aria-hidden one-based line numbers alongside source lines. */
   readonly showLineNumbers?: boolean;
+  /** Wraps long source lines; false keeps a keyboard-scrollable horizontal viewport. */
   readonly wrap?: boolean;
 }
 
@@ -52,6 +66,7 @@ export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function Cod
     className,
     code,
     copiedLabel: copiedLabelProp,
+    copyable = true,
     copyErrorLabel: copyErrorLabelProp,
     copyLabel: copyLabelProp,
     filename,
@@ -99,6 +114,7 @@ export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function Cod
           ? "mrg-code-block"
           : `mrg-code-block ${className}`
       }
+      data-copyable={copyable ? "true" : "false"}
       data-slot="code-block"
       data-wrap={wrap ? "true" : "false"}
       role="region"
@@ -106,15 +122,17 @@ export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function Cod
       <div className="mrg-code-block-header" data-slot="code-block-header">
         <span data-slot="code-block-title">{filename ?? label}</span>
         {language === undefined ? null : <span data-slot="code-block-language">{language}</span>}
-        <button
-          aria-describedby={statusId}
-          data-copy-status={status}
-          data-slot="code-block-copy"
-          onClick={() => void copy()}
-          type="button"
-        >
-          {status === "copied" ? copiedLabel : copyLabel}
-        </button>
+        {copyable ? (
+          <button
+            aria-describedby={statusId}
+            data-copy-status={status}
+            data-slot="code-block-copy"
+            onClick={() => void copy()}
+            type="button"
+          >
+            {status === "copied" ? copiedLabel : copyLabel}
+          </button>
+        ) : null}
       </div>
       <pre aria-label={sourceLabel} data-slot="code-block-scroll" tabIndex={0}>
         <code data-slot="code-block-code">
@@ -145,9 +163,11 @@ export const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(function Cod
           })}
         </code>
       </pre>
-      <span className="mrg-code-block-sr-only" id={statusId} role="status">
-        {status === "copied" ? copiedLabel : status === "error" ? copyErrorLabel : ""}
-      </span>
+      {copyable ? (
+        <span className="mrg-code-block-sr-only" id={statusId} role="status">
+          {status === "copied" ? copiedLabel : status === "error" ? copyErrorLabel : ""}
+        </span>
+      ) : null}
     </div>
   );
 });

@@ -23,8 +23,11 @@ import "./rating.css";
 export type RatingValue = number | null;
 
 export interface RatingLabelContext {
+  /** Active provider locale for consumer-owned localized formatting. */
   readonly locale: string;
+  /** Configured highest selectable rating. */
   readonly maximum: number;
+  /** Rating option or committed value currently being labelled. */
   readonly value: number;
 }
 
@@ -32,28 +35,48 @@ export interface RatingProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Adds an explicit no-rating radio; false removes that option and cannot combine with required. */
   readonly allowClear?: boolean;
+  /** Localized label for the optional no-rating choice and empty read-only value. */
   readonly clearLabel?: string;
+  /** Initial rating for uncontrolled use and native form reset. */
   readonly defaultValue?: RatingValue;
+  /** Optional persistent guidance associated with every rating option. */
   readonly description?: ReactNode;
+  /** Disables every radio option and successful read-only hidden control. */
   readonly disabled?: boolean;
+  /** Optional persistent error content associated with every rating option. */
   readonly error?: ReactNode;
+  /** Native form owner id applied to rating radios or the read-only hidden input. */
   readonly form?: string;
+  /** Returns a bounded localized accessible label for an editable rating option. */
   readonly formatOptionLabel?: (context: RatingLabelContext) => string;
+  /** Returns bounded localized text for the committed read-only rating value. */
   readonly formatValueLabel?: (context: RatingLabelContext) => string;
+  /** Applies invalid styling and aria-invalid alongside visible error content. */
   readonly invalid?: boolean;
+  /** Persistent visible fieldset legend or read-only rating label. */
   readonly label: ReactNode;
+  /** Number of whole editable options from one through ten; defaults to five. */
   readonly maximum?: number;
+  /** Required native form field name used by radios and read-only serialization. */
   readonly name: string;
+  /** Reports the next selected rating or null from the optional clear choice. */
   readonly onValueChange?: (value: RatingValue) => void;
+  /** Replaces interactive radios with static stars, value text, and hidden serialization. */
   readonly readOnly?: boolean;
+  /** Localized visible context identifying the static read-only presentation. */
   readonly readOnlyLabel?: string;
+  /** Requires one numbered radio and disallows the optional no-rating choice. */
   readonly required?: boolean;
+  /** Localized visible marker appended to the legend when required. */
   readonly requiredLabel?: string;
+  /** Controlled rating; user selections are proposed through onValueChange. */
   readonly value?: RatingValue;
 }
 
 interface ProcessLike {
+  /** Optional runtime environment used only to gate development diagnostics. */
   readonly env?: { readonly NODE_ENV?: string };
 }
 
@@ -108,7 +131,10 @@ export function assertRatingMaximum(maximum: number): number {
 export function assertRatingValue(
   value: RatingValue,
   maximum: number,
-  options: { readonly readOnly: boolean },
+  options: {
+    /** Allows fractional and zero values only for the static read-only presentation. */
+    readonly readOnly: boolean;
+  },
 ): RatingValue {
   if (value === null) return value;
   if (!Number.isFinite(value) || value < 0 || value > maximum) {
@@ -128,9 +154,13 @@ export function ratingFillForPosition(value: RatingValue, position: number): num
 }
 
 export function resolveRatingKeyboardIndex(input: {
+  /** Zero-based index of the currently focused enabled radio. */
   readonly current: number;
+  /** Logical direction used to mirror horizontal arrow navigation. */
   readonly direction: "ltr" | "rtl";
+  /** Positive number of enabled radios participating in movement. */
   readonly itemCount: number;
+  /** Keyboard key considered for Home, End, or directional movement. */
   readonly key: string;
 }): number | null {
   const { current, direction, itemCount, key } = input;

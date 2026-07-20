@@ -1,0 +1,99 @@
+.mrg-image {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.mrg-image__frame {
+  aspect-ratio: var(--mrg-image-aspect-ratio, auto);
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  display: grid;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  overflow: hidden;
+  place-items: center;
+  position: relative;
+}
+
+.mrg-image__media {
+  block-size: 100%;
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+.mrg-image[data-fit="contain"] .mrg-image__media {
+  object-fit: contain;
+}
+
+.mrg-image[data-fit="cover"] .mrg-image__media {
+  object-fit: cover;
+}
+
+.mrg-image[data-fit="none"] .mrg-image__media {
+  block-size: auto;
+  inline-size: auto;
+  object-fit: none;
+}
+
+.mrg-image__fallback {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: var(--mrg-semantic-space-inset-md);
+  position: absolute;
+  text-align: center;
+}
+
+.mrg-image__status {
+  align-items: center;
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  color: var(--mrg-semantic-color-foreground-secondary);
+  display: flex;
+  font-size: var(--mrg-semantic-font-size-label);
+  gap: var(--mrg-semantic-space-inline-xs);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-image__status-mark {
+  background: var(--mrg-semantic-color-brand-living);
+  block-size: var(--mrg-semantic-border-width-strong);
+  flex: 0 0 auto;
+  inline-size: var(--mrg-semantic-size-icon-sm);
+}
+
+.mrg-image[data-state="error"] .mrg-image__status-mark,
+.mrg-image[data-state="rejected"] .mrg-image__status-mark {
+  background: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-image *,
+  .mrg-image *::before,
+  .mrg-image *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-image__frame,
+  .mrg-image__fallback,
+  .mrg-image__status {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-image__status-mark {
+    background: Highlight;
+  }
+}

@@ -9,12 +9,14 @@ import type {
 } from "../../../registry/source/components/dialog/index";
 
 interface DialogSpecimenProps {
+  readonly dismissalDiscovery?: boolean;
   readonly dismissPolicy?: DialogDismissPolicy;
   readonly longContent?: boolean;
   readonly rtl?: boolean;
 }
 
 function DialogSpecimen({
+  dismissalDiscovery = false,
   dismissPolicy = "outside-and-escape",
   longContent = false,
   rtl = false,
@@ -25,7 +27,17 @@ function DialogSpecimen({
     <Dialog.Root>
       <Dialog.Trigger>{rtl ? "مراجعة التغييرات" : "Review changes"}</Dialog.Trigger>
       <Dialog.Overlay dir={rtl ? "rtl" : "ltr"}>
-        <Dialog.Content dismissPolicy={dismissPolicy} initialFocusRef={closeRef}>
+        <Dialog.Content
+          dismissHint={
+            dismissalDiscovery
+              ? dismissPolicy === "explicit"
+                ? "Use one of the visible actions to close this review."
+                : "Press Escape or use the visible return action to close this review."
+              : undefined
+          }
+          dismissPolicy={dismissPolicy}
+          initialFocusRef={closeRef}
+        >
           <Dialog.Header>
             <Dialog.Title>{rtl ? "مراجعة التغييرات" : "Review source changes"}</Dialog.Title>
           </Dialog.Header>
@@ -97,22 +109,51 @@ function ControlledDialogSpecimen() {
 }
 
 const meta = {
-  component: Dialog.Root,
+  argTypes: {
+    dismissalDiscovery: { control: "boolean" },
+    dismissPolicy: {
+      control: "inline-radio",
+      options: ["outside-and-escape", "escape-only", "explicit"],
+    },
+    longContent: { control: "boolean" },
+    rtl: { control: "boolean" },
+  },
+  component: DialogSpecimen,
   parameters: {
     a11y: { test: "error" },
     docs: {
       description: {
         component:
-          "Experimental P1 tracer. Browser and manual assistive-technology evidence remain intentionally unclaimed.",
+          "Source-present Dialog with automated browser evidence. Manual assistive-technology and regenerated parity evidence remain incomplete.",
       },
     },
     layout: "centered",
   },
   title: "Components/Dialog",
-} satisfies Meta<typeof Dialog.Root>;
+} satisfies Meta<typeof DialogSpecimen>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const BasicDefaults: Story = {
+  args: {
+    dismissalDiscovery: false,
+    dismissPolicy: "outside-and-escape",
+    longContent: false,
+    rtl: false,
+  },
+  name: "Basic · enhancements disabled",
+};
+
+export const RecommendedMergora: Story = {
+  args: {
+    dismissalDiscovery: true,
+    dismissPolicy: "explicit",
+    longContent: false,
+    rtl: false,
+  },
+  name: "Recommended Mergora",
+};
 
 export const DefaultUncontrolled: Story = {
   name: "Default uncontrolled",

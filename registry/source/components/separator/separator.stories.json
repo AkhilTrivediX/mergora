@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "itemId": "separator",
   "states": [
-    { "id": "default", "applicability": { "status": "applicable" }, "story": "SeparatorModes" },
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
     {
       "id": "hover",
       "applicability": {
@@ -119,7 +119,7 @@
     {
       "id": "semantic-horizontal",
       "applicability": { "status": "applicable" },
-      "story": "SeparatorModes"
+      "story": "RecommendedMergora"
     },
     {
       "id": "semantic-vertical",

@@ -16,6 +16,7 @@
     "Spinner is always aria-hidden, unfocusable decorative output and never owns a loading announcement or live descendant.",
     "BusyRegion owns role=region, aria-busy, and exactly one label/labelledby relationship; semantic overrides are rejected at type and runtime boundaries.",
     "Announcements are opt-in, polite, emitted only when an announcing busy period starts, and deduplicated through the nearest ScreenReaderAnnouncer.Provider outside the aria-busy subtree.",
-    "Reduced motion removes rotation while preserving a visually distinct static busy glyph."
+    "Reduced motion removes rotation while preserving a visually distinct static busy glyph.",
+    "announce=false removes the optional announcement effect and event while retaining only the named aria-busy region."
   ]
 }

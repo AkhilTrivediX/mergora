@@ -5,7 +5,7 @@
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "NativeScrollAffordance"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -66,7 +66,7 @@
     {
       "id": "populated",
       "applicability": { "status": "applicable" },
-      "story": "NativeScrollAffordance"
+      "story": "RecommendedMergora"
     },
     {
       "id": "partial",

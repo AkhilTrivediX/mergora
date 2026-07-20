@@ -8,13 +8,13 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["wrapped", "unwrapped", "long-content", "rtl"],
+  "stateGroups": ["wrapped", "unwrapped", "bidi-isolated", "long-content", "rtl"],
   "slots": [
     {
       "name": "code",
       "semanticElement": "code",
       "refTarget": "HTMLElement",
-      "states": ["wrap"]
+      "states": ["wrap", "bidi-isolated"]
     }
   ],
   "contract": {

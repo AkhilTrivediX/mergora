@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "collaboration-presence",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, real-time accuracy, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "named unordered list with visible person and status text",
+    "rolePolicy": "Avatars are decorative because the adjacent name is authoritative.",
+    "refTarget": "HTMLUListElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Static presence adds no focus stops; consumer-provided interactive avatar content remains consumer-owned."
+    }
+  ],
+  "nonColor": "Every state is explicit visible text; border color and style are supplementary.",
+  "responsive": "The list wraps and becomes a single column on narrow surfaces; logical layout supports RTL.",
+  "stableSelectors": {
+    "root": "[data-slot=collaboration-presence]",
+    "parts": [
+      "collaboration-presence-list",
+      "collaboration-presence-avatar",
+      "collaboration-presence-label",
+      "collaboration-presence-summary"
+    ],
+    "attributes": ["data-presence-status"]
+  },
+  "timePolicy": "Stale derivation requires an explicit now value, avoiding hydration drift and making tests deterministic.",
+  "consumerResponsibilities": [
+    "Own real-time transport, authentication, authorization and privacy.",
+    "Choose a truthful stale threshold and refresh policy.",
+    "Localize status and summary text.",
+    "Do not use presence for safety-critical availability or monitoring."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "all-status-labels",
+      "non-color",
+      "deterministic-stale",
+      "summary-off",
+      "empty",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["screen-reader", "speech", "switch", "touch", "zoom", "color-vision"],
+    "recordedEvidence": []
+  }
+}

@@ -21,7 +21,9 @@ export type MergoraMessageScalar = string | number;
 export type MergoraMessageValue = MergoraMessageScalar | readonly MergoraMessageScalar[];
 
 export interface MergoraMessageFormatContext {
+  /** Supplies the resolved provider locale to message formatters. */
   readonly locale: string;
+  /** Supplies named scalar or list values for localized formatting. */
   readonly values: Readonly<Record<string, MergoraMessageValue>>;
 }
 
@@ -30,16 +32,25 @@ export interface MergoraMessageFormatContext {
  * when a translation needs Intl plural/select behavior or grammatical reordering.
  */
 export type MergoraMessage = string | ((context: MergoraMessageFormatContext) => string);
+/** Maps semantic message keys to localized strings or formatter callbacks. */
 export type MergoraMessages = Readonly<Record<string, MergoraMessage>>;
 
 export interface MergoraContextValue {
+  /** Exposes the resolved locale inherited by Mergora descendants. */
   readonly locale: string;
+  /** Exposes the resolved logical text direction. */
   readonly direction: DirectionValue;
+  /** Exposes the merged message catalog by semantic key. */
   readonly messages: MergoraMessages;
+  /** Exposes the resolved IANA time-zone identifier. */
   readonly timeZone: string;
+  /** Exposes the resolved portal target or null for document body after mount. */
   readonly portalContainer: HTMLElement | null;
+  /** Exposes the resolved reduced-motion policy. */
   readonly reducedMotion: MergoraReducedMotion;
+  /** Exposes the resolved shared density policy. */
   readonly density: MergoraDensity;
+  /** Resolves a catalog key or fallback with localized named values. */
   readonly getMessage: (
     key: string,
     fallback: MergoraMessage,
@@ -64,14 +75,21 @@ export interface MergoraProviderProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "dir" | "lang"
 > {
+  /** Subtree that receives the resolved Mergora context and boundary attributes. */
   readonly children: ReactNode;
+  /** Locale applied to the native lang attribute and message formatting; omitted values inherit. */
   readonly locale?: string;
+  /** Text direction applied to native dir and direction context; omitted values inherit. */
   readonly direction?: DirectionValue;
+  /** Message overrides merged by key with the nearest provider. */
   readonly messages?: MergoraMessages;
+  /** Time-zone identifier exposed through context; omitted values inherit. */
   readonly timeZone?: string;
   /** A null value intentionally selects document.body once mounted; undefined inherits. */
   readonly portalContainer?: HTMLElement | null;
+  /** Motion policy exposed to Mergora descendants; omitted values inherit. */
   readonly reducedMotion?: MergoraReducedMotion;
+  /** Density policy applied to the subtree's shared tokens; omitted values inherit. */
   readonly density?: MergoraDensity;
   /** Merges provider attributes into one concrete child instead of adding a div. */
   readonly asChild?: boolean;

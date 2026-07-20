@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scheduler-kit",
+  "root": {
+    "element": "div containing header, calendar filters and main calendar/agenda/editor workspace",
+    "ref": "HTMLDivElement",
+    "slot": "scheduler-kit",
+    "stableAttributes": ["data-slot", "data-maturity", "data-offline"]
+  },
+  "parts": [
+    { "name": "header", "element": "header", "slot": "scheduler-header" },
+    { "name": "filters", "element": "aside", "slot": "scheduler-filters" },
+    { "name": "main", "element": "main", "slot": "scheduler-main" },
+    { "name": "agenda", "element": "section", "slot": "scheduler-agenda" },
+    { "name": "editor", "element": "section", "slot": "scheduler-editor" },
+    { "name": "conflicts", "element": "section", "slot": "scheduler-conflicts" }
+  ]
+}

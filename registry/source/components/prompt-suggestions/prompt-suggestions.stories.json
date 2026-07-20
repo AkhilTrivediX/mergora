@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prompt-suggestions",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicPromptSuggestions"
+    },
+    {
+      "id": "selected",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedPromptSuggestions"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "long-content",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

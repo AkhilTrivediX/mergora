@@ -14,7 +14,8 @@
   "layout": {
     "horizontal": "One semantic border-width token in the block axis and fluid inline size.",
     "vertical": "One semantic border-width token in the inline axis and stretch within the parent.",
-    "forcedColors": "CanvasText provides a visible system-color line."
+    "forcedColors": "CanvasText provides a visible system-color line.",
+    "spacing": "Optional logical margin uses semantic spacing tokens; none removes component-owned margin."
   },
   "stableSelectors": {
     "root": "[data-slot=separator]",

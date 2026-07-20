@@ -5,12 +5,12 @@
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "DisclosureNavigationWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
       "applicability": { "status": "applicable" },
-      "story": "DisclosureNavigationWorkbench"
+      "story": "RecommendedMergora"
     },
     {
       "id": "active",

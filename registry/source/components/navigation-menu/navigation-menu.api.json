@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navigation-menu",
+  "entryExport": "NavigationMenu",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML nav attributes except owned children",
+  "exports": [
+    { "kind": "function", "name": "isSafeNavigationMenuHref" },
+    { "kind": "component", "name": "NavigationMenu" },
+    { "kind": "type", "name": "NavigationMenuGroupItem" },
+    { "kind": "type", "name": "NavigationMenuItem" },
+    { "kind": "type", "name": "NavigationMenuLinkItem" },
+    { "kind": "type", "name": "NavigationMenuProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "open group",
+      "controlled": "openGroupId",
+      "uncontrolled": "defaultOpenGroupId",
+      "callback": "onOpenGroupChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "destination preview",
+      "api": "renderLinkPreview",
+      "disabled": "omission removes preview handlers, state, region, name, and rendered content"
+    }
+  ]
+}

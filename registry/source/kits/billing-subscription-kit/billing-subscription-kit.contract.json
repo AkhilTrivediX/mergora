@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "billing-subscription-kit",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not a payment integration, merchant backend, ledger, tax engine, PCI boundary, legal retention flow, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native form, radio fieldset, invoice table, acknowledgement checkbox, and explicit action buttons.",
+    "rolePolicy": "Errors are persistent alerts; change impact is optional output; destructive review is inline and never auto-confirms.",
+    "refTarget": "HTMLFormElement"
+  },
+  "keyboard": [
+    { "key": "Arrow keys", "behavior": "Use native radio-group navigation between enabled plans." },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through plan, invoice, payment, and cancellation controls in document order."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Activates the focused native or canonical control; cancellation still requires acknowledgement."
+    },
+    {
+      "key": "Native reset",
+      "behavior": "Restores the declared plan snapshot when mutable; read-only mode disables and cancels reset without plan callbacks or mutation."
+    }
+  ],
+  "nonColor": "Selected plan, invoice status, pending, error, and cancellation states include text, checked state, headings, and native semantics.",
+  "responsive": "Plan rows collapse intrinsically and the labelled invoice region owns horizontal overflow without widening the page.",
+  "stableSelectors": {
+    "root": "[data-slot=billing-subscription-kit]",
+    "parts": [
+      "billing-plans",
+      "billing-change-preview",
+      "billing-invoices",
+      "billing-payment-method",
+      "billing-cancellation-review"
+    ],
+    "attributes": ["data-selected", "data-status", "aria-busy"]
+  },
+  "consumerResponsibilities": [
+    "Calculate authoritative prices, taxes, credits, proration, effective dates, invoices, entitlements, and cancellation consequences on secured services.",
+    "Use a compliant payment provider and keep card data, provider secrets, and authorization outside this source kit.",
+    "Localize currency, dates, legal copy, and spoken labels and complete product security, privacy, legal, financial, browser, and assistive-technology review."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "native-form",
+      "controlled-uncontrolled",
+      "reset",
+      "read-only-reset",
+      "instance-safe-aria",
+      "table-semantics",
+      "destructive-confirmation",
+      "enhancement-disabled-path",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "zoom",
+      "financial-review",
+      "security-privacy-legal-review"
+    ],
+    "recordedEvidence": []
+  }
+}

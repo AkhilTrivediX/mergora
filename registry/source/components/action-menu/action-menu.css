@@ -8,24 +8,31 @@
 .mrg-action-menu-trigger {
   align-items: center;
   appearance: none;
-  background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: var(--mrg-semantic-radius-control);
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
   box-sizing: border-box;
-  color: var(--mrg-semantic-color-foreground-primary);
+  color: var(--mrg-component-control-foreground);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
   font-weight: var(--mrg-semantic-font-weight-label);
-  gap: var(--mrg-semantic-density-control-gap);
+  gap: var(--mrg-component-control-gap);
   justify-content: space-between;
   max-inline-size: 100%;
-  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-block-size: max(
+    var(--mrg-component-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   overflow-wrap: anywhere;
-  padding-block: var(--mrg-semantic-space-inline-sm);
-  padding-inline: var(--mrg-semantic-space-inline-lg);
+  padding-block: var(--mrg-component-control-padding-block);
+  padding-inline: var(--mrg-component-control-padding-inline);
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
 }
 
 .mrg-action-menu-trigger [data-slot="action-menu-trigger-label"] {
@@ -39,31 +46,43 @@
 
 .mrg-action-menu-trigger[data-hovered]:not([data-disabled]):not([data-pending="true"]),
 .mrg-action-menu-trigger[data-pressed]:not([data-disabled]):not([data-pending="true"]) {
-  background: var(--mrg-semantic-color-background-surface);
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-action-menu[data-open="true"] .mrg-action-menu-trigger {
+  background: var(--mrg-component-control-background-pressed);
+  border-color: var(--mrg-component-control-border-active);
 }
 
 .mrg-action-menu-trigger[data-focus-visible],
 .mrg-action-menu-item[data-focus-visible] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-action-menu-trigger[data-disabled] {
-  border-color: var(--mrg-semantic-color-border-disabled);
-  color: var(--mrg-semantic-color-foreground-disabled);
+  background: var(--mrg-component-control-background-disabled);
+  border-color: var(--mrg-component-control-border-disabled);
+  color: var(--mrg-component-control-foreground-disabled);
   cursor: not-allowed;
 }
 
 .mrg-action-menu-trigger[data-pending="true"] {
+  background: var(--mrg-semantic-color-status-loading-background);
+  border-color: var(--mrg-semantic-color-status-loading-border);
   cursor: progress;
 }
 
 .mrg-action-menu-popover {
   --mrg-action-menu-z-index: 20;
-  background: var(--mrg-semantic-color-background-surface-raised);
-  border-radius: var(--mrg-semantic-radius-overlay);
-  box-shadow: 0 var(--mrg-semantic-space-inline-xs) var(--mrg-semantic-space-inline-sm)
-    var(--mrg-semantic-color-overlay-scrim);
+  background: var(--mrg-component-overlay-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+  border-radius: var(--mrg-component-overlay-radius);
+  box-shadow: var(--mrg-component-overlay-elevation);
   box-sizing: border-box;
   max-block-size: min(var(--available-height), 22rem);
   max-inline-size: min(var(--trigger-width), calc(100vw - 2 * var(--mrg-semantic-space-stack-md)));
@@ -97,9 +116,9 @@
 .mrg-action-menu-item {
   background: transparent;
   border: 0;
-  border-radius: var(--mrg-semantic-radius-control);
+  border-radius: var(--mrg-component-control-radius);
   box-sizing: border-box;
-  color: var(--mrg-semantic-color-foreground-primary);
+  color: var(--mrg-component-control-foreground);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -121,7 +140,7 @@
 
 .mrg-action-menu-item[data-focused],
 .mrg-action-menu-item[data-hovered] {
-  background: var(--mrg-semantic-color-background-surface-sunken);
+  background: var(--mrg-component-control-background-hover);
 }
 
 .mrg-action-menu-item[data-intent="destructive"] {
@@ -160,6 +179,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .mrg-action-menu-trigger {
+    transition: none;
+  }
+
   .mrg-action-menu-popover[data-entering],
   .mrg-action-menu-popover[data-exiting] {
     animation: none;

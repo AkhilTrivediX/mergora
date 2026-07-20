@@ -5,7 +5,7 @@
     "element": "div",
     "ref": "HTMLDivElement",
     "slot": "inline",
-    "stableAttributes": ["data-slot", "data-gap", "data-align", "data-justify"]
+    "stableAttributes": ["data-slot", "data-gap", "data-align", "data-justify", "data-wrap"]
   },
   "parts": []
 }

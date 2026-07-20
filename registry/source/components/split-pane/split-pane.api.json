@@ -58,10 +58,12 @@
       "name": "locale/messages/formatValue",
       "required": false,
       "type": "localization overrides"
-    }
+    },
+    { "default": true, "name": "showStepControls", "required": false, "type": "boolean" }
   ],
   "partProps": {
     "Panel": "index is required; regionLabel opts into a named region without creating landmarks by default.",
-    "Handle": "index and an accessible name are required; collapseTarget enables Enter and a touch collapse/restore button only for a declared collapsible panel."
+    "Handle": "index and an accessible name are required; collapseTarget enables Enter and a touch collapse/restore button only for a declared collapsible panel.",
+    "enhancement": "showStepControls=false removes every button group, button event, label, and touch-control accessibility node while preserving separator keyboard/pointer operation; persistence and narrow stacking remain independently optional."
   }
 }

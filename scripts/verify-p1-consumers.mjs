@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { createServer } from "node:http";
 import {
   cpSync,
   existsSync,
@@ -10,11 +11,16 @@ import {
   readdirSync,
   realpathSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+import { chromium } from "@playwright/test";
+
+import { canonicalPackedContentDigest } from "./lib/packed-content-digest.mjs";
 
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fixtureRoot = join(workspaceRoot, "tests", "packed-consumers", "fixtures");
@@ -42,14 +48,18 @@ const textExtensions = new Set([
   ".yml",
 ]);
 
+const sharedRepresentativeIds = [
+  "button",
+  "dialog",
+  "combobox",
+  "date-picker",
+  "file-upload",
+  "data-grid",
+];
+const sourceOnlyWorkflowKitId = "admin-dashboard-shell";
 const requiredUiExports = [
   ".",
-  "./button",
-  "./button.css",
-  "./combobox",
-  "./combobox.css",
-  "./dialog",
-  "./dialog.css",
+  ...sharedRepresentativeIds.flatMap((id) => [`./${id}`, `./${id}.css`]),
   "./package.json",
 ];
 
@@ -96,7 +106,7 @@ const generatedSourcePayloads = new Map(
     readJson(join(generatedNativeSourceDirectory, `${id}.json`)),
   ]),
 );
-const packedSourceRequestIds = ["button", "dialog", "combobox"];
+const packedSourceRequestIds = [...sharedRepresentativeIds, sourceOnlyWorkflowKitId];
 
 function expectedSourceClosure(requested) {
   const visited = new Set();
@@ -144,8 +154,29 @@ function canonicalJson(value) {
   return `${JSON.stringify(normalize(value), null, 2)}\n`;
 }
 
+function compactCanonicalJson(value) {
+  const normalize = (entry) => {
+    if (Array.isArray(entry)) return entry.map(normalize);
+    if (entry === null || typeof entry !== "object") return entry;
+    return Object.fromEntries(
+      Object.entries(entry)
+        .sort(([left], [right]) => (left < right ? -1 : left > right ? 1 : 0))
+        .map(([key, nested]) => [key, normalize(nested)]),
+    );
+  };
+  return JSON.stringify(normalize(value));
+}
+
 function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
+}
+
+function semanticDigest(value) {
+  return `sha256:${sha256(compactCanonicalJson(value))}`;
+}
+
+function bytesDigest(bytes) {
+  return `sha256:${sha256(bytes)}`;
 }
 
 function isInside(root, candidate) {
@@ -165,7 +196,7 @@ function sanitize(value, temporaryRoot) {
   return sanitized;
 }
 
-function run(label, command, arguments_, cwd, temporaryRoot) {
+function run(label, command, arguments_, cwd, temporaryRoot, environment = {}) {
   const result = spawnSync(command, arguments_, {
     cwd,
     encoding: "utf8",
@@ -175,6 +206,7 @@ function run(label, command, arguments_, cwd, temporaryRoot) {
       COREPACK_ENABLE_DOWNLOAD_PROMPT: "0",
       FORCE_COLOR: "0",
       NO_COLOR: "1",
+      ...environment,
     },
     maxBuffer: 128 * 1024 * 1024,
     windowsHide: true,
@@ -189,6 +221,137 @@ function run(label, command, arguments_, cwd, temporaryRoot) {
   }
   process.stdout.write(`p1 packed consumers: ${label} passed\n`);
   return result.stdout;
+}
+
+function runWithExpectedStatus(
+  label,
+  command,
+  arguments_,
+  cwd,
+  temporaryRoot,
+  expectedStatus,
+  environment = {},
+) {
+  const result = spawnSync(command, arguments_, {
+    cwd,
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      CI: "1",
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0",
+      FORCE_COLOR: "0",
+      NO_COLOR: "1",
+      ...environment,
+    },
+    maxBuffer: 128 * 1024 * 1024,
+    windowsHide: true,
+  });
+  const detail = [result.stdout, result.stderr, result.error?.message]
+    .filter((part) => typeof part === "string" && part.trim() !== "")
+    .join("\n");
+  assert(
+    result.error === undefined && result.status === expectedStatus,
+    `${label} exited ${String(result.status)} instead of ${String(expectedStatus)}.\n${sanitize(detail, temporaryRoot)}`,
+  );
+  process.stdout.write(`p1 packed consumers: ${label} returned ${String(expectedStatus)} safely\n`);
+  return result.stdout;
+}
+
+function runRejected(label, command, arguments_, cwd, temporaryRoot, expectedPattern) {
+  const result = spawnSync(command, arguments_, {
+    cwd,
+    encoding: "utf8",
+    env: {
+      ...process.env,
+      CI: "1",
+      FORCE_COLOR: "0",
+      NO_COLOR: "1",
+    },
+    maxBuffer: 16 * 1024 * 1024,
+    windowsHide: true,
+  });
+  const detail = [result.stdout, result.stderr, result.error?.message]
+    .filter((part) => typeof part === "string" && part.trim() !== "")
+    .join("\n");
+  assert(
+    result.error === undefined && result.status !== null && result.status !== 0,
+    `${label} unexpectedly succeeded.\n${sanitize(detail, temporaryRoot)}`,
+  );
+  assert(
+    expectedPattern.test(detail),
+    `${label} failed without the expected rejection.\n${sanitize(detail, temporaryRoot)}`,
+  );
+  process.stdout.write(`p1 packed consumers: ${label} rejected safely\n`);
+}
+
+function resultEnvelope(output, command) {
+  const envelopes = output
+    .split(/\r?\n/u)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .flatMap((line) => {
+      try {
+        const value = JSON.parse(line);
+        return value?.schemaVersion === 1 && value?.command === command ? [value] : [];
+      } catch {
+        return [];
+      }
+    });
+  assert(
+    envelopes.length === 1,
+    `Packed CLI ${command} emitted ${String(envelopes.length)} result envelopes.`,
+  );
+  return envelopes[0];
+}
+
+function runCliJson(
+  label,
+  packedCli,
+  arguments_,
+  consumerDirectory,
+  temporaryRoot,
+  environment = {},
+) {
+  const output = run(
+    label,
+    process.execPath,
+    [packedCli, ...arguments_, "--json"],
+    consumerDirectory,
+    temporaryRoot,
+    environment,
+  );
+  const envelope = resultEnvelope(output, arguments_[0]);
+  assert(
+    envelope.ok === true && envelope.exitCode === 0,
+    `Packed CLI ${arguments_[0]} envelope failed.`,
+  );
+  return envelope;
+}
+
+function runCliJsonWithStatus(
+  label,
+  packedCli,
+  arguments_,
+  consumerDirectory,
+  temporaryRoot,
+  expectedStatus,
+  environment = {},
+) {
+  const output = runWithExpectedStatus(
+    label,
+    process.execPath,
+    [packedCli, ...arguments_, "--json"],
+    consumerDirectory,
+    temporaryRoot,
+    expectedStatus,
+    environment,
+  );
+  const envelope = resultEnvelope(output, arguments_[0]);
+  assert(
+    envelope.exitCode === expectedStatus,
+    `Packed CLI ${arguments_[0]} envelope exit code did not match the process.`,
+  );
+  return envelope;
 }
 
 function pnpm(label, arguments_, cwd, temporaryRoot) {
@@ -320,6 +483,14 @@ function validatePackageSources() {
   for (const subpath of requiredUiExports) {
     assert(uiManifest.exports?.[subpath] !== undefined, `Packed UI export ${subpath} is missing.`);
   }
+  assert(
+    uiManifest.exports?.[`./${sourceOnlyWorkflowKitId}`] === undefined &&
+      uiManifest.exports?.[`./${sourceOnlyWorkflowKitId}.css`] === undefined &&
+      !existsSync(
+        join(workspaceRoot, "packages", "ui", "src", "generated", sourceOnlyWorkflowKitId),
+      ),
+    `${sourceOnlyWorkflowKitId} must remain source-only in the package build.`,
+  );
 }
 
 function buildAndPack(artifactDirectory, temporaryRoot) {
@@ -355,7 +526,7 @@ function buildAndPack(artifactDirectory, temporaryRoot) {
       name: definition.name,
       path,
       role: definition.role,
-      sha256: sha256(bytes),
+      sha256: canonicalPackedContentDigest(bytes),
       version: sourceManifest.version,
     });
   }
@@ -471,18 +642,17 @@ function installSource(consumerDirectory, temporaryRoot) {
     "dist",
     "bin.js",
   );
-  run(
+  runCliJson(
     "packed CLI initialization",
-    process.execPath,
-    [packedCli, "init", "--cwd", ".", "--yes", "--non-interactive", "--json"],
+    packedCli,
+    ["init", "--cwd", ".", "--yes", "--non-interactive"],
     consumerDirectory,
     temporaryRoot,
   );
-  const output = run(
+  const envelope = runCliJson(
     "packed CLI source add",
-    process.execPath,
+    packedCli,
     [
-      packedCli,
       "add",
       ...packedSourceRequestIds,
       "--root",
@@ -491,30 +661,10 @@ function installSource(consumerDirectory, temporaryRoot) {
       "src/components",
       "--yes",
       "--non-interactive",
-      "--json",
     ],
     consumerDirectory,
     temporaryRoot,
   );
-  const envelopes = output
-    .split(/\r?\n/u)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .flatMap((line) => {
-      try {
-        const value = JSON.parse(line);
-        return value?.schemaVersion === 1 && value?.command === "add" ? [value] : [];
-      } catch {
-        return [];
-      }
-    });
-  assert(envelopes.length > 0, "Packed CLI add did not emit JSON.");
-  assert(
-    envelopes.length === 1,
-    `Packed CLI add emitted ${String(envelopes.length)} result envelopes: ${JSON.stringify(envelopes.map(({ status, result }) => ({ mode: result?.mode, status })))}`,
-  );
-  const envelope = envelopes[0];
-  assert(envelope.ok === true && envelope.exitCode === 0, "Packed CLI add envelope failed.");
   const result = envelope.result;
   assert(
     result.mode === "source-transaction",
@@ -525,16 +675,20 @@ function installSource(consumerDirectory, temporaryRoot) {
     "Packed CLI add did not install the exact generated dependency closure.",
   );
   assert(result.transaction?.state === "committed", "Packed CLI add did not commit a transaction.");
+  const installedDependencies = readJson(join(consumerDirectory, "package.json")).dependencies;
   assert(
-    readJson(join(consumerDirectory, "package.json")).dependencies?.["react-aria-components"] ===
-      "1.19.0",
+    installedDependencies?.["react-aria-components"] === "1.19.0",
     "Packed CLI add did not patch the exact React Aria dependency.",
+  );
+  assert(
+    installedDependencies?.["@tanstack/react-table"] === "8.21.3",
+    "Packed CLI add did not patch the exact Data Grid dependency.",
   );
   assert(
     result.manifest === ".mergora/manifest.json",
     "Packed CLI add manifest path is incorrect.",
   );
-  return result;
+  return { packedCli, result };
 }
 
 function assertPackedDependencyValues(manifest, packageName) {
@@ -719,6 +873,1099 @@ function sourceTreeDigest(consumerDirectory) {
   return digest.digest("hex");
 }
 
+function lifecycleStateDigest(consumerDirectory) {
+  const roots = ["package.json", "pnpm-lock.yaml", "mergora.json", "src", ".mergora"];
+  const files = roots.flatMap((target) => {
+    const path = join(consumerDirectory, target);
+    if (!existsSync(path)) return [];
+    return statSync(path).isDirectory() ? walkFiles(path) : [path];
+  });
+  const digest = createHash("sha256");
+  for (const path of files
+    .filter((path) => {
+      const target = relative(consumerDirectory, path).replaceAll("\\", "/");
+      return target !== ".mergora/transactions" && !target.startsWith(".mergora/transactions/");
+    })
+    .sort((left, right) => left.localeCompare(right, "en-US"))) {
+    const target = relative(consumerDirectory, path).replaceAll("\\", "/");
+    digest.update(target);
+    digest.update("\0");
+    digest.update(readFileSync(path));
+    digest.update("\0");
+  }
+  return digest.digest("hex");
+}
+
+function itemManifestEntry(manifest, itemId) {
+  const match = Object.entries(manifest.items).find(
+    ([qualifiedId]) => qualifiedId === itemId || qualifiedId.endsWith(`:${itemId}`),
+  );
+  assert(match !== undefined, `CLI source manifest omits ${itemId}.`);
+  return match[1];
+}
+
+function immutableBasePath(consumerDirectory, digest) {
+  assert(/^sha256:[a-f0-9]{64}$/u.test(digest), "Manifest base digest is invalid.");
+  const value = digest.slice("sha256:".length);
+  return join(
+    consumerDirectory,
+    ".mergora",
+    "bases",
+    "sha256",
+    value.slice(0, 2),
+    `${value.slice(2)}.blob`,
+  );
+}
+
+function writePackedUpdateFixture(consumerDirectory, manifest, itemId, variant = "disjoint") {
+  assert(
+    variant === "disjoint" || variant === "overlapping",
+    `Unsupported packed update fixture variant ${variant}.`,
+  );
+  const installed = itemManifestEntry(manifest, itemId);
+  const files = installed.files.map((file) => {
+    const bytes = readFileSync(immutableBasePath(consumerDirectory, file.base));
+    const binary = !(file.mediaType.startsWith("text/") || file.mediaType.includes("json"));
+    return {
+      content: bytes.toString(binary ? "base64" : "utf8"),
+      digest: bytesDigest(bytes),
+      encoding: binary ? "base64" : "utf8",
+      executable: false,
+      logicalPath: file.logicalPath,
+      mediaType: file.mediaType,
+      role: file.role,
+    };
+  });
+  const upstreamFile = files.find(({ logicalPath }) =>
+    logicalPath.endsWith(variant === "disjoint" ? "data-grid-css.d.ts" : "data-grid.css"),
+  );
+  assert(
+    upstreamFile !== undefined && upstreamFile.encoding === "utf8",
+    "Data Grid update fixture cannot find its selected text file.",
+  );
+  const version = variant === "disjoint" ? "0.0.1" : "0.0.2";
+  const marker = variant === "disjoint" ? "*.packed-update.css" : "align-items: flex-end;";
+  if (variant === "disjoint") {
+    upstreamFile.content += 'declare module "*.packed-update.css";\n';
+  } else {
+    const next = upstreamFile.content.replace("align-items: center;", marker);
+    assert(
+      next !== upstreamFile.content,
+      "Data Grid overlap fixture found no shared CSS declaration.",
+    );
+    upstreamFile.content = next;
+  }
+  upstreamFile.digest = bytesDigest(Buffer.from(upstreamFile.content, "utf8"));
+
+  const itemWithoutDigest = {
+    contractVersion: version,
+    dependencies: installed.dependencies,
+    files,
+    itemId,
+    kind: installed.kind,
+    lastMigration: null,
+    payloadUrl: `https://fixture.invalid/releases/${version}/items/${itemId}.json`,
+    registryDependencies: installed.registryDependencies,
+    renderedWithTransformContextDigest: installed.transformContextDigest,
+    resolved: version,
+  };
+  const item = {
+    ...itemWithoutDigest,
+    payloadDigest: semanticDigest(itemWithoutDigest),
+  };
+  const identity = {
+    id: "official",
+    origin: "https://fixture.invalid/registry/v1",
+    protocol: "mergora-v1",
+    trust: "local-development",
+  };
+  const registry = {
+    ...identity,
+    evidenceTier: "not-supplied",
+    identityDigest: semanticDigest(identity),
+    source: "verified-cache",
+  };
+  const releaseWithoutDigest = {
+    items: [item],
+    registry,
+    release: version,
+    schemaVersion: 1,
+  };
+  const manifestPayload = {
+    items: [{ itemId, payloadDigest: item.payloadDigest, resolved: item.resolved }],
+    registry,
+    release: releaseWithoutDigest.release,
+    schemaVersion: releaseWithoutDigest.schemaVersion,
+  };
+  const release = {
+    ...releaseWithoutDigest,
+    manifestDigest: semanticDigest(manifestPayload),
+  };
+  const releaseFile = `mergora-packed-${variant}-update.json`;
+  writeFileSync(join(consumerDirectory, releaseFile), canonicalJson(release), "utf8");
+  const upstreamTarget = installed.files.find(
+    ({ logicalPath }) => logicalPath === upstreamFile.logicalPath,
+  )?.target;
+  assert(upstreamTarget !== undefined, "Data Grid update fixture target is missing.");
+  return {
+    releaseFile,
+    upstreamContent: upstreamFile.content,
+    upstreamMarker: marker,
+    upstreamTarget,
+    version,
+  };
+}
+
+function verifyCustomizedSourceLifecycle(consumerDirectory, packedCli, temporaryRoot) {
+  const itemId = "data-grid";
+  const manifest = readJson(join(consumerDirectory, ".mergora", "manifest.json"));
+  const item = itemManifestEntry(manifest, itemId);
+  const ownedFile = item.files.find(({ target }) => target.endsWith("/data-grid.tsx"));
+  assert(ownedFile !== undefined, "Data Grid source ownership omits its implementation file.");
+  const targetPath = resolve(consumerDirectory, ...ownedFile.target.split("/"));
+  assert(isInside(consumerDirectory, targetPath), "Data Grid customization target escapes.");
+  const original = readFileSync(targetPath);
+  const customized = Buffer.concat([
+    original,
+    Buffer.from("\n// Consumer-owned packed-fixture customization.\n", "utf8"),
+  ]);
+  writeFileSync(targetPath, customized);
+
+  const statusEnvelope = runCliJson(
+    "packed CLI customized-source status",
+    packedCli,
+    ["status", "--cwd", "."],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  const statusItem = statusEnvelope.result.items.find(
+    ({ id }) => id === itemId || id.endsWith(`:${itemId}`),
+  );
+  assert(
+    statusItem?.status === "locally-modified" &&
+      statusItem.files.some(
+        ({ status, target }) => status === "locally-modified" && target === ownedFile.target,
+      ),
+    "Packed CLI status did not classify the consumer customization.",
+  );
+
+  const diffEnvelope = runCliJson(
+    "packed CLI customized-source diff",
+    packedCli,
+    ["diff", itemId, "--cwd", ".", "--local", "--format", "json"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    diffEnvelope.status === "differences" &&
+      diffEnvelope.result.hasDifferences === true &&
+      diffEnvelope.result.nameOnly.includes(ownedFile.target),
+    "Packed CLI diff did not expose the consumer customization.",
+  );
+
+  const updateFixture = writePackedUpdateFixture(consumerDirectory, manifest, itemId);
+  const upstreamDiffEnvelope = runCliJson(
+    "packed CLI customized-source upstream diff",
+    packedCli,
+    [
+      "diff",
+      itemId,
+      "--cwd",
+      ".",
+      "--upstream",
+      "--release-file",
+      updateFixture.releaseFile,
+      "--format",
+      "json",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  const upstreamDiff = upstreamDiffEnvelope.result.files.find(
+    ({ target }) => target === updateFixture.upstreamTarget,
+  );
+  assert(
+    upstreamDiffEnvelope.status === "differences" &&
+      upstreamDiff?.planned !== null &&
+      upstreamDiff?.planned !== undefined &&
+      upstreamDiff.planned.remoteDigest !== upstreamDiff.baseDigest &&
+      upstreamDiff.planned.conflicts.length === 0,
+    "Packed CLI upstream diff did not plan the independent Data Grid change.",
+  );
+
+  const updateEnvelope = runCliJson(
+    "packed CLI customized-source update",
+    packedCli,
+    [
+      "update",
+      itemId,
+      "--cwd",
+      ".",
+      "--release-file",
+      updateFixture.releaseFile,
+      "--no-install",
+      "--yes",
+      "--non-interactive",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    updateEnvelope.status === "committed" &&
+      updateEnvelope.result.mode === "semantic-update" &&
+      updateEnvelope.result.release === "0.0.1",
+    "Packed CLI did not commit the independent Data Grid update.",
+  );
+  assert(
+    readFileSync(targetPath).equals(customized),
+    "Semantic Sync discarded the independent consumer customization.",
+  );
+  assert(
+    readFileSync(
+      resolve(consumerDirectory, ...updateFixture.upstreamTarget.split("/")),
+      "utf8",
+    ).includes(updateFixture.upstreamMarker),
+    "Semantic Sync omitted the independent upstream change.",
+  );
+  const updatedManifest = readJson(join(consumerDirectory, ".mergora", "manifest.json"));
+  assert(
+    itemManifestEntry(updatedManifest, itemId).resolved === "0.0.1",
+    "Semantic Sync did not advance exact release provenance.",
+  );
+
+  const removalEnvelope = runCliJson(
+    "packed CLI customized-source guarded removal",
+    packedCli,
+    ["remove", itemId, "--cwd", ".", "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    removalEnvelope.status === "conflict" &&
+      Array.isArray(removalEnvelope.result.conflicts) &&
+      removalEnvelope.result.conflicts.length > 0,
+    "Packed CLI removal did not refuse locally customized owned source.",
+  );
+  assert(
+    readFileSync(targetPath).equals(customized),
+    "Guarded removal changed locally customized source.",
+  );
+
+  const doctorEnvelope = runCliJson(
+    "packed CLI customized-source doctor",
+    packedCli,
+    ["doctor", "--cwd", "."],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    doctorEnvelope.result.healthy === true && doctorEnvelope.result.counts.error === 0,
+    "Packed CLI doctor found an integrity error after a valid local customization.",
+  );
+
+  return {
+    diff: "reported",
+    doctor: "healthy",
+    guardedRemoval: "conflict-preserved-live-source",
+    itemId,
+    status: "locally-modified",
+    target: ownedFile.target,
+    update: "disjoint-upstream-change-merged-local-customization-preserved",
+  };
+}
+
+function verifyOverlappingUpdateAndResolution(consumerDirectory, packedCli, temporaryRoot) {
+  const itemId = "data-grid";
+  const manifestPath = join(consumerDirectory, ".mergora", "manifest.json");
+  const manifest = readJson(manifestPath);
+  const item = itemManifestEntry(manifest, itemId);
+  const ownedFile = item.files.find(({ target }) => target.endsWith("/data-grid.css"));
+  assert(ownedFile !== undefined, "Data Grid source ownership omits its CSS file.");
+  const targetPath = resolve(consumerDirectory, ...ownedFile.target.split("/"));
+  const baseText = readFileSync(targetPath, "utf8");
+  const localText = baseText.replace("align-items: center;", "align-items: flex-start;");
+  assert(localText !== baseText, "Data Grid overlap fixture found no local CSS declaration.");
+  writeFileSync(targetPath, localText, "utf8");
+  const localBytes = Buffer.from(localText, "utf8");
+
+  const updateFixture = writePackedUpdateFixture(
+    consumerDirectory,
+    manifest,
+    itemId,
+    "overlapping",
+  );
+  const manifestBefore = readFileSync(manifestPath);
+  const packageBefore = readFileSync(join(consumerDirectory, "package.json"));
+  const sourceBefore = sourceTreeDigest(consumerDirectory);
+  const conflictEnvelope = runCliJsonWithStatus(
+    "packed CLI overlapping source update",
+    packedCli,
+    [
+      "update",
+      itemId,
+      "--cwd",
+      ".",
+      "--release-file",
+      updateFixture.releaseFile,
+      "--no-install",
+      "--yes",
+      "--non-interactive",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+    6,
+  );
+  const conflict = conflictEnvelope.result;
+  assert(
+    conflictEnvelope.status === "conflicted" &&
+      conflict.status === "conflicted" &&
+      conflict.liveProjectChanged === false &&
+      conflict.conflicts.some(({ target }) => target === ownedFile.target),
+    "Packed CLI overlapping update did not stage an explicit conflict.",
+  );
+  assert(
+    readFileSync(manifestPath).equals(manifestBefore) &&
+      readFileSync(join(consumerDirectory, "package.json")).equals(packageBefore) &&
+      readFileSync(targetPath).equals(localBytes) &&
+      sourceTreeDigest(consumerDirectory) === sourceBefore,
+    "Packed CLI overlapping update changed live source, package metadata, or provenance.",
+  );
+
+  const transactionId = conflict.conflictTransactionId;
+  assert(
+    typeof transactionId === "string" &&
+      /^[0-9]{8}T[0-9]{6}(?:\.[0-9]{3})?Z-[0-9a-f]{32}$/u.test(transactionId),
+    "Packed CLI overlapping update omitted its conflict transaction ID.",
+  );
+  const packetRoot = join(consumerDirectory, ".mergora", "transactions", transactionId);
+  const conflictsRoot = join(packetRoot, "conflicts");
+  assert(
+    existsSync(join(packetRoot, "README.md")) && existsSync(conflictsRoot),
+    "Packed CLI overlapping update omitted its local conflict packet.",
+  );
+  const packetEntries = readdirSync(conflictsRoot, { withFileTypes: true }).filter((entry) =>
+    entry.isDirectory(),
+  );
+  const packet = packetEntries
+    .map((entry) => ({
+      directory: join(conflictsRoot, entry.name),
+      record: readJson(join(conflictsRoot, entry.name, "conflict.json")),
+    }))
+    .find(({ record }) => record.target === ownedFile.target);
+  assert(
+    packet !== undefined,
+    "Packed CLI conflict packet omits the overlapping Data Grid target.",
+  );
+  for (const name of ["base", "local", "remote", "proposed", "conflict.json"]) {
+    assert(existsSync(join(packet.directory, name)), `Packed CLI conflict packet omits ${name}.`);
+  }
+  assert(
+    packet.record.originalLivePreconditionDigest === bytesDigest(localBytes) &&
+      JSON.stringify(packet.record.safeResolutionChoices) ===
+        JSON.stringify(["keep-local", "take-upstream", "manual"]),
+    "Packed CLI conflict packet has incorrect live preconditions or safe choices.",
+  );
+
+  const listed = runCliJson(
+    "packed CLI conflict packet list",
+    packedCli,
+    ["resolve", transactionId, "--cwd", ".", "--list"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    listed.result.unresolved.some(({ target }) => target === ownedFile.target),
+    "Packed CLI resolve list omitted the unresolved Data Grid target.",
+  );
+  const choicePlan = runCliJson(
+    "packed CLI conflict choice plan",
+    packedCli,
+    ["resolve", transactionId, "--cwd", ".", "--take-local", ownedFile.target, "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    choicePlan.status === "planned" && choicePlan.result.command === "resolve",
+    "Packed CLI did not plan the explicit local resolution.",
+  );
+  const choice = runCliJson(
+    "packed CLI conflict choice",
+    packedCli,
+    [
+      "resolve",
+      transactionId,
+      "--cwd",
+      ".",
+      "--take-local",
+      ownedFile.target,
+      "--yes",
+      "--non-interactive",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(choice.status === "recorded", "Packed CLI did not record the explicit local choice.");
+
+  const applyPlan = runCliJson(
+    "packed CLI conflict apply plan",
+    packedCli,
+    ["resolve", transactionId, "--cwd", ".", "--apply", "--no-install", "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    applyPlan.status === "planned" && applyPlan.result.conflicts.length === 0,
+    "Packed CLI did not plan the reviewed conflict application.",
+  );
+  const applied = runCliJson(
+    "packed CLI conflict apply",
+    packedCli,
+    [
+      "resolve",
+      transactionId,
+      "--cwd",
+      ".",
+      "--apply",
+      "--no-install",
+      "--yes",
+      "--non-interactive",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  const updatedManifest = readJson(manifestPath);
+  assert(
+    applied.status === "committed" &&
+      applied.result.transaction?.state === "committed" &&
+      itemManifestEntry(updatedManifest, itemId).resolved === updateFixture.version &&
+      readFileSync(targetPath).equals(localBytes),
+    "Packed CLI explicit conflict resolution did not preserve local bytes and advance provenance.",
+  );
+
+  return {
+    conflictPacket: "complete-local-only",
+    liveProjectDuringConflict: "byte-identical",
+    release: updateFixture.version,
+    resolution: "explicit-take-local-committed",
+    target: ownedFile.target,
+  };
+}
+
+function verifyOfflineVendor(consumerDirectory, packedCli, temporaryRoot) {
+  const planned = runCliJson(
+    "packed CLI offline vendor plan",
+    packedCli,
+    ["vendor", "button", "--cwd", ".", "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    planned.status === "planned" && planned.result.items.some(({ id }) => id === "official:button"),
+    "Packed CLI did not plan the installed Button vendor snapshot.",
+  );
+  const applied = runCliJson(
+    "packed CLI offline vendor apply",
+    packedCli,
+    ["vendor", "button", "--cwd", ".", "--yes", "--non-interactive"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    applied.status === "committed" &&
+      applied.result.verification?.state === "valid" &&
+      applied.result.verification?.provenanceState === "unreleased-local" &&
+      applied.result.verification?.networkUsed === false,
+    "Packed CLI did not create a valid network-free local vendor snapshot.",
+  );
+  const verified = runCliJson(
+    "packed CLI offline vendor verify",
+    packedCli,
+    ["vendor", "verify", "--cwd", ".", "--offline"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    verified.status === "valid" &&
+      verified.result.state === "valid" &&
+      verified.result.networkUsed === false,
+    "Packed CLI did not verify the local vendor fully offline.",
+  );
+  return {
+    networkUsed: false,
+    provenance: "unreleased-local",
+    verification: "valid-offline",
+  };
+}
+
+function verifyStaticContractAudit(consumerDirectory, packedCli, temporaryRoot) {
+  const manifest = readJson(join(consumerDirectory, ".mergora", "manifest.json"));
+  const item = itemManifestEntry(manifest, "button");
+  const source = item.files.find(({ target }) => target.endsWith("/button.tsx"));
+  assert(source !== undefined, "Button source ownership omits its implementation file.");
+  const contract = {
+    schemaVersion: 1,
+    contractVersion: item.contractVersion,
+    contractId: "button-packed-consumer-contract",
+    registryId: "official",
+    itemId: "button",
+    payloadDigest: item.payload.digest,
+    conformanceClaim: "automated-evidence-only",
+    limitations: [],
+    assertions: [
+      {
+        id: "button-export",
+        mode: "static",
+        evidenceType: "static-source",
+        target: { kind: "owned-file", logicalPath: source.logicalPath },
+        expectedBehavior: "Button source exports the public component.",
+        severity: "S1",
+        remediationUrl: "https://akhiltrivedix.github.io/mergora/components/button",
+        adapter: { kind: "text-includes", version: "1.0.0", value: "export const Button" },
+      },
+    ],
+  };
+  const directory = join(consumerDirectory, ".mergora", "contracts");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(join(directory, "official--button.json"), canonicalJson(contract), "utf8");
+  const audited = runCliJson(
+    "packed CLI static Contract Audit",
+    packedCli,
+    ["audit", "button", "--static", "--cwd", "."],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    audited.status === "pass" &&
+      audited.result.state === "pass" &&
+      audited.result.recommendedExitCode === 0 &&
+      audited.result.networkUsed === false &&
+      audited.result.summary?.pass === 1,
+    "Packed CLI static Contract Audit did not produce one passing offline assertion.",
+  );
+  return { assertions: 1, mode: "static", networkUsed: false, state: "pass" };
+}
+
+function verifyOwnershipRemoveAndRollback(consumerDirectory, packedCli, temporaryRoot) {
+  const manifestPath = join(consumerDirectory, ".mergora", "manifest.json");
+  const manifestBefore = readFileSync(manifestPath);
+  const manifest = JSON.parse(manifestBefore.toString("utf8"));
+  const button = itemManifestEntry(manifest, "button");
+  const buttonFiles = button.files.map(({ target }) => ({
+    bytes: readFileSync(resolve(consumerDirectory, ...target.split("/"))),
+    target,
+  }));
+  const dataGrid = itemManifestEntry(manifest, "data-grid");
+  const unrelated = dataGrid.files.find(({ target }) => target.endsWith("/data-grid.tsx"));
+  assert(unrelated !== undefined, "Ownership removal fixture omits unrelated Data Grid source.");
+  const unrelatedPath = resolve(consumerDirectory, ...unrelated.target.split("/"));
+  const unrelatedBefore = readFileSync(unrelatedPath);
+
+  const planned = runCliJson(
+    "packed CLI ownership-aware remove plan",
+    packedCli,
+    ["remove", "button", "--cwd", ".", "--no-install", "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    planned.status === "planned" &&
+      planned.result.conflicts.length === 0 &&
+      planned.result.items.some(({ id }) => id === "official:button"),
+    "Packed CLI did not plan a conflict-free owned Button removal.",
+  );
+  const removed = runCliJson(
+    "packed CLI ownership-aware remove",
+    packedCli,
+    ["remove", "button", "--cwd", ".", "--no-install", "--yes", "--non-interactive"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  const removedManifest = readJson(manifestPath);
+  const retainedButton = itemManifestEntry(removedManifest, "button");
+  assert(
+    removed.status === "committed" &&
+      removed.result.transaction?.state === "committed" &&
+      button.direct === true &&
+      retainedButton.direct === false &&
+      buttonFiles.every(({ bytes, target }) =>
+        readFileSync(resolve(consumerDirectory, ...target.split("/"))).equals(bytes),
+      ) &&
+      readFileSync(unrelatedPath).equals(unrelatedBefore),
+    "Packed CLI ownership-aware removal did not detach direct Button ownership while retaining its dependent-owned bytes.",
+  );
+  const transactionId = removed.result.transaction.transactionId;
+  assert(typeof transactionId === "string", "Packed CLI removal omitted its transaction ID.");
+
+  const rollbackPlan = runCliJson(
+    "packed CLI removal rollback plan",
+    packedCli,
+    ["rollback", transactionId, "--cwd", ".", "--no-install", "--plan"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    rollbackPlan.status === "planned" && rollbackPlan.result.plan.conflicts.length === 0,
+    "Packed CLI did not plan the completed removal rollback.",
+  );
+  const rollback = runCliJson(
+    "packed CLI removal rollback",
+    packedCli,
+    ["rollback", transactionId, "--cwd", ".", "--no-install", "--yes", "--non-interactive"],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    rollback.status === "committed" &&
+      rollback.result.rollbackOf === transactionId &&
+      rollback.result.transaction?.state === "committed" &&
+      readFileSync(manifestPath).equals(manifestBefore) &&
+      buttonFiles.every(({ bytes, target }) =>
+        readFileSync(resolve(consumerDirectory, ...target.split("/"))).equals(bytes),
+      ) &&
+      readFileSync(unrelatedPath).equals(unrelatedBefore),
+    "Packed CLI rollback did not restore the removal byte-identically.",
+  );
+  return {
+    removal: "direct-ownership-detached-dependent-owned-files-retained",
+    rollback: "byte-identical-restore",
+  };
+}
+
+function verifyInterruptedRecovery(consumerDirectory, packedCli, temporaryRoot) {
+  const manifestPath = join(consumerDirectory, ".mergora", "manifest.json");
+  const manifestBefore = readFileSync(manifestPath);
+  const sourceBefore = sourceTreeDigest(consumerDirectory);
+  const lifecycleBefore = lifecycleStateDigest(consumerDirectory);
+  const installedIds = new Set(
+    Object.keys(JSON.parse(manifestBefore.toString("utf8")).items).map((id) =>
+      id.includes(":") ? id.slice(id.lastIndexOf(":") + 1) : id,
+    ),
+  );
+  const itemId = expectedCliTemplateIds.find((id) => !installedIds.has(id));
+  assert(itemId !== undefined, "Packed recovery proof cannot find an uninstalled source item.");
+  const program = `
+import {
+  TransactionInterruption,
+  applySourceAdd,
+  listIncompleteTransactions,
+  planSourceAdd,
+} from ${JSON.stringify(selectedPackages.cli)};
+
+const root = process.cwd();
+let interrupted = false;
+const options = {
+  projectRoot: root,
+  itemIds: [${JSON.stringify(itemId)}],
+  noInstall: true,
+  faultInjector(point) {
+    if (!interrupted && point === "commit-file") {
+      interrupted = true;
+      throw new TransactionInterruption("packed consumer injected interruption");
+    }
+  },
+};
+const plan = planSourceAdd(options);
+try {
+  applySourceAdd(options, plan.planDigest);
+  throw new Error("packed source add unexpectedly completed");
+} catch (error) {
+  if (!(error instanceof TransactionInterruption)) throw error;
+}
+const transactions = listIncompleteTransactions(root);
+if (transactions.length !== 1) {
+  throw new Error(\`expected one interrupted transaction, received \${transactions.length}\`);
+}
+process.stdout.write(JSON.stringify({ itemId: ${JSON.stringify(itemId)}, transactionId: transactions[0] }));
+`;
+  const output = run(
+    "packed public API injected transaction interruption",
+    process.execPath,
+    ["--input-type=module", "--eval", program],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  const interrupted = JSON.parse(output);
+  assert(
+    interrupted.itemId === itemId && typeof interrupted.transactionId === "string",
+    "Packed public API interruption did not report its recoverable transaction.",
+  );
+  assert(
+    readFileSync(manifestPath).equals(manifestBefore),
+    "Interrupted packed source add advanced the manifest before recovery.",
+  );
+  const recoveryPlan = runCliJson(
+    "packed CLI interrupted transaction recovery plan",
+    packedCli,
+    [
+      "recover",
+      "--cwd",
+      ".",
+      "--transaction",
+      interrupted.transactionId,
+      "--strategy",
+      "rollback",
+      "--offline",
+      "--plan",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    recoveryPlan.status === "rollback-planned" && recoveryPlan.result.command === "recover",
+    "Packed CLI did not plan rollback recovery for the injected interruption.",
+  );
+  const recovered = runCliJson(
+    "packed CLI interrupted transaction recovery",
+    packedCli,
+    [
+      "recover",
+      "--cwd",
+      ".",
+      "--transaction",
+      interrupted.transactionId,
+      "--strategy",
+      "rollback",
+      "--offline",
+      "--yes",
+      "--non-interactive",
+    ],
+    consumerDirectory,
+    temporaryRoot,
+  );
+  assert(
+    recovered.status === "rolled-back" &&
+      recovered.result.action === "rollback" &&
+      recovered.result.state === "rolled-back" &&
+      readFileSync(manifestPath).equals(manifestBefore) &&
+      sourceTreeDigest(consumerDirectory) === sourceBefore &&
+      lifecycleStateDigest(consumerDirectory) === lifecycleBefore &&
+      !existsSync(join(consumerDirectory, ".mergora", ".lock")),
+    "Packed CLI recovery did not restore the interrupted source add byte-identically.",
+  );
+  return {
+    injectedAt: "commit-file",
+    itemId,
+    recovery: "rollback-byte-identical",
+  };
+}
+
+function writeJsonFetchPreload(projectRoot, value, expectedUrl) {
+  const directory = join(projectRoot, ".mergora", "packed-shadcn-fetch");
+  const bytesPath = join(directory, "registry.json");
+  const preloadPath = join(directory, "preload.mjs");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(bytesPath, canonicalJson(value), "utf8");
+  writeFileSync(
+    preloadPath,
+    `import { readFileSync } from "node:fs";
+const bytes = readFileSync(process.env.MERGORA_PACKED_SHADCN_BYTES);
+globalThis.fetch = async (input) => {
+  const url = typeof input === "string" ? input : input.url;
+  if (url !== process.env.MERGORA_PACKED_SHADCN_URL) throw new Error("unexpected shadcn URL");
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+      "content-length": String(bytes.byteLength),
+    },
+  });
+};
+`,
+    "utf8",
+  );
+  return {
+    NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}`,
+    MERGORA_PACKED_SHADCN_BYTES: bytesPath,
+    MERGORA_PACKED_SHADCN_URL: expectedUrl,
+  };
+}
+
+function verifyMigrationAndShadcnAdoption(consumerDirectory, packedCli, temporaryRoot) {
+  const projectRoot = join(consumerDirectory, ".packed-cli-lifecycle");
+  mkdirSync(join(projectRoot, "src", "components", "ui"), { recursive: true });
+  writeFileSync(
+    join(projectRoot, "package.json"),
+    canonicalJson({
+      name: "mergora-packed-cli-lifecycle",
+      version: "0.0.0",
+      private: true,
+      type: "module",
+      dependencies: { react: "19.2.7", "react-dom": "19.2.7" },
+      devDependencies: { vite: "8.1.5" },
+    }),
+    "utf8",
+  );
+  writeFileSync(
+    join(projectRoot, "tsconfig.json"),
+    canonicalJson({
+      compilerOptions: {
+        baseUrl: ".",
+        jsx: "react-jsx",
+        paths: { "@/*": ["./src/*"], "~/*": ["./src/*"] },
+      },
+      include: ["src"],
+    }),
+    "utf8",
+  );
+  writeFileSync(join(projectRoot, "src", "index.css"), '@import "tailwindcss";\n', "utf8");
+  writeFileSync(join(projectRoot, "vite.config.ts"), "export default {};\n", "utf8");
+  runCliJson(
+    "packed CLI migration fixture initialization",
+    packedCli,
+    [
+      "init",
+      "--cwd",
+      ".",
+      "--framework",
+      "vite-react",
+      "--source-root",
+      "src",
+      "--global-css",
+      "src/index.css",
+      "--alias-prefix",
+      "@",
+      "--package-manager",
+      "pnpm",
+      "--yes",
+      "--non-interactive",
+    ],
+    projectRoot,
+    temporaryRoot,
+  );
+
+  const components = {
+    $schema: "https://ui.shadcn.com/schema.json",
+    style: "new-york",
+    rsc: false,
+    tsx: true,
+    tailwind: {
+      config: "",
+      css: "src/index.css",
+      baseColor: "neutral",
+      cssVariables: true,
+      prefix: "",
+    },
+    iconLibrary: "lucide",
+    aliases: {
+      components: "~/components",
+      utils: "~/lib/utils",
+      ui: "~/components/ui",
+      lib: "~/lib",
+      hooks: "~/hooks",
+    },
+    registries: {},
+  };
+  const componentsPath = join(projectRoot, "components.json");
+  writeFileSync(componentsPath, canonicalJson(components), "utf8");
+  const componentsBefore = readFileSync(componentsPath);
+  const migrationPlan = runCliJson(
+    "packed CLI shadcn settings migration plan",
+    packedCli,
+    ["migrate", "shadcn", "--cwd", ".", "--plan"],
+    projectRoot,
+    temporaryRoot,
+  );
+  assert(
+    migrationPlan.status === "planned" &&
+      migrationPlan.result.migrations.some(
+        ({ id, adapter }) => id === "shadcn-components-v1-to-mergora-v1" && adapter === "config-v1",
+      ),
+    "Packed CLI did not plan its built-in shadcn settings migration.",
+  );
+  const migrated = runCliJson(
+    "packed CLI shadcn settings migration",
+    packedCli,
+    ["migrate", "shadcn", "--cwd", ".", "--yes", "--non-interactive"],
+    projectRoot,
+    temporaryRoot,
+  );
+  assert(
+    migrated.status === "committed" &&
+      migrated.result.transaction?.state === "committed" &&
+      readFileSync(componentsPath).equals(componentsBefore),
+    "Packed CLI shadcn settings migration did not retain components.json.",
+  );
+  writeFileSync(
+    join(projectRoot, "tsconfig.json"),
+    canonicalJson({
+      compilerOptions: {
+        baseUrl: ".",
+        jsx: "react-jsx",
+        paths: { "~/*": ["./src/*"] },
+      },
+      include: ["src"],
+    }),
+    "utf8",
+  );
+
+  const origin = "https://registry.example.test/r/v1";
+  const source = 'export const Demo = "packed shadcn adoption";\n';
+  const registry = {
+    $schema: "https://ui.shadcn.com/schema/registry.json",
+    name: "partner",
+    homepage: "https://registry.example.test",
+    items: [
+      {
+        $schema: "https://ui.shadcn.com/schema/registry-item.json",
+        name: "demo",
+        type: "registry:ui",
+        title: "Demo",
+        description: "A neutral packed-consumer adoption fixture.",
+        dependencies: ["react"],
+        devDependencies: [],
+        registryDependencies: [],
+        files: [
+          {
+            path: "components/ui/demo.tsx",
+            type: "registry:ui",
+            target: "@ui/demo.tsx",
+            content: source,
+          },
+        ],
+        docs: "Compatibility source; native evidence is not supplied.",
+      },
+    ],
+  };
+  const declaredIdentityDigest = semanticDigest({
+    homepage: registry.homepage,
+    id: registry.name,
+    origin,
+    protocol: "shadcn-v1",
+  });
+  const identityDigest = semanticDigest({
+    protocol: "shadcn-v1",
+    resolvedOrigin: origin,
+    declaredRegistry: { id: "partner", identityDigest: declaredIdentityDigest },
+    licensePolicy: { status: "not-supplied", licenses: [] },
+    keyPolicy: {
+      digest: "not-supplied",
+      immutableReleaseManifests: false,
+      signatures: "not-supplied",
+    },
+  });
+  const environment = writeJsonFetchPreload(projectRoot, registry, `${origin}/registry.json`);
+  const enrolled = runCliJson(
+    "packed CLI shadcn registry enrollment",
+    packedCli,
+    [
+      "registry",
+      "enroll",
+      "partner",
+      origin,
+      "--protocol",
+      "shadcn-v1",
+      "--accept-registry-identity",
+      identityDigest,
+    ],
+    projectRoot,
+    temporaryRoot,
+    environment,
+  );
+  assert(enrolled.status === "committed", "Packed CLI did not enroll the exact shadcn registry.");
+  const sourcePath = join(projectRoot, "src", "components", "ui", "demo.tsx");
+  writeFileSync(sourcePath, source, "utf8");
+  const sourceBefore = readFileSync(sourcePath);
+  const adoptionPlan = runCliJson(
+    "packed CLI shadcn adoption plan",
+    packedCli,
+    ["adopt", "--from", "shadcn", "demo", "--registry", "partner", "--cwd", ".", "--plan"],
+    projectRoot,
+    temporaryRoot,
+    environment,
+  );
+  assert(
+    adoptionPlan.status === "planned" && adoptionPlan.result.conflicts.length === 0,
+    "Packed CLI did not plan exact shadcn source adoption.",
+  );
+  const adopted = runCliJson(
+    "packed CLI shadcn adoption",
+    packedCli,
+    [
+      "adopt",
+      "--from",
+      "shadcn",
+      "demo",
+      "--registry",
+      "partner",
+      "--cwd",
+      ".",
+      "--yes",
+      "--non-interactive",
+    ],
+    projectRoot,
+    temporaryRoot,
+    environment,
+  );
+  const adoptedManifest = readJson(join(projectRoot, ".mergora", "manifest.json"));
+  assert(
+    adopted.status === "committed" &&
+      adopted.result.transaction?.state === "committed" &&
+      readFileSync(sourcePath).equals(sourceBefore) &&
+      readFileSync(componentsPath).equals(componentsBefore) &&
+      adoptedManifest.items["partner:demo"]?.lastMigration === "shadcn-v1-adapter",
+    "Packed CLI shadcn adoption replaced consumer source or lost adapter provenance.",
+  );
+  return {
+    adoption: "exact-shadcn-v1-source-preserved",
+    migration: "built-in-settings-transaction",
+    networkFixture: "bounded-preloaded-json",
+  };
+}
+
+function verifyAdvancedPublicCliLifecycle(consumerDirectory, packedCli, temporaryRoot, vendor) {
+  return {
+    overlappingUpdate: verifyOverlappingUpdateAndResolution(
+      consumerDirectory,
+      packedCli,
+      temporaryRoot,
+    ),
+    vendor,
+    contractAudit: verifyStaticContractAudit(consumerDirectory, packedCli, temporaryRoot),
+    ownershipAndRollback: verifyOwnershipRemoveAndRollback(
+      consumerDirectory,
+      packedCli,
+      temporaryRoot,
+    ),
+    interruptedRecovery: verifyInterruptedRecovery(consumerDirectory, packedCli, temporaryRoot),
+    migrationAndAdoption: verifyMigrationAndShadcnAdoption(
+      consumerDirectory,
+      packedCli,
+      temporaryRoot,
+    ),
+  };
+}
+
+function verifySourceOnlyPackageRejection(consumerDirectory, temporaryRoot) {
+  const uiPackage = join(consumerDirectory, "node_modules", ...selectedPackages.ui.split("/"));
+  const manifest = readJson(join(uiPackage, "package.json"));
+  assert(
+    manifest.exports?.[`./${sourceOnlyWorkflowKitId}`] === undefined &&
+      manifest.exports?.[`./${sourceOnlyWorkflowKitId}.css`] === undefined,
+    "The source-only workflow kit leaked into the packed UI export map.",
+  );
+  assert(
+    !existsSync(join(uiPackage, "dist", "generated", sourceOnlyWorkflowKitId)),
+    "The source-only workflow kit leaked into packed UI files.",
+  );
+  runRejected(
+    "source-only workflow-kit package import",
+    process.execPath,
+    [
+      "--input-type=module",
+      "--eval",
+      `await import(${JSON.stringify(`${selectedPackages.ui}/${sourceOnlyWorkflowKitId}`)});`,
+    ],
+    consumerDirectory,
+    temporaryRoot,
+    /ERR_PACKAGE_PATH_NOT_EXPORTED|Package subpath .* is not defined by "exports"/u,
+  );
+  return {
+    import: "rejected-not-exported",
+    itemId: sourceOnlyWorkflowKitId,
+    packageFiles: "absent",
+  };
+}
+
 function verifyProductionOutput(consumer, consumerDirectory) {
   const outputDirectory = join(consumerDirectory, consumer.framework === "next" ? "out" : "dist");
   assert(existsSync(outputDirectory), `${consumer.id} production output is missing.`);
@@ -726,8 +1973,22 @@ function verifyProductionOutput(consumer, consumerDirectory) {
   assert(existsSync(indexPath), `${consumer.id} production index.html is missing.`);
   const files = walkFiles(outputDirectory).filter((file) => textExtensions.has(extname(file)));
   const output = files.map((file) => readFileSync(file, "utf8")).join("\n");
-  for (const marker of ["mrg-button", "mrg-combobox", "mrg-dialog"]) {
+  for (const marker of [
+    "mrg-button",
+    "mrg-combobox",
+    "mrg-dialog",
+    "mrg-date-picker",
+    "mrg-file-upload",
+    "mrg-data-grid",
+    ...(consumer.mode === "source" ? ["mrg-admin-dashboard-shell"] : []),
+  ]) {
     assert(output.includes(marker), `${consumer.id} production bundle omits ${marker}.`);
+  }
+  if (consumer.mode === "package") {
+    assert(
+      !output.includes("mrg-admin-dashboard-shell"),
+      `${consumer.id} production bundle includes the source-only workflow kit.`,
+    );
   }
   assert(
     output.includes("--mrg-semantic-color-background-canvas"),
@@ -737,13 +1998,163 @@ function verifyProductionOutput(consumer, consumerDirectory) {
     output.includes("/mergora-p1/"),
     `${consumer.id} does not preserve the non-root base path.`,
   );
+  for (const cliMarker of ["Transactional source commands:", 'Run "mergora <command> --help"']) {
+    assert(
+      !output.includes(cliMarker),
+      `${consumer.id} production output bundled packed CLI implementation text.`,
+    );
+  }
   const workspaceMarkers = [workspaceRoot, workspaceRoot.replaceAll("\\", "/")];
   for (const marker of workspaceMarkers) {
     assert(!output.includes(marker), `${consumer.id} production output embeds the monorepo path.`);
   }
 }
 
-function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, temporaryRoot) {
+function contentType(path) {
+  return (
+    {
+      ".css": "text/css; charset=utf-8",
+      ".html": "text/html; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".json": "application/json; charset=utf-8",
+      ".map": "application/json; charset=utf-8",
+      ".svg": "image/svg+xml",
+      ".woff": "font/woff",
+      ".woff2": "font/woff2",
+    }[extname(path)] ?? "application/octet-stream"
+  );
+}
+
+async function withProductionServer(consumer, consumerDirectory, callback) {
+  const outputDirectory = join(consumerDirectory, consumer.framework === "next" ? "out" : "dist");
+  const server = createServer((request, response) => {
+    try {
+      const pathname = new URL(request.url ?? "/", "http://127.0.0.1").pathname;
+      if (
+        pathname !== "/mergora-p1" &&
+        pathname !== "/mergora-p1/" &&
+        !pathname.startsWith("/mergora-p1/")
+      ) {
+        response.writeHead(404).end("Not found");
+        return;
+      }
+      const encodedRelative = pathname.slice("/mergora-p1".length).replace(/^\/+/, "");
+      const portableRelative = decodeURIComponent(encodedRelative) || "index.html";
+      let target = resolve(outputDirectory, ...portableRelative.split("/"));
+      assert(isInside(outputDirectory, target), "Production request escaped its output root.");
+      if (existsSync(target) && statSync(target).isDirectory()) target = join(target, "index.html");
+      if (!existsSync(target) || !statSync(target).isFile()) {
+        response.writeHead(404).end("Not found");
+        return;
+      }
+      response.writeHead(200, {
+        "cache-control": "no-store",
+        "content-type": contentType(target),
+      });
+      response.end(readFileSync(target));
+    } catch {
+      response.writeHead(400).end("Bad request");
+    }
+  });
+  await new Promise((resolvePromise, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolvePromise);
+  });
+  try {
+    const address = server.address();
+    assert(address !== null && typeof address === "object", "Production server has no address.");
+    await callback(`http://127.0.0.1:${String(address.port)}/mergora-p1/`);
+  } finally {
+    await new Promise((resolvePromise, reject) => {
+      server.close((error) => (error === undefined ? resolvePromise() : reject(error)));
+    });
+  }
+}
+
+async function verifyProductionRuntime(consumer, consumerDirectory, browser) {
+  const context = await browser.newContext({ reducedMotion: "reduce" });
+  const page = await context.newPage();
+  const runtimeErrors = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") runtimeErrors.push(`console: ${message.text()}`);
+  });
+  page.on("pageerror", (error) => runtimeErrors.push(`page: ${error.message}`));
+  try {
+    await withProductionServer(consumer, consumerDirectory, async (url) => {
+      const response = await page.goto(url, { waitUntil: "networkidle" });
+      assert(response?.ok() === true, `${consumer.id} production route did not return success.`);
+      await page.locator(`[data-consumer-mode="${consumer.mode}"]`).waitFor();
+      for (const selector of [
+        ".mrg-button",
+        ".mrg-combobox",
+        ".mrg-date-picker",
+        ".mrg-file-upload",
+        ".mrg-data-grid",
+      ]) {
+        assert(
+          (await page.locator(selector).count()) > 0,
+          `${consumer.id} runtime omitted ${selector}.`,
+        );
+      }
+      assert(
+        (await page.locator('input[type="date"]').count()) > 0 &&
+          (await page.locator('input[type="file"]').count()) > 0,
+        `${consumer.id} runtime omitted native date or file form controls.`,
+      );
+
+      const label = consumer.mode === "package" ? "packed" : "source";
+      await page.getByRole("button", { name: `Open ${label} Dialog`, exact: true }).click();
+      await page.getByRole("dialog").waitFor();
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      assert(
+        (await page.getByRole("dialog").count()) === 0,
+        `${consumer.id} Dialog did not close at runtime.`,
+      );
+
+      const sortableHeader = page.locator('[data-slot="data-grid-column-header"] button').first();
+      await sortableHeader.click();
+      assert(
+        (await sortableHeader.locator("..").getAttribute("aria-sort")) === "ascending",
+        `${consumer.id} Data Grid did not sort at runtime.`,
+      );
+
+      const workflowKit = page.locator(".mrg-admin-dashboard-shell");
+      if (consumer.mode === "source") {
+        await workflowKit.locator('[data-slot="admin-dashboard-layout"]').waitFor();
+        assert(
+          (await workflowKit.getByRole("heading", { name: "Operations overview" }).count()) === 1,
+          `${consumer.id} source-only workflow kit did not load at runtime.`,
+        );
+      } else {
+        assert(
+          (await workflowKit.count()) === 0,
+          `${consumer.id} package runtime unexpectedly includes the source-only workflow kit.`,
+        );
+      }
+    });
+    assert(
+      runtimeErrors.length === 0,
+      `${consumer.id} production runtime reported errors:\n${runtimeErrors.join("\n")}`,
+    );
+  } finally {
+    await context.close();
+  }
+  process.stdout.write(`p1 packed consumers: ${consumer.id} production runtime passed\n`);
+  return {
+    hydrated: true,
+    interactions: ["dialog-open-close", "data-grid-sort"],
+    sourceOnlyWorkflowKit: consumer.mode === "source" ? "rendered" : "absent",
+  };
+}
+
+async function verifyConsumer(
+  consumer,
+  matrix,
+  artifacts,
+  consumersDirectory,
+  temporaryRoot,
+  browser,
+) {
   const consumerDirectory = createConsumer(consumer, matrix, artifacts, consumersDirectory);
   pnpm(
     `${consumer.id} dependency seed`,
@@ -760,14 +2171,33 @@ function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, tempora
   assert(cliVersion === "0.0.0", `${consumer.id} did not execute the packed P1 CLI.`);
 
   let sourceInstall = null;
+  let sourceLifecycle = null;
+  let publicCliLifecycle = null;
   if (consumer.mode === "source") {
-    installSource(consumerDirectory, temporaryRoot);
+    const installedSource = installSource(consumerDirectory, temporaryRoot);
     pnpm(
       `${consumer.id} source dependency lock`,
       ["install", "--frozen-lockfile=false"],
       consumerDirectory,
       temporaryRoot,
     );
+    const vendor =
+      consumer.id === "next-source"
+        ? verifyOfflineVendor(consumerDirectory, installedSource.packedCli, temporaryRoot)
+        : null;
+    sourceLifecycle = verifyCustomizedSourceLifecycle(
+      consumerDirectory,
+      installedSource.packedCli,
+      temporaryRoot,
+    );
+    if (consumer.id === "next-source") {
+      publicCliLifecycle = verifyAdvancedPublicCliLifecycle(
+        consumerDirectory,
+        installedSource.packedCli,
+        temporaryRoot,
+        vendor,
+      );
+    }
     sourceInstall = {
       command: `node node_modules/${selectedPackages.cli}/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/${selectedPackages.cli}/dist/bin.js add ${packedSourceRequestIds.join(" ")} --root . --target src/components --yes --non-interactive --json`,
       files: Object.values(
@@ -785,6 +2215,10 @@ function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, tempora
     temporaryRoot,
   );
   auditInstalledPackages(consumerDirectory, temporaryRoot);
+  const sourceOnlyPackageRejection =
+    consumer.mode === "package"
+      ? verifySourceOnlyPackageRejection(consumerDirectory, temporaryRoot)
+      : null;
   const mcpSmoke = pnpm(
     `${consumer.id} packed MCP smoke`,
     [
@@ -801,24 +2235,35 @@ function verifyConsumer(consumer, matrix, artifacts, consumersDirectory, tempora
   pnpm(`${consumer.id} typecheck`, ["run", "typecheck"], consumerDirectory, temporaryRoot);
   pnpm(`${consumer.id} production build`, ["run", "build"], consumerDirectory, temporaryRoot);
   verifyProductionOutput(consumer, consumerDirectory);
+  const runtime = await verifyProductionRuntime(consumer, consumerDirectory, browser);
 
   return {
     assertions: [
       "all-mergora-inputs-are-exact-tarballs",
+      ...(consumer.mode === "source"
+        ? ["customized-source-update-and-lifecycle"]
+        : ["source-only-workflow-kit-not-package-exported"]),
+      ...(publicCliLifecycle === null ? [] : ["packed-public-cli-lifecycle"]),
       "frozen-offline-reinstall",
       "no-workspace-resolution",
       "packed-cli-executed",
       "packed-mcp-read-plan-only",
       "production-base-path",
       "production-build",
+      "production-hydration-and-interaction",
       "public-subpaths-and-types",
+      "representative-primitive-composite-date-file-grid-workflow-coverage",
     ],
     basePath: matrix.basePath,
     framework: consumer.framework,
     id: consumer.id,
     mode: consumer.mode,
     result: "passed",
+    runtime,
+    publicCliLifecycle,
     sourceInstall,
+    sourceLifecycle,
+    sourceOnlyPackageRejection,
   };
 }
 
@@ -826,6 +2271,7 @@ function evidenceFor(matrix, artifacts, consumers) {
   return {
     schemaVersion: 1,
     artifactKind: "p1-packed-consumer-evidence",
+    artifactDigestAlgorithm: "sha256-canonical-tar-content-v1",
     publicationStatus: "unreleased",
     runtime: {
       node: process.version.slice(1),
@@ -840,8 +2286,10 @@ function evidenceFor(matrix, artifacts, consumers) {
     })),
     consumers: [...consumers].sort((left, right) => left.id.localeCompare(right.id, "en-US")),
     limitations: [
-      "This P1 tracer proves fresh installation, package/source compilation, and production builds only.",
-      "Browser interaction, assistive-technology review, Semantic Sync updates, and public npm provenance remain separate gates.",
+      "This unreleased exact-tarball matrix proves fresh package/source installation, representative compilation, production builds, and headless Chromium hydration in Next.js and Vite.",
+      "The source lifecycle proof covers local customization classification, upstream diff, disjoint and overlapping Semantic Sync updates, local-only conflict packets, explicit resolution, ownership-aware removal and rollback, injected-interruption recovery, static Contract Audit, offline local-vendor verification, built-in shadcn settings migration, and exact shadcn-v1 adoption.",
+      "The shadcn-v1 adoption uses a bounded deterministic JSON fetch preload, and the offline vendor is honestly labeled unreleased-local; public registry networking and formal Stable-release vendor provenance remain separate gates.",
+      "Public npm provenance, non-Chromium runtime coverage, and manual assistive-technology review remain separate gates.",
     ],
   };
 }
@@ -863,6 +2311,7 @@ function parseArguments(arguments_) {
 }
 
 let temporaryRoot;
+let browser;
 try {
   const options = parseArguments(process.argv.slice(2));
   const expectedNode = readFileSync(join(workspaceRoot, ".node-version"), "utf8").trim();
@@ -881,9 +2330,13 @@ try {
   mkdirSync(consumersDirectory);
 
   const artifacts = buildAndPack(artifactDirectory, temporaryRoot);
-  const consumers = matrix.consumers.map((consumer) =>
-    verifyConsumer(consumer, matrix, artifacts, consumersDirectory, temporaryRoot),
-  );
+  browser = await chromium.launch({ headless: true });
+  const consumers = [];
+  for (const consumer of matrix.consumers) {
+    consumers.push(
+      await verifyConsumer(consumer, matrix, artifacts, consumersDirectory, temporaryRoot, browser),
+    );
+  }
   const evidence = canonicalJson(evidenceFor(matrix, artifacts, consumers));
   if (options.writeEvidence) {
     writeFileSync(evidencePath, evidence, "utf8");
@@ -906,6 +2359,7 @@ try {
   );
   process.exitCode = 1;
 } finally {
+  if (browser !== undefined) await browser.close();
   if (
     temporaryRoot !== undefined &&
     existsSync(temporaryRoot) &&

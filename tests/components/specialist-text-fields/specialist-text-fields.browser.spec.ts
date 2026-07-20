@@ -56,6 +56,36 @@ async function axeViolations(page: Page): Promise<unknown[]> {
   });
 }
 
+test("basic and recommended specialist modes remove or restore policy and result context", async ({
+  page,
+}) => {
+  await openStory(page, "basic-defaults", "Specialist text controls");
+  await expect(page.locator('[data-slot="password-field-rules"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="search-field-status"]')).toHaveCount(0);
+  const plainSearch = page.getByRole("searchbox", { name: "Component query" });
+  await expect(plainSearch).not.toHaveAttribute("aria-describedby", /search-status/u);
+
+  await openStory(page, "recommended-mergora", "Specialist text controls");
+  const password = page.getByLabel("Account password");
+  await expect(page.locator('[data-slot="password-field-rules"]')).toBeVisible();
+  await expect(page.locator('[data-slot="password-field-rule"]')).toHaveCount(3);
+  await password.fill("Workbench2026A");
+  await expect(page.locator('[data-slot="password-field-rule"][data-met="true"]')).toHaveCount(3);
+
+  const search = page.getByRole("searchbox", { name: "Component query" });
+  const status = page.locator('[data-slot="search-field-status"]');
+  await expect(status).toHaveText("3 matching components available.");
+  await expect(search).toHaveAttribute("aria-describedby", /search-status/u);
+  await search.focus();
+  const focusVisual = await search.locator("..").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { boxShadow: style.boxShadow, outlineStyle: style.outlineStyle };
+  });
+  expect(focusVisual.outlineStyle).not.toBe("none");
+  expect(focusVisual.boxShadow).not.toBe("none");
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("password reveal, rules, paste, and Caps Lock remain explicit and keyboard-safe", async ({
   page,
 }) => {

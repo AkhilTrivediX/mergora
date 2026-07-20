@@ -2,7 +2,9 @@
 "use client";
 
 import {
+  Fragment,
   forwardRef,
+  isValidElement,
   useCallback,
   useEffect,
   useId,
@@ -13,6 +15,7 @@ import {
   type ChangeEvent,
   type CompositionEvent,
   type InputHTMLAttributes,
+  type ReactNode,
   type Ref,
 } from "react";
 
@@ -21,23 +24,42 @@ import { useMergoraMessage } from "../provider/index.js";
 import "./search-field.css";
 
 export type SearchFieldStatus =
-  | { readonly state: "idle" }
-  | { readonly message: string; readonly state: "loading" | "results" | "empty" | "error" };
+  | {
+      /** Idle discriminator that removes live status UI and busy semantics. */
+      readonly state: "idle";
+    }
+  | {
+      /** Non-empty localized status or recovery text rendered in the live output. */
+      readonly message: string;
+      /** Loading, results, empty, or error semantics applied to the status output. */
+      readonly state: "loading" | "results" | "empty" | "error";
+    };
 
 export interface SearchFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "onChange" | "type" | "value"
 > {
+  /** Non-empty localized accessible label for the clear-search button. */
   readonly clearLabel?: string;
+  /** Initial query for uncontrolled use; defaults to an empty string. */
   readonly defaultValue?: string;
+  /** Additional class name applied to the native search input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with status, ARIA, and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Receives native edits and explicit clears as the complete query string. */
   readonly onChange?: (value: string) => void;
+  /** ID of consumer-owned results merged into the input's `aria-controls`. */
   readonly resultsId?: string;
+  /** Additional class name applied to the outer SearchField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer SearchField wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Optional search lifecycle context; idle or omitted removes live output and busy state. */
   readonly status?: SearchFieldStatus;
+  /** Visible label adding a native submit button; omitting it removes that successful action. */
   readonly submitLabel?: string;
+  /** Controlled query string; changes are proposed through `onChange`. */
   readonly value?: string;
 }
 
@@ -51,6 +73,17 @@ function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
 
 function isSemanticallyInvalid(value: AriaAttributes["aria-invalid"]): boolean {
   return value === true || value === "true" || value === "grammar" || value === "spelling";
+}
+
+function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
 }
 
 function developmentRuntime(): boolean {
@@ -103,8 +136,11 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
   const currentValue = controlled ? value : uncontrolledValue;
   const resolvedId = field?.controlId ?? id ?? `mrg-search-field-${generatedId}`;
   const statusId = `${resolvedId}-search-status`;
+  const activeStatus =
+    status.state !== "idle" && hasAccessibleContent(status.message) ? status : undefined;
+  const statusState = activeStatus?.state ?? "idle";
   const resolvedInvalid =
-    status.state === "error" ||
+    statusState === "error" ||
     (ariaInvalid !== undefined
       ? isSemanticallyInvalid(ariaInvalid)
       : invalid !== undefined
@@ -115,17 +151,17 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
     ariaDescribedBy,
     field?.descriptionId,
     resolvedInvalid ? field?.errorMessageId : undefined,
-    status.state === "idle" ? undefined : statusId,
+    activeStatus === undefined ? undefined : statusId,
   );
   const errorMessage = mergeFieldIdRefs(
     ariaErrorMessage,
     resolvedInvalid ? field?.errorMessageId : undefined,
-    status.state === "error" ? statusId : undefined,
+    statusState === "error" ? statusId : undefined,
   );
   const controls = mergeFieldIdRefs(ariaControls, resultsId);
   const labelledBy = ariaLabelledBy ?? field?.labelId;
   const clearLabel = useMergoraMessage("searchField.clear", clearLabelProp ?? "Clear search");
-  const busy = status.state === "loading" || ariaBusy === true || ariaBusy === "true";
+  const busy = statusState === "loading" || ariaBusy === true || ariaBusy === "true";
 
   const setInputRef = useCallback(
     (node: HTMLInputElement | null) => {
@@ -189,7 +225,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
       data-invalid={resolvedInvalid || undefined}
       data-readonly={readOnly || undefined}
       data-slot="search-field"
-      data-status={status.state}
+      data-status={statusState}
       style={rootStyle}
     >
       <span className={className} data-slot="search-field-control">
@@ -200,7 +236,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
           aria-describedby={describedBy}
           aria-errormessage={errorMessage}
           aria-invalid={
-            status.state === "error" ? true : (ariaInvalid ?? (resolvedInvalid || undefined))
+            statusState === "error" ? true : (ariaInvalid ?? (resolvedInvalid || undefined))
           }
           aria-labelledby={labelledBy}
           className={
@@ -248,16 +284,16 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
           </button>
         )}
       </span>
-      {status.state === "idle" ? null : (
+      {activeStatus === undefined ? null : (
         <span
           aria-atomic="true"
-          aria-live={status.state === "error" ? "assertive" : "polite"}
+          aria-live={activeStatus.state === "error" ? "assertive" : "polite"}
           data-slot="search-field-status"
-          data-status={status.state}
+          data-status={activeStatus.state}
           id={statusId}
-          role={status.state === "error" ? "alert" : "status"}
+          role={activeStatus.state === "error" ? "alert" : "status"}
         >
-          {status.message}
+          {activeStatus.message}
         </span>
       )}
     </span>

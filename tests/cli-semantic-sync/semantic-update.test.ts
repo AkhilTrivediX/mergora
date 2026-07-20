@@ -37,6 +37,7 @@ import {
   type ProvenanceManifest,
 } from "../../packages/cli/src/source-operations.ts";
 import { sha256 } from "../../packages/cli/src/contracts.ts";
+import { renderSemanticSourceDiff } from "../../packages/cli/src/semantic-diff-renderer.ts";
 import { createProjectFixture } from "../cli-fixtures/project-fixture.ts";
 import { formatValidationErrors, validateSchemaDocument } from "../../registry/schemas/index.ts";
 
@@ -400,6 +401,20 @@ describe("Semantic Sync update planning and apply", () => {
       localChange: "modified",
       planned: null,
     });
+    const unified = renderSemanticSourceDiff(project.root, local, {
+      contextLines: 0,
+      format: "unified",
+    });
+    expect(unified).toContain(`--- a/${file.target}`);
+    expect(unified).toContain('-declare module "*.css";');
+    expect(unified).toContain('+declare module "*.local";');
+    expect(unified).toContain("@@ -1,1 +1,1 @@");
+    const sideBySide = renderSemanticSourceDiff(project.root, local, {
+      contextLines: 0,
+      format: "side-by-side",
+    });
+    expect(sideBySide).toContain(`=== ${file.target} ===`);
+    expect(sideBySide).toContain('declare module "*.local";');
     const release = releaseFor(project.root);
     const planned = diffSemanticSource({ projectRoot: project.root, release });
     expect(planned.files.find(({ target }) => target === file.target)?.planned).toMatchObject({

@@ -9,7 +9,9 @@ import "./copy-button.css";
 export type CopyButtonStatus = "idle" | "copying" | "copied" | "error";
 
 export interface ClipboardEnvironment {
+  /** Supplies the modern clipboard writer when the host grants access. */
   readonly clipboard?: { writeText(text: string): Promise<void> };
+  /** Supplies a document only when the explicitly enabled legacy fallback is available. */
   readonly document?: Document;
 }
 
@@ -21,10 +23,14 @@ export async function writeClipboardText(
       : { clipboard: navigator.clipboard }),
     ...(typeof document === "undefined" ? {} : { document }),
   },
+  allowFallback = true,
 ): Promise<"clipboard" | "fallback"> {
   if (environment.clipboard !== undefined) {
     await environment.clipboard.writeText(text);
     return "clipboard";
+  }
+  if (!allowFallback) {
+    throw new Error("Clipboard API access is unavailable and the legacy fallback is disabled.");
   }
   if (environment.document === undefined) {
     throw new Error("Clipboard access is unavailable in this environment.");
@@ -49,17 +55,27 @@ export interface CopyButtonProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "onCopy" | "onError"
 > {
+  /** Exact string written to the clipboard; the component does not render this value. */
   readonly text: string;
+  /** Localizable idle-state label; defaults through MergoraProvider messages. */
   readonly copyLabel?: string;
+  /** Localizable in-progress label announced while the write is pending. */
   readonly copyingLabel?: string;
+  /** Localizable success label announced after a completed write. */
   readonly copiedLabel?: string;
+  /** Localizable failure label announced after a rejected write. */
   readonly errorLabel?: string;
+  /** Allows the legacy hidden-control fallback when the Clipboard API is unavailable. */
+  readonly allowFallback?: boolean;
+  /** Called after a successful write with the method that completed it. */
   readonly onCopy?: (method: "clipboard" | "fallback") => void;
+  /** Called with the rejected value when clipboard writing fails. */
   readonly onCopyError?: (error: unknown) => void;
 }
 
 export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(function CopyButton(
   {
+    allowFallback = true,
     className,
     copiedLabel: copiedLabelProp,
     copyingLabel: copyingLabelProp,
@@ -98,7 +114,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
     const activation = runButtonActivation(pending, event, onClick);
     if (activation === "prevented-pending" || event.defaultPrevented) return;
     setStatus("copying");
-    void writeClipboardText(text).then(
+    void writeClipboardText(text, undefined, allowFallback).then(
       (method) => {
         setStatus("copied");
         onCopy?.(method);

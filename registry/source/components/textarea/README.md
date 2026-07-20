@@ -8,4 +8,6 @@ Default count text resolves through the stable `textarea.count` and `textarea.co
 
 While IME composition is active, the visible count remains at the last committed value and `data-composing` is present; composition end commits the native value once, including while a controlled parent catches up. `maxRows` must be a finite positive integer. Autogrow recalculates for value, width, container, and font changes, clears its inline sizing when disabled, and recalculates after reset (including reset during composition). Native `className` and `style` target the real textarea; `rootClassName` and `rootStyle` target only the visual wrapper. Field owns the integrated control ID and warns in development about conflicting child IDs; native `aria-invalid` tokens remain intact.
 
+The literal Canvas editor, strong ink boundary, violet focus seam, and tabular violet count rail make the control visibly part of the Mergora field family. `autoGrow` and `showCount` are independent and off by default: disabling either removes its sizing behavior or output/description ID without affecting the other, native form behavior, or the value.
+
 Promotion requires Japanese IME, mobile virtual keyboard, reset/count, long localized content, autogrow overflow, generated consumers, package/source parity, Semantic Sync, and current manual evidence.

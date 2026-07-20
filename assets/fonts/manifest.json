@@ -4,6 +4,17 @@
     "brotli": "1.2.0",
     "fontTools": "4.62.1"
   },
+  "siteSubsets": [
+    {
+      "asset": "schibsted-grotesk-site-basic-wght.woff2",
+      "bytes": 37980,
+      "display": "optional",
+      "preload": true,
+      "sha256": "dcbf3d18a5677584e924634fd7181291f6f6644f5ddef77291e4940fde62d92f",
+      "sourceAsset": "schibsted-grotesk-latin-ext-wght.woff2",
+      "unicodeRange": "U+0020-007E,U+00A0,U+00B7,U+00D7,U+2010-2027,U+2032-2033,U+2039-203A,U+20AC,U+2190-2199"
+    }
+  ],
   "families": [
     {
       "family": "Schibsted Grotesk",

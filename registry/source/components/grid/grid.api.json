@@ -35,10 +35,12 @@
       "type": "stretch | start | center | end"
     },
     { "default": "div", "name": "element", "required": false, "type": "div | section | ul | ol" },
-    { "default": "preserve", "name": "listStyle", "required": false, "type": "preserve | none" }
+    { "default": "preserve", "name": "listStyle", "required": false, "type": "preserve | none" },
+    { "default": false, "name": "equalRows", "required": false, "type": "boolean" }
   ],
   "compositionPolicy": {
     "responsiveDefault": "auto uses auto-fit with minmax(min(100%, semantic minimum), 1fr).",
-    "polymorphism": "Restricted to native structural elements; arbitrary components and asChild are unsupported."
+    "polymorphism": "Restricted to native structural elements; arbitrary components and asChild are unsupported.",
+    "enhancement": "equalRows=true equalizes intrinsic row tracks; false removes the grid-auto-rows override while auto-fit remains independently selectable through columns."
   }
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 
-import { useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext, useMergoraMessage } from "../provider/index.js";
 import {
   SliderBase,
   assertSliderValues,
@@ -26,11 +26,19 @@ export interface RangeSliderProps extends Omit<
 > {
   /** Thumbs may meet, but their indices never swap or cross. */
   readonly collisionBehavior?: "clamp";
+  /** Announces the first pair of thumbs when they meet. No live region exists when disabled. */
+  readonly announceCollisions?: boolean;
+  /** Initial ordered values for uncontrolled use; defaults to both domain endpoints. */
   readonly defaultValue?: RangeSliderValues;
+  /** Distinct native form names corresponding one-to-one with range thumbs. */
   readonly names?: readonly [string, string, ...string[]];
+  /** Receives each ordered range value change during interaction. */
   readonly onChange?: (value: RangeSliderValues) => void;
+  /** Receives the final ordered range values when interaction ends. */
   readonly onChangeEnd?: (value: RangeSliderValues) => void;
+  /** Accessible boundary names corresponding one-to-one with range thumbs. */
   readonly thumbLabels?: readonly [string, string, ...string[]];
+  /** Controlled ordered range values; thumbs may meet but never cross. */
   readonly value?: RangeSliderValues;
 }
 
@@ -49,11 +57,68 @@ function assertOrderedValues(values: readonly number[]): void {
   }
 }
 
+interface RangeSliderCollisionAnnouncerHandle {
+  readonly publish: (values: RangeSliderValues) => void;
+}
+
+interface RangeSliderCollisionAnnouncerProps {
+  readonly formatOptions: Intl.NumberFormatOptions | undefined;
+  readonly minimum: number;
+}
+
+const RangeSliderCollisionAnnouncer = forwardRef<
+  RangeSliderCollisionAnnouncerHandle,
+  RangeSliderCollisionAnnouncerProps
+>(function RangeSliderCollisionAnnouncer({ formatOptions, minimum }, ref) {
+  const collisionMessage = useMergoraMessage(
+    "rangeSlider.collision",
+    "Range limits meet at {value}.",
+  );
+  const { locale } = useMergoraContext();
+  const [announcement, setAnnouncement] = useState("");
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      publish: (values) => {
+        const collisionIndex = values.findIndex(
+          (current, index) => index > 0 && values[index - 1] === current,
+        );
+        if (collisionIndex < 0) {
+          setAnnouncement("");
+          return;
+        }
+        const formatter = new Intl.NumberFormat(locale, formatOptions);
+        setAnnouncement(
+          collisionMessage.replace("{value}", formatter.format(values[collisionIndex] ?? minimum)),
+        );
+      },
+    }),
+    [collisionMessage, formatOptions, locale, minimum],
+  );
+
+  return (
+    <span
+      aria-atomic="true"
+      aria-live="polite"
+      className="mrg-slider-visually-hidden"
+      data-slot="range-slider-collision-status"
+      role="status"
+    >
+      {announcement}
+    </span>
+  );
+});
+
+RangeSliderCollisionAnnouncer.displayName = "RangeSliderCollisionAnnouncer";
+
 export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
   function RangeSlider(props, ref) {
     const {
+      announceCollisions = false,
       collisionBehavior = "clamp",
       defaultValue,
+      formatOptions,
       maxValue = 100,
       minValue = 0,
       names,
@@ -67,6 +132,7 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
     const minimumLabel = useMergoraMessage("rangeSlider.minimum", "Minimum value");
     const maximumLabel = useMergoraMessage("rangeSlider.maximum", "Maximum value");
     const intermediateLabel = useMergoraMessage("rangeSlider.intermediate", "Value {index}");
+    const collisionAnnouncerRef = useRef<RangeSliderCollisionAnnouncerHandle>(null);
     const domain = resolveSliderDomain(minValue, maxValue, step);
     if (value !== undefined && defaultValue !== undefined) {
       throw new RangeError("Mergora RangeSlider cannot receive both value and defaultValue.");
@@ -83,22 +149,41 @@ export const RangeSlider = forwardRef<HTMLDivElement, RangeSliderProps>(
       });
     const valueProps = value === undefined ? { defaultValue: resolvedValues } : { value };
     const nameProps = names === undefined ? {} : { names };
+    const publishChange = (next: number[]): void => {
+      const typedNext = next as RangeSliderValues;
+      if (announceCollisions) {
+        collisionAnnouncerRef.current?.publish(typedNext);
+      }
+      onChange?.(typedNext);
+    };
 
     return (
-      <SliderBase<number[]>
-        {...baseProps}
-        {...valueProps}
-        {...nameProps}
-        collisionBehavior={collisionBehavior}
-        maxValue={domain.maximum}
-        minValue={domain.minimum}
-        onChange={(next) => onChange?.(next as RangeSliderValues)}
-        onChangeEnd={(next) => onChangeEnd?.(next as RangeSliderValues)}
-        ref={ref}
-        step={domain.step}
-        thumbCount={resolvedValues.length}
-        thumbLabels={resolvedThumbLabels}
-      />
+      <>
+        <SliderBase<number[]>
+          {...baseProps}
+          {...valueProps}
+          {...nameProps}
+          {...(formatOptions === undefined ? {} : { formatOptions })}
+          collisionBehavior={collisionBehavior}
+          maxValue={domain.maximum}
+          minValue={domain.minimum}
+          {...(announceCollisions || onChange !== undefined ? { onChange: publishChange } : {})}
+          {...(onChangeEnd === undefined
+            ? {}
+            : { onChangeEnd: (next) => onChangeEnd(next as RangeSliderValues) })}
+          ref={ref}
+          step={domain.step}
+          thumbCount={resolvedValues.length}
+          thumbLabels={resolvedThumbLabels}
+        />
+        {!announceCollisions ? null : (
+          <RangeSliderCollisionAnnouncer
+            formatOptions={formatOptions}
+            minimum={domain.minimum}
+            ref={collisionAnnouncerRef}
+          />
+        )}
+      </>
     );
   },
 );

@@ -6,6 +6,7 @@ import {
   assertPortableRelativePath,
   canonicalJson,
   CliError,
+  isValidAuthorizationHeaderValue,
   portableSort,
   sha256,
   validatedProjectRoot,
@@ -135,11 +136,32 @@ export interface RegistryMetadata extends RegistryPolicySummary {
   readonly identityBinding: RegistryIdentityBinding;
   readonly identityDigest: `sha256:${string}`;
   readonly currentStableRelease: string | null;
+  readonly dependencyGraphDigest: `sha256:${string}` | null;
   readonly catalogDigest: `sha256:${string}`;
   readonly catalogBytes: number;
   readonly catalogUrl: string;
   readonly items: readonly RegistryCatalogItemSummary[];
   readonly keyPolicy: RegistryIdentityBinding["keyPolicy"];
+}
+
+export interface DiscoveredNativeReleaseReference {
+  readonly schemaVersion: 1;
+  readonly artifactKind: "mergora-native-release-reference";
+  readonly registryId: string;
+  readonly release: string;
+  readonly catalog: {
+    readonly digest: `sha256:${string}`;
+    readonly bytes: number;
+  };
+  readonly manifest: {
+    readonly digest: `sha256:${string}`;
+    readonly bytes: number;
+  };
+}
+
+export interface DiscoverNativeReleaseReferenceOptions extends RegistryFetchOptions {
+  readonly projectRoot: string;
+  readonly registryId: string;
 }
 
 export interface RegistryInspection {
@@ -148,6 +170,41 @@ export interface RegistryInspection {
   readonly metadata: RegistryMetadata | null;
   readonly identityStatus: "match" | "mismatch" | "not-pinned" | "not-checked";
   readonly missingEvidence: readonly string[];
+}
+
+export const SHADCN_V1_ADAPTER_VERSION = "1.0.0" as const;
+
+export interface AcquiredShadcnRegistryFile {
+  readonly path: string;
+  readonly target: string;
+  readonly type: "registry:file" | "registry:style" | "registry:ui";
+  readonly content: string;
+}
+
+export interface AcquiredShadcnRegistryItem {
+  readonly id: string;
+  readonly type: "registry:block" | "registry:ui";
+  readonly dependencies: readonly string[];
+  readonly devDependencies: readonly string[];
+  readonly registryDependencies: readonly string[];
+  readonly files: readonly AcquiredShadcnRegistryFile[];
+  readonly payloadDigest: `sha256:${string}`;
+}
+
+export interface AcquiredShadcnRegistryCatalog {
+  readonly adapterVersion: typeof SHADCN_V1_ADAPTER_VERSION;
+  readonly registry: RegistryListEntry;
+  readonly metadata: RegistryMetadata;
+  readonly payloadUrl: string;
+  readonly payloadDigest: `sha256:${string}`;
+  readonly payloadBytes: number;
+  readonly items: readonly AcquiredShadcnRegistryItem[];
+}
+
+export interface AcquireShadcnRegistryCatalogOptions extends RegistryFetchOptions {
+  readonly projectRoot: string;
+  readonly registryId: string;
+  readonly offline?: boolean | undefined;
 }
 
 export type RegistryConfigOperationPlan = OperationPlan;
@@ -232,7 +289,7 @@ interface ReleaseManifestSample {
 function registryError(
   message: string,
   code: string,
-  exitCode: 2 | 3 | 5 | 7 | 8 = 5,
+  exitCode: 2 | 3 | 4 | 5 | 7 | 8 | 11 = 5,
   target?: string,
 ): CliError {
   return new CliError(message, {
@@ -551,6 +608,20 @@ async function fetchBoundedJson(
   const environment = options.environment ?? process.env;
   const authValue =
     authEnvironmentVariable === undefined ? undefined : environment[authEnvironmentVariable];
+  if (authEnvironmentVariable !== undefined && authValue === undefined) {
+    throw registryError(
+      `Registry authorization requires environment variable ${authEnvironmentVariable}.`,
+      "REGISTRY_AUTH_REQUIRED",
+      11,
+    );
+  }
+  if (authValue !== undefined && !isValidAuthorizationHeaderValue(authValue)) {
+    throw registryError(
+      "Registry authorization credential is invalid.",
+      "REGISTRY_AUTH_INVALID",
+      11,
+    );
+  }
   const authOrigin =
     options.authOrigin === undefined
       ? new URL(initialUrl).origin
@@ -566,7 +637,7 @@ async function fetchBoundedJson(
       });
       const headers = new Headers({ Accept: "application/json" });
       if (authValue !== undefined && new URL(current).origin === authOrigin) {
-        headers.set("Authorization", `Bearer ${authValue}`);
+        headers.set("Authorization", authValue);
       }
       let response: Response;
       try {
@@ -1035,6 +1106,7 @@ function validateShadcnCatalog(
   readonly registryId: string;
   readonly declaredIdentityDigest: `sha256:${string}`;
   readonly items: readonly RegistryCatalogItemSummary[];
+  readonly sourceItems: readonly AcquiredShadcnRegistryItem[];
 } {
   const root = objectValue(value, "shadcn registry catalog");
   exactKeys(root, ["$schema", "name", "homepage", "items"], [], "shadcn registry catalog");
@@ -1056,6 +1128,7 @@ function validateShadcnCatalog(
     );
   }
   const seen = new Set<string>();
+  const sourceItems: AcquiredShadcnRegistryItem[] = [];
   const items = root.items.map((entry, index): RegistryCatalogItemSummary => {
     const label = `shadcn registry item ${String(index)}`;
     const item = objectValue(entry, label);
@@ -1116,6 +1189,7 @@ function validateShadcnCatalog(
     }
     const seenPaths = new Set<string>();
     const seenTargets = new Set<string>();
+    const files: AcquiredShadcnRegistryFile[] = [];
     for (const [fileIndex, entryFile] of item.files.entries()) {
       const file = objectValue(entryFile, `${label}.files[${String(fileIndex)}]`);
       exactKeys(
@@ -1147,8 +1221,23 @@ function validateShadcnCatalog(
           "REGISTRY_METADATA_SCHEMA_INVALID",
         );
       }
+      files.push({
+        path,
+        target,
+        type: file.type as AcquiredShadcnRegistryFile["type"],
+        content: file.content,
+      });
     }
     stringValue(item.docs, `${label}.docs`);
+    sourceItems.push({
+      id,
+      type: item.type as AcquiredShadcnRegistryItem["type"],
+      dependencies: runtime,
+      devDependencies: development,
+      registryDependencies,
+      files,
+      payloadDigest: sha256(canonicalJson(item)),
+    });
     return {
       id,
       license: null,
@@ -1164,6 +1253,7 @@ function validateShadcnCatalog(
       canonicalJson({ homepage, id: registryId, origin: resolvedOrigin, protocol: "shadcn-v1" }),
     ),
     items,
+    sourceItems,
   };
 }
 
@@ -1213,6 +1303,7 @@ function metadataFromCatalog(
   let declaredTrust: RegistryTrust;
   let declaredIdentityDigest: `sha256:${string}`;
   let currentStableRelease: string | null;
+  let dependencyGraphDigest: `sha256:${string}` | null;
   let items: readonly RegistryCatalogItemSummary[];
   if (protocol === "mergora-v1") {
     const catalog = validateNativeCatalog(response.value);
@@ -1226,6 +1317,7 @@ function metadataFromCatalog(
     declaredTrust = catalog.declaredTrust;
     declaredIdentityDigest = catalog.declaredIdentityDigest;
     currentStableRelease = catalog.currentStable;
+    dependencyGraphDigest = catalog.dependencyGraphDigest;
     items = catalog.items;
   } else {
     const catalog = validateShadcnCatalog(response.value, normalizedResolvedOrigin);
@@ -1233,6 +1325,7 @@ function metadataFromCatalog(
     declaredTrust = "enrolled";
     declaredIdentityDigest = catalog.declaredIdentityDigest;
     currentStableRelease = null;
+    dependencyGraphDigest = null;
     items = catalog.items;
   }
   const policies = summarizePolicies(items);
@@ -1269,6 +1362,7 @@ function metadataFromCatalog(
     identityBinding,
     identityDigest: sha256(canonicalJson(identityBinding)),
     currentStableRelease,
+    dependencyGraphDigest,
     catalogDigest: response.digest,
     catalogBytes: response.bytes.byteLength,
     catalogUrl: response.finalUrl,
@@ -1476,6 +1570,159 @@ export async function inspectRegistry(
     metadata,
     identityStatus,
     missingEvidence: metadata.protocol === "shadcn-v1" ? shadcnMissingEvidence(registry.id) : [],
+  };
+}
+
+/**
+ * Discovers the one current Stable native release advertised by an already
+ * enrolled registry. The mutable catalog is used only to select the version;
+ * both catalog and immutable manifest raw-byte digests are returned so the
+ * ordinary immutable resolver can reacquire and cross-check the same snapshot.
+ */
+export async function discoverNativeReleaseReference(
+  options: DiscoverNativeReleaseReferenceOptions,
+): Promise<DiscoveredNativeReleaseReference> {
+  const { config } = configuredProject(options.projectRoot);
+  const inspection = await inspectRegistry({
+    projectRoot: options.projectRoot,
+    id: options.registryId,
+    fetchImplementation: options.fetchImplementation,
+    environment: options.environment,
+    maxBytes: options.maxBytes,
+    maxRedirects: options.maxRedirects,
+    timeoutMilliseconds: options.timeoutMilliseconds,
+  });
+  const { metadata, registry } = inspection;
+  if (registry.protocol !== "mergora-v1" || metadata?.protocol !== "mergora-v1") {
+    throw registryError(
+      `Registry ${JSON.stringify(registry.id)} does not provide native immutable releases.`,
+      "REGISTRY_NATIVE_PROTOCOL_REQUIRED",
+      7,
+      registry.id,
+    );
+  }
+  const expectedIdentityStatus = registry.trust === "official" ? "not-pinned" : "match";
+  if (
+    inspection.identityStatus !== expectedIdentityStatus ||
+    metadata.declaredRegistryId !== registry.id ||
+    metadata.resolvedOrigin !== registry.origin
+  ) {
+    throw registryError(
+      `Registry ${JSON.stringify(registry.id)} changed identity during release discovery.`,
+      "REGISTRY_IDENTITY_MISMATCH",
+      5,
+      registry.id,
+    );
+  }
+  if (metadata.currentStableRelease === null || metadata.dependencyGraphDigest === null) {
+    throw registryError(
+      `Registry ${JSON.stringify(registry.id)} does not advertise one current Stable native release.`,
+      "REGISTRY_RELEASE_MISSING",
+      4,
+      registry.id,
+    );
+  }
+  const release = metadata.currentStableRelease;
+  const manifestUrl = `${metadata.resolvedOrigin}/releases/${release}/manifest.json`;
+  const manifestResponse = await fetchBoundedJson(manifestUrl, {
+    fetchImplementation: options.fetchImplementation,
+    environment: options.environment,
+    maxBytes:
+      options.maxBytes ?? Math.min(config.policy.maxOperationBytes, DEFAULT_MAX_CATALOG_BYTES),
+    maxRedirects: options.maxRedirects,
+    timeoutMilliseconds: options.timeoutMilliseconds,
+    ...(registry.authEnvironmentVariable === null
+      ? {}
+      : { authEnvironmentVariable: registry.authEnvironmentVariable }),
+    authOrigin: registry.origin,
+    allowInsecureLocalhost: registry.trust === "local-development",
+  });
+  if (manifestResponse.finalUrl !== manifestUrl || manifestResponse.redirects.length !== 0) {
+    throw registryError(
+      "Immutable release manifest redirected during automatic discovery.",
+      "REGISTRY_IMMUTABLE_REDIRECT_REJECTED",
+      5,
+      manifestUrl,
+    );
+  }
+  validateReleaseManifest(
+    manifestResponse.value,
+    registry.id,
+    release,
+    metadata.dependencyGraphDigest,
+  );
+  return {
+    schemaVersion: 1,
+    artifactKind: "mergora-native-release-reference",
+    registryId: registry.id,
+    release,
+    catalog: { digest: metadata.catalogDigest, bytes: metadata.catalogBytes },
+    manifest: {
+      digest: manifestResponse.digest,
+      bytes: manifestResponse.bytes.byteLength,
+    },
+  };
+}
+
+/**
+ * Retrieves one exact, schema-validated snapshot of an already enrolled shadcn-v1 catalog.
+ * The returned source is inert data: no registry-provided transform or executable hook is loaded.
+ */
+export async function acquireShadcnRegistryCatalog(
+  options: AcquireShadcnRegistryCatalogOptions,
+): Promise<AcquiredShadcnRegistryCatalog> {
+  const { root, config } = configuredProject(options.projectRoot);
+  const registry = configuredRegistry(root, config, options.registryId);
+  if (registry.protocol !== "shadcn-v1") {
+    throw registryError(
+      `Registry ${JSON.stringify(registry.id)} is not enrolled with the shadcn-v1 adapter.`,
+      "REGISTRY_PROTOCOL_UNSUPPORTED",
+      7,
+      registry.id,
+    );
+  }
+  if (options.offline === true) {
+    throw registryError(
+      `No verified offline shadcn-v1 catalog was supplied for ${JSON.stringify(registry.id)}.`,
+      "SHADCN_OFFLINE_PAYLOAD_UNAVAILABLE",
+      4,
+      registry.id,
+    );
+  }
+  const response = await fetchBoundedJson(endpoint(registry.origin, "registry.json"), {
+    fetchImplementation: options.fetchImplementation,
+    environment: options.environment,
+    maxBytes:
+      options.maxBytes ?? Math.min(config.policy.maxOperationBytes, DEFAULT_MAX_CATALOG_BYTES),
+    maxRedirects: options.maxRedirects,
+    timeoutMilliseconds: options.timeoutMilliseconds,
+    ...(registry.authEnvironmentVariable === null
+      ? {}
+      : { authEnvironmentVariable: registry.authEnvironmentVariable }),
+    allowInsecureLocalhost: registry.trust === "local-development",
+  });
+  const metadata = metadataFromCatalog("shadcn-v1", registry.origin, response);
+  if (
+    metadata.declaredRegistryId !== registry.id ||
+    registry.identityDigest === null ||
+    registry.identityDigest !== metadata.identityDigest
+  ) {
+    throw registryError(
+      `Enrolled identity for ${JSON.stringify(registry.id)} does not match the retrieved shadcn-v1 catalog.`,
+      "REGISTRY_IDENTITY_MISMATCH",
+      5,
+      registry.id,
+    );
+  }
+  const catalog = validateShadcnCatalog(response.value, metadata.resolvedOrigin);
+  return {
+    adapterVersion: SHADCN_V1_ADAPTER_VERSION,
+    registry: { ...registry, ...summarizePolicies(metadata.items) },
+    metadata,
+    payloadUrl: metadata.catalogUrl,
+    payloadDigest: metadata.catalogDigest,
+    payloadBytes: metadata.catalogBytes,
+    items: catalog.sourceItems,
   };
 }
 
@@ -1854,7 +2101,7 @@ function validateReleaseManifest(
       "qualitySummary",
       "manifestDigest",
     ],
-    [],
+    ["npmPackageInventory"],
     "Native release manifest",
   );
   if (

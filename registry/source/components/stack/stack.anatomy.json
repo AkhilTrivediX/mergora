@@ -5,7 +5,14 @@
     "element": "div | section | ul | ol",
     "ref": "HTMLElement",
     "slot": "stack",
-    "stableAttributes": ["data-slot", "data-element", "data-gap", "data-align", "data-list-style"]
+    "stableAttributes": [
+      "data-slot",
+      "data-element",
+      "data-gap",
+      "data-align",
+      "data-list-style",
+      "data-separated"
+    ]
   },
   "parts": []
 }

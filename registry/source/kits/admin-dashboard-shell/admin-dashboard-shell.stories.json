@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "itemId": "admin-dashboard-shell",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicAdminDashboardShell"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAdminDashboardShell"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "offline",
+      "applicability": { "status": "applicable" },
+      "story": "OfflineWorkflowKits"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledAdminDashboardShell"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlWorkflowKits" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    }
+  ]
+}

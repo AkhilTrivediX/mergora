@@ -1,6 +1,6 @@
 import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup, renderToString } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { ClientOnly } from "../../registry/source/components/client-only/index.ts";
 import {
@@ -22,7 +22,11 @@ import {
 } from "../../registry/source/components/provider/index.ts";
 import { Presence } from "../../registry/source/components/presence/index.ts";
 import { Slot } from "../../registry/source/components/slot/index.ts";
-import { ScreenReaderAnnouncer } from "../../registry/source/components/sr-announcer/index.ts";
+import {
+  ScreenReaderAnnouncer,
+  useAnnouncer,
+  type AnnouncerApi,
+} from "../../registry/source/components/sr-announcer/index.ts";
 import {
   VisuallyHidden,
   type VisuallyHiddenProps,
@@ -53,6 +57,11 @@ function ContextProbe(): ReactElement {
 
 function ManagerProbe({ onRead }: { readonly onRead: (manager: LayerManagerApi) => void }): null {
   onRead(useLayerManager());
+  return null;
+}
+
+function AnnouncerProbe({ onRead }: { readonly onRead: (announcer: AnnouncerApi) => void }): null {
+  onRead(useAnnouncer());
   return null;
 }
 
@@ -129,14 +138,21 @@ describe("P2 context and infrastructure server rendering", () => {
   });
 
   it("pairs native direction with context and maps logical sides", () => {
-    const html = renderToStaticMarkup(
+    const isolated = renderToStaticMarkup(
+      <Direction.Boundary direction="rtl" isolate>
+        <ContextProbe />
+      </Direction.Boundary>,
+    );
+    const plain = renderToStaticMarkup(
       <Direction.Boundary direction="rtl">
         <ContextProbe />
       </Direction.Boundary>,
     );
 
-    expect(html).toContain('data-slot="direction-boundary"');
-    expect(html).toContain('dir="rtl"');
+    expect(isolated).toContain('data-slot="direction-boundary"');
+    expect(isolated).toContain('dir="rtl"');
+    expect(isolated).toContain('data-bidi-isolate="true"');
+    expect(plain).not.toContain("data-bidi-isolate");
     expect(resolveLogicalSide("start", "ltr")).toBe("left");
     expect(resolveLogicalSide("start", "rtl")).toBe("right");
     expect(resolveLogicalSide("end", "rtl")).toBe("left");
@@ -186,13 +202,17 @@ describe("P2 context and infrastructure server rendering", () => {
     expect(html).toContain('href="#content"');
     expect(html).toContain('data-reveal-on-focus="true"');
     expect(html).not.toContain('aria-hidden="true">Upload');
+    expect(renderToStaticMarkup(<VisuallyHidden>Plain context</VisuallyHidden>)).not.toContain(
+      "data-reveal-on-focus",
+    );
   });
 
   it("uses deterministic fallback markup for Portal and ClientOnly", () => {
+    const onClientReady = vi.fn();
     const tree = (
       <MergoraProvider locale="ar-EG" direction="rtl" density="touch">
         <ul>
-          <ClientOnly fallback={<li>Server fallback</li>}>
+          <ClientOnly fallback={<li>Server fallback</li>} onClientReady={onClientReady}>
             <li>Client content</li>
           </ClientOnly>
         </ul>
@@ -210,6 +230,14 @@ describe("P2 context and infrastructure server rendering", () => {
     expect(server).not.toContain("Client content");
     expect(server).not.toContain("Portaled content");
     expect(server).not.toMatch(/<span[^>]*>\s*<li>/u);
+    expect(onClientReady).not.toHaveBeenCalled();
+    expect(
+      renderToStaticMarkup(
+        <Portal>
+          <aside>Deferred without fallback</aside>
+        </Portal>,
+      ),
+    ).toBe("");
   });
 
   it("renders disabled portals inline with inherited native context", () => {
@@ -269,7 +297,17 @@ describe("P2 context and infrastructure server rendering", () => {
     expect(layers).toContain('data-slot="layer-application"');
     expect(layers).toContain('data-slot="layer"');
     expect(layers).toContain('data-layer-modal="true"');
+    expect(layers).toContain('data-layer-manages-environment="true"');
     expect(layers).not.toContain("inert");
+  });
+
+  it("keeps announcement composition completely inert when its provider is omitted", () => {
+    let announcer: AnnouncerApi | undefined;
+    const html = renderToStaticMarkup(<AnnouncerProbe onRead={(value) => (announcer = value)} />);
+
+    expect(html).toBe("");
+    expect(announcer?.announce("No provider")).toBe(false);
+    expect(html).not.toContain("aria-live");
   });
 
   it("reuses a nested announcer instead of duplicating live regions", () => {

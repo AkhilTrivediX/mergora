@@ -26,9 +26,21 @@
     }
   ],
   "controlledState": [],
+  "props": [
+    {
+      "default": true,
+      "name": "allowFallback",
+      "required": false,
+      "type": "boolean"
+    }
+  ],
   "nativePolicy": [
     "Clipboard rejection is visible and announced instead of being silently treated as success.",
     "Status remains present until the next attempt and focus stays on the native button.",
     "The fallback removes its temporary textarea after every attempt."
-  ]
+  ],
+  "compositionPolicy": {
+    "familySignature": "Persistent success, loading, and error rails use the shared workbench status language without moving focus.",
+    "enhancement": "allowFallback opts into the legacy temporary-textarea recovery path; false removes that path while preserving explicit error feedback."
+  }
 }

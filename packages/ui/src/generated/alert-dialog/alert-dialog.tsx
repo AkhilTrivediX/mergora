@@ -3,7 +3,19 @@
 
 import "./alert-dialog.css";
 
-import { forwardRef, useCallback, useEffect, useMemo, useRef } from "react";
+import {
+  createContext,
+  Fragment,
+  forwardRef,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { ButtonHTMLAttributes, ComponentPropsWithoutRef, ReactNode, RefObject } from "react";
 
 import {
@@ -20,11 +32,36 @@ import {
 } from "../dialog/dialog.js";
 import type { DialogOpenChangeDetails, DialogOpenChangeReason } from "../dialog/model.js";
 
+/** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
+export function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
+}
+
+/** @internal Controlled/default conflict predicate; not exported from the public item entrypoint. */
+export function hasAcknowledgementStateConflict(
+  acknowledged: boolean | undefined,
+  defaultAcknowledged: boolean | undefined,
+): boolean {
+  return acknowledged !== undefined && defaultAcknowledged !== undefined;
+}
+
 export interface AlertDialogRootProps {
+  /** Declarative AlertDialog parts owned by this root. */
   readonly children?: ReactNode;
+  /** Initial open state for uncontrolled use. */
   readonly defaultOpen?: boolean;
+  /** Fallback focus target used when the invoking trigger is unavailable after close. */
   readonly finalFocusRef?: RefObject<HTMLElement | null>;
+  /** Reports open-state changes with the originating dialog interaction. */
   readonly onOpenChange?: (open: boolean, details: DialogOpenChangeDetails) => void;
+  /** Controlled open state; pair with onOpenChange. */
   readonly open?: boolean;
 }
 
@@ -66,9 +103,29 @@ export interface AlertDialogContentProps extends Omit<
   ComponentPropsWithoutRef<typeof DialogContent>,
   "dismissPolicy" | "initialFocus" | "initialFocusRef" | "role"
 > {
+  /** Enables a native acknowledgement control and holds destructive actions until accepted. */
+  readonly acknowledgementLabel?: ReactNode;
+  /** Controlled state of the optional acknowledgement checkbox. */
+  readonly acknowledged?: boolean;
+  /** Initial acknowledgement state for uncontrolled use. */
+  readonly defaultAcknowledged?: boolean;
   /** Must point to the contained cancel/return action. */
   readonly leastDestructiveRef: RefObject<HTMLElement | null>;
+  /** Reports acknowledgement checkbox changes in controlled and uncontrolled modes. */
+  readonly onAcknowledgedChange?: (acknowledged: boolean) => void;
 }
+
+interface AlertDialogAcknowledgementContextValue {
+  readonly acknowledged: boolean;
+  readonly descriptionId: string | undefined;
+  readonly required: boolean;
+}
+
+const AlertDialogAcknowledgementContext = createContext<AlertDialogAcknowledgementContextValue>({
+  acknowledged: true,
+  descriptionId: undefined,
+  required: false,
+});
 
 interface ProcessLike {
   readonly env?: { readonly NODE_ENV?: string };
@@ -98,8 +155,25 @@ function isUsableLeastDestructiveTarget(
 }
 
 export const AlertDialogContent = forwardRef<HTMLElement, AlertDialogContentProps>(
-  function AlertDialogContent({ leastDestructiveRef, ...props }, ref) {
+  function AlertDialogContent(
+    {
+      acknowledgementLabel,
+      acknowledged,
+      children,
+      defaultAcknowledged,
+      leastDestructiveRef,
+      onAcknowledgedChange,
+      ...props
+    },
+    ref,
+  ) {
     const contentRef = useRef<HTMLElement | null>(null);
+    const acknowledgementId = useId();
+    const [uncontrolledAcknowledged, setUncontrolledAcknowledged] = useState(
+      defaultAcknowledged ?? false,
+    );
+    const acknowledgementRequired = hasAccessibleContent(acknowledgementLabel);
+    const currentAcknowledged = acknowledged ?? uncontrolledAcknowledged;
     const mergedRef = useCallback(
       (node: HTMLElement | null) => {
         contentRef.current = node;
@@ -126,22 +200,55 @@ export const AlertDialogContent = forwardRef<HTMLElement, AlertDialogContentProp
 
     useEffect(() => {
       if (!isDevelopmentRuntime()) return;
+      if (hasAcknowledgementStateConflict(acknowledged, defaultAcknowledged)) {
+        console.warn(
+          "Mergora AlertDialog.Content received both acknowledged and defaultAcknowledged. Remove defaultAcknowledged when controlling acknowledgement.",
+        );
+      }
       if (!isUsableLeastDestructiveTarget(leastDestructiveRef.current, contentRef.current)) {
         console.warn(
           "Mergora AlertDialog.Content leastDestructiveRef must resolve to a connected, enabled, contained non-destructive action. AlertDialog.Cancel is used as the safe fallback when available.",
         );
       }
-    }, [leastDestructiveRef]);
+    }, [acknowledged, defaultAcknowledged, leastDestructiveRef]);
+
+    const acknowledgementContext = useMemo<AlertDialogAcknowledgementContextValue>(
+      () => ({
+        acknowledged: !acknowledgementRequired || currentAcknowledged,
+        descriptionId: acknowledgementRequired ? acknowledgementId : undefined,
+        required: acknowledgementRequired,
+      }),
+      [acknowledgementId, acknowledgementRequired, currentAcknowledged],
+    );
 
     return (
-      <DialogContent
-        {...props}
-        ref={mergedRef}
-        dismissPolicy="explicit"
-        initialFocus="first-interactive"
-        initialFocusRef={guardedLeastDestructiveRef}
-        role="alertdialog"
-      />
+      <AlertDialogAcknowledgementContext.Provider value={acknowledgementContext}>
+        <DialogContent
+          {...props}
+          ref={mergedRef}
+          dismissPolicy="explicit"
+          initialFocus="first-interactive"
+          initialFocusRef={guardedLeastDestructiveRef}
+          role="alertdialog"
+        >
+          {children}
+          {acknowledgementRequired ? (
+            <label className="mrg-alert-dialog__acknowledgement" id={acknowledgementId}>
+              <input
+                checked={currentAcknowledged}
+                data-slot="alert-dialog-acknowledgement-input"
+                onChange={(event) => {
+                  const nextAcknowledged = event.currentTarget.checked;
+                  if (acknowledged === undefined) setUncontrolledAcknowledged(nextAcknowledged);
+                  onAcknowledgedChange?.(nextAcknowledged);
+                }}
+                type="checkbox"
+              />
+              <span>{acknowledgementLabel}</span>
+            </label>
+          ) : null}
+        </DialogContent>
+      </AlertDialogAcknowledgementContext.Provider>
     );
   },
 );
@@ -199,12 +306,28 @@ export const AlertDialogCancel = forwardRef<HTMLButtonElement, AlertDialogCancel
 AlertDialogCancel.displayName = "AlertDialog.Cancel";
 
 export interface AlertDialogActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Destructive action content rendered inside the closing button. */
   readonly children: ReactNode;
 }
 
 export const AlertDialogAction = forwardRef<HTMLButtonElement, AlertDialogActionProps>(
-  function AlertDialogAction(props, ref) {
-    return <DialogClose {...props} ref={ref} data-intent="destructive" />;
+  function AlertDialogAction({ "aria-describedby": ariaDescribedBy, disabled, ...props }, ref) {
+    const acknowledgement = useContext(AlertDialogAcknowledgementContext);
+    const blocked = acknowledgement.required && !acknowledgement.acknowledged;
+    const resolvedAriaDescribedBy =
+      [ariaDescribedBy, blocked ? acknowledgement.descriptionId : undefined]
+        .filter((value): value is string => value !== undefined && value.length > 0)
+        .join(" ") || undefined;
+    return (
+      <DialogClose
+        {...props}
+        ref={ref}
+        aria-describedby={resolvedAriaDescribedBy}
+        data-acknowledgement-required={acknowledgement.required || undefined}
+        data-intent="destructive"
+        disabled={disabled || blocked}
+      />
+    );
   },
 );
 

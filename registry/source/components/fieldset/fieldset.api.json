@@ -19,10 +19,12 @@
       "required": false,
       "default": "stacked",
       "type": "stacked | columns | inline"
-    }
+    },
+    { "name": "selectionSummary", "required": false, "type": "ReactNode" }
   ],
   "compositionPolicy": {
     "semantics": "Always emits a native fieldset with its legend as the first child.",
-    "disabled": "Native fieldset disabled propagation owns descendant successful-control and activation behavior."
+    "disabled": "Native fieldset disabled propagation owns descendant successful-control and activation behavior.",
+    "enhancement": "selectionSummary adds persistent group context to aria-describedby; omitting it removes the rail and ID reference."
   }
 }

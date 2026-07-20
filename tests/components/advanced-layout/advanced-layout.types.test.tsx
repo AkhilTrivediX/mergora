@@ -25,17 +25,17 @@ const elementRef = createRef<HTMLElement>();
 
 const fixtures = [
   <ScrollArea aria-label="History" focusable key="scroll" ref={divRef} />,
-  <Resizable.Root defaultValue={40} key="resizable" ref={divRef}>
+  <Resizable.Root defaultValue={40} key="resizable" ref={divRef} showStepControls={false}>
     <Resizable.Primary />
     <Resizable.Handle aria-label="Resize panels" ref={divRef} />
     <Resizable.Secondary />
   </Resizable.Root>,
-  <SplitPane.Root defaultValue={[30, 70]} key="split" ref={divRef}>
+  <SplitPane.Root defaultValue={[30, 70]} key="split" ref={divRef} showStepControls={false}>
     <SplitPane.Panel index={0} />
     <SplitPane.Handle aria-labelledby="split-label" index={0} ref={divRef} />
     <SplitPane.Panel index={1} />
   </SplitPane.Root>,
-  <StickyRegion.Root key="sticky" ref={divRef}>
+  <StickyRegion.Root key="sticky" manageFocusOffset={false} ref={divRef}>
     <StickyRegion.Content element="header" ref={elementRef} />
     <StickyRegion.Body />
   </StickyRegion.Root>,

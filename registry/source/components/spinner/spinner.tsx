@@ -2,7 +2,7 @@
 
 import { forwardRef, useEffect, useId, useRef, type HTMLAttributes, type ReactNode } from "react";
 
-import { useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import { useAnnouncer } from "../sr-announcer/index.js";
 import "./spinner.css";
 
@@ -20,15 +20,25 @@ export interface SpinnerProps extends Omit<
   | "role"
   | "tabIndex"
 > {
+  /** Reserved: Spinner is decorative and never owns announcement atomicity. */
   readonly "aria-atomic"?: never;
+  /** Reserved: Spinner cannot describe another element or expose loading semantics. */
   readonly "aria-describedby"?: never;
+  /** Reserved: Spinner always renders with `aria-hidden="true"`. */
   readonly "aria-hidden"?: never;
+  /** Reserved: pair Spinner with a named BusyRegion instead of naming the glyph. */
   readonly "aria-label"?: never;
+  /** Reserved: decorative spinners cannot reference an accessible name. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: Spinner never creates a live region. */
   readonly "aria-live"?: never;
+  /** Reserved: Spinner is a decorative glyph and cannot contain content. */
   readonly children?: never;
+  /** Reserved: Spinner is always accessibility-hidden and has no semantic role. */
   readonly role?: never;
+  /** Visual glyph size; defaults to `medium`. */
   readonly size?: SpinnerSize;
+  /** Reserved: Spinner is never focusable. */
   readonly tabIndex?: never;
 }
 
@@ -71,23 +81,43 @@ export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(function Spinne
 Spinner.displayName = "Spinner";
 
 type BusyRegionName =
-  | { readonly label: string; readonly labelledBy?: never }
-  | { readonly label?: never; readonly labelledBy: string };
+  | {
+      /** Non-empty accessible name applied directly to the busy region. */
+      readonly label: string;
+      /** Unavailable when `label` directly names the region. */
+      readonly labelledBy?: never;
+    }
+  | {
+      /** Unavailable when `labelledBy` references the visible region name. */
+      readonly label?: never;
+      /** Non-empty element id that supplies the busy region's accessible name. */
+      readonly labelledBy: string;
+    };
 
 export type BusyRegionProps = Omit<
   HTMLAttributes<HTMLDivElement>,
   "aria-atomic" | "aria-busy" | "aria-label" | "aria-labelledby" | "aria-live" | "children" | "role"
 > &
   BusyRegionName & {
+    /** Reserved: BusyRegion's optional announcement uses the shared announcer. */
     readonly "aria-atomic"?: never;
+    /** Reserved: BusyRegion maps `busy` to its native busy state. */
     readonly "aria-busy"?: never;
+    /** Reserved: use the mutually exclusive `label` naming option. */
     readonly "aria-label"?: never;
+    /** Reserved: use the mutually exclusive `labelledBy` naming option. */
     readonly "aria-labelledby"?: never;
+    /** Reserved: opt into external polite transitions with `announce`. */
     readonly "aria-live"?: never;
+    /** Announces each inactive-to-active transition through the shared announcer. */
     readonly announce?: boolean;
+    /** Native `aria-busy` state for the named region; defaults to true. */
     readonly busy?: boolean;
+    /** Non-empty localized transition summary; defaults to the provider loading message. */
     readonly busyMessage?: string;
+    /** Region content that remains outside every generated live region. */
     readonly children: ReactNode;
+    /** Reserved: BusyRegion always owns native `region` semantics. */
     readonly role?: never;
   };
 
@@ -171,8 +201,10 @@ export const BusyRegion = forwardRef<HTMLDivElement, BusyRegionProps>(
       throw new Error("Mergora BusyRegion busyMessage must be non-empty when provided.");
     }
 
-    const defaultBusyMessage = useMergoraMessage("spinner.busy", "Loading");
-    const busyMessage = (busyMessageProp ?? defaultBusyMessage).trim();
+    const { getMessage } = useMergoraContext();
+    const busyMessage = announce
+      ? (busyMessageProp ?? getMessage("spinner.busy", "Loading")).trim()
+      : "";
     if (announce && busyMessage.length === 0) {
       throw new Error("Mergora BusyRegion requires a non-empty localized busy message.");
     }
@@ -181,11 +213,9 @@ export const BusyRegion = forwardRef<HTMLDivElement, BusyRegionProps>(
 
     return (
       <>
-        <BusyRegionAnnouncement
-          active={announce && busy}
-          dedupeKey={dedupeKey}
-          message={busyMessage}
-        />
+        {announce ? (
+          <BusyRegionAnnouncement active={busy} dedupeKey={dedupeKey} message={busyMessage} />
+        ) : null}
         <div
           {...nativeProps}
           {...(label === undefined ? { "aria-labelledby": labelledBy } : { "aria-label": label })}

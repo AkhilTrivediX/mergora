@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "menubar",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "closed",
+    "open",
+    "empty",
+    "populated",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "menubar",
+      "semanticElement": "div role=menubar",
+      "refTarget": "HTMLDivElement",
+      "states": ["closed", "open"]
+    },
+    {
+      "name": "menubar-rail",
+      "semanticElement": "menuitem rail",
+      "refTarget": "none",
+      "states": ["closed", "open"]
+    },
+    {
+      "name": "menubar-keyboard-guide",
+      "semanticElement": "associated paragraph",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": {
+    "id": "menubar-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "menubar-quality-passport",
+    "version": "0.0.0"
+  }
+}

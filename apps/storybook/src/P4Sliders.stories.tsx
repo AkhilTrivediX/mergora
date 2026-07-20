@@ -63,6 +63,12 @@ const buttonStyle = {
 const headingStyle = { margin: 0, textWrap: "balance" } satisfies CSSProperties;
 const proseStyle = { margin: 0, maxInlineSize: "68ch", textWrap: "pretty" } satisfies CSSProperties;
 
+interface SliderEnhancementArgs {
+  readonly announceCollisions: boolean;
+  readonly intelligentMarks: boolean;
+  readonly showValueBubbles: boolean;
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -81,7 +87,11 @@ function Canvas({
   );
 }
 
-function ProductionForm() {
+function ProductionForm({
+  announceCollisions = true,
+  intelligentMarks = true,
+  showValueBubbles = true,
+}: Partial<SliderEnhancementArgs> = {}) {
   const [result, setResult] = useState("No submission yet");
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -112,6 +122,7 @@ function ProductionForm() {
           label="Approved budget range"
         >
           <RangeSlider
+            announceCollisions={announceCollisions}
             defaultValue={[4000, 10000]}
             formatOptions={{
               currency: "EUR",
@@ -119,15 +130,23 @@ function ProductionForm() {
               maximumFractionDigits: 0,
               style: "currency",
             }}
-            marks={[
-              { label: "EUR 1k", value: 1000 },
-              { label: "EUR 5k", value: 5000 },
-              { label: "EUR 10k", value: 10000 },
-            ]}
+            {...(intelligentMarks
+              ? {
+                  intelligentMarks: { maximumVisible: 6, strategy: "meaningful" as const },
+                }
+              : {
+                  intelligentMarks: false as const,
+                  marks: [
+                    { label: "EUR 1k", value: 1000 },
+                    { label: "EUR 5k", value: 5000 },
+                    { label: "EUR 10k", value: 10000 },
+                  ],
+                })}
             maxValue={10000}
             minValue={1000}
             names={["budget-minimum", "budget-maximum"]}
             step={250}
+            showValueBubbles={showValueBubbles}
             thumbLabels={["Minimum approved budget", "Maximum approved budget"]}
           />
         </Field>
@@ -138,14 +157,22 @@ function ProductionForm() {
           <Slider
             defaultValue={0.8}
             formatOptions={{ maximumFractionDigits: 0, style: "percent" }}
-            marks={[
-              { label: "0%", value: 0 },
-              { label: "50%", value: 0.5 },
-              { label: "100%", value: 1 },
-            ]}
+            {...(intelligentMarks
+              ? {
+                  intelligentMarks: { maximumVisible: 6, strategy: "meaningful" as const },
+                }
+              : {
+                  intelligentMarks: false as const,
+                  marks: [
+                    { label: "0%", value: 0 },
+                    { label: "50%", value: 0.5 },
+                    { label: "100%", value: 1 },
+                  ],
+                })}
             maxValue={1}
             minValue={0}
             name="confidence-threshold"
+            showValueBubbles={showValueBubbles}
             step={0.05}
           />
         </Field>
@@ -188,15 +215,38 @@ function ControlledRange() {
 }
 
 const meta = {
+  args: {
+    announceCollisions: true,
+    intelligentMarks: true,
+    showValueBubbles: true,
+  },
+  argTypes: {
+    announceCollisions: { control: "boolean" },
+    intelligentMarks: { control: "boolean" },
+    showValueBubbles: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   title: "P4/Sliders",
-} satisfies Meta;
+} satisfies Meta<SliderEnhancementArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ProductionWorkbench: Story = {
-  render: () => <ProductionForm />,
+  render: (args) => <ProductionForm {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <ProductionForm {...args} />,
+};
+
+export const PlainBaseline: Story = {
+  args: {
+    announceCollisions: false,
+    intelligentMarks: false,
+    showValueBubbles: false,
+  },
+  render: (args) => <ProductionForm {...args} />,
 };
 
 export const KeyboardAndCollision: Story = {
@@ -212,12 +262,14 @@ export const KeyboardAndCollision: Story = {
         label="Clamped delivery window"
       >
         <RangeSlider
+          announceCollisions
           data-testid="collision-range"
           defaultValue={[40, 60]}
           maxValue={100}
           minValue={0}
           names={["delivery-start", "delivery-end"]}
           step={5}
+          showValueBubbles
           thumbLabels={["Delivery window start", "Delivery window end"]}
         />
       </Field>
@@ -355,6 +407,27 @@ export const NarrowAndTouch: Story = {
           </Field>
         </section>
       </div>
+    </Canvas>
+  ),
+};
+
+export const PreferenceModes: Story = {
+  render: () => (
+    <Canvas>
+      <h1 style={headingStyle}>System preference specimen</h1>
+      <p style={proseStyle}>
+        Focus geometry, mark density, and state identity remain explicit in forced colors. Thumb
+        feedback becomes immediate when reduced motion is requested.
+      </p>
+      <Field description="Generated labels stay bounded at narrow widths." label="Inspection range">
+        <RangeSlider
+          announceCollisions
+          defaultValue={[25, 75]}
+          intelligentMarks={{ maximumVisible: 5, strategy: "meaningful" }}
+          showValueBubbles
+          thumbLabels={["Inspection minimum", "Inspection maximum"]}
+        />
+      </Field>
     </Canvas>
   ),
 };

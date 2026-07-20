@@ -17,6 +17,8 @@
     "required",
     "empty",
     "populated",
+    "canonical-preview",
+    "status-rail",
     "rtl"
   ],
   "slots": [
@@ -55,6 +57,24 @@
       "semanticElement": "button",
       "refTarget": "none",
       "states": ["disabled", "pressed"]
+    },
+    {
+      "name": "number-field-insights",
+      "semanticElement": "context rail",
+      "refTarget": "none",
+      "states": ["empty", "populated", "narrow"]
+    },
+    {
+      "name": "number-field-status",
+      "semanticElement": "descriptive percent-bound text",
+      "refTarget": "none",
+      "states": ["bounded", "unbounded"]
+    },
+    {
+      "name": "number-field-canonical-preview",
+      "semanticElement": "fractional text and data value",
+      "refTarget": "none",
+      "states": ["empty", "populated"]
     }
   ],
   "contract": { "id": "percentage-field-accessibility", "version": "0.1.0" },

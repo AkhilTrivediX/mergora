@@ -1,0 +1,182 @@
+/* Generated from registry/source/components/file-upload/file-upload.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-file-upload {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-lg);
+  min-inline-size: 0;
+}
+
+.mrg-file-upload [data-slot="file-upload-queue"],
+.mrg-file-upload [data-slot="file-upload-rejections"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  min-inline-size: 0;
+  padding-block-start: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-file-upload [data-slot="file-upload-queue-heading"],
+.mrg-file-upload [data-slot="file-upload-rejections"] h3 {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  margin: 0;
+}
+
+.mrg-file-upload [data-slot="file-upload-empty"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  margin-block-end: 0;
+}
+
+.mrg-file-upload [data-slot="file-upload-items"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mrg-file-upload [data-slot="file-upload-item"] {
+  align-items: start;
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-md);
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-inline-size: 0;
+  padding-block: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-file-upload [data-slot="file-upload-preview"] {
+  grid-row: span 2;
+}
+
+.mrg-file-upload [data-slot="file-upload-file"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-file-upload [data-slot="file-upload-file"] strong {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+}
+
+.mrg-file-upload [data-slot="file-upload-file"] span {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  overflow-wrap: anywhere;
+}
+
+.mrg-file-upload [data-slot="upload-progress"] {
+  grid-column: 1 / -1;
+}
+
+.mrg-file-upload [data-slot="file-upload-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  justify-content: end;
+}
+
+.mrg-file-upload [data-slot="file-upload-actions"] button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-file-upload [data-slot="file-upload-actions"] button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-file-upload [data-slot="file-upload-actions"] button:disabled {
+  background: var(--mrg-semantic-color-background-disabled);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-file-upload [data-slot="file-upload-rejections"],
+.mrg-file-upload [data-slot="file-upload-form-error"] {
+  border-block-start-color: var(--mrg-semantic-color-status-danger-border);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-file-upload [data-slot="file-upload-form-error"] {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-file-upload [data-slot="file-upload-rejections"] ul {
+  margin-block-end: 0;
+  padding-inline-start: var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-file-upload[data-readonly="true"] [data-slot="file-upload-queue"] {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+@media (max-width: 30rem) {
+  .mrg-file-upload [data-slot="file-upload-item"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-file-upload [data-slot="file-upload-preview"] {
+    grid-row: auto;
+  }
+
+  .mrg-file-upload [data-slot="file-upload-actions"] {
+    justify-content: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-file-upload *,
+  .mrg-file-upload *::before,
+  .mrg-file-upload *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-file-upload [data-slot="file-upload-queue"],
+  .mrg-file-upload [data-slot="file-upload-item"],
+  .mrg-file-upload [data-slot="file-upload-rejections"],
+  .mrg-file-upload [data-slot="file-upload-form-error"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-file-upload [data-slot="file-upload-actions"] button {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mrg-file-upload [data-slot="file-upload-actions"] button:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-file-upload [data-slot="file-upload-actions"] button:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

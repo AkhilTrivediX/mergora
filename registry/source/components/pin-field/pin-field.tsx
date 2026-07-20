@@ -27,19 +27,33 @@ export interface PinFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "maxLength" | "onChange" | "type" | "value"
 > {
+  /** Initial normalized digits for uncontrolled use and native form reset. */
   readonly defaultValue?: string;
+  /** Concealed password or visible text rendering; defaults to secure. */
   readonly displayMode?: PinFieldDisplayMode;
+  /** Additional class name applied to the native PIN input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Accepted digit count from four through twelve; defaults to four. */
   readonly length?: number;
+  /** Reports every normalized edit and permitted multi-character paste. */
   readonly onChange?: (value: string) => void;
+  /** Reports each newly completed PIN without submitting the associated form. */
   readonly onComplete?: (value: string) => void;
+  /** Localized polite recovery message announced only after blocked paste. */
   readonly pasteBlockedMessage?: string;
+  /** Allows paste or blocks it with recovery status; allow removes blocked-paste output. */
   readonly pastePolicy?: PinFieldPastePolicy;
+  /** Required explicit reusable-secret purpose preventing one-time-code ambiguity. */
   readonly purpose: PinFieldPurpose;
+  /** Localized purpose and length explanation persistently linked to the input. */
   readonly purposeLabel?: string;
+  /** Additional class name applied to the outer PinField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer PinField wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Controlled normalized PIN; edits are proposed through onChange. */
   readonly value?: string;
 }
 

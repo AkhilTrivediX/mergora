@@ -7,7 +7,8 @@
   "exports": [
     { "kind": "component", "name": "Separator" },
     { "kind": "type", "name": "SeparatorProps" },
-    { "kind": "type", "name": "SeparatorOrientation" }
+    { "kind": "type", "name": "SeparatorOrientation" },
+    { "kind": "type", "name": "SeparatorSpacing" }
   ],
   "props": [
     { "default": true, "name": "decorative", "required": false, "type": "boolean" },
@@ -16,11 +17,13 @@
       "name": "orientation",
       "required": false,
       "type": "horizontal | vertical"
-    }
+    },
+    { "default": "none", "name": "spacing", "required": false, "type": "none | sm | md | lg" }
   ],
   "compositionPolicy": {
     "horizontal": "Renders hr so semantic mode uses native separator semantics.",
     "vertical": "Renders div; semantic mode adds role=separator and aria-orientation=vertical.",
-    "decorative": "Adds role=presentation and aria-hidden=true in either orientation."
+    "decorative": "Adds role=presentation and aria-hidden=true in either orientation.",
+    "enhancement": "spacing applies logical tokenized breathing room without wrappers; none removes all component-owned margin."
   }
 }

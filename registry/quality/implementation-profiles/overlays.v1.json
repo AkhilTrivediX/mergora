@@ -1,0 +1,2707 @@
+{
+  "schemaVersion": 1,
+  "category": "overlays",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "alert-dialog",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Alert Dialog provides modal confirmation composition with cancel and action parts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/alert-dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora validates least-destructive focus, forbids implicit dismissal, and optionally gates destructive completion behind a native controlled or uncontrolled acknowledgement.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert-dialog/alert-dialog.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["acknowledgement-gate"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The alert surface inherits the literal Canvas dialog workbench, Ink boundary, shared Violet focus seam, restrained warning rail, strong labels, bounded corners, and preference-safe overlay motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert-dialog/alert-dialog.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dialog/dialog.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "status-rail",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-overlay"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "acknowledgement-gate",
+          "status": "evidence-backed",
+          "summary": "A labelled native checkbox can hold every destructive action until acknowledgement while supporting controlled and uncontrolled state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/alert-dialog/alert-dialog.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["alertAcknowledgement"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "acknowledgementLabel",
+              "acknowledged",
+              "defaultAcknowledged",
+              "onAcknowledgedChange"
+            ],
+            "enableWhen": "Provide acknowledgementLabel and optionally control acknowledged state."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No acknowledgement rail or checkbox is rendered.",
+            "behavior": "The destructive action retains its normal enabled state.",
+            "events": "No acknowledgement change handler is installed or invoked.",
+            "accessibility": "No checkbox, acknowledgement description, or action description contribution is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicAlertDialog",
+          "enhancementControls": ["alertAcknowledgement"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedAlertDialog",
+          "enhancementControls": ["alertAcknowledgement"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated role, focus, keyboard, pointer, narrow layout, RTL, forced-colors, reduced-motion, and axe evidence is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Explicit dismissal, least-destructive focus, acknowledgement gating, action completion, and disabled enhancement removal are browser-covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/alert-dialog/alert-dialog.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert-dialog/alert-dialog.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dialog",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Dialog provides modal trigger, portal, overlay, content, title, description, and close composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds explicit dismissal policies, reasoned state changes, resilient workflow-successor focus restoration, and an optional announced dismissal-discovery rail.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dialog/dialog.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["dismissal-discovery"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The overlay uses a literal Canvas surface, Ink boundary, deliberate heading hierarchy, shared Violet focus seam, measured workbench spacing, bounded corners, and spatial motion with reduced-motion removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dialog/dialog.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "workbench-structure",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-motion-duration-overlay"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "dismissal-discovery",
+          "status": "evidence-backed",
+          "summary": "Consumer-supplied dismissal guidance is visible and appended to the dialog description without changing dismissal mechanics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dialog/dialog.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dialogDismissHint"],
+          "api": {
+            "kind": "prop",
+            "names": ["dismissHint"],
+            "enableWhen": "Provide Dialog.Content dismissHint."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No dismissal-discovery rail is rendered.",
+            "behavior": "Dismissal follows dismissPolicy without added behavior.",
+            "events": "No discovery-specific event handler is installed.",
+            "accessibility": "No hint ID or aria-describedby contribution is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicDialog",
+          "enhancementControls": ["dialogDismissHint"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedDialog",
+          "enhancementControls": ["dialogDismissHint"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated naming, focus containment and restoration, keyboard, IME, narrow reflow, RTL, forced-colors, reduced-motion, and axe evidence is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled state, reason details, modal and non-modal operation, nested dismissal, explicit policy, and focus restoration are browser-covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dialog/dialog.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dialog/dialog.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "popover",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Popover provides anchored trigger, content, collision handling, and dismissal composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/popover"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps explicit non-modal ownership, maps logical placement independently from locale, records open-change reasons, and optionally adds announced anchor context and managed entry focus.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/popover/popover.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["anchor-context", "managed-entry-focus"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The anchored surface uses literal Canvas, Ink structure, strong title and context hierarchy, shared Violet focus, a measured context rail, restrained corners, and collision-aware motion with reduced-motion removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/popover/popover.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "status-rail",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "anchor-context",
+          "status": "evidence-backed",
+          "summary": "A persistent context rail keeps the anchor's meaning available when collision or scrolling moves the trigger away.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/popover/popover.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["popoverAnchorContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["anchorContext"],
+            "enableWhen": "Provide Popover.Content anchorContext."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No anchor-context rail is rendered.",
+            "behavior": "Positioning, collision, and dismissal are unchanged.",
+            "events": "No context-specific event handler is installed.",
+            "accessibility": "No context ID or aria-describedby contribution is emitted."
+          }
+        },
+        {
+          "id": "managed-entry-focus",
+          "status": "evidence-backed",
+          "summary": "Task popovers can deliberately focus the content or first interactive target while the basic default keeps focus on the trigger.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/popover/popover.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["popoverManagedFocus"],
+          "api": {
+            "kind": "prop",
+            "names": ["initialFocus", "initialFocusRef"],
+            "enableWhen": "Set initialFocus to content or first-interactive, optionally with initialFocusRef."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No focus-specific UI is rendered.",
+            "behavior": "Opening leaves focus on the trigger under initialFocus none.",
+            "events": "No entry-focus effect moves focus into the surface.",
+            "accessibility": "No extra focus announcement is caused by entry movement."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicPopover",
+          "enhancementControls": ["popoverAnchorContext", "popoverManagedFocus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedPopover",
+          "enhancementControls": ["popoverAnchorContext", "popoverManagedFocus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated naming, keyboard entry and dismissal, focus return, collision, narrow layout, RTL, forced-colors, reduced-motion, and axe evidence is current; manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled state, logical placement, collision flip, topmost Escape, managed focus, focus return, and disabled enhancement removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/popover/popover.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/popover/popover.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sheet",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Sheet provides a modal edge panel with trigger, overlay, content, title, description, and close parts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/sheet"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides logical RTL-aware edges, explicit size and safe-area behavior, resilient focus restoration, and optional consumer-controlled native workflow progress.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sheet/sheet.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["workflow-progress"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The edge workbench inherits the literal Canvas dialog structure, Ink boundary, strong hierarchy, shared Violet focus, stable Green progress rail, and directional motion with reduced-motion removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sheet/sheet.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dialog/dialog.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "status-rail",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-overlay"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "workflow-progress",
+          "status": "evidence-backed",
+          "summary": "A labelled native progress rail communicates bounded task progress without turning the base sheet into a scheduler or wizard.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sheet/sheet.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["sheetProgress"],
+          "api": {
+            "kind": "prop",
+            "names": ["progress"],
+            "enableWhen": "Provide Sheet.Content progress with label, value, and optional max."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No progress rail is rendered.",
+            "behavior": "Sheet focus, dismissal, edge placement, and scrolling remain unchanged.",
+            "events": "No progress-specific event handler is installed.",
+            "accessibility": "No progressbar or progress label is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicSheet",
+          "enhancementControls": ["sheetProgress"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedSheet",
+          "enhancementControls": ["sheetProgress"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated dialog semantics, focus, logical edge RTL, safe areas, narrow reflow, touch targets, forced-colors, reduced-motion, progress semantics, and axe evidence is current; manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "All logical and physical edges, responsive sizing, contained scrolling, focus restoration, strict progress validation, and disabled enhancement removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sheet/sheet.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sheet/sheet.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tooltip",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Tooltip provides delayed hover and focus description with trigger and positioned content.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/tooltip"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds a focusable aria-disabled activation-suppressing adapter, forbids long-press-only access, diagnoses interactive content, and optionally presents keyboard shortcut context.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tooltip/tooltip.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["disabled-trigger-adapter", "shortcut-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The compact Ink tooltip uses strong label type, a precise shortcut key boundary, shared Violet focus, restrained corners, and short opacity feedback removed under reduced motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tooltip/tooltip.css"
+          }
+        ],
+        "patternIds": [
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-inverse",
+          "--mrg-semantic-color-foreground-inverse",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-feedback"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "disabled-trigger-adapter",
+          "status": "evidence-backed",
+          "summary": "Disabled-looking controls can remain keyboard discoverable for supplemental explanation while all activation is suppressed.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tooltip/tooltip.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["tooltipDisabledAdapter"],
+          "api": {
+            "kind": "compound-part",
+            "names": ["Tooltip.DisabledTrigger"],
+            "enableWhen": "Render Tooltip.DisabledTrigger instead of Tooltip.Trigger."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The ordinary trigger is rendered without disabled-adapter styling.",
+            "behavior": "The trigger keeps normal activation behavior.",
+            "events": "No adapter click cancellation or propagation stop is installed.",
+            "accessibility": "No aria-disabled state or adapter slot is exposed."
+          }
+        },
+        {
+          "id": "shortcut-context",
+          "status": "evidence-backed",
+          "summary": "Tooltip content can append concise keyboard context without making the tooltip interactive.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tooltip/tooltip.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["tooltipShortcut"],
+          "api": {
+            "kind": "prop",
+            "names": ["shortcut"],
+            "enableWhen": "Provide Tooltip.Content shortcut."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No shortcut key is rendered.",
+            "behavior": "Tooltip timing, positioning, and dismissal are unchanged.",
+            "events": "No shortcut-specific event handler is installed.",
+            "accessibility": "No shortcut text is appended to the tooltip description."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicTooltip",
+          "enhancementControls": ["tooltipDisabledAdapter", "tooltipShortcut"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedTooltip",
+          "enhancementControls": ["tooltipDisabledAdapter", "tooltipShortcut"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlays/overlays.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated focus and hover description, disabled adapter, Escape, pointer persistence, touch policy, RTL, forced-colors, reduced-motion, and axe evidence is current; manual records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Warm-up and close delay, hover persistence, describedby lifecycle, disabled activation suppression, shortcut removal, Escape, and no-long-press touch behavior are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlays/overlays.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tooltip/tooltip.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tooltip/tooltip.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "context-menu",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Context Menu provides right-click or long-press menu composition with items, submenus, selection items, and shortcuts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/context-menu"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora unifies right-click, press, Shift+F10, and Menu-key invocation with optional discovery, selection context, and destructive confirmation that remain independently removable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/context-menu/context-menu.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["invocation-discovery", "selection-context", "destructive-confirmation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The target and menu use precise Ink structure, strong label/context hierarchy, shared Violet focus, Green selection, restrained corners, and preference-safe overlay motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/context-menu/context-menu.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-foreground-muted",
+          "--mrg-semantic-font-size-label",
+          "--mrg-semantic-color-selection-border",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "invocation-discovery",
+          "status": "evidence-backed",
+          "summary": "Shows every supported pointer and keyboard invocation path.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/context-menu/context-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["contextHint"],
+          "api": {
+            "kind": "prop",
+            "names": ["showInvocationHint"],
+            "enableWhen": "Set showInvocationHint to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No invocation hint is rendered.",
+            "behavior": "The ordinary pointer, press, and keyboard paths remain available.",
+            "events": "No hint-specific state or callback is installed.",
+            "accessibility": "No aria-describedby relationship or hint text is exposed."
+          }
+        },
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "Adds stable selected-count context.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/context-menu/context-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["selectionSummary"],
+            "enableWhen": "Set selectionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection summary is rendered.",
+            "behavior": "Selection behavior is unchanged.",
+            "events": "No summary-specific update work runs.",
+            "accessibility": "No status live region is exposed."
+          }
+        },
+        {
+          "id": "destructive-confirmation",
+          "status": "evidence-backed",
+          "summary": "Requires a second explicit activation for destructive actions.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/context-menu/context-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownConfirm"],
+          "api": {
+            "kind": "prop",
+            "names": ["confirmDestructiveActions"],
+            "enableWhen": "Set confirmDestructiveActions to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No confirmation label or intermediate state is rendered.",
+            "behavior": "Destructive actions use the normal single-action path.",
+            "events": "No action event is deferred.",
+            "accessibility": "No confirmation state is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicContextMenu",
+          "enhancementControls": ["contextHint", "dropdownSummary", "dropdownConfirm"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedContextMenu",
+          "enhancementControls": ["contextHint", "dropdownSummary", "dropdownConfirm"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/context-menu/context-menu.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/context-menu/context-menu.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/context-menu/context-menu.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/context-menu/context-menu.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "drawer",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Drawer provides a bottom or directional modal panel with trigger, overlay, content, and close composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/drawer"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds optional dependency-free directional swipe dismissal with a visible keyboard-operable equivalent and reasoned close details while retaining every ordinary close path.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/drawer/drawer.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["directional-swipe-dismissal"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The drawer uses a literal Canvas work surface, a strong Ink attachment edge, deliberate type hierarchy, shared Violet focus, bounded corners, and spatial motion removed under reduced motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/drawer/drawer.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "workbench-structure",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-radius-container",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "directional-swipe-dismissal",
+          "status": "evidence-backed",
+          "summary": "Adds touch swipe dismissal and an explicit keyboard equivalent.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/drawer/drawer.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["drawerSwipe"],
+          "api": {
+            "kind": "prop",
+            "names": ["swipeToClose", "swipeThreshold", "swipeHandleLabel"],
+            "enableWhen": "Set swipeToClose to true; threshold and label configure it."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No swipe handle is rendered.",
+            "behavior": "Escape, close buttons, and ordinary dismissal remain.",
+            "events": "No pointer gesture handlers or swipe close reason are installed.",
+            "accessibility": "No swipe-handle button or label is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicDrawer",
+          "enhancementControls": ["drawerSwipe"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedDrawer",
+          "enhancementControls": ["drawerSwipe"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/drawer/drawer.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 3 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/drawer/drawer.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/drawer/drawer.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/drawer/drawer.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dropdown-menu",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Dropdown Menu provides a button-triggered menu with actions, links, submenus, shortcuts, and checkbox or radio items.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dropdown-menu"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds independently optional selected-set context and two-step destructive confirmation to a data-driven nested React Aria menu.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropdown-menu/dropdown-menu.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selection-context", "destructive-confirmation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The menu uses a literal overlay surface, precise Ink boundaries, strong labels and machine-text shortcuts, Green selected identity, Violet focus, restrained corners, and concise preference-safe motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropdown-menu/dropdown-menu.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "selected-pressed-identity",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-color-selection-border",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "Adds a stable selected-count rail.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropdown-menu/dropdown-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["selectionSummary"],
+            "enableWhen": "Set selectionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No summary rail is rendered.",
+            "behavior": "Selection remains unchanged.",
+            "events": "No summary update work runs.",
+            "accessibility": "No status live region is exposed."
+          }
+        },
+        {
+          "id": "destructive-confirmation",
+          "status": "evidence-backed",
+          "summary": "Adds a deliberate two-activation destructive path.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropdown-menu/dropdown-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownConfirm"],
+          "api": {
+            "kind": "prop",
+            "names": ["confirmDestructiveActions"],
+            "enableWhen": "Set confirmDestructiveActions to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No confirmation label or intermediate state is rendered.",
+            "behavior": "Destructive items activate normally.",
+            "events": "No action event is deferred.",
+            "accessibility": "No confirmation state changes the accessible name."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicDropdownMenu",
+          "enhancementControls": ["dropdownSummary", "dropdownConfirm"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedDropdownMenu",
+          "enhancementControls": ["dropdownSummary", "dropdownConfirm"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropdown-menu/dropdown-menu.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropdown-menu/dropdown-menu.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropdown-menu/dropdown-menu.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropdown-menu/dropdown-menu.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "hover-card",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Hover Card provides a hover- and focus-triggered supplemental preview in a positioned overlay.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/hover-card"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora offers optional press-to-pin parity for keyboard, pointer, and touch users with explicit persistent-state context and a deterministic close path.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/hover-card/hover-card.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["press-to-pin"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The preview uses a literal white surface, Ink boundary, strong title/context hierarchy, a restrained Violet information rail, shared focus treatment, bounded corners, and preference-safe motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/hover-card/hover-card.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "violet-context-signal",
+          "status-rail",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-status-info-border",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "press-to-pin",
+          "status": "evidence-backed",
+          "summary": "Adds persistent preview state, status, and close action.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/hover-card/hover-card.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["hoverPin"],
+          "api": {
+            "kind": "prop",
+            "names": ["pinOnPress"],
+            "enableWhen": "Set pinOnPress to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No pin rail or close action is rendered.",
+            "behavior": "Focus and hover preview behavior remains.",
+            "events": "No pin state or event branch is installed.",
+            "accessibility": "No pinned status or extra action is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicHoverCard",
+          "enhancementControls": ["hoverPin"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedHoverCard",
+          "enhancementControls": ["hoverPin"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/hover-card/hover-card.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/hover-card/hover-card.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/hover-card/hover-card.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/hover-card/hover-card.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lightbox",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn has no dedicated Lightbox; ordinary implementations compose Dialog, buttons, images, captions, and ad hoc zoom or carousel behavior.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines direction-aware gallery navigation and focus restoration with independent position context, bounded zoom and non-gesture pan controls, and optional swipe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/lightbox/lightbox.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["position-context", "bounded-zoom-controls", "swipe-navigation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The lightbox uses a literal Canvas inspection stage, strong Ink frame, deliberate caption hierarchy, restrained information and selection signals, shared focus, bounded corners, and reduced-motion-safe transforms.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/lightbox/lightbox.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-status-info-border",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "position-context",
+          "status": "evidence-backed",
+          "summary": "Adds current/total context and navigation announcements.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/lightbox/lightbox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["lightboxSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showPositionSummary"],
+            "enableWhen": "Set showPositionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No position output is rendered.",
+            "behavior": "All navigation remains available.",
+            "events": "No summary event is produced.",
+            "accessibility": "No position live output is exposed."
+          }
+        },
+        {
+          "id": "bounded-zoom-controls",
+          "status": "evidence-backed",
+          "summary": "Adds bounded zoom, reset, and non-gesture pan alternatives.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/lightbox/lightbox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["lightboxZoom"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "zoomControls",
+              "zoom",
+              "defaultZoom",
+              "onZoomChange",
+              "minimumZoom",
+              "maximumZoom",
+              "zoomStep"
+            ],
+            "enableWhen": "Set zoomControls to true; remaining properties configure zoom."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No zoom or pan controls are rendered.",
+            "behavior": "Images remain at canonical scale.",
+            "events": "No zoom or pan state or event is produced.",
+            "accessibility": "No zoom group, output, or pan labels are exposed."
+          }
+        },
+        {
+          "id": "swipe-navigation",
+          "status": "evidence-backed",
+          "summary": "Adds touch swipe while retaining button and keyboard navigation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/lightbox/lightbox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["lightboxSwipe"],
+          "api": {
+            "kind": "prop",
+            "names": ["swipeNavigation"],
+            "enableWhen": "Set swipeNavigation to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No swipe affordance is rendered.",
+            "behavior": "Buttons and keyboard remain complete.",
+            "events": "No pointer gesture handlers are installed.",
+            "accessibility": "No gesture-specific output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicLightbox",
+          "enhancementControls": ["lightboxSummary", "lightboxZoom", "lightboxSwipe"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedLightbox",
+          "enhancementControls": ["lightboxSummary", "lightboxZoom", "lightboxSwipe"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/lightbox/lightbox.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 3 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/lightbox/lightbox.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/lightbox/lightbox.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/lightbox/lightbox.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "menubar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Menubar provides an application menubar with roving top-level items, nested menus, shortcuts, and selection items.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/menubar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds independently optional keyboard discovery and open-menu focus transfer plus the removable selection context and destructive safety used across its menu family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/menubar/menubar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": [
+          "keyboard-discovery",
+          "open-menu-focus-transfer",
+          "selection-context",
+          "destructive-confirmation"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The menubar uses a literal white command rail, flush Ink structure, strong hierarchy, Green selected identity, Violet focus, restrained corners, and preference-safe child-menu motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/menubar/menubar.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "selected-pressed-identity",
+          "workbench-structure",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-selection-border",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "keyboard-discovery",
+          "status": "evidence-backed",
+          "summary": "Adds an associated guide for the complete keyboard model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["menubarGuide"],
+          "api": {
+            "kind": "prop",
+            "names": ["keyboardGuide", "keyboardGuideText"],
+            "enableWhen": "Set keyboardGuide to true; keyboardGuideText localizes it."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No guide is rendered.",
+            "behavior": "The keyboard model remains complete.",
+            "events": "No guide state or event is installed.",
+            "accessibility": "No aria-describedby or guide text is exposed."
+          }
+        },
+        {
+          "id": "open-menu-focus-transfer",
+          "status": "evidence-backed",
+          "summary": "Transfers an already-open menu across top-level focus.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["menubarOpenOnFocus"],
+          "api": {
+            "kind": "prop",
+            "names": ["openMenuOnFocus"],
+            "enableWhen": "Set openMenuOnFocus to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No UI is rendered.",
+            "behavior": "Roving focus and explicit open remain.",
+            "events": "Focus does not emit automatic open changes.",
+            "accessibility": "No accessibility output is added."
+          }
+        },
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "Adds selected-count context in selection menus.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["selectionSummary"],
+            "enableWhen": "Set selectionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection summary is rendered.",
+            "behavior": "Selection remains unchanged.",
+            "events": "No summary work runs.",
+            "accessibility": "No status live region is exposed."
+          }
+        },
+        {
+          "id": "destructive-confirmation",
+          "status": "evidence-backed",
+          "summary": "Adds two-step destructive child-menu activation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dropdownConfirm"],
+          "api": {
+            "kind": "prop",
+            "names": ["confirmDestructiveActions"],
+            "enableWhen": "Set confirmDestructiveActions to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No confirmation state is rendered.",
+            "behavior": "Destructive actions activate normally.",
+            "events": "No event is deferred.",
+            "accessibility": "No confirmation state is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicMenubar",
+          "enhancementControls": [
+            "menubarGuide",
+            "menubarOpenOnFocus",
+            "dropdownSummary",
+            "dropdownConfirm"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedMenubar",
+          "enhancementControls": [
+            "menubarGuide",
+            "menubarOpenOnFocus",
+            "dropdownSummary",
+            "dropdownConfirm"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/menubar/menubar.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 3 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/menubar/menubar.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/menubar/menubar.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "toast",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Sonner provides transient toast notifications with variants, actions, dismissal, and stacking.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/sonner"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora supplies a bounded first-party queue with urgent insertion, deduplication, visible-only timers, durable recovery guidance, and independent queue-context and timer controls.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toast/toast.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["queue-visibility-summary", "explicit-timer-control"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Notifications use literal white surfaces, strong Ink status rails, deliberate title/context hierarchy, restrained Green and status signals, precise focus, bounded corners, and preference-safe motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toast/toast.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "status-rail",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-motion-duration-feedback"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "queue-visibility-summary",
+          "status": "evidence-backed",
+          "summary": "Reports messages waiting beyond the visible window.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toast/toast.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["toastQueueSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showQueueSummary", "queueSummaryLabel"],
+            "enableWhen": "Set showQueueSummary to true; queueSummaryLabel localizes it."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No waiting-count output is rendered.",
+            "behavior": "Queue behavior is unchanged.",
+            "events": "No summary callback is installed.",
+            "accessibility": "No summary live output is exposed."
+          }
+        },
+        {
+          "id": "explicit-timer-control",
+          "status": "evidence-backed",
+          "summary": "Adds explicit pause/resume beside automatic hover/focus pause.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toast/toast.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["toastPauseControls"],
+          "api": {
+            "kind": "prop",
+            "names": ["pauseControls", "pauseLabel", "resumeLabel"],
+            "enableWhen": "Set pauseControls to true; label properties localize it."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No pause button is rendered.",
+            "behavior": "Automatic hover and focus pause remains.",
+            "events": "No control activation event is installed.",
+            "accessibility": "No timer-control name or state is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "BasicToast",
+          "enhancementControls": ["toastQueueSummary", "toastPauseControls"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2OverlayComponentProof.stories.tsx",
+          "exportName": "RecommendedToast",
+          "enhancementControls": ["toastQueueSummary", "toastPauseControls"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2OverlayComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/overlay-component-proof-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated names, roles, focus, dismissal, keyboard, narrow RTL, forced-colors, reduced-motion, touch-target, and axe evidence is current; required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toast/toast.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused browser coverage verifies concise defaults, selective enhancements, keyboard behavior, dismissal and restoration, narrow RTL containment, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/overlay-systems/overlay-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Risk Class 2 manual screen-reader, speech, switch, touch-device, zoom, and Windows forced-colors evidence is missing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toast/toast.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "lifecycle-evidence-incomplete",
+          "summary": "Lifecycle evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toast/toast.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toast/toast.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

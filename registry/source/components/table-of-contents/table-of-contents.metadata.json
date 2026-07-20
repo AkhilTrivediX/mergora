@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "table-of-contents",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "focus-visible", "disabled", "current", "observed", "rtl"],
+  "slots": [
+    {
+      "name": "table-of-contents",
+      "semanticElement": "nav",
+      "refTarget": "HTMLElement",
+      "states": ["default", "current", "observed", "rtl"]
+    },
+    {
+      "name": "table-of-contents-summary",
+      "semanticElement": "optional output",
+      "refTarget": "none",
+      "states": ["current"]
+    }
+  ],
+  "contract": { "id": "table-of-contents-accessibility", "version": "0.1.0" },
+  "passport": { "id": "table-of-contents-quality-passport", "version": "0.0.0" }
+}

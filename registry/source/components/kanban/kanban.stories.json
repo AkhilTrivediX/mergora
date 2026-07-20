@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kanban",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicKanban" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedKanban" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedKanban" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPreferences"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A read-only workflow should use grouped native lists rather than expose inert move controls."
+      }
+    },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Board order is not a required form value."
+      }
+    },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedKanban"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ControlledAndForm" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "RecommendedKanban" },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "ServerRecovery"
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedKanban"
+    }
+  ]
+}

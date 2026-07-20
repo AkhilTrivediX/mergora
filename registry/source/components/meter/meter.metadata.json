@@ -8,7 +8,7 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["default", "populated", "partial"],
+  "stateGroups": ["default", "populated", "partial", "plain-baseline", "recommended-mergora"],
   "slots": [
     { "name": "meter", "semanticElement": "label", "refTarget": "HTMLMeterElement", "states": [] },
     {
@@ -22,6 +22,12 @@
       "semanticElement": "meter",
       "refTarget": "HTMLMeterElement",
       "states": []
+    },
+    {
+      "name": "meter-thresholds",
+      "semanticElement": "optional aria-describedby threshold summary",
+      "refTarget": "HTMLSpanElement",
+      "states": ["present", "absent"]
     }
   ],
   "contract": { "id": "meter-accessibility", "version": "0.1.0" },

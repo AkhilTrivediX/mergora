@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "kind": "mergora-cross-commit-visual-baseline",
+  "suiteId": "p1-browser-evidence-workbench",
+  "acceptedCommit": "44a78292339b46ff2a388a4bc0658d689424e853",
+  "source": {
+    "fixture": "tests/browser/fixture/src/main.tsx",
+    "spec": "tests/browser/visual.spec.ts"
+  },
+  "environmentPolicy": {
+    "ciRunner": "ubuntu-24.04",
+    "playwrightVersion": "1.61.1",
+    "fontManifest": "assets/fonts/manifest.json",
+    "acceptedFontDigest": "sha256:7da8d95cfb1606e38b27e734ba9b59447178458bb7a68716aa49cb45d474eafb",
+    "eligibleEvidencePlatforms": ["linux"]
+  },
+  "comparison": {
+    "threshold": 0,
+    "maxDiffPixels": 0,
+    "masks": []
+  },
+  "projects": ["chromium", "firefox", "webkit"],
+  "modes": [
+    {
+      "id": "light",
+      "path": "/?theme=light",
+      "colorScheme": "light"
+    },
+    {
+      "id": "dark",
+      "path": "/?theme=dark",
+      "colorScheme": "dark"
+    },
+    {
+      "id": "enhanced-contrast",
+      "path": "/?theme=light&contrast=enhanced",
+      "colorScheme": "light"
+    },
+    {
+      "id": "rtl",
+      "path": "/?theme=light&dir=rtl",
+      "colorScheme": "light"
+    },
+    {
+      "id": "reduced-motion",
+      "path": "/?theme=light",
+      "reducedMotion": "reduce"
+    },
+    {
+      "id": "forced-colors",
+      "path": "/?theme=light",
+      "forcedColors": "active",
+      "projects": ["chromium"]
+    }
+  ],
+  "review": {
+    "status": "provisional",
+    "requiredLabel": "visual-change",
+    "explanation": "Bootstrap the immutable cross-commit reference for the existing P1 browser evidence workbench without treating same-run captures as reviewed baselines.",
+    "affectedStories": [
+      "Components/Button",
+      "Components/Combobox",
+      "Components/DataGrid",
+      "Components/Dialog"
+    ],
+    "reviewer": null,
+    "reviewedAt": null,
+    "reviewBundleDigest": null
+  },
+  "limitations": [
+    "The bootstrap reference is provisional until a rendered cross-commit diff receives explicit review.",
+    "This suite covers the canonical Button, Dialog, Combobox, and Data Grid workbench; it does not claim catalog-wide Storybook visual coverage.",
+    "Windows and macOS runs are useful diagnostics but are not release-eligible pinned visual evidence.",
+    "Both source revisions are rendered with the candidate checkout's pinned browser and dependency toolchain so the comparison isolates committed source drift rather than historical runtime drift.",
+    "Visual comparison does not replace semantic, interaction, reflow, or manual assistive-technology evidence."
+  ]
+}

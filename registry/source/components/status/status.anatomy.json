@@ -3,7 +3,7 @@
   "itemId": "status",
   "root": {
     "slot": "status",
-    "element": "span optionally role=status or alert",
+    "element": "static span or opt-in atomic status/alert",
     "ref": "HTMLSpanElement",
     "stableAttributes": ["data-slot", "data-variant", "data-live"]
   },

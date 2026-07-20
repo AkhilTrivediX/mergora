@@ -9,6 +9,12 @@
   },
   "parts": [
     { "slot": "tabs-list", "element": "div role=tablist", "stability": "documented" },
+    {
+      "slot": "tabs-keyboard-hint",
+      "element": "p referenced by tablist aria-describedby",
+      "purpose": "Optionally exposes concise keyboard discovery without changing the tab interaction model.",
+      "stability": "documented"
+    },
     { "slot": "tabs-tab", "element": "div or link role=tab", "stability": "documented" },
     { "slot": "tabs-panels", "element": "div", "stability": "documented" },
     { "slot": "tabs-panel", "element": "div role=tabpanel", "stability": "documented" }

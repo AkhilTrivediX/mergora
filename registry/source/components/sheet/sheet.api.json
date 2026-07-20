@@ -30,6 +30,7 @@
   "nativePolicy": [
     "Sheet reuses the canonical modal Dialog behavior and shared layer record.",
     "start/end are logical sides resolved by native direction; top/bottom remain physical block edges.",
-    "Size is bounded by the visual viewport, safe areas, and narrow mobile adaptation."
+    "Size is bounded by the visual viewport, safe areas, and narrow mobile adaptation.",
+    "Content progress is an optional consumer-controlled native progress rail, is absent by default, and rejects blank labels or non-finite and out-of-range values."
   ]
 }

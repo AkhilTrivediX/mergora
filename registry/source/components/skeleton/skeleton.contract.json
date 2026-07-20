@@ -5,11 +5,12 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 1,
-  "summary": "An accessibility-hidden, dimension-preserving loading placeholder with text, rectangle, and circle shapes.",
+  "summary": "An Ink-bounded accessibility-hidden logical-size placeholder with independently selectable pulse motion.",
   "semantics": [
     "Skeleton is always aria-hidden and rejects accessible-name, live-region, role, and child-content overrides at typed and runtime boundaries.",
     "Logical block and inline dimensions reserve the future content footprint and numeric sizes normalize to CSS pixels.",
-    "Pulse animation disappears under reduced motion and forced colors preserves a visible boundary."
+    "Pulse animation disappears under reduced motion and forced colors preserves a visible boundary.",
+    "animated=false removes the animation hook and pulse behavior without changing geometry or accessibility-tree exclusion."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

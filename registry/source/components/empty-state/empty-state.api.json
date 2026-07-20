@@ -6,6 +6,7 @@
   "exports": [
     { "kind": "component", "name": "EmptyState" },
     { "kind": "type", "name": "EmptyStateProps" },
+    { "kind": "type", "name": "EmptyStateRecoverySuggestions" },
     { "kind": "type", "name": "EmptyStateContext" },
     { "kind": "type", "name": "EmptyStateHeadingLevel" }
   ],
@@ -14,6 +15,7 @@
     "A named section contains a caller-selected native heading, description, optional decorative icon/context, and optional explanatory body; required content rejects booleans, whitespace, empty arrays, and empty fragments.",
     "A primary recovery action is one non-fragment React element and an optional secondary action follows the same rule.",
     "Native recovery elements must be enabled buttons, href-bearing anchors, or action-capable inputs; custom action components retain their semantics.",
-    "The layout reflows actions at narrow width without clipping or hiding recovery paths."
+    "The layout reflows actions at narrow width without clipping or hiding recovery paths.",
+    "Optional recoverySuggestions require a non-empty label and items; omission removes the suggestion list and its accessibility output completely."
   ]
 }

@@ -10,6 +10,8 @@ A named, touch-comfortable native button for icon actions with tooltip and pendi
 - Pending remains focusable, exposes busy semantics, and blocks activation.
 - Every size is at least 44 by 44 CSS pixels.
 
+The compact Canvas control uses the same Ink border, Green state, Violet focus seam, and optional loading rail as Button. The required accessible `label`, independently optional native `tooltip`, and focus-retaining `pending` behavior are the useful guardrails beyond an ordinary icon button. Omitting `tooltip` and setting `pending={false}` removes their UI and behavior.
+
 The public ref resolves to `HTMLButtonElement`. Stable source styling starts at `data-slot="icon-button"`; documented child slots are recorded in `icon-button.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

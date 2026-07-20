@@ -1,0 +1,126 @@
+@layer mergora.components {
+  .mrg-comment-thread {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-comment-thread[data-resolved="true"] {
+    border-color: var(--mrg-semantic-color-status-success-border);
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-header"],
+  .mrg-comment-thread article > header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-header"] {
+    padding-block-end: var(--mrg-semantic-space-inset-sm);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-comments"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-comments"] > li {
+    padding-block-end: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-comment-thread time,
+  .mrg-comment-thread [data-optimistic-state] span {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-comment-thread [data-optimistic-state="pending"] {
+    border-color: var(--mrg-semantic-color-status-loading-border);
+  }
+  .mrg-comment-thread [data-optimistic-state="error"] {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-reply"],
+  .mrg-comment-thread [data-slot="comment-thread-reply"] label {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-comment-thread textarea {
+    min-block-size: calc(var(--mrg-semantic-density-row-height) * 2);
+    padding: var(--mrg-semantic-space-inset-sm);
+    resize: block;
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-comment-thread [data-slot="comment-thread-mentions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-comment-thread button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-comment-thread :is(button, textarea):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (pointer: coarse) {
+    .mrg-comment-thread button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-comment-thread,
+    .mrg-comment-thread textarea {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-comment-thread button {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-comment-thread :is(button, textarea):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

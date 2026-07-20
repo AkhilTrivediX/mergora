@@ -7,18 +7,25 @@ import "./kbd.css";
 export type KbdPlatform = "generic" | "mac" | "windows" | "linux";
 
 export interface KbdProps extends HTMLAttributes<HTMLElement> {
+  /** Optional spoken replacement for a symbolic or abbreviated key label. */
   readonly spokenLabel?: string;
 }
 
 export interface KbdKey {
+  /** Canonical key name used to derive the platform-specific visual glyph. */
   readonly key: string;
+  /** Optional spoken key name used by the chord's accessible label. */
   readonly spokenLabel?: string;
 }
 
 export interface KbdChordProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Ordered key descriptors rendered as one non-interactive shortcut group. */
   readonly keys: readonly KbdKey[];
+  /** Complete localized accessible name overriding generated spoken key names. */
   readonly label?: string;
+  /** Selects platform-specific modifier glyphs without changing spoken names. */
   readonly platform?: KbdPlatform;
+  /** Aria-hidden visual separator rendered between adjacent keys. */
   readonly separator?: ReactNode;
 }
 

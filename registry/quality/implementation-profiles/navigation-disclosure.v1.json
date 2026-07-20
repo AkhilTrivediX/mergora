@@ -1,0 +1,2884 @@
+{
+  "schemaVersion": 1,
+  "category": "navigation-disclosure",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "accordion",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Accordion supplies accessible single or multiple disclosures with triggers and content; a live overview of the current expansion set remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/accordion"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native disclosure and heading semantics while optionally deriving a polite expansion overview from the same controlled or uncontrolled root state.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/accordion/accordion.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["expansion-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas panels, Ink separators, strong trigger type, a Green expanded signal, the shared Violet focus seam, restrained corners, and reduced-motion-safe disclosure transitions form the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/accordion/accordion.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "expansion-summary",
+          "status": "evidence-backed",
+          "summary": "A consumer formatter receives the current expanded keys and may render a concise polite status rail for long or multi-open accordions.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/accordion/accordion.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["expansionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderExpansionSummary"],
+            "enableWhen": "Pass a formatter that returns non-empty localized accessible content for the current expanded keys."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No expansion-summary rail is rendered when the formatter is omitted or returns null, false, or empty content.",
+            "behavior": "Single or multiple disclosure state follows the ordinary accordion path.",
+            "events": "No expansion-summary formatter is called.",
+            "accessibility": "No role=status, live region, or summary text is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicAccordion",
+          "enhancementControls": ["expansionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedAccordion",
+          "enhancementControls": ["expansionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated heading, button, disclosure, disabled, keyboard, summary-removal, axe, RTL, narrow, forced-colors, and reduced-motion coverage is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/accordion/accordion.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers controlled/uncontrolled expansion, native activation, roving focus, disabled items, and clean summary removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, touch-device, and relevant manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/accordion/accordion.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/accordion/accordion.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "breadcrumb",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Breadcrumb supplies a navigation hierarchy with links, current page, separators, and consumer-composed ellipsis; bounded responsive hierarchy recovery remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/breadcrumb"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora optionally derives a compact path that keeps hidden ancestors recoverable through native details while preserving the complete ordered hierarchy as the plain baseline.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/breadcrumb/breadcrumb.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["responsive-hierarchy"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Ink link structure, a Green current-page signal, literal Canvas overflow surface, strong hierarchy, the Violet focus seam, restrained corners, and reduced-motion-safe reveal keep the breadcrumb in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/breadcrumb/breadcrumb.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "responsive-hierarchy",
+          "status": "evidence-backed",
+          "summary": "A bounded compact hierarchy retains the first, tail, current page, and hidden ancestors through a native details disclosure.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/breadcrumb/breadcrumb.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["responsiveBreadcrumb"],
+          "api": {
+            "kind": "prop",
+            "names": ["collapse", "maxVisible"],
+            "enableWhen": "Keep collapse true and optionally set maxVisible to an integer of at least two."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Only the complete ordered breadcrumb hierarchy renders.",
+            "behavior": "No compact duplicate or native details disclosure is created.",
+            "events": "No details toggle path or hidden-message resolution occurs.",
+            "accessibility": "No compact hierarchy, disclosure name, hidden-path copy, or duplicate navigation output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicBreadcrumb",
+          "enhancementControls": ["responsiveBreadcrumb"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedBreadcrumb",
+          "enhancementControls": ["responsiveBreadcrumb"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated landmark, list, current-page, safe-link, clean compact-output removal, axe, narrow, RTL, forced-colors, and reduced-motion coverage is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/breadcrumb/breadcrumb.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers hierarchy validation, localized responsive recovery, real links, safe hrefs, and complete enhancement-off cleanup.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, touch-device, and relevant manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/breadcrumb/breadcrumb.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/breadcrumb/breadcrumb.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "collapsible",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Collapsible supplies controlled or uncontrolled disclosure root, trigger, and content; concise visible state context remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/collapsible"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps aria-expanded authoritative while optionally deriving localized visible open or closed context from the same controlled or uncontrolled disclosure state.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collapsible/collapsible.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["visible-state-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas disclosure, Ink boundary, strong trigger type, Green expanded signal, Violet focus seam, restrained radius, and reduced-motion-safe reveal establish the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collapsible/collapsible.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "visible-state-context",
+          "status": "evidence-backed",
+          "summary": "Localized stateText renders an immediate sighted open or closed cue without duplicating aria-expanded for assistive technology.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/collapsible/collapsible.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["collapsibleStateText"],
+          "api": {
+            "kind": "prop",
+            "names": ["stateText"],
+            "enableWhen": "Pass localized closed and open React content to Collapsible.Trigger; the active value must have accessible content."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No extra state text is rendered when stateText is omitted or its active value is null, false, or empty.",
+            "behavior": "Controlled or uncontrolled disclosure behavior is unchanged.",
+            "events": "No state-text-specific event or callback occurs.",
+            "accessibility": "No extra presentation node or duplicate state copy is exposed; aria-expanded remains authoritative."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicCollapsible",
+          "enhancementControls": ["collapsibleStateText"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedCollapsible",
+          "enhancementControls": ["collapsibleStateText"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native-button disclosure semantics, state-copy isolation, keyboard, axe, narrow, RTL, forced-colors, and reduced-motion coverage is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collapsible/collapsible.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers controlled/uncontrolled state, native keyboard/pointer activation, disabled behavior, and clean optional-output removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, touch-device, and relevant manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/collapsible/collapsible.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collapsible/collapsible.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "pagination",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Pagination composes finite page links, previous/next actions, and ellipses; an explicit server-owned cursor contract without a fabricated total remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/pagination"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora offers a discriminated cursor mode for server-owned sequences while preserving real-link progressive enhancement and safe destination validation in both modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/pagination/pagination.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["cursor-navigation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas controls, Ink structure, a Green current-page signal, strong current type, the shared Violet focus seam, restrained corners, and purposeful state transitions establish the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/pagination/pagination.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "cursor-navigation",
+          "status": "evidence-backed",
+          "summary": "Explicit cursor mode represents server-owned previous/current/next navigation without inventing a page count or weakening safe-link validation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/pagination/pagination.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["cursorPagination"],
+          "api": {
+            "kind": "prop",
+            "names": ["mode", "currentLabel", "previousHref", "nextHref"],
+            "enableWhen": "Set mode to cursor and supply the current server-owned range label plus available cursor destinations."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Finite page links, current page, and ellipses render instead of cursor-only controls.",
+            "behavior": "Navigation uses page, pageCount, and getHref; cursor labels and destinations are not evaluated.",
+            "events": "onNavigate receives page numbers rather than cursor directions.",
+            "accessibility": "No cursor currentLabel or cursor-only previous/next relationship is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicPagination",
+          "enhancementControls": ["cursorPagination"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedPagination",
+          "enhancementControls": ["cursorPagination"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated landmark, real-link, current-page, disabled, safe-href, mode-isolation, axe, narrow, RTL, forced-colors, and touch coverage is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/pagination/pagination.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers page/cursor discrimination, real and safe links, disabled navigation, current locations, and clean mode isolation.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, touch-device, and relevant manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/pagination/pagination.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/pagination/pagination.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tabs",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Tabs supplies tablist, tab, and panel composition with keyboard selection; concise keyboard-discovery context remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/tabs"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora optionally connects visible keyboard-discovery copy to the tablist accessible description while preserving React Aria collection prepass, orientation, activation, disabled, and RTL behavior.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tabs/tabs.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["keyboard-discovery"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "An Ink tab baseline, Green selected underline, literal Canvas panel, strong tab type, the shared Violet focus seam, restrained corners, and reduced-motion-safe transitions form the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tabs/tabs.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "keyboard-discovery",
+          "status": "evidence-backed",
+          "summary": "Tabs.List may render localized keyboard guidance and connect it to the tablist without changing the interaction model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tabs/tabs.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["keyboardHint"],
+          "api": {
+            "kind": "prop",
+            "names": ["keyboardHint"],
+            "enableWhen": "Pass concise non-empty localized accessible content to Tabs.List."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No keyboard hint is rendered when keyboardHint is omitted, null, false, or empty.",
+            "behavior": "Tab focus, selection, orientation, and activation follow the ordinary tabs path.",
+            "events": "No hint-specific behavior or event occurs.",
+            "accessibility": "No hint id, node, or aria-describedby contribution is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicTabs",
+          "enhancementControls": ["keyboardHint"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedTabs",
+          "enhancementControls": ["keyboardHint"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2DisclosureNavigation.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated tablist/tab/panel relationships, keyboard hint isolation, orientation, activation, disabled, RTL, axe, narrow, forced-colors, reduced-motion, and touch coverage is current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tabs/tabs.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers automatic/manual activation, orientation, RTL spatial keys, disabled skipping, safe URL state, and clean hint removal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/disclosure-navigation/disclosure-navigation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, touch-device, and relevant manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tabs/tabs.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tabs/tabs.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "bottom-navigation",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The official Shadcn catalog has navigation primitives but no dedicated bottom-navigation component; safe-area behavior, current destination retention, and bounded overflow remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps the current destination in the primary mobile rail while optionally recovering lower-priority destinations through a native disclosure with safe real links.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/bottom-navigation/bottom-navigation.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["bounded-overflow"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas, a decisive Ink top rule, Green current marker, strong labels, Violet focus geometry, restrained overlay corners, and safe-area-aware touch targets establish the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/bottom-navigation/bottom-navigation.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "bounded-overflow",
+          "status": "evidence-backed",
+          "summary": "A deterministic maximum-visible policy preserves the current destination and exposes the remaining safe links through native details.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/bottom-navigation/bottom-navigation.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["bottomOverflow"],
+          "api": {
+            "kind": "prop",
+            "names": ["overflow"],
+            "enableWhen": "Pass overflow with a localized label and maximumVisible of at least two."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No overflow list, summary, or details element renders.",
+            "behavior": "Every destination remains in the primary list and layout calculation takes the plain path.",
+            "events": "No disclosure-specific event path exists.",
+            "accessibility": "No extra summary, nested list, disclosure state, or accessible name is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicBottomNavigation",
+          "enhancementControls": ["bottomOverflow"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedBottomNavigation",
+          "enhancementControls": ["bottomOverflow"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/bottom-navigation/bottom-navigation.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/bottom-navigation/bottom-navigation.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/bottom-navigation/bottom-navigation.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "navbar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn applications compose a header from links, Button, Navigation Menu, and Sheet; router-owned loading or failure context remains application work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/navigation-menu"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines a skip path and focus-returning responsive navigation with an optional router-owned status rail that adds loading and recovery context without framework coupling.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navbar/navbar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["route-status"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas, strong Ink header structure, Green current-page treatment, decisive type, Violet focus geometry, a measured status rail, and narrow logical reflow repeat the Mergora language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navbar/navbar.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "route-status",
+          "status": "evidence-backed",
+          "summary": "Consumer route state can occupy a stable contextual rail with busy and live semantics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/navbar/navbar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["navbarRouteStatus"],
+          "api": {
+            "kind": "prop",
+            "names": ["routeStatus"],
+            "enableWhen": "Pass a routeStatus state and localized text."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No route-status rail or text renders.",
+            "behavior": "Header, skip link, desktop links, and mobile disclosure follow the plain path.",
+            "events": "No status-specific event or callback exists.",
+            "accessibility": "No aria-busy, live output, state attribute, or status copy is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicNavbar",
+          "enhancementControls": ["navbarRouteStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedNavbar",
+          "enhancementControls": ["navbarRouteStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navbar/navbar.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/navbar/navbar.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navbar/navbar.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "navigation-menu",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Shadcn Navigation Menu supplies website navigation triggers, content, links, indicator, custom-link composition, and RTL guidance; focus-driven destination previews remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/navigation-menu"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves site-navigation lists and real links without menu-role misuse while optionally showing destination context from the focused or pointed link.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navigation-menu/navigation-menu.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["destination-preview"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas panels, Ink boundaries, strong destination hierarchy, Green current location, Violet focus seam, restrained corners, and in-flow narrow disclosure styling identify Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navigation-menu/navigation-menu.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "destination-preview",
+          "status": "evidence-backed",
+          "summary": "A consumer renderer adds rich destination context only for an intentionally focused or pointer-entered enabled link.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/navigation-menu/navigation-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["navigationPreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderLinkPreview", "previewLabel"],
+            "enableWhen": "Pass renderLinkPreview and a localized previewLabel when the default name is unsuitable."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No preview aside or rendered destination context exists.",
+            "behavior": "Disclosure and real-link navigation remain unchanged.",
+            "events": "No preview focus, pointer, state-update, or renderer path is installed.",
+            "accessibility": "No preview region, label, description, or duplicate navigation output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicNavigationMenu",
+          "enhancementControls": ["navigationPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedNavigationMenu",
+          "enhancementControls": ["navigationPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navigation-menu/navigation-menu.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/navigation-menu/navigation-menu.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/navigation-menu/navigation-menu.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sidebar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Shadcn Sidebar supplies providers, responsive variants, triggers, groups, menus, controlled state, keyboard shortcut support, and cookie-oriented persistence guidance.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/sidebar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps collapse and mobile focus behavior controlled or uncontrolled while offering an optional storage-agnostic persistence adapter whose failures are contained and consumer-reportable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sidebar/sidebar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["persistence-adapter"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas rails, Ink group structure, Green current links, strong labels that remain named when collapsed, Violet focus geometry, restrained controls, and logical mobile placement form the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sidebar/sidebar.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "persistence-adapter",
+          "status": "evidence-backed",
+          "summary": "A synchronous consumer adapter may hydrate only uncontrolled collapse state and persist only explicit collapse transitions without choosing a storage vendor.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sidebar/sidebar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["sidebarPersistence"],
+          "api": {
+            "kind": "prop",
+            "names": ["persistenceAdapter", "onPersistenceError"],
+            "enableWhen": "Pass persistenceAdapter and optionally onPersistenceError."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No persistence indicator or supplementary UI renders.",
+            "behavior": "Collapse state remains local or controlled with no storage initialization.",
+            "events": "No adapter read, write, storage event, or persistence-error callback occurs.",
+            "accessibility": "No attribute, status, announcement, or extra accessible output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicSidebar",
+          "enhancementControls": ["sidebarPersistence"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedSidebar",
+          "enhancementControls": ["sidebarPersistence"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sidebar/sidebar.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sidebar/sidebar.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sidebar/sidebar.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stepper",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The official Shadcn catalog has Button and Progress primitives but no dedicated stepper; process reachability, step recovery context, and coordinated announcements remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines linear or nonlinear process navigation with independently selectable native progress, localized remaining-work context, and bounded step-change announcements.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stepper/stepper.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["process-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Strong Ink process connectors, literal Canvas markers, Green completion/current state, Violet focus geometry, error-safe status colors, restrained corners, and vertical narrow reflow establish Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stepper/stepper.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "process-context",
+          "status": "evidence-backed",
+          "summary": "Native progress, visible consumer-formatted recovery context, and polite step announcements can be enabled independently around the same controlled or uncontrolled step state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/stepper/stepper.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["stepperProgress", "stepperSummary", "stepperAnnouncements"],
+          "api": {
+            "kind": "prop",
+            "names": ["showProgressBar", "renderProgressSummary", "announceStepChanges"],
+            "enableWhen": "Enable any of the three process-context props independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No progress bar, summary output, or announcement node renders for the corresponding false or omitted prop.",
+            "behavior": "Ordered step state and optional navigation remain on the ordinary path.",
+            "events": "No summary formatter or announcement-specific behavior runs when its option is omitted.",
+            "accessibility": "No progress semantics, formatted context, role=status, live region, or announcement text is exposed for disabled options."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicStepper",
+          "enhancementControls": ["stepperProgress", "stepperSummary", "stepperAnnouncements"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedStepper",
+          "enhancementControls": ["stepperProgress", "stepperSummary", "stepperAnnouncements"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stepper/stepper.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/stepper/stepper.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stepper/stepper.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "table-of-contents",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The official Shadcn catalog has link and navigation building blocks but no dedicated table of contents; heading extraction and current-section observation remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora pairs a consumer-run heading extractor with optional uncontrolled IntersectionObserver tracking and localized current-section context without owning scrolling or URL mutation.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table-of-contents/table-of-contents.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["observed-reading-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas reading rail, strong Ink rule, Green current-location seam, Violet focus geometry, deliberate heading hierarchy, restrained context surface, and logical indentation identify Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table-of-contents/table-of-contents.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "observed-reading-context",
+          "status": "evidence-backed",
+          "summary": "Observation and current-section summary are separately selectable and preserve consumer control over headings, hashes, scrolling, and routers.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/table-of-contents/table-of-contents.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["tocObserver", "tocSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["observeCurrent", "renderCurrentSummary"],
+            "enableWhen": "Pass observeCurrent for uncontrolled observation and/or renderCurrentSummary for visible context."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No current-section output renders when its formatter is omitted.",
+            "behavior": "False observation leaves current state controlled or link-driven and creates no observer.",
+            "events": "No observer callbacks or summary formatter calls occur for disabled options.",
+            "accessibility": "No observation attribute, summary output, context text, or supplementary accessibility output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicTableOfContents",
+          "enhancementControls": ["tocObserver", "tocSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedTableOfContents",
+          "enhancementControls": ["tocObserver", "tocSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table-of-contents/table-of-contents.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/table-of-contents/table-of-contents.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table-of-contents/table-of-contents.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tour",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The official Shadcn catalog has Dialog and Popover primitives but no dedicated non-blocking product tour; route readiness, skip policy, focus policy, and target recovery remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides skippable non-modal guidance that never blocks application access, with separately selectable route callbacks, progress, announcements, and explicit missing-target recovery.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tour/tour.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["recoverable-route-guidance"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas guidance, a strong Ink boundary, Green primary action, restrained Violet progress/focus, measured overlay corners, spatial anchoring, and an instant reduced-motion path form the Mergora signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tour/tour.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "recoverable-route-guidance",
+          "status": "evidence-backed",
+          "summary": "A consumer route adapter and missing-target retry contract make cross-route guidance recoverable without polling, focus trapping, or hidden navigation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tour/tour.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "tourRouteAdapter",
+            "tourTargetRecovery",
+            "tourProgress",
+            "tourAnnouncements"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": ["routeAdapter", "targetRecovery", "showProgress", "announceStepChanges"],
+            "enableWhen": "Enable only the routing, recovery, progress, and announcement capabilities the tour needs."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No recovery status, retry button, progress counter, or announcement node renders for disabled options.",
+            "behavior": "The tour remains skippable, non-modal, and locally step-driven with no route or retry behavior.",
+            "events": "No route adapter, target-retry callback, recovery event, or announcement-specific path runs.",
+            "accessibility": "No recovery role=status, retry control/name, progress copy, live region, or announcement text is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicTour",
+          "enhancementControls": [
+            "tourRouteAdapter",
+            "tourTargetRecovery",
+            "tourProgress",
+            "tourAnnouncements"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedTour",
+          "enhancementControls": [
+            "tourRouteAdapter",
+            "tourTargetRecovery",
+            "tourProgress",
+            "tourAnnouncements"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tour/tour.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tour/tour.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tour/tour.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tree-view",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The official Shadcn catalog has collapsible and collection building blocks but no dedicated APG tree view; full roving keyboard behavior, lazy hierarchy, virtual windows, and non-drag structural changes remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora implements the full navigable tree model and adds explicit non-drag move controls so keyboard, touch, speech, and switch users can request structural changes without pointer dragging.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-view/tree-view.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["non-drag-movement"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas hierarchy, precise Ink rows, Green multiselect state, a restrained Violet active seam and focus geometry, strong labels, logical depth, touch-sized actions, and forced-color mappings identify Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-view/tree-view.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "non-drag-movement",
+          "status": "evidence-backed",
+          "summary": "Consumer-authorized move directions render as a named group of standard buttons for every eligible item.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tree-view/tree-view.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["treeMoveActions"],
+          "api": {
+            "kind": "prop",
+            "names": ["moveActions"],
+            "enableWhen": "Pass moveActions with onMove and optional allowed-direction and localized-label policies."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No move group or movement buttons render.",
+            "behavior": "APG navigation, expansion, lazy loading, selection, and optional rename remain unchanged.",
+            "events": "No move callback or movement-button event path exists.",
+            "accessibility": "No movement group, control names, focus stops, or structural-action output is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "BasicTreeView",
+          "enhancementControls": ["treeMoveActions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx",
+          "exportName": "RecommendedTreeView",
+          "enhancementControls": ["treeMoveActions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationDisclosureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/navigation-disclosure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5NavigationSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantics, keyboard, axe, narrow, RTL, forced-colors, reduced-motion, and touch-target evidence is current; required manual assistive-technology sessions remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-view/tree-view.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Chromium/Firefox/WebKit Storybook evidence covers controlled and uncontrolled state, keyboard and pointer interaction, responsive behavior, enhancement isolation, and runtime safety.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/navigation-systems/navigation-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current screen-reader, speech, switch, real-device touch, and relevant risk-class manual evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tree-view/tree-view.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tree-view/tree-view.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

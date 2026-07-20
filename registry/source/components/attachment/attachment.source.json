@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./attachment.css", "react"],
+  "entryPath": "registry/source/components/attachment/attachment.tsx",
+  "id": "attachment",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

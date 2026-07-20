@@ -239,15 +239,33 @@ describe("project discovery failures", () => {
     );
   });
 
-  it("rejects package-manager contradictions and unsupported root layouts", () => {
+  it("rejects package-manager contradictions and initializes package-root source layouts", () => {
     const project = fixture();
     writeFileSync(resolve(project.root, "package-lock.json"), "{}\n");
     expect(() => inspectProject(project.root)).toThrow(/Conflicting authoritative/u);
 
-    const rootSource = fixture({ framework: "vite-react" });
+    const rootSource = fixture({
+      framework: "vite-react",
+      tsconfigText: '{ "compilerOptions": { "paths": { "@/*": ["./*"] } } }\n',
+    });
+    const css = readFileSync(resolve(rootSource.root, rootSource.globalCss), "utf8");
     rmSync(resolve(rootSource.root, "src"), { recursive: true, force: true });
-    mkdirSync(resolve(rootSource.root, "app"));
-    expect(() => inspectProject(rootSource.root)).toThrow(/named source root/u);
+    writeFileSync(resolve(rootSource.root, "index.css"), css, "utf8");
+
+    const inspection = inspectProject(rootSource.root);
+    expect(inspection.sourceRoot).toBe(".");
+    expect(inspection.globalCss).toBe("index.css");
+
+    const reviewed = planInit({ projectRoot: rootSource.root });
+    applyInit({ projectRoot: rootSource.root }, reviewed.planDigest);
+    expect(readMergoraConfig(rootSource.root)).toMatchObject({
+      project: { sourceRoot: "." },
+      targets: {
+        components: "components/mergora",
+        styles: "styles/mergora",
+      },
+      styling: { globalCss: "index.css" },
+    });
   });
 
   it("ignores an unrelated ancestor lockfile without a proven workspace boundary", () => {

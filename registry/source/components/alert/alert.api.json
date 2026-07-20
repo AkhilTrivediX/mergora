@@ -14,6 +14,7 @@
   "nativePolicy": [
     "Static alerts make no announcement; explicit polite/assertive modes require a concise announcement and use the shared announcer.",
     "A caller-selected native heading, visible variant label, text, shape, and optional actions prevent color-only severity.",
-    "Provider labels remain stable while explicit non-empty variantLabel wins; actions never enter the live region."
+    "Provider labels remain stable while explicit non-empty variantLabel wins; actions never enter the live region.",
+    "live=off is the lightweight default and removes the optional announcement effect and every live-region output."
   ]
 }

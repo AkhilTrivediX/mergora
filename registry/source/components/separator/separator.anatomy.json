@@ -9,6 +9,7 @@
       "data-slot",
       "data-orientation",
       "data-decorative",
+      "data-spacing",
       "role",
       "aria-hidden",
       "aria-orientation"

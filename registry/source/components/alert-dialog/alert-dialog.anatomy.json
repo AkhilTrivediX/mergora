@@ -17,10 +17,17 @@
   "relationships": [
     "Content requires leastDestructiveRef pointing to Cancel.",
     "Title names the decision and Description explains the irreversible consequence.",
-    "Cancel and Action are the only default dismissal paths."
+    "Cancel and Action are the only default dismissal paths.",
+    "An optional acknowledgement checkbox blocks Action until controlled or uncontrolled acceptance."
   ],
   "behaviorOwnership": {
-    "mergora": ["alert semantics", "explicit policy", "least-destructive focus", "intent styling"],
+    "mergora": [
+      "alert semantics",
+      "explicit policy",
+      "least-destructive focus",
+      "optional acknowledgement gate",
+      "intent styling"
+    ],
     "dialog": ["canonical modal behavior"],
     "reactAria": ["focus containment", "background isolation", "portal", "restoration"]
   }

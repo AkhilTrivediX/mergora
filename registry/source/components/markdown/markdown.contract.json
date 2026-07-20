@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "markdown",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, Markdown parsing, sanitization, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "An article contains literal preformatted text by default or semantic React nodes from a consumer renderer.",
+    "naming": "Headings, links, tables, code, and image alternatives are owned by renderer output; renderer-boundary and streaming labels are localizable.",
+    "roleOverride": "No unsafe HTML is injected and no prose subtree is made into one live region.",
+    "refTarget": "HTMLElement article"
+  },
+  "interaction": {
+    "keyboard": "Links and controls supplied by the renderer retain native keyboard behavior and shared focus styling.",
+    "pointer": "No article-wide action is inferred.",
+    "touch": "Wide code and tables retain native overflow rather than clipping.",
+    "speech": "Consumer-rendered links and controls need visible names.",
+    "switchAccess": "The wrapper adds no scan stop."
+  },
+  "preferences": {
+    "forcedColors": "Rules, code surfaces, links, and focus remain visible in system colors.",
+    "reducedMotion": "Streaming content stays visible and no reveal animation is required."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Prose wraps; essential code and table axes remain scrollable."
+  },
+  "consumerResponsibilities": [
+    "Parse untrusted Markdown with a maintained parser and sanitize or structurally filter renderer output under the application's threat model.",
+    "Prohibit raw HTML or unsafe URL schemes unless a reviewed sanitizer and CSP cover the exact output.",
+    "Provide semantic headings, links, tables, code labels, image alternatives, and stable keys during streaming updates."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "literal-no-innerhtml",
+      "consumer-renderer",
+      "streaming-dom-stability",
+      "announcement-isolation",
+      "narrow-rtl-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "screen-reader-streaming-summary",
+      "long-prose-navigation",
+      "zoom-code-table-overflow",
+      "speech-switch-links"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Mergora deliberately includes no runtime Markdown parser or sanitizer and makes no safety claim for consumer renderer output.",
+    "Manual, packed-consumer, and generated parity evidence remains unrecorded."
+  ]
+}

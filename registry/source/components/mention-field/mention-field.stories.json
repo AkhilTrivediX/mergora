@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "itemId": "mention-field",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicMentionField" },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMentionField"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMentionField"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndScreenReader"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledAndForms"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncRemoteStates"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "EmptyAndError" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMentionField"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "No partial progress state is owned."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success belongs to the containing workflow."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to the containing workflow."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "EmptyAndError" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Mention insertion is not destructive."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "long-content",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "rtl",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    }
+  ]
+}

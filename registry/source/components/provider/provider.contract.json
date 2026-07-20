@@ -18,8 +18,9 @@
       "density": "comfortable",
       "reducedMotion": "system"
     },
-    "nesting": "Unspecified values inherit; messages shallow-merge by stable key; explicit values override only the subtree.",
-    "portal": "The configured container is inherited and Portal writes locale/direction/density onto its DOM boundary."
+    "nesting": "Unspecified values inherit; messages shallow-merge by stable key; explicit values override only the subtree, including density and reduced-motion CSS variables.",
+    "portal": "The configured container is inherited and Portal writes locale/direction/density onto its DOM boundary.",
+    "asChildOptOut": "asChild=false renders the neutral provider div; element merging is absent and no role, name, event, or focus behavior is inferred."
   },
   "ssrHydration": {
     "moduleScopeGlobals": false,
@@ -37,6 +38,8 @@
       "strict-types",
       "nested-overrides",
       "message-merge",
+      "density-motion-variable-scope",
+      "as-child-opt-out",
       "ssr",
       "hydration",
       "portal-context",

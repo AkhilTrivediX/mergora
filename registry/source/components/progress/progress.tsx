@@ -4,11 +4,12 @@ import {
   Fragment,
   forwardRef,
   isValidElement,
+  useId,
   type ProgressHTMLAttributes,
   type ReactNode,
 } from "react";
 
-import { useMergoraContext, useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import "./progress.css";
 
 export interface ProgressProps extends Omit<
@@ -25,10 +26,17 @@ export interface ProgressProps extends Omit<
   | "role"
   | "value"
 > {
+  /** Class name applied to the outer labelled Progress wrapper. */
   readonly className?: string;
+  /** Formats determinate visible and accessible values with the provider locale. */
   readonly formatValue?: (value: number, maximum: number, locale: string) => string;
+  /** Non-empty visible content that supplies the native progress accessible name. */
   readonly label: ReactNode;
+  /** Positive finite upper boundary; defaults to 100. */
   readonly maximum?: number;
+  /** Shows localized value context and `aria-valuetext`; defaults to true. */
+  readonly showValue?: boolean;
+  /** Current determinate value; omit to preserve native indeterminate semantics. */
   readonly value?: number;
 }
 
@@ -63,7 +71,7 @@ function assertProgressOwnedProps(props: Readonly<Record<string, unknown>>): voi
 }
 
 export const Progress = forwardRef<HTMLProgressElement, ProgressProps>(function Progress(
-  { className, formatValue, label, maximum = 100, value, ...progressProps },
+  { className, formatValue, label, maximum = 100, showValue = true, value, ...progressProps },
   ref,
 ) {
   assertProgressOwnedProps(progressProps as Readonly<Record<string, unknown>>);
@@ -74,33 +82,44 @@ export const Progress = forwardRef<HTMLProgressElement, ProgressProps>(function 
   if (value !== undefined && (!Number.isFinite(value) || value < 0 || value > maximum)) {
     throw new RangeError("Mergora Progress value must be finite and within zero and maximum.");
   }
-  const { locale } = useMergoraContext();
-  const indeterminateText = useMergoraMessage("progress.indeterminate", "In progress");
-  const formattedValue =
-    value === undefined
-      ? indeterminateText
+  if (typeof showValue !== "boolean") {
+    throw new Error("Mergora Progress showValue must be a boolean when provided.");
+  }
+  const { getMessage, locale } = useMergoraContext();
+  const generatedId = useId().replaceAll(":", "");
+  const labelId = `mrg-progress-${generatedId}-label`;
+  const formattedValue = showValue
+    ? value === undefined
+      ? getMessage("progress.indeterminate", "In progress")
       : (formatValue?.(value, maximum, locale) ??
         new Intl.NumberFormat(locale, {
           maximumFractionDigits: 0,
           style: "percent",
-        }).format(value / maximum));
+        }).format(value / maximum))
+    : undefined;
 
   return (
     <label
       className={className === undefined ? "mrg-progress" : `mrg-progress ${className}`}
       data-indeterminate={value === undefined || undefined}
       data-slot="progress"
+      data-value-visible={showValue || undefined}
     >
       <span data-slot="progress-heading">
-        <span data-slot="progress-label">{label}</span>
-        <span data-slot="progress-value">
-          <bdi>{formattedValue}</bdi>
+        <span data-slot="progress-label" id={labelId}>
+          {label}
         </span>
+        {formattedValue === undefined ? null : (
+          <span data-slot="progress-value">
+            <bdi>{formattedValue}</bdi>
+          </span>
+        )}
       </span>
       <progress
         {...progressProps}
         {...(value === undefined ? {} : { value })}
-        aria-valuetext={formattedValue}
+        aria-labelledby={labelId}
+        {...(formattedValue === undefined ? {} : { "aria-valuetext": formattedValue })}
         data-slot="progress-track"
         max={maximum}
         ref={ref}

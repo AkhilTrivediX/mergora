@@ -26,16 +26,27 @@ export interface OtpFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "maxLength" | "onChange" | "type" | "value"
 > {
+  /** Numeric-only or ASCII alphanumeric normalization policy; defaults to numeric. */
   readonly characterSet?: OtpFieldCharacterSet;
+  /** Initial normalized code for uncontrolled use and native form reset. */
   readonly defaultValue?: string;
+  /** Localized description of total length and visual grouping linked to the input. */
   readonly groupingLabel?: string;
+  /** Positive visual group sizes whose sum defines the accepted code length. */
   readonly groups?: readonly number[];
+  /** Additional class name applied to the native one-time-code input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Reports every normalized edit, composition commit, and multi-character paste. */
   readonly onChange?: (value: string) => void;
+  /** Reports each newly completed code without submitting the associated form. */
   readonly onComplete?: (value: string) => void;
+  /** Additional class name applied to the outer OtpField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer OtpField wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Controlled normalized code; edits are proposed through onChange. */
   readonly value?: string;
 }
 

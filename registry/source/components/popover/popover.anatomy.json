@@ -6,10 +6,18 @@
   "relationships": [
     "Root owns controlled or uncontrolled open state and callback reasons.",
     "Content positions from Trigger and requires Title or an explicit accessible name.",
-    "Arrow is decorative and Close remains visible/reachable."
+    "Arrow is decorative and Close remains visible/reachable.",
+    "Optional anchorContext remains visible and described when collision moves the trigger away."
   ],
   "behaviorOwnership": {
-    "mergora": ["compound API", "logical placement", "provider context", "messages", "slots"],
+    "mergora": [
+      "compound API",
+      "logical placement",
+      "optional anchor context",
+      "provider context",
+      "messages",
+      "slots"
+    ],
     "reactAria": ["position", "collision", "flip", "portal", "dismissal", "focus return"],
     "layerManager": ["shared nesting record"]
   }

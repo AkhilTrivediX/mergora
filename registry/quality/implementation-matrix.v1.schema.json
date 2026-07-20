@@ -1,0 +1,434 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/schemas/implementation-matrix-v1.schema.json",
+  "title": "Mergora catalog implementation matrix",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactKind",
+    "generated",
+    "authority",
+    "profileSchema",
+    "matrixSchema",
+    "signaturePolicy",
+    "publicationStatus",
+    "inventory",
+    "items"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "artifactKind": { "const": "catalog-implementation-matrix" },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "editPolicy"],
+      "properties": {
+        "by": { "const": "@mergora-internal/registry-builder" },
+        "editPolicy": { "const": "do-not-edit" }
+      }
+    },
+    "authority": { "const": "registry/generated/catalog.json" },
+    "profileSchema": {
+      "const": "registry/quality/implementation-profile-shard.v1.schema.json"
+    },
+    "matrixSchema": { "const": "registry/quality/implementation-matrix.v1.schema.json" },
+    "signaturePolicy": { "const": "registry/quality/mergora-signature-policy.v1.json" },
+    "publicationStatus": { "const": "blocked-unreleased" },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entries", "categories", "implementationStatus", "profileStatus"],
+      "properties": {
+        "entries": { "type": "integer", "minimum": 1 },
+        "categories": { "type": "integer", "minimum": 1 },
+        "implementationStatus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["unimplemented", "source-present-unreleased"],
+          "properties": {
+            "unimplemented": { "type": "integer", "minimum": 0 },
+            "source-present-unreleased": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "profileStatus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["audit-pending", "profiled-incomplete", "evidence-backed"],
+          "properties": {
+            "audit-pending": { "type": "integer", "minimum": 0 },
+            "profiled-incomplete": { "type": "integer", "minimum": 0 },
+            "evidence-backed": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "location"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "repository-file",
+            "generated-artifact",
+            "official-documentation",
+            "manual-record"
+          ]
+        },
+        "location": { "type": "string", "minLength": 1, "maxLength": 4000 }
+      }
+    },
+    "references": { "type": "array", "items": { "$ref": "#/$defs/reference" } },
+    "pendingStatement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": { "const": "audit-pending" },
+        "summary": { "type": "null" },
+        "references": { "const": [] }
+      }
+    },
+    "statement": {
+      "type": "object",
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": {
+          "enum": ["planned", "implemented-unverified", "evidence-backed", "blocked"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["comparison", "summary", "references"],
+      "properties": {
+        "comparison": {
+          "enum": ["direct-component", "common-composition", "no-direct-equivalent"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "advantage": {
+      "allOf": [
+        { "$ref": "#/$defs/statement" },
+        {
+          "type": "object",
+          "required": ["enhancementIds"],
+          "properties": {
+            "enhancementIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/id" }
+            }
+          }
+        }
+      ]
+    },
+    "visualSignature": {
+      "allOf": [
+        { "$ref": "#/$defs/statement" },
+        {
+          "type": "object",
+          "required": ["patternIds", "tokenReferences"],
+          "properties": {
+            "patternIds": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/id" }
+            },
+            "tokenReferences": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "pattern": "^--mrg-semantic-" }
+            }
+          }
+        }
+      ]
+    },
+    "pendingVisualSignature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references", "patternIds", "tokenReferences"],
+      "properties": {
+        "status": { "const": "audit-pending" },
+        "summary": { "type": "null" },
+        "references": { "const": [] },
+        "patternIds": { "const": [] },
+        "tokenReferences": { "const": [] }
+      }
+    },
+    "enhancement": {
+      "allOf": [
+        { "$ref": "#/$defs/statement" },
+        {
+          "type": "object",
+          "required": ["id", "storybookControlNames", "api", "defaultEnabled", "disabledBehavior"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "storybookControlNames": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "api": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["kind", "names", "enableWhen"],
+              "properties": {
+                "kind": { "enum": ["prop", "compound-part", "hook", "composition"] },
+                "names": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": { "type": "string", "minLength": 1 }
+                },
+                "enableWhen": { "type": "string", "minLength": 1 }
+              }
+            },
+            "defaultEnabled": { "type": "boolean" },
+            "disabledBehavior": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["ui", "behavior", "events", "accessibility"],
+              "properties": {
+                "ui": { "type": "string", "minLength": 1 },
+                "behavior": { "type": "string", "minLength": 1 },
+                "events": { "type": "string", "minLength": 1 },
+                "accessibility": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pendingStory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "mode",
+        "modulePath",
+        "exportName",
+        "enhancementControls",
+        "references"
+      ],
+      "properties": {
+        "status": { "const": "audit-pending" },
+        "mode": {
+          "enum": ["basic-enhancements-disabled", "recommended-enhancements-enabled"]
+        },
+        "modulePath": { "type": "null" },
+        "exportName": { "type": "null" },
+        "enhancementControls": { "const": [] },
+        "references": { "const": [] }
+      }
+    },
+    "story": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "mode",
+        "modulePath",
+        "exportName",
+        "enhancementControls",
+        "references"
+      ],
+      "properties": {
+        "status": { "enum": ["missing", "declared", "tested", "blocked"] },
+        "mode": {
+          "enum": ["basic-enhancements-disabled", "recommended-enhancements-enabled"]
+        },
+        "modulePath": { "type": ["string", "null"] },
+        "exportName": { "type": ["string", "null"] },
+        "enhancementControls": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "pendingAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": { "const": "audit-pending" },
+        "summary": { "type": "null" },
+        "references": { "const": [] }
+      }
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "summary", "references"],
+      "properties": {
+        "status": { "enum": ["not-verified", "partial", "verified", "blocked"] },
+        "summary": { "type": "string", "minLength": 1 },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "blocker": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "summary", "references"],
+      "properties": {
+        "code": { "$ref": "#/$defs/id" },
+        "summary": { "type": "string", "minLength": 1 },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "maturityAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "rationale", "references"],
+      "properties": {
+        "status": {
+          "enum": [
+            "audit-pending",
+            "not-ready",
+            "experimental-candidate",
+            "beta-candidate",
+            "ready-for-promotion-review",
+            "deprecated-candidate",
+            "blocked"
+          ]
+        },
+        "rationale": { "type": ["string", "null"] },
+        "references": { "$ref": "#/$defs/references" }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "family",
+        "layer",
+        "kind",
+        "implementationStatus",
+        "sourceAvailable",
+        "profileStatus",
+        "ordinaryShadcnBaseline",
+        "mergoraAdvantage",
+        "visualSignature",
+        "optionalEnhancements",
+        "storybook",
+        "accessibilityEvidence",
+        "interactionEvidence",
+        "packageSourceShadcnParity",
+        "remainingBlockers",
+        "maturity"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1 },
+        "family": { "$ref": "#/$defs/id" },
+        "layer": { "enum": ["foundation", "component", "system", "kit"] },
+        "kind": { "enum": ["catalog-item", "kit"] },
+        "implementationStatus": {
+          "enum": ["unimplemented", "source-present-unreleased"]
+        },
+        "sourceAvailable": { "type": "boolean" },
+        "profileStatus": {
+          "enum": ["audit-pending", "profiled-incomplete", "evidence-backed"]
+        },
+        "ordinaryShadcnBaseline": {
+          "oneOf": [{ "$ref": "#/$defs/pendingStatement" }, { "$ref": "#/$defs/baseline" }]
+        },
+        "mergoraAdvantage": {
+          "oneOf": [{ "$ref": "#/$defs/pendingStatement" }, { "$ref": "#/$defs/advantage" }]
+        },
+        "visualSignature": {
+          "oneOf": [
+            { "$ref": "#/$defs/pendingVisualSignature" },
+            { "$ref": "#/$defs/visualSignature" }
+          ]
+        },
+        "optionalEnhancements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "items"],
+          "properties": {
+            "status": { "enum": ["audit-pending", "profiled"] },
+            "items": { "type": "array", "items": { "$ref": "#/$defs/enhancement" } }
+          }
+        },
+        "storybook": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stateContractPath", "basic", "enhanced"],
+          "properties": {
+            "stateContractPath": { "type": ["string", "null"] },
+            "basic": {
+              "oneOf": [{ "$ref": "#/$defs/pendingStory" }, { "$ref": "#/$defs/story" }]
+            },
+            "enhanced": {
+              "oneOf": [{ "$ref": "#/$defs/pendingStory" }, { "$ref": "#/$defs/story" }]
+            }
+          }
+        },
+        "accessibilityEvidence": {
+          "oneOf": [{ "$ref": "#/$defs/pendingAssessment" }, { "$ref": "#/$defs/assessment" }]
+        },
+        "interactionEvidence": {
+          "oneOf": [{ "$ref": "#/$defs/pendingAssessment" }, { "$ref": "#/$defs/assessment" }]
+        },
+        "packageSourceShadcnParity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["artifacts", "assessment"],
+          "properties": {
+            "artifacts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["canonicalSource", "packageEntry", "nativeRegistry", "shadcn"],
+              "properties": {
+                "canonicalSource": { "type": ["string", "null"] },
+                "packageEntry": { "type": ["string", "null"] },
+                "nativeRegistry": { "type": ["string", "null"] },
+                "shadcn": { "type": ["string", "null"] }
+              }
+            },
+            "assessment": {
+              "oneOf": [{ "$ref": "#/$defs/pendingAssessment" }, { "$ref": "#/$defs/assessment" }]
+            }
+          }
+        },
+        "remainingBlockers": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/blocker" }
+        },
+        "maturity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["target", "published", "assessment"],
+          "properties": {
+            "target": { "enum": ["experimental", "beta", "stable", "deprecated"] },
+            "published": { "type": "null" },
+            "assessment": { "$ref": "#/$defs/maturityAssessment" }
+          }
+        }
+      }
+    }
+  }
+}

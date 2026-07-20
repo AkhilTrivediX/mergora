@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "navbar",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "Header composition contains an optional skip anchor and breakpoint-exclusive named navigation landmarks with safe real links.",
+    "current": "Exactly the matching destination receives aria-current=page.",
+    "refTarget": "HTMLElement header"
+  },
+  "interaction": {
+    "keyboard": "The mobile disclosure uses a native button; Escape closes it and restores trigger focus.",
+    "routing": "Link events are cancellable and no router or history mutation is internal.",
+    "touch": "Mobile controls and destinations meet preferred target size."
+  },
+  "enhancementIsolation": {
+    "routeStatusOmitted": "No output, live region, aria-busy, data-route-state, text, or status behavior exists."
+  },
+  "preferences": {
+    "forcedColors": "Focus and current state map to system colors.",
+    "reducedMotion": "Skip-link reveal does not require transition.",
+    "rtl": "Layout and panel padding use logical properties."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "skip-link",
+      "mobile-focus-return",
+      "route-status-isolation",
+      "safe-links",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Consumers own route status accuracy and the skip-link target."
+  ]
+}

@@ -3,7 +3,7 @@
   "itemId": "callout",
   "root": {
     "slot": "callout",
-    "element": "div or named aside",
+    "element": "plain div or opt-in named complementary aside",
     "ref": "HTMLElement",
     "stableAttributes": ["data-slot", "data-variant", "data-landmark"]
   },

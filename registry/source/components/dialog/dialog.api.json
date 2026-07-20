@@ -36,6 +36,7 @@
     "React Aria owns focus containment, portal positioning, outside interaction, Escape ordering, scroll prevention, background isolation, and focus return.",
     "LayerManager records modal and nested layer order as non-dismissible so it never installs a second Escape path.",
     "Modal is the default; non-modal dialogs do not trap focus and remain explicitly named.",
-    "finalFocusRef is the documented fallback when the invoking trigger is removed."
+    "finalFocusRef is the documented fallback when the invoking trigger is removed.",
+    "dismissHint optionally joins visible keyboard discovery to the accessible description and emits nothing when omitted."
   ]
 }

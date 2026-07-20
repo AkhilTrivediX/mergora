@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown-editor",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Complete deterministic async paste/upload stale-order, cancellation, error, reset, and unmount fixtures with maintained sanitizer/upload adapters.",
+    "Record the full Risk Class 3 desktop/mobile AT, IME, speech, switch, touch, zoom, RTL, and virtual-keyboard matrix.",
+    "Generate and verify all distribution surfaces, packed consumers, source-update lifecycle, and package/source parity."
+  ]
+}

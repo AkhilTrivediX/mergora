@@ -36,16 +36,24 @@ export interface PhoneCountry {
 }
 
 export interface PhoneTextSelection {
+  /** Native selection direction, or null when the browser does not expose one. */
   readonly direction: "backward" | "forward" | "none" | null;
+  /** Exclusive UTF-16 selection end offset in the visible telephone value. */
   readonly end: number;
+  /** Inclusive UTF-16 selection start offset in the visible telephone value. */
   readonly start: number;
 }
 
 export interface PhoneAdapterContext {
+  /** Explicit country metadata constraining canonical E.164 output. */
   readonly country: PhoneCountry;
+  /** Active provider locale available for deterministic formatting. */
   readonly locale: string;
+  /** Hard character boundary applied to adapter input and display output. */
   readonly maxInputLength: number;
+  /** Render, input, composition-end, or reset lifecycle phase being resolved. */
   readonly phase: PhoneAdapterPhase;
+  /** Previously rendered display text available for stable caret mapping. */
   readonly previousDisplayValue: string;
   /** UTF-16 offsets matching HTMLInputElement selectionStart/selectionEnd. */
   readonly selection: PhoneTextSelection | null;
@@ -58,6 +66,7 @@ export interface PhoneAdapterResult {
   readonly e164: string | null;
   /** Adapter-owned caret mapping after formatting. */
   readonly selection: PhoneTextSelection | null;
+  /** Empty, incomplete, invalid, or valid interpretation of the adapter output. */
   readonly status: PhoneAdapterStatus;
 }
 
@@ -66,16 +75,24 @@ export interface PhoneAdapterResult {
  * load adapters from JSON, registry metadata, URLs, or user-authored mask strings.
  */
 export interface PhoneFormatAdapter {
+  /** Bounded lowercase identifier used in validation diagnostics. */
   readonly id: string;
+  /** Synchronously formats, validates, canonicalizes, and maps caret state. */
   readonly resolve: (input: string, context: PhoneAdapterContext) => PhoneAdapterResult;
 }
 
 export interface PhoneFieldValue {
+  /** Explicit ISO country code supplied to the trusted adapter. */
   readonly countryCode: string;
+  /** Exact bounded text currently rendered in the native telephone input. */
   readonly displayValue: string;
+  /** Canonical E.164 value available only while adapter status is valid. */
   readonly e164: string | null;
+  /** Current optional extension, or an empty string when extension support is off. */
   readonly extension: string;
+  /** Adapter-owned caret mapping, or null when no mapping is required. */
   readonly selection: PhoneTextSelection | null;
+  /** Adapter status, extended with composing while IME input remains provisional. */
   readonly status: PhoneFieldStatus;
 }
 
@@ -83,26 +100,43 @@ export interface PhoneFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "name" | "onChange" | "type" | "value"
 > {
+  /** Trusted synchronous phone formatter, validator, and caret mapper. */
   readonly adapter: PhoneFormatAdapter;
+  /** Explicit country metadata supplied to the adapter and visible context. */
   readonly country: PhoneCountry;
+  /** Initial extension for uncontrolled use and form reset; requires extension support. */
   readonly defaultExtensionValue?: string;
+  /** Initial visible phone text for uncontrolled use and native form reset. */
   readonly defaultValue?: string;
+  /** Adds a separately labelled extension input; false removes its UI and successful control. */
   readonly extension?: boolean;
+  /** Additional class name applied to the extension input. */
   readonly extensionClassName?: string;
+  /** Required localized visible label when extension support is enabled. */
   readonly extensionLabel?: string;
+  /** Positive accepted extension length cap; defaults to 12. */
   readonly extensionMaxLength?: number;
+  /** Native form name assigned to the optional extension input. */
   readonly extensionName?: string;
+  /** Controlled extension string; changes are proposed through callbacks. */
   readonly extensionValue?: string;
+  /** Additional class name applied to the visible telephone input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with adapter, ARIA, and Field state. */
   readonly invalid?: boolean;
+  /** Localized native validation and visible recovery message for invalid input. */
   readonly invalidMessage?: string;
   /** Maximum accepted visible input length before the trusted adapter runs. */
   readonly maxInputLength?: number;
   /** Name of the hidden canonical E.164 form control. */
   readonly name?: string;
+  /** Receives each edit to the optional extension string. */
   readonly onExtensionChange?: (extension: string) => void;
+  /** Receives display, E.164, extension, selection, and adapter status updates. */
   readonly onValueChange?: (value: PhoneFieldValue) => void;
+  /** Additional class name applied to the outer PhoneField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer PhoneField wrapper. */
   readonly rootStyle?: CSSProperties;
   /** Controlled visible phone text. */
   readonly value?: string;

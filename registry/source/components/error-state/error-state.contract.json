@@ -5,14 +5,15 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 2,
-  "summary": "A recoverable or unrecoverable named error section with a shared-announcer policy, retry, alternative actions, and opt-in technical details.",
+  "summary": "A Canvas-and-Ink error section with independent retry, safe-details, and shared-announcement enhancements.",
   "semantics": [
     "Recoverable mode requires a native retry callback; unrecoverable mode rejects retry props at the type boundary.",
     "Raw Error objects are not accepted and technical details appear only from an explicit consumer node behind native details.",
     "The visible named section never owns role=status, role=alert, or aria-live; static mode makes no announcement and explicit polite/assertive modes require one concise caller-provided summary.",
     "The summary is enqueued through the nearest ScreenReaderAnnouncer.Provider, whose persistent live roots sit outside the error section; retry, alternative actions, and technical details therefore never enter a live region.",
     "Visible localized error text and a distinct symbol preserve meaning without color, while identical shared announcements use the provider dedupe policy.",
-    "The native retry button and details summary expose underline-based hover/active feedback and an explicit focus-visible ring without depending on color or motion."
+    "The native retry button and details summary expose underline-based hover/active feedback and an explicit focus-visible ring without depending on color or motion.",
+    "Unrecoverable, no-details, and live=off modes independently remove their related UI, callbacks, focus targets, effects, and accessibility output."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

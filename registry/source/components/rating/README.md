@@ -2,6 +2,8 @@
 
 Status: source present and unreleased. No Stable, package-parity, conformance, or manual assistive-technology claim is made.
 
+Precise Ink choices, literal Canvas surfaces, Green selected geometry, Violet two-layer focus, strong numeric hierarchy, and restrained motion make Rating part of the Mergora family. `allowClear` independently adds an explicit native no-rating choice; disabling it removes that control, empty-value event path, and accessible option.
+
 `Rating` uses one native radio input for every editable choice. Arrow keys, Home, End, Space, pointer activation, touch activation, native required validation, submission, external form association, and reset all operate on the same controls. The optional `allowClear` choice is an explicit “No rating” radio with an empty submitted value. It cannot be combined with `required`, because a selected empty radio would otherwise satisfy the browser's required radio-group constraint.
 
 The visible label is rendered as the editable fieldset legend. Each numeric choice receives a locale-formatted accessible label through the provider message `rating.option`; applications can replace that message or `formatOptionLabel` for grammatical reordering. Provider and callback labels fail clearly when blank or longer than 256 Unicode code points, so customization cannot silently erase or flood an accessible name. Selection is shown with star fill, a thicker boundary, a check mark, and native checked state rather than color alone.

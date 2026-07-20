@@ -46,7 +46,7 @@ const validFixtures = [
   <BusyRegion key="busy" label="Results" ref={divRef}>
     Results
   </BusyRegion>,
-  <Skeleton key="skeleton" ref={spanRef} />,
+  <Skeleton animated={false} key="skeleton" ref={spanRef} />,
   <EmptyState
     description="Try again."
     key="empty"

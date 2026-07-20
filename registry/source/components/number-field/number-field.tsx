@@ -13,6 +13,7 @@ import {
   forwardRef,
   useContext,
   useEffect,
+  useId,
   useRef,
   type AriaAttributes,
   type CSSProperties,
@@ -26,6 +27,7 @@ import { useMergoraContext, useMergoraMessage } from "../provider/index.js";
 import "./number-field.css";
 
 export type NumericFieldKind = "currency" | "number" | "percentage";
+export type NumericFieldStatusRail = false | "auto";
 
 export interface NumberFieldProps extends Omit<
   AriaNumberFieldProps,
@@ -41,37 +43,62 @@ export interface NumberFieldProps extends Omit<
   | "isRequired"
   | "style"
 > {
+  /** IDs of persistent error text associated with the editable spinbutton. */
   readonly "aria-errormessage"?: string | undefined;
+  /** Explicit invalid state for the editable input, merged with Field context. */
   readonly "aria-invalid"?: AriaAttributes["aria-invalid"];
-  /** Enables value changes from a focused input's wheel event. Disabled by default. */
+  /** Enables focused wheel stepping; false leaves wheel events without numeric changes. */
   readonly allowWheel?: boolean;
+  /** Class name applied to the NumberField root. */
   readonly className?: string;
+  /** Localized accessible label for the decrement button. */
   readonly decrementLabel?: string;
+  /** Disables editing, stepping, scrubbing, and native form interaction. */
   readonly disabled?: boolean;
+  /** Intl options used to format the localized editable value. */
   readonly formatOptions?: Intl.NumberFormatOptions;
+  /** Explicit control identity, superseded by an enclosing Field control ID. */
   readonly id?: string;
+  /** Localized accessible label for the increment button. */
   readonly incrementLabel?: string;
+  /** Additional class name applied to the editable input. */
   readonly inputClassName?: string;
+  /** Ref forwarded to the editable HTML input rather than the component root. */
   readonly inputRef?: Ref<HTMLInputElement>;
+  /** Inline style applied to the editable input. */
   readonly inputStyle?: CSSProperties;
+  /** Boolean invalid state used when `aria-invalid` and Field context are absent. */
   readonly invalid?: boolean;
   /** Maximum accepted/displayed decimal places. Also supplies the default step. */
   readonly precision?: number;
+  /** Preserves focus and submission while preventing user value changes. */
   readonly readOnly?: boolean;
+  /** Marks the underlying numeric control as required for native validation. */
   readonly required?: boolean;
-  /** Adds a pointer-drag and keyboard-operable scrub handle. */
+  /** Adds pointer and keyboard scrubbing; false removes its control, events, and accessible name. */
   readonly scrub?: boolean;
+  /** Localized accessible label for the optional scrub handle. */
   readonly scrubLabel?: string;
   /** Horizontal CSS pixels required for one scrub step. */
   readonly scrubSensitivity?: number;
+  /** Shows the canonical JavaScript number; false removes the preview UI entirely. */
+  readonly showCanonicalPreview?: boolean;
+  /** Renders increment and decrement controls; false removes both buttons and their labels. */
   readonly showStepper?: boolean;
+  /** Adds bounded-domain context; false removes the status UI and description relationship. */
+  readonly statusRail?: NumericFieldStatusRail;
+  /** Inline style applied to the NumberField root. */
   readonly style?: CSSProperties;
 }
 
 export interface StepNumericValueOptions {
+  /** Optional inclusive upper clamp applied after stepping. */
   readonly maximum?: number | undefined;
+  /** Optional inclusive lower clamp and empty-value stepping origin. */
   readonly minimum?: number | undefined;
+  /** Decimal precision used to stabilize floating-point stepping. */
   readonly precision?: number | undefined;
+  /** Positive finite interval multiplied by the requested step count. */
   readonly step: number;
 }
 
@@ -162,18 +189,30 @@ function assertNumberFieldProps(props: NumberFieldProps): void {
   if (props.form !== undefined && props.form.trim().length === 0) {
     throw new RangeError("Mergora NumberField form must not be empty or whitespace-only.");
   }
+  if (props.statusRail !== undefined && props.statusRail !== false && props.statusRail !== "auto") {
+    throw new RangeError('Mergora NumberField statusRail must be false or "auto".');
+  }
   resolveNumberFormatOptions(props.formatOptions, props.precision);
 }
 
 interface NumericScrubControlProps {
+  /** Whether the scrub action blocks focus and value changes. */
   readonly disabled: boolean;
+  /** Editable spinbutton id referenced by the scrub action. */
   readonly inputId: string | undefined;
+  /** Localized accessible name for the scrub action. */
   readonly label: string;
+  /** Optional inclusive upper value clamp. */
   readonly maximum: number | undefined;
+  /** Optional inclusive lower value clamp and empty-value origin. */
   readonly minimum: number | undefined;
+  /** Decimal precision used for stable scrub stepping. */
   readonly precision: number | undefined;
+  /** Whether focus remains available while value changes are blocked. */
   readonly readOnly: boolean;
+  /** Horizontal CSS pixels required to commit one pointer step. */
   readonly sensitivity: number;
+  /** Positive numeric interval committed by each scrub step. */
   readonly step: number;
 }
 
@@ -279,9 +318,105 @@ function developmentRuntime(): boolean {
   return viteProduction !== true && runtime.process?.env?.NODE_ENV !== "production";
 }
 
-export interface NumericFieldBaseProps extends NumberFieldProps {
-  readonly currencyCode?: string | undefined;
+interface NumericFieldInsightsProps {
+  /** Normalized currency code included only in currency preview labels. */
+  readonly currencyCode: string | undefined;
+  /** Intl formatting options used for bounded-domain status values. */
+  readonly formatOptions: Intl.NumberFormatOptions;
+  /** Number, currency, or percentage presentation selecting preview copy. */
   readonly kind: NumericFieldKind;
+  /** Active provider locale used for number and message formatting. */
+  readonly locale: string;
+  /** Whether the canonical numeric preview is rendered. */
+  readonly showCanonicalPreview: boolean;
+  /** Generated id linking optional status context to the spinbutton. */
+  readonly statusId: string;
+  /** Whether automatic bounded-domain status context is rendered. */
+  readonly statusRail: NumericFieldStatusRail;
+}
+
+function NumericFieldInsights({
+  currencyCode,
+  formatOptions,
+  kind,
+  locale,
+  showCanonicalPreview,
+  statusId,
+  statusRail,
+}: NumericFieldInsightsProps) {
+  const state = useContext(NumberFieldStateContext);
+  const { getMessage } = useMergoraContext();
+  if (state === null) {
+    throw new Error("Mergora numeric insights require a NumberField state context.");
+  }
+  const minimum = state.minValue;
+  const maximum = state.maxValue;
+  let status = "";
+  if (statusRail !== false) {
+    const formatter = new Intl.NumberFormat(locale, formatOptions);
+    status =
+      minimum !== undefined && maximum !== undefined
+        ? getMessage("numberField.status.range", "Accepted range: {minimum} to {maximum}.")
+            .replace("{minimum}", formatter.format(minimum))
+            .replace("{maximum}", formatter.format(maximum))
+        : minimum !== undefined
+          ? getMessage("numberField.status.minimum", "Minimum accepted value: {minimum}.").replace(
+              "{minimum}",
+              formatter.format(minimum),
+            )
+          : maximum !== undefined
+            ? getMessage(
+                "numberField.status.maximum",
+                "Maximum accepted value: {maximum}.",
+              ).replace("{maximum}", formatter.format(maximum))
+            : getMessage("numberField.status.unbounded", "Any finite number is accepted.");
+  }
+
+  const hasCanonicalValue = showCanonicalPreview && Number.isFinite(state.numberValue);
+  const canonicalValue = !showCanonicalPreview
+    ? ""
+    : hasCanonicalValue
+      ? String(Object.is(state.numberValue, -0) ? 0 : state.numberValue)
+      : getMessage("numberField.canonicalPreview.empty", "No canonical value yet");
+  let previewLabel = "";
+  if (showCanonicalPreview) {
+    previewLabel =
+      kind === "currency"
+        ? getMessage(
+            "currencyField.canonicalPreview",
+            "Canonical {currency} major-unit value",
+          ).replace("{currency}", currencyCode ?? "currency")
+        : kind === "percentage"
+          ? getMessage("percentageField.canonicalPreview", "Canonical fractional value")
+          : getMessage("numberField.canonicalPreview", "Canonical number");
+  }
+
+  return (
+    <div className="mrg-number-field-insights" data-slot="number-field-insights">
+      {statusRail === false ? null : (
+        <span className="mrg-number-field-status" data-slot="number-field-status" id={statusId}>
+          {status}
+        </span>
+      )}
+      {!showCanonicalPreview ? null : (
+        <span
+          className="mrg-number-field-canonical-preview"
+          data-slot="number-field-canonical-preview"
+        >
+          <span>{previewLabel}</span>
+          <data {...(hasCanonicalValue ? { value: canonicalValue } : {})}>{canonicalValue}</data>
+        </span>
+      )}
+    </div>
+  );
+}
+
+export interface NumericFieldBaseProps extends NumberFieldProps {
+  /** Normalized currency code used only to explain currency canonical previews. */
+  readonly currencyCode?: string | undefined;
+  /** Internal presentation mode selecting number, currency, or percentage behavior. */
+  readonly kind: NumericFieldKind;
+  /** Marks percentage canonical values as fractions for explanatory output. */
   readonly valueScale?: "fraction" | undefined;
 }
 
@@ -313,7 +448,9 @@ export const NumericFieldBase = forwardRef<HTMLDivElement, NumericFieldBaseProps
       scrub = false,
       scrubLabel: scrubLabelProp,
       scrubSensitivity = 8,
+      showCanonicalPreview = false,
       showStepper = true,
+      statusRail = false,
       step: stepProp,
       style,
       valueScale,
@@ -330,6 +467,7 @@ export const NumericFieldBase = forwardRef<HTMLDivElement, NumericFieldBaseProps
       decrementLabelProp ?? "Decrease value",
     );
     const scrubLabel = useMergoraMessage("numberField.scrub", scrubLabelProp ?? "Scrub value");
+    const statusId = `mrg-number-field-status-${useId().replaceAll(":", "")}`;
     const resolvedId = field?.controlId ?? id;
     const resolvedInvalid =
       ariaInvalid !== undefined
@@ -342,6 +480,7 @@ export const NumericFieldBase = forwardRef<HTMLDivElement, NumericFieldBaseProps
       ariaDescribedBy,
       field?.descriptionId,
       resolvedInvalid ? field?.errorMessageId : undefined,
+      statusRail === "auto" ? statusId : undefined,
     );
     const errorMessage = mergeFieldIdRefs(
       ariaErrorMessage,
@@ -389,7 +528,9 @@ export const NumericFieldBase = forwardRef<HTMLDivElement, NumericFieldBaseProps
           data-currency={currencyCode}
           data-format-style={kind}
           data-has-scrub={scrub || undefined}
+          data-has-status-rail={statusRail === "auto" || undefined}
           data-has-stepper={showStepper || undefined}
+          data-shows-canonical-preview={showCanonicalPreview || undefined}
           data-slot={rootSlot}
           data-value-scale={valueScale}
           decrementAriaLabel={decrementLabel}
@@ -446,6 +587,17 @@ export const NumericFieldBase = forwardRef<HTMLDivElement, NumericFieldBaseProps
               </AriaButton>
             )}
           </AriaGroup>
+          {statusRail === false && !showCanonicalPreview ? null : (
+            <NumericFieldInsights
+              currencyCode={currencyCode}
+              formatOptions={resolvedFormatOptions}
+              kind={kind}
+              locale={locale}
+              showCanonicalPreview={showCanonicalPreview}
+              statusId={statusId}
+              statusRail={statusRail}
+            />
+          )}
         </AriaNumberField>
       </AriaI18nProvider>
     );

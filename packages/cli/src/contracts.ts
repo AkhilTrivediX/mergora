@@ -46,6 +46,22 @@ export class CliError extends Error {
   }
 }
 
+/**
+ * Authorization is an opaque HTTP field value supplied by the consumer. Keep validation shared so
+ * every registry transport applies the same bounded, injection-safe policy without interpreting
+ * or persisting the credential.
+ */
+export function isValidAuthorizationHeaderValue(value: string): boolean {
+  return (
+    value.length >= 1 &&
+    value.length <= 8_192 &&
+    ![...value].some((character) => {
+      const codePoint = character.codePointAt(0)!;
+      return codePoint <= 0x1f || codePoint === 0x7f;
+    })
+  );
+}
+
 export interface JsonError {
   readonly code: string;
   readonly docs?: string;

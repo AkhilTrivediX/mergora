@@ -20,11 +20,17 @@ export interface ToggleProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "aria-pressed" | "children"
 > {
+  /** Visible button label content and the default accessible-name source. */
   readonly children: ReactNode;
+  /** Controlled pressed state reflected through aria-pressed and data-state. */
   readonly pressed?: boolean;
+  /** Initial pressed state when the component is uncontrolled. */
   readonly defaultPressed?: boolean;
+  /** Called with the next pressed state after a non-cancelled activation. */
   readonly onPressedChange?: (pressed: boolean) => void;
+  /** Keeps the toggle focusable but busy and blocks activation; false removes pending output. */
   readonly pending?: boolean;
+  /** Localizable visible and accessible label used while pending when non-empty. */
   readonly pendingLabel?: string;
 }
 

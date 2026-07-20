@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "category": "scheduler",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "scheduler-kit",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn supplies Calendar and form primitives but no maintained timezone-aware calendar/agenda workflow with conflict recovery and an explicit responsive alternative.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/calendar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps canonical Calendar navigation while adding independently optional timezone context, duration recovery, conflict decisions and change announcements across an agenda-first narrow layout.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/scheduler-kit/scheduler-kit.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          }
+        ],
+        "enhancementIds": [
+          "timezone-context",
+          "duration-summary",
+          "conflict-guidance",
+          "schedule-announcements"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white calendar and agenda regions use ink divisions, green event marks, violet temporal context, deliberate type and the shared focus treatment.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/scheduler-kit/scheduler-kit.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "restrained-corners",
+          "status-rail",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-accent-background-subtle",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "timezone-context",
+          "status": "evidence-backed",
+          "summary": "A context rail states the active zone and adapter-owned wall-time boundary.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/scheduler-kit/scheduler-kit.tsx"
+            }
+          ],
+          "storybookControlNames": ["showTimeZoneContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTimeZoneContext"],
+            "enableWhen": "Set showTimeZoneContext to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The context rail is absent while the explicit timezone selector remains.",
+            "behavior": "No context string is composed.",
+            "events": "No enhancement event exists.",
+            "accessibility": "No additional timezone context enters the accessibility tree."
+          }
+        },
+        {
+          "id": "duration-summary",
+          "status": "evidence-backed",
+          "summary": "The event editor explains duration or how to recover from an invalid end time.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/scheduler-kit/scheduler-kit.tsx"
+            }
+          ],
+          "storybookControlNames": ["showDurationSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showDurationSummary"],
+            "enableWhen": "Set showDurationSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Duration output is absent.",
+            "behavior": "No duration message is rendered.",
+            "events": "No enhancement event exists.",
+            "accessibility": "No duration output enters the accessibility tree."
+          }
+        },
+        {
+          "id": "conflict-guidance",
+          "status": "evidence-backed",
+          "summary": "Collision copy names consequences and offers explicit consumer-owned resolutions.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/scheduler-kit/scheduler-kit.tsx"
+            }
+          ],
+          "storybookControlNames": ["showConflictGuidance"],
+          "api": {
+            "kind": "prop",
+            "names": ["showConflictGuidance", "resolveConflict"],
+            "enableWhen": "Set showConflictGuidance to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Collision details and controls are absent.",
+            "behavior": "No resolution branch is reachable.",
+            "events": "No resolveConflict call is emitted.",
+            "accessibility": "No conflict heading, copy or actions enter the accessibility tree."
+          }
+        },
+        {
+          "id": "schedule-announcements",
+          "status": "evidence-backed",
+          "summary": "Mutation progress and completion can be announced without forcing a live region.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/scheduler-kit/scheduler-kit.tsx"
+            }
+          ],
+          "storybookControlNames": ["announceChanges"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceChanges"],
+            "enableWhen": "Set announceChanges to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No hidden output is rendered.",
+            "behavior": "Mutation state does not update announcement text.",
+            "events": "No announcement event is emitted.",
+            "accessibility": "The polite live region is absent."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6SchedulerKit.stories.tsx",
+          "exportName": "BasicSchedulerKit",
+          "enhancementControls": [
+            "showTimeZoneContext",
+            "showDurationSummary",
+            "showConflictGuidance",
+            "announceChanges"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6SchedulerKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6SchedulerKit.stories.tsx",
+          "exportName": "RecommendedSchedulerKit",
+          "enhancementControls": [
+            "showTimeZoneContext",
+            "showDurationSummary",
+            "showConflictGuidance",
+            "announceChanges"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6SchedulerKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Canonical Calendar semantics and focused automated fixtures exist; the complete Risk Class 3 manual matrix is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/scheduler-kit/scheduler-kit.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Keyboard Calendar, filtering, editor validation, narrow agenda, RTL, forced colors and reduced motion have fixtures; DST/recurrence and full browsers remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "temporal-and-manual-evidence-incomplete",
+          "summary": "DST gap/fold, recurrence, manual assistive-technology and supported-browser evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/scheduler-kit/scheduler-kit.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "beta-candidate",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/scheduler-kit/scheduler-kit.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

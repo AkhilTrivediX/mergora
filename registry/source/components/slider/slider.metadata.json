@@ -18,6 +18,8 @@
     "invalid",
     "controlled",
     "uncontrolled",
+    "intelligent-marks",
+    "value-bubbles",
     "horizontal",
     "vertical",
     "rtl"
@@ -64,6 +66,12 @@
       "semanticElement": "visual tick labels",
       "refTarget": "none",
       "states": ["horizontal", "vertical", "narrow"]
+    },
+    {
+      "name": "slider-value-bubble",
+      "semanticElement": "aria-hidden visual value",
+      "refTarget": "none",
+      "states": ["formatted", "horizontal", "vertical"]
     }
   ],
   "contract": { "id": "slider-accessibility", "version": "0.1.0" },

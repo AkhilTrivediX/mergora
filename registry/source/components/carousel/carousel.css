@@ -1,0 +1,99 @@
+@layer mergora.components {
+  .mrg-carousel {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    max-inline-size: 100%;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    touch-action: pan-y;
+  }
+  .mrg-carousel:focus-visible,
+  .mrg-carousel button:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  .mrg-carousel__viewport {
+    min-inline-size: 0;
+    overflow: clip;
+  }
+  .mrg-carousel__slide {
+    animation: mrg-carousel-enter var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-enter);
+  }
+  .mrg-carousel__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+  .mrg-carousel__controls button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+  .mrg-carousel__controls button[aria-pressed="true"] {
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+    border-color: var(--mrg-semantic-color-selection-border);
+  }
+  .mrg-carousel__announcement {
+    display: block;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-brand-living);
+    color: var(--mrg-semantic-color-brand-action);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  @keyframes mrg-carousel-enter {
+    from {
+      transform: translateX(var(--mrg-semantic-space-inline-sm));
+    }
+    to {
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-carousel__slide {
+      animation: none;
+    }
+  }
+  @media (pointer: coarse) {
+    .mrg-carousel__controls button {
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-carousel,
+    .mrg-carousel__controls button {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-carousel__controls button[aria-pressed="true"] {
+      color: HighlightText;
+      background: Highlight;
+    }
+    .mrg-carousel:focus-visible,
+    .mrg-carousel button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-carousel__announcement {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+}

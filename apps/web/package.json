@@ -11,6 +11,8 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "mergora-ui": "workspace:*",
+    "mergora-tokens": "workspace:*",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:"

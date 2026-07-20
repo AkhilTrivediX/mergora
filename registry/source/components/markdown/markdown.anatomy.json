@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown",
+  "root": {
+    "element": "article",
+    "ref": "HTMLElement",
+    "slot": "markdown",
+    "stableAttributes": ["data-slot", "data-renderer", "data-streaming", "aria-busy"]
+  },
+  "parts": [
+    {
+      "slot": "markdown-renderer-boundary",
+      "element": "optional paragraph",
+      "purpose": "Makes consumer adapter ownership visible without claiming sanitization.",
+      "stability": "documented"
+    },
+    {
+      "slot": "markdown-content",
+      "element": "div",
+      "purpose": "Contains literal text or consumer-rendered semantic React nodes with stable prose styling.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "markdown-announcement",
+      "element": "optional visually hidden output",
+      "purpose": "Summarizes streaming progress only when explicitly enabled.",
+      "stability": "documented"
+    }
+  ]
+}

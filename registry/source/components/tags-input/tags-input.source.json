@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tags-input.css", "react"],
+  "entryPath": "registry/source/components/tags-input/tags-input.tsx",
+  "id": "tags-input",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

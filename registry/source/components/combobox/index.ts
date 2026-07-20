@@ -1,6 +1,7 @@
 export {
   Combobox,
   ComboboxDescription,
+  ComboboxClear,
   ComboboxErrorMessage,
   ComboboxInput,
   ComboboxItem,
@@ -11,6 +12,7 @@ export {
   ComboboxSection,
   ComboboxTrigger,
   type ComboboxDescriptionProps,
+  type ComboboxClearProps,
   type ComboboxErrorMessageProps,
   type ComboboxInputChangeDetail,
   type ComboboxInputProps,

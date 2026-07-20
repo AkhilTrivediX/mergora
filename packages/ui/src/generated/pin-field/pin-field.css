@@ -10,8 +10,7 @@
 
 .mrg-pin-field [data-slot="pin-field-control"] {
   background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
   border-radius: var(--mrg-semantic-radius-control);
   box-sizing: border-box;
   display: grid;
@@ -23,8 +22,11 @@
 }
 
 .mrg-pin-field [data-slot="pin-field-control"]:focus-within {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-pin-field[data-invalid="true"] [data-slot="pin-field-control"] {
@@ -114,6 +116,11 @@
 }
 
 @media (forced-colors: active) {
+  .mrg-pin-field [data-slot="pin-field-control"]:focus-within {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
   .mrg-pin-field [data-slot="pin-field-control"] {
     background: Field;
     border-color: FieldText;

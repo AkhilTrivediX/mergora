@@ -17,7 +17,7 @@ import {
 } from "node:fs";
 import { relative, resolve } from "node:path";
 
-import { CliError, canonicalJson, sha256 } from "./contracts.js";
+import { CliError, canonicalJson, isValidAuthorizationHeaderValue, sha256 } from "./contracts.js";
 import { OFFICIAL_REGISTRY_ORIGIN } from "./registry-data.js";
 
 const DIGEST = /^sha256:[a-f0-9]{64}$/u;
@@ -74,6 +74,8 @@ export type AcquisitionVendorReader = (
 export interface AcquisitionTransportRequest {
   readonly url: string;
   readonly acceptedMediaTypes: readonly string[];
+  /** Exact Authorization header value, present only for the enrolled canonical origin. */
+  readonly authorization?: string | undefined;
   readonly maxBytes: number;
   readonly timeoutMs: number;
 }
@@ -96,6 +98,8 @@ export interface AcquireImmutableArtifactOptions {
   readonly projectRoot: string;
   readonly offline?: boolean | undefined;
   readonly mirrorOrigins?: readonly string[] | undefined;
+  /** Exact Authorization header value. It is never cached, logged, or sent to mirrors. */
+  readonly authorization?: string | undefined;
   readonly vendor?: AcquisitionVendorReader | undefined;
   readonly validate?: AcquisitionValidator | undefined;
   readonly transport?: AcquisitionTransport | undefined;
@@ -597,7 +601,10 @@ async function defaultTransport(
         redirect: "manual",
         credentials: "omit",
         referrerPolicy: "no-referrer",
-        headers: { Accept: request.acceptedMediaTypes.join(", ") },
+        headers: {
+          Accept: request.acceptedMediaTypes.join(", "),
+          ...(request.authorization === undefined ? {} : { Authorization: request.authorization }),
+        },
         signal: controller.signal,
       });
     } catch {
@@ -693,6 +700,7 @@ async function acquireNetworkCandidate(
   origin: string,
   transport: AcquisitionTransport,
   timeoutMs: number,
+  authorization: string | undefined,
 ): Promise<{ readonly bytes: Uint8Array; readonly url: string }> {
   const url = artifactUrl(origin, normalized.request.path);
   let response: AcquisitionTransportResponse;
@@ -700,6 +708,7 @@ async function acquireNetworkCandidate(
     response = await transport({
       url,
       acceptedMediaTypes: [...normalized.acceptedMediaTypes],
+      ...(authorization === undefined ? {} : { authorization }),
       maxBytes: normalized.request.maxBytes,
       timeoutMs,
     });
@@ -763,6 +772,16 @@ export async function acquireImmutableArtifact(
   options: AcquireImmutableArtifactOptions,
 ): Promise<AcquiredImmutableArtifact> {
   const normalized = normalizeRequest(options.request);
+  if (
+    options.authorization !== undefined &&
+    !isValidAuthorizationHeaderValue(options.authorization)
+  ) {
+    throw acquisitionError(
+      "Registry authorization credential is invalid.",
+      "REGISTRY_AUTH_INVALID",
+      11,
+    );
+  }
   const root = projectRoot(options.projectRoot);
   const offline = options.offline ?? false;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
@@ -843,6 +862,7 @@ export async function acquireImmutableArtifact(
         candidate.origin,
         transport,
         timeoutMs,
+        candidate.source === "network" ? options.authorization : undefined,
       );
       await validateAcquisition(
         normalized,

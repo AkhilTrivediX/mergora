@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navigation-menu",
+  "root": {
+    "element": "nav",
+    "ref": "HTMLElement",
+    "slot": "navigation-menu",
+    "stableAttributes": ["data-slot", "data-enhanced-preview"]
+  },
+  "parts": [
+    {
+      "slot": "navigation-menu-list",
+      "element": "ul",
+      "purpose": "Preserves site-navigation list semantics without menu-role misuse.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "navigation-menu-panel",
+      "element": "disclosure div",
+      "purpose": "Groups real child links and returns Escape focus to its trigger.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "navigation-menu-preview",
+      "element": "optional aside",
+      "purpose": "Shows consumer-rendered destination context on focus or pointer entry.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -17,10 +17,10 @@
       "element": "div outside provider-owned live roots",
       "stability": "documented"
     },
-    { "slot": "error-state-retry", "element": "button", "stability": "documented" },
+    { "slot": "error-state-retry", "element": "optional native button", "stability": "documented" },
     {
       "slot": "error-state-details",
-      "element": "details outside provider-owned live roots",
+      "element": "optional details outside provider-owned live roots",
       "stability": "documented"
     }
   ]

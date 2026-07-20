@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "media-player",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, caption quality, media-security, package-parity, or recorded manual Risk Class 3 claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A named native audio or video element owns playback controls and text tracks; optional chapters are nav links-as-buttons and transcript is details.",
+    "naming": "Visible media title names the native player; track, chapter, transcript, and source rejection language is consumer localizable.",
+    "roleOverride": "No custom slider, button, or application role replaces native media controls.",
+    "refTarget": "HTMLDivElement shell"
+  },
+  "interaction": {
+    "keyboard": "Browser-native media controls own their documented platform keyboard path; chapter buttons use native activation.",
+    "pointer": "Native controls and explicit chapter buttons are the only targets.",
+    "touch": "Platform controls remain native and transcript/chapters reflow without gestures.",
+    "speech": "Visible title, Transcript, and chapter names form speech targets.",
+    "switchAccess": "Native controls and optional buttons remain standard scan stops."
+  },
+  "preferences": {
+    "forcedColors": "Structural surfaces, transcript, chapters, errors, and focus retain system colors; native media controls remain browser-owned.",
+    "reducedMotion": "No autoplay is exposed and component motion is removed; user-initiated media playback remains user controlled."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Native player scales inline; chapter labels wrap; transcript remains readable."
+  },
+  "consumerResponsibilities": [
+    "Provide accurate synchronized captions, audio description where required, and a complete corrected transcript.",
+    "Authorize media URLs and own CORS, tracking, DRM, privacy, range requests, errors, and retention.",
+    "Do not autoplay audio; validate chapter times and localize all media context."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "native-controls-no-autoplay",
+      "track-wiring",
+      "transcript-chapter-isolation",
+      "throttled-announcements",
+      "source-rejection",
+      "narrow-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "native-controls-all-desktop-at",
+      "voiceover-ios-media",
+      "talkback-chrome-media",
+      "captions-transcript-task",
+      "speech-switch",
+      "zoom-reflow"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Mergora does not author, validate, synchronize, or translate caption/transcript content and does not implement DRM or transport.",
+    "Native control behavior varies by browser/platform; full Risk Class 3 manual and parity evidence remains unrecorded."
+  ]
+}

@@ -31,6 +31,7 @@
     "React Aria owns anchored positioning, collision/flip, dismissal, focus scope, portal, and focus return.",
     "Popover is explicitly non-modal and does not inert or trap the surrounding application.",
     "Mergora maps logical placement to physical React Aria placement from provider direction while provider locale remains available for interaction.",
-    "LayerManager records the surface as non-dismissible and never competes for Escape."
+    "LayerManager records the surface as non-dismissible and never competes for Escape.",
+    "anchorContext optionally preserves trigger context in the visible and accessible description; omission emits nothing."
   ]
 }

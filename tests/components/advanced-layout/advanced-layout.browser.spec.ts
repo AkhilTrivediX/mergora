@@ -6,10 +6,14 @@ const axePath = resolve(
   "../../../packages/test-utils/node_modules/axe-core/axe.min.js",
 );
 
-async function openStory(page: Page, story: string): Promise<void> {
-  await page.goto(`/iframe.html?viewMode=story&id=p2-advanced-intrinsic-layout--${story}`, {
-    waitUntil: "domcontentloaded",
-  });
+async function openStory(page: Page, story: string, args?: string): Promise<void> {
+  const storyArgs = args === undefined ? "" : `&args=${encodeURIComponent(args)}`;
+  await page.goto(
+    `/iframe.html?viewMode=story&id=p2-advanced-intrinsic-layout--${story}${storyArgs}`,
+    {
+      waitUntil: "domcontentloaded",
+    },
+  );
   await expect(page.locator("[data-slot]").first()).toBeVisible();
 }
 
@@ -21,7 +25,17 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
   });
 }
 
@@ -40,6 +54,78 @@ test("advanced workbench exposes named separators and no automated accessibility
   ).toHaveCount(1);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ fullPage: true, path: testInfo.outputPath("advanced-workbench.png") });
+});
+
+test("plain and recommended modes remove and restore enhancement UI cleanly", async ({
+  page,
+}, testInfo) => {
+  await openStory(page, "basic-defaults");
+  await expect(page.locator('[data-slot="resizable-root"]')).not.toHaveAttribute(
+    "data-step-controls",
+  );
+  await expect(page.locator('[data-slot="split-pane-root"]')).not.toHaveAttribute(
+    "data-step-controls",
+  );
+  await expect(page.locator('[data-slot="resizable-handle"] [role="group"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="split-pane-handle"] [role="group"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="sticky-region-root"]')).not.toHaveAttribute(
+    "data-manage-focus-offset",
+  );
+  await expect(page.locator('[data-slot="scroll-area"]')).not.toHaveAttribute("role");
+  expect(await axeViolations(page)).toEqual([]);
+
+  await openStory(page, "recommended-mergora");
+  await expect(page.locator('[data-slot="resizable-root"]')).toHaveAttribute(
+    "data-step-controls",
+    "true",
+  );
+  await expect(page.locator('[data-slot="split-pane-root"]')).toHaveAttribute(
+    "data-step-controls",
+    "true",
+  );
+  await expect(page.locator('[data-slot="sticky-region-root"]')).toHaveAttribute(
+    "data-manage-focus-offset",
+    "true",
+  );
+  await expect(page.getByRole("region", { name: "Document revisions" })).toBeVisible();
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ fullPage: true, path: testInfo.outputPath("recommended-layout.png") });
+});
+
+test("basic story controls can selectively enable advanced-layout enhancements", async ({
+  page,
+}) => {
+  await openStory(
+    page,
+    "basic-defaults",
+    [
+      "containOverscroll:true",
+      "focusableScroll:true",
+      "manageFocusOffset:true",
+      "responsiveStack:true",
+      "showStepControls:true",
+    ].join(";"),
+  );
+
+  const scrollArea = page.getByRole("region", { name: "Plain document sections" });
+  await expect(scrollArea).toHaveAttribute("data-contain-overscroll", "true");
+  await expect(page.locator('[data-slot="resizable-root"]')).toHaveAttribute(
+    "data-step-controls",
+    "true",
+  );
+  await expect(page.locator('[data-slot="split-pane-root"]')).toHaveAttribute(
+    "data-step-controls",
+    "true",
+  );
+  await expect(page.locator('[data-slot="split-pane-layout"]')).toHaveAttribute(
+    "data-stack-at",
+    "narrow",
+  );
+  await expect(page.locator('[data-slot="sticky-region-root"]')).toHaveAttribute(
+    "data-manage-focus-offset",
+    "true",
+  );
+  expect(await axeViolations(page)).toEqual([]);
 });
 
 test("Resizable supports arrows, Home, End, Enter, and non-drag touch controls", async ({

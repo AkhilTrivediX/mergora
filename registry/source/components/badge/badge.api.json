@@ -17,6 +17,7 @@
     "Badge is always a noninteractive span and rejects every React event handler plus href, accessKey, editable/drag state, focus, role, dangerous HTML, and generic accessible-name overrides at type and runtime boundaries.",
     "Category, status, and count modes are explicit; status punctuation and severity/label order use the stable badge.status formatter key and never truncate long labels.",
     "Count mode caps only its visual value and exposes a localized exact accessible count.",
-    "Interactive affordances wrap Badge in a correctly named Button or Link rather than changing Badge semantics."
+    "Interactive affordances wrap Badge in a correctly named Button or Link rather than changing Badge semantics.",
+    "The default category mode emits neither localized severity nor hidden exact-count output; status and count enhancements are explicit discriminated modes."
   ]
 }

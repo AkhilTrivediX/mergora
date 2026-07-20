@@ -12,8 +12,8 @@
   },
   "layout": {
     "intrinsic": "Inline size is fluid and max-inline-size is selected from semantic container tokens.",
-    "safeArea": "Physical safe-area inset values are mapped to the correct logical edges in LTR and RTL.",
-    "containerQueries": "queryContainer enables anonymous inline-size containment.",
+    "safeArea": "Physical safe-area inset values are mapped to the correct logical edges in LTR and RTL; false removes the environment-inset calculation.",
+    "containerQueries": "queryContainer enables anonymous inline-size containment; false removes containment independently.",
     "overflow": "The root uses min-inline-size zero and never clips descendants."
   },
   "stableSelectors": {

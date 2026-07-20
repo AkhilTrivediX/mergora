@@ -290,7 +290,7 @@ export function validateMergoraConfig(value: unknown): MergoraConfig {
     });
   }
   const sourceRoot = stringField(project, "sourceRoot");
-  assertPortableRelativePath(sourceRoot, "Configured source root");
+  assertPortableRelativePath(sourceRoot, "Configured source root", { allowProjectRoot: true });
   const distribution = recordField(root, "distribution", ["defaultMode", "packageName"]);
   if (
     !(["source", "package", "hybrid"] as const).includes(
@@ -600,7 +600,9 @@ export function readMergoraConfig(root: string): MergoraConfig | null {
 }
 
 function rootPath(sourceRoot: string, suffix: string): string {
-  return `${sourceRoot}/${suffix}`;
+  const target = sourceRoot === "." ? suffix : `${sourceRoot}/${suffix}`;
+  assertPortableRelativePath(target, "Configured target");
+  return target;
 }
 
 function aliasPath(prefix: string, suffix: string): string {

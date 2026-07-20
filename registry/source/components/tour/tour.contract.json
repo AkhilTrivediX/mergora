@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tour",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, route-framework, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Guidance is a labelled non-modal region with visible heading, description, native controls, and no dialog claim.",
+    "nonBlocking": "Core creates no backdrop, inert state, focus trap, or application-access blocker.",
+    "refTarget": "HTMLDivElement shell"
+  },
+  "interaction": {
+    "keyboard": "Back, next, finish, and skip are native buttons; Escape dismisses and focus returns to the trigger or consumer ref.",
+    "focus": "Preserve is default; panel focus is explicit and never trapped.",
+    "routing": "The optional route adapter is consumer-owned and called once per opened routed step."
+  },
+  "enhancementIsolation": {
+    "recoveryFalse": "No missing-target status, retry button, callback, copy, or retry event exists.",
+    "progressFalse": "No progress counter exists.",
+    "announcementFalse": "No live status exists.",
+    "routeOmitted": "No route callback or navigation behavior exists."
+  },
+  "preferences": {
+    "forcedColors": "Panel, controls, primary action, and focus map to system colors.",
+    "reducedMotion": "Anchored panel transition is removed.",
+    "rtl": "Fallback and anchored placement remain direction-aware."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "non-modal-access",
+      "skip-complete-focus-return",
+      "route-deduplication",
+      "target-recovery-isolation",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device", "route-change"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Consumers own route readiness, target authorization, localized copy, and deciding whether a tour is appropriate."
+  ]
+}

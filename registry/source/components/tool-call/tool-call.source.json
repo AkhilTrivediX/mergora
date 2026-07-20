@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tool-call.css", "react"],
+  "entryPath": "registry/source/components/tool-call/tool-call.tsx",
+  "id": "tool-call",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

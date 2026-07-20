@@ -1,27 +1,98 @@
 # Catalog status
 
-- Updated: 2026-07-19T04:08:40Z
-- Source of truth: `registry/definitions/`
-- Current validation result: 168 catalog items plus 10 workflow kits; 7 catalog tests pass in the working tree
+- Updated: 2026-07-20
+- Authority: `registry/generated/catalog.json`
+- Evidence matrix: `registry/generated/implementation-matrix.v1.json`
+- Publication status: `blocked-unreleased`
+- Published Stable entries: 0
 
-Ninety-two canonical entries now have the separate generated status `source-present-unreleased`.
-That status proves canonical source and derived surfaces exist; it does not count any entry as
-completed, Stable, or publicly released. Data Grid is additionally visible as Experimental. The
-planned definition records retain their target maturity, which is a requirement rather than
-shipped evidence.
+The generated inventory is authoritative and is not assumed to have a fixed component count. All
+178 definitions now have canonical source and generated delivery surfaces. That closes the old
+92-present/86-missing implementation split, but it does not promote or release any item.
 
-| Trust/target-maturity class      |    Planned definitions | Implemented | Publicly released | Evidence status        |
-| -------------------------------- | ---------------------: | ----------: | ----------------: | ---------------------- |
-| Core Stable catalog items        |                    166 |           0 |                 0 | definition seed only   |
-| Core Beta catalog items          |           1 (`kanban`) |           0 |                 0 | definition seed only   |
-| Labs Experimental catalog items  | 1 (`rich-text-editor`) |           0 |                 0 | definition seed only   |
-| Community Verified catalog items |                      0 |           0 |                 0 | out of v1 launch scope |
-| Stable workflow kits             |                      9 |           0 |                 0 | definition seed only   |
-| Beta workflow kits               |    1 (`scheduler-kit`) |           0 |                 0 | definition seed only   |
+## Inventory
 
-Source-present-unreleased entries: **92**. Unimplemented definitions: **86**.
-Completed/Stable/released entries: **0**.
+| Dimension                      | Count |
+| ------------------------------ | ----: |
+| Definitions                    |   178 |
+| Catalog entries excluding kits |   168 |
+| Workflow kits                  |    10 |
+| Foundation                     |    22 |
+| Components                     |   113 |
+| Systems                        |    33 |
+| Kits                           |    10 |
+| Core                           |   177 |
+| Labs                           |     1 |
+| Community                      |     0 |
+| Target Stable                  |   175 |
+| Target Beta                    |     2 |
+| Target Experimental            |     1 |
+| Source-present-unreleased      |   178 |
+| Unimplemented definitions      |     0 |
+| Published maturity records     |     0 |
 
-ADR-0008 records why the collision-free inventory is 168 + 10. This file must become generated from
-the canonical definitions before completed or maturity counts change. Counts keep
-components/systems, kits, examples, parts, variants, and internal utilities separate.
+The two Beta targets are Kanban and Scheduler Kit. Rich Text Editor is the one Experimental/Labs
+target. These target values are requirements, not shipped maturity claims.
+
+## Implementation matrix
+
+| Required column/evidence family             | Current evidence |
+| ------------------------------------------- | ---------------: |
+| Mergora-specific advantage, evidence-backed |        178 / 178 |
+| Shared visual signature, evidence-backed    |        178 / 178 |
+| Optional enhancements, evidence-backed      |        247 / 247 |
+| Basic story tested                          |        178 / 178 |
+| Recommended Mergora story tested            |        178 / 178 |
+| Package/source/Shadcn parity verified       |        178 / 178 |
+| Interaction evidence verified               |        129 / 178 |
+| Interaction evidence partial                |         49 / 178 |
+| Accessibility evidence partial              |        178 / 178 |
+| Overall profile complete                    |          0 / 178 |
+
+All 178 records have `profileStatus: profiled-incomplete`. Maturity assessments are 175
+`not-ready`, two `beta-candidate`, and one `experimental-candidate`. A candidate assessment is
+not published maturity.
+
+## What the current matrix proves
+
+- Every generated inventory entry has a named family, ordinary Shadcn baseline, Mergora advantage,
+  shared visual signature, independently described optional enhancement API, disabled behavior,
+  Basic story, Recommended story, parity record, evidence references, remaining blockers, and an
+  honest maturity assessment.
+- Disabling an enhancement is documented across UI, behavior, events, and accessibility output.
+- Every Basic and Recommended story has a test reference.
+- Canonical source, package output, native registry output, and Shadcn output are linked and
+  generation-tested for every item.
+
+## Current automated breadth
+
+- The generator emits 1,050 deterministic outputs including its manifest. The manifest's 1,049
+  entries include the authoritative documentation-contract index for all 178 items.
+- The full component Playwright aggregate on 2026-07-20 scheduled 909 Chromium, Firefox, and WebKit
+  cases: 907 passed, two Firefox/WebKit instances of a Chromium-only mobile-touch-emulation case
+  were intentionally skipped, and zero failed.
+- The exact-tarball consumer WRITE run and immediate NO-WRITE replay match deterministically across
+  seven tarballs and four Next/Vite package/source lanes. The source lane exercises the bounded
+  customize/update/conflict/resolve/audit/rollback/recover/remove/vendor/migrate/adopt lifecycle.
+- The documentation contract exposes 2,806 catalog State Lab rows and 178 fail-closed Passport JSON
+  skeletons. Strict public API extraction covers 178 entries, 530 groups, 3,431 declared props,
+  3,431 descriptions, and 807 runtime defaults with no generated review placeholders.
+- The manual campaign plan covers 178 items, 3,253 exact environment sessions, and 4,124 task
+  observations. Every row is `not-run` and the campaign makes zero evidence claims.
+
+## What remains open
+
+- No item has complete manual assistive-technology evidence.
+- Forty-nine entries still have only partial interaction evidence.
+- The local component-browser and bounded packed-consumer aggregates pass, but they are not bound to
+  a fresh all-green exact CI commit, immutable release evidence, or public artifacts.
+- Coordinated website/static/browser, visual, responsive/locale breadth, compatibility, and manual
+  gates have not all passed for one exact release commit.
+- The visual baseline is provisional and covers only Button, Dialog, Combobox, and Data Grid.
+- Quality Passports are unreleased skeletons, not immutable public release Passports.
+- Stable promotion, npm publication, registry release, Pages deployment, and public clean-room
+  verification have not occurred.
+
+The exact evidence and blocker vocabulary is maintained in
+[`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md). Counts must continue to separate maturity, trust, layers,
+kits, examples, parts, and internal utilities.

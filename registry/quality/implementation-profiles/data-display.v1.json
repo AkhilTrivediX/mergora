@@ -1,0 +1,2346 @@
+{
+  "schemaVersion": 1,
+  "category": "data-display",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "avatar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Avatar composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/avatar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional text-backed presence context stays readable without color and disappears completely when disabled.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar/avatar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["presence-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar/avatar.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "presence-context",
+          "status": "evidence-backed",
+          "summary": "Optional text-backed presence context stays readable without color and disappears completely when disabled.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar/avatar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showPresence"],
+          "api": {
+            "kind": "prop",
+            "names": ["showPresence", "presence", "presenceLabel"],
+            "enableWhen": "Enable showPresence or presence or presenceLabel as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicAvatar",
+          "enhancementControls": ["showPresence"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedAvatar",
+          "enhancementControls": ["showPresence"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar/avatar.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Fallback image naming, group overflow context, optional presence removal, and the intentional absence of component-owned focus stops are covered in both story modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar/avatar.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar/avatar.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar/avatar.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "card",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Card composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/card"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional structural status rail adds contextual state without turning the whole surface into a control.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/card/card.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["status-rail"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/card/card.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "status-rail",
+          "status": "evidence-backed",
+          "summary": "An optional structural status rail adds contextual state without turning the whole surface into a control.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/card/card.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showStatusRail"],
+          "api": {
+            "kind": "prop",
+            "names": ["statusRail"],
+            "enableWhen": "Enable statusRail as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicCard",
+          "enhancementControls": ["showStatusRail"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedCard",
+          "enhancementControls": ["showStatusRail"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/card/card.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Neutral root semantics, heading and action composition, status-rail isolation, and consumer-owned native action focus are covered in both story modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/card/card.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/card/card.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/card/card.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "item",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Item composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/item"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "A typed selection/current context renderer explains state beyond color and is never invoked when omitted.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/item/item.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["selection-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/item/item.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "A typed selection/current context renderer explains state beyond color and is never invoked when omitted.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/item/item.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showSelectionContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderSelectionContext"],
+            "enableWhen": "Enable renderSelectionContext as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicItem",
+          "enhancementControls": ["showSelectionContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedItem",
+          "enhancementControls": ["showSelectionContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/item/item.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Selected-state text, current semantics, optional selection context, consumer-owned action focus, and enhancement removal are covered in both story modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/item/item.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/item/item.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/item/item.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "table",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Table composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/table"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional narrow-screen row labels preserve native table semantics while making each stacked value understandable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table/table.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["responsive-labels"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table/table.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "responsive-labels",
+          "status": "evidence-backed",
+          "summary": "Optional narrow-screen row labels preserve native table semantics while making each stacked value understandable.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/table/table.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["responsiveLabels"],
+          "api": {
+            "kind": "prop",
+            "names": ["responsiveLabels"],
+            "enableWhen": "Enable responsiveLabels as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicTable",
+          "enhancementControls": ["responsiveLabels"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedTable",
+          "enhancementControls": ["responsiveLabels"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table/table.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Caption and header semantics, the focusable overflow region, responsive-label isolation, narrow overflow containment, and RTL rendering are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/table/table.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table/table.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/table/table.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "data-table",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Data Table composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/data-table"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Consumer-owned query adapters bridge URL or server state without coupling the component to routing or transport, alongside independently optional query controls and summary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/data-table/data-table.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["query-adapter"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/data-table/data-table.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "query-adapter",
+          "status": "evidence-backed",
+          "summary": "Consumer-owned query adapters bridge URL or server state without coupling the component to routing or transport, alongside independently optional query controls and summary.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/data-table/data-table.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": [
+            "queryAdapterEnabled",
+            "showQuerySummary",
+            "searchable",
+            "selectable",
+            "paginated"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": ["queryAdapter", "showQuerySummary", "searchable", "selectable", "paginated"],
+            "enableWhen": "Enable queryAdapter or showQuerySummary or searchable or selectable or paginated as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicDataTable",
+          "enhancementControls": [
+            "queryAdapterEnabled",
+            "showQuerySummary",
+            "searchable",
+            "selectable",
+            "paginated"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedDataTable",
+          "enhancementControls": [
+            "queryAdapterEnabled",
+            "showQuerySummary",
+            "searchable",
+            "selectable",
+            "paginated"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/data-table/data-table.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Sorting, filtering, selection, pagination, query summary, enhancement removal, and coarse-pointer preferred target sizing are exercised in the rendered story.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/data-table/data-table.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/data-table/data-table.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/data-table/data-table.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "virtual-list",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn baseline provides the common Virtual List composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional polite position summary exposes active position and collection size without changing the virtualized listbox model.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/virtual-list/virtual-list.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["position-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/virtual-list/virtual-list.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "position-summary",
+          "status": "evidence-backed",
+          "summary": "An optional polite position summary exposes active position and collection size without changing the virtualized listbox model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/virtual-list/virtual-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showPositionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showPositionSummary"],
+            "enableWhen": "Enable showPositionSummary as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicVirtualList",
+          "enhancementControls": ["showPositionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedVirtualList",
+          "enhancementControls": ["showPositionSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/virtual-list/virtual-list.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Roving option focus, Home and End synchronization, pointer selection, offscreen window updates, and optional position-summary removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/virtual-list/virtual-list.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/virtual-list/virtual-list.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/virtual-list/virtual-list.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "timeline",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn baseline provides the common Timeline composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional intervals explain temporal distance between ordered events and skip all formatter work when disabled.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/timeline/timeline.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["duration-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/timeline/timeline.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "duration-context",
+          "status": "evidence-backed",
+          "summary": "Optional intervals explain temporal distance between ordered events and skip all formatter work when disabled.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/timeline/timeline.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showDurations"],
+          "api": {
+            "kind": "prop",
+            "names": ["showDurations", "formatDuration"],
+            "enableWhen": "Enable showDurations or formatDuration as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicTimeline",
+          "enhancementControls": ["showDurations"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedTimeline",
+          "enhancementControls": ["showDurations"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/timeline/timeline.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Ordered-list and time semantics, optional duration rendering, RTL layout, and the intentional absence of component-owned focus stops are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/timeline/timeline.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/timeline/timeline.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/timeline/timeline.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stat",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn baseline provides the common Stat composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Locale-aware comparison derives a non-color arrow, percentage, direction word, and named baseline only when requested.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stat/stat.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["comparison-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stat/stat.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "comparison-context",
+          "status": "evidence-backed",
+          "summary": "Locale-aware comparison derives a non-color arrow, percentage, direction word, and named baseline only when requested.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/stat/stat.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showComparison"],
+          "api": {
+            "kind": "prop",
+            "names": ["comparison"],
+            "enableWhen": "Enable comparison as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicStat",
+          "enhancementControls": ["showComparison"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedStat",
+          "enhancementControls": ["showComparison"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stat/stat.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native description-list structure, locale-formatted value context, optional comparison removal, and the intentional absence of focus stops are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/stat/stat.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stat/stat.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stat/stat.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chart",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Chart composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/chart"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional native-button data points provide controlled or uncontrolled keyboard exploration while the semantic table fallback remains available.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chart/chart.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["keyboard-data-points"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chart/chart.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "keyboard-data-points",
+          "status": "evidence-backed",
+          "summary": "Optional native-button data points provide controlled or uncontrolled keyboard exploration while the semantic table fallback remains available.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/chart/chart.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["interactive"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "interactive",
+              "activePointId",
+              "defaultActivePointId",
+              "onActivePointChange"
+            ],
+            "enableWhen": "Enable interactive or activePointId or defaultActivePointId or onActivePointChange as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicChart",
+          "enhancementControls": ["interactive"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedChart",
+          "enhancementControls": ["interactive"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chart/chart.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Named image semantics, native table fallback, optional point controls, pressed-state updates, and touch-capable point selection are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/chart/chart.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chart/chart.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chart/chart.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "carousel",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn baseline provides the common Carousel composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/carousel"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Autoplay is explicit, pausable, and reduced-motion aware; slide announcements are a separate opt-in live channel.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/carousel/carousel.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["announced-rotation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/carousel/carousel.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "announced-rotation",
+          "status": "evidence-backed",
+          "summary": "Autoplay is explicit, pausable, and reduced-motion aware; slide announcements are a separate opt-in live channel.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/carousel/carousel.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["autoplayEnabled", "announceSlide"],
+          "api": {
+            "kind": "prop",
+            "names": ["autoplay", "announceSlide"],
+            "enableWhen": "Enable autoplay or announceSlide as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicCarousel",
+          "enhancementControls": ["autoplayEnabled", "announceSlide"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedCarousel",
+          "enhancementControls": ["autoplayEnabled", "announceSlide"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/carousel/carousel.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Named carousel and slide semantics, arrow-key navigation, RTL spatial mapping, autoplay pause, announcements, touch controls, and reduced motion are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/carousel/carousel.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/carousel/carousel.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/carousel/carousel.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "calendar-heatmap",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn baseline provides the common Calendar Heatmap composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional aggregate and selection summary complements the always-available keyboard grid, non-color marks, legend, and table fallback.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar-heatmap/calendar-heatmap.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["aggregate-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar-heatmap/calendar-heatmap.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "aggregate-summary",
+          "status": "evidence-backed",
+          "summary": "An optional aggregate and selection summary complements the always-available keyboard grid, non-color marks, legend, and table fallback.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar-heatmap/calendar-heatmap.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSummary"],
+            "enableWhen": "Enable showSummary as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicCalendarHeatmap",
+          "enhancementControls": ["showSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedCalendarHeatmap",
+          "enhancementControls": ["showSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar-heatmap/calendar-heatmap.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Grid and fallback-table semantics, roving focus, Home and End selection, touch selection, summary isolation, narrow RTL layout, and forced colors are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar-heatmap/calendar-heatmap.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar-heatmap/calendar-heatmap.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar-heatmap/calendar-heatmap.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "activity-feed",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn baseline provides the common Activity Feed composition but does not own this complete native, responsive, enhancement-off, and evidence contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional polite continuation rail distinguishes loaded, loading, interrupted, more-available, and terminal feed states without layout jumps.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/activity-feed/activity-feed.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          }
+        ],
+        "enhancementIds": ["continuation-status"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink rules, strong type, restrained green/violet state, bounded corners, logical properties, shared two-layer focus, and system-color fallbacks keep this item in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/activity-feed/activity-feed.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "continuation-status",
+          "status": "evidence-backed",
+          "summary": "An optional polite continuation rail distinguishes loaded, loading, interrupted, more-available, and terminal feed states without layout jumps.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/activity-feed/activity-feed.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["showContinuationStatus"],
+          "api": {
+            "kind": "prop",
+            "names": ["showContinuationStatus"],
+            "enableWhen": "Enable showContinuationStatus as documented; each boolean remains independently selectable where present."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific rail, context, control, or indicator is rendered.",
+            "behavior": "The native-first baseline continues without enhancement work or state.",
+            "events": "No enhancement renderer, adapter, announcement callback, or enhancement-only event runs.",
+            "accessibility": "No enhancement-specific live region, name, description, state, or focus stop enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "BasicActivityFeed",
+          "enhancementControls": ["showContinuationStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5DataDisplay.stories.tsx",
+          "exportName": "RecommendedActivityFeed",
+          "enhancementControls": ["showContinuationStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5DataDisplay.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-display/data-display.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, per-item axe, explicit keyboard behavior or noninteractive classification, narrow layout, RTL, touch-capable interaction, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/activity-feed/activity-feed.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Named list and time semantics, continuation loading, live summary updates, enhancement removal, touch activation, and the resulting end state are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/data-display/data-display.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, touch-device, and relevant browser evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/activity-feed/activity-feed.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/activity-feed/activity-feed.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/activity-feed/activity-feed.contract.json"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kanban",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased-beta-candidate",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Remain explicitly Beta and excluded from Stable counts until physical iOS VoiceOver and Android TalkBack task evidence passes.",
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, updater, and packed-consumer outputs.",
+    "Pass pointer cancellation, WIP rejection, server rollback/retry, large-board virtualization, deterministic generation, and full cross-browser gates.",
+    "Record all remaining Risk Class 3 desktop/mobile screen-reader, speech, switch, keyboard, touch, zoom, RTL, and forced-colors evidence."
+  ]
+}

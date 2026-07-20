@@ -247,6 +247,98 @@ globalThis.fetch = async () => {
   return { NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}` };
 }
 
+function writeJsonFetchPreload(
+  projectRoot: string,
+  value: unknown,
+  expectedUrl: string,
+): Readonly<Record<string, string>> {
+  const directory = resolve(projectRoot, ".mergora/test-shadcn-fetch");
+  const bytesPath = resolve(directory, "registry.json");
+  const preloadPath = resolve(directory, "preload.mjs");
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(bytesPath, `${canonicalJson(value)}\n`, "utf8");
+  writeFileSync(
+    preloadPath,
+    `import { readFileSync } from "node:fs";
+const bytes = readFileSync(process.env.MERGORA_TEST_SHADCN_BYTES);
+globalThis.fetch = async (input) => {
+  const url = typeof input === "string" ? input : input.url;
+  if (url !== process.env.MERGORA_TEST_SHADCN_URL) throw new Error("unexpected URL");
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+      "content-length": String(bytes.byteLength),
+    },
+  });
+};
+`,
+    "utf8",
+  );
+  return {
+    NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}`,
+    MERGORA_TEST_SHADCN_BYTES: bytesPath,
+    MERGORA_TEST_SHADCN_URL: expectedUrl,
+  };
+}
+
+function writeNativeReleaseDiscoveryPreload(
+  projectRoot: string,
+  origin: string,
+  reference: {
+    readonly release: string;
+    readonly catalog: { readonly digest: string };
+    readonly manifest: { readonly digest: string };
+  },
+): Readonly<Record<string, string>> {
+  const directory = resolve(projectRoot, ".mergora/test-native-discovery");
+  const preloadPath = resolve(directory, "preload.mjs");
+  const catalogPath = resolve(
+    projectRoot,
+    ".mergora/cache/entries",
+    reference.catalog.digest.slice("sha256:".length),
+    "artifact",
+  );
+  const manifestPath = resolve(
+    projectRoot,
+    ".mergora/cache/entries",
+    reference.manifest.digest.slice("sha256:".length),
+    "artifact",
+  );
+  mkdirSync(directory, { recursive: true });
+  writeFileSync(
+    preloadPath,
+    `import { readFileSync } from "node:fs";
+const catalog = readFileSync(process.env.MERGORA_TEST_NATIVE_CATALOG);
+const manifest = readFileSync(process.env.MERGORA_TEST_NATIVE_MANIFEST);
+globalThis.fetch = async (input) => {
+  const url = typeof input === "string" ? input : input.url;
+  const bytes = url === process.env.MERGORA_TEST_NATIVE_CATALOG_URL
+    ? catalog
+    : url === process.env.MERGORA_TEST_NATIVE_MANIFEST_URL
+      ? manifest
+      : null;
+  if (bytes === null) throw new Error("unexpected native discovery URL");
+  return new Response(bytes, {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+      "content-length": String(bytes.byteLength),
+    },
+  });
+};
+`,
+    "utf8",
+  );
+  return {
+    NODE_OPTIONS: `--import=${pathToFileURL(preloadPath).href}`,
+    MERGORA_TEST_NATIVE_CATALOG: catalogPath,
+    MERGORA_TEST_NATIVE_MANIFEST: manifestPath,
+    MERGORA_TEST_NATIVE_CATALOG_URL: `${origin}/catalog.json`,
+    MERGORA_TEST_NATIVE_MANIFEST_URL: `${origin}/releases/${reference.release}/manifest.json`,
+  };
+}
+
 beforeAll(() => {
   const typeScript = resolve(cliPackage, "node_modules/typescript/bin/tsc");
   const cacheDirectory = resolve(cliPackage, "node_modules/.cache");
@@ -324,6 +416,8 @@ afterAll(() => {
 describe("packed command parser and output contract", () => {
   it("keeps help and version fast, complete, and dependency-free", () => {
     const help = command(["--help"]);
+    const addHelp = command(["add", "--help"]);
+    const diffHelp = command(["diff", "--help"]);
     const version = command(["--version"]);
     expect(help.status).toBe(0);
     expect(help.stdout).toContain("init");
@@ -331,6 +425,13 @@ describe("packed command parser and output contract", () => {
     expect(help.stdout).toContain("doctor");
     expect(help.stdout).toContain("recover");
     expect(help.stdout).toContain("clean");
+    expect(addHelp).toMatchObject({ status: 0, stderr: "" });
+    expect(addHelp.stdout).toContain("--with-contracts");
+    expect(addHelp.stdout).toContain("--with-examples");
+    expect(addHelp.stdout).toContain("--no-format");
+    expect(diffHelp).toMatchObject({ status: 0, stderr: "" });
+    expect(diffHelp.stdout).toContain("--format <unified|side-by-side|json>");
+    expect(diffHelp.stdout).toContain("--context <0-1000>");
     expect(version).toMatchObject({ status: 0, stdout: "0.0.0\n", stderr: "" });
   });
 
@@ -402,6 +503,17 @@ describe("packed command parser and output contract", () => {
     expect(sensitive.status).toBe(2);
     expect(sensitive.stdout).not.toContain("person");
     expect(sensitive.stdout).not.toContain("private-token");
+
+    for (const arguments_ of [
+      ["diff", "--context", "1.5", "--json"],
+      ["diff", "--context", "1001", "--json"],
+      ["diff", "--local", "--upstream", "--json"],
+      ["diff", "--format", "compact", "--json"],
+    ]) {
+      const diffUsage = command(arguments_);
+      expect(diffUsage.status).toBe(2);
+      expect(json(diffUsage)).toMatchObject({ errors: [{ code: "COMMAND_USAGE_INVALID" }] });
+    }
   });
 
   it("restricts npm tarball inclusion to formal Stable vendor creation", () => {
@@ -442,6 +554,200 @@ describe("packed command parser and output contract", () => {
 });
 
 describe("packed project commands", () => {
+  it("routes package add/update through exact packed evidence and keeps offline failure mutation-free", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    const firstTarball = packedNpmTarball("mergora-ui", "1.0.0");
+    const first = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.0.0",
+      'export const button = "package mode first";\n',
+      { package: "mergora-ui", bytes: firstTarball },
+    );
+    expect(
+      command(
+        ["init", "--cwd", project.root, "--mode", "hybrid", "--yes", "--non-interactive", "--json"],
+        project.root,
+      ).status,
+    ).toBe(0);
+
+    const targetRejected = command(
+      ["add", "button", "--mode", "package", "--target", "src/custom", "--json"],
+      project.root,
+    );
+    expect(targetRejected.status).toBe(2);
+    expect(json(targetRejected)).toMatchObject({
+      errors: [{ code: "COMMAND_USAGE_INVALID" }],
+    });
+
+    const manifestBefore = readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8");
+    const packageBefore = readFileSync(resolve(project.root, "package.json"), "utf8");
+    const offlineMissing = command(
+      [
+        "add",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        first.referencePath,
+        "--offline",
+        "--no-install",
+        "--no-format",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+    );
+    expect(offlineMissing.status, `${offlineMissing.stdout}\n${offlineMissing.stderr}`).toBe(4);
+    expect(json(offlineMissing)).toMatchObject({
+      errors: [{ code: "DISTRIBUTION_PACKAGE_OFFLINE_MISSING" }],
+    });
+    expect(readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8")).toBe(
+      manifestBefore,
+    );
+    expect(readFileSync(resolve(project.root, "package.json"), "utf8")).toBe(packageBefore);
+
+    const firstUrl = "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.0.0.tgz";
+    const firstPreload = writeFetchPreload(project.root, firstTarball, firstUrl);
+    const planned = command(
+      [
+        "add",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        first.referencePath,
+        "--no-install",
+        "--no-format",
+        "--plan",
+        "--json",
+      ],
+      project.root,
+      firstPreload.environment,
+    );
+    expect(planned.status, `${planned.stdout}\n${planned.stderr}`).toBe(0);
+    expect(json(planned)).toMatchObject({
+      status: "planned",
+      result: {
+        items: [expect.objectContaining({ id: "official:button", mode: "package" })],
+        fileOperations: expect.arrayContaining([
+          expect.objectContaining({ target: "package.json" }),
+          expect.objectContaining({ target: ".mergora/manifest.json" }),
+        ]),
+        warnings: expect.arrayContaining([expect.stringContaining("formatter provenance is none")]),
+      },
+    });
+    expect(readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8")).toBe(
+      manifestBefore,
+    );
+
+    const added = command(
+      [
+        "add",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        first.referencePath,
+        "--no-install",
+        "--no-format",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+      firstPreload.environment,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(json(added)).toMatchObject({
+      status: "committed",
+      result: { mode: "package-transaction", transaction: { state: "committed" } },
+    });
+    const afterAdd = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as {
+      toolchain: { formatter: string };
+      items: Record<string, { mode: string; files: unknown[]; importSubpaths: string[] }>;
+    };
+    expect(afterAdd.toolchain.formatter).toBe("none");
+    expect(afterAdd.items["official:button"]).toMatchObject({
+      mode: "package",
+      importSubpaths: ["mergora-ui/button"],
+    });
+    expect(afterAdd.items["official:button"]!.files).toEqual([
+      expect.objectContaining({
+        role: "contract",
+        target: ".mergora/contracts/official--button.json",
+      }),
+    ]);
+    expect(
+      (
+        JSON.parse(readFileSync(resolve(project.root, "package.json"), "utf8")) as {
+          dependencies: Record<string, string>;
+        }
+      ).dependencies["mergora-ui"],
+    ).toBe("1.0.0");
+    expect(existsSync(resolve(project.root, ".mergora/bases"))).toBe(true);
+
+    const wrongRoute = command(
+      ["update", "button", "--mode", "source", "--plan", "--json"],
+      project.root,
+    );
+    expect(wrongRoute.status).toBe(6);
+    expect(json(wrongRoute)).toMatchObject({
+      errors: [{ code: "DISTRIBUTION_MODE_MIGRATION_REQUIRED" }],
+    });
+
+    const secondTarball = packedNpmTarball("mergora-ui", "1.1.0");
+    const second = seedPackedCompleteNativeReleaseCache(
+      project.root,
+      "1.1.0",
+      'export const button = "package mode second";\n',
+      { package: "mergora-ui", bytes: secondTarball },
+    );
+    const secondPreload = writeFetchPreload(
+      project.root,
+      secondTarball,
+      "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.1.0.tgz",
+    );
+    const updated = command(
+      [
+        "update",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        second.referencePath,
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+      secondPreload.environment,
+    );
+    expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
+    expect(json(updated)).toMatchObject({
+      status: "committed",
+      result: { mode: "package-transaction", transaction: { state: "committed" } },
+    });
+    expect(
+      (
+        JSON.parse(readFileSync(resolve(project.root, "package.json"), "utf8")) as {
+          dependencies: Record<string, string>;
+        }
+      ).dependencies["mergora-ui"],
+    ).toBe("1.1.0");
+    expect(existsSync(resolve(project.root, "src/components/mergora/button/button.tsx"))).toBe(
+      false,
+    );
+    expect(
+      JSON.parse(
+        readFileSync(resolve(project.root, ".mergora/contracts/official--button.json"), "utf8"),
+      ),
+    ).toMatchObject({ contractVersion: "1.1.0", payloadDigest: second.payloadDigest });
+  }, 30_000);
+
   it("routes exact official native references through offline search, view, add, and update", async () => {
     const project = createProjectFixture();
     temporaryDirectories.push(project.root);
@@ -459,11 +765,13 @@ describe("packed project commands", () => {
       `${OFFICIAL_REGISTRY_ORIGIN}/catalog.json`,
       `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.0.0/manifest.json`,
       `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.0.0/items/button.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/contracts/1.0.0/button.json`,
     ]);
     expect(second.requestedUrls).toEqual([
       `${OFFICIAL_REGISTRY_ORIGIN}/catalog.json`,
       `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/manifest.json`,
       `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/items/button.json`,
+      `${OFFICIAL_REGISTRY_ORIGIN}/contracts/1.1.0/button.json`,
     ]);
     expect([...first.requestedUrls, ...second.requestedUrls]).not.toEqual(
       expect.arrayContaining([expect.stringContaining("/r/v1/r/v1/")]),
@@ -543,6 +851,7 @@ describe("packed project commands", () => {
         first.referencePath,
         "--offline",
         "--no-install",
+        "--no-format",
         "--yes",
         "--non-interactive",
         "--json",
@@ -554,6 +863,14 @@ describe("packed project commands", () => {
       status: "committed",
       result: { items: ["button"], transaction: { state: "committed" } },
     });
+    const installedContract = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/contracts/official--button.json"), "utf8"),
+    ) as { contractVersion: string; payloadDigest: string };
+    expect(installedContract).toMatchObject({
+      contractVersion: "1.0.0",
+      payloadDigest: first.payloadDigest,
+    });
+    expect(existsSync(resolve(project.root, "examples/button-basic.tsx"))).toBe(false);
 
     const updatePlan = command(
       [
@@ -563,6 +880,7 @@ describe("packed project commands", () => {
         second.referencePath,
         "--offline",
         "--no-install",
+        "--no-format",
         "--plan",
         "--json",
       ],
@@ -590,6 +908,7 @@ describe("packed project commands", () => {
         second.referencePath,
         "--offline",
         "--no-install",
+        "--no-format",
         "--yes",
         "--non-interactive",
         "--json",
@@ -601,27 +920,288 @@ describe("packed project commands", () => {
     const manifest = JSON.parse(
       readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
     ) as {
+      toolchain: { formatter: string };
+      releases: Record<string, unknown>;
       items: Record<
         string,
         {
           resolved: string;
+          releaseRef: string;
           payload: { digest: string; url: string };
-          files: readonly { target: string }[];
+          files: readonly { role: string; target: string }[];
         }
       >;
     };
     const installed = manifest.items["official:button"]!;
     expect(installed).toMatchObject({
       resolved: "1.1.0",
+      releaseRef: "official@1.1.0",
       payload: {
         digest: second.payloadDigest,
         url: `${OFFICIAL_REGISTRY_ORIGIN}/releases/1.1.0/items/button.json`,
       },
     });
+    expect(manifest.toolchain.formatter).toBe("none");
+    expect(Object.keys(manifest.releases)).toEqual(["official@1.1.0"]);
     expect(installed.payload.url).not.toContain("/r/v1/r/v1/");
-    expect(readFileSync(resolve(project.root, installed.files[0]!.target), "utf8")).toBe(
-      second.source,
+    const installedSource = installed.files.find(({ role }) => role === "component")!;
+    expect(readFileSync(resolve(project.root, installedSource.target), "utf8")).toBe(second.source);
+    expect(
+      JSON.parse(
+        readFileSync(resolve(project.root, ".mergora/contracts/official--button.json"), "utf8"),
+      ),
+    ).toMatchObject({ contractVersion: "1.1.0", payloadDigest: second.payloadDigest });
+  }, 30_000);
+
+  it("augments existing installs with exact examples in source and package modes", () => {
+    const sourceProject = createProjectFixture();
+    temporaryDirectories.push(sourceProject.root);
+    const release = seedPackedCompleteNativeReleaseCache(
+      sourceProject.root,
+      "1.0.0",
+      'export const button = "examples";\n',
     );
+    expect(command(["init", "--yes", "--non-interactive"], sourceProject.root).status).toBe(0);
+    const basic = command(
+      [
+        "add",
+        "button",
+        "--release-file",
+        release.referencePath,
+        "--offline",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      sourceProject.root,
+    );
+    expect(basic.status, `${basic.stdout}\n${basic.stderr}`).toBe(0);
+    expect(existsSync(resolve(sourceProject.root, "examples/button-basic.tsx"))).toBe(false);
+    const added = command(
+      [
+        "add",
+        "button",
+        "--release-file",
+        release.referencePath,
+        "--offline",
+        "--with-examples",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      sourceProject.root,
+    );
+    expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
+    expect(
+      readFileSync(resolve(sourceProject.root, "examples/button-basic.tsx"), "utf8"),
+    ).toContain("ButtonExample");
+    const manifest = JSON.parse(
+      readFileSync(resolve(sourceProject.root, ".mergora/manifest.json"), "utf8"),
+    ) as { items: Record<string, { files: readonly { role: string; target: string }[] }> };
+    expect(manifest.items["official:button"]!.files).toContainEqual(
+      expect.objectContaining({ role: "example", target: "examples/button-basic.tsx" }),
+    );
+    const exactExample = readFileSync(resolve(sourceProject.root, "examples/button-basic.tsx"));
+    const manifestBeforeConflict = readFileSync(
+      resolve(sourceProject.root, ".mergora/manifest.json"),
+    );
+    writeFileSync(
+      resolve(sourceProject.root, "examples/button-basic.tsx"),
+      `${exactExample.toString("utf8")}\n// local customization\n`,
+    );
+    const conflictedRemoval = command(
+      ["remove", "button", "--no-install", "--plan", "--json"],
+      sourceProject.root,
+    );
+    expect(conflictedRemoval.status).toBe(0);
+    expect(json(conflictedRemoval)).toMatchObject({
+      status: "conflict",
+      result: {
+        conflicts: [
+          expect.objectContaining({ target: "examples/button-basic.tsx", kind: "modify-delete" }),
+        ],
+      },
+    });
+    expect(readFileSync(resolve(sourceProject.root, ".mergora/manifest.json"))).toEqual(
+      manifestBeforeConflict,
+    );
+    writeFileSync(resolve(sourceProject.root, "examples/button-basic.tsx"), exactExample);
+    const removed = command(
+      ["remove", "button", "--no-install", "--yes", "--non-interactive", "--json"],
+      sourceProject.root,
+    );
+    expect(removed.status, `${removed.stdout}\n${removed.stderr}`).toBe(0);
+    expect(existsSync(resolve(sourceProject.root, "examples/button-basic.tsx"))).toBe(false);
+    expect(
+      existsSync(resolve(sourceProject.root, ".mergora/contracts/official--button.json")),
+    ).toBe(false);
+
+    const packageProject = createProjectFixture();
+    temporaryDirectories.push(packageProject.root);
+    const packageTarball = packedNpmTarball("mergora-ui", "1.0.0");
+    const packageRelease = seedPackedCompleteNativeReleaseCache(
+      packageProject.root,
+      "1.0.0",
+      'export const button = "package examples";\n',
+      { package: "mergora-ui", bytes: packageTarball },
+    );
+    expect(
+      command(["init", "--mode", "package", "--yes", "--non-interactive"], packageProject.root)
+        .status,
+    ).toBe(0);
+    const packagePreload = writeFetchPreload(
+      packageProject.root,
+      packageTarball,
+      "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.0.0.tgz",
+    );
+    const packageAdded = command(
+      [
+        "add",
+        "button",
+        "--with-examples",
+        "--mode",
+        "package",
+        "--release-file",
+        packageRelease.referencePath,
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      packageProject.root,
+      packagePreload.environment,
+    );
+    expect(packageAdded.status, `${packageAdded.stdout}\n${packageAdded.stderr}`).toBe(0);
+    expect(
+      readFileSync(resolve(packageProject.root, "examples/button-basic.tsx"), "utf8"),
+    ).toContain("ButtonExample");
+    const packageManifest = JSON.parse(
+      readFileSync(resolve(packageProject.root, ".mergora/manifest.json"), "utf8"),
+    ) as { items: Record<string, { files: readonly { role: string }[] }> };
+    expect(packageManifest.items["official:button"]!.files.map(({ role }) => role).sort()).toEqual([
+      "contract",
+      "example",
+    ]);
+    const packageExamplePath = resolve(packageProject.root, "examples/button-basic.tsx");
+    const exactPackageExample = readFileSync(packageExamplePath);
+    writeFileSync(
+      packageExamplePath,
+      `${exactPackageExample.toString("utf8")}\n// preserve this local edit\n`,
+    );
+    const nextPackageTarball = packedNpmTarball("mergora-ui", "1.1.0");
+    const nextPackageRelease = seedPackedCompleteNativeReleaseCache(
+      packageProject.root,
+      "1.1.0",
+      'export const button = "package examples removed upstream";\n',
+      { package: "mergora-ui", bytes: nextPackageTarball },
+      { includeExamples: false },
+    );
+    const nextPackagePreload = writeFetchPreload(
+      packageProject.root,
+      nextPackageTarball,
+      "https://registry.npmjs.org/mergora-ui/-/mergora-ui-1.1.0.tgz",
+    );
+    const packageUpdateConflict = command(
+      [
+        "update",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        nextPackageRelease.referencePath,
+        "--no-install",
+        "--plan",
+        "--json",
+      ],
+      packageProject.root,
+      nextPackagePreload.environment,
+    );
+    expect(
+      packageUpdateConflict.status,
+      `${packageUpdateConflict.stdout}\n${packageUpdateConflict.stderr}`,
+    ).toBe(0);
+    expect(json(packageUpdateConflict)).toMatchObject({
+      status: "conflict",
+      result: {
+        conflicts: [
+          expect.objectContaining({ target: "examples/button-basic.tsx", kind: "modify-delete" }),
+        ],
+      },
+    });
+    writeFileSync(packageExamplePath, exactPackageExample);
+    const packageUpdated = command(
+      [
+        "update",
+        "button",
+        "--mode",
+        "package",
+        "--release-file",
+        nextPackageRelease.referencePath,
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      packageProject.root,
+      nextPackagePreload.environment,
+    );
+    expect(packageUpdated.status, `${packageUpdated.stdout}\n${packageUpdated.stderr}`).toBe(0);
+    expect(existsSync(packageExamplePath)).toBe(false);
+
+    const packageContractPath = resolve(
+      packageProject.root,
+      ".mergora/contracts/official--button.json",
+    );
+    const exactPackageContract = readFileSync(packageContractPath);
+    writeFileSync(packageContractPath, Buffer.concat([exactPackageContract, Buffer.from("\n")]));
+    const packageRemoveConflict = command(
+      ["remove", "button", "--mode", "package", "--no-install", "--plan", "--json"],
+      packageProject.root,
+    );
+    expect(
+      packageRemoveConflict.status,
+      `${packageRemoveConflict.stdout}\n${packageRemoveConflict.stderr}`,
+    ).toBe(0);
+    expect(json(packageRemoveConflict)).toMatchObject({
+      status: "conflict",
+      result: {
+        conflicts: [
+          expect.objectContaining({
+            target: ".mergora/contracts/official--button.json",
+            kind: "modify-delete",
+          }),
+        ],
+      },
+    });
+    writeFileSync(packageContractPath, exactPackageContract);
+    const packageRemoved = command(
+      [
+        "remove",
+        "button",
+        "--mode",
+        "package",
+        "--no-install",
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      packageProject.root,
+    );
+    expect(packageRemoved.status, `${packageRemoved.stdout}\n${packageRemoved.stderr}`).toBe(0);
+    expect(json(packageRemoved)).toMatchObject({
+      status: "committed",
+      result: { mode: "package-transaction", command: "remove" },
+    });
+    expect(existsSync(packageContractPath)).toBe(false);
+    expect(
+      (
+        JSON.parse(readFileSync(resolve(packageProject.root, "package.json"), "utf8")) as {
+          dependencies: Record<string, string>;
+        }
+      ).dependencies["mergora-ui"],
+    ).toBeUndefined();
   }, 30_000);
 
   it("routes an enrolled native registry without namespace fallback or provenance relabeling", () => {
@@ -652,14 +1232,13 @@ describe("packed project commands", () => {
     config.policy.allowExternalRegistries = true;
     writeFileSync(configPath, `${JSON.stringify(config, null, 2)}\n`, "utf8");
 
-    const noFallback = command(
+    const automatic = command(
       ["search", "button", "--registry", "partner", "--json"],
       project.root,
+      writeNativeReleaseDiscoveryPreload(project.root, first.registry.origin, first.reference),
     );
-    expect(noFallback.status).toBe(4);
-    expect(json(noFallback)).toMatchObject({
-      errors: [{ code: "REGISTRY_RELEASE_REFERENCE_REQUIRED" }],
-    });
+    expect(automatic.status, `${automatic.stdout}\n${automatic.stderr}`).toBe(0);
+    expect(json(automatic)).toMatchObject({ result: { items: [{ id: "button" }] } });
 
     const wrongNamespace = command(
       ["search", "button", "--release-file", first.referencePath, "--offline", "--json"],
@@ -687,18 +1266,9 @@ describe("packed project commands", () => {
     expect(json(searched)).toMatchObject({ result: { items: [{ id: "button" }] } });
 
     const viewed = command(
-      [
-        "view",
-        "partner:button",
-        "--registry",
-        "partner",
-        "--release-file",
-        first.referencePath,
-        "--offline",
-        "--source",
-        "ui/button/button.tsx",
-      ],
+      ["view", "partner:button", "--registry", "partner", "--source", "ui/button/button.tsx"],
       project.root,
+      writeNativeReleaseDiscoveryPreload(project.root, first.registry.origin, first.reference),
     );
     expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: first.source });
 
@@ -708,15 +1278,13 @@ describe("packed project commands", () => {
         "partner:button",
         "--registry",
         "partner",
-        "--release-file",
-        first.referencePath,
-        "--offline",
         "--no-install",
         "--yes",
         "--non-interactive",
         "--json",
       ],
       project.root,
+      writeNativeReleaseDiscoveryPreload(project.root, first.registry.origin, first.reference),
     );
     expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
     expect(json(added)).toMatchObject({ status: "committed" });
@@ -735,15 +1303,13 @@ describe("packed project commands", () => {
         "partner:button",
         "--registry",
         "partner",
-        "--release-file",
-        second.referencePath,
-        "--offline",
         "--no-install",
         "--yes",
         "--non-interactive",
         "--json",
       ],
       project.root,
+      writeNativeReleaseDiscoveryPreload(project.root, second.registry.origin, second.reference),
     );
     expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
     expect(json(updated)).toMatchObject({ status: "committed", result: { release: "1.1.0" } });
@@ -791,16 +1357,7 @@ describe("packed project commands", () => {
     expect(command(["init", "--yes", "--non-interactive"], project.root).status).toBe(0);
 
     const searched = command(
-      [
-        "search",
-        "pressable",
-        "--release-file",
-        first.referencePath,
-        "--ui-version",
-        "^1.0.0",
-        "--offline",
-        "--json",
-      ],
+      ["search", "pressable", "--ui-version", "^1.0.0", "--offline", "--json"],
       project.root,
     );
     expect(searched.status, `${searched.stdout}\n${searched.stderr}`).toBe(0);
@@ -809,30 +1366,13 @@ describe("packed project commands", () => {
     });
 
     const viewed = command(
-      [
-        "view",
-        "button",
-        "--release-file",
-        first.referencePath,
-        "--offline",
-        "--source",
-        "ui/button/button.tsx",
-      ],
+      ["view", "button", "--offline", "--source", "ui/button/button.tsx"],
       project.root,
     );
     expect(viewed).toMatchObject({ status: 0, stderr: "", stdout: first.source });
 
     const addPlan = command(
-      [
-        "add",
-        "button",
-        "--release-file",
-        first.referencePath,
-        "--offline",
-        "--no-install",
-        "--plan",
-        "--json",
-      ],
+      ["add", "button", "--offline", "--no-install", "--plan", "--json"],
       project.root,
     );
     expect(addPlan.status, `${addPlan.stdout}\n${addPlan.stderr}`).toBe(0);
@@ -840,17 +1380,7 @@ describe("packed project commands", () => {
       result: { registries: [{ id: "official", release: "1.0.0", source: "vendor" }] },
     });
     const added = command(
-      [
-        "add",
-        "button",
-        "--release-file",
-        first.referencePath,
-        "--offline",
-        "--no-install",
-        "--yes",
-        "--non-interactive",
-        "--json",
-      ],
+      ["add", "button", "--offline", "--no-install", "--yes", "--non-interactive", "--json"],
       project.root,
     );
     expect(added.status, `${added.stdout}\n${added.stderr}`).toBe(0);
@@ -862,16 +1392,7 @@ describe("packed project commands", () => {
       'export const button = "vendor second";\n',
     );
     const updatePlan = command(
-      [
-        "update",
-        "button",
-        "--release-file",
-        second.referencePath,
-        "--offline",
-        "--no-install",
-        "--plan",
-        "--json",
-      ],
+      ["update", "button", "--offline", "--no-install", "--plan", "--json"],
       project.root,
     );
     expect(updatePlan.status, `${updatePlan.stdout}\n${updatePlan.stderr}`).toBe(0);
@@ -879,17 +1400,7 @@ describe("packed project commands", () => {
       result: { registries: [{ id: "official", release: "1.1.0", source: "vendor" }] },
     });
     const updated = command(
-      [
-        "update",
-        "button",
-        "--release-file",
-        second.referencePath,
-        "--offline",
-        "--no-install",
-        "--yes",
-        "--non-interactive",
-        "--json",
-      ],
+      ["update", "button", "--offline", "--no-install", "--yes", "--non-interactive", "--json"],
       project.root,
     );
     expect(updated.status, `${updated.stdout}\n${updated.stderr}`).toBe(0);
@@ -1150,6 +1661,160 @@ describe("packed project commands", () => {
     expect(readFileSync(manifestPath)).toEqual(manifestBefore);
     expect(transactionIds(project.root)).toEqual(transactionsBefore);
     expect(existsSync(resolve(project.root, ".mergora/bases"))).toBe(false);
+  });
+
+  it("adopts an exact enrolled shadcn-v1 payload without replacing source or components.json", () => {
+    const project = createProjectFixture();
+    temporaryDirectories.push(project.root);
+    expect(command(["init", "--cwd", project.root, "--yes", "--non-interactive"]).status).toBe(0);
+    const origin = "https://registry.example.test/r/v1";
+    const registry = {
+      $schema: "https://ui.shadcn.com/schema/registry.json",
+      name: "partner",
+      homepage: "https://registry.example.test",
+      items: [
+        {
+          $schema: "https://ui.shadcn.com/schema/registry-item.json",
+          name: "demo",
+          type: "registry:ui",
+          title: "Demo",
+          description: "A neutral demo component.",
+          dependencies: ["react"],
+          devDependencies: [],
+          registryDependencies: [],
+          files: [
+            {
+              path: "components/ui/demo.tsx",
+              type: "registry:ui",
+              target: "@ui/demo.tsx",
+              content: 'export const Demo = "demo";\n',
+            },
+          ],
+          docs: "Compatibility source; native evidence is not supplied.",
+        },
+      ],
+    };
+    const declaredIdentityDigest = digest(
+      canonicalJson({
+        homepage: registry.homepage,
+        id: registry.name,
+        origin,
+        protocol: "shadcn-v1",
+      }),
+    );
+    const identityDigest = digest(
+      canonicalJson({
+        protocol: "shadcn-v1",
+        resolvedOrigin: origin,
+        declaredRegistry: { id: "partner", identityDigest: declaredIdentityDigest },
+        licensePolicy: { status: "not-supplied", licenses: [] },
+        keyPolicy: {
+          digest: "not-supplied",
+          immutableReleaseManifests: false,
+          signatures: "not-supplied",
+        },
+      }),
+    );
+    const environment = writeJsonFetchPreload(project.root, registry, `${origin}/registry.json`);
+    const enrolled = command(
+      [
+        "registry",
+        "enroll",
+        "partner",
+        origin,
+        "--protocol",
+        "shadcn-v1",
+        "--accept-registry-identity",
+        identityDigest,
+        "--json",
+      ],
+      project.root,
+      environment,
+    );
+    expect(enrolled.status).toBe(0);
+
+    const components = {
+      $schema: "https://ui.shadcn.com/schema.json",
+      style: "new-york",
+      rsc: true,
+      tsx: true,
+      tailwind: { css: project.globalCss, baseColor: "neutral", cssVariables: true, prefix: "" },
+      iconLibrary: "lucide",
+      aliases: {
+        components: "@/components",
+        ui: "@/components/ui",
+        lib: "@/lib",
+        utils: "@/lib/utils",
+        hooks: "@/hooks",
+      },
+      registries: {},
+    };
+    const componentsPath = resolve(project.root, "components.json");
+    const sourcePath = resolve(project.root, "src/components/ui/demo.tsx");
+    mkdirSync(resolve(project.root, "src/components/ui"), { recursive: true });
+    writeFileSync(componentsPath, `${JSON.stringify(components, null, 2)}\n`, "utf8");
+    writeFileSync(sourcePath, registry.items[0]!.files[0]!.content, "utf8");
+    const componentsBefore = readFileSync(componentsPath);
+    const sourceBefore = readFileSync(sourcePath);
+
+    const planned = command(
+      [
+        "adopt",
+        "--from",
+        "shadcn",
+        "demo",
+        "--registry",
+        "partner",
+        "--cwd",
+        project.root,
+        "--plan",
+        "--json",
+      ],
+      project.root,
+      environment,
+    );
+    expect(planned.status).toBe(0);
+    expect(json(planned)).toMatchObject({
+      command: "adopt",
+      status: "planned",
+      result: {
+        registries: [{ id: "partner", evidenceTier: "not-supplied" }],
+        conflicts: [],
+      },
+    });
+
+    const applied = command(
+      [
+        "adopt",
+        "--from",
+        "shadcn",
+        "demo",
+        "--registry",
+        "partner",
+        "--cwd",
+        project.root,
+        "--yes",
+        "--non-interactive",
+        "--json",
+      ],
+      project.root,
+      environment,
+    );
+    expect(applied.status).toBe(0);
+    expect(json(applied)).toMatchObject({
+      command: "adopt",
+      status: "committed",
+      result: { items: ["demo"], transaction: { state: "committed" } },
+    });
+    expect(readFileSync(sourcePath)).toEqual(sourceBefore);
+    expect(readFileSync(componentsPath)).toEqual(componentsBefore);
+    const manifest = JSON.parse(
+      readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
+    ) as { items: Record<string, { contractVersion: string; lastMigration: string }> };
+    expect(manifest.items["partner:demo"]).toMatchObject({
+      contractVersion: "0.0.0-not-supplied",
+      lastMigration: "shadcn-v1-adapter",
+    });
   });
 
   it("plans and applies a completed transaction rollback without implicit consent", () => {

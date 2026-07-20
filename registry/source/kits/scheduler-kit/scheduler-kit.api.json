@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scheduler-kit",
+  "entryExport": "SchedulerKit",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change/value props",
+  "exports": [
+    { "kind": "value", "name": "SchedulerKit" },
+    { "kind": "value", "name": "SchedulerKitPage" },
+    { "kind": "type", "name": "SchedulerKitProps" },
+    { "kind": "type", "name": "SchedulerView" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "SchedulerAdapter" },
+    { "name": "showTimeZoneContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "showDurationSummary", "required": false, "default": false, "type": "boolean" },
+    { "name": "showConflictGuidance", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceChanges", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Button and Calendar items plus native form and filtering controls.",
+    "adapter": "Consumers own time-zone conversion, persistence, permissions, recurrence, attendees and notifications.",
+    "enhancements": "Timezone context, duration summary, conflict guidance and change announcements are independently selectable.",
+    "maturity": "The source and rendered root identify Scheduler Kit as Beta; it must not be promoted to Stable without evidence."
+  }
+}

@@ -12,14 +12,23 @@ export interface StatusProps extends Omit<
   HTMLAttributes<HTMLSpanElement>,
   "aria-atomic" | "aria-label" | "aria-labelledby" | "aria-live" | "children" | "role"
 > {
+  /** Reserved: Status owns atomicity when an explicit live mode is enabled. */
   readonly "aria-atomic"?: never;
+  /** Reserved: visible variant and consumer text provide the status content. */
   readonly "aria-label"?: never;
+  /** Reserved: Status does not use an external accessible-name relationship. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: configure optional live behavior with `live`. */
   readonly "aria-live"?: never;
+  /** Non-empty visible status content. */
   readonly children: ReactNode;
+  /** Optional atomic live behavior; defaults to the static `off` mode. */
   readonly live?: StatusLiveMode;
+  /** Reserved: role is derived from `live` and omitted in static mode. */
   readonly role?: never;
+  /** Visual and textual status treatment; defaults to `neutral`. */
   readonly variant?: StatusVariant;
+  /** Localized visible override for the formatted variant label. */
   readonly variantLabel?: string;
 }
 

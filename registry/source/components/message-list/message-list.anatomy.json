@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message-list",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "message-list",
+    "stableAttributes": ["data-slot", "data-following"]
+  },
+  "parts": [
+    "message-list-viewport",
+    "message-list-items",
+    "message-list-empty",
+    "message-list-follow",
+    "message-list-announcement"
+  ]
+}

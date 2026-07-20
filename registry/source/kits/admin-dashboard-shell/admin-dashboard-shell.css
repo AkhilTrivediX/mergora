@@ -1,0 +1,190 @@
+@layer mergora.components {
+  .mrg-admin-dashboard-shell {
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-layout"] {
+    display: grid;
+    grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-block-start: 0;
+    border-radius: 0 0 var(--mrg-semantic-radius-panel) var(--mrg-semantic-radius-panel);
+    overflow: clip;
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-main"] {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-lg);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-strong);
+    background: var(--mrg-semantic-color-background-canvas);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-heading"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding-block-end: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-admin-dashboard-shell h1,
+  .mrg-admin-dashboard-shell h2 {
+    margin: 0;
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-admin-dashboard-shell h1 {
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+  }
+
+  .mrg-admin-dashboard-shell h2 {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-heading"] p,
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] p {
+    margin-block: var(--mrg-semantic-space-stack-xs) 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-role-context"] {
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+  }
+
+  .mrg-admin-dashboard-shell
+    :is([data-slot="admin-dashboard-trend"], [data-slot="admin-dashboard-activity"]) {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    min-inline-size: 0;
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-surface);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] ul {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    list-style: none;
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] li {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-md);
+    padding-block: var(--mrg-semantic-space-inset-sm);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] li:not([data-read]) {
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-admin-dashboard-shell [data-slot="admin-dashboard-loading"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: var(--mrg-semantic-space-section);
+  }
+
+  .mrg-admin-dashboard-shell :focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 48rem) {
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-layout"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-main"] {
+      padding: var(--mrg-semantic-space-inset-md);
+      border-inline-start: 0;
+      border-block-start: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-strong);
+    }
+
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] li {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-admin-dashboard-shell button,
+    .mrg-admin-dashboard-shell a {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-admin-dashboard-shell * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-admin-dashboard-shell,
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-layout"],
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-main"],
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-heading"],
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-role-context"],
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"],
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] li {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-admin-dashboard-shell [data-slot="admin-dashboard-notifications"] li:not([data-read]) {
+      border-color: Highlight;
+      color: CanvasText;
+      background: Canvas;
+      outline: var(--mrg-semantic-border-width-emphasis) solid Highlight;
+      outline-offset: calc(-1 * var(--mrg-semantic-border-width-emphasis));
+    }
+
+    .mrg-admin-dashboard-shell :focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "sidebar",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, persistence-security, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "Breakpoint-exclusive complementary regions contain named nav landmarks, native details groups, and safe real links.",
+    "current": "Current location is expressed by aria-current and visible structural state.",
+    "refTarget": "HTMLDivElement shell"
+  },
+  "interaction": {
+    "keyboard": "Desktop collapse and mobile disclosure use native buttons; mobile Escape and close restore trigger focus.",
+    "routing": "Consumers may cancel link events and own navigation.",
+    "touch": "The mobile drawer provides explicit controls without gestures."
+  },
+  "enhancementIsolation": {
+    "persistenceOmitted": "No adapter read, write, error callback, storage event, UI, attribute, or accessibility output exists."
+  },
+  "preferences": {
+    "forcedColors": "Selected and focus states use system colors.",
+    "reducedMotion": "Rail-size transitions are removed.",
+    "rtl": "Drawer and structural edges follow logical direction."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "controlled-uncontrolled",
+      "mobile-focus-return",
+      "persistence-isolation",
+      "safe-links",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Persistence adapters are synchronous and consumer-owned; secure storage and cross-tab synchronization are outside core."
+  ]
+}

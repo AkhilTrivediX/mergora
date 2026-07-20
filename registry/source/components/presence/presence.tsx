@@ -17,16 +17,24 @@ import "./presence.css";
 export type PresenceState = "entering" | "entered" | "exiting" | "unmounted";
 
 export interface PresenceRenderState {
+  /** Reports entering, entered, or exiting while the child remains mounted. */
   readonly state: Exclude<PresenceState, "unmounted">;
+  /** Reports the requested presence independently from the current exit lifecycle. */
   readonly present: boolean;
 }
 
 export interface PresenceProps {
+  /** Keeps the child mounted when true and begins its exit lifecycle when false. */
   readonly present: boolean;
+  /** One concrete element, or a render function receiving the current presence state. */
   readonly children: ReactElement | ((state: PresenceRenderState) => ReactElement);
+  /** Authoritative exit deadline in milliseconds, including any motion delay. */
   readonly exitDurationMs?: number;
+  /** Starts initially present content in the entering state instead of the entered state. */
   readonly initialEnter?: boolean;
+  /** Called once after an uninterrupted exit unmounts the child. */
   readonly onExitComplete?: () => void;
+  /** Overrides the provider policy; true completes exits without waiting for motion. */
   readonly reducedMotion?: boolean;
 }
 

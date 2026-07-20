@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "itemId": "masked-field",
   "states": [
-    { "id": "default", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
     { "id": "active", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
     {

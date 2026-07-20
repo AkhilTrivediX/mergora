@@ -8,6 +8,7 @@ Combobox wraps React Aria Components 1.19 behind Mergora-owned anatomy, types, s
 <Combobox.Root name="country" defaultValue="in">
   <Combobox.Label>Country</Combobox.Label>
   <Combobox.Input placeholder="Choose a country" />
+  <Combobox.Clear label="Clear country" />
   <Combobox.Trigger label="Show countries" />
   <Combobox.Description>Type to filter.</Combobox.Description>
   <Combobox.Popover>
@@ -19,6 +20,8 @@ Combobox wraps React Aria Components 1.19 behind Mergora-owned anatomy, types, s
   </Combobox.Popover>
 </Combobox.Root>
 ```
+
+Mergora's literal Canvas surface, Ink structure, Green selection signal, and Violet focus seam keep the field visibly related to the rest of the library. `Combobox.Clear` is an optional recovery action beyond the ordinary editable-combobox composition: it clears the committed key and editable text through the same controlled or uncontrolled state boundaries, then closes the popup. The action is inert when the root is disabled or read-only. Omit the compound part to remove its button, click path, and accessible name completely; the plain combobox keeps the same input, selection, form, and popup behavior.
 
 Plain string or number item children become the item's text value automatically, so default
 selection and type-ahead use the visible label. Supply `textValue` explicitly whenever an item

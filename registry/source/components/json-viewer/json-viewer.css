@@ -1,5 +1,8 @@
 .mrg-json-viewer {
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-block-start-color: var(--mrg-semantic-color-brand-violet);
+  border-block-start-width: var(--mrg-semantic-border-width-strong);
   border-radius: var(--mrg-semantic-radius-panel);
   box-sizing: border-box;
   color: var(--mrg-semantic-color-foreground-primary);
@@ -40,6 +43,13 @@
   min-block-size: var(--mrg-semantic-size-target-minimum);
   padding-block: var(--mrg-semantic-space-inline-xs);
   padding-inline: var(--mrg-semantic-space-inline-sm);
+  transition:
+    background var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-feedback) var(--mrg-semantic-motion-easing-standard);
+}
+.mrg-json-viewer :is([data-slot="json-copy-path"], [data-slot="json-copy-value"]):hover {
+  background: var(--mrg-semantic-color-background-surface-sunken);
 }
 .mrg-json-viewer [data-slot="json-tree"] {
   font-family: var(--mrg-semantic-font-family-machine);
@@ -74,8 +84,11 @@
   outline-offset: calc(var(--mrg-semantic-border-width-default) * -1);
 }
 .mrg-json-viewer :is(button, [data-slot="json-tree-item"]):focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 .mrg-json-viewer [data-slot="json-disclosure"] {
   text-align: center;
@@ -137,11 +150,13 @@
     outline-color: Highlight;
   }
   .mrg-json-viewer :is(button, [data-slot="json-tree-item"]):focus-visible {
+    box-shadow: none;
     outline-color: Highlight;
   }
 }
 @media (prefers-reduced-motion: reduce) {
   .mrg-json-viewer * {
     scroll-behavior: auto;
+    transition-duration: var(--mrg-semantic-motion-duration-reduced);
   }
 }

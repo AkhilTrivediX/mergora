@@ -3,6 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "description": "Deterministic read-only and plan-only MCP core for Mergora projects",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
   "type": "module",
   "sideEffects": false,
   "exports": {

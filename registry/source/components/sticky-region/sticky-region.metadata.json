@@ -15,6 +15,7 @@
     "page",
     "safe-area",
     "measured",
+    "unmanaged-focus-offset",
     "focus-not-obscured",
     "zoom",
     "rtl"
@@ -24,7 +25,7 @@
       "name": "sticky-region-root",
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
-      "states": ["position", "contained", "offset", "safe-area", "size"]
+      "states": ["position", "contained", "offset", "safe-area", "focus-offset", "size"]
     },
     {
       "name": "sticky-region-content",

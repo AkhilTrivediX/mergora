@@ -4,6 +4,8 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 `Pagination` supports finite page-count navigation and server/cursor navigation. Destinations are real links, the current location is named, ellipses are exposed to assistive technology, and missing previous/next destinations become noninteractive disabled text.
 
+Mergora uses literal Canvas controls, Ink structure, a Green current-page cue, and the shared Violet focus seam. Its useful optional advantage is the explicit `mode="cursor"` path for server-owned sequences that cannot honestly claim a page total. Omit `mode` to keep finite page navigation and remove cursor-only labels, destinations, and behavior; both modes retain real-link progressive enhancement.
+
 ## Contract
 
 - Page/count/boundary/sibling inputs are finite integers within range. `getHref` and cursor hrefs must return non-empty URLs outside prohibited executable protocols.

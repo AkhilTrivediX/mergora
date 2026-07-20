@@ -7,6 +7,7 @@
   "evidenceStatus": "incomplete",
   "recordedEvidence": [],
   "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora controls, including complete disabled-output evidence, against the generated implementation matrix.",
     "Generate and verify source, package, registry, documentation, and public subpath outputs.",
     "Bind strict type, unit, SSR, hydration, schema, browser, axe, shared-announcement transition/dedupe, and preference results to the candidate digest.",
     "Complete required manual keyboard, touch, speech, switch, forced-colors, NVDA/Firefox, and VoiceOver/Safari sessions.",

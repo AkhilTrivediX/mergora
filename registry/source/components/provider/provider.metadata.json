@@ -22,7 +22,7 @@
       "name": "provider",
       "semanticElement": "div or consumer element",
       "refTarget": "HTMLElement",
-      "states": ["locale", "direction", "density", "reduced-motion"]
+      "states": ["locale", "direction", "density", "reduced-motion", "as-child"]
     }
   ],
   "contract": { "id": "provider-accessibility", "version": "0.1.0" },

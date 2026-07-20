@@ -1,26 +1,32 @@
 name: CI
+run-name: CI - ${{ github.event.pull_request.head.ref || github.ref_name }} - ${{ github.event.pull_request.head.sha || github.sha }}
 
 on:
   pull_request:
   push:
     branches:
       - main
+      - "feature/**"
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.head.repo.full_name || github.repository }}-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/feature/') }}
 
 jobs:
   quality:
-    name: Foundation quality and build
+    name: Repository quality
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -37,25 +43,63 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: Run fast aggregate
         run: pnpm check
+      - name: Confirm checks do not edit tracked source
+        run: git diff --exit-code
+
+  site-contracts:
+    name: Storybook, site export, and performance
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Chromium for Lighthouse
+        run: pnpm exec playwright install --with-deps chromium
       - name: Build every workspace project
         env:
           MERGORA_BASE_PATH: /mergora
         run: pnpm build
+      - name: Assemble precompiled Quality Lab specimens
+        run: node scripts/assemble-quality-lab.mjs
       - name: Verify the Pages-style static export
         env:
           MERGORA_BASE_PATH: /mergora
         run: node scripts/verify-static-export.mjs
-      - name: Confirm checks and builds do not edit tracked source
+      - name: Verify production route and Lighthouse budgets
+        run: pnpm test:performance
+      - name: Confirm site verification does not edit tracked source
         run: git diff --exit-code
 
   browser-contracts:
     name: Browser, accessibility, and visual contracts
     needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -71,8 +115,88 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
       - name: Run cross-browser contracts
         run: pnpm test:browser
+      - name: Resolve immutable visual review context
+        id: visual-context
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          EVENT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          EVENT_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        with:
+          script: |
+            const candidateSha = process.env.CANDIDATE_SHA;
+            let baseSha = process.env.EVENT_BASE_SHA;
+            let directFeaturePushAuthority = false;
+            let labels = process.env.EVENT_LABELS ?? "";
+
+            if (context.eventName !== "pull_request") {
+              const associatedPulls = await github.paginate(
+                github.rest.repos.listPullRequestsAssociatedWithCommit,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  commit_sha: candidateSha,
+                  per_page: 100,
+                },
+              );
+              const exactPull = associatedPulls.find(
+                (pull) =>
+                  (pull.head.sha === candidateSha || pull.merge_commit_sha === candidateSha) &&
+                  pull.base.repo?.full_name === context.repo.owner + "/" + context.repo.repo,
+              );
+              if (exactPull !== undefined) {
+                baseSha = exactPull.base.sha;
+                labels = exactPull.labels.map((label) => label.name ?? "").filter(Boolean).join(",");
+              } else if (context.ref.startsWith("refs/heads/feature/")) {
+                if (context.eventName === "push") {
+                  directFeaturePushAuthority = true;
+                } else {
+                  const defaultBranch = context.payload.repository?.default_branch;
+                  if (defaultBranch === undefined || defaultBranch === "") {
+                    throw new Error(
+                      "Cannot resolve the default branch for visual-policy comparison",
+                    );
+                  }
+                  const { data: comparison } = await github.rest.repos.compareCommitsWithBasehead({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    basehead: defaultBranch + "..." + candidateSha,
+                  });
+                  baseSha = comparison.merge_base_commit.sha;
+                }
+              }
+            }
+
+            if (baseSha === undefined || baseSha === "" || /^0+$/.test(baseSha)) {
+              const { data: candidateCommit } = await github.rest.repos.getCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: candidateSha,
+              });
+              baseSha = candidateCommit.parents[0]?.sha ?? candidateSha;
+            }
+            core.setOutput("base-sha", baseSha);
+            core.setOutput(
+              "direct-feature-push-authority",
+              directFeaturePushAuthority ? "true" : "false",
+            );
+            core.setOutput("labels", labels);
+      - name: Compare candidate visuals with the immutable accepted commit
+        env:
+          MERGORA_VISUAL_DIRECT_FEATURE_PUSH_AUTHORITY: ${{ steps.visual-context.outputs.direct-feature-push-authority }}
+          MERGORA_VISUAL_POLICY_BASE_SHA: ${{ steps.visual-context.outputs.base-sha }}
+          MERGORA_VISUAL_PR_LABELS: ${{ steps.visual-context.outputs.labels }}
+        run: pnpm test:visual
       - name: Confirm browser tests do not edit tracked source
         run: git diff --exit-code
+      - name: Upload rendered visual comparisons
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: visual-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/browser-evidence/visual-regression
+          if-no-files-found: warn
+          retention-days: 14
 
   packed-consumers:
     name: Packed Next and Vite consumers
@@ -82,6 +206,9 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -93,6 +220,8 @@ jobs:
           corepack prepare pnpm@11.14.0 --activate
       - name: Install frozen dependencies
         run: pnpm install --frozen-lockfile
+      - name: Install Chromium for packed runtime probes
+        run: pnpm exec playwright install --with-deps chromium
       - name: Run exact-tarball clean-consumer matrix
         run: pnpm test:consumer
       - name: Confirm consumer verification is deterministic

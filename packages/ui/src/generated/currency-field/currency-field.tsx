@@ -22,8 +22,11 @@ export interface CurrencyFieldProps extends Omit<NumberFieldProps, "formatOption
   readonly allowNegative?: boolean;
   /** Required ISO 4217-style currency code. */
   readonly currency: string;
+  /** Intl currency-symbol presentation; defaults to the explicit currency code. */
   readonly currencyDisplay?: Intl.NumberFormatOptions["currencyDisplay"];
+  /** Intl accounting or standard sign treatment; defaults to `standard`. */
   readonly currencySign?: Intl.NumberFormatOptions["currencySign"];
+  /** Additional Intl options excluding currency-owned formatting keys. */
   readonly formatOptions?: CurrencyFieldFormatOptions;
   /** Defaults to the currency's Intl minor-unit precision. */
   readonly precision?: number;

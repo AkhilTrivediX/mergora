@@ -28,36 +28,58 @@ interface ToggleGroupBaseProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "aria-label" | "defaultValue" | "onChange"
 > {
+  /** Accessible name applied to the toggle-group composite. */
   readonly label: string;
+  /** ToggleGroup.Item descendants rendered in source order. */
   readonly children: ReactNode;
+  /** Disables every item and exposes disabled state on the group. */
   readonly disabled?: boolean;
+  /** Axis used for layout and arrow-key navigation; defaults to horizontal. */
   readonly orientation?: ToggleGroupOrientation;
+  /** Logical direction for horizontal arrow movement; defaults from DirectionProvider. */
   readonly direction?: DirectionValue;
+  /** Renders an optional live selection summary. Omit it to remove the UI and announcement node. */
+  readonly renderSelectionSummary?: (values: readonly string[]) => ReactNode;
 }
 
 export interface ToggleGroupSingleProps extends ToggleGroupBaseProps {
+  /** Selects mutually exclusive single or independent multiple item behavior. */
   readonly type: "single";
+  /** Controlled selection shaped as a string or null for single mode and an array for multiple. */
   readonly value?: string | null;
+  /** Initial uncontrolled selection using the value shape selected by type. */
   readonly defaultValue?: string | null;
+  /** Reports the next selection using the value shape selected by type after item activation. */
   readonly onValueChange?: (value: string | null) => void;
+  /** Controls whether empty selection is valid; multiple mode permits empty and accepts only true. */
   readonly allowEmpty?: boolean;
 }
 
 export interface ToggleGroupMultipleProps extends ToggleGroupBaseProps {
+  /** Selects mutually exclusive single or independent multiple item behavior. */
   readonly type: "multiple";
+  /** Controlled selection shaped as a string or null for single mode and an array for multiple. */
   readonly value?: readonly string[];
+  /** Initial uncontrolled selection using the value shape selected by type. */
   readonly defaultValue?: readonly string[];
+  /** Reports the next selection using the value shape selected by type after item activation. */
   readonly onValueChange?: (value: readonly string[]) => void;
+  /** Controls whether empty selection is valid; multiple mode permits empty and accepts only true. */
   readonly allowEmpty?: true;
 }
 
 export type ToggleGroupProps = ToggleGroupSingleProps | ToggleGroupMultipleProps;
 
 interface ToggleGroupContextValue {
+  /** Whether the complete group blocks item activation. */
   readonly disabled: boolean;
+  /** Current canonical set of selected item values. */
   readonly selected: ReadonlySet<string>;
+  /** Value owning the group's single roving tab stop. */
   readonly tabStopValue: string | null;
+  /** Moves the roving tab stop to a focused item. */
   readonly setTabStop: (value: string) => void;
+  /** Commits an item activation using the group's selection mode. */
   readonly toggle: (value: string) => void;
 }
 
@@ -128,6 +150,7 @@ export const ToggleGroup = forwardRef<HTMLDivElement, ToggleGroupProps>(
       label,
       onKeyDown,
       orientation = "horizontal",
+      renderSelectionSummary,
       type,
       value: _value,
       defaultValue: _defaultValue,
@@ -157,6 +180,7 @@ export const ToggleGroup = forwardRef<HTMLDivElement, ToggleGroupProps>(
           ? uncontrolledValues
           : props.value;
     const selected = useMemo(() => new Set(values), [values]);
+    const selectedValues = useMemo<readonly string[]>(() => Object.freeze([...values]), [values]);
     const itemDescriptors = collectItemDescriptors(children);
     const enabledValues = itemDescriptors
       .filter((item) => !disabled && !item.disabled)
@@ -223,12 +247,18 @@ export const ToggleGroup = forwardRef<HTMLDivElement, ToggleGroupProps>(
           data-orientation={orientation}
           data-selection-mode={type}
           data-slot="toggle-group"
+          data-with-summary={renderSelectionSummary === undefined ? undefined : "true"}
           dir={resolvedDirection}
           onKeyDown={handleKeyDown}
           ref={composeRefs(forwardedRef, rootRef)}
           role="group"
         >
           {children}
+          {renderSelectionSummary === undefined ? null : (
+            <output aria-live="polite" data-slot="toggle-group-summary">
+              {renderSelectionSummary(selectedValues)}
+            </output>
+          )}
         </div>
       </ToggleGroupContext.Provider>
     );
@@ -241,6 +271,7 @@ export interface ToggleGroupItemProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "aria-pressed" | "value"
 > {
+  /** Stable selection identity exposed on the item and supplied to group callbacks. */
   readonly value: string;
 }
 

@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import { useAnnouncer } from "../sr-announcer/index.js";
 import "./error-state.css";
 
@@ -28,35 +28,63 @@ interface ErrorStateBaseProps extends Omit<
   | "role"
   | "title"
 > {
+  /** Reserved: announcement atomicity belongs to the shared announcer. */
   readonly "aria-atomic"?: never;
+  /** Reserved: ErrorState links its generated description and optional details. */
   readonly "aria-describedby"?: never;
+  /** Reserved: the visible title names the error section. */
   readonly "aria-label"?: never;
+  /** Reserved: ErrorState links its generated title to the section. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: opt into announcements with `live` and `announcement` instead. */
   readonly "aria-live"?: never;
+  /** Alternative recovery controls rendered after the native retry action. */
   readonly actions?: ReactNode;
+  /** Non-empty visible explanation linked to the named section. */
   readonly description: ReactNode;
+  /** Native heading level used for `title`; defaults to 2. */
   readonly headingLevel?: ErrorStateHeadingLevel;
+  /** Reserved: the visible section stays non-live while the shared announcer owns roles. */
   readonly role?: never;
+  /** Explicitly safe diagnostic content revealed through native `details`. */
   readonly technicalDetails?: ReactNode;
+  /** Localized visible label for the technical-details disclosure. */
   readonly technicalDetailsLabel?: string;
+  /** Non-empty visible heading that names the error section. */
   readonly title: ReactNode;
 }
 
 type ErrorStateAnnouncementPolicy =
-  | { readonly announcement?: never; readonly live?: "off" }
-  | { readonly announcement: string; readonly live: "assertive" | "polite" };
+  | {
+      /** Disabled when `live` is `off`, so no announcement copy or effect is emitted. */
+      readonly announcement?: never;
+      /** Keeps the ErrorState static and non-live; this is the default mode. */
+      readonly live?: "off";
+    }
+  | {
+      /** Concise non-empty summary enqueued through the nearest shared announcer. */
+      readonly announcement: string;
+      /** Politeness used by the shared announcer for this summary. */
+      readonly live: "assertive" | "polite";
+    };
 
 export type RecoverableErrorStateProps = ErrorStateBaseProps &
   ErrorStateAnnouncementPolicy & {
+    /** Native retry callback invoked by the rendered retry button. */
     readonly onRetry: () => void;
+    /** Enables the retry control and requires `onRetry`. */
     readonly recoverable: true;
+    /** Localized visible label for the retry button. */
     readonly retryLabel?: string;
   };
 
 export type UnrecoverableErrorStateProps = ErrorStateBaseProps &
   ErrorStateAnnouncementPolicy & {
+    /** Unavailable when `recoverable` is false or omitted. */
     readonly onRetry?: never;
+    /** Omits retry UI and behavior; this is the default mode. */
     readonly recoverable?: false;
+    /** Unavailable when no retry button is rendered. */
     readonly retryLabel?: never;
   };
 
@@ -162,9 +190,14 @@ export const ErrorState = forwardRef<HTMLElement, ErrorStateProps>(function Erro
     throw new Error("Mergora ErrorState announcement requires polite or assertive live mode.");
   }
 
-  const defaultErrorLabel = useMergoraMessage("errorState.label", "Error");
-  const defaultRetryLabel = useMergoraMessage("errorState.retry", "Try again");
-  const defaultDetailsLabel = useMergoraMessage("errorState.details", "Technical details");
+  const { getMessage } = useMergoraContext();
+  const defaultErrorLabel = getMessage("errorState.label", "Error");
+  const retryLabel = recoverable
+    ? (retryLabelProp ?? getMessage("errorState.retry", "Try again"))
+    : undefined;
+  const detailsLabel = hasErrorStateContent(technicalDetails)
+    ? (technicalDetailsLabelProp ?? getMessage("errorState.details", "Technical details"))
+    : undefined;
   const reactId = useId();
   const titleId = `mrg-error-state-${reactId.replaceAll(":", "")}-title`;
   const descriptionId = `mrg-error-state-${reactId.replaceAll(":", "")}-description`;
@@ -199,7 +232,7 @@ export const ErrorState = forwardRef<HTMLElement, ErrorStateProps>(function Erro
           <div data-slot="error-state-actions">
             {recoverable ? (
               <button data-slot="error-state-retry" onClick={onRetry} type="button">
-                {retryLabelProp ?? defaultRetryLabel}
+                {retryLabel}
               </button>
             ) : null}
             {hasErrorStateContent(actions) ? actions : null}
@@ -207,7 +240,7 @@ export const ErrorState = forwardRef<HTMLElement, ErrorStateProps>(function Erro
         ) : null}
         {hasErrorStateContent(technicalDetails) ? (
           <details data-slot="error-state-details">
-            <summary>{technicalDetailsLabelProp ?? defaultDetailsLabel}</summary>
+            <summary>{detailsLabel}</summary>
             <div data-slot="error-state-technical-content">{technicalDetails}</div>
           </details>
         ) : null}

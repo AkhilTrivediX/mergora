@@ -25,6 +25,12 @@
             "value": 1
           }
         },
+        "emphasis": {
+          "$value": {
+            "unit": "px",
+            "value": 3
+          }
+        },
         "focus": {
           "$value": {
             "unit": "px",
@@ -436,6 +442,12 @@
           "value": 160
         }
       },
+      "reduced": {
+        "$value": {
+          "unit": "ms",
+          "value": 1
+        }
+      },
       "slow": {
         "$value": {
           "unit": "ms",
@@ -534,19 +546,19 @@
         "lg": {
           "$value": {
             "unit": "px",
-            "value": 17
+            "value": 18
           }
         },
         "md": {
           "$value": {
             "unit": "px",
-            "value": 15
+            "value": 16
           }
         },
         "sm": {
           "$value": {
             "unit": "px",
-            "value": 13
+            "value": 14
           }
         },
         "xl": {
@@ -574,7 +586,7 @@
             ],
             "fontSize": {
               "unit": "px",
-              "value": 15
+              "value": 16
             },
             "fontWeight": 400,
             "letterSpacing": {
@@ -595,7 +607,7 @@
             ],
             "fontSize": {
               "unit": "px",
-              "value": 13
+              "value": 14
             },
             "fontWeight": 450,
             "letterSpacing": {
@@ -689,10 +701,17 @@
     },
     "radius": {
       "$type": "dimension",
-      "full": {
+      "2xl": {
         "$value": {
           "unit": "px",
-          "value": 999
+          "value": 16
+        }
+      },
+      "full": {
+        "$description": "Legacy full-radius alias deliberately capped at the Mergora 16px ceiling.",
+        "$value": {
+          "unit": "px",
+          "value": 16
         }
       },
       "lg": {
@@ -738,7 +757,7 @@
         "$value": {
           "blur": {
             "unit": "px",
-            "value": 32
+            "value": 8
           },
           "color": {
             "alpha": 0.2,
@@ -751,11 +770,11 @@
           },
           "offsetY": {
             "unit": "px",
-            "value": 12
+            "value": 6
           },
           "spread": {
             "unit": "px",
-            "value": -8
+            "value": -2
           }
         }
       },
@@ -764,7 +783,7 @@
           {
             "blur": {
               "unit": "px",
-              "value": 12
+              "value": 8
             },
             "color": {
               "alpha": 0.12,

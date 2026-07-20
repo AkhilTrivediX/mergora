@@ -15,3 +15,7 @@ The restricted `element` union is `div | section | ul | ol`. CSS Grid does not g
 The stable root is `[data-slot="grid"]`; documented attributes cover element, columns, minimum, gap, alignment, and list style. Auto mode is the responsive default. Fixed columns remain fluid but can become intentionally narrow.
 
 Current status is `source-present-unreleased`; generated outputs, responsive browser evidence, clean consumers, parity, updater fixtures, manual review, site dogfooding, and an approved Passport remain required.
+
+## Mergora advantage
+
+The intrinsic auto-fit baseline uses semantic minimums rather than consumer-authored breakpoints. Optional `equalRows` aligns uneven evidence rows across the grid; `equalRows={false}` removes the implicit-row override while fixed or auto-fit columns remain independently selectable.

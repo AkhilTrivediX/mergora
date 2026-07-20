@@ -8,7 +8,7 @@
   "semantics": {
     "nativeBasis": "span or div with unchanged child semantics.",
     "accessibilityTree": "Content remains present and nameable; hidden, aria-hidden, display:none, and visibility:hidden are never applied.",
-    "focus": "revealOnFocus restores normal geometry only for focus-visible and supplies a forced-colors-safe indicator."
+    "focus": "revealOnFocus restores normal geometry only for focus-visible and supplies a forced-colors-safe indicator. With revealOnFocus=false the reveal attribute, surface, and behavior are absent while accessibility-tree content remains."
   },
   "layout": {
     "hiddenGeometry": "One CSS pixel with clipping and no layout contribution.",
@@ -26,6 +26,7 @@
       "ssr",
       "accessibility-tree",
       "focus-reveal",
+      "focus-reveal-opt-out",
       "rtl",
       "forced-colors-css",
       "packed-consumer",

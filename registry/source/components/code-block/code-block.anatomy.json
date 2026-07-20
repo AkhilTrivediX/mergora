@@ -5,7 +5,7 @@
     "element": "div role=region",
     "ref": "HTMLDivElement",
     "slot": "code-block",
-    "stableAttributes": ["data-slot", "data-wrap"]
+    "stableAttributes": ["data-slot", "data-wrap", "data-copyable"]
   },
   "parts": [
     {

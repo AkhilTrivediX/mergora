@@ -1,0 +1,112 @@
+.mrg-markdown {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-inline-size: 0;
+}
+
+.mrg-markdown__boundary {
+  background: var(--mrg-semantic-color-status-info-background);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-info-border);
+  color: var(--mrg-semantic-color-status-info-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  margin: 0;
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-markdown__content {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-markdown__content > :first-child {
+  margin-block-start: 0;
+}
+
+.mrg-markdown__content > :last-child {
+  margin-block-end: 0;
+}
+
+.mrg-markdown__content :where(h1, h2, h3, h4, h5, h6) {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  text-wrap: balance;
+}
+
+.mrg-markdown__content :where(a) {
+  color: var(--mrg-semantic-color-action-foreground);
+  text-decoration-thickness: var(--mrg-semantic-border-width-strong);
+  text-underline-offset: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-markdown__content :where(a:focus-visible) {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-markdown__content :where(pre) {
+  background: var(--mrg-semantic-color-background-surface);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  font-family: var(--mrg-semantic-font-family-code);
+  margin: 0;
+  max-inline-size: 100%;
+  overflow: auto;
+  padding: var(--mrg-semantic-space-inset-md);
+  white-space: pre-wrap;
+}
+
+.mrg-markdown__content :where(table) {
+  border-collapse: collapse;
+  inline-size: 100%;
+}
+
+.mrg-markdown__content :where(th, td) {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  padding: var(--mrg-semantic-space-inset-sm);
+  text-align: start;
+}
+
+.mrg-markdown__announcement {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-markdown *,
+  .mrg-markdown *::before,
+  .mrg-markdown *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-markdown,
+  .mrg-markdown__boundary,
+  .mrg-markdown__content :where(pre, th, td) {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-markdown__content :where(a:focus-visible) {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

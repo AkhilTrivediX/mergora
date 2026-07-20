@@ -64,6 +64,11 @@ const secondaryButtonStyle = {
   color: "var(--mrg-semantic-color-foreground-primary)",
 } satisfies CSSProperties;
 
+interface RatingInlineEnhancementArgs {
+  readonly inlineSaveOnBlur: boolean;
+  readonly ratingAllowClear: boolean;
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -85,6 +90,68 @@ function Canvas({
         <div style={workbenchStyle}>{children}</div>
       </main>
     </MergoraProvider>
+  );
+}
+
+function MergoraRatingInlineModes({
+  inlineSaveOnBlur,
+  ratingAllowClear,
+}: RatingInlineEnhancementArgs) {
+  const [savedValue, setSavedValue] = useState("Review note");
+  const [submission, setSubmission] = useState("No values submitted.");
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Mergora review controls</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Native rating choices and explicit inline editing remain predictable while clear and
+          save-on-blur behaviors can be removed independently.
+        </p>
+      </header>
+      <form
+        aria-label="Review control modes"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSubmission(
+            JSON.stringify(Object.fromEntries(new FormData(event.currentTarget).entries())),
+          );
+        }}
+      >
+        <Rating
+          allowClear={ratingAllowClear}
+          defaultValue={3}
+          description="Choose a whole-number result."
+          label="Documentation quality"
+          name="documentation-quality"
+        />
+        <InlineEdit
+          blurBehavior={inlineSaveOnBlur ? "save" : "keep-editing"}
+          defaultValue="Review note"
+          description={
+            inlineSaveOnBlur
+              ? "Moving focus outside validates and saves the draft."
+              : "Use the visible Save or Cancel actions to finish editing."
+          }
+          label="Review note"
+          name="review-note"
+          onSave={(value) => setSavedValue(value)}
+        />
+        <div style={actionRailStyle}>
+          <button style={primaryButtonStyle} type="submit">
+            Inspect saved values
+          </button>
+          <button style={secondaryButtonStyle} type="reset">
+            Restore defaults
+          </button>
+        </div>
+      </form>
+      <output aria-live="polite" data-testid="inline-mode-saved-value">
+        Saved inline value: {savedValue}
+      </output>
+      <output aria-live="polite" data-testid="rating-inline-mode-submission">
+        {submission}
+      </output>
+    </Canvas>
   );
 }
 
@@ -251,12 +318,30 @@ function FormSerializationContent() {
 }
 
 const meta = {
+  args: {
+    inlineSaveOnBlur: true,
+    ratingAllowClear: true,
+  },
+  argTypes: {
+    inlineSaveOnBlur: { control: "boolean" },
+    ratingAllowClear: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
+  tags: ["autodocs"],
   title: "P4/Rating and inline edit",
-} satisfies Meta;
+} satisfies Meta<RatingInlineEnhancementArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<RatingInlineEnhancementArgs>;
+
+export const BasicDefaults: Story = {
+  args: { inlineSaveOnBlur: false, ratingAllowClear: false },
+  render: (args) => <MergoraRatingInlineModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraRatingInlineModes {...args} />,
+};
 
 export const RatingWorkbench: Story = {
   render: () => (

@@ -2,6 +2,8 @@
 
 Status: source present and unreleased. No Stable, package-parity, conformance, or manual assistive-technology claim is made.
 
+Literal Canvas editing, strong Ink boundaries, explicit action hierarchy, Green success, Violet focus, and stable status space give Inline Edit the Mergora workbench identity. Optional `blurBehavior="save"` can be returned to the safe `keep-editing` mode without removing explicit Save, Cancel, validation, or draft recovery.
+
 `InlineEdit` separates a saved value from an editable draft. View mode always renders the saved value and a visible edit button. Edit mode uses a native `input` or `textarea`, plus visible Save and Cancel buttons. Enter saves a single-line input; Control+Enter or Command+Enter saves a textarea; Escape cancels either editor. None of those commands fires while IME composition is active.
 
 When the visible `label` is plain text and `editLabel` is not customized, the Edit button receives a contextual accessible name such as “Edit Feature name” while retaining the visible “Edit” text in the same order. Rich labels or repeated instances should provide `editAccessibleLabel` or an already-contextual `editLabel`.

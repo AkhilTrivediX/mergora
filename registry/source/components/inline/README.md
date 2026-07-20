@@ -14,3 +14,7 @@
 The stable root slot is `[data-slot="inline"]`, with `data-gap`, `data-align`, and `data-justify`. The component never clips children; consumers remain responsible for unbreakable embedded content such as URLs or code.
 
 Current status is `source-present-unreleased`; generated distributions, responsive browser evidence, packed-consumer parity, updater fixtures, manual review, public-site use, and an approved Passport remain outstanding.
+
+## Mergora advantage
+
+Adaptive wrapping is the resilient Mergora baseline for localized actions and metadata. `wrap={false}` disables it for deliberate one-line compositions without adding an overflow container, event handler, role, or screen-reader-only output.

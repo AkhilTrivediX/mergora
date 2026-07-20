@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "attachment",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "attachment",
+    "stableAttributes": ["data-slot", "data-status", "data-disabled", "data-safety"]
+  },
+  "parts": [
+    {
+      "slot": "attachment-content",
+      "element": "div",
+      "purpose": "Keeps file identity and metadata readable in logical order.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "attachment-preview",
+      "element": "optional div",
+      "purpose": "Displays consumer-provided preview content without opening the file.",
+      "stability": "documented"
+    },
+    {
+      "slot": "attachment-status",
+      "element": "optional live status and native progress",
+      "purpose": "Reports consumer-owned lifecycle state without starting transport.",
+      "stability": "documented"
+    },
+    {
+      "slot": "attachment-safety",
+      "element": "optional paragraph",
+      "purpose": "Keeps the application's verification state and recovery guidance adjacent to the file.",
+      "stability": "documented"
+    }
+  ]
+}

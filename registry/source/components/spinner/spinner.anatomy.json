@@ -10,7 +10,7 @@
   "parts": [
     {
       "slot": "busy-region",
-      "element": "named div role=region aria-busy with no live descendants",
+      "element": "named div role=region aria-busy with an optional external announcer effect and no live descendants",
       "stability": "documented"
     }
   ]

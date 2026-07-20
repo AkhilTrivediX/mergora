@@ -17,7 +17,8 @@
     "Root owns controlled or uncontrolled open state and restoration fallback.",
     "Overlay selects modal or non-modal React Aria behavior and portal target.",
     "Content requires Title or an explicit accessible name.",
-    "Description supplies the automatic aria-describedby target when exactly one exists."
+    "Description supplies the automatic aria-describedby target when exactly one exists.",
+    "An optional dismissHint joins the accessible description only while rendered."
   ],
   "behaviorOwnership": {
     "mergora": [
@@ -26,7 +27,8 @@
       "callback reasons",
       "message keys",
       "stable slots",
-      "provider context"
+      "provider context",
+      "optional dismissal discovery"
     ],
     "reactAria": [
       "dialog semantics",

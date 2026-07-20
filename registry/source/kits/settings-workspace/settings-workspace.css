@@ -1,0 +1,227 @@
+@layer mergora.components {
+  .mrg-settings-workspace {
+    display: grid;
+    grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr);
+    max-inline-size: 72rem;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow: clip;
+  }
+
+  .mrg-settings-workspace [data-slot="settings-header"] {
+    grid-column: 1 / -1;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-settings-workspace h1,
+  .mrg-settings-workspace h2,
+  .mrg-settings-workspace h3,
+  .mrg-settings-workspace p {
+    margin-block-start: 0;
+  }
+
+  .mrg-settings-workspace h1 {
+    margin-block-end: var(--mrg-semantic-space-stack-xs);
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-settings-workspace [data-slot="settings-header"] p,
+  .mrg-settings-workspace [data-slot="settings-section-heading"] p {
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    margin-block-end: 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-navigation"] {
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-navigation"] ul {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-settings-workspace [data-slot="settings-navigation"] button {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid transparent;
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: transparent;
+    font: inherit;
+    text-align: start;
+  }
+
+  .mrg-settings-workspace [data-slot="settings-navigation"] button small {
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-navigation"] button[aria-current="page"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-main"] {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-lg);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-section-content"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    max-inline-size: 42rem;
+  }
+
+  .mrg-settings-workspace [data-slot="settings-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-settings-workspace
+    :is(
+      [data-slot="settings-unsaved-prompt"],
+      [data-slot="settings-save-status"],
+      [data-slot="settings-save-error"],
+      [data-slot="settings-error"],
+      [data-slot="settings-destructive-review"]
+    ) {
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-unsaved-prompt"] {
+    border-color: var(--mrg-semantic-color-status-warning-border);
+    color: var(--mrg-semantic-color-status-warning-foreground);
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-save-status"] {
+    border-color: var(--mrg-semantic-color-status-success-border);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+
+  .mrg-settings-workspace :is([data-slot="settings-save-error"], [data-slot="settings-error"]) {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-settings-workspace [data-slot="settings-destructive"] {
+    padding-block-start: var(--mrg-semantic-space-stack-lg);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-strong);
+  }
+
+  .mrg-settings-workspace button:focus-visible,
+  .mrg-settings-workspace :is(input, select, textarea):focus-visible,
+  .mrg-settings-workspace [tabindex="-1"]:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 48rem) {
+    .mrg-settings-workspace {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-settings-workspace [data-slot="settings-navigation"] {
+      border-inline-end: 0;
+      border-block-end: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-default);
+    }
+
+    .mrg-settings-workspace [data-slot="settings-navigation"] ul {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .mrg-settings-workspace [data-slot="settings-navigation"] li {
+      flex: 0 0 min(14rem, 78vw);
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-settings-workspace button,
+    .mrg-settings-workspace :is(input, select, textarea) {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-settings-workspace * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-settings-workspace,
+    .mrg-settings-workspace [data-slot="settings-header"],
+    .mrg-settings-workspace [data-slot="settings-navigation"],
+    .mrg-settings-workspace [data-slot="settings-destructive"],
+    .mrg-settings-workspace
+      :is(
+        [data-slot="settings-unsaved-prompt"],
+        [data-slot="settings-save-status"],
+        [data-slot="settings-save-error"],
+        [data-slot="settings-error"],
+        [data-slot="settings-destructive-review"]
+      ) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-settings-workspace [data-slot="settings-navigation"] button[aria-current="page"] {
+      border-color: Highlight;
+      color: CanvasText;
+      background: Canvas;
+      outline: var(--mrg-semantic-border-width-strong) solid Highlight;
+      outline-offset: calc(-1 * var(--mrg-semantic-border-width-strong));
+    }
+
+    .mrg-settings-workspace
+      [data-slot="settings-navigation"]
+      button[aria-current="page"]
+      :is(strong, small) {
+      color: CanvasText;
+    }
+
+    .mrg-settings-workspace button:focus-visible,
+    .mrg-settings-workspace :is(input, select, textarea):focus-visible,
+    .mrg-settings-workspace [tabindex="-1"]:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

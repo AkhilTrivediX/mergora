@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./transfer-list.css", "react"],
+  "entryPath": "registry/source/components/transfer-list/transfer-list.tsx",
+  "id": "transfer-list",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

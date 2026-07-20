@@ -1,0 +1,15 @@
+{
+  "declaredImports": [
+    "./file-manager.css",
+    "react",
+    "../../components/button/button.js",
+    "../../components/tree-view/tree-view.js",
+    "../../components/upload-progress/upload-progress.js",
+    "./file-manager-adapter.js",
+    "./file-manager-state.js"
+  ],
+  "entryPath": "registry/source/kits/file-manager/file-manager.tsx",
+  "id": "file-manager",
+  "itemDependencies": ["button", "tree-view", "upload-progress"],
+  "outputRole": "kit"
+}

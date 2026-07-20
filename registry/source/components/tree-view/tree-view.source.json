@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tree-view.css", "react"],
+  "entryPath": "registry/source/components/tree-view/tree-view.tsx",
+  "id": "tree-view",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

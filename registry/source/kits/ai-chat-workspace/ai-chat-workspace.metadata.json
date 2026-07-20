@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "itemId": "ai-chat-workspace",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "loading",
+    "empty",
+    "ready",
+    "streaming",
+    "offline",
+    "error",
+    "retry",
+    "edit",
+    "branch",
+    "attachments",
+    "citations",
+    "tool-calls",
+    "narrow",
+    "rtl",
+    "reduced-motion",
+    "forced-colors"
+  ],
+  "slots": [
+    {
+      "name": "ai-chat-workspace",
+      "semanticElement": "page-like div with aside and main landmarks",
+      "refTarget": "HTMLDivElement",
+      "states": ["loading", "empty", "ready", "offline", "error"]
+    },
+    {
+      "name": "ai-chat-workspace-sidebar",
+      "semanticElement": "aside with conversation navigation",
+      "refTarget": "none",
+      "states": ["empty", "populated"]
+    },
+    {
+      "name": "ai-chat-workspace-main",
+      "semanticElement": "main conversation workspace",
+      "refTarget": "none",
+      "states": ["streaming", "attachments", "citations", "tool-calls"]
+    }
+  ],
+  "contract": { "id": "ai-chat-workspace-accessibility", "version": "0.1.0" },
+  "passport": { "id": "ai-chat-workspace-quality-passport", "version": "0.0.0" }
+}

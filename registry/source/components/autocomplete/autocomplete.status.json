@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "autocomplete",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Record current Basic and Recommended Storybook, empty, disabled, read-only, invalid, form, narrow, RTL, forced-colors, reduced-motion, keyboard, touch, and screen-reader evidence.",
+    "Generate and verify package, editable source, native registry, Shadcn, docs, and subpath parity.",
+    "Complete supported-browser, visual, accessibility, lifecycle, frozen-install, packed-consumer, and manual risk-class gates.",
+    "Publish an approved Quality Passport and public dogfood evidence."
+  ]
+}

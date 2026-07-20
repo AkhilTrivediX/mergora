@@ -1,8 +1,7 @@
 .mrg-native-select {
   align-items: center;
   background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
   border-radius: var(--mrg-semantic-radius-control);
   box-sizing: border-box;
   color: var(--mrg-semantic-color-foreground-primary);
@@ -15,8 +14,11 @@
 }
 
 .mrg-native-select:focus-within {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-native-select[data-invalid="true"] {
@@ -60,6 +62,25 @@
   pointer-events: none;
 }
 
+.mrg-native-select [data-slot="native-select-selection-context"] {
+  background: var(--mrg-semantic-color-status-info-background);
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-info-border);
+  color: var(--mrg-semantic-color-status-info-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  grid-column: 1 / -1;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-control-padding-inline);
+}
+
+@media (pointer: coarse) {
+  .mrg-native-select {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
 @media (forced-colors: active) {
   .mrg-native-select {
     background: Field;
@@ -69,5 +90,16 @@
 
   .mrg-native-select [data-slot="native-select-indicator"] {
     color: ButtonText;
+  }
+
+  .mrg-native-select:focus-within {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-native-select [data-slot="native-select-selection-context"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
   }
 }

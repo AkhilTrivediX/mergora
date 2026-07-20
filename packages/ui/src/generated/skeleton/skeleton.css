@@ -1,7 +1,5 @@
 /* Generated from registry/source/components/skeleton/skeleton.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-skeleton {
-  animation: mrg-skeleton-pulse var(--mrg-semantic-motion-duration-deliberate)
-    var(--mrg-semantic-motion-easing-standard) infinite alternate;
   background: var(--mrg-semantic-color-background-surface-sunken);
   block-size: var(--mrg-skeleton-block-size);
   border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
@@ -12,8 +10,13 @@
   max-inline-size: 100%;
 }
 
+.mrg-skeleton[data-animated] {
+  animation: mrg-skeleton-pulse var(--mrg-semantic-motion-duration-deliberate)
+    var(--mrg-semantic-motion-easing-standard) infinite alternate;
+}
+
 .mrg-skeleton[data-shape="text"] {
-  border-radius: var(--mrg-semantic-radius-pill);
+  border-radius: var(--mrg-semantic-radius-compact);
 }
 
 .mrg-skeleton[data-shape="circle"] {
@@ -24,7 +27,7 @@
 
 @keyframes mrg-skeleton-pulse {
   from {
-    opacity: 0.58;
+    opacity: var(--mrg-semantic-opacity-muted);
   }
   to {
     opacity: 1;
@@ -32,7 +35,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mrg-skeleton {
+  .mrg-skeleton[data-animated] {
     animation: none;
   }
 }

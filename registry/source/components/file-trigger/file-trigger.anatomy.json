@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-trigger",
+  "root": {
+    "element": "span",
+    "ref": "none",
+    "slot": "file-trigger",
+    "stableAttributes": ["data-slot", "data-disabled"]
+  },
+  "parts": [
+    {
+      "slot": "file-trigger-label",
+      "element": "label",
+      "purpose": "Provides the visible 44 CSS pixel activation target and native accessible name.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "file-trigger-control",
+      "element": "input type=file",
+      "purpose": "Owns picker activation, selected FileList, native form association, reset, accept, multiple, capture, and directory policy.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "file-trigger-description",
+      "element": "descriptive text",
+      "purpose": "Explains accepted files and is connected to the native control.",
+      "stability": "documented"
+    }
+  ]
+}

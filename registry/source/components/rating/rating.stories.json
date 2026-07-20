@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "itemId": "rating",
   "states": [
-    { "id": "default", "applicability": { "status": "applicable" }, "story": "RatingWorkbench" },
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "RatingWorkbench" },
     { "id": "active", "applicability": { "status": "applicable" }, "story": "RatingWorkbench" },
     {
@@ -26,7 +26,11 @@
       }
     },
     { "id": "empty", "applicability": { "status": "applicable" }, "story": "RatingWorkbench" },
-    { "id": "populated", "applicability": { "status": "applicable" }, "story": "RatingWorkbench" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
     { "id": "partial", "applicability": { "status": "applicable" }, "story": "RatingStateMatrix" },
     {
       "id": "success",

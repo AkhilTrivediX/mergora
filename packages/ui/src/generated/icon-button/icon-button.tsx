@@ -26,9 +26,13 @@ export interface IconButtonProps extends Omit<
   readonly children: ReactNode;
   /** Optional native tooltip text; this never replaces the required accessible name. */
   readonly tooltip?: string;
+  /** Keeps the button focusable but busy and blocks activation. */
   readonly pending?: boolean;
+  /** Localizable accessible name used while pending when the string is non-empty. */
   readonly pendingLabel?: string;
+  /** Selects the intrinsic icon-button target size; every option remains at least 44 CSS pixels. */
   readonly size?: IconButtonSize;
+  /** Visual intent inherited from Button; it does not change native button semantics. */
   readonly variant?: ButtonVariant;
 }
 

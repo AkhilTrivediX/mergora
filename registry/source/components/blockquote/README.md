@@ -8,6 +8,10 @@ Preserves native blockquote, figure, citation, attribution, and source-link anat
 </Blockquote>
 ```
 
+## Mergora advantage
+
+Optional attribution, semantic citation metadata, and a linked source turn a plain quotation into verifiable reference content. Omit `attribution`, `sourceTitle`, and `citeUrl` to remove the caption, link, citation metadata, and associated accessibility output completely.
+
 ## Contract
 
 The quotation is a native blockquote inside a figure. Attribution and a semantic cite are grouped in figcaption; citeUrl is applied to both the quote metadata and source link.

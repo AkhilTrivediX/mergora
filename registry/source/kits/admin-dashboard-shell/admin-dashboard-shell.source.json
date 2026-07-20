@@ -1,0 +1,33 @@
+{
+  "declaredImports": [
+    "../../components/alert/alert.js",
+    "../../components/badge/badge.js",
+    "../../components/breadcrumb/breadcrumb.js",
+    "../../components/button/button.js",
+    "../../components/chart/chart.js",
+    "../../components/data-table/data-table.js",
+    "../../components/empty-state/empty-state.js",
+    "../../components/navbar/navbar.js",
+    "../../components/sidebar/sidebar.js",
+    "../../components/skeleton/skeleton.js",
+    "./admin-dashboard-shell-adapter.js",
+    "./admin-dashboard-shell-state.js",
+    "./admin-dashboard-shell.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.tsx",
+  "id": "admin-dashboard-shell",
+  "itemDependencies": [
+    "alert",
+    "badge",
+    "breadcrumb",
+    "button",
+    "chart",
+    "data-table",
+    "empty-state",
+    "navbar",
+    "sidebar",
+    "skeleton"
+  ],
+  "outputRole": "kit"
+}

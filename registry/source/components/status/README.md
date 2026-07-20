@@ -4,6 +4,10 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 Status composes a distinct symbol, visible localized variant label, and consumer text. Live behavior is opt-in.
 
+## Mergora signature and advantage
+
+Status repeats the compact squared semantic marker, strong label, Ink text, and restrained state palette used across Mergora feedback. Beyond a baseline status badge, it can become an atomic polite status or assertive alert without changing its visible composition. The default `live="off"` cleanly removes role, `aria-live`, `aria-atomic`, and live announcement behavior while preserving the static text-and-shape cue.
+
 ## Contract
 
 - live=off is the default; polite and assertive are explicit atomic modes.

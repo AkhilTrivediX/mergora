@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "category": "settings",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "settings-workspace",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn components can compose settings forms and navigation, while controlled section ownership, dirty-state interception, before-unload cleanup, native reset, async save recovery, and typed destructive confirmation remain application work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The workspace guarantees profile, preferences, notifications, and security sections; supports controlled or uncontrolled section and dirty state; and layers independently removable unsaved-change and destructive-operation protection over native save/reset.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/settings-workspace/settings-workspace.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/settings-workspace/settings-workspace.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["unsaved-change-protection", "destructive-confirmation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The settings workbench uses literal white, an Ink navigation rail, strong hierarchy, a Green header seam, Violet selection/focus, restrained corners, touch-aware targets, logical responsiveness, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/settings-workspace/settings-workspace.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "unsaved-change-protection",
+          "status": "evidence-backed",
+          "summary": "Dirty section changes receive an explicit stay-or-discard prompt with focus placement, and page exit installs a warning only while protection and dirty state are active.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/settings-workspace/settings-workspace.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["unsavedProtection"],
+          "api": {
+            "kind": "prop",
+            "names": ["protectUnsavedChanges", "dirty", "onDirtyChange"],
+            "enableWhen": "Set protectUnsavedChanges to true; protection activates only while dirty is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No unsaved-change alertdialog or stay/discard controls are rendered.",
+            "behavior": "Section navigation occurs immediately even when the consumer marks the section dirty.",
+            "events": "No beforeunload listener or navigation interception is installed.",
+            "accessibility": "No alertdialog, warning description, or extra focus stops enter the accessibility tree."
+          }
+        },
+        {
+          "id": "destructive-confirmation",
+          "status": "evidence-backed",
+          "summary": "A consumer-owned account action remains unavailable until consequences are reviewed and exact confirmation text is entered.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/settings-workspace/settings-workspace.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["destructiveConfirmation"],
+          "api": {
+            "kind": "prop",
+            "names": ["destructiveAction"],
+            "enableWhen": "Provide a SettingsDestructiveAction object."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No account-action section, review, consequences, confirmation field, or destructive button is rendered.",
+            "behavior": "Section navigation, save, reset, and dirty-state behavior remains unchanged.",
+            "events": "No destructive review state, abort controller, or onConfirm callback exists.",
+            "accessibility": "No destructive heading, list, field, alert, or focus stops enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6SettingsWorkspace.stories.tsx",
+          "exportName": "BasicSettingsWorkspace",
+          "enhancementControls": ["unsavedProtection", "destructiveConfirmation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6SettingsWorkspace.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6SettingsWorkspace.stories.tsx",
+          "exportName": "RecommendedSettingsWorkspace",
+          "enhancementControls": ["unsavedProtection", "destructiveConfirmation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6SettingsWorkspace.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated Chromium, Firefox, and WebKit axe coverage includes native navigation and forms, instance-scoped dialog labels, enhancement removal, read-only reset cancellation, current-page state and focus restoration, narrow RTL, reduced motion, forced colors, and target sizing; complete Risk Class 3 assistive-technology and manual evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/settings-workspace/settings-workspace.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused Chromium, Firefox, and WebKit evidence covers enhancement removal, mutable and read-only dirty-state reset semantics, repeated-instance ARIA ownership, unsaved-dialog focus entry and restoration, destructive gating, RTL, reduced motion, forced colors, and narrow/touch presentation; custom-control, lifecycle, authorization, and manual assistive-technology matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/settings-workspace/settings-workspace.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/settings-workspace/settings-workspace.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "settings-kit-evidence-incomplete",
+          "summary": "Dependency closure, custom-control dirty-state review, destructive authorization, security/privacy/legal/notification review, current manual assistive technology, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/settings-workspace/settings-workspace.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "The source workflow and focused evidence exist, but distribution, lifecycle, authorization, security, privacy, legal, browser/device, and manual assistive-technology gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/settings-workspace/settings-workspace.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

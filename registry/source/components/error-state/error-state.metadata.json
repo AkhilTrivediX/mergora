@@ -15,7 +15,9 @@
     "focus-visible",
     "error",
     "polite-announcement",
-    "assertive-announcement"
+    "assertive-announcement",
+    "plain-baseline",
+    "recommended-mergora"
   ],
   "slots": [
     {

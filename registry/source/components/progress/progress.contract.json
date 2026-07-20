@@ -5,12 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 1,
-  "summary": "A visibly labelled native determinate or indeterminate progress indicator with localized value text.",
+  "summary": "A visibly labelled native progress element with Living Green/Violet state and independently optional localized value context.",
   "semantics": [
     "Omitting value preserves native indeterminate progress semantics; determinate values are finite and bounded by a positive maximum.",
     "The visible formatted value and aria-valuetext are identical and locale-aware.",
     "A meaningful visible label owns the accessible name; role, generic name props, and aria value overrides are rejected at type and runtime boundaries.",
-    "Indeterminate animation is decoration only and disappears under reduced motion."
+    "Indeterminate animation is decoration only and disappears under reduced motion.",
+    "showValue=false omits the visible value, aria-valuetext, and formatter call while preserving native determinate or indeterminate semantics."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

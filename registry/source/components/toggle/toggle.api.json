@@ -18,5 +18,9 @@
     "aria-pressed, data-state, and the visual state remain synchronized.",
     "Consumer cancellation prevents the state transition.",
     "Pending remains focusable and prevents state changes."
-  ]
+  ],
+  "compositionPolicy": {
+    "familySignature": "A Green pressed rail and Violet focus seam distinguish state without color alone.",
+    "enhancement": "pending and pendingLabel add focus-retaining update semantics; false removes the indicator, loading rail, busy output, and guard."
+  }
 }

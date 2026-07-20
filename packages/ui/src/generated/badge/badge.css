@@ -1,12 +1,12 @@
 /* Generated from registry/source/components/badge/badge.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-badge {
-  --mrg-badge-background: var(--mrg-semantic-color-background-surface-sunken);
-  --mrg-badge-border: var(--mrg-semantic-color-border-default);
+  --mrg-badge-background: var(--mrg-semantic-color-background-canvas);
+  --mrg-badge-border: var(--mrg-semantic-color-border-strong);
   --mrg-badge-foreground: var(--mrg-semantic-color-foreground-primary);
   align-items: baseline;
   background: var(--mrg-badge-background);
   border: var(--mrg-semantic-border-width-default) solid var(--mrg-badge-border);
-  border-radius: var(--mrg-semantic-radius-pill);
+  border-radius: var(--mrg-semantic-radius-compact);
   color: var(--mrg-badge-foreground);
   display: inline-flex;
   font-size: var(--mrg-semantic-font-size-caption);
@@ -14,13 +14,17 @@
   gap: var(--mrg-semantic-space-inline-xs);
   line-height: var(--mrg-semantic-font-line-height-body);
   max-inline-size: 100%;
-  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-block-size: var(--mrg-semantic-size-icon-lg);
   padding-inline: var(--mrg-semantic-space-inline-sm);
 }
 
 .mrg-badge[data-kind="count"] {
+  background: var(--mrg-semantic-color-accent-background-subtle);
+  border-color: var(--mrg-semantic-color-accent-border);
+  color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+  font-variant-numeric: tabular-nums;
   justify-content: center;
-  min-inline-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: var(--mrg-semantic-size-icon-lg);
 }
 
 .mrg-badge[data-variant="info"] {
@@ -47,12 +51,12 @@
   --mrg-badge-foreground: var(--mrg-semantic-color-status-danger-foreground);
 }
 
-[data-slot="badge-status-label"] {
+.mrg-badge [data-slot="badge-status-label"] {
   font-weight: var(--mrg-semantic-font-weight-strong);
   overflow-wrap: anywhere;
 }
 
-[data-slot="badge-label"] {
+.mrg-badge [data-slot="badge-label"] {
   overflow-wrap: anywhere;
   white-space: normal;
 }
@@ -72,6 +76,8 @@
 
 @media (forced-colors: active) {
   .mrg-badge {
+    background: Canvas;
     border-color: CanvasText;
+    color: CanvasText;
   }
 }

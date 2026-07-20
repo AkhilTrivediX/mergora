@@ -11,9 +11,9 @@
     "refTarget": "HTMLDivElement"
   },
   "layout": {
-    "intrinsic": "A wrapping one-dimensional flex row uses semantic inline gaps.",
+    "intrinsic": "A one-dimensional flex row uses semantic inline gaps and wraps by default.",
     "logicalDirection": "start and end follow the computed inline direction.",
-    "overflow": "Wrapping is mandatory; root and direct children have zero minimum inline size without clipping."
+    "overflow": "wrap=false deliberately removes adaptive wrapping; the root still adds no clipping or synthetic scroll behavior."
   },
   "stableSelectors": {
     "root": "[data-slot=inline]",

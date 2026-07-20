@@ -26,9 +26,11 @@
       "data-readonly",
       "data-required",
       "data-has-stepper",
-      "data-has-scrub"
+      "data-has-scrub",
+      "data-has-status-rail",
+      "data-shows-canonical-preview"
     ],
-    "synchronization": "Visible localized text, numeric state, step controls, validation, and hidden form serialization share one React Aria state engine."
+    "synchronization": "Visible localized text, numeric state, step controls, optional bound context, optional non-live canonical preview, validation, and hidden form serialization share one React Aria state engine. Disabled enhancements add no DOM, events, or accessibility output."
   },
   "stableSelectors": {
     "root": "[data-slot=number-field]",
@@ -54,7 +56,9 @@
       "field-error",
       "incrementLabel",
       "decrementLabel",
-      "scrubLabel"
+      "scrubLabel",
+      "status rail messages",
+      "canonical preview labels"
     ],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
@@ -65,6 +69,7 @@
     "Provide a persistent visible label and describe units when they are not otherwise clear.",
     "Choose minimum, maximum, step, and precision values that match the domain rather than using visual formatting as validation.",
     "Do not enable wheel changes where page scrolling could cause accidental edits.",
+    "Treat the canonical preview as explanatory evidence, not as a replacement for the persistent visible Field label or validation message.",
     "Do not depend on localized visible text as a machine-readable submitted value."
   ],
   "evidenceRequirements": {
@@ -75,6 +80,8 @@
       "ime-and-caret",
       "keyboard-and-stepper",
       "scrub-pointer-cancellation",
+      "status-rail-description-and-disabled-absence",
+      "canonical-preview-sync-and-disabled-absence",
       "form-submission-reset",
       "mobile-narrow-rtl-forced-colors",
       "packed-consumer",

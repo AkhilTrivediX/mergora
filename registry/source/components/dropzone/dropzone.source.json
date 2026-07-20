@@ -1,0 +1,13 @@
+{
+  "declaredImports": [
+    "../file-trigger/file-trigger.js",
+    "../file-trigger/index.js",
+    "./dropzone.css",
+    "react",
+    "react-aria-components"
+  ],
+  "entryPath": "registry/source/components/dropzone/dropzone.tsx",
+  "id": "dropzone",
+  "itemDependencies": ["file-trigger"],
+  "outputRole": "component"
+}

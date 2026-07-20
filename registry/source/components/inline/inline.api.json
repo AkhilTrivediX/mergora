@@ -24,10 +24,12 @@
       "name": "justify",
       "required": false,
       "type": "start | center | end | between"
-    }
+    },
+    { "default": true, "name": "wrap", "required": false, "type": "boolean" }
   ],
   "compositionPolicy": {
-    "wrapping": "Always wraps; nowrap is intentionally excluded because it would invalidate the overflow-safe default.",
+    "wrapping": "Wraps by default for resilient reflow; wrap=false opts into a deliberate single logical line.",
+    "enhancement": "Adaptive wrapping is independently disabled by wrap=false, which removes wrapping without adding scroll, events, or accessibility output.",
     "semantics": "Always a neutral div; use a semantic parent for lists, toolbars, or navigation."
   }
 }

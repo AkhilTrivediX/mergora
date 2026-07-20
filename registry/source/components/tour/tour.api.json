@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tour",
+  "entryExport": "Tour",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "component", "name": "Tour" },
+    { "kind": "type", "name": "TourCloseReason" },
+    { "kind": "type", "name": "TourFocusPolicy" },
+    { "kind": "type", "name": "TourProps" },
+    { "kind": "type", "name": "TourRouteAdapter" },
+    { "kind": "type", "name": "TourStep" },
+    { "kind": "type", "name": "TourTargetRecovery" }
+  ],
+  "controlledState": [
+    {
+      "state": "visibility",
+      "controlled": "open",
+      "uncontrolled": "defaultOpen",
+      "callback": "onOpenChange"
+    },
+    {
+      "state": "current step",
+      "controlled": "stepId",
+      "uncontrolled": "defaultStepId",
+      "callback": "onStepIdChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "target recovery",
+      "api": "targetRecovery",
+      "disabled": "false removes status, retry control, callback, recovery copy, and retry events"
+    },
+    {
+      "name": "route, progress, and announcements",
+      "api": "routeAdapter, showProgress, announceStepChanges",
+      "disabled": "each omission independently removes its call, UI, or live output"
+    }
+  ]
+}

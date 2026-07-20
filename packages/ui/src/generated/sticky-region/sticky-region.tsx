@@ -42,15 +42,22 @@ function joinClassName(base: string, className: string | undefined): string {
 }
 
 export interface StickyRegionRootProps extends HTMLAttributes<HTMLDivElement> {
+  /** Provides sticky content and the associated body within one measurement context. */
   readonly children?: ReactNode;
+  /** Pins content to the logical start or end edge, so the behavior follows writing mode. */
   readonly position?: StickyRegionPosition;
+  /** Adds tokenized distance from the selected sticky edge. */
   readonly offset?: StickyRegionOffset;
+  /** Includes the corresponding physical safe-area inset when enabled. */
   readonly safeArea?: boolean;
   /** Makes the root its own native scroll container; page mode leaves scrolling to an ancestor. */
   readonly contained?: boolean;
+  /** Applies a semantic maximum block size when contained scrolling is enabled. */
   readonly size?: StickyRegionSize;
   /** Server-rendered focus offset before ResizeObserver measures localized content. */
   readonly estimatedSize?: number;
+  /** Measures sticky content and reserves focus/scroll clearance for obscured descendants. */
+  readonly manageFocusOffset?: boolean;
 }
 
 export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps>(
@@ -60,6 +67,7 @@ export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps
       className,
       contained = false,
       estimatedSize = 44,
+      manageFocusOffset = true,
       offset = "none",
       position = "block-start",
       safeArea = true,
@@ -69,14 +77,14 @@ export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps
     },
     forwardedRef,
   ) {
-    if (!Number.isFinite(estimatedSize) || estimatedSize < 0) {
+    if (manageFocusOffset && (!Number.isFinite(estimatedSize) || estimatedSize < 0)) {
       throw new RangeError("Mergora StickyRegion estimatedSize must be a non-negative number.");
     }
     const [contentNode, setContentNode] = useState<HTMLElement | null>(null);
     const [measuredSize, setMeasuredSize] = useState(estimatedSize);
 
     useEffect(() => {
-      if (contentNode === null) return;
+      if (!manageFocusOffset || contentNode === null) return;
       const measure = () => {
         const nextSize = contentNode.getBoundingClientRect().height;
         if (Number.isFinite(nextSize) && nextSize >= 0) setMeasuredSize(nextSize);
@@ -87,16 +95,21 @@ export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps
       const observer = new Observer(measure);
       observer.observe(contentNode);
       return () => observer.disconnect();
-    }, [contentNode]);
+    }, [contentNode, manageFocusOffset]);
 
-    const context = useMemo<StickyRegionContextValue>(
-      () => ({ position, setContentNode }),
-      [position],
+    const setMeasuredContentNode = useCallback(
+      (node: HTMLElement | null) => {
+        if (manageFocusOffset) setContentNode(node);
+      },
+      [manageFocusOffset],
     );
-    const rootStyle = {
-      ...style,
-      "--mrg-sticky-region-size": `${measuredSize}px`,
-    } as CSSProperties;
+    const context = useMemo<StickyRegionContextValue>(
+      () => ({ position, setContentNode: setMeasuredContentNode }),
+      [position, setMeasuredContentNode],
+    );
+    const rootStyle = manageFocusOffset
+      ? ({ ...style, "--mrg-sticky-region-size": `${measuredSize}px` } as CSSProperties)
+      : style;
 
     return (
       <StickyRegionContext.Provider value={context}>
@@ -105,6 +118,7 @@ export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps
           ref={forwardedRef}
           className={joinClassName("mrg-sticky-region", className)}
           data-contained={contained ? "true" : "false"}
+          data-manage-focus-offset={manageFocusOffset ? "true" : undefined}
           data-offset={offset}
           data-position={position}
           data-safe-area={safeArea ? "true" : "false"}
@@ -122,6 +136,7 @@ export const StickyRegionRoot = forwardRef<HTMLDivElement, StickyRegionRootProps
 StickyRegionRoot.displayName = "StickyRegion.Root";
 
 export interface StickyRegionContentProps extends HTMLAttributes<HTMLElement> {
+  /** Selects a restricted semantic element for the measured sticky content. */
   readonly element?: StickyRegionElement;
 }
 

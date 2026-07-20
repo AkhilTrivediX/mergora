@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "billing-subscription-kit",
+  "root": {
+    "element": "form containing plan, invoice, payment, and cancellation sections",
+    "ref": "HTMLFormElement",
+    "slot": "billing-subscription-kit",
+    "stableAttributes": ["data-slot", "aria-busy"]
+  },
+  "parts": [
+    {
+      "slot": "billing-plans",
+      "element": "section with native radio fieldset",
+      "purpose": "Supports controlled or uncontrolled plan choice and native serialization.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "billing-change-preview",
+      "element": "optional output",
+      "purpose": "Explains consumer-calculated effects before applying a plan.",
+      "stability": "documented"
+    },
+    {
+      "slot": "billing-invoices",
+      "element": "section with native table",
+      "purpose": "Presents billing records with text status and scoped overflow.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "billing-cancellation-review",
+      "element": "optional inline confirmation region",
+      "purpose": "Requires review and explicit acknowledgement before a destructive request.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "declaredImports": [
+    "./ai-chat-workspace-adapter.js",
+    "./ai-chat-workspace-state.js",
+    "./ai-chat-workspace.js"
+  ],
+  "entryPath": "registry/source/kits/ai-chat-workspace/index.ts",
+  "id": "ai-chat-workspace",
+  "itemDependencies": [
+    "chat-composer",
+    "citation",
+    "message",
+    "message-list",
+    "prompt-suggestions",
+    "streaming-text",
+    "tool-call"
+  ],
+  "outputRole": "kit"
+}

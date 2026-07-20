@@ -25,6 +25,7 @@ import {
   type MergoraConfig,
 } from "./configuration.js";
 import {
+  acquiredRegistryBindingDigest,
   assertAuthenticAcquiredNativeRegistryRelease,
   type AcquiredNativeFile,
   type AcquiredNativeRegistryItem,
@@ -76,6 +77,7 @@ import {
 } from "./trusted-transaction-validators.js";
 import {
   assertDistributionConfigurationBinding,
+  resolveRequestedDistributionMode,
   serializeDistributionProvenance,
   validateDistributionProvenance,
   type ConfiguredDistributionMode,
@@ -84,16 +86,19 @@ import {
   type DistributionPatchOwnership,
   type DistributionProvenanceState,
   type DistributionReleasePin,
+  type InstalledDistributionMode,
   type ValidatedDistributionProvenance,
 } from "./distribution-provenance.js";
 
 const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
 export const MANIFEST_PATH = ".mergora/manifest.json" as const;
+const CONTRACT_DIRECTORY = ".mergora/contracts" as const;
 
 export interface ManifestFile {
   readonly logicalPath: string;
   readonly target: string;
-  readonly role: "component" | "hook" | "lib" | "system" | "kit" | "style" | "token";
+  readonly role:
+    "component" | "hook" | "lib" | "system" | "kit" | "style" | "token" | "contract" | "example";
   readonly base: `sha256:${string}`;
   readonly installed: `sha256:${string}` | null;
   readonly mediaType: string;
@@ -227,6 +232,14 @@ export interface SourceOperationOptions extends RegistryDataOptions {
   readonly itemIds: readonly string[];
   readonly targetDirectory?: string | undefined;
   readonly noInstall?: boolean | undefined;
+  /** Explicit operation-level mode. Source entry points reject package routing before planning. */
+  readonly distributionMode?: InstalledDistributionMode | undefined;
+  /** Skips the configured formatting pass while retaining parse/semantic validation. */
+  readonly noFormat?: boolean | undefined;
+  /** Explicitly includes verified Contract artifacts for non-Stable native items. */
+  readonly withContracts?: boolean | undefined;
+  /** Includes only example files explicitly declared by the exact native item. */
+  readonly withExamples?: boolean | undefined;
   readonly offline?: boolean | undefined;
   readonly packageManager?: PackageManager | undefined;
   readonly packageManagerRunner?: PackageManagerRunner | undefined;
@@ -404,16 +417,16 @@ function distributionItemProjection(item: ManifestItem, qualifiedId: string): Di
       importSubpaths: [],
     };
   }
-  if (item.files.length !== 0) {
+  if (item.files.some(({ role }) => role !== "contract" && role !== "example")) {
     throw manifestError(
-      `Package manifest item ${qualifiedId} cannot own copied source files.`,
+      `Package manifest item ${qualifiedId} can own only selected Contract and example artifacts outside package internals.`,
       "MANIFEST_DISTRIBUTION_OWNERSHIP_MISMATCH",
     );
   }
   return {
     ...common,
     mode: "package",
-    files: [],
+    files: item.files,
     packageClaims: item.packageClaims,
     importSubpaths: item.importSubpaths,
   };
@@ -1078,7 +1091,10 @@ function payloadUrl(itemId: string): string {
   return `${OFFICIAL_REGISTRY_ORIGIN}/releases/${UNRELEASED_VERSION}/items/${itemId}.json`;
 }
 
-function acquiredSourceContext(release: AcquiredNativeRegistryRelease): AcquiredSourceContext {
+function acquiredSourceContext(
+  release: AcquiredNativeRegistryRelease,
+  options: { readonly withExamples?: boolean | undefined } = {},
+): AcquiredSourceContext {
   assertAuthenticAcquiredNativeRegistryRelease(release);
   const dependencyPrefix = `${release.registry.id}:`;
   const items = release.items.map((item): SourceItemRecord => {
@@ -1092,11 +1108,28 @@ function acquiredSourceContext(release: AcquiredNativeRegistryRelease): Acquired
         { code: "SOURCE_ACQUIRED_ADAPTER_UNSUPPORTED", exitCode: 7, target: item.itemId },
       );
     }
-    const files = item.files.map((file): SourceFileRecord => {
+    const declaredExamples = new Set(item.examples);
+    const exampleFiles = item.files.filter(({ targetRole }) => targetRole === "example");
+    if (
+      options.withExamples === true &&
+      (item.examples.some(
+        (logicalPath) =>
+          exampleFiles.filter((file) => file.logicalPath === logicalPath).length !== 1,
+      ) ||
+        exampleFiles.some((file) => !declaredExamples.has(file.logicalPath)))
+    ) {
+      throw new CliError(
+        `Acquired item ${item.itemId} does not bind every declared example to exactly one example file.`,
+        { code: "REGISTRY_EXAMPLE_MISSING", exitCode: 5, target: item.itemId },
+      );
+    }
+    const selectedFiles = item.files.filter(
+      ({ targetRole }) => targetRole !== "example" || options.withExamples === true,
+    );
+    const files = selectedFiles.map((file): SourceFileRecord => {
       if (
         file.encoding !== "utf8" ||
         file.targetRole === "contract" ||
-        file.targetRole === "example" ||
         file.transformPipeline.some(({ adapter }) => adapter !== "none" && adapter !== "target-map")
       ) {
         throw new CliError(
@@ -1311,6 +1344,7 @@ export function deriveAcquiredDistributionSources(
       });
     }
     const files = acquired.files
+      .filter(({ targetRole }) => targetRole !== "contract" && targetRole !== "example")
       .map((file): AcquiredDistributionSourceFile => {
         const bytes = Buffer.from(file.content, file.encoding === "utf8" ? "utf8" : "base64");
         if (
@@ -1422,6 +1456,30 @@ function mapFiles(
   const mapped = item.files
     .map((source) => {
       const bytes = Buffer.from(source.content);
+      if (source.targetRole === "example") {
+        assertPortableRelativePath(source.logicalPath, "Acquired example target");
+        if (
+          !source.logicalPath.startsWith("examples/") ||
+          source.logicalPath.split("/").length < 2
+        ) {
+          throw new CliError(
+            `Acquired example ${source.logicalPath} must remain under the project examples directory.`,
+            {
+              code: "SOURCE_ACQUIRED_TARGET_INVALID",
+              exitCode: 5,
+              target: source.logicalPath,
+            },
+          );
+        }
+        return {
+          source,
+          target: source.logicalPath,
+          logicalPath: source.logicalPath,
+          role: "example",
+          bytes,
+          digest: sha256(bytes),
+        } satisfies MappedSourceFile;
+      }
       const role = (
         ["component", "hook", "lib", "system", "kit", "style", "token"] as const
       ).includes(source.targetRole as never)
@@ -1635,6 +1693,193 @@ function rebuildSharedTargets(manifest: ProvenanceManifest): void {
   manifest.dependencyOwners = dependencyOwners(manifest.items);
 }
 
+function acquiredDistributionReleasePin(
+  release: AcquiredNativeRegistryRelease,
+): DistributionReleasePin {
+  const included = (release.npmPackageInventory?.entries ?? []).filter(
+    (entry) => entry.disposition === "include",
+  );
+  return {
+    registryId: release.registry.id,
+    origin: release.registry.origin,
+    trust: release.registry.trust,
+    identityDigest: acquiredRegistryBindingDigest(release.registry),
+    release: release.release,
+    manifestUrl: `${release.registry.origin}/releases/${release.release}/manifest.json`,
+    manifestDigest: release.manifestDigest,
+    packages: Object.fromEntries(
+      included.map((entry) => [
+        entry.package,
+        {
+          name: entry.package,
+          version: entry.version,
+          tarballDigest: entry.digest,
+        },
+      ]),
+    ),
+  };
+}
+
+function attachSourceDistributionProvenance(options: {
+  readonly current: ProvenanceManifest;
+  readonly next: ProvenanceManifest;
+  readonly config: MergoraConfig;
+  readonly acquired?: AcquiredSourceContext | undefined;
+  readonly addedOwners: ReadonlySet<string>;
+  readonly existingDependencies: Readonly<Record<string, string>>;
+}): void {
+  if (options.addedOwners.size === 0) return;
+  const current = distributionProvenanceFromManifest(options.current);
+  if (current === null && Object.keys(options.current.items).length > 0) {
+    // Preserve legacy source behavior. A later package enrollment must use the reviewed legacy
+    // attachment/mode migration instead of inferring release or retention metadata.
+    return;
+  }
+  if (options.acquired === undefined) {
+    if (current === null) return;
+    throw new CliError(
+      "A distribution-aware project requires an exact acquired release before adding source ownership.",
+      { code: "DISTRIBUTION_RELEASE_REQUIRED", exitCode: 7, target: MANIFEST_PATH },
+    );
+  }
+  const release = options.acquired.release;
+  const releaseRef = `${release.registry.id}@${release.release}`;
+  const releasePin = acquiredDistributionReleasePin(release);
+  for (const owner of options.addedOwners) {
+    const item = options.next.items[owner];
+    if (item === undefined) {
+      throw new CliError(`Distribution source owner ${owner} disappeared during planning.`, {
+        code: "DISTRIBUTION_OWNERSHIP_INVALID",
+        exitCode: 8,
+        target: MANIFEST_PATH,
+      });
+    }
+    options.next.items[owner] = {
+      ...item,
+      releaseRef,
+      packageClaims: [],
+      importSubpaths: [],
+      structuredPatches: item.structuredPatches.map((patch) => ({
+        ...patch,
+        target: patch.target ?? "package.json",
+      })),
+    };
+  }
+  const releases = {
+    ...(current?.state.releases ?? {}),
+    [releaseRef]: releasePin,
+  };
+  const items = Object.fromEntries(
+    Object.entries(options.next.items).map(([owner, item]) => [
+      owner,
+      distributionItemProjection(item, owner),
+    ]),
+  );
+  const dependencyClaims = new Map<string, { owners: string[]; ranges: string[] }>();
+  const patchClaims = new Map<
+    string,
+    {
+      patch: ManifestPatch & { readonly target: string };
+      owners: string[];
+    }
+  >();
+  for (const [owner, item] of Object.entries(options.next.items)) {
+    for (const scope of ["runtime", "development"] as const) {
+      for (const [name, range] of Object.entries(item.dependencies[scope])) {
+        const key = `${scope}:${name}`;
+        const claim = dependencyClaims.get(key) ?? { owners: [], ranges: [] };
+        claim.owners.push(owner);
+        claim.ranges.push(range);
+        dependencyClaims.set(key, claim);
+      }
+    }
+    for (const patch of item.structuredPatches) {
+      if (patch.target === undefined) {
+        throw new CliError(`Distribution patch ${patch.id} has no exact target.`, {
+          code: "DISTRIBUTION_OWNERSHIP_INVALID",
+          exitCode: 8,
+          target: MANIFEST_PATH,
+        });
+      }
+      const existing = patchClaims.get(patch.id);
+      if (existing !== undefined && canonicalJson(existing.patch) !== canonicalJson(patch)) {
+        throw new CliError(`Distribution patch ${patch.id} has conflicting owners.`, {
+          code: "DISTRIBUTION_PATCH_CONFLICT",
+          exitCode: 6,
+          target: patch.target,
+        });
+      }
+      const claim = existing ?? {
+        patch: patch as ManifestPatch & { readonly target: string },
+        owners: [],
+      };
+      claim.owners.push(owner);
+      patchClaims.set(patch.id, claim);
+    }
+  }
+  const previousDependencies = current?.state.dependencyOwnership ?? {};
+  const previousPatches = current?.state.patchOwnership ?? {};
+  const dependencyOwnership: Record<string, DistributionDependencyOwnership> = {};
+  for (const [key, claim] of dependencyClaims) {
+    const separator = key.indexOf(":");
+    const scope = key.slice(0, separator) as "runtime" | "development";
+    const name = key.slice(separator + 1);
+    const previous = previousDependencies[key];
+    const distinctRanges = [...new Set(claim.ranges)];
+    dependencyOwnership[key] = {
+      scope,
+      package: name,
+      range: previous?.range ?? distinctRanges[0]!,
+      owners: portableSort(claim.owners),
+      retention:
+        previous?.retention ??
+        (options.existingDependencies[name] === undefined
+          ? "remove-if-unowned"
+          : "retain-if-unowned"),
+    };
+  }
+  const patchOwnership: Record<string, DistributionPatchOwnership> = {};
+  for (const [id, claim] of patchClaims) {
+    const previous = previousPatches[id];
+    patchOwnership[id] = {
+      id: claim.patch.id,
+      adapter: claim.patch.adapter,
+      target: claim.patch.target,
+      semanticKey: claim.patch.semanticKey,
+      ownedValueDigest: claim.patch.ownedValueDigest,
+      owners: portableSort(claim.owners),
+      retention:
+        previous?.retention ??
+        (claim.patch.adapter === "package-dependency" &&
+        options.existingDependencies[claim.patch.semanticKey.slice("dependencies.".length)] ===
+          undefined
+          ? "remove-if-unowned"
+          : "retain-if-unowned"),
+    };
+  }
+  const state = validateDistributionProvenance({
+    schemaVersion: 1,
+    projectId: options.next.projectId,
+    configDigest: sha256(canonicalJson(options.config)),
+    defaultMode: options.config.distribution.defaultMode,
+    packageName: options.config.distribution.packageName,
+    releases,
+    items,
+    dependencyOwnership,
+    patchOwnership,
+  });
+  Object.assign(options.next, {
+    configDigest: state.configDigest,
+    defaultMode: state.defaultMode,
+    packageName: state.packageName,
+    releases: state.releases,
+    dependencyOwnership: state.dependencyOwnership,
+    patchOwnership: state.patchOwnership,
+    ...distributionOwnershipViews(state),
+  });
+  distributionProvenanceFromManifest(options.next);
+}
+
 function registryPlan(
   items: readonly SourceItemRecord[],
   acquired?: AcquiredSourceContext | undefined,
@@ -1694,16 +1939,34 @@ function registryPlan(
 function registryPayloads(
   items: readonly SourceItemRecord[],
   acquired?: AcquiredSourceContext | undefined,
+  installedItems?: Readonly<Record<string, ManifestItem>> | undefined,
 ): readonly TransactionRegistryPayload[] {
   return items
-    .map((item) => {
+    .flatMap((item) => {
       const acquiredItem = acquired?.itemById.get(item.itemId);
-      return {
-        registry: acquired?.release.registry.id ?? "official",
-        release: acquired?.release.release ?? UNRELEASED_VERSION,
-        url: acquiredItem?.payloadUrl ?? payloadUrl(item.itemId),
-        digest: item.payloadDigest,
-      };
+      const installed = Object.values(installedItems ?? {}).find(
+        (candidate) => candidate.itemId === item.itemId,
+      );
+      const registry = acquired?.release.registry.id ?? installed?.registry ?? "official";
+      const release = acquired?.release.release ?? installed?.resolved ?? UNRELEASED_VERSION;
+      return [
+        {
+          registry,
+          release,
+          url: acquiredItem?.payloadUrl ?? installed?.payload.url ?? payloadUrl(item.itemId),
+          digest: item.payloadDigest,
+        },
+        ...(acquiredItem?.contractDocument === undefined
+          ? []
+          : [
+              {
+                registry,
+                release,
+                url: acquiredItem.contractDocument.url,
+                digest: acquiredItem.contractDocument.digest,
+              },
+            ]),
+      ];
     })
     .sort((left, right) => left.url.localeCompare(right.url, "en-US"));
 }
@@ -1949,7 +2212,9 @@ function operationPlan(
     readonly conflicts: OperationPlan["conflicts"];
     readonly mutations: readonly TransactionMutation[];
     readonly structuredPatches?: OperationPlan["structuredPatches"] | undefined;
+    readonly contractChanges?: OperationPlan["contractChanges"] | undefined;
     readonly acquired?: AcquiredSourceContext | undefined;
+    readonly registries?: OperationPlan["registries"] | undefined;
     readonly validators: readonly TransactionValidator[];
   },
 ): OperationPlan {
@@ -2011,7 +2276,7 @@ function operationPlan(
     projectRoot: ".",
     configDigest: context.configDigest,
     manifestPreconditionDigest: context.manifestDigest,
-    registries: registryPlan(context.sources, context.acquired),
+    registries: context.registries ?? registryPlan(context.sources, context.acquired),
     items: context.items,
     fileOperations: files.sort((left, right) => left.target.localeCompare(right.target, "en-US")),
     dependencyChanges: [...context.dependencyChanges].sort((left, right) =>
@@ -2019,7 +2284,7 @@ function operationPlan(
     ),
     structuredPatches: context.structuredPatches ?? [],
     migrations: [],
-    contractChanges: [],
+    contractChanges: context.contractChanges ?? [],
     warnings: context.warnings,
     consentRequirements: [
       {
@@ -2133,6 +2398,16 @@ function addInternal(
     assertPortableRelativePath(options.targetDirectory, "Source target root");
   }
   const project = readConfiguredProject(options);
+  const requestedMode = resolveRequestedDistributionMode(
+    project.config.distribution.defaultMode,
+    options.distributionMode,
+  );
+  if (requestedMode !== "source") {
+    throw new CliError(
+      "Package-mode add must use the reviewed package distribution planner; source files and bases were not planned.",
+      { code: "DISTRIBUTION_PACKAGE_ROUTING_REQUIRED", exitCode: 7, target: MANIFEST_PATH },
+    );
+  }
   if (acquired !== undefined) {
     const selected = project.config.registries[acquired.release.registry.id];
     const expectedBinding =
@@ -2166,11 +2441,116 @@ function addInternal(
   const observedTargets: Record<string, `sha256:${string}` | null> = {};
   const fileOperations: OperationPlanFile[] = [];
   const conflicts: OperationPlan["conflicts"][number][] = [];
+  const contractChanges: OperationPlan["contractChanges"][number][] = [];
   const plannedBaseTargets = new Set<string>();
   const claimedTargets = new Map<string, string>();
+  let addedItem = false;
+  const addedOwners = new Set<string>();
   for (const [owner, item] of Object.entries(nextManifest.items)) {
     for (const file of item.files) claimedTargets.set(file.target, owner);
   }
+  const ensureOwnedBase = (owner: string, bytes: Buffer, digest: `sha256:${string}`): void => {
+    const target = basePath(digest);
+    const current = readProjectFile(project.root, target);
+    if (current !== null && sha256(current) !== digest) {
+      throw new CliError(`Immutable base ${target} is corrupt.`, {
+        code: "BASE_DIGEST_MISMATCH",
+        exitCode: 3,
+        target,
+      });
+    }
+    observedTargets[target] = digestOrNull(current);
+    if (current === null && !plannedBaseTargets.has(target)) {
+      mutations.push(mutation(project.root, target, bytes));
+      plannedBaseTargets.add(target);
+    }
+    claimedTargets.set(target, owner);
+  };
+  const planExplicitArtifact = (input: {
+    readonly owner: string;
+    readonly logicalPath: string;
+    readonly target: string;
+    readonly role: "contract" | "example";
+    readonly bytes: Buffer;
+    readonly digest: `sha256:${string}`;
+    readonly mediaType: string;
+    readonly reason: string;
+  }): ManifestFile | null => {
+    const claimed = claimedTargets.get(input.target);
+    const localBytes = readProjectFile(project.root, input.target);
+    const local = digestOrNull(localBytes);
+    observedTargets[input.target] = local;
+    if (claimed !== undefined && claimed !== input.owner) {
+      conflicts.push({
+        target: input.target,
+        kind: "ownership",
+        reason: `The selected artifact target is already owned by ${claimed}.`,
+      });
+      fileOperations.push({
+        operation: "conflict",
+        target: input.target,
+        owner: input.owner,
+        base: null,
+        local,
+        remote: input.digest,
+        proposed: null,
+        mediaType: input.mediaType,
+        risk: "conflict",
+        reason: "Existing ownership cannot be replaced by optional artifact selection.",
+      });
+      return null;
+    }
+    if (localBytes !== null && local !== input.digest) {
+      conflicts.push({
+        target: input.target,
+        kind: "add-add",
+        reason:
+          "Different local artifact bytes are preserved and cannot be claimed or overwritten.",
+      });
+      fileOperations.push({
+        operation: "conflict",
+        target: input.target,
+        owner: input.owner,
+        base: null,
+        local,
+        remote: input.digest,
+        proposed: null,
+        mediaType: input.mediaType,
+        risk: "conflict",
+        reason: "Only byte-identical verified artifacts can be adopted during explicit selection.",
+      });
+      return null;
+    }
+    if (localBytes === null) {
+      mutations.push(mutation(project.root, input.target, input.bytes));
+    }
+    fileOperations.push({
+      operation: localBytes === null ? "add" : "no-op",
+      target: input.target,
+      owner: input.owner,
+      base: localBytes === null ? null : input.digest,
+      local,
+      remote: input.digest,
+      proposed: input.digest,
+      mediaType: input.mediaType,
+      risk: "ordinary",
+      reason:
+        localBytes === null
+          ? input.reason
+          : "The existing bytes exactly match the selected immutable artifact and are now explicitly owned.",
+    });
+    ensureOwnedBase(input.owner, input.bytes, input.digest);
+    claimedTargets.set(input.target, input.owner);
+    return {
+      logicalPath: input.logicalPath,
+      target: input.target,
+      role: input.role,
+      base: input.digest,
+      installed: input.digest,
+      mediaType: input.mediaType,
+      executable: false,
+    };
+  };
   for (const source of sources) {
     const id = qualified(source.itemId, registryId);
     const existing = nextManifest.items[id];
@@ -2214,6 +2594,33 @@ function addInternal(
           reason: "The exact release and transform context are already installed.",
         });
       }
+      const ownedLogicalPaths = new Set(existing.files.map(({ logicalPath }) => logicalPath));
+      const augmentations: ManifestFile[] = [];
+      for (const file of files) {
+        if (ownedLogicalPaths.has(file.logicalPath)) continue;
+        if (file.role !== "example") {
+          throw new CliError(
+            `Installed item ${source.itemId} is missing required owned file ${file.logicalPath}; use update or recovery instead of add.`,
+            { code: "ITEM_UPDATE_REQUIRED", exitCode: 7, target: file.target },
+          );
+        }
+        const added = planExplicitArtifact({
+          owner: id,
+          logicalPath: file.logicalPath,
+          target: file.target,
+          role: "example",
+          bytes: file.bytes,
+          digest: file.digest,
+          mediaType: file.source.mediaType,
+          reason: "Materialize the explicitly selected exact example artifact.",
+        });
+        if (added !== null) augmentations.push(added);
+      }
+      if (augmentations.length > 0) {
+        nextManifest.items[id] = { ...existing, files: [...existing.files, ...augmentations] };
+        addedItem = true;
+        addedOwners.add(id);
+      }
       continue;
     }
     const entry = manifestItem(
@@ -2225,6 +2632,8 @@ function addInternal(
       options.targetDirectory,
       acquired,
     );
+    addedItem = true;
+    addedOwners.add(id);
     nextManifest.items[id] = entry;
     for (const file of files) {
       const owner = claimedTargets.get(file.target);
@@ -2255,6 +2664,7 @@ function addInternal(
         continue;
       }
       mutations.push(mutation(project.root, file.target, file.bytes));
+      claimedTargets.set(file.target, id);
       fileOperations.push({
         operation: "add",
         target: file.target,
@@ -2288,6 +2698,66 @@ function addInternal(
     }
   }
 
+  if (acquired !== undefined) {
+    for (const source of sources) {
+      const acquiredItem = acquired.itemById.get(source.itemId);
+      if (acquiredItem === undefined || acquiredItem.contractDocument === undefined) continue;
+      const document = acquiredItem.contractDocument;
+      const owner = qualified(source.itemId, registryId);
+      const target = `${CONTRACT_DIRECTORY}/${registryId}--${source.itemId}.json`;
+      assertPortableRelativePath(target, "Contract installation target");
+      const bytes = Buffer.from(document.content, "utf8");
+      if (sha256(bytes) !== document.digest) {
+        throw new CliError(`Verified Contract for ${owner} changed before planning.`, {
+          code: "REGISTRY_CONTRACT_INVALID",
+          exitCode: 5,
+          target: source.itemId,
+        });
+      }
+      const item = nextManifest.items[owner];
+      if (item === undefined) {
+        throw new CliError(`Contract owner ${owner} is absent from the planned manifest.`, {
+          code: "PLAN_OWNER_MISSING",
+          exitCode: 8,
+          target,
+        });
+      }
+      const owned = item.files.find(({ role }) => role === "contract");
+      if (owned !== undefined) {
+        if (
+          owned.target !== target ||
+          owned.logicalPath !== `contracts/${registryId}/${source.itemId}.json` ||
+          owned.base !== document.digest
+        ) {
+          throw new CliError(
+            `Installed Contract ownership for ${owner} differs from this immutable release; use update.`,
+            { code: "ITEM_UPDATE_REQUIRED", exitCode: 7, target },
+          );
+        }
+        continue;
+      }
+      const added = planExplicitArtifact({
+        owner,
+        logicalPath: `contracts/${registryId}/${source.itemId}.json`,
+        target,
+        role: "contract",
+        bytes,
+        digest: document.digest,
+        mediaType: "application/json",
+        reason: "Install the exact payload-bound Contract selected for this native item.",
+      });
+      if (added === null) continue;
+      nextManifest.items[owner] = { ...item, files: [...item.files, added] };
+      addedItem = true;
+      addedOwners.add(owner);
+      contractChanges.push({
+        item: owner,
+        from: null,
+        to: acquiredItem.contract.version,
+      });
+    }
+  }
+
   const requirements = dependencyRequirements(sources, registryId);
   const packagePlan = planPackageDependencies(resolve(project.root, "package.json"), requirements);
   assertPackageManagerTransactionScope(
@@ -2303,6 +2773,25 @@ function addInternal(
     );
   }
   rebuildSharedTargets(nextManifest);
+  attachSourceDistributionProvenance({
+    current: project.manifest.value,
+    next: nextManifest,
+    config: project.config,
+    acquired,
+    addedOwners,
+    existingDependencies: packagePlan.dependencies,
+  });
+  if (addedItem) {
+    Object.assign(nextManifest, {
+      toolchain: {
+        ...nextManifest.toolchain,
+        formatter:
+          options.noFormat === true || project.config.formatting.strategy === "none"
+            ? "none"
+            : "mergora@1",
+      },
+    });
+  }
   if (packagePlan.after !== packagePlan.before) {
     mutations.push(mutation(project.root, "package.json", Buffer.from(packagePlan.after)));
   }
@@ -2353,6 +2842,7 @@ function addInternal(
       owner: change.owners[0]!,
       operation: "add" as const,
     })),
+    contractChanges: blockedByConflict ? [] : contractChanges,
     warnings: [
       acquired === undefined
         ? "The bundled source payloads are unreleased; provenance records their exact digest and provisional 0.0.0-unreleased identity without claiming Stable evidence."
@@ -2362,6 +2852,11 @@ function addInternal(
         project.inspection.packageManager,
         packagePlan.after !== packagePlan.before,
       ),
+      ...(addedItem && options.noFormat === true
+        ? [
+            "Formatting was explicitly skipped; media parsing and semantic transaction validation remain enabled, and formatter provenance is recorded as none.",
+          ]
+        : []),
     ],
     conflicts,
     mutations: transactionMutations,
@@ -2385,6 +2880,33 @@ function addInternal(
 }
 
 function sourceForManifestItem(item: ManifestItem, options: RegistryDataOptions): SourceItemRecord {
+  if (item.resolved !== UNRELEASED_VERSION) {
+    return {
+      itemId: item.itemId,
+      title: item.itemId,
+      description: `Installed immutable ${item.registry}:${item.itemId} source item.`,
+      kind: item.kind,
+      visibleStatus: "installed",
+      implementationStatus: "released",
+      files: [],
+      registryDependencies: item.registryDependencies.map((dependency) =>
+        dependency.startsWith(`${item.registry}:`)
+          ? dependency.slice(item.registry.length + 1)
+          : dependency,
+      ),
+      runtimeDependencies: item.dependencies.runtime,
+      installDependencies: Object.fromEntries(
+        Object.entries(item.dependencies.runtime).filter(
+          ([name]) => name !== "react" && name !== "react-dom",
+        ),
+      ),
+      blockers: [],
+      packageImport: null,
+      packageStyleImport: null,
+      associations: {},
+      payloadDigest: item.payload.digest,
+    };
+  }
   const source = resolveSourceDependencyClosure([item.itemId], options).find(
     ({ itemId }) => itemId === item.itemId,
   );
@@ -2396,6 +2918,39 @@ function sourceForManifestItem(item: ManifestItem, options: RegistryDataOptions)
     });
   }
   return source;
+}
+
+function removalRegistryPlan(
+  manifest: ProvenanceManifest,
+  selected: ReadonlySet<string>,
+): OperationPlan["registries"] {
+  const releaseRefs = new Set(
+    [...selected]
+      .map((id) => manifest.items[id]?.releaseRef)
+      .filter((value): value is string => value !== undefined),
+  );
+  if (releaseRefs.size === 0) return [];
+  return [...releaseRefs]
+    .map((releaseRef) => {
+      const release = manifest.releases?.[releaseRef];
+      if (release === undefined) {
+        throw new CliError(`Installed release pin ${releaseRef} is missing.`, {
+          code: "MANIFEST_DISTRIBUTION_INCOMPLETE",
+          exitCode: 3,
+          target: MANIFEST_PATH,
+        });
+      }
+      return {
+        id: release.registryId,
+        identityDigest: release.identityDigest,
+        release: release.release,
+        manifestDigest: release.manifestDigest,
+        source: "verified-cache" as const,
+        trust: release.trust,
+        evidenceTier: "not-supplied" as const,
+      };
+    })
+    .sort((left, right) => left.id.localeCompare(right.id, "en-US"));
 }
 
 function remainingItemIdsAfterRemoval(
@@ -2652,6 +3207,7 @@ function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
     warnings,
     conflicts,
     mutations,
+    registries: removalRegistryPlan(project.manifest.value, removed),
     validators,
   });
   return validateSourcePlanOverlay({
@@ -2659,7 +3215,7 @@ function removeInternal(options: SourceRemoveOptions): InternalSourcePlan {
     publicPlan: plan,
     mutations,
     observedTargets,
-    registryPayloads: registryPayloads(itemsForPlan),
+    registryPayloads: registryPayloads(itemsForPlan, undefined, project.manifest.value.items),
     packageManager: project.inspection.packageManager,
     packageManagerRequired: packagePlan.after !== packagePlan.before,
     resolvedItems: portableSort([...removed].map((id) => id.slice("official:".length))),
@@ -2889,7 +3445,9 @@ export function applySourceAdd(
 export function planAcquiredSourceAdd(
   options: AcquiredSourceOperationOptions,
 ): SourceOperationPlan {
-  const acquired = acquiredSourceContext(options.acquiredRelease);
+  const acquired = acquiredSourceContext(options.acquiredRelease, {
+    withExamples: options.withExamples,
+  });
   return addInternal(options, acquired).publicPlan;
 }
 
@@ -2897,7 +3455,9 @@ export function applyAcquiredSourceAdd(
   options: AcquiredSourceOperationOptions,
   expectedPlanDigest: string,
 ): SourceOperationResult {
-  const acquired = acquiredSourceContext(options.acquiredRelease);
+  const acquired = acquiredSourceContext(options.acquiredRelease, {
+    withExamples: options.withExamples,
+  });
   return executeSourceOperation("add", addInternal(options, acquired), options, expectedPlanDigest);
 }
 

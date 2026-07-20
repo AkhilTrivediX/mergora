@@ -555,7 +555,10 @@ const WINDOWS_RESERVED_NAME = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/
 const UNSAFE_DEPENDENCY_PROTOCOL =
   /^(?:[a-z][a-z0-9+.-]*:|git(?:\+|@)|https?:|github:|file:|link:|portal:|patch:|workspace:|\.\.?\/|[/\\])/i;
 
-function portablePathProblem(value: string): string | undefined {
+function portablePathProblem(
+  value: string,
+  options: { readonly allowProjectRoot?: boolean } = {},
+): string | undefined {
   if (value.length === 0) return "Path must not be empty.";
   if (value !== value.normalize("NFKC"))
     return "Path must already be normalized with Unicode NFKC.";
@@ -572,6 +575,7 @@ function portablePathProblem(value: string): string | undefined {
   if (value.startsWith("/") || /^[a-z]:/i.test(value))
     return "Absolute and drive-qualified paths are forbidden.";
   if (value.includes(":")) return "Colons and alternate data-stream syntax are forbidden.";
+  if (options.allowProjectRoot === true && value === ".") return undefined;
   const parts = value.split("/");
   for (const part of parts) {
     if (part === "" || part === "." || part === "..")
@@ -584,9 +588,14 @@ function portablePathProblem(value: string): string | undefined {
   return undefined;
 }
 
-function validatePathValue(value: unknown, path: string, errors: SchemaValidationError[]): void {
+function validatePathValue(
+  value: unknown,
+  path: string,
+  errors: SchemaValidationError[],
+  options: { readonly allowProjectRoot?: boolean } = {},
+): void {
   if (typeof value !== "string") return;
-  const problem = portablePathProblem(value);
+  const problem = portablePathProblem(value, options);
   if (problem !== undefined) addError(errors, "UNSAFE_PATH", path, "portablePath", problem);
 }
 
@@ -654,7 +663,11 @@ function scanSecurity(
       );
     }
 
-    if (PATH_VALUE_KEYS.has(key)) validatePathValue(child, nextPath, errors);
+    if (PATH_VALUE_KEYS.has(key)) {
+      validatePathValue(child, nextPath, errors, {
+        allowProjectRoot: kind === "config" && nextPath === "/project/sourceRoot",
+      });
+    }
     if (PATH_MAP_KEYS.has(key) && isObject(child)) {
       for (const mapKey of Object.keys(child))
         validatePathValue(mapKey, childPath(nextPath, mapKey), errors);

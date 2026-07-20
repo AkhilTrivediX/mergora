@@ -10,7 +10,9 @@
 </Portal>
 ```
 
-On the server and first hydration pass, a non-disabled portal renders only `fallback`; no document global is read. Set `disabled` to render the same context wrapper inline on server and client. Portal deliberately does not own overlay roles, names, focus movement, dismissal, inerting, or scroll lock—compose those through the relevant component and `LayerManager`.
+On the server and first hydration pass, a non-disabled portal renders only `fallback`; no document global is read. Omitting `fallback` (or passing `null`) cleanly removes that temporary UI and its accessibility output. Set `disabled` to opt out of portal movement and render the same context wrapper inline on server and client, with no portal event or target lookup. The context-preserving native `dir`, `lang`, and density bridge is Mergora's advantage over a bare React portal.
+
+Portal deliberately does not own overlay roles, names, focus movement, dismissal, inerting, or scroll lock—compose those through the relevant component and `LayerManager`.
 
 Keep cross-root ID relationships unique and mounted, and place modal portal targets outside any application root that will become inert.
 

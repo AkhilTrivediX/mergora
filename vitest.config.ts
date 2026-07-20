@@ -1,6 +1,9 @@
+import { availableParallelism } from "node:os";
 import { fileURLToPath } from "node:url";
 
 import { defineConfig } from "vitest/config";
+
+const workerLimit = Math.max(1, Math.min(8, availableParallelism()));
 
 export default defineConfig({
   resolve: {
@@ -11,7 +14,10 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.{ts,tsx}"],
+    hookTimeout: 10_000,
+    maxWorkers: workerLimit,
     passWithNoTests: false,
     reporters: ["default"],
+    testTimeout: 10_000,
   },
 });

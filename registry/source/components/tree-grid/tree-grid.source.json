@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tree-grid.css", "react"],
+  "entryPath": "registry/source/components/tree-grid/tree-grid.tsx",
+  "id": "tree-grid",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

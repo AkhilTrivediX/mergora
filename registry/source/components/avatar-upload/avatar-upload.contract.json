@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "avatar-upload",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, image safety, server lifecycle, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Mergora FileTrigger remains the one real file input; preview uses an ordinary named img and metadata uses a description list.",
+    "naming": "Visible avatar context and native choose/replace labels remain distinct; enabled edit, remove, retry, and preview output have explicit names.",
+    "roleOverride": "Consumer children, change, and native input type overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement composite shell"
+  },
+  "interaction": {
+    "keyboard": "The native picker and every enabled action are standard focusable controls in document order.",
+    "pointer": "Choose, replace, edit, remove, and retry use explicit controls without hidden gesture areas.",
+    "touch": "Preferred-size controls remain usable on coarse pointers and no crop gesture is implemented by core.",
+    "speech": "Visible choose/replace/edit/remove/retry labels provide deterministic voice targets.",
+    "switchAccess": "No timed interaction, canvas-only crop, or drag-only replacement is required."
+  },
+  "formBehavior": "FileTrigger remains the one successful input. Initial/default and external controlled File values synchronize through the bounded shared FileList helper; selection, removal, required validation, disabled omission, FormData, and reset remain aligned without synthetic events. Failure clears and blocks the native value.",
+  "states": {
+    "attributes": ["data-disabled", "data-readonly", "data-empty", "data-status"],
+    "synchronization": "Controlled and uncontrolled selected files share one reasoned callback; consumer status exclusively drives server lifecycle output."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=avatar-upload]",
+    "attributes": ["data-disabled", "data-readonly"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Strong structural rules, labels, lifecycle text, and image boundary accompany color.",
+    "forcedColors": "Canvas, CanvasText, ButtonFace, ButtonText, and Highlight retain controls, image boundary, and focus.",
+    "reducedMotion": "Preview and lifecycle meaning do not depend on animation; transition duration is removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The visual/control split collapses to one column and names wrap at narrow widths."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "choose",
+      "replace",
+      "edit",
+      "remove",
+      "retry",
+      "rejection recovery",
+      "preview alt"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The component has no text-editing surface.",
+    "serialization": "The native input submits the user-selected File; preview URLs and metadata are never serialized."
+  },
+  "consumerResponsibilities": [
+    "Validate image signatures, dimensions, authorization, malware controls, and server policy before persistence.",
+    "Own crop UI, transport, credentials, replacement/removal authorization, retry, and durable lifecycle state.",
+    "Treat the visible form synchronization error as a blocked direct-form submission and preserve recovery.",
+    "Return a safe Blob from previewTransform and honor AbortSignal for expensive crop or decode work.",
+    "Provide localized recovery messages and meaningful preview alternative text for the product context."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "native-form-and-reset",
+      "controlled-uncontrolled-selection",
+      "type-and-size-recovery",
+      "object-url-create-revoke-and-stale-transform",
+      "edit-remove-progress-retry-gating",
+      "keyboard-touch-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-mobile-picker",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch",
+      "real-device-image-picker"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include packed-consumer, package/source parity, real server lifecycle, crop adapter, or manual assistive-technology evidence.",
+    "Core AvatarUpload does not decode image dimensions, crop pixels, inspect metadata safety, upload, persist, replace, or delete server content.",
+    "Controlled/default native synchronization depends on standards-supported DataTransfer FileList assignment and fails closed when the browser cannot verify it."
+  ]
+}

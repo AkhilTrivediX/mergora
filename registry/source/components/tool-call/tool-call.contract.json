@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tool-call",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, security-completeness, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "named section, native details/summary and native action buttons",
+    "rolePolicy": "Error content is an alert; pending and running use aria-busy without a forced live region.",
+    "refTarget": "HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through disclosure, reveal, cancel and retry controls."
+    },
+    { "key": "Enter / Space", "behavior": "Activates the focused native control." }
+  ],
+  "nonColor": "Every status is visible text and a stable data attribute; sensitive state has explicit text.",
+  "responsive": "Preformatted text wraps and scrolls within a bounded block; controls keep touch targets.",
+  "stableSelectors": {
+    "root": "[data-slot=tool-call]",
+    "parts": ["tool-call-header", "tool-call-details", "tool-call-error", "tool-call-action"],
+    "attributes": ["data-status"]
+  },
+  "security": "Input/output is rendered as escaped text. Consumer-supplied exact redactions are applied before output. Sensitive values are withheld by default and no tool is executed.",
+  "consumerResponsibilities": [
+    "Authorize, validate, sandbox and audit every tool outside this component.",
+    "Do not pass secrets that must never reach the client.",
+    "Treat redaction as defense in depth, not a data-loss-prevention boundary.",
+    "Localize actions and recovery text."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "all-statuses",
+      "escaped-output",
+      "exact-redaction",
+      "sensitive-default-hidden",
+      "details-off",
+      "reveal-controlled",
+      "cancel-retry",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch", "zoom", "security-review"],
+    "recordedEvidence": []
+  }
+}

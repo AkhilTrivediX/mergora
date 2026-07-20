@@ -22,9 +22,8 @@
 .mrg-switch [data-slot="switch-track"] {
   align-items: center;
   background: var(--mrg-semantic-color-background-surface-sunken);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: var(--mrg-semantic-radius-pill);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
   display: flex;
   flex: 0 0 auto;
   inline-size: 2.75rem;
@@ -34,7 +33,7 @@
 
 .mrg-switch [data-slot="switch-thumb"] {
   background: var(--mrg-semantic-color-foreground-primary);
-  border-radius: 50%;
+  border-radius: var(--mrg-semantic-radius-pill);
   block-size: 1rem;
   inline-size: 1rem;
   transform: translateX(0);
@@ -74,8 +73,11 @@
 }
 
 .mrg-switch:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-switch:disabled {
@@ -94,6 +96,11 @@
 }
 
 @media (forced-colors: active) {
+  .mrg-switch:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
   .mrg-switch [data-slot="switch-track"] {
     background: ButtonFace;
     border-color: ButtonText;

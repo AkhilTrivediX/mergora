@@ -18,6 +18,7 @@
     "responsive-stack",
     "keyboard",
     "pointer",
+    "separator-only",
     "rtl"
   ],
   "slots": [
@@ -25,7 +26,7 @@
       "name": "split-pane-root",
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
-      "states": ["orientation", "panel-count", "disabled"]
+      "states": ["orientation", "panel-count", "disabled", "step-controls"]
     },
     {
       "name": "split-pane-layout",

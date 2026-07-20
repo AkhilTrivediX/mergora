@@ -48,3 +48,7 @@ Stable slots are `split-pane-root`, `split-pane-layout`, `split-pane-panel`, `sp
 Initial markup is deterministic; pointer geometry and persistence are client-only event/effect work. Consumers must keep index order and controlled arrays aligned, provide localized Handle names, use named regions sparingly, and retest custom constraints/CSS under 320-pixel reflow, 400% zoom, RTL, long text, forced colors, and touch.
 
 Current status is `source-present-unreleased`. Generation, cross-item dependency closure, normalization/property cases, persistence failures, browser and manual Risk Class 2 evidence, packed consumers, source/package parity, updater fixtures, site dogfooding, and Quality Passport approval remain incomplete. This source record makes no Stable or conformance claim.
+
+## Mergora advantage
+
+Bounded multi-panel normalization, controlled/uncontrolled state, optional collapse, consumer-owned persistence, RTL spatial input, and container-driven sequential layout remain independent. `showStepControls={false}` removes every adjacent button group, label, event, and accessibility node without weakening the named keyboard/pointer separator.

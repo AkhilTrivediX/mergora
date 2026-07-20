@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
   "itemId": "form",
+  "canonicalStoryFile": "apps/storybook/src/P2FormControls.stories.tsx",
   "states": [
     {
       "id": "default",
       "applicability": {
         "status": "applicable"
       },
-      "story": "CompositionWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -61,9 +62,9 @@
     {
       "id": "loading",
       "applicability": {
-        "status": "not-applicable",
-        "reason": "Loading status belongs to the submitting workflow and is not synthesized by this item."
-      }
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
     },
     {
       "id": "empty",
@@ -89,9 +90,9 @@
     {
       "id": "success",
       "applicability": {
-        "status": "not-applicable",
-        "reason": "Success feedback belongs to persistent workflow status, not this control."
-      }
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
     },
     {
       "id": "warning",
@@ -105,7 +106,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "AsyncValidation"
+      "story": "RecommendedMergora"
     },
     {
       "id": "destructive",

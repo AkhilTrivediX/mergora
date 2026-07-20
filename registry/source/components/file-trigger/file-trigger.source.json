@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./file-trigger.css", "react"],
+  "entryPath": "registry/source/components/file-trigger/file-trigger.tsx",
+  "id": "file-trigger",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

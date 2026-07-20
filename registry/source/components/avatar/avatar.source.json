@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./avatar.css", "react"],
+  "entryPath": "registry/source/components/avatar/avatar.tsx",
+  "id": "avatar",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

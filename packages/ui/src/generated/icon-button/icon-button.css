@@ -1,15 +1,15 @@
 /* Generated from registry/source/components/icon-button/icon-button.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-icon-button {
-  --mrg-icon-button-background: var(--mrg-semantic-color-background-canvas);
-  --mrg-icon-button-background-hover: var(--mrg-semantic-color-background-surface);
-  --mrg-icon-button-background-pressed: var(--mrg-semantic-color-background-surface-sunken);
-  --mrg-icon-button-border: var(--mrg-semantic-color-border-interactive);
-  --mrg-icon-button-foreground: var(--mrg-semantic-color-foreground-primary);
+  --mrg-icon-button-background: var(--mrg-component-control-background);
+  --mrg-icon-button-background-hover: var(--mrg-component-control-background-hover);
+  --mrg-icon-button-background-pressed: var(--mrg-component-control-background-pressed);
+  --mrg-icon-button-border: var(--mrg-component-control-border);
+  --mrg-icon-button-foreground: var(--mrg-component-control-foreground);
   align-items: center;
   appearance: none;
   background: var(--mrg-icon-button-background);
   border: var(--mrg-semantic-border-width-default) solid var(--mrg-icon-button-border);
-  border-radius: var(--mrg-semantic-radius-control);
+  border-radius: var(--mrg-component-control-radius);
   box-sizing: border-box;
   color: var(--mrg-icon-button-foreground);
   cursor: pointer;
@@ -20,6 +20,7 @@
   min-block-size: var(--mrg-semantic-size-target-preferred);
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   padding: var(--mrg-semantic-space-inline-sm);
+  position: relative;
   transition:
     background-color var(--mrg-semantic-motion-duration-transition)
       var(--mrg-semantic-motion-easing-standard),
@@ -49,8 +50,8 @@
 
 .mrg-icon-button[data-variant="destructive"] {
   --mrg-icon-button-background: var(--mrg-semantic-color-status-danger-background);
-  --mrg-icon-button-background-hover: var(--mrg-semantic-color-background-surface);
-  --mrg-icon-button-background-pressed: var(--mrg-semantic-color-background-surface-sunken);
+  --mrg-icon-button-background-hover: var(--mrg-component-control-background-hover);
+  --mrg-icon-button-background-pressed: var(--mrg-component-control-background-pressed);
   --mrg-icon-button-border: var(--mrg-semantic-color-status-danger-border);
   --mrg-icon-button-foreground: var(--mrg-semantic-color-status-danger-foreground);
 }
@@ -64,20 +65,32 @@
 }
 
 .mrg-icon-button:focus-visible {
-  box-shadow: 0 0 0 var(--mrg-semantic-focus-width) var(--mrg-semantic-color-focus-ring-on-action);
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: calc(var(--mrg-semantic-focus-offset) - var(--mrg-semantic-focus-width));
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-icon-button:disabled {
-  --mrg-icon-button-background: var(--mrg-semantic-color-background-surface-sunken);
-  --mrg-icon-button-border: var(--mrg-semantic-color-border-disabled);
-  --mrg-icon-button-foreground: var(--mrg-semantic-color-foreground-disabled);
+  --mrg-icon-button-background: var(--mrg-component-control-background-disabled);
+  --mrg-icon-button-border: var(--mrg-component-control-border-disabled);
+  --mrg-icon-button-foreground: var(--mrg-component-control-foreground-disabled);
   cursor: not-allowed;
 }
 
 .mrg-icon-button[data-pending="true"] {
+  border-color: var(--mrg-semantic-color-status-loading-border);
   cursor: progress;
+}
+
+.mrg-icon-button[data-pending="true"]::after {
+  background: var(--mrg-semantic-color-status-loading-border);
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inset-block-end: 0;
+  inset-inline: var(--mrg-semantic-space-inline-sm);
+  position: absolute;
 }
 
 .mrg-icon-button [data-slot="icon-button-icon"] {

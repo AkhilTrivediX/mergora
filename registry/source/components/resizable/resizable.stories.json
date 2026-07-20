@@ -5,7 +5,7 @@
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "KeyboardAndTouchResize"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -56,7 +56,7 @@
     {
       "id": "populated",
       "applicability": { "status": "applicable" },
-      "story": "AdvancedLayoutWorkbench"
+      "story": "RecommendedMergora"
     },
     {
       "id": "partial",
@@ -115,10 +115,8 @@
     },
     {
       "id": "reduced-motion",
-      "applicability": {
-        "status": "not-applicable",
-        "reason": "Resizable defines no animation or transition."
-      }
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
     },
     { "id": "rtl", "applicability": { "status": "applicable" }, "story": "RightToLeft" },
     {

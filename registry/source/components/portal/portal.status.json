@@ -8,7 +8,7 @@
   "recordedEvidence": [],
   "promotionDelta": [
     "Generate and verify package, registry, documentation, and subpath outputs.",
-    "Record SSR/hydration, custom-container, nested portal, locale, direction, and density behavior.",
+    "Record SSR/hydration fallback opt-out, inline opt-out, custom-container, nested portal, locale, direction, and density behavior.",
     "Verify accessible relationships and focus order across portal roots in every browser.",
     "Pass packed consumers, package/source parity, and Semantic Sync fixtures.",
     "Complete Risk Class 2 desktop/mobile assistive-technology and forced-colors evidence.",

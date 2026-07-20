@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chat-composer",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "empty",
+    "populated",
+    "disabled",
+    "read-only",
+    "submitting",
+    "streaming",
+    "offline",
+    "error",
+    "attachments",
+    "ime",
+    "narrow",
+    "rtl",
+    "forced-colors"
+  ],
+  "slots": [
+    {
+      "name": "chat-composer",
+      "semanticElement": "form",
+      "refTarget": "HTMLFormElement",
+      "states": ["submitting", "streaming", "offline", "error"]
+    },
+    {
+      "name": "chat-composer-field",
+      "semanticElement": "label and textarea",
+      "refTarget": "none",
+      "states": ["empty", "populated", "disabled", "read-only"]
+    }
+  ],
+  "contract": { "id": "chat-composer-accessibility", "version": "0.1.0" },
+  "passport": { "id": "chat-composer-quality-passport", "version": "0.0.0" }
+}

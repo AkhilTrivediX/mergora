@@ -1,0 +1,110 @@
+@layer mergora.components {
+  .mrg-avatar {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    block-size: var(--mrg-semantic-size-target-preferred);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+    isolation: isolate;
+  }
+
+  .mrg-avatar__image,
+  .mrg-avatar__fallback {
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: inherit;
+  }
+
+  .mrg-avatar__image {
+    object-fit: cover;
+  }
+  .mrg-avatar__fallback {
+    display: grid;
+    place-items: center;
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-avatar__presence {
+    position: absolute;
+    inset-block-end: calc(var(--mrg-semantic-space-inline-xs) * -1);
+    inset-inline-start: calc(100% - var(--mrg-semantic-space-inline-xs));
+    z-index: var(--mrg-semantic-layer-raised);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-space-inline-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-size: var(--mrg-semantic-font-size-caption);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    white-space: nowrap;
+  }
+
+  .mrg-avatar__presence-mark {
+    inline-size: var(--mrg-semantic-space-inline-sm);
+    block-size: var(--mrg-semantic-space-inline-sm);
+    border: var(--mrg-semantic-border-width-default) solid currentColor;
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-status-neutral-background);
+  }
+  .mrg-avatar[data-presence="available"] .mrg-avatar__presence-mark {
+    background: var(--mrg-semantic-color-brand-living);
+  }
+  .mrg-avatar[data-presence="busy"] .mrg-avatar__presence-mark {
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+  .mrg-avatar[data-presence="away"] .mrg-avatar__presence-mark {
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-avatar-group {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+  .mrg-avatar-group__overflow {
+    display: inline-grid;
+    place-items: center;
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    block-size: var(--mrg-semantic-size-target-preferred);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-brand-violet);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-brand-violet);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: var(--mrg-semantic-font-weight-label) var(--mrg-semantic-font-size-label) / 1
+      var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-avatar__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (forced-colors: active) {
+    .mrg-avatar,
+    .mrg-avatar__presence,
+    .mrg-avatar-group__overflow {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-avatar__presence-mark {
+      forced-color-adjust: none;
+      border-color: CanvasText;
+      background: CanvasText;
+    }
+  }
+}

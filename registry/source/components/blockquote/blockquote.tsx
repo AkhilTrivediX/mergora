@@ -3,9 +3,13 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import "./blockquote.css";
 
 export interface BlockquoteProps extends HTMLAttributes<HTMLElement> {
+  /** Optional author or speaker rendered in the quote caption. */
   readonly attribution?: ReactNode;
+  /** Quoted content rendered by the native blockquote element. */
   readonly children: ReactNode;
+  /** Source URL applied to blockquote cite and to the optional source-title link. */
   readonly citeUrl?: string;
+  /** Optional work or source name rendered with native cite semantics. */
   readonly sourceTitle?: ReactNode;
 }
 

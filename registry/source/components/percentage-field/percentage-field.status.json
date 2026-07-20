@@ -13,6 +13,7 @@
     "Verify the fractional value contract across controlled state, submission, reset, and adapters.",
     "Verify default and extended bounds, step, precision, negative, and over-100-percent cases.",
     "Complete IME, caret, keyboard, stepper, wheel safeguard, and scrub fixtures.",
+    "Verify status rail, canonical fractional preview, and complete disabled-enhancement absence across generated consumers.",
     "Record mobile, narrow, zoom, RTL, forced-colors, touch, and long-label geometry.",
     "Publish current manual assistive-technology evidence and an approved Quality Passport."
   ]

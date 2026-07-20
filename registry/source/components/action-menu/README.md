@@ -13,6 +13,10 @@ A React Aria MenuTrigger/Menu/Popover composition with shared LayerManager regis
 - Open focuses the first or last enabled item and Escape returns focus to the trigger.
 - Destructive actions require a second activation with explicit confirmation text.
 
+## Mergora identity and advantage
+
+The literal Canvas trigger, Ink structure, Violet two-layer focus seam, and bordered workbench overlay share the family signature. `confirmDestructiveActions` is the useful Mergora safeguard and defaults to `true`; setting it to `false` removes confirmation state, replacement text, and the extra activation while preserving ordinary menu behavior.
+
 The public ref resolves to `HTMLButtonElement`. Stable source styling starts at `data-slot="action-menu"`; documented child slots are recorded in `action-menu.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

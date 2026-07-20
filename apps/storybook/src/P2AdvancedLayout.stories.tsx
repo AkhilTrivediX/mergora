@@ -41,6 +41,14 @@ const actionStyle = {
   paddingInline: "var(--mrg-semantic-space-inline-lg)",
 } satisfies CSSProperties;
 
+interface AdvancedLayoutStoryArgs {
+  readonly containOverscroll: boolean;
+  readonly focusableScroll: boolean;
+  readonly manageFocusOffset: boolean;
+  readonly responsiveStack: boolean;
+  readonly showStepControls: boolean;
+}
+
 function Canvas({
   children,
   direction,
@@ -133,14 +141,180 @@ function PersistentSplitSpecimen() {
 }
 
 const meta = {
-  component: ScrollArea,
+  args: {
+    containOverscroll: true,
+    focusableScroll: true,
+    manageFocusOffset: true,
+    responsiveStack: true,
+    showStepControls: true,
+  },
+  argTypes: {
+    containOverscroll: { control: "boolean", name: "Contain scroll chaining" },
+    focusableScroll: { control: "boolean", name: "Focusable named scroll region" },
+    manageFocusOffset: { control: "boolean", name: "Measured sticky focus clearance" },
+    responsiveStack: { control: "boolean", name: "SplitPane narrow stacking" },
+    showStepControls: { control: "boolean", name: "Explicit resize controls" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Advanced Intrinsic Layout",
-} satisfies Meta<typeof ScrollArea>;
+} satisfies Meta<AdvancedLayoutStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<AdvancedLayoutStoryArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    containOverscroll: false,
+    focusableScroll: false,
+    manageFocusOffset: false,
+    responsiveStack: false,
+    showStepControls: false,
+  },
+  render: (args: AdvancedLayoutStoryArgs) => (
+    <Canvas>
+      <h1>Plain advanced-layout baseline</h1>
+      {args.focusableScroll ? (
+        <ScrollArea
+          aria-label="Plain document sections"
+          containOverscroll={args.containOverscroll}
+          focusable
+          scrollPadding="none"
+          size="sm"
+        >
+          <p>
+            Browser-native scrolling remains available with an explicit named region.{" "}
+            <a href="#plain-scroll-end">Jump to the final section</a>.
+          </p>
+          {Array.from({ length: 8 }, (_, index) => (
+            <p id={index === 7 ? "plain-scroll-end" : undefined} key={index}>
+              Document section {index + 1}
+            </p>
+          ))}
+        </ScrollArea>
+      ) : (
+        <ScrollArea
+          containOverscroll={args.containOverscroll}
+          focusable={false}
+          scrollPadding="none"
+          size="sm"
+        >
+          <p>
+            Browser-native scrolling remains available without an extra tab stop or region.{" "}
+            <a href="#plain-scroll-end">Jump to the final section</a>.
+          </p>
+          {Array.from({ length: 8 }, (_, index) => (
+            <p id={index === 7 ? "plain-scroll-end" : undefined} key={index}>
+              Document section {index + 1}
+            </p>
+          ))}
+        </ScrollArea>
+      )}
+      <Resizable.Root
+        collapsible={false}
+        defaultValue={40}
+        showStepControls={args.showStepControls}
+      >
+        <Resizable.Primary style={panelStyle}>Primary panel</Resizable.Primary>
+        <Resizable.Handle aria-label="Resize primary panel" />
+        <Resizable.Secondary style={alternatePanelStyle}>Secondary panel</Resizable.Secondary>
+      </Resizable.Root>
+      <SplitPane.Root
+        defaultValue={[40, 60]}
+        showStepControls={args.showStepControls}
+        stackAt={args.responsiveStack ? "narrow" : "never"}
+      >
+        <SplitPane.Panel index={0} style={panelStyle}>
+          Navigation
+        </SplitPane.Panel>
+        <SplitPane.Handle aria-label="Resize navigation and document" index={0} />
+        <SplitPane.Panel index={1} style={alternatePanelStyle}>
+          Document
+        </SplitPane.Panel>
+      </SplitPane.Root>
+      <StickyRegion.Root manageFocusOffset={args.manageFocusOffset}>
+        <StickyRegion.Content element="header" style={{ padding: "1rem" }}>
+          <strong>Unmeasured sticky header</strong>
+        </StickyRegion.Content>
+        <StickyRegion.Body>
+          <button style={actionStyle} type="button">
+            Continue
+          </button>
+        </StickyRegion.Body>
+      </StickyRegion.Root>
+    </Canvas>
+  ),
+};
+
+export const RecommendedMergora: Story = {
+  render: (args: AdvancedLayoutStoryArgs) => (
+    <Canvas>
+      <h1>Adaptive document workbench</h1>
+      <p style={{ maxInlineSize: "68ch" }}>
+        Native scrolling, visible resize alternatives, responsive sequencing, and sticky focus
+        clearance can be selected independently.
+      </p>
+      {args.focusableScroll ? (
+        <ScrollArea
+          aria-label="Document revisions"
+          containOverscroll={args.containOverscroll}
+          focusable
+          size="sm"
+        >
+          {Array.from({ length: 10 }, (_, index) => (
+            <p key={index}>Revision {index + 1}: structure and content remain synchronized.</p>
+          ))}
+        </ScrollArea>
+      ) : (
+        <ScrollArea containOverscroll={args.containOverscroll} focusable={false} size="sm">
+          {Array.from({ length: 10 }, (_, index) => (
+            <p key={index}>Revision {index + 1}: structure and content remain synchronized.</p>
+          ))}
+        </ScrollArea>
+      )}
+      <Resizable.Root
+        collapsible
+        defaultValue={36}
+        min={20}
+        showStepControls={args.showStepControls}
+      >
+        <Resizable.Primary style={panelStyle}>Editable source</Resizable.Primary>
+        <Resizable.Handle aria-label="Resize editable source" />
+        <Resizable.Secondary style={alternatePanelStyle}>Rendered result</Resizable.Secondary>
+      </Resizable.Root>
+      <SplitPane.Root
+        collapsiblePanels={[0]}
+        defaultValue={[35, 65]}
+        showStepControls={args.showStepControls}
+        stackAt={args.responsiveStack ? "narrow" : "never"}
+      >
+        <SplitPane.Panel index={0} regionLabel="Outline" style={panelStyle}>
+          Document outline
+        </SplitPane.Panel>
+        <SplitPane.Handle
+          aria-label="Resize outline and document"
+          collapseTarget="before"
+          index={0}
+        />
+        <SplitPane.Panel index={1} regionLabel="Document" style={alternatePanelStyle}>
+          Document workspace
+        </SplitPane.Panel>
+      </SplitPane.Root>
+      <StickyRegion.Root contained manageFocusOffset={args.manageFocusOffset} size="sm">
+        <StickyRegion.Content element="header" style={{ padding: "1rem" }}>
+          <strong>Document actions</strong>
+        </StickyRegion.Content>
+        <StickyRegion.Body style={{ display: "grid", gap: "1rem", padding: "1rem" }}>
+          {Array.from({ length: 8 }, (_, index) => (
+            <button key={index} style={actionStyle} type="button">
+              Review section {index + 1}
+            </button>
+          ))}
+        </StickyRegion.Body>
+      </StickyRegion.Root>
+    </Canvas>
+  ),
+};
 
 export const AdvancedLayoutWorkbench: Story = {
   render: () => (
@@ -234,7 +408,7 @@ export const NativeScrollAffordance: Story = {
     <Canvas>
       <h2>Native horizontal and vertical scrolling</h2>
       <ScrollArea aria-label="Wide release comparison" focusable orientation="both" size="sm">
-        <div style={{ inlineSize: "70rem", padding: "var(--mrg-semantic-density-panel-padding)" }}>
+        <div style={{ inlineSize: "90rem", padding: "var(--mrg-semantic-density-panel-padding)" }}>
           <strong>Source → package → registry → independent consumer → evidence digest</strong>
           {Array.from({ length: 12 }, (_, index) => (
             <p key={index}>

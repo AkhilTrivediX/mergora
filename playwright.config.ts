@@ -1,6 +1,22 @@
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { defineConfig, devices } from "@playwright/test";
 
 const port = 4176;
+const workspaceRoot = fileURLToPath(new URL(".", import.meta.url));
+const visualRunId = process.env.MERGORA_VISUAL_RUN_ID;
+const visualPhase = process.env.MERGORA_VISUAL_PHASE ?? "standalone";
+const visualArtifactRoot =
+  visualRunId === undefined
+    ? undefined
+    : resolve(workspaceRoot, "artifacts", "browser-evidence", "visual-regression", visualRunId);
+const viteConfig = resolve(workspaceRoot, "tests", "browser", "vite.config.ts").replaceAll(
+  "\\",
+  "/",
+);
+const tokenBuild =
+  visualPhase === "baseline" ? "" : "corepack pnpm@11.14.0 --filter mergora-tokens build && ";
 
 export default defineConfig({
   testDir: "./tests/browser",
@@ -11,11 +27,41 @@ export default defineConfig({
   ...(process.env.CI ? { workers: 1 } : {}),
   timeout: 30_000,
   expect: { timeout: 5_000 },
-  outputDir: "artifacts/browser/playwright",
+  outputDir:
+    visualArtifactRoot === undefined
+      ? "artifacts/browser/playwright"
+      : resolve(visualArtifactRoot, "playwright", visualPhase),
+  ...(visualArtifactRoot === undefined
+    ? {}
+    : {
+        snapshotPathTemplate: resolve(
+          visualArtifactRoot,
+          "expected",
+          "{projectName}",
+          "{arg}{ext}",
+        ),
+      }),
   reporter: [
     ["line"],
-    ["json", { outputFile: "artifacts/browser/playwright-results.json" }],
-    ["html", { open: "never", outputFolder: "artifacts/browser/report" }],
+    [
+      "json",
+      {
+        outputFile:
+          visualArtifactRoot === undefined
+            ? "artifacts/browser/playwright-results.json"
+            : resolve(visualArtifactRoot, `playwright-results-${visualPhase}.json`),
+      },
+    ],
+    [
+      "html",
+      {
+        open: "never",
+        outputFolder:
+          visualArtifactRoot === undefined
+            ? "artifacts/browser/report"
+            : resolve(visualArtifactRoot, `report-${visualPhase}`),
+      },
+    ],
   ],
   use: {
     baseURL: `http://127.0.0.1:${port}`,
@@ -33,9 +79,10 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      `corepack pnpm@11.14.0 --filter mergora-tokens build && ` +
-      `corepack pnpm@11.14.0 exec vite --config tests/browser/vite.config.ts ` +
+      tokenBuild +
+      `corepack pnpm@11.14.0 exec vite --config "${viteConfig}" ` +
       `--host 127.0.0.1 --port ${port}`,
+    cwd: workspaceRoot,
     url: `http://127.0.0.1:${port}`,
     reuseExistingServer: false,
     timeout: 30_000,

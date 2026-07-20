@@ -1,0 +1,1834 @@
+{
+  "schemaVersion": 1,
+  "category": "actions-selection",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "action-menu",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Dropdown Menu provides an accessible menu primitive, while destructive confirmation policy and pending trigger semantics remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dropdown-menu"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves React Aria collection, typeahead, dismissal, focus return, locale, and layer ownership while offering a safer second activation for destructive items.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/action-menu/action-menu.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["destructive-confirmation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/action-menu/action-menu.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "destructive-confirmation",
+          "status": "evidence-backed",
+          "summary": "Mergora preserves React Aria collection, typeahead, dismissal, focus return, locale, and layer ownership while offering a safer second activation for destructive items.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/action-menu/action-menu.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["destructiveConfirmation"],
+          "api": {
+            "kind": "prop",
+            "names": ["confirmDestructiveActions"],
+            "enableWhen": "Keep confirmDestructiveActions true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Confirmation copy and confirming item state are not rendered.",
+            "behavior": "A destructive item activates on its first eligible selection.",
+            "events": "No confirmation-only interception or second activation is required.",
+            "accessibility": "No confirmation label or confirmation-state announcement is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicActionMenu",
+          "enhancementControls": ["destructiveConfirmation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedActionMenu",
+          "enhancementControls": ["destructiveConfirmation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/action-menu/action-menu.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled opening, typeahead, keyboard traversal, dismissal, focus return, and both confirmed and direct destructive paths are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/action-menu/action-menu.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/action-menu/action-menu.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "button",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Button provides styled button variants and composes a spinner for loading.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora supplies a focus-retaining pending state that blocks duplicate activation while synchronizing visible loading, aria-busy, aria-disabled, and the accessible label.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button/button.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["pending-action"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button/button.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "pending-action",
+          "status": "evidence-backed",
+          "summary": "Mergora supplies a focus-retaining pending state that blocks duplicate activation while synchronizing visible loading, aria-busy, aria-disabled, and the accessible label.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/button/button.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["pendingFeedback"],
+          "api": {
+            "kind": "prop",
+            "names": ["pending", "pendingLabel"],
+            "enableWhen": "Set pending true and optionally provide pendingLabel."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No loading indicator, pending label, or loading rail is rendered.",
+            "behavior": "The native button remains normally activatable.",
+            "events": "Consumer click handling is not intercepted by pending-state protection.",
+            "accessibility": "No pending aria-busy or pending aria-disabled output is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicButton",
+          "enhancementControls": ["pendingFeedback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedButton",
+          "enhancementControls": ["pendingFeedback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button/button.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native type, disabled behavior, accessible-name diagnostics, focus retention, pending cancellation, keyboard activation, and touch sizing are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/button/button.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button/button.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "button-group",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Button Group visually composes adjacent actions and fields.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button-group"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora can become a real toolbar with one tab stop, spatial arrows, Home and End, RTL mapping, disabled skipping, and optional visible keyboard discovery.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button-group/button-group.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["keyboard-discovery"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button-group/button-group.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "keyboard-discovery",
+          "status": "evidence-backed",
+          "summary": "Mergora can become a real toolbar with one tab stop, spatial arrows, Home and End, RTL mapping, disabled skipping, and optional visible keyboard discovery.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/button-group/button-group.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["toolbarDiscovery"],
+          "api": {
+            "kind": "prop",
+            "names": ["keyboardHint"],
+            "enableWhen": "Use mode toolbar and supply a non-empty keyboardHint."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No keyboard hint text is rendered.",
+            "behavior": "The hint adds no behavior; group mode separately retains ordinary native tab stops.",
+            "events": "No hint-specific event or focus handler is installed.",
+            "accessibility": "No hint ID or aria-describedby contribution is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicButtonGroup",
+          "enhancementControls": ["toolbarDiscovery"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedButtonGroup",
+          "enhancementControls": ["toolbarDiscovery"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button-group/button-group.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Group and toolbar modes, roving focus, disabled skipping, Home and End, orientation, RTL arrows, custom action marking, and hint removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/button-group/button-group.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/button-group/button-group.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "copy-button",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn provides the Button used for a copy action, while clipboard success, failure, fallback cleanup, and announced status are application work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora owns explicit copying, copied, and failure feedback without moving focus and offers a bounded legacy fallback that can be disabled for stricter security policy.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/copy-button/copy-button.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["clipboard-fallback"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/copy-button/copy-button.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "clipboard-fallback",
+          "status": "evidence-backed",
+          "summary": "Mergora owns explicit copying, copied, and failure feedback without moving focus and offers a bounded legacy fallback that can be disabled for stricter security policy.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/copy-button/copy-button.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["clipboardFallback"],
+          "api": {
+            "kind": "prop",
+            "names": ["allowFallback"],
+            "enableWhen": "Keep allowFallback true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No fallback-specific UI is shown; unavailable clipboard access uses the normal error status.",
+            "behavior": "The temporary textarea and execCommand recovery path are never created.",
+            "events": "onCopy cannot report the fallback method and failure flows to onCopyError.",
+            "accessibility": "No false success announcement is emitted when the Clipboard API is unavailable."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicCopyButton",
+          "enhancementControls": ["clipboardFallback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedCopyButton",
+          "enhancementControls": ["clipboardFallback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/copy-button/copy-button.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Clipboard success, fallback success and cleanup, strict no-fallback failure, pending focus retention, retry, status announcements, and keyboard activation are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/copy-button/copy-button.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/copy-button/copy-button.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "icon-button",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn uses icon-sized Button variants and leaves accessible naming and tooltip composition to the consumer.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora requires a localizable accessible label, preserves a 44 CSS-pixel target, and keeps an optional native tooltip separate from that required name.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/icon-button/icon-button.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["optional-tooltip"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/icon-button/icon-button.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "optional-tooltip",
+          "status": "evidence-backed",
+          "summary": "Mergora requires a localizable accessible label, preserves a 44 CSS-pixel target, and keeps an optional native tooltip separate from that required name.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/icon-button/icon-button.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["iconTooltip"],
+          "api": {
+            "kind": "prop",
+            "names": ["tooltip"],
+            "enableWhen": "Supply non-empty tooltip text."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No tooltip text or title attribute is rendered by the component.",
+            "behavior": "Hover and long-press do not gain component-owned tooltip behavior.",
+            "events": "No tooltip event handlers are installed.",
+            "accessibility": "The required label remains the accessible name with no tooltip contribution."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicIconButton",
+          "enhancementControls": ["iconTooltip"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedIconButton",
+          "enhancementControls": ["iconTooltip"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/icon-button/icon-button.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Required naming, pending activation protection, native keyboard activation, variants, focus, tooltip independence, and minimum target sizing are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/icon-button/icon-button.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/icon-button/icon-button.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "link",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn documents semantic links through a plain anchor styled with button variants rather than a dedicated Link component.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves an actual anchor, hardens external rel tokens, distinguishes current and download states without color alone, and can add visible new-context disclosure.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/link/link.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["external-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/link/link.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "external-context",
+          "status": "evidence-backed",
+          "summary": "Mergora preserves an actual anchor, hardens external rel tokens, distinguishes current and download states without color alone, and can add visible new-context disclosure.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/link/link.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["externalContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["externalContext"],
+            "enableWhen": "Set external true and provide non-empty externalContext text."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No external-context text or related data attribute is rendered.",
+            "behavior": "External target and rel hardening remain intact without added disclosure text.",
+            "events": "No context-specific event handler is installed.",
+            "accessibility": "The accessible name contains only the link label and no new-context phrase."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicLink",
+          "enhancementControls": ["externalContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedLink",
+          "enhancementControls": ["externalContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/link/link.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native navigation attributes, external target and rel merging, download and current states, context disclosure, focus, RTL, and narrow wrapping are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/link/link.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/link/link.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "segmented-control",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Toggle Group can present mutually exclusive actions, while native radio form serialization, required validity, and reset are separate composition decisions.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/toggle-group"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora uses fieldset, legend, and native radios for form ownership with controlled or uncontrolled state, required validity, reset restoration, narrow scrolling, and optional selection context.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/segmented-control/segmented-control.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selection-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/segmented-control/segmented-control.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-summary",
+          "status": "evidence-backed",
+          "summary": "Mergora uses fieldset, legend, and native radios for form ownership with controlled or uncontrolled state, required validity, reset restoration, narrow scrolling, and optional selection context.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/segmented-control/segmented-control.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["selectionSummaries"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderSelectionSummary"],
+            "enableWhen": "Provide renderSelectionSummary."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection summary rail is rendered.",
+            "behavior": "Selection, form serialization, reset, and keyboard behavior continue unchanged.",
+            "events": "No summary rendering callback is invoked.",
+            "accessibility": "No summary output or polite live region is present."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicSegmentedControl",
+          "enhancementControls": ["selectionSummaries"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedSegmentedControl",
+          "enhancementControls": ["selectionSummaries"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/segmented-control/segmented-control.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled selection, native submit and reset, required validity, disabled options, arrows, Home and End, RTL, overflow, and summary removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/segmented-control/segmented-control.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/segmented-control/segmented-control.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "toggle",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Toggle provides a pressed button with controlled styling.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/toggle"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora synchronizes controlled or uncontrolled pressed state with consumer cancellation and adds an optional focus-retaining pending update state.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle/toggle.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["pending-change"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle/toggle.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "pending-change",
+          "status": "evidence-backed",
+          "summary": "Mergora synchronizes controlled or uncontrolled pressed state with consumer cancellation and adds an optional focus-retaining pending update state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toggle/toggle.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["pendingFeedback"],
+          "api": {
+            "kind": "prop",
+            "names": ["pending", "pendingLabel"],
+            "enableWhen": "Set pending true and optionally provide pendingLabel."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No pending indicator, pending label, or loading rail is rendered.",
+            "behavior": "Eligible activation updates pressed state normally.",
+            "events": "Pending protection does not intercept click or onPressedChange.",
+            "accessibility": "No pending aria-busy or pending aria-disabled output is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicToggle",
+          "enhancementControls": ["pendingFeedback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedToggle",
+          "enhancementControls": ["pendingFeedback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle/toggle.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled pressed state, cancelled clicks, pending protection, keyboard activation, accessible naming, focus, and toolbar composition are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toggle/toggle.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle/toggle.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "toggle-group",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Toggle Group provides single or multiple pressed-item composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/toggle-group"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds a predictable roving-focus model with RTL spatial arrows, disabled skipping, non-empty single selection by default, and optional summarized selection context.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle-group/toggle-group.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selection-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal Canvas control surfaces, precise Ink boundaries, strong label hierarchy, restrained Green state signals, the shared Violet focus seam, purposeful reduced motion, and corners bounded by shared control tokens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle-group/toggle-group.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-summary",
+          "status": "evidence-backed",
+          "summary": "Mergora adds a predictable roving-focus model with RTL spatial arrows, disabled skipping, non-empty single selection by default, and optional summarized selection context.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toggle-group/toggle-group.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["selectionSummaries"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderSelectionSummary"],
+            "enableWhen": "Provide renderSelectionSummary."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection summary rail is rendered.",
+            "behavior": "Single or multiple selection and roving focus continue unchanged.",
+            "events": "No summary rendering callback is invoked.",
+            "accessibility": "No summary output or polite live region is present."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "BasicToggleGroup",
+          "enhancementControls": ["selectionSummaries"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx",
+          "exportName": "RecommendedToggleGroup",
+          "enhancementControls": ["selectionSummaries"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2ActionsSelectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/actions-selection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, keyboard, focus, axe, narrow layout, RTL, forced-colors, and reduced-motion evidence is current; the contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle-group/toggle-group.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Single and multiple controlled and uncontrolled selection, allowEmpty, roving focus, disabled skipping, arrows, Home and End, RTL, and summary removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/actions-selection/actions-selection.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/toggle-group/toggle-group.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/toggle-group/toggle-group.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

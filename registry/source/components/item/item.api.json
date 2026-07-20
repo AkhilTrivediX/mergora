@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "item",
+  "entryExport": "Item",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Item"
+    },
+    {
+      "kind": "type",
+      "name": "ItemProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "renderSelectionContext",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Item; enhancement output is additive and independently removable.",
+    "enhancement": "A typed selection/current context renderer explains state beyond color and is never invoked when omitted. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

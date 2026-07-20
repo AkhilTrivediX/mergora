@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  Fragment,
   forwardRef,
+  isValidElement,
   useCallback,
   useEffect,
   useId,
@@ -19,12 +21,15 @@ import {
 } from "react";
 
 import { mergeFieldIdRefs, useFieldControlState } from "../field/index.js";
-import { useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import "./password-field.css";
 
 export interface PasswordFieldRule {
+  /** Stable unique requirement identity used as the rendered list key. */
   readonly id: string;
+  /** Non-empty visible requirement description. */
   readonly label: ReactNode;
+  /** Deterministic predicate evaluated against the complete current password. */
   readonly validate: (value: string) => boolean;
 }
 
@@ -32,19 +37,33 @@ export interface PasswordFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "onChange" | "type" | "value"
 > {
+  /** Localized polite status shown only while focused Caps Lock is detected. */
   readonly capsLockMessage?: string;
+  /** Initial password for uncontrolled use and native form reset; defaults to empty. */
   readonly defaultValue?: string;
+  /** Localized accessible and visible label used while the password is revealed. */
   readonly hidePasswordLabel?: string;
+  /** Additional class name applied to the native password input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Receives native password edits as the complete current string. */
   readonly onChange?: (value: string) => void;
+  /** Additional class name applied to the outer PasswordField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer PasswordField wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Localized text identifying a currently satisfied requirement. */
   readonly ruleMetLabel?: string;
+  /** Localized text identifying a currently unsatisfied requirement. */
   readonly ruleUnmetLabel?: string;
+  /** Deterministic labelled requirements; an empty array removes the complete status list. */
   readonly rules?: readonly PasswordFieldRule[];
+  /** Localized accessible name for the password-requirements list. */
   readonly rulesLabel?: string;
+  /** Localized accessible and visible label used while the password is concealed. */
   readonly showPasswordLabel?: string;
+  /** Controlled password string; changes are proposed through `onChange`. */
   readonly value?: string;
 }
 
@@ -60,6 +79,23 @@ function isSemanticallyInvalid(value: AriaAttributes["aria-invalid"]): boolean {
   return value === true || value === "true" || value === "grammar" || value === "spelling";
 }
 
+function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
+}
+
+function assertNonEmptyPasswordLabel(value: unknown, name: string): asserts value is string {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new RangeError(`Mergora PasswordField ${name} must be a non-empty string.`);
+  }
+}
+
 function assertPasswordRules(rules: readonly PasswordFieldRule[]): void {
   const ids = new Set<string>();
   for (const rule of rules) {
@@ -68,6 +104,9 @@ function assertPasswordRules(rules: readonly PasswordFieldRule[]): void {
     }
     if (ids.has(rule.id)) {
       throw new RangeError(`Mergora PasswordField rule ID "${rule.id}" must be unique.`);
+    }
+    if (!hasAccessibleContent(rule.label)) {
+      throw new RangeError(`Mergora PasswordField rule "${rule.id}" requires a non-empty label.`);
     }
     ids.add(rule.id);
   }
@@ -130,7 +169,9 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
     const [composing, setComposing] = useState(false);
     const [focused, setFocused] = useState(false);
     const [revealed, setRevealed] = useState(false);
+    const { getMessage } = useMergoraContext();
     const currentValue = controlled ? value : uncontrolledValue;
+    const capsLockActive = focused && capsLock;
     const resolvedId = field?.controlId ?? id ?? `mrg-password-field-${generatedId}`;
     const rulesId = `${resolvedId}-rules`;
     const capsLockId = `${resolvedId}-caps-lock`;
@@ -146,34 +187,71 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
       field?.descriptionId,
       resolvedInvalid ? field?.errorMessageId : undefined,
       rules.length > 0 ? rulesId : undefined,
-      focused && capsLock ? capsLockId : undefined,
+      capsLockActive ? capsLockId : undefined,
     );
     const errorMessage = mergeFieldIdRefs(
       ariaErrorMessage,
       resolvedInvalid ? field?.errorMessageId : undefined,
     );
     const labelledBy = ariaLabelledBy ?? field?.labelId;
-    const showPasswordLabel = useMergoraMessage(
+    for (const [labelName, label] of [
+      ["showPasswordLabel", showPasswordLabelProp],
+      ["hidePasswordLabel", hidePasswordLabelProp],
+      ["capsLockMessage", capsLockMessageProp],
+    ] as const) {
+      if (label !== undefined) assertNonEmptyPasswordLabel(label, labelName);
+    }
+    if (rules.length > 0) {
+      for (const [labelName, label] of [
+        ["rulesLabel", rulesLabelProp],
+        ["ruleMetLabel", ruleMetLabelProp],
+        ["ruleUnmetLabel", ruleUnmetLabelProp],
+      ] as const) {
+        if (label !== undefined) assertNonEmptyPasswordLabel(label, labelName);
+      }
+    }
+    const resolveRequiredMessage = (key: string, fallback: string, name: string): string => {
+      const message = getMessage(key, fallback);
+      assertNonEmptyPasswordLabel(message, name);
+      return message;
+    };
+    const showPasswordLabel = resolveRequiredMessage(
       "passwordField.showPassword",
       showPasswordLabelProp ?? "Show password",
+      "showPasswordLabel",
     );
-    const hidePasswordLabel = useMergoraMessage(
+    const hidePasswordLabel = resolveRequiredMessage(
       "passwordField.hidePassword",
       hidePasswordLabelProp ?? "Hide password",
+      "hidePasswordLabel",
     );
-    const capsLockMessage = useMergoraMessage(
-      "passwordField.capsLock",
-      capsLockMessageProp ?? "Caps Lock is on",
-    );
-    const rulesLabel = useMergoraMessage(
-      "passwordField.rules",
-      rulesLabelProp ?? "Password requirements",
-    );
-    const ruleMetLabel = useMergoraMessage("passwordField.ruleMet", ruleMetLabelProp ?? "Met");
-    const ruleUnmetLabel = useMergoraMessage(
-      "passwordField.ruleUnmet",
-      ruleUnmetLabelProp ?? "Not met",
-    );
+    const capsLockMessage = capsLockActive
+      ? resolveRequiredMessage(
+          "passwordField.capsLock",
+          capsLockMessageProp ?? "Caps Lock is on",
+          "capsLockMessage",
+        )
+      : undefined;
+    const rulesLabel =
+      rules.length > 0
+        ? resolveRequiredMessage(
+            "passwordField.rules",
+            rulesLabelProp ?? "Password requirements",
+            "rulesLabel",
+          )
+        : undefined;
+    const ruleMetLabel =
+      rules.length > 0
+        ? resolveRequiredMessage("passwordField.ruleMet", ruleMetLabelProp ?? "Met", "ruleMetLabel")
+        : undefined;
+    const ruleUnmetLabel =
+      rules.length > 0
+        ? resolveRequiredMessage(
+            "passwordField.ruleUnmet",
+            ruleUnmetLabelProp ?? "Not met",
+            "ruleUnmetLabel",
+          )
+        : undefined;
 
     const setInputRef = useCallback(
       (node: HTMLInputElement | null) => {
@@ -226,7 +304,7 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
         className={
           rootClassName === undefined ? "mrg-password-field" : `mrg-password-field ${rootClassName}`
         }
-        data-caps-lock={focused && capsLock ? "true" : undefined}
+        data-caps-lock={capsLockActive ? "true" : undefined}
         data-disabled={disabled || undefined}
         data-empty={currentValue.length === 0 || undefined}
         data-invalid={resolvedInvalid || undefined}
@@ -298,16 +376,18 @@ export const PasswordField = forwardRef<HTMLInputElement, PasswordFieldProps>(
             {revealed ? hidePasswordLabel : showPasswordLabel}
           </button>
         </span>
-        <span
-          aria-atomic="true"
-          aria-live="polite"
-          data-composing={composing || undefined}
-          data-slot="password-field-caps-lock"
-          id={capsLockId}
-          role="status"
-        >
-          {focused && capsLock ? capsLockMessage : null}
-        </span>
+        {capsLockActive ? (
+          <span
+            aria-atomic="true"
+            aria-live="polite"
+            data-composing={composing || undefined}
+            data-slot="password-field-caps-lock"
+            id={capsLockId}
+            role="status"
+          >
+            {capsLockMessage}
+          </span>
+        ) : null}
         {rules.length === 0 ? null : (
           <ul aria-label={rulesLabel} data-slot="password-field-rules" id={rulesId}>
             {rules.map((rule) => {

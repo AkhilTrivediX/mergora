@@ -28,6 +28,7 @@
   ],
   "compositionPolicy": {
     "element": "Always a semantically neutral div; consumers place it inside the appropriate landmark.",
-    "queryContainer": "Anonymous inline-size container only; no global container name is reserved."
+    "queryContainer": "Anonymous inline-size container only; no global container name is reserved.",
+    "enhancement": "safeArea and queryContainer are independent: false removes the corresponding environment-inset or containment behavior without adding semantics or events."
   }
 }

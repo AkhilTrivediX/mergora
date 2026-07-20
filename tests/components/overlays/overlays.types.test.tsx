@@ -1,4 +1,4 @@
-import type { RefObject } from "react";
+import type { ReactNode, RefObject } from "react";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
 import type {
@@ -30,6 +30,8 @@ describe("P2 overlay public types", () => {
       RefObject<HTMLElement | null>
     >();
     expectTypeOf<AlertDialogRootProps["open"]>().toEqualTypeOf<boolean | undefined>();
+    expectTypeOf<AlertDialogContentProps["acknowledged"]>().toEqualTypeOf<boolean | undefined>();
+    expectTypeOf<DialogContentProps["dismissHint"]>().toEqualTypeOf<ReactNode | undefined>();
     type InternalDialogRootPropsArePrivate = Extract<
       keyof DialogRootProps,
       "__kind" | "__dismissPolicy" | "kind" | "dismissPolicy"
@@ -45,11 +47,25 @@ describe("P2 overlay public types", () => {
     expectTypeOf<PopoverContentProps["initialFocus"]>().toEqualTypeOf<
       "first-interactive" | "content" | "none" | undefined
     >();
+    expectTypeOf<PopoverContentProps["anchorContext"]>().toEqualTypeOf<ReactNode | undefined>();
     expectTypeOf<NonNullable<PopoverRootProps["onOpenChange"]>>().toBeFunction();
     expectTypeOf<SheetRootProps["side"]>().toEqualTypeOf<
       "start" | "end" | "top" | "bottom" | undefined
     >();
+    expectTypeOf<
+      import("../../../registry/source/components/sheet/index.js").SheetContentProps["progress"]
+    >().toEqualTypeOf<
+      | {
+          readonly label: string;
+          readonly max?: number;
+          readonly value: number;
+        }
+      | undefined
+    >();
     expectTypeOf<TooltipRootProps["delay"]>().toEqualTypeOf<number | undefined>();
+    expectTypeOf<
+      import("../../../registry/source/components/tooltip/index.js").TooltipContentProps["shortcut"]
+    >().toEqualTypeOf<ReactNode | undefined>();
     type DisabledIsExcluded = "disabled" extends keyof TooltipDisabledTriggerProps ? false : true;
     expectTypeOf<DisabledIsExcluded>().toEqualTypeOf<true>();
     expect(true).toBe(true);

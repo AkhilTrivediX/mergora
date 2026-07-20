@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "query-builder",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "query-builder",
+    "stableAttributes": ["data-slot", "data-read-only"]
+  },
+  "parts": [
+    {
+      "slot": "query-builder-group",
+      "element": "fieldset and legend",
+      "purpose": "Preserves nested condition-group structure and a local match policy.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "query-builder-condition",
+      "element": "labelled native select and input controls",
+      "purpose": "Edits one schema-bound condition with explicit non-drag movement.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "query-builder-summary",
+      "element": "optional output",
+      "purpose": "Provides an independently selected human-readable canonical summary.",
+      "stability": "documented"
+    }
+  ]
+}

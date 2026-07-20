@@ -83,11 +83,47 @@ describe("Mergora token distribution contract", () => {
 
     expect(schema.$schema).toBe("https://json-schema.org/draft/2020-12/schema");
     expect(docs).toMatchObject({
-      contractVersion: "1.0.0",
+      contractVersion: "1.1.0",
       dtcgVersion: "2025.10",
       name: "Mergora Living Workbench",
-      tokenCount: 330,
+      tokenCount: 405,
     });
     expect(Object.keys(interchange.workbench as object)).toHaveLength(12);
+  });
+
+  it("publishes the reusable family signature without oversized radii or soft shadows", () => {
+    const docs = readJson(resolve(generated, "docs.json")) as {
+      tokens: Array<{ path: string; type: string; value: string }>;
+    };
+    const primitives = readJson(resolve(source, "primitives.tokens.json")) as {
+      primitive: {
+        shadow: {
+          lg: { $value: { blur: { value: number } } };
+          md: { $value: Array<{ blur: { value: number } }> };
+        };
+      };
+    };
+    const paths = new Set(docs.tokens.map(({ path }) => path));
+
+    for (const path of [
+      "component.control.backgroundSelected",
+      "component.field.statusRailLoading",
+      "component.focusIndicator.contrastBackground",
+      "component.overlay.surface",
+      "component.progress.indeterminate",
+      "semantic.color.status.loading.foreground",
+      "semantic.density.controlPaddingBlock",
+      "semantic.radius.surface",
+    ]) {
+      expect(paths).toContain(path);
+    }
+
+    const radiusValues = docs.tokens
+      .filter(({ path, type }) => type === "dimension" && path.includes("radius"))
+      .map(({ value }) => Number.parseFloat(value));
+    expect(radiusValues.length).toBeGreaterThan(10);
+    expect(radiusValues.every((value) => value <= 16)).toBe(true);
+    expect(primitives.primitive.shadow.md.$value.every(({ blur }) => blur.value <= 8)).toBe(true);
+    expect(primitives.primitive.shadow.lg.$value.blur.value).toBeLessThanOrEqual(8);
   });
 });

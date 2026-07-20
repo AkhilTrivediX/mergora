@@ -1,4 +1,6 @@
 .mrg-pagination {
+  color: var(--mrg-component-control-foreground);
+  font-family: var(--mrg-semantic-font-family-prose);
   max-inline-size: 100%;
   min-inline-size: 0;
 }
@@ -25,16 +27,27 @@
   min-block-size: var(--mrg-semantic-size-target-preferred);
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   padding-inline: var(--mrg-semantic-space-inline-sm);
+  border-radius: var(--mrg-component-control-radius);
 }
 
 [data-slot="pagination-link"] {
   color: var(--mrg-semantic-color-foreground-primary);
   text-underline-offset: 0.2em;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-transition) var(--mrg-semantic-motion-easing-standard);
+}
+
+[data-slot="pagination-link"]:hover {
+  background: var(--mrg-component-control-background-hover);
+  color: var(--mrg-semantic-color-brand-action);
 }
 
 [data-slot="pagination-current"] {
-  background: var(--mrg-semantic-color-background-surface-sunken);
-  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  background: var(--mrg-component-control-background-selected);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-component-control-border-selected);
+  color: var(--mrg-component-control-foreground-selected);
   font-weight: var(--mrg-semantic-font-weight-strong);
 }
 
@@ -43,8 +56,17 @@
 }
 
 [data-slot="pagination-link"]:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="pagination-link"] {
+    transition: none;
+  }
 }
 
 .mrg-pagination__sr-only {
@@ -63,5 +85,6 @@
 
   [data-slot="pagination-link"]:focus-visible {
     outline-color: Highlight;
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
   }
 }

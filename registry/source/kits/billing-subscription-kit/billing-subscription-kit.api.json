@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "itemId": "billing-subscription-kit",
+  "entryExport": "BillingSubscriptionKit",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "HTML form attributes except owned children, value, change, and submit behavior",
+  "exports": [
+    { "kind": "value", "name": "BillingSubscriptionKit" },
+    { "kind": "value", "name": "BillingSubscriptionPage" },
+    { "kind": "type", "name": "BillingCancellationReview" },
+    { "kind": "type", "name": "BillingInvoice" },
+    { "kind": "type", "name": "BillingInvoiceStatus" },
+    { "kind": "type", "name": "BillingPlan" },
+    { "kind": "type", "name": "BillingPlanChangeRequest" },
+    { "kind": "type", "name": "BillingSubscriptionKitProps" }
+  ],
+  "props": [
+    { "name": "plans", "required": true, "type": "readonly BillingPlan[]" },
+    { "name": "invoices", "required": true, "type": "readonly BillingInvoice[]" },
+    { "name": "selectedPlanId", "required": false, "type": "string" },
+    {
+      "name": "renderChangePreview",
+      "required": false,
+      "default": false,
+      "type": "false | renderer"
+    },
+    {
+      "name": "paymentMethodForm",
+      "required": false,
+      "default": false,
+      "type": "false | ReactNode"
+    },
+    {
+      "name": "cancellationReview",
+      "required": false,
+      "default": false,
+      "type": "false | BillingCancellationReview"
+    }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Button with native form, radio, table, checkbox, and output semantics.",
+    "adapter": "The consumer owns pricing, tax, proration, payment collection, PCI scope, invoice access, cancellation authorization, network, and persistence.",
+    "enhancements": "Change preview, payment method shell, invoice actions, and cancellation review remain independent opt-ins."
+  }
+}

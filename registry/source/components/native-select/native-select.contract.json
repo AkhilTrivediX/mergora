@@ -33,17 +33,23 @@
       "aria-errormessage",
       "aria-invalid"
     ],
-    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines. Optional selectionContext adds one persistent described-by detail and is absent from UI and the accessibility tree when omitted or empty."
   },
   "stableSelectors": {
     "root": "[data-slot=native-select-root]",
-    "attributes": ["data-disabled", "data-invalid", "data-multiple", "data-listbox"]
+    "attributes": [
+      "data-disabled",
+      "data-invalid",
+      "data-multiple",
+      "data-listbox",
+      "data-selection-context"
+    ]
   },
   "preferences": {
     "dark": "Uses semantic theme tokens.",
     "enhancedContrast": "Uses semantic theme tokens and non-color state cues.",
     "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
-    "reducedMotion": "No essential information depends on motion; Switch removes its thumb transition."
+    "reducedMotion": "No essential information depends on motion and the component introduces no motion."
   },
   "responsive": {
     "minimumInlineSizeCssPx": 320,

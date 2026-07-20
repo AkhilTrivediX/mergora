@@ -98,6 +98,7 @@ export {
   type AcquiredDistributionSourceFile,
   type AcquiredDistributionSourceProjection,
   type DeriveAcquiredDistributionSourcesOptions,
+  type ProvenanceManifest,
   planSourceAdopt,
   planSourceRemove,
   type SourceOperationOptions,
@@ -138,12 +139,37 @@ export {
 
 export {
   compatibleDependencyRange,
+  planOwnedPackageDependencyChange,
   planPackageDependencies,
   readPackageDependencies,
   type DependencyRequirement,
   type PackageDependencyChange,
   type PackageDependencyPlan,
 } from "./package-editor.js";
+
+export {
+  acquireDistributionPackageEvidence,
+  applyPackageDistributionAdd,
+  applyPackageDistributionRemove,
+  applyPackageDistributionUpdate,
+  planPackageDistributionAdd,
+  planPackageDistributionRemove,
+  planPackageDistributionUpdate,
+  resolveDistributionAddMode,
+  resolveDistributionRemoveMode,
+  resolveDistributionUpdateRoute,
+  type AcquiredDistributionPackageEvidence,
+  type AcquireDistributionPackageEvidenceOptions,
+  type DistributionAddRouteOptions,
+  type DistributionPackageArtifactEvidence,
+  type DistributionRemoveRouteOptions,
+  type DistributionUpdateRoute,
+  type DistributionUpdateRouteOptions,
+  type PackageDistributionAddOptions,
+  type PackageDistributionRemoveOptions,
+  type PackageDistributionResult,
+  type PackageDistributionUpdateOptions,
+} from "./distribution-operations.js";
 
 export {
   acquireStableNpmTarballInventory,
@@ -179,6 +205,7 @@ export {
 export {
   createStableAcquisitionVendorReader,
   createStableNpmTarballVendorReader,
+  discoverStableVendorReleaseReference,
   stableNpmTarballInternalPath,
   validateStableNpmRegistryOriginPolicies,
   validateStableNpmTarballBytes,
@@ -186,12 +213,20 @@ export {
   verifyStableVendorBundle,
   verifyStableVendorBundleBytes,
   type StableAcquisitionVendorReaderOptions,
+  type DiscoveredStableVendorReleaseReference,
   type StableNpmRegistryOriginPolicy,
   type StableVendorNpmTarballDescriptor,
   type StableVendorNpmTarballReader,
   type StableVendorNpmTarballRequest,
   type StableVendorVerificationResult,
 } from "./vendor-reader.js";
+
+export {
+  resolveAutomaticNativeReleaseReference,
+  type AutomaticNativeReleaseReference,
+  type AutomaticNativeReleaseRoutingDependencies,
+  type AutomaticNativeReleaseRoutingOptions,
+} from "./native-release-routing.js";
 
 export {
   acquireImmutableArtifact,
@@ -277,6 +312,13 @@ export {
 } from "./distribution-mode-migration.js";
 
 export {
+  applyProjectDistributionModeMigration,
+  planProjectDistributionModeMigration,
+  type ProjectDistributionModeOptions,
+  type ProjectDistributionModeResult,
+} from "./distribution-mode-command.js";
+
+export {
   applySemanticResolution,
   applyAcquiredSemanticUpdate,
   applySemanticResolveChoice,
@@ -313,11 +355,13 @@ export {
 } from "./semantic-update.js";
 
 export * from "./registry-management.js";
+export * from "./shadcn-adoption.js";
 export * from "./theme.js";
 export * from "./migrate.js";
 export * from "./clean.js";
 
 export {
+  assertPortableRelativePath,
   CLI_VERSION,
   CliError,
   canonicalJson,

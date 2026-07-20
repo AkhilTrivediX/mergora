@@ -7,8 +7,9 @@
   "riskClass": 1,
   "semantics": {
     "nativeBasis": "A native div scrollport with browser-owned overflow, scrollbar, wheel, touch, and keyboard behavior.",
-    "focusPolicy": "The root is not focusable by default. focusable=true creates tabIndex=0 and requires aria-label or aria-labelledby in the TypeScript API.",
+    "focusPolicy": "The root is not focusable by default. focusable=true creates tabIndex=0 and requires aria-label or aria-labelledby in the TypeScript API; false removes all naming, region, and tab-stop output.",
     "rolePolicy": "The inert default adds no role. Explicit focusable=true adds role=region with its required name because the independently meaningful scrollport is then a deliberate landmark and keyboard stop.",
+    "overscrollPolicy": "containOverscroll is independent from focusability; false restores native scroll chaining without changing semantics.",
     "refTarget": "HTMLDivElement"
   },
   "keyboard": [

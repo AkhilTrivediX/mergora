@@ -9,7 +9,8 @@
   "semantics": [
     "Exactly one enabled item is the tab stop during SSR and every render; Home, End, orientation arrows, RTL spatial arrows, wrapping, and disabled skipping move it.",
     "Arrow movement never changes selection; native activation does.",
-    "Single selection cannot become empty unless allowEmpty is explicit."
+    "Single selection cannot become empty unless allowEmpty is explicit.",
+    "renderSelectionSummary is an optional live output and no summary UI or accessibility node exists when it is omitted."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

@@ -126,14 +126,23 @@ function DialogModalSpecimen() {
 }
 
 function DialogNonModalSpecimen() {
+  const [closeReasons, setCloseReasons] = useState<string[]>([]);
   return (
     <Canvas>
       <h1 style={{ margin: 0 }}>Non-modal dialog policy</h1>
+      <p data-testid="nonmodal-dismissals">
+        Dismissals: {closeReasons.length === 0 ? "none" : closeReasons.join(", ")}
+      </p>
       <div style={railStyle}>
         <button data-testid="nonmodal-background" style={buttonStyle} type="button">
           Before dialog
         </button>
-        <Dialog.Root modality="non-modal">
+        <Dialog.Root
+          modality="non-modal"
+          onOpenChange={(open, details) => {
+            if (!open) setCloseReasons((current) => [...current, details.reason]);
+          }}
+        >
           <Dialog.Trigger>Open non-modal inspector</Dialog.Trigger>
           <Dialog.Overlay placement="end">
             <Dialog.Content initialFocus="none">
@@ -557,15 +566,192 @@ function SsrHydrationSpecimen() {
   );
 }
 
+interface OverlayWorkbenchProps {
+  readonly alertAcknowledgement?: boolean;
+  readonly dialogDismissHint?: boolean;
+  readonly popoverAnchorContext?: boolean;
+  readonly popoverManagedFocus?: boolean;
+  readonly sheetProgress?: boolean;
+  readonly tooltipDisabledAdapter?: boolean;
+  readonly tooltipShortcut?: boolean;
+  readonly emptyEnhancements?: boolean;
+  readonly controlledAcknowledgement?: boolean;
+}
+
+function OverlayWorkbench({
+  alertAcknowledgement = false,
+  dialogDismissHint = false,
+  popoverAnchorContext = false,
+  popoverManagedFocus = false,
+  sheetProgress = false,
+  tooltipDisabledAdapter = false,
+  tooltipShortcut = false,
+  emptyEnhancements = false,
+  controlledAcknowledgement = false,
+}: OverlayWorkbenchProps) {
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const [acknowledged, setAcknowledged] = useState(false);
+  return (
+    <Canvas>
+      <h1 style={{ margin: 0 }}>Overlay workbench</h1>
+      <p>
+        Open each surface to compare the concise baseline with independently selectable Mergora
+        context and safety rails.
+      </p>
+      <div style={railStyle}>
+        <Dialog.Root>
+          <Dialog.Trigger>Review changes</Dialog.Trigger>
+          <Dialog.Overlay>
+            <Dialog.Content
+              dismissHint={
+                emptyEnhancements ? (
+                  <span />
+                ) : dialogDismissHint ? (
+                  "Press Escape or use the visible return action to close this review."
+                ) : undefined
+              }
+            >
+              <Dialog.Title>Review changes</Dialog.Title>
+              <Dialog.Description>Confirm the current source diff.</Dialog.Description>
+              <Dialog.Close>Return to diff</Dialog.Close>
+            </Dialog.Content>
+          </Dialog.Overlay>
+        </Dialog.Root>
+
+        <AlertDialog.Root>
+          <AlertDialog.Trigger>Remove saved view</AlertDialog.Trigger>
+          <AlertDialog.Overlay>
+            <AlertDialog.Content
+              {...(alertAcknowledgement && controlledAcknowledgement
+                ? { acknowledged, onAcknowledgedChange: setAcknowledged }
+                : {})}
+              acknowledgementLabel={
+                emptyEnhancements
+                  ? "   "
+                  : alertAcknowledgement
+                    ? "I understand that this saved view cannot be restored."
+                    : undefined
+              }
+              leastDestructiveRef={cancelRef}
+            >
+              <AlertDialog.Title>Remove saved view?</AlertDialog.Title>
+              <AlertDialog.Description>
+                This removes the view definition without changing its source records.
+              </AlertDialog.Description>
+              <AlertDialog.Footer>
+                <AlertDialog.Cancel ref={cancelRef}>Keep view</AlertDialog.Cancel>
+                <AlertDialog.Action>Remove view</AlertDialog.Action>
+              </AlertDialog.Footer>
+            </AlertDialog.Content>
+          </AlertDialog.Overlay>
+        </AlertDialog.Root>
+
+        <Sheet.Root>
+          <Sheet.Trigger>Open setup panel</Sheet.Trigger>
+          <Sheet.Overlay>
+            <Sheet.Content
+              {...(sheetProgress
+                ? { progress: { label: "Workspace setup", max: 4, value: 2 } }
+                : {})}
+            >
+              <Sheet.Title>Workspace setup</Sheet.Title>
+              <Sheet.Description>
+                Configure the reusable defaults for this workspace.
+              </Sheet.Description>
+              <Sheet.Close>Close setup</Sheet.Close>
+            </Sheet.Content>
+          </Sheet.Overlay>
+        </Sheet.Root>
+
+        <Popover.Root>
+          <Popover.Trigger>Inspect token</Popover.Trigger>
+          <Popover.Content
+            anchorContext={
+              emptyEnhancements
+                ? false
+                : popoverAnchorContext
+                  ? "Selected token · border.default"
+                  : undefined
+            }
+            initialFocus={popoverManagedFocus ? "first-interactive" : "none"}
+          >
+            <Popover.Title>Token inspector</Popover.Title>
+            <Popover.Description>Review the resolved semantic value.</Popover.Description>
+            <Popover.Close>Close inspector</Popover.Close>
+          </Popover.Content>
+        </Popover.Root>
+
+        <Tooltip.Root delay={120}>
+          {tooltipDisabledAdapter ? (
+            <Tooltip.DisabledTrigger>Command unavailable</Tooltip.DisabledTrigger>
+          ) : (
+            <Tooltip.Trigger>Command details</Tooltip.Trigger>
+          )}
+          <Tooltip.Content
+            shortcut={emptyEnhancements ? <></> : tooltipShortcut ? "Ctrl K" : undefined}
+          >
+            {tooltipDisabledAdapter
+              ? "Complete the current validation first"
+              : "Open the command palette"}
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </div>
+    </Canvas>
+  );
+}
+
 const meta = {
-  component: Dialog.Root,
+  argTypes: {
+    alertAcknowledgement: { control: "boolean" },
+    dialogDismissHint: { control: "boolean" },
+    popoverAnchorContext: { control: "boolean" },
+    popoverManagedFocus: { control: "boolean" },
+    sheetProgress: { control: "boolean" },
+    tooltipDisabledAdapter: { control: "boolean" },
+    tooltipShortcut: { control: "boolean" },
+  },
+  component: OverlayWorkbench,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Overlays",
-} satisfies Meta<typeof Dialog.Root>;
+} satisfies Meta<typeof OverlayWorkbench>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const BasicDefaults: Story = {
+  args: {
+    alertAcknowledgement: false,
+    dialogDismissHint: false,
+    popoverAnchorContext: false,
+    popoverManagedFocus: false,
+    sheetProgress: false,
+    tooltipDisabledAdapter: false,
+    tooltipShortcut: false,
+  },
+  name: "Basic · enhancements disabled",
+};
+
+export const RecommendedMergora: Story = {
+  args: {
+    alertAcknowledgement: true,
+    dialogDismissHint: true,
+    popoverAnchorContext: true,
+    popoverManagedFocus: true,
+    sheetProgress: true,
+    tooltipDisabledAdapter: true,
+    tooltipShortcut: true,
+  },
+  name: "Recommended Mergora",
+};
+
+export const EmptyEnhancementContent: Story = {
+  render: () => <OverlayWorkbench emptyEnhancements />,
+};
+
+export const ControlledAlertAcknowledgement: Story = {
+  render: () => <OverlayWorkbench alertAcknowledgement controlledAcknowledgement />,
+};
 
 export const DialogModalPolicy: Story = { render: () => <DialogModalSpecimen /> };
 export const DialogNonModal: Story = { render: () => <DialogNonModalSpecimen /> };

@@ -1,0 +1,214 @@
+/* Generated from registry/source/components/stepper/stepper.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-stepper {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-stepper progress {
+  accent-color: var(--mrg-semantic-color-brand-action);
+  inline-size: 100%;
+}
+
+.mrg-stepper__summary {
+  background: var(--mrg-semantic-color-background-surface);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: block;
+  padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-stepper ol {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.mrg-stepper li {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  position: relative;
+}
+
+.mrg-stepper li:not(:last-child)::after {
+  background: var(--mrg-semantic-color-border-strong);
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inline-size: calc(100% - var(--mrg-semantic-size-target-preferred));
+  inset-block-start: calc(var(--mrg-semantic-size-target-preferred) / 2);
+  inset-inline-start: calc(50% + var(--mrg-semantic-size-target-preferred) / 2);
+  position: absolute;
+}
+
+.mrg-stepper li[data-state="complete"]::after {
+  background: var(--mrg-semantic-color-brand-action);
+}
+
+.mrg-stepper__control {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  font: inherit;
+  gap: var(--mrg-semantic-space-stack-sm);
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-inset-xs);
+  position: relative;
+  text-align: center;
+  transition: background-color var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+  z-index: var(--mrg-semantic-layer-base);
+}
+
+button.mrg-stepper__control {
+  cursor: pointer;
+}
+
+button.mrg-stepper__control:hover {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-stepper__marker {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: inline-flex;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-stepper li[data-state="complete"] .mrg-stepper__marker,
+.mrg-stepper li[data-state="current"] .mrg-stepper__marker {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+
+.mrg-stepper li[data-error] .mrg-stepper__marker {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border-color: var(--mrg-semantic-color-status-danger-border);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-stepper__copy {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-stepper__copy > span {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+}
+
+.mrg-stepper__copy small {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-body);
+}
+
+.mrg-stepper__control[aria-current="step"] .mrg-stepper__copy > span {
+  color: var(--mrg-semantic-color-brand-action);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-stepper li[data-error] .mrg-stepper__copy > span {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-stepper__control[aria-disabled="true"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-stepper__control:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-stepper__announcement {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  block-size: 1px;
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.mrg-stepper__visually-hidden {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (max-width: 36rem) {
+  .mrg-stepper ol {
+    display: grid;
+  }
+
+  .mrg-stepper li:not(:last-child)::after {
+    block-size: calc(100% - var(--mrg-semantic-size-target-preferred));
+    inline-size: var(--mrg-semantic-border-width-strong);
+    inset-block-start: calc(50% + var(--mrg-semantic-size-target-preferred) / 2);
+    inset-inline-start: calc(var(--mrg-semantic-size-target-preferred) / 2);
+  }
+
+  .mrg-stepper__control {
+    flex-direction: row;
+    text-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-stepper__control,
+  .mrg-stepper__marker {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-stepper__marker,
+  .mrg-stepper li[data-state] .mrg-stepper__marker,
+  .mrg-stepper__summary {
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-stepper li[data-state="current"] .mrg-stepper__marker,
+  .mrg-stepper li[data-state="complete"] .mrg-stepper__marker {
+    border-color: Highlight;
+  }
+
+  .mrg-stepper__control:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

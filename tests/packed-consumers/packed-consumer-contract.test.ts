@@ -1,7 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { gzipSync } from "node:zlib";
 
 import { describe, expect, it } from "vitest";
+
+// @ts-expect-error The executable ESM helper intentionally has no declaration output.
+import { canonicalPackedContentDigest } from "../../scripts/lib/packed-content-digest.mjs";
 
 const root = process.cwd();
 const packedRoot = join(root, "tests", "packed-consumers");
@@ -23,7 +27,16 @@ const packageMap = JSON.parse(text("config/public-packages.json")) as {
     ui: string;
   };
 };
-const packedSourceRequestIds = ["button", "dialog", "combobox"];
+const sharedRepresentativeIds = [
+  "button",
+  "dialog",
+  "combobox",
+  "date-picker",
+  "file-upload",
+  "data-grid",
+] as const;
+const sourceOnlyWorkflowKitId = "admin-dashboard-shell";
+const packedSourceRequestIds = [...sharedRepresentativeIds, sourceOnlyWorkflowKitId];
 
 function expectedPackedSourceFileCount(): number {
   const visited = new Set<string>();
@@ -40,6 +53,34 @@ function expectedPackedSourceFileCount(): number {
   };
   for (const id of packedSourceRequestIds) visit(id);
   return count;
+}
+
+function tarEntry(path: string, content: string): Buffer {
+  const body = Buffer.from(content);
+  const header = Buffer.alloc(512);
+  header.write(path, 0, 100, "utf8");
+  header.write("0000644\0", 100, 8, "ascii");
+  header.write("0000000\0", 108, 8, "ascii");
+  header.write("0000000\0", 116, 8, "ascii");
+  header.write(`${body.length.toString(8).padStart(11, "0")}\0`, 124, 12, "ascii");
+  header.write("00000000000\0", 136, 12, "ascii");
+  header.fill(0x20, 148, 156);
+  header.write("0", 156, 1, "ascii");
+  header.write("ustar\0", 257, 6, "ascii");
+  header.write("00", 263, 2, "ascii");
+  const checksum = [...header].reduce((sum, byte) => sum + byte, 0);
+  header.write(`${checksum.toString(8).padStart(6, "0")}\0 `, 148, 8, "ascii");
+  const padding = Buffer.alloc((512 - (body.length % 512)) % 512);
+  return Buffer.concat([header, body, padding]);
+}
+
+function packedFixture(entries: ReadonlyArray<readonly [string, string]>): Buffer {
+  return gzipSync(
+    Buffer.concat([
+      ...entries.map(([path, content]) => tarEntry(path, content)),
+      Buffer.alloc(1024),
+    ]),
+  );
 }
 
 describe("P1 packed consumer proof", () => {
@@ -80,9 +121,11 @@ describe("P1 packed consumer proof", () => {
       text("tests/packed-consumers/fixtures/vite/package/src/App.tsx"),
     ];
     for (const fixture of packageFixtures) {
-      expect(fixture).toContain(`from "${packageMap.public.ui}/button"`);
-      expect(fixture).toContain(`from "${packageMap.public.ui}/dialog"`);
-      expect(fixture).toContain(`from "${packageMap.public.ui}/combobox"`);
+      for (const itemId of sharedRepresentativeIds) {
+        expect(fixture).toContain(`from "${packageMap.public.ui}/${itemId}"`);
+      }
+      expect(fixture).not.toContain(`${packageMap.public.ui}/${sourceOnlyWorkflowKitId}`);
+      expect(fixture).toContain('data-consumer-mode="package"');
     }
 
     const sourceFixtures = [
@@ -90,10 +133,11 @@ describe("P1 packed consumer proof", () => {
       text("tests/packed-consumers/fixtures/vite/source/src/App.tsx"),
     ];
     for (const fixture of sourceFixtures) {
-      expect(fixture).toContain("components/button/button");
-      expect(fixture).toContain("components/dialog");
-      expect(fixture).toContain("components/combobox/combobox");
+      for (const itemId of packedSourceRequestIds) {
+        expect(fixture).toContain(`components/${itemId}`);
+      }
       expect(fixture).not.toContain(`${packageMap.public.ui}/`);
+      expect(fixture).toContain('data-consumer-mode="source"');
     }
   });
 
@@ -102,11 +146,46 @@ describe("P1 packed consumer proof", () => {
     expect(runner).toContain('"--offline", "--frozen-lockfile"');
     expect(runner).toContain("Packed consumer evidence is missing");
     expect(runner).toContain("Consumer lockfile contains a workspace-only protocol");
-    expect(runner).toContain('const packedSourceRequestIds = ["button", "dialog", "combobox"]');
+    expect(runner).toContain(
+      "const packedSourceRequestIds = [...sharedRepresentativeIds, sourceOnlyWorkflowKitId]",
+    );
     expect(runner).toContain('${packedSourceRequestIds.join(" ")}');
     expect(runner).toContain("const packedCli = join(");
     expect(runner).toContain("process.execPath");
+    expect(runner).toContain("verifyCustomizedSourceLifecycle");
+    expect(runner).toContain("verifyOverlappingUpdateAndResolution");
+    expect(runner).toContain("verifyOfflineVendor");
+    expect(runner).toContain("verifyStaticContractAudit");
+    expect(runner).toContain("verifyOwnershipRemoveAndRollback");
+    expect(runner).toContain("verifyInterruptedRecovery");
+    expect(runner).toContain("verifyMigrationAndShadcnAdoption");
+    expect(runner).toContain("verifySourceOnlyPackageRejection");
+    expect(runner).toContain("verifyProductionRuntime");
     expect(existsSync(packedRoot)).toBe(true);
+  });
+
+  it("normalizes packed manifest key order without hiding file or value changes", () => {
+    const first = packedFixture([
+      ["package/package.json", '{"name":"mergora","dependencies":{"a":"1","b":"2"}}'],
+      ["package/dist/index.js", "export const value = 1;\n"],
+    ]);
+    const reordered = packedFixture([
+      ["package/dist/index.js", "export const value = 1;\n"],
+      ["package/package.json", '{"dependencies":{"b":"2","a":"1"},"name":"mergora"}'],
+    ]);
+    const changedManifestValue = packedFixture([
+      ["package/package.json", '{"name":"mergora","dependencies":{"a":"1","b":"3"}}'],
+      ["package/dist/index.js", "export const value = 1;\n"],
+    ]);
+    const changedFileValue = packedFixture([
+      ["package/package.json", '{"name":"mergora","dependencies":{"a":"1","b":"2"}}'],
+      ["package/dist/index.js", "export const value = 2;\n"],
+    ]);
+
+    const digest = canonicalPackedContentDigest(first);
+    expect(canonicalPackedContentDigest(reordered)).toBe(digest);
+    expect(canonicalPackedContentDigest(changedManifestValue)).not.toBe(digest);
+    expect(canonicalPackedContentDigest(changedFileValue)).not.toBe(digest);
   });
 
   it("tracks path-free digest evidence for every exact tarball and consumer", () => {
@@ -114,13 +193,35 @@ describe("P1 packed consumer proof", () => {
     expect(existsSync(evidencePath)).toBe(true);
     const source = readFileSync(evidencePath, "utf8");
     const evidence = JSON.parse(source) as {
+      artifactDigestAlgorithm: string;
       artifactKind: string;
       artifacts: Array<{ name: string; sha256: string }>;
-      consumers: Array<{ id: string; result: string; sourceInstall: null | { files: number } }>;
+      consumers: Array<{
+        id: string;
+        mode: string;
+        result: string;
+        publicCliLifecycle: null | {
+          contractAudit: { assertions: number; networkUsed: boolean; state: string };
+          interruptedRecovery: { injectedAt: string; recovery: string };
+          migrationAndAdoption: { adoption: string; migration: string };
+          overlappingUpdate: {
+            conflictPacket: string;
+            liveProjectDuringConflict: string;
+            resolution: string;
+          };
+          ownershipAndRollback: { removal: string; rollback: string };
+          vendor: { networkUsed: boolean; provenance: string; verification: string };
+        };
+        runtime: { hydrated: boolean; sourceOnlyWorkflowKit: string };
+        sourceInstall: null | { files: number };
+        sourceLifecycle: null | { guardedRemoval: string; status: string; update: string };
+        sourceOnlyPackageRejection: null | { import: string; packageFiles: string };
+      }>;
       publicationStatus: string;
     };
 
     expect(evidence.artifactKind).toBe("p1-packed-consumer-evidence");
+    expect(evidence.artifactDigestAlgorithm).toBe("sha256-canonical-tar-content-v1");
     expect(evidence.publicationStatus).toBe("unreleased");
     expect(evidence.artifacts.map(({ name }) => name)).toEqual(
       [
@@ -141,10 +242,70 @@ describe("P1 packed consumer proof", () => {
       "vite-source",
     ]);
     expect(evidence.consumers.every(({ result }) => result === "passed")).toBe(true);
+    expect(evidence.consumers.every(({ runtime }) => runtime.hydrated)).toBe(true);
     expect(
       evidence.consumers
         .filter(({ sourceInstall }) => sourceInstall !== null)
         .every(({ sourceInstall }) => sourceInstall?.files === expectedPackedSourceFileCount()),
+    ).toBe(true);
+    expect(
+      evidence.consumers
+        .filter(({ mode }) => mode === "source")
+        .every(
+          ({ runtime, sourceLifecycle }) =>
+            runtime.sourceOnlyWorkflowKit === "rendered" &&
+            sourceLifecycle?.status === "locally-modified" &&
+            sourceLifecycle.guardedRemoval === "conflict-preserved-live-source" &&
+            sourceLifecycle.update ===
+              "disjoint-upstream-change-merged-local-customization-preserved",
+        ),
+    ).toBe(true);
+    expect(
+      evidence.consumers
+        .filter(({ mode }) => mode === "package")
+        .every(
+          ({ runtime, sourceOnlyPackageRejection }) =>
+            runtime.sourceOnlyWorkflowKit === "absent" &&
+            sourceOnlyPackageRejection?.import === "rejected-not-exported" &&
+            sourceOnlyPackageRejection.packageFiles === "absent",
+        ),
+    ).toBe(true);
+    const lifecycleConsumers = evidence.consumers.filter(
+      ({ publicCliLifecycle }) => publicCliLifecycle !== null,
+    );
+    expect(lifecycleConsumers).toHaveLength(1);
+    expect(lifecycleConsumers[0]).toMatchObject({
+      id: "next-source",
+      publicCliLifecycle: {
+        contractAudit: { assertions: 1, networkUsed: false, state: "pass" },
+        interruptedRecovery: {
+          injectedAt: "commit-file",
+          recovery: "rollback-byte-identical",
+        },
+        migrationAndAdoption: {
+          adoption: "exact-shadcn-v1-source-preserved",
+          migration: "built-in-settings-transaction",
+        },
+        overlappingUpdate: {
+          conflictPacket: "complete-local-only",
+          liveProjectDuringConflict: "byte-identical",
+          resolution: "explicit-take-local-committed",
+        },
+        ownershipAndRollback: {
+          removal: "direct-ownership-detached-dependent-owned-files-retained",
+          rollback: "byte-identical-restore",
+        },
+        vendor: {
+          networkUsed: false,
+          provenance: "unreleased-local",
+          verification: "valid-offline",
+        },
+      },
+    });
+    expect(
+      evidence.consumers
+        .filter(({ id }) => id !== "next-source")
+        .every(({ publicCliLifecycle }) => publicCliLifecycle === null),
     ).toBe(true);
     expect(source).not.toMatch(/(?:[A-Z]:[\\/]|AppData|Temp|workspace:|catalog:|link:)/u);
   });

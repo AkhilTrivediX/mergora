@@ -5,7 +5,7 @@
     "slot": "skeleton",
     "element": "span aria-hidden",
     "ref": "HTMLSpanElement",
-    "stableAttributes": ["data-slot", "data-shape"]
+    "stableAttributes": ["data-slot", "data-shape", "data-animated"]
   },
   "parts": []
 }

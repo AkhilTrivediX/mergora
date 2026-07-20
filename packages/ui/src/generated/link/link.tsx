@@ -9,12 +9,16 @@ export interface LinkProps extends Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
   "aria-disabled" | "href"
 > {
+  /** Required anchor destination passed directly to the native href attribute. */
   readonly href: string;
+  /** Visible link label content and the default accessible-name source. */
   readonly children: ReactNode;
-  /** Opens in a new browsing context and applies a safe rel by default. */
+  /** Uses target=_blank by default and adds noopener and noreferrer to the resolved rel. */
   readonly external?: boolean;
   /** Expands standalone actions to the 44 CSS-pixel comfort target. */
   readonly standalone?: boolean;
+  /** Optional visible and announced context such as "New tab". Rendered only for external links. */
+  readonly externalContext?: string | false;
 }
 
 function mergeRel(rel: string | undefined, opensNewContext: boolean): string | undefined {
@@ -31,6 +35,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     className,
     download,
     external = false,
+    externalContext = false,
     href,
     rel,
     standalone = false,
@@ -40,6 +45,10 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   ref,
 ) {
   const resolvedTarget = external ? (target ?? "_blank") : target;
+  const usableExternalContext =
+    external && typeof externalContext === "string" && externalContext.trim().length > 0
+      ? externalContext
+      : undefined;
   return (
     <a
       {...nativeProps}
@@ -47,6 +56,7 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
       data-current={nativeProps["aria-current"] === undefined ? undefined : "true"}
       data-download={download === undefined || download === false ? undefined : "true"}
       data-external={external || undefined}
+      data-external-context={usableExternalContext === undefined ? undefined : "true"}
       data-slot="link"
       data-standalone={standalone || undefined}
       download={download}
@@ -56,6 +66,9 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
       target={resolvedTarget}
     >
       <span data-slot="link-label">{children}</span>
+      {usableExternalContext === undefined ? null : (
+        <span data-slot="link-external-context">{usableExternalContext}</span>
+      )}
       {external ? (
         <span aria-hidden="true" data-slot="link-external-indicator">
           ↗

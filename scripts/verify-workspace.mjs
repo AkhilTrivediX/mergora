@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -46,6 +47,14 @@ const requiredRootScripts = [
   "pack:all",
   "release:verify",
 ];
+
+const executableQualityGateScripts = {
+  "test:e2e": "node scripts/run-quality-gate.mjs e2e",
+  "test:visual": "node scripts/run-quality-gate.mjs visual",
+  "test:a11y": "node scripts/run-quality-gate.mjs a11y",
+  "test:compat": "node scripts/run-quality-gate.mjs compat",
+  "release:verify": "node scripts/run-quality-gate.mjs release",
+};
 
 const pinnedCatalog = {
   "@changesets/cli": "2.31.1",
@@ -138,6 +147,11 @@ async function verifyScaffold() {
     }
     if (/process\.exit\(0\)|echo\s+(ok|todo|pass)/iu.test(command ?? "")) {
       fail(`root script ${script} is a success stub`);
+    }
+  }
+  for (const [script, expected] of Object.entries(executableQualityGateScripts)) {
+    if (packageJson.scripts?.[script] !== expected) {
+      fail(`root script ${script} must execute its concrete quality-gate runner`);
     }
   }
 
@@ -246,6 +260,43 @@ async function verifyScaffold() {
     fail(".npmrc must not contain project credentials");
   }
 
+  const tracked = spawnSync("git", ["ls-files", "-z"], {
+    cwd: root,
+    encoding: "utf8",
+    shell: false,
+    windowsHide: true,
+  });
+  if (tracked.error !== undefined || tracked.status !== 0) {
+    fail("tracked-private-data policy requires a readable Git index");
+  } else {
+    const privateTrackedPaths = tracked.stdout
+      .split("\0")
+      .filter(Boolean)
+      .filter((path) => {
+        const normalized = path.replaceAll("\\", "/");
+        const name = normalized.split("/").at(-1) ?? "";
+        return (
+          normalized.startsWith("PLANS/") ||
+          normalized.startsWith(".codex-runs/") ||
+          normalized.startsWith(".secrets/") ||
+          normalized === ".npmrc.local" ||
+          (/^\.env(?:\..+)?$/u.test(normalized) && normalized !== ".env.example") ||
+          /^credentials(?:\..+)?\.json$/u.test(name) ||
+          /\.credentials\.json$/u.test(name)
+        );
+      });
+    if (privateTrackedPaths.length > 0) {
+      fail(`private guidance or credentials are tracked: ${privateTrackedPaths.join(", ")}`);
+    }
+  }
+
+  const gitignore = await readFile(join(root, ".gitignore"), "utf8");
+  for (const ignored of ["PLANS/", ".codex-runs/", "credentials.json", ".npmrc.local"]) {
+    if (!gitignore.split(/\r?\n/u).includes(ignored)) {
+      fail(`.gitignore must explicitly exclude ${ignored}`);
+    }
+  }
+
   const normalizedFiles = [
     "package.json",
     "pnpm-workspace.yaml",
@@ -290,60 +341,19 @@ async function verifyScaffold() {
   );
 }
 
-const gateDefinitions = {
-  generate: {
-    roots: ["registry/source"],
-    pattern: /\.(ts|tsx|json)$/u,
-    message: "canonical registry definitions and real generators are not implemented yet",
-  },
-  browser: {
-    roots: ["tests/browser"],
-    pattern: /\.(test|spec)\.(ts|tsx)$/u,
-    message: "browser test suites are not implemented yet",
-  },
-  e2e: {
-    roots: ["tests/e2e"],
-    pattern: /\.spec\.ts$/u,
-    message: "Playwright end-to-end suites are not implemented yet",
-  },
-  visual: {
-    roots: ["tests/visual"],
-    pattern: /\.spec\.ts$/u,
-    message: "visual regression suites are not implemented yet",
-  },
-  a11y: {
-    roots: ["tests/accessibility"],
-    pattern: /\.(test|spec)\.(ts|tsx)$/u,
-    message: "accessibility suites are not implemented yet",
-  },
-  compat: {
-    roots: ["tests/compatibility"],
-    pattern: /\.(test|spec)\.(ts|tsx)$/u,
-    message: "compatibility suites are not implemented yet",
-  },
-  release: {
-    roots: ["tests/packed-consumers", ".github/workflows"],
-    pattern: /(release|consumer).*(test|spec|ya?ml)$/u,
-    message: "the release-candidate matrix is not implemented yet",
-  },
-};
-
-async function verifyGate(name) {
-  const gate = gateDefinitions[name];
-  if (!gate) {
-    fail(`unknown gate ${name}`);
-    return;
+function runExecutableGate(name) {
+  const result = spawnSync(process.execPath, ["scripts/run-quality-gate.mjs", name], {
+    cwd: root,
+    env: process.env,
+    shell: false,
+    stdio: "inherit",
+    windowsHide: true,
+  });
+  if (result.error !== undefined) {
+    fail(`gate ${name} could not start: ${result.error.message}`);
+  } else if (result.status !== 0) {
+    process.exitCode = result.status ?? 1;
   }
-  const files = (await Promise.all(gate.roots.map(filesBelow))).flat();
-  if (!files.some((file) => gate.pattern.test(file))) {
-    process.stderr.write(`gate ${name} unavailable: ${gate.message}\n`);
-    process.exitCode = 1;
-    return;
-  }
-  process.stderr.write(
-    `gate ${name} unavailable: prerequisites exist, but the dedicated runner is not wired yet\n`,
-  );
-  process.exitCode = 1;
 }
 
 async function verifyGenerateGate() {
@@ -435,5 +445,7 @@ if (gateIndex === -1) {
   const gate = process.argv[gateIndex + 1];
   if (gate === "generate") await verifyGenerateGate();
   else if (gate === "consumer" || gate === "pack") await verifyP1PackedGate(gate);
-  else await verifyGate(gate);
+  else if (["a11y", "compat", "e2e", "release", "visual"].includes(gate)) {
+    runExecutableGate(gate);
+  } else fail(`unknown gate ${String(gate)}`);
 }

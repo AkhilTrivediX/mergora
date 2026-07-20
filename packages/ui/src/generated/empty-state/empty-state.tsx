@@ -1,5 +1,6 @@
 // Generated from registry/source/components/empty-state/empty-state.tsx by @mergora-internal/source-transformer. Do not edit.
 import {
+  Children,
   Fragment,
   forwardRef,
   isValidElement,
@@ -14,17 +15,34 @@ import "./empty-state.css";
 export type EmptyStateHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type EmptyStateContext = "collection" | "search" | "first-use" | "permission" | "filtered";
 
+export interface EmptyStateRecoverySuggestions {
+  /** Non-empty contextual suggestions rendered as an ordered visible list. */
+  readonly items: readonly ReactNode[];
+  /** Visible text that names the recovery-suggestions list. */
+  readonly label: ReactNode;
+}
+
 export interface EmptyStateProps extends Omit<
   HTMLAttributes<HTMLElement>,
   "children" | "role" | "title"
 > {
+  /** Optional non-empty visible body content between the description and recovery actions. */
   readonly children?: ReactNode;
+  /** Domain-neutral state metadata used for styling; defaults to `collection`. */
   readonly context?: EmptyStateContext;
+  /** Non-empty visible explanation linked to the named section. */
   readonly description: ReactNode;
+  /** Native heading level used for `title`; defaults to 2. */
   readonly headingLevel?: EmptyStateHeadingLevel;
+  /** Decorative visual rendered outside the accessibility tree. */
   readonly icon?: ReactNode;
+  /** One enabled native or custom recovery action rendered first. */
   readonly primaryAction: ReactElement;
+  /** Optional labelled recovery list; omitting it removes the suggestions UI and semantics. */
+  readonly recoverySuggestions?: EmptyStateRecoverySuggestions;
+  /** Optional second enabled native or custom recovery action. */
   readonly secondaryAction?: ReactElement;
+  /** Non-empty visible heading that names the section. */
   readonly title: ReactNode;
 }
 
@@ -83,6 +101,7 @@ export const EmptyState = forwardRef<HTMLElement, EmptyStateProps>(function Empt
     headingLevel = 2,
     icon,
     primaryAction,
+    recoverySuggestions,
     secondaryAction,
     title,
     ...nativeProps
@@ -97,6 +116,18 @@ export const EmptyState = forwardRef<HTMLElement, EmptyStateProps>(function Empt
   }
   assertRecoveryAction(primaryAction, "primaryAction");
   if (secondaryAction !== undefined) assertRecoveryAction(secondaryAction, "secondaryAction");
+  if (recoverySuggestions !== undefined) {
+    if (!hasEmptyStateContent(recoverySuggestions.label)) {
+      throw new Error("Mergora EmptyState recoverySuggestions requires a non-empty label.");
+    }
+    if (
+      !Array.isArray(recoverySuggestions.items) ||
+      recoverySuggestions.items.length === 0 ||
+      recoverySuggestions.items.some((item) => !hasEmptyStateContent(item))
+    ) {
+      throw new Error("Mergora EmptyState recoverySuggestions requires non-empty items.");
+    }
+  }
   const reactId = useId();
   const titleId = `mrg-empty-state-${reactId.replaceAll(":", "")}-title`;
   const descriptionId = `mrg-empty-state-${reactId.replaceAll(":", "")}-description`;
@@ -123,6 +154,16 @@ export const EmptyState = forwardRef<HTMLElement, EmptyStateProps>(function Empt
         {description}
       </div>
       {hasEmptyStateContent(children) ? <div data-slot="empty-state-body">{children}</div> : null}
+      {recoverySuggestions === undefined ? null : (
+        <div data-slot="empty-state-suggestions">
+          <span data-slot="empty-state-suggestions-label">{recoverySuggestions.label}</span>
+          <ul>
+            {Children.map(recoverySuggestions.items, (item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div data-slot="empty-state-actions">
         <span data-slot="empty-state-primary-action">{primaryAction}</span>
         {secondaryAction !== undefined ? (

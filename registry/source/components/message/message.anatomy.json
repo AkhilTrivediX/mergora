@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message",
+  "root": {
+    "element": "article",
+    "ref": "HTMLElement",
+    "slot": "message",
+    "stableAttributes": ["data-slot", "data-message-role", "data-delivery-state"]
+  },
+  "parts": [
+    "message-header",
+    "message-role-context",
+    "message-content",
+    "message-metadata",
+    "message-actions"
+  ]
+}

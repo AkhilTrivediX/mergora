@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "bottom-navigation",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "focus-visible", "disabled", "current", "overflow", "rtl"],
+  "slots": [
+    {
+      "name": "bottom-navigation",
+      "semanticElement": "nav",
+      "refTarget": "HTMLElement",
+      "states": ["default", "current", "overflow", "rtl"]
+    },
+    {
+      "name": "bottom-navigation-overflow",
+      "semanticElement": "optional details",
+      "refTarget": "none",
+      "states": ["overflow", "focus-visible"]
+    }
+  ],
+  "contract": { "id": "bottom-navigation-accessibility", "version": "0.1.0" },
+  "passport": { "id": "bottom-navigation-quality-passport", "version": "0.0.0" }
+}

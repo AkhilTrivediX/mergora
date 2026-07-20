@@ -26,9 +26,11 @@
       "data-invalid",
       "data-orientation",
       "data-has-marks",
+      "data-intelligent-marks",
+      "data-show-value-bubbles",
       "data-collision-behavior"
     ],
-    "synchronization": "Output, selected fill, thumb positions, accessible value text, form values, read-only description, and callbacks share one ordered React Aria state engine."
+    "synchronization": "Output, selected fill, thumb positions, accessible value text, form values, read-only description, optional intelligent marks and aria-hidden value bubbles, collision status, and callbacks share one ordered React Aria state engine. Disabled enhancements add no DOM, events, or accessibility output."
   },
   "stableSelectors": {
     "root": "[data-slot=range-slider]",
@@ -60,7 +62,8 @@
       "field-error",
       "thumbLabels",
       "mark-label",
-      "readOnlyMessage"
+      "readOnlyMessage",
+      "collision announcement"
     ],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
@@ -71,6 +74,7 @@
     "Provide a persistent group label and distinct boundary labels that describe each thumb's meaning rather than only its order.",
     "Supply equally sized value, thumbLabels, and names arrays when custom multi-thumb or form behavior is used.",
     "Keep values ordered. Thumbs may collide but never cross or exchange semantic identity.",
+    "Enable announceCollisions only when meeting boundaries need explicit workflow feedback; keep domain-specific consequences in persistent Field text.",
     "Use separate numeric fields when users must directly enter exact boundaries."
   ],
   "evidenceRequirements": {
@@ -79,6 +83,8 @@
       "ssr-hydration",
       "distinct-thumb-names",
       "keyboard-boundaries-and-collision",
+      "optional-collision-announcement-and-disabled-absence",
+      "intelligent-mark-density-and-value-bubbles",
       "pointer-touch-cancellation",
       "multi-value-form-submission-reset",
       "localized-value-text",

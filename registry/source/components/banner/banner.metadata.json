@@ -8,7 +8,15 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["default", "focus-visible", "success", "warning", "error"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "success",
+    "warning",
+    "error",
+    "plain-baseline",
+    "recommended-mergora"
+  ],
   "slots": [
     { "name": "banner", "semanticElement": "aside", "refTarget": "HTMLElement", "states": [] },
     {

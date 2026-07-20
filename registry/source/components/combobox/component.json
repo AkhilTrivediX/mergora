@@ -30,6 +30,12 @@
       "refTarget": "HTMLInputElement",
       "states": ["open", "disabled", "readonly", "required", "invalid", "focus-visible"]
     },
+    {
+      "name": "clear",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["disabled", "focus-visible"]
+    },
     { "name": "trigger", "semanticElement": "button", "refTarget": "HTMLButtonElement" },
     { "name": "popover", "semanticElement": "div", "refTarget": "HTMLElement" },
     { "name": "listbox", "semanticElement": "div", "refTarget": "HTMLDivElement" },

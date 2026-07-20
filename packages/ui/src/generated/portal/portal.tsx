@@ -15,6 +15,7 @@ import { useMergoraContext } from "../provider/index.js";
 import "./portal.css";
 
 export interface PortalProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Content rendered inside the locale, direction, and density context boundary. */
   readonly children: ReactNode;
   /** Explicit target. Null or undefined falls back to the provider target, then document.body. */
   readonly container?: HTMLElement | null;

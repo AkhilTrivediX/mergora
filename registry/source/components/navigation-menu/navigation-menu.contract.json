@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "navigation-menu",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A named site nav uses lists, disclosure buttons, and real anchors without menu, menubar, or menuitem roles.",
+    "current": "One matching destination may expose aria-current=page.",
+    "refTarget": "HTMLElement nav"
+  },
+  "interaction": {
+    "keyboard": "Tab follows native order; Escape closes an open group and restores focus to its trigger.",
+    "pointer": "Click controls disclosure and optional pointer entry may update a preview.",
+    "touch": "Narrow panels remain in flow and all controls meet target size."
+  },
+  "enhancementIsolation": {
+    "previewOmitted": "No focus or pointer preview handlers, preview state, aside, name, or renderer call exists."
+  },
+  "preferences": {
+    "forcedColors": "Borders, current state, and focus use system colors.",
+    "reducedMotion": "Meaning does not depend on animation.",
+    "rtl": "Panels and boundaries use logical placement."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "no-menu-role",
+      "disclosure-focus-return",
+      "preview-isolation",
+      "narrow-rtl",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "The component intentionally does not implement application-menu arrow-key behavior."
+  ]
+}

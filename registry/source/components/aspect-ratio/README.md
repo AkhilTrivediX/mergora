@@ -13,3 +13,7 @@ Custom tuple values must be finite and above zero. Invalid values throw instead 
 The stable root is `[data-slot="aspect-ratio"]`, with `data-ratio` and the documented ratio custom properties. The consumer still owns image alternatives, captions, iframe titles, media controls, and any deliberate crop policy.
 
 Current status is `source-present-unreleased`; generated outputs, native/fallback browser geometry, semantic-content evidence, packed consumers, parity, updater fixtures, manual review, site use, and a Passport remain required.
+
+## Mergora advantage
+
+Named and validated ratio tuples remain the predictable baseline. Optional `fit="contain"` or `fit="cover"` gives direct media children useful bounded fitting and a semantic surface signal; `fit="none"` removes that fitting selector and signal without changing the child’s native semantics.

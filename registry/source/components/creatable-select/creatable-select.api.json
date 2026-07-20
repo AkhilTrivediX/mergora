@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "creatable-select",
+  "entryExport": "CreatableSelect",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "InputHTMLAttributes<HTMLInputElement>",
+  "exports": [
+    { "kind": "value", "name": "CreatableSelect" },
+    { "kind": "type", "name": "CreatableSelectOption" },
+    { "kind": "type", "name": "CreatableSelectProps" }
+  ],
+  "props": [
+    { "name": "showCanonicalPreview", "required": false, "type": "boolean" },
+    { "name": "formatCanonicalValue", "required": false, "type": "(value: string) => string" },
+    {
+      "name": "onCreate",
+      "required": false,
+      "type": "(value: string, context: { signal: AbortSignal }) => void | Promise<void>"
+    },
+    { "name": "validateCreate", "required": false, "type": "(value: string) => string | null" },
+    { "name": "creating", "required": false, "type": "boolean" },
+    { "name": "onCancelCreate", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the labelled editable combobox, listbox ownership, hidden canonical form value, validation proxy, and reset behavior.",
+    "enhancement": "showCanonicalPreview is independently removable; false removes UI, formatter execution, description relationship, events, and accessibility output. Creation validation and async lifecycle are independent of preview and expose an AbortSignal without owning persistence."
+  }
+}

@@ -30,16 +30,19 @@ export function DirectionProvider({ children, direction }: DirectionProviderProp
 export interface DirectionBoundaryProps extends HTMLAttributes<HTMLDivElement> {
   /** Native bidi direction for this DOM subtree. */
   readonly direction: DirectionValue;
+  /** Isolates the subtree's bidi ordering from surrounding text without changing semantics. */
+  readonly isolate?: boolean;
 }
 
 export const DirectionBoundary = forwardRef<HTMLDivElement, DirectionBoundaryProps>(
-  function DirectionBoundary({ children, direction, ...nativeProps }, ref) {
+  function DirectionBoundary({ children, direction, isolate = false, ...nativeProps }, ref) {
     return (
       <DirectionProvider direction={direction}>
         <div
           {...nativeProps}
           ref={ref}
           dir={direction}
+          data-bidi-isolate={isolate ? "true" : undefined}
           data-direction={direction}
           data-slot="direction-boundary"
         >

@@ -14,7 +14,8 @@
     "defaultEntry": "Present server content begins visible and entered; JavaScript is not required to reveal it.",
     "exit": "The element remains mounted until a root transition/animation end event reaches the declared deadline or the authoritative timeout expires; shorter property events are ignored.",
     "reducedMotion": "Explicit or provider reduce preference unmounts without a motion delay.",
-    "interruption": "A new present=true transition cancels pending exit cleanup."
+    "interruption": "A new present=true transition cancels pending exit cleanup.",
+    "enhancementOptOut": "initialEnter=false omits the initial entering lifecycle; absent onExitComplete emits no callback; absent reducedMotion follows provider policy."
   },
   "consumerResponsibilities": [
     "Do not move focus merely because presence state changes.",
@@ -29,6 +30,8 @@
       "ssr",
       "hydration",
       "interrupt-exit",
+      "initial-enter-opt-out",
+      "callback-opt-out",
       "multi-property-exit-deadline",
       "cleanup",
       "reduced-motion",

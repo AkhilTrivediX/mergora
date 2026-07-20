@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "comment-thread",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "comment-thread",
+    "stableAttributes": ["data-slot", "data-resolved"]
+  },
+  "parts": [
+    "comment-thread-header",
+    "comment-thread-comments",
+    "comment-thread-reply",
+    "comment-thread-mentions"
+  ]
+}

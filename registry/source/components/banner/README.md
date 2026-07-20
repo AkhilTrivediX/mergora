@@ -4,6 +4,10 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 Banner renders a persistent named page/site aside with actions and optional dismissal. Persistence is injected through an adapter rather than reading ambient storage, and narrow behavior follows the component's own inline size rather than the viewport.
 
+## Mergora signature and advantage
+
+Banner uses the same Canvas, Ink, strong-type, compact-control, and semantic signal-seam language as Alert while retaining an intrinsic page-width composition. Beyond an ordinary alert banner, dismissal may be controlled or persisted through an injected adapter with pre-paint hydration handling. Omitting `persistence` removes every adapter read, write, pending-visibility state, and persistence error event; `dismissible={false}` independently removes the dismiss button, click behavior, accessible name, and dismissal event path.
+
 ## Contract
 
 - Controlled and uncontrolled dismissal are exclusive. Controlled mode accepts `dismissed` and only proposes changes through `onDismissedChange`; it cannot accept `defaultDismissed` or `persistence`.

@@ -21,6 +21,7 @@ import type {
 import {
   Children,
   createContext,
+  Fragment,
   forwardRef,
   isValidElement,
   useCallback,
@@ -51,6 +52,7 @@ export type PopoverOpenChangeReason =
   "trigger" | "close-button" | "escape-key" | "outside-interaction" | "dismiss";
 
 export interface PopoverOpenChangeDetails {
+  /** Trigger, close, Escape, outside, or fallback dismissal interaction. */
   readonly reason: PopoverOpenChangeReason;
 }
 
@@ -113,6 +115,18 @@ function isDevelopmentRuntime(): boolean {
   return viteProduction !== true && runtime.process?.env?.NODE_ENV !== "production";
 }
 
+/** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
+export function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
+}
+
 function joinClassName(base: string, className: string | undefined): string {
   return className === undefined || className.trim().length === 0 ? base : `${base} ${className}`;
 }
@@ -163,10 +177,15 @@ function usePopoverContext(part: string): PopoverContextValue {
 const PopoverDescriptionContext = createContext<string | undefined>(undefined);
 
 export interface PopoverRootProps {
+  /** Declarative Popover parts owned by this root. */
   readonly children?: ReactNode;
+  /** Initial open state for uncontrolled use. */
   readonly defaultOpen?: boolean;
+  /** Fallback focus target used when the invoking trigger is unavailable after close. */
   readonly finalFocusRef?: RefObject<HTMLElement | null>;
+  /** Reports open-state changes with the trigger, close, Escape, outside, or dismissal reason. */
   readonly onOpenChange?: (open: boolean, details: PopoverOpenChangeDetails) => void;
+  /** Controlled open state; pair with onOpenChange. */
   readonly open?: boolean;
 }
 
@@ -251,6 +270,7 @@ PopoverRoot.displayName = "Popover.Root";
 markPopoverPart(PopoverRoot, "root");
 
 export interface PopoverTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Trigger button content; native button semantics remain authoritative. */
   readonly children?: ReactNode;
 }
 
@@ -289,21 +309,32 @@ export const PopoverTrigger = forwardRef<HTMLButtonElement, PopoverTriggerProps>
 PopoverTrigger.displayName = "Popover.Trigger";
 
 export interface PopoverContentProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+  /** Cross-axis alignment relative to the selected placement edge. */
   readonly align?: PopoverAlign;
+  /** Optional persistent context for the anchor when the trigger is outside the visible viewport. */
+  readonly anchorContext?: ReactNode;
+  /** Popover body and named parts rendered inside the non-modal dialog. */
   readonly children?: ReactNode;
+  /** Minimum collision padding, in CSS pixels, from the viewport edge. */
   readonly containerPadding?: number;
+  /** Cross-axis displacement in CSS pixels from the aligned position. */
   readonly crossOffset?: number;
   /** Non-modal entry policy. The default keeps focus on the trigger. */
   readonly initialFocus?: PopoverInitialFocus;
+  /** Preferred contained entry-focus target when initial focus is requested. */
   readonly initialFocusRef?: RefObject<HTMLElement | null>;
+  /** Distance in CSS pixels between the trigger and popover. */
   readonly offset?: number;
+  /** Requested logical edge used before collision adjustment. */
   readonly placement?: PopoverPlacement;
+  /** Allows collision handling to flip the requested placement. */
   readonly shouldFlip?: boolean;
 }
 
 export const PopoverContent = forwardRef<HTMLElement, PopoverContentProps>(function PopoverContent(
   {
     align = "center",
+    anchorContext,
     "aria-describedby": ariaDescribedBy,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
@@ -323,13 +354,18 @@ export const PopoverContent = forwardRef<HTMLElement, PopoverContentProps>(funct
   const provider = useMergoraContext();
   const context = usePopoverContext("Content");
   const contentRef = useRef<HTMLElement | null>(null);
+  const anchorContextId = useId();
   const descriptionId = useId();
   const inspection = useMemo(() => inspectPopoverTree(children), [children]);
   const resolvedDescriptionId =
     inspection.description === 1 && ariaDescribedBy === undefined
       ? (inspection.descriptionIds[0] ?? descriptionId)
       : undefined;
-  const resolvedAriaDescribedBy = ariaDescribedBy ?? resolvedDescriptionId;
+  const hasAnchorContext = hasAccessibleContent(anchorContext);
+  const resolvedAriaDescribedBy =
+    [ariaDescribedBy ?? resolvedDescriptionId, hasAnchorContext ? anchorContextId : undefined]
+      .filter((value): value is string => value !== undefined && value.length > 0)
+      .join(" ") || undefined;
   const mergedPopoverRef = useCallback(
     (node: HTMLElement | null) => {
       // React Aria derives the portal-root dir from locale. Mergora intentionally allows an
@@ -453,6 +489,15 @@ export const PopoverContent = forwardRef<HTMLElement, PopoverContentProps>(funct
                 if (layer?.dataset.layerTop === "true") context.markReason("escape-key");
               }}
             >
+              {hasAnchorContext ? (
+                <div
+                  className="mrg-popover__anchor-context"
+                  data-slot="popover-anchor-context"
+                  id={anchorContextId}
+                >
+                  {anchorContext}
+                </div>
+              ) : null}
               {children}
             </div>
           </ReactAriaDialog>
@@ -465,6 +510,7 @@ export const PopoverContent = forwardRef<HTMLElement, PopoverContentProps>(funct
 PopoverContent.displayName = "Popover.Content";
 
 export interface PopoverArrowProps extends ComponentPropsWithoutRef<"svg"> {
+  /** Arrow width and height in CSS pixels. */
   readonly size?: number;
 }
 
@@ -492,6 +538,7 @@ export const PopoverArrow = forwardRef<SVGSVGElement, PopoverArrowProps>(functio
 PopoverArrow.displayName = "Popover.Arrow";
 
 export type PopoverTitleProps = ComponentPropsWithoutRef<"h2"> & {
+  /** Semantic heading level used for the rendered popover title. */
   readonly level?: 1 | 2 | 3 | 4 | 5 | 6;
 };
 
@@ -533,6 +580,7 @@ export const PopoverDescription = forwardRef<HTMLParagraphElement, PopoverDescri
 PopoverDescription.displayName = "Popover.Description";
 
 export interface PopoverCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Close-button content; localized default text is used when omitted. */
   readonly children?: ReactNode;
 }
 

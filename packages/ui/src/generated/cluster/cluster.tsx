@@ -9,8 +9,11 @@ export type ClusterJustify = "start" | "center" | "end" | "between";
 export type ClusterOrphan = "start" | "fill";
 
 export interface ClusterProps extends HTMLAttributes<HTMLDivElement> {
+  /** Sets tokenized space between wrapped items without accepting arbitrary CSS lengths. */
   readonly gap?: ClusterGap;
+  /** Aligns items on the cross axis, including a typography-friendly baseline option. */
   readonly align?: ClusterAlign;
+  /** Distributes each wrapped row along the logical inline axis. */
   readonly justify?: ClusterJustify;
   /** `start` keeps an orphan on the logical leading edge; `fill` lets the final item grow. */
   readonly orphan?: ClusterOrphan;

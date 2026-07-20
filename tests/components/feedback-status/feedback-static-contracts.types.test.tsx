@@ -29,12 +29,13 @@ const validFixtures = [
     description="Try a broader query."
     key="empty"
     primaryAction={<button type="button">Reset</button>}
+    recoverySuggestions={{ items: ["Remove one filter"], label: "Ways to recover" }}
     ref={sectionRef}
     secondaryAction={<a href="/help">Help</a>}
     title="No results"
   />,
-  <Progress key="progress" label="Upload" ref={progressRef} value={20} />,
-  <Meter key="meter" label="Storage" ref={meterRef} value={62} />,
+  <Progress key="progress" label="Upload" ref={progressRef} showValue={false} value={20} />,
+  <Meter key="meter" label="Storage" ref={meterRef} showThresholdSummary value={62} />,
 ];
 
 const invalidBadgeAnimationHandler: BadgeProps = {

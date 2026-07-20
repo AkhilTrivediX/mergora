@@ -12,8 +12,11 @@
 }
 
 .mrg-validation-summary:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-validation-summary [data-slot="validation-summary-heading"] {
@@ -38,8 +41,11 @@
 }
 
 .mrg-validation-summary a:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 @media (forced-colors: active) {
@@ -47,5 +53,11 @@
     background: Canvas;
     border-color: CanvasText;
     color: CanvasText;
+  }
+
+  .mrg-validation-summary:focus-visible,
+  .mrg-validation-summary a:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
   }
 }

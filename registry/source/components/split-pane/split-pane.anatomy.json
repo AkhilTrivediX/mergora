@@ -5,7 +5,13 @@
     "element": "div containing an intrinsic layout wrapper",
     "ref": "HTMLDivElement",
     "slot": "split-pane-root",
-    "stableAttributes": ["data-slot", "data-orientation", "data-panel-count", "data-disabled"]
+    "stableAttributes": [
+      "data-slot",
+      "data-orientation",
+      "data-panel-count",
+      "data-disabled",
+      "data-step-controls"
+    ]
   },
   "parts": [
     {

@@ -5,13 +5,14 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 2,
-  "summary": "Inline status text with visible severity and explicit off, polite, or assertive announcement policy.",
+  "summary": "A compact squared Mergora status cue with independently optional atomic live behavior.",
   "semantics": [
     "Status is non-live by default; polite and assertive modes are explicit and atomic.",
     "Visible localized variant text, a distinct symbol, and consumer text preserve meaning without color.",
     "Status has no interaction or focus behavior.",
     "The status.variantLabel formatter owns punctuation and grammatical order while explicit variantLabel content is preserved exactly.",
-    "Owned role and ARIA semantics cannot be overridden at the typed or runtime boundary; empty composite content is invalid."
+    "Owned role and ARIA semantics cannot be overridden at the typed or runtime boundary; empty composite content is invalid.",
+    "live=off removes role, aria-live, aria-atomic, and live behavior while preserving the static cue."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

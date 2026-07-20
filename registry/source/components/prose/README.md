@@ -9,6 +9,10 @@ Provides bounded, tokenized authored-content styling without changing descendant
 </Prose>
 ```
 
+## Mergora advantage
+
+Intrinsic reading measures, size modes, semantic descendant rhythm, and `data-prose-unstyled` opt-out islands provide authored-content structure without parsing HTML. Set `measure="none"`, keep `size="default"`, or mark a subtree `data-prose-unstyled` to remove each enhancement without adding roles, events, or accessibility output.
+
 ## Contract
 
 Prose adds no roles and does not parse or inject HTML. It styles native descendants while data-prose-unstyled provides a local widget escape hatch.

@@ -13,6 +13,7 @@ import { RangeSlider } from "../../../registry/source/components/range-slider/ra
 import { MergoraProvider } from "../../../registry/source/components/provider/provider.tsx";
 import {
   Slider,
+  deriveIntelligentSliderMarks,
   normalizeSliderMarks,
   resolveSliderDomain,
   sliderValueIsAligned,
@@ -74,6 +75,14 @@ describe("P4 slider registry records", () => {
     }
   });
 
+  it("uses the shared two-layer focus seam and forced-color mapping", () => {
+    const css = readItem("slider", "slider.css");
+    expect(css).toContain("var(--mrg-component-focus-indicator-color)");
+    expect(css).toContain("var(--mrg-component-focus-indicator-contrast-background)");
+    expect(css).toContain("box-shadow: none");
+    expect(css).toContain("outline-color: Highlight");
+  });
+
   it("keeps source descriptors exact and claims no release or evidence it does not have", () => {
     const expectedDependencies = {
       "range-slider": ["provider", "slider"],
@@ -119,6 +128,7 @@ describe("P4 slider registry records", () => {
     expect(sliderCss).toContain("@media (prefers-reduced-motion: reduce)");
     expect(sliderCss).toContain("@media (pointer: coarse)");
     expect(sliderCss).toContain("@media (max-width: 30rem)");
+    expect(sliderCss).not.toContain("radius-pill");
   });
 });
 
@@ -161,6 +171,35 @@ describe("slider domain and mark helpers", () => {
         domain,
       ),
     ).toThrow(/duplicated/u);
+  });
+
+  it("derives bounded localized marks using meaningful or even strategies", () => {
+    const domain = resolveSliderDomain(0, 100, 5);
+    expect(
+      deriveIntelligentSliderMarks(domain, { maximumVisible: 7, strategy: "meaningful" }),
+    ).toEqual([
+      { label: "0", value: 0 },
+      { label: "25", value: 25 },
+      { label: "50", value: 50 },
+      { label: "75", value: 75 },
+      { label: "100", value: 100 },
+    ]);
+    expect(
+      deriveIntelligentSliderMarks(
+        resolveSliderDomain(0, 1, 0.05),
+        { maximumVisible: 4, strategy: "even" },
+        "de-DE",
+        { style: "percent" },
+      ),
+    ).toEqual([
+      { label: "0\u00a0%", value: 0 },
+      { label: "35\u00a0%", value: 0.35 },
+      { label: "65\u00a0%", value: 0.65 },
+      { label: "100\u00a0%", value: 1 },
+    ]);
+    expect(() => deriveIntelligentSliderMarks(domain, { maximumVisible: 13 })).toThrow(
+      /maximumVisible/u,
+    );
   });
 });
 
@@ -244,5 +283,56 @@ describe("slider server rendering", () => {
     expect(() =>
       renderToStaticMarkup(<RangeSlider defaultValue={[20, 80]} value={[30, 70]} />),
     ).toThrow(/both value and defaultValue/u);
+  });
+
+  it("keeps enhancements absent by default and renders each enabled surface explicitly", () => {
+    const plainMarkup = renderToStaticMarkup(
+      <RangeSlider defaultValue={[20, 80]} thumbLabels={["Minimum", "Maximum"]} />,
+    );
+    expect(plainMarkup).not.toContain("data-intelligent-marks");
+    expect(plainMarkup).not.toContain("slider-value-bubble");
+    expect(plainMarkup).not.toContain("range-slider-collision-status");
+
+    const enhancedMarkup = renderToStaticMarkup(
+      <RangeSlider
+        announceCollisions
+        defaultValue={[20, 80]}
+        intelligentMarks={{ maximumVisible: 5, strategy: "meaningful" }}
+        showValueBubbles
+        thumbLabels={["Minimum", "Maximum"]}
+      />,
+    );
+    expect(enhancedMarkup).toContain('data-intelligent-marks="meaningful"');
+    expect(enhancedMarkup.match(/data-slot="slider-value-bubble"/gu)).toHaveLength(2);
+    expect(enhancedMarkup).toContain('data-slot="range-slider-collision-status"');
+    expect(enhancedMarkup).toContain('role="status"');
+    expect(() =>
+      renderToStaticMarkup(
+        <Slider intelligentMarks={{ maximumVisible: 5 }} marks={[{ label: "Manual", value: 0 }]} />,
+      ),
+    ).toThrow(/cannot combine intelligentMarks/u);
+  });
+
+  it("does not resolve collision copy when collision announcements are disabled", () => {
+    let collisionMessageResolutions = 0;
+    const markup = renderToStaticMarkup(
+      <MergoraProvider
+        messages={{
+          "rangeSlider.collision": () => {
+            collisionMessageResolutions += 1;
+            return "The selected limits meet.";
+          },
+        }}
+      >
+        <RangeSlider
+          announceCollisions={false}
+          defaultValue={[20, 80]}
+          thumbLabels={["Minimum", "Maximum"]}
+        />
+      </MergoraProvider>,
+    );
+
+    expect(collisionMessageResolutions).toBe(0);
+    expect(markup).not.toContain("range-slider-collision-status");
   });
 });

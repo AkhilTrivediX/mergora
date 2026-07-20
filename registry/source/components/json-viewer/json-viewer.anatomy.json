@@ -5,7 +5,7 @@
     "element": "div role=region",
     "ref": "HTMLDivElement",
     "slot": "json-viewer",
-    "stableAttributes": ["data-slot", "data-virtualized"]
+    "stableAttributes": ["data-slot", "data-virtualized", "data-copyable", "data-show-active-path"]
   },
   "parts": [
     {

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "avatar",
+  "entryExport": "Avatar",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Avatar"
+    },
+    {
+      "kind": "value",
+      "name": "AvatarGroup"
+    },
+    {
+      "kind": "type",
+      "name": "AvatarGroupProps"
+    },
+    {
+      "kind": "type",
+      "name": "AvatarPresence"
+    },
+    {
+      "kind": "type",
+      "name": "AvatarProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showPresence",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "presence",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "presenceLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Avatar; enhancement output is additive and independently removable.",
+    "enhancement": "Optional text-backed presence context stays readable without color and disappears completely when disabled. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

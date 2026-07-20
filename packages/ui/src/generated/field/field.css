@@ -5,11 +5,12 @@
   display: grid;
   font-family: var(--mrg-semantic-font-family-prose);
   gap: var(--mrg-semantic-space-stack-xs);
+  grid-template-columns: minmax(0, 1fr) auto;
   min-inline-size: 0;
 }
 
 .mrg-field[data-layout="inline"] {
-  grid-template-columns: minmax(8rem, 0.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(8rem, 0.4fr) minmax(0, 1fr) auto;
 }
 
 .mrg-field [data-slot="field-label"] {
@@ -30,6 +31,22 @@
 .mrg-field [data-slot="field-description"] {
   color: var(--mrg-semantic-color-foreground-muted);
   font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-field [data-slot="field-contextual-action"] {
+  align-self: center;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  min-inline-size: 0;
+}
+
+.mrg-field [data-slot="field-contextual-action"] :where(button, a):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-field [data-slot="field-required-indicator"],
@@ -62,9 +79,13 @@
   grid-row: 1;
 }
 
+.mrg-field[data-layout="inline"] [data-slot="field-contextual-action"] {
+  grid-column: 3;
+}
+
 @media (max-width: 30rem) {
   .mrg-field[data-layout="inline"] {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .mrg-field[data-layout="inline"] [data-slot="field-label"],
@@ -72,11 +93,29 @@
     grid-column: 1;
     grid-row: auto;
   }
+
+  .mrg-field[data-layout="inline"] [data-slot="field-label"] {
+    grid-row: 1;
+  }
+
+  .mrg-field[data-layout="inline"] [data-slot="field-contextual-action"] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .mrg-field[data-layout="inline"] [data-slot="field-control"] {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (forced-colors: active) {
   .mrg-field [data-slot="field-required-indicator"],
   .mrg-field [data-slot="field-error"] {
     color: CanvasText;
+  }
+
+  .mrg-field [data-slot="field-contextual-action"] :where(button, a):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
   }
 }

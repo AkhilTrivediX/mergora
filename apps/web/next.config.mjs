@@ -13,6 +13,7 @@ if (
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   basePath: requestedBasePath,
+  env: { NEXT_PUBLIC_MERGORA_BASE_PATH: requestedBasePath },
   images: { unoptimized: true },
   output: "export",
   reactStrictMode: true,

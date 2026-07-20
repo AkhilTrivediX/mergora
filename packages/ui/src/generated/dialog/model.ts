@@ -7,6 +7,7 @@ export type DialogOpenChangeReason =
   "trigger" | "close-button" | "escape-key" | "outside-interaction" | "dismiss";
 
 export interface DialogOpenChangeDetails {
+  /** Identifies trigger, close button, Escape, outside interaction, or library dismissal. */
   readonly reason: DialogOpenChangeReason;
 }
 
@@ -15,11 +16,35 @@ export interface DialogDismissBehavior {
   readonly allowsOutsideInteraction: boolean;
 }
 
+/** @internal Browser-normalized evidence for the non-modal outside-activation fallback. */
+export interface DialogOutsideActivationEvidence {
+  readonly clickEndedOutside: boolean;
+  readonly defaultPrevented: boolean;
+  readonly isPrimary: boolean;
+  readonly pointerStartedOutside: boolean;
+  readonly sameTargetLineage: boolean;
+  readonly topLayerOwned: boolean;
+}
+
 export function getDialogDismissBehavior(policy: DialogDismissPolicy): DialogDismissBehavior {
   return {
     allowsEscape: policy !== "explicit",
     allowsOutsideInteraction: policy === "outside-and-escape",
   };
+}
+
+/** @internal Keeps the WebKit fallback narrower than the React Aria dismissal contract. */
+export function shouldDismissNonModalOutsideActivation(
+  evidence: DialogOutsideActivationEvidence,
+): boolean {
+  return (
+    evidence.pointerStartedOutside &&
+    evidence.clickEndedOutside &&
+    evidence.sameTargetLineage &&
+    evidence.isPrimary &&
+    !evidence.defaultPrevented &&
+    !evidence.topLayerOwned
+  );
 }
 
 export function resolveDialogOpenChangeReason(

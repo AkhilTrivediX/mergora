@@ -55,6 +55,18 @@ const secondaryActionStyle = {
   color: "var(--mrg-semantic-color-foreground-primary)",
 } satisfies CSSProperties;
 
+interface FoundationStoryArgs {
+  readonly adaptiveWrap: boolean;
+  readonly equalRows: boolean;
+  readonly fillOrphan: boolean;
+  readonly fitMedia: boolean;
+  readonly queryContainer: boolean;
+  readonly safeArea: boolean;
+  readonly semanticMaximum: boolean;
+  readonly separatedStack: boolean;
+  readonly separatorSpacing: boolean;
+}
+
 function Canvas({
   children,
   direction,
@@ -87,14 +99,127 @@ function EvidenceDatum({
 }
 
 const meta = {
-  component: Container,
+  args: {
+    adaptiveWrap: true,
+    equalRows: true,
+    fillOrphan: true,
+    fitMedia: true,
+    queryContainer: true,
+    safeArea: true,
+    semanticMaximum: true,
+    separatedStack: true,
+    separatorSpacing: true,
+  },
+  argTypes: {
+    adaptiveWrap: { control: "boolean", name: "Inline adaptive wrapping" },
+    equalRows: { control: "boolean", name: "Grid equal rows" },
+    fillOrphan: { control: "boolean", name: "Cluster fill orphan" },
+    fitMedia: { control: "boolean", name: "AspectRatio media fit" },
+    queryContainer: { control: "boolean", name: "Container query context" },
+    safeArea: { control: "boolean", name: "Container safe-area gutters" },
+    semanticMaximum: { control: "boolean", name: "Center semantic maximum" },
+    separatedStack: { control: "boolean", name: "Stack structural separators" },
+    separatorSpacing: { control: "boolean", name: "Separator logical spacing" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Intrinsic Layout Foundations",
-} satisfies Meta<typeof Container>;
+} satisfies Meta<FoundationStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<FoundationStoryArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    adaptiveWrap: false,
+    equalRows: false,
+    fillOrphan: false,
+    fitMedia: false,
+    queryContainer: false,
+    safeArea: false,
+    semanticMaximum: false,
+    separatedStack: false,
+    separatorSpacing: false,
+  },
+  render: (args: FoundationStoryArgs) => (
+    <Canvas>
+      <Container
+        gutter="default"
+        queryContainer={args.queryContainer}
+        safeArea={args.safeArea}
+        width="content"
+      >
+        <Stack gap="md" separated={args.separatedStack}>
+          <h1 style={{ margin: 0 }}>Plain layout baseline</h1>
+          <Inline gap="sm" wrap={args.adaptiveWrap}>
+            <span>Source</span>
+            <span>Package</span>
+          </Inline>
+          <Separator spacing={args.separatorSpacing ? "md" : "none"} />
+          <Grid columns={1} equalRows={args.equalRows}>
+            <Center maximum={args.semanticMaximum ? "prose" : "none"}>
+              <p style={{ margin: 0 }}>Native elements keep their own meaning.</p>
+            </Center>
+          </Grid>
+          <Cluster orphan={args.fillOrphan ? "fill" : "start"}>
+            <button style={secondaryActionStyle} type="button">
+              Inspect
+            </button>
+            <button style={secondaryActionStyle} type="button">
+              Continue
+            </button>
+          </Cluster>
+          <AspectRatio fit={args.fitMedia ? "contain" : "none"} ratio="video">
+            <div style={specimenStyle}>Unfitted content</div>
+          </AspectRatio>
+        </Stack>
+      </Container>
+    </Canvas>
+  ),
+};
+
+export const RecommendedMergora: Story = {
+  render: (args: FoundationStoryArgs) => (
+    <Canvas>
+      <Container queryContainer={args.queryContainer} safeArea={args.safeArea} width="wide">
+        <Stack gap="lg" separated={args.separatedStack}>
+          <Inline align="baseline" justify="between" wrap={args.adaptiveWrap}>
+            <Stack gap="xs">
+              <h1 style={{ margin: 0 }}>Responsive evidence rail</h1>
+              <span>Layout intelligence remains explicit and inspectable.</span>
+            </Stack>
+            <strong>Source present</strong>
+          </Inline>
+          <Separator spacing={args.separatorSpacing ? "md" : "none"} />
+          <Grid equalRows={args.equalRows} minimum="compact">
+            <EvidenceDatum title="Keyboard">Logical order remains the DOM order.</EvidenceDatum>
+            <EvidenceDatum title="Narrow screens">
+              Intrinsic tracks collapse without clipping.
+            </EvidenceDatum>
+            <EvidenceDatum title="RTL">Logical properties preserve direction.</EvidenceDatum>
+          </Grid>
+          <Center maximum={args.semanticMaximum ? "prose" : "none"} text="center">
+            <p style={{ margin: 0 }}>
+              A semantic maximum keeps long reading lines comfortable without imposing a generic
+              card surface.
+            </p>
+          </Center>
+          <Cluster orphan={args.fillOrphan ? "fill" : "start"}>
+            <button style={secondaryActionStyle} type="button">
+              Review source
+            </button>
+            <button style={actionStyle} type="button">
+              Run interaction checks
+            </button>
+          </Cluster>
+          <AspectRatio fit={args.fitMedia ? "contain" : "none"} ratio="wide">
+            <div style={specimenStyle}>Bounded preview geometry</div>
+          </AspectRatio>
+        </Stack>
+      </Container>
+    </Canvas>
+  ),
+};
 
 export const LayoutWorkbench: Story = {
   render: () => (

@@ -7,6 +7,7 @@
   "evidenceStatus": "incomplete",
   "recordedEvidence": [],
   "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora enhancement-off/on stories, selective controls, and separator-only accessibility output.",
     "Generate and verify source/package/registry/docs outputs and the public subpath export.",
     "Record pointer capture, cancellation, keyboard, 44-pixel step controls, collapse, and restore behavior in supported browsers.",
     "Complete manual screen-reader value, keyboard-only, speech, switch, touch, and forced-colors sessions for this Risk Class 2 component.",

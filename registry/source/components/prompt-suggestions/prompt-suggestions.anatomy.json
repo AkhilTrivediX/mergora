@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prompt-suggestions",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "prompt-suggestions",
+    "stableAttributes": ["data-slot", "data-selection-mode"]
+  },
+  "parts": ["prompt-suggestion"]
+}

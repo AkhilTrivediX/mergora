@@ -1,7 +1,9 @@
 .mrg-status {
-  --mrg-status-color: var(--mrg-semantic-color-foreground-muted);
+  --mrg-status-background: var(--mrg-semantic-color-status-neutral-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-neutral-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-neutral-foreground);
   align-items: baseline;
-  color: var(--mrg-status-color);
+  color: var(--mrg-semantic-color-foreground-primary);
   display: inline-flex;
   flex-wrap: wrap;
   font-size: var(--mrg-semantic-font-size-label);
@@ -10,25 +12,35 @@
 }
 
 .mrg-status[data-variant="info"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-info-border);
   --mrg-status-color: var(--mrg-semantic-color-status-info-foreground);
 }
 
 .mrg-status[data-variant="success"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-success-border);
   --mrg-status-color: var(--mrg-semantic-color-status-success-foreground);
 }
 
 .mrg-status[data-variant="warning"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-warning-border);
   --mrg-status-color: var(--mrg-semantic-color-status-warning-foreground);
 }
 
 .mrg-status[data-variant="error"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-danger-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-danger-border);
   --mrg-status-color: var(--mrg-semantic-color-status-danger-foreground);
 }
 
-[data-slot="status-symbol"] {
+.mrg-status [data-slot="status-symbol"] {
   align-items: center;
-  border: var(--mrg-semantic-border-width-default) solid currentColor;
-  border-radius: var(--mrg-semantic-radius-pill);
+  background: var(--mrg-status-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-status-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-status-color);
   display: inline-flex;
   flex: none;
   font-size: var(--mrg-semantic-font-size-caption);
@@ -37,16 +49,19 @@
   min-block-size: 1.25em;
 }
 
-[data-slot="status-variant-label"] {
+.mrg-status [data-slot="status-variant-label"] {
+  color: var(--mrg-status-color);
   font-weight: var(--mrg-semantic-font-weight-strong);
 }
 
-[data-slot="status-label"] {
+.mrg-status [data-slot="status-label"] {
   overflow-wrap: anywhere;
 }
 
 @media (forced-colors: active) {
-  [data-slot="status-symbol"] {
+  .mrg-status [data-slot="status-symbol"] {
+    background: Canvas;
     border-color: CanvasText;
+    color: CanvasText;
   }
 }

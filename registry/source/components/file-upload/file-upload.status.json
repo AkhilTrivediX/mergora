@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-upload",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, and updater outputs.",
+    "Pass package/source parity, frozen packed consumers, queue lifecycle recovery, and adapter contract gates.",
+    "Verify picker, paste, drop, validation, duplicate, ordering, retry, cancel, remove, reset, and controlled behavior in every supported browser engine.",
+    "Record narrow, zoom, text-spacing, RTL, touch, reduced-motion, enhanced-contrast, forced-colors, and risk-class manual assistive-technology evidence.",
+    "Document and test direct-form, deterministic mock, multipart/S3-compatible, and tus-compatible consumer adapters without vendor coupling.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

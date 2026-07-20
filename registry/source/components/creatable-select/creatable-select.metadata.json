@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "creatable-select",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "empty",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "creatable-select",
+      "semanticElement": "div containing labelled editable combobox",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-disabled", "enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "creatable-select-accessibility", "version": "0.1.0" },
+  "passport": { "id": "creatable-select-quality-passport", "version": "0.0.0" }
+}

@@ -19,30 +19,49 @@ import "./field.css";
 export type FieldLayout = "stacked" | "inline";
 
 export interface FieldProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** One primary labelled control rendered inside the Field control slot. */
   readonly children: ReactNode;
+  /** Optional label-aligned recovery action; empty or omitted content removes the action slot. */
+  readonly contextualAction?: ReactNode;
+  /** Stable ID assigned to the primary control; generated when omitted. */
   readonly controlId?: string;
+  /** Optional persistent help content linked to the primary control. */
   readonly description?: ReactNode;
+  /** Optional persistent error content that marks the Field context invalid. */
   readonly error?: ReactNode;
+  /** Non-empty visible label associated with the primary control. */
   readonly label: ReactNode;
+  /** Stacked or inline visual arrangement; defaults to `stacked`. */
   readonly layout?: FieldLayout;
+  /** Visible localized optional marker shown only when `required` is false. */
   readonly optionalLabel?: ReactNode;
+  /** Supplies required state to integrated controls; defaults to false. */
   readonly required?: boolean;
+  /** Decorative visible required marker; defaults to an asterisk. */
   readonly requiredIndicator?: ReactNode;
 }
 
 export interface FieldControlState {
+  /** Authoritative native id assigned to the integrated primary control. */
   readonly controlId: string;
+  /** Id of visible label content naming the primary control. */
   readonly labelId: string;
+  /** Id of persistent help content, or undefined when no description renders. */
   readonly descriptionId: string | undefined;
+  /** Space-separated description and error ids for aria-describedby. */
   readonly describedBy: string | undefined;
+  /** Id of persistent error content, or undefined when no error renders. */
   readonly errorMessageId: string | undefined;
+  /** Whether error content currently marks the integrated control invalid. */
   readonly invalid: boolean;
+  /** Required state inherited by integrated field controls. */
   readonly required: boolean;
 }
 
 const FieldContext = createContext<FieldControlState | null>(null);
 
 interface ProcessLike {
+  /** Optional runtime environment used only to gate development diagnostics. */
   readonly env?: { readonly NODE_ENV?: string };
 }
 
@@ -95,6 +114,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   {
     children,
     className,
+    contextualAction,
     controlId,
     description,
     error,
@@ -115,6 +135,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
   const labelId = `${idStem}-label`;
   const hasDescription = hasAccessibleContent(description);
   const hasError = hasAccessibleContent(error);
+  const hasContextualAction = hasAccessibleContent(contextualAction);
   const descriptionId = hasDescription ? `${idStem}-description` : undefined;
   const errorId = hasError ? `${idStem}-error` : undefined;
   const invalid = hasError;
@@ -146,6 +167,7 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
       <div
         {...nativeProps}
         className={className === undefined ? "mrg-field" : `mrg-field ${className}`}
+        data-contextual-action={hasContextualAction || undefined}
         data-invalid={invalid || undefined}
         data-layout={layout}
         data-required={required || undefined}
@@ -162,6 +184,9 @@ export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
             <span data-slot="field-optional-label">{optionalLabel}</span>
           )}
         </label>
+        {!hasContextualAction ? null : (
+          <div data-slot="field-contextual-action">{contextualAction}</div>
+        )}
         {!hasDescription ? null : (
           <p data-slot="field-description" id={descriptionId}>
             {description}

@@ -3,4 +3,8 @@
     box-sizing: border-box;
     min-inline-size: 0;
   }
+
+  [data-slot="direction-boundary"][data-bidi-isolate="true"] {
+    unicode-bidi: isolate;
+  }
 }

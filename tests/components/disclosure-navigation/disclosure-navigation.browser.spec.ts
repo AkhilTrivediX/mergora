@@ -42,7 +42,17 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
   });
 }
 
@@ -95,6 +105,36 @@ test("workbench exposes native disclosure, selection, hierarchy, and page semant
     fullPage: true,
     path: testInfo.outputPath("disclosure-navigation-workbench.png"),
   });
+});
+
+test("basic and recommended controls isolate every navigation enhancement", async ({ page }) => {
+  await page.setViewportSize({ height: 900, width: 320 });
+  await openStory(page, "basic-defaults");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Disclosure and navigation modes",
+  );
+  await expect(page.locator('[data-slot="accordion-expansion-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="collapsible-state-text"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="tabs-keyboard-hint"]')).toHaveCount(0);
+  await expect(page.locator('[data-view="compact"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="pagination"]')).toHaveAttribute("data-mode", "pages");
+  expect(await axeViolations(page)).toEqual([]);
+
+  await openStory(page, "recommended-mergora");
+  await expect(page.locator('[data-slot="accordion-expansion-summary"]')).toContainText(
+    "1 section expanded",
+  );
+  const collapsible = page.getByRole("button", { name: "Technical details" });
+  await expect(page.locator('[data-slot="collapsible-state-text"]')).toHaveText("Collapsed");
+  await collapsible.click();
+  await expect(page.locator('[data-slot="collapsible-state-text"]')).toHaveText("Expanded");
+  const tablist = page.getByRole("tablist", { name: "Artifact sections" });
+  await expect(page.locator('[data-slot="tabs-keyboard-hint"]')).toBeVisible();
+  await expect(tablist).toHaveAccessibleDescription(/Use arrow keys/u);
+  await expect(page.locator('[data-view="full"]')).toBeHidden();
+  await expect(page.locator('[data-view="compact"]')).toBeVisible();
+  await expect(page.locator('[data-slot="pagination"]')).toHaveAttribute("data-mode", "cursor");
+  expect(await axeViolations(page)).toEqual([]);
 });
 
 test("accordion and collapsible preserve native activation and optional roving focus", async ({

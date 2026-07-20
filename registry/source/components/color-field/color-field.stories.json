@@ -5,7 +5,7 @@
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "ColorFieldWorkbench"
+      "story": "BasicDefaults"
     },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "ColorFieldWorkbench" },
     {
@@ -49,7 +49,7 @@
     {
       "id": "populated",
       "applicability": { "status": "applicable" },
-      "story": "ColorFieldWorkbench"
+      "story": "RecommendedMergora"
     },
     {
       "id": "partial",

@@ -5,11 +5,11 @@
     "slot": "progress",
     "element": "label containing progress",
     "ref": "HTMLProgressElement",
-    "stableAttributes": ["data-slot", "data-indeterminate"]
+    "stableAttributes": ["data-slot", "data-indeterminate", "data-value-visible"]
   },
   "parts": [
     { "slot": "progress-label", "element": "span", "stability": "documented" },
-    { "slot": "progress-value", "element": "span", "stability": "documented" },
+    { "slot": "progress-value", "element": "optional span", "stability": "documented" },
     { "slot": "progress-track", "element": "progress", "stability": "documented" }
   ]
 }

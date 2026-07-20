@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "creatable-select",
+  "root": {
+    "element": "div",
+    "ref": "HTMLInputElement",
+    "slot": "creatable-select",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid"]
+  },
+  "parts": [
+    { "element": "input", "slot": "creatable-select-input" },
+    { "element": "ul", "slot": "creatable-select-listbox" },
+    { "element": "output", "slot": "creatable-select-canonical-preview" }
+  ]
+}

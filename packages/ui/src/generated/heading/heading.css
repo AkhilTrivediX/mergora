@@ -11,6 +11,10 @@
   overflow-wrap: anywhere;
   text-wrap: balance;
 }
+.mrg-heading::selection {
+  background: var(--mrg-semantic-color-selection-background);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
 .mrg-heading[data-size="md"] {
   font-size: var(--mrg-semantic-font-size-heading-medium);
 }

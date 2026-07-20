@@ -67,6 +67,15 @@ const buttonStyle = {
   paddingInline: "var(--mrg-semantic-space-inline-md)",
 } satisfies CSSProperties;
 
+interface ColorEnhancementArgs {
+  readonly colorFieldContrast: boolean;
+  readonly colorFieldPreview: boolean;
+  readonly colorPickerContrast: boolean;
+  readonly colorPickerPreview: boolean;
+  readonly colorPickerSwatches: boolean;
+  readonly colorTextFormat: "hex" | "hsl" | "rgb";
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -82,6 +91,70 @@ function Canvas({
         <div style={workbenchStyle}>{children}</div>
       </main>
     </MergoraProvider>
+  );
+}
+
+function MergoraColorModes({
+  colorFieldContrast,
+  colorFieldPreview,
+  colorPickerContrast,
+  colorPickerPreview,
+  colorPickerSwatches,
+  colorTextFormat,
+}: ColorEnhancementArgs) {
+  const [submission, setSubmission] = useState("No canonical values submitted.");
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Mergora color controls</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Exact editing and native serialization remain available when preview, contrast, and preset
+          aids are removed independently.
+        </p>
+      </header>
+      <Form
+        aria-label="Color control modes"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSubmission(
+            JSON.stringify(Object.fromEntries(new FormData(event.currentTarget).entries())),
+          );
+        }}
+      >
+        <Field label="Accent color">
+          <ColorField
+            contrastBackground={WHITE}
+            defaultValue={VIOLET}
+            format={colorTextFormat}
+            name="accent-color"
+            showContrast={colorFieldContrast}
+            showPreview={colorFieldPreview}
+          />
+        </Field>
+        <Field label="Interface color">
+          <ColorPicker
+            contrastBackground={WHITE}
+            defaultValue={BRAND_GREEN}
+            format={colorTextFormat}
+            name="interface-color"
+            showContrast={colorPickerContrast}
+            showPreview={colorPickerPreview}
+            swatches={colorPickerSwatches ? [BRAND_GREEN, VIOLET] : []}
+          />
+        </Field>
+        <div style={actionsStyle}>
+          <button style={buttonStyle} type="submit">
+            Inspect canonical values
+          </button>
+          <button style={buttonStyle} type="reset">
+            Restore defaults
+          </button>
+        </div>
+      </Form>
+      <output aria-live="polite" data-testid="mergora-color-values">
+        {submission}
+      </output>
+    </Canvas>
   );
 }
 
@@ -214,12 +287,45 @@ function DelayedControlledTextWorkbench() {
 }
 
 const meta = {
+  args: {
+    colorFieldContrast: true,
+    colorFieldPreview: true,
+    colorPickerContrast: true,
+    colorPickerPreview: true,
+    colorPickerSwatches: true,
+    colorTextFormat: "hex",
+  },
+  argTypes: {
+    colorFieldContrast: { control: "boolean" },
+    colorFieldPreview: { control: "boolean" },
+    colorPickerContrast: { control: "boolean" },
+    colorPickerPreview: { control: "boolean" },
+    colorPickerSwatches: { control: "boolean" },
+    colorTextFormat: { control: "select", options: ["hex", "rgb", "hsl"] },
+  },
   parameters: { layout: "fullscreen" },
+  tags: ["autodocs"],
   title: "P4/Color fields",
-} satisfies Meta;
+} satisfies Meta<ColorEnhancementArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<ColorEnhancementArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    colorFieldContrast: false,
+    colorFieldPreview: false,
+    colorPickerContrast: false,
+    colorPickerPreview: false,
+    colorPickerSwatches: false,
+    colorTextFormat: "hex",
+  },
+  render: (args) => <MergoraColorModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraColorModes {...args} />,
+};
 
 export const ProductionWorkbench: Story = {
   render: () => <ProductionForm />,

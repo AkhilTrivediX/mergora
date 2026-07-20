@@ -168,12 +168,12 @@ describe("P2 feedback and status records", () => {
       callout: { warning: "FeedbackVariants" },
       "error-state": {
         active: "ErrorInteractions",
-        error: "FeedbackVariants",
+        error: "RecommendedMergora",
         "focus-visible": "ErrorInteractions",
         hover: "ErrorInteractions",
       },
-      skeleton: { loading: "LoadingStates" },
-      spinner: { loading: "LoadingStates" },
+      skeleton: { loading: "RecommendedMergora" },
+      spinner: { loading: "RecommendedMergora" },
       status: {
         error: "FeedbackVariants",
         success: "FeedbackVariants",
@@ -234,6 +234,41 @@ describe("P2 feedback and status records", () => {
       }
       expect(css).not.toMatch(/^\s*(?:margin|padding|inset|border)-(?:left|right)\s*:/mu);
       expect(css).not.toMatch(/#[0-9a-f]{3,8}|(?:oklch|rgb|hsl)\(/iu);
+    }
+  });
+
+  it("uses the shared Mergora signature and exposes basic and enhanced Storybook modes", () => {
+    const storySource = readFileSync(
+      resolve(root, "apps/storybook/src/P2FeedbackStatus.stories.tsx"),
+      "utf8",
+    );
+    expect(storySource).toContain("export const BasicDefaults");
+    expect(storySource).toContain("export const RecommendedMergora");
+    for (const control of [
+      "animateSkeleton",
+      "announceAlert",
+      "announceBusyState",
+      "landmarkCallout",
+      "liveStatus",
+      "persistBannerDismissal",
+      "showBadgeSemantics",
+      "showErrorDetails",
+      "showMeterThresholds",
+      "showProgressValue",
+      "showRecoverySuggestions",
+    ]) {
+      expect(storySource).toContain(`${control}: { control: "boolean" }`);
+    }
+
+    for (const itemId of itemIds) {
+      const css = readItem(itemId, `${itemId}.css`);
+      expect(css, itemId).not.toMatch(/(?:linear|radial)-gradient|backdrop-filter/iu);
+      expect(css, itemId).not.toMatch(/border-inline-(?:start|end)-width\s*:/iu);
+    }
+    for (const itemId of ["alert", "banner", "callout", "empty-state", "error-state"]) {
+      expect(readItem(itemId, `${itemId}.css`), itemId).toContain(
+        "var(--mrg-semantic-color-background-canvas)",
+      );
     }
   });
 });
@@ -429,6 +464,9 @@ describe("P2 progress, meter, and loading ownership", () => {
     expect(determinate).toContain("<progress");
     expect(determinate).toContain('max="200"');
     expect(determinate).toContain('value="50"');
+    const labelId = determinate.match(/id="(mrg-progress-[^"]+-label)"/u)?.[1];
+    expect(labelId).toBeDefined();
+    expect(determinate).toContain(`aria-labelledby="${labelId}"`);
     expect(determinate).toContain("25 %");
 
     const indeterminate = renderToStaticMarkup(<Progress label="Indexing" />);
@@ -491,6 +529,95 @@ describe("P2 progress, meter, and loading ownership", () => {
     expect(resolveSkeletonSize(0, "width")).toBe("0px");
     expect(() => resolveSkeletonSize(-1, "width")).toThrow("non-negative");
     expect(() => resolveSkeletonSize(" ", "width")).toThrow("non-empty");
+  });
+
+  it("removes optional value, threshold, and motion enhancements without residual output", () => {
+    const progressFormatter = vi.fn(() => "42 of 100");
+    const plainProgress = renderToStaticMarkup(
+      <Progress formatValue={progressFormatter} label="Processing" showValue={false} value={42} />,
+    );
+    expect(plainProgress).not.toContain('data-slot="progress-value"');
+    expect(plainProgress).not.toContain("aria-valuetext");
+    expect(progressFormatter).not.toHaveBeenCalled();
+    expect(plainProgress).toContain('value="42"');
+
+    const meterFormatter = vi.fn((candidate: number) => `${candidate} units`);
+    const plainMeter = renderToStaticMarkup(
+      <Meter
+        formatValue={meterFormatter}
+        high={85}
+        label="Capacity"
+        low={55}
+        optimum={35}
+        showThresholdSummary={false}
+        value={68}
+      />,
+    );
+    expect(plainMeter).not.toContain('data-slot="meter-thresholds"');
+    expect(plainMeter).not.toContain("aria-describedby");
+    expect(meterFormatter).toHaveBeenCalledTimes(1);
+
+    const staticSkeleton = renderToStaticMarkup(<Skeleton animated={false} />);
+    expect(staticSkeleton).not.toContain("data-animated");
+    expect(staticSkeleton).toContain('aria-hidden="true"');
+    expect(() =>
+      renderToStaticMarkup(
+        <Progress label="Processing" showValue={"yes" as unknown as boolean} value={42} />,
+      ),
+    ).toThrow("showValue");
+    expect(() =>
+      renderToStaticMarkup(
+        <Meter label="Capacity" showThresholdSummary={"yes" as unknown as boolean} value={42} />,
+      ),
+    ).toThrow("showThresholdSummary");
+    expect(() => renderToStaticMarkup(<Skeleton animated={"yes" as unknown as boolean} />)).toThrow(
+      "animated",
+    );
+  });
+
+  it("adds optional threshold context to the native meter without replacing its value model", () => {
+    const markup = renderToStaticMarkup(
+      <Meter high={85} label="Capacity" low={55} optimum={35} showThresholdSummary value={68} />,
+    );
+    const summaryId = markup.match(/id="(mrg-meter-[^"]+-thresholds)"/u)?.[1];
+    expect(summaryId).toBeDefined();
+    expect(markup).toContain(`aria-describedby="${summaryId}"`);
+    expect(markup).toContain('data-slot="meter-thresholds"');
+    expect(markup).toContain("Low");
+    expect(markup).toContain("High");
+    expect(markup).toContain("Optimum");
+    expect(markup).toContain('value="68"');
+  });
+
+  it("does not resolve enhancement-only messages when related enhancements are disabled", () => {
+    const optionalMessage = vi.fn(() => "Optional enhancement copy");
+    renderToStaticMarkup(
+      <MergoraProvider
+        messages={{
+          "badge.status": optionalMessage,
+          "banner.dismiss": optionalMessage,
+          "errorState.details": optionalMessage,
+          "errorState.retry": optionalMessage,
+          "meter.high": optionalMessage,
+          "meter.low": optionalMessage,
+          "meter.optimum": optionalMessage,
+          "progress.indeterminate": optionalMessage,
+          "spinner.busy": optionalMessage,
+        }}
+      >
+        <Badge>Category</Badge>
+        <Banner dismissible={false} id="quiet" title="Notice">
+          Static content
+        </Banner>
+        <ErrorState description="Return later." title="Unavailable" />
+        <Meter high={85} label="Capacity" low={55} optimum={35} value={68} />
+        <Progress label="Processing" showValue={false} />
+        <BusyRegion announce={false} busy label="Results">
+          Results
+        </BusyRegion>
+      </MergoraProvider>,
+    );
+    expect(optionalMessage).not.toHaveBeenCalled();
   });
 
   it("rejects invalid progress, meter, and busy-region contracts", () => {

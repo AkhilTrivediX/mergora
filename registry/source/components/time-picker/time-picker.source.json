@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../date-field/date-time-utils.js",
+    "../time-field/index.js",
+    "./time-picker.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/time-picker/time-picker.tsx",
+  "id": "time-picker",
+  "itemDependencies": ["date-field", "time-field"],
+  "outputRole": "system"
+}

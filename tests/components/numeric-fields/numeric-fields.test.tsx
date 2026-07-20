@@ -79,6 +79,14 @@ describe("P4 numeric-field registry records", () => {
     }
   });
 
+  it("uses the shared two-layer focus seam and forced-color mapping", () => {
+    const css = readItem("number-field", "number-field.css");
+    expect(css).toContain("var(--mrg-component-focus-indicator-color)");
+    expect(css).toContain("var(--mrg-component-focus-indicator-contrast-background)");
+    expect(css).toContain("box-shadow: none");
+    expect(css).toContain("outline-color: Highlight");
+  });
+
   it("keeps source descriptors exact and claims no release or evidence it does not have", () => {
     const expectedDependencies = {
       "currency-field": ["number-field", "provider"],
@@ -123,6 +131,7 @@ describe("P4 numeric-field registry records", () => {
     const numberCss = readItem("number-field", "number-field.css");
     expect(numberCss).toContain("@media (forced-colors: active)");
     expect(numberCss).toContain("@media (pointer: coarse)");
+    expect(numberCss).not.toContain("radius-pill");
   });
 });
 
@@ -226,5 +235,95 @@ describe("numeric field server rendering", () => {
     expect(markup).toContain('required=""');
     expect(markup).toMatch(/aria-describedby="[^"]+-error"/u);
     expect(markup).toMatch(/aria-errormessage="[^"]+-error"/u);
+  });
+
+  it("omits optional insight output by default", () => {
+    const markup = renderToStaticMarkup(
+      <MergoraProvider>
+        <Field label="Quantity">
+          <NumberField defaultValue={12} />
+        </Field>
+      </MergoraProvider>,
+    );
+    expect(markup).not.toContain("number-field-insights");
+    expect(markup).not.toContain("number-field-status");
+    expect(markup).not.toContain("number-field-canonical-preview");
+    expect(markup).not.toContain("data-has-status-rail");
+    expect(markup).not.toContain("data-shows-canonical-preview");
+  });
+
+  it("shows linked range context and exact canonical values only when requested", () => {
+    const markup = renderToStaticMarkup(
+      <MergoraProvider locale="en-US">
+        <Field label="Operating reserve">
+          <CurrencyField
+            currency="EUR"
+            defaultValue={8250}
+            maxValue={12000}
+            minValue={1000}
+            showCanonicalPreview
+            statusRail="auto"
+          />
+        </Field>
+      </MergoraProvider>,
+    );
+    expect(markup).toContain('data-has-status-rail="true"');
+    expect(markup).toContain('data-shows-canonical-preview="true"');
+    expect(markup).toContain("Accepted range: EUR\u00a01,000.00 to EUR\u00a012,000.00.");
+    expect(markup).toContain("Canonical EUR major-unit value");
+    expect(markup).toContain('<data value="8250">8250</data>');
+    const statusId = markup.match(/id="(mrg-number-field-status-[^"]+)"/u)?.[1];
+    expect(statusId).toBeDefined();
+    expect(markup).toMatch(
+      new RegExp(`aria-describedby="[^"]*${statusId ?? "missing"}[^"]*"`, "u"),
+    );
+
+    const percentageMarkup = renderToStaticMarkup(
+      <PercentageField defaultValue={0.275} showCanonicalPreview showStepper={false} />,
+    );
+    expect(percentageMarkup).toContain("Canonical fractional value");
+    expect(percentageMarkup).toContain('<data value="0.275">0.275</data>');
+    expect(percentageMarkup).not.toContain("number-field-status");
+  });
+
+  it("resolves status and canonical-preview messages only for the enabled enhancement", () => {
+    let statusMessageResolutions = 0;
+    let previewMessageResolutions = 0;
+    const messages = {
+      "numberField.canonicalPreview": () => {
+        previewMessageResolutions += 1;
+        return "Canonical number";
+      },
+      "numberField.canonicalPreview.empty": () => {
+        previewMessageResolutions += 1;
+        return "No canonical value yet";
+      },
+      "numberField.status.range": () => {
+        statusMessageResolutions += 1;
+        return "Accepted range: {minimum} to {maximum}.";
+      },
+    } as const;
+
+    const statusOnlyMarkup = renderToStaticMarkup(
+      <MergoraProvider messages={messages}>
+        <NumberField defaultValue={4} maxValue={10} minValue={0} statusRail="auto" />
+      </MergoraProvider>,
+    );
+    expect(statusOnlyMarkup).toContain("number-field-status");
+    expect(statusOnlyMarkup).not.toContain("number-field-canonical-preview");
+    expect(statusMessageResolutions).toBe(1);
+    expect(previewMessageResolutions).toBe(0);
+
+    statusMessageResolutions = 0;
+    previewMessageResolutions = 0;
+    const previewOnlyMarkup = renderToStaticMarkup(
+      <MergoraProvider messages={messages}>
+        <NumberField defaultValue={4} showCanonicalPreview statusRail={false} />
+      </MergoraProvider>,
+    );
+    expect(previewOnlyMarkup).toContain("number-field-canonical-preview");
+    expect(previewOnlyMarkup).not.toContain("number-field-status");
+    expect(statusMessageResolutions).toBe(0);
+    expect(previewMessageResolutions).toBe(1);
   });
 });

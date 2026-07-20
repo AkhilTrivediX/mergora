@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./rich-text-editor.css", "react"],
+  "entryPath": "registry/source/components/rich-text-editor/rich-text-editor.tsx",
+  "id": "rich-text-editor",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

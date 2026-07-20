@@ -1,0 +1,105 @@
+/* Generated from registry/source/components/item/item.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-item {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-md);
+    min-block-size: var(--mrg-semantic-density-row-height);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    transition: background-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+  }
+  .mrg-item[data-selected] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    background: var(--mrg-semantic-color-selection-background);
+    color: var(--mrg-semantic-color-selection-foreground);
+  }
+  .mrg-item[data-current] {
+    box-shadow: inset 0 calc(var(--mrg-semantic-border-width-strong) * -1) 0
+      var(--mrg-semantic-color-brand-violet);
+  }
+  .mrg-item__media {
+    flex: none;
+  }
+  .mrg-item__body {
+    min-inline-size: 0;
+    flex: 1;
+  }
+  .mrg-item__title {
+    font-size: var(--mrg-semantic-font-size-body);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+    overflow-wrap: anywhere;
+  }
+  .mrg-item__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow-wrap: anywhere;
+  }
+  .mrg-item__context {
+    display: block;
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+    color: var(--mrg-semantic-color-brand-action);
+    font-size: var(--mrg-semantic-font-size-caption);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-item__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .mrg-item__actions {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-density-control-gap);
+  }
+  .mrg-item :where(button, a):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  @media (max-width: 30rem) {
+    .mrg-item {
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .mrg-item__actions {
+      inline-size: 100%;
+      padding-inline-start: calc(
+        var(--mrg-semantic-size-icon-md) + var(--mrg-semantic-space-inline-md)
+      );
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-item {
+      transition: none;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-item {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-item[data-selected] {
+      outline: var(--mrg-semantic-border-width-strong) solid Highlight;
+    }
+    .mrg-item[data-current] {
+      box-shadow: inset 0 calc(var(--mrg-semantic-border-width-strong) * -1) 0 Highlight;
+    }
+    .mrg-item :where(button, a):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rich-text-editor",
+  "entryExport": "RichTextEditor",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div shell attributes except owned children, defaultValue, and change handling",
+  "exports": [
+    { "kind": "component", "name": "RichTextEditor" },
+    { "kind": "type", "name": "RichTextEditorAdapter" },
+    { "kind": "type", "name": "RichTextEditorChangeReason" },
+    { "kind": "type", "name": "RichTextEditorProps" },
+    { "kind": "type", "name": "RichTextEditorSurfaceContext" }
+  ],
+  "controlledState": [
+    {
+      "state": "adapter serialization",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange(value, reason)"
+    }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "identified versioned RichTextEditorAdapter" },
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "showAdapterBoundary", "required": false, "default": false, "type": "boolean" },
+    { "name": "showSerializationPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "showStatusRail", "required": false, "default": false, "type": "boolean" },
+    { "name": "validateSerializedValue", "required": false, "type": "consumer validation callback" }
+  ],
+  "compositionPolicy": {
+    "engine": "Mergora renders a versioned consumer adapter and does not implement contenteditable, document transforms, history, or schema itself.",
+    "enhancements": "Adapter ownership note, serialization disclosure, and status output are independently gated and absent when disabled."
+  }
+}

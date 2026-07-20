@@ -8,13 +8,15 @@
   "semantics": {
     "provider": "Context-only and semantically transparent.",
     "boundary": "A neutral div writes native dir and the identical context value.",
-    "default": "ltr is deterministic when no provider exists."
+    "default": "ltr is deterministic when no provider exists.",
+    "isolation": "Boundary isolation is opt-in and changes CSS bidi containment only; it adds no role, name, event, or focus behavior."
   },
   "direction": {
     "nesting": "The nearest provider wins and outer direction resumes after the subtree.",
     "portal": "React context follows portals; Portal additionally writes native dir on its DOM boundary.",
     "logicalSides": "start resolves to left in LTR and right in RTL; end is the inverse.",
-    "css": "Consumers use logical properties unless a physical coordinate is semantically required."
+    "css": "Consumers use logical properties unless a physical coordinate is semantically required.",
+    "isolateOptOut": "With isolate=false the data attribute and unicode-bidi declaration are absent while native dir and context remain synchronized."
   },
   "consumerResponsibilities": [
     "Use Direction.Boundary or a native dir attribute whenever the DOM bidi algorithm must change.",
@@ -27,6 +29,8 @@
       "nested-context",
       "native-dir",
       "logical-side-map",
+      "isolation-opt-in",
+      "isolation-opt-out",
       "ssr",
       "hydration",
       "portal-context",

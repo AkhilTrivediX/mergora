@@ -27,6 +27,8 @@ claim.
 
 `disabled` retains native behavior. It is intentionally different from `pending`: a native disabled button can leave the tab order and lose focus, while a pending button remains focusable. If both are supplied, native `disabled` behavior wins, so do not combine them when focus retention is required.
 
+The precise Ink border, Living Green action state, Violet two-layer focus seam, and restrained loading rail form the shared Mergora workbench signature. Focus-retaining `pending` behavior is the useful advantage over an ordinary Shadcn button. Leaving `pending={false}` removes the rail, indicator, busy state, replacement label, and activation guard.
+
 When an idle icon-only button is named with `aria-label`, a visible `pendingLabel` temporarily becomes its accessible name. When `aria-labelledby` named the idle button, the pending label temporarily uses content naming instead. This keeps the visible pending text in the accessible name for speech users; choose a pending label that retains any context users still need.
 
 ## Accessible naming

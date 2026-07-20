@@ -26,7 +26,10 @@
 }
 
 .mrg-checkbox-group [data-slot="checkbox-group-error"] {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-status-danger-border);
   color: var(--mrg-semantic-color-status-danger-foreground);
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
 }
 
 .mrg-checkbox-group [data-slot="checkbox-group-items"] {
@@ -56,6 +59,7 @@
 
 @media (forced-colors: active) {
   .mrg-checkbox-group [data-slot="checkbox-group-error"] {
+    border-color: CanvasText;
     color: CanvasText;
   }
 }

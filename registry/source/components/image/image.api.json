@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image",
+  "entryExport": "Image",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML figure attributes plus imageProps for the owned img",
+  "exports": [
+    { "kind": "component", "name": "Image" },
+    { "kind": "type", "name": "ImageLoadState" },
+    { "kind": "type", "name": "ImageProps" },
+    { "kind": "function", "name": "defaultImageSourcePolicy" }
+  ],
+  "props": [
+    { "name": "src", "required": true, "type": "string" },
+    {
+      "name": "alt/decorative",
+      "required": true,
+      "type": "discriminated informative or decorative alternative contract"
+    },
+    { "name": "aspectRatio", "required": false, "type": "number | string" },
+    { "name": "fit", "required": false, "default": "cover", "type": "contain | cover | none" },
+    { "name": "showStatusRail", "required": false, "default": false, "type": "boolean" },
+    { "name": "sourcePolicy", "required": false, "type": "consumer source predicate" }
+  ],
+  "compositionPolicy": {
+    "alternatives": "Informative images require non-empty alt; decorative images require decorative=true and an empty alternative.",
+    "enhancements": "Status UI, announcements, and onLoadStateChange are absent when showStatusRail is false; source policy is consumer-controlled."
+  }
+}

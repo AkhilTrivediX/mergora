@@ -35,6 +35,12 @@
       "stability": "documented"
     },
     {
+      "slot": "fieldset-selection-summary",
+      "element": "p",
+      "purpose": "Optional persistent selection context referenced by the fieldset.",
+      "stability": "documented"
+    },
+    {
       "slot": "fieldset-error",
       "element": "p",
       "purpose": "Persistent group error.",

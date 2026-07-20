@@ -32,6 +32,11 @@
       "slot": "segmented-control-text",
       "element": "span",
       "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-summary",
+      "element": "output aria-live=polite",
+      "stability": "documented"
     }
   ]
 }

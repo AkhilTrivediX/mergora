@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "filter-builder",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "filter-builder",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "filter-builder-inline-editor",
+      "element": "labelled native fields",
+      "purpose": "Edits the common flat filter subset without an overlay.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "filter-builder-drawer-editor",
+      "element": "optional native dialog",
+      "purpose": "Preserves every filter action in a narrow sequential presentation.",
+      "stability": "documented"
+    },
+    {
+      "slot": "filter-builder-summary",
+      "element": "optional output",
+      "purpose": "Explains active filters without requiring users to decode editor controls.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "../file-trigger/file-trigger.js",
+    "../file-trigger/index.js",
+    "../provider/index.js",
+    "../upload-progress/index.js",
+    "./avatar-upload.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/avatar-upload/avatar-upload.tsx",
+  "id": "avatar-upload",
+  "itemDependencies": ["file-trigger", "provider", "upload-progress"],
+  "outputRole": "component"
+}

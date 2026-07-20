@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tour",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "tour",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "tour-trigger",
+      "element": "optional button",
+      "purpose": "Starts guidance and provides a deterministic focus-return origin.",
+      "stability": "documented"
+    },
+    {
+      "slot": "tour-panel",
+      "element": "named non-modal region",
+      "purpose": "Keeps application access available while presenting anchored guidance.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "tour-target-recovery",
+      "element": "optional status and button",
+      "purpose": "Makes missing routed targets recoverable without hidden retry loops.",
+      "stability": "documented"
+    }
+  ]
+}

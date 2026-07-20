@@ -56,6 +56,50 @@ async function axeViolations(page: Page): Promise<unknown[]> {
   });
 }
 
+test("basic and recommended phone and mask modes keep serialization and extension independent", async ({
+  page,
+}) => {
+  await openStory(page, "basic-defaults", "Canonical contact and identifier entry");
+  await expect(page.locator('[data-slot="phone-field-canonical-input"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="phone-field-extension"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="masked-field-serialized-input"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Inspect native values" }).click();
+  await expect(page.getByTestId("enhancement-form-values")).toHaveText("{}");
+
+  await openStory(page, "recommended-mergora", "Canonical contact and identifier entry");
+  await expect(page.locator('[data-slot="phone-field-canonical-input"]')).toHaveValue(
+    "+14155552671",
+  );
+  await expect(page.getByLabel("Extension")).toHaveValue("204");
+  await expect(page.locator('[data-slot="masked-field-serialized-input"]')).toHaveValue("AB2048QZ");
+  const phone = page.getByRole("textbox", { name: "Support phone" });
+  await phone.focus();
+  const focusVisual = await phone.locator("..").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { boxShadow: style.boxShadow, outlineStyle: style.outlineStyle };
+  });
+  expect(focusVisual.outlineStyle).not.toBe("none");
+  expect(focusVisual.boxShadow).not.toBe("none");
+
+  await page.getByRole("button", { name: "Inspect native values" }).click();
+  await expect(page.getByTestId("enhancement-form-values")).toContainText(
+    '"support-phone":"+14155552671"',
+  );
+  await expect(page.getByTestId("enhancement-form-values")).toContainText(
+    '"support-extension":"204"',
+  );
+  await expect(page.getByTestId("enhancement-form-values")).toContainText(
+    '"inventory-code":"AB2048QZ"',
+  );
+
+  await page.setViewportSize({ height: 720, width: 320 });
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("phone formatting exposes exact E.164 and extension values without canceling paste", async ({
   page,
 }) => {

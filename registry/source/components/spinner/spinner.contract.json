@@ -5,13 +5,14 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 2,
-  "summary": "A decorative spinner plus a separately named owning busy region whose opt-in polite transitions use the shared announcer.",
+  "summary": "A Living Green/Violet decorative spinner plus a named aria-busy region with independently optional shared-announcer transitions.",
   "semantics": [
     "Spinner is always aria-hidden and unfocusable, never owns an accessible loading name, and remains independent from Skeleton geometry or busy ownership.",
     "BusyRegion owns role=region and aria-busy and requires exactly one of label or labelledBy; it never renders a live descendant inside the aria-busy subtree.",
     "Announcements are opt-in and require a nearest ScreenReaderAnnouncer.Provider. Mounting an active announcing region or transitioning it from inactive to active enqueues one polite summary; identical restarts use the provider dedupe window.",
     "Provider-owned persistent live roots render after provider content, outside the named busy region, and static or completed states make no announcement.",
-    "Reduced motion replaces rotation with a distinct static glyph."
+    "Reduced motion replaces rotation with a distinct static glyph.",
+    "announce=false removes the announcement effect and event while retaining only the named aria-busy region."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

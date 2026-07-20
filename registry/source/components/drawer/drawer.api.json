@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "itemId": "drawer",
+  "entryExport": "Drawer",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Drawer"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerClose"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerCloseProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerContent"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerContentProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerDescription"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerDescriptionProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerFooter"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerFooterProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerHeader"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerHeaderProps"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerOpenChangeDetails"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerOpenChangeReason"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerOverlay"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerOverlayProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerRoot"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerRootProps"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerSide"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerSize"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerTitle"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerTitleProps"
+    },
+    {
+      "kind": "value",
+      "name": "DrawerTrigger"
+    },
+    {
+      "kind": "type",
+      "name": "DrawerTriggerProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "swipeToClose",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "swipeThreshold",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "swipeHandleLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Drawer; optional output is additive and independently removable.",
+    "enhancement": "Setting swipeToClose adds only the swipe handle, touch pointer handlers, and swipe close reasons. False removes its UI, handlers, events, and accessibility output."
+  }
+}

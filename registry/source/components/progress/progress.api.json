@@ -12,6 +12,7 @@
     "A visible label wraps one native progress element; omitting value creates native indeterminate semantics.",
     "Determinate values are finite and bounded by a positive maximum; visible and aria-valuetext formatting share one localized string.",
     "Role, generic accessible-name props, and aria value overrides are rejected at type and runtime boundaries because the visible label and native progress model own them.",
-    "Indeterminate motion is optional decoration and disappears under reduced motion."
+    "Indeterminate motion is optional decoration and disappears under reduced motion.",
+    "showValue=false removes the visible localized value, aria-valuetext, and formatter work without changing native progress semantics."
   ]
 }

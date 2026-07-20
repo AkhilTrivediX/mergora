@@ -3,13 +3,16 @@
   --mrg-scroll-area-max-block-size: 24rem;
   --mrg-scroll-area-padding: var(--mrg-semantic-space-inline-sm);
   box-sizing: border-box;
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
   max-block-size: var(--mrg-scroll-area-max-block-size);
   min-block-size: 0;
   min-inline-size: 0;
   overflow: auto;
   overflow-wrap: anywhere;
   overscroll-behavior: auto;
-  scrollbar-color: var(--mrg-semantic-color-border-strong)
+  scrollbar-color: var(--mrg-semantic-color-brand-living)
     var(--mrg-semantic-color-background-surface-sunken);
   scrollbar-gutter: stable;
   scrollbar-width: auto;
@@ -50,8 +53,11 @@
 }
 
 .mrg-scroll-area:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-offset)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-scroll-area::-webkit-scrollbar {
@@ -64,7 +70,7 @@
 }
 
 .mrg-scroll-area::-webkit-scrollbar-thumb {
-  background: var(--mrg-semantic-color-border-strong);
+  background: var(--mrg-semantic-color-brand-living);
   background-clip: content-box;
   border: var(--mrg-semantic-border-width-strong) solid transparent;
   border-radius: var(--mrg-semantic-radius-pill);
@@ -72,10 +78,12 @@
 
 @media (forced-colors: active) {
   .mrg-scroll-area {
+    border-block-color: CanvasText;
     scrollbar-color: auto;
   }
 
   .mrg-scroll-area:focus-visible {
+    box-shadow: none;
     outline-color: Highlight;
   }
 }

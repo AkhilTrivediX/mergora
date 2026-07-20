@@ -5,9 +5,9 @@
     {
       "id": "default",
       "applicability": {
-        "status": "not-applicable",
-        "reason": "This state is not part of the component contract."
-      }
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -63,7 +63,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "LoadingStates"
+      "story": "RecommendedMergora"
     },
     {
       "id": "empty",

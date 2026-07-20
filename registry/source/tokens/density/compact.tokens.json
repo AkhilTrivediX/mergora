@@ -5,6 +5,7 @@
     "density": {
       "controlHeight": { "$type": "dimension", "$value": "{primitive.size.8}" },
       "controlPaddingInline": { "$type": "dimension", "$value": "{primitive.space.2}" },
+      "controlPaddingBlock": { "$type": "dimension", "$value": "{primitive.space.1}" },
       "controlGap": { "$type": "dimension", "$value": "{primitive.space.1}" },
       "rowHeight": { "$type": "dimension", "$value": "{primitive.size.8}" },
       "panelPadding": { "$type": "dimension", "$value": "{primitive.space.3}" }

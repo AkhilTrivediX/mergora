@@ -51,43 +51,77 @@ import { NativeSelect } from "../native-select/index.js";
 import { useMergoraContext } from "../provider/index.js";
 import "./select.css";
 
+/** Explicit Mergora popover or browser-native select presentation. */
 export type SelectPresentation = "enhanced" | "native";
+/** Logical preferred placement for the enhanced select popover. */
 export type SelectPlacement =
   "bottom" | "bottom start" | "bottom end" | "top" | "top start" | "top end";
 
 export interface SelectProps<T = unknown> {
+  /** Validated ordered item and section models shared by enhanced and native presentations. */
   readonly entries: readonly CollectionEntry<T>[];
+  /** Persistent visible label supplying the select control's accessible name. */
   readonly label: ReactNode;
+  /** Controlled canonical selected key, or null for no selection. */
   readonly value?: CollectionKey | null;
+  /** Initial selected key for uncontrolled use and form reset. */
   readonly defaultValue?: CollectionKey | null;
+  /** Reports the next canonical selected key from either presentation. */
   readonly onValueChange?: (value: CollectionKey | null) => void;
+  /** Controlled popup state accepted only by the enhanced presentation. */
   readonly open?: boolean;
+  /** Initial enhanced-popup state for uncontrolled use. */
   readonly defaultOpen?: boolean;
+  /** Reports enhanced-popup visibility changes and is unavailable in native presentation. */
   readonly onOpenChange?: (open: boolean) => void;
+  /** Optional visible guidance associated with the select control. */
   readonly description?: ReactNode;
+  /** Optional visible validation message rendered as an alert. */
   readonly errorMessage?: ReactNode;
+  /** Applies invalid styling and aria-invalid when no explicit aria-invalid is supplied. */
   readonly invalid?: boolean;
+  /** Requires a non-placeholder selection through the configured validation behavior. */
   readonly required?: boolean;
+  /** Disables popup activation and native form interaction. */
   readonly disabled?: boolean;
+  /** Native form field name used directly by either presentation. */
   readonly name?: string;
+  /** Native form owner id used directly by either presentation. */
   readonly form?: string;
+  /** Browser autofill hint forwarded to the enhanced or native form control. */
   readonly autoComplete?: string;
+  /** Chooses browser-native constraint validation or ARIA-only validation semantics. */
   readonly validationBehavior?: "native" | "aria";
-  /** Explicit; never user-agent switched. Native is recommended for simple mobile-first choices. */
+  /** Explicit enhanced or platform-native control; native removes custom popup and open-state behavior. */
   readonly presentation?: SelectPresentation;
+  /** Localized text shown when no value is selected. */
   readonly placeholder?: string;
+  /** Optional loading, pagination, and recovery state; omitting it removes async controls. */
   readonly asyncState?: CollectionAsyncState;
+  /** Localized overrides for empty, loading, load-more, and retry copy. */
   readonly messages?: Partial<CollectionMessages>;
+  /** Enables measured enhanced-list virtualization; omitting it renders the normal collection. */
   readonly virtualization?: CollectionVirtualizationOptions;
-  readonly formatSelectionSummary?: (context: CollectionSelectionSummaryContext) => string;
+  /** Pass false to remove the summary callback, text, id, and aria-describedby contribution. */
+  readonly formatSelectionSummary?:
+    false | ((context: CollectionSelectionSummaryContext) => string);
+  /** Logical enhanced-popover placement; native presentation leaves placement to the browser. */
   readonly placement?: SelectPlacement;
+  /** Stable root id used to derive control, description, error, and summary ids. */
   readonly id?: string;
+  /** Class name applied to the outer select field wrapper. */
   readonly className?: string;
+  /** Inline style applied to the outer select field wrapper. */
   readonly style?: CSSProperties;
+  /** Additional class name applied only to the enhanced popover. */
   readonly popoverClassName?: string;
+  /** Additional class name applied only to the enhanced listbox. */
   readonly listboxClassName?: string;
+  /** Additional description ids merged with component-owned description and summary ids. */
   readonly "aria-describedby"?: string;
+  /** Explicit validation-message id; defaults to the component-owned error element. */
   readonly "aria-errormessage"?: string;
+  /** Explicit ARIA invalid state overriding the invalid boolean. */
   readonly "aria-invalid"?: AriaAttributes["aria-invalid"];
 }
 
@@ -283,7 +317,7 @@ function SelectInner<T>(props: SelectProps<T>, ref: ForwardedRef<HTMLDivElement>
     entries,
     errorMessage,
     form,
-    formatSelectionSummary = formatCollectionSelectionSummary,
+    formatSelectionSummary,
     id,
     invalid = false,
     label,
@@ -365,12 +399,16 @@ function SelectInner<T>(props: SelectProps<T>, ref: ForwardedRef<HTMLDivElement>
       CollectionKey | null | readonly CollectionKey[] | undefined,
     entries,
   );
+  const resolvedSummaryFormatter =
+    formatSelectionSummary === undefined
+      ? formatCollectionSelectionSummary
+      : formatSelectionSummary;
   const summary =
-    presentation === "native" && value === undefined
+    resolvedSummaryFormatter === false || (presentation === "native" && value === undefined)
       ? null
       : selectionSummary({
           entries,
-          format: formatSelectionSummary,
+          format: resolvedSummaryFormatter,
           keys: selectedKeys,
           locale,
         });
@@ -648,6 +686,7 @@ function SelectInner<T>(props: SelectProps<T>, ref: ForwardedRef<HTMLDivElement>
   );
 }
 
+/** Generic ref-aware call signature preserved by the forwarded Select implementation. */
 export interface SelectComponent {
   <T = unknown>(props: SelectProps<T> & RefAttributes<HTMLDivElement>): ReactElement | null;
 }

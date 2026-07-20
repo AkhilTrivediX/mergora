@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "card",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Run and record Basic and Recommended Storybook controls plus empty, loading, narrow, RTL, forced-colors, reduced-motion, keyboard, and screen-reader-oriented evidence.",
+    "Generate and verify package, editable source, native registry, Shadcn, docs, and subpath outputs.",
+    "Complete the current risk-class keyboard, screen-reader, speech, switch, touch, zoom, and forced-colors manual matrix.",
+    "Pass supported-browser, visual, accessibility, lifecycle, frozen-install, packed Next.js and Vite, and package/source parity gates.",
+    "Add Semantic Sync clean update, customized update, conflict, rollback, and removal fixtures.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

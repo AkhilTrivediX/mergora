@@ -7,7 +7,7 @@
   "riskClass": 2,
   "semantics": {
     "nativeBasis": "diff-viewer: div role=region; diff-copy: button; diff-line: tr; diff-marker: th",
-    "rolePolicy": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text; one row is in the tab order and vertical/Home/End/Page keys navigate rows.",
+    "rolePolicy": "A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text. Summary, copy, and roving row navigation are independent; disabling them removes their UI, handlers, focus model, callbacks, and announcements.",
     "refTarget": "HTMLDivElement"
   },
   "keyboard": [
@@ -33,12 +33,22 @@
   "stableSelectors": {
     "root": "[data-slot=diff-viewer]",
     "parts": ["[data-slot=diff-copy]", "[data-slot=diff-line]", "[data-slot=diff-marker]"],
-    "attributes": ["data-mode", "data-wrap", "data-copy-status", "data-kind", "data-active"]
+    "attributes": [
+      "data-mode",
+      "data-wrap",
+      "data-copyable",
+      "data-line-navigation",
+      "data-show-summary",
+      "data-copy-status",
+      "data-kind",
+      "data-active"
+    ]
   },
   "consumerResponsibilities": [
     "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
     "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
-    "Large inputs use bounded native scrolling and caller-controlled chunking; virtualization is not implemented or claimed and remains a measured promotion decision."
+    "Large inputs use bounded native scrolling and caller-controlled chunking; virtualization is not implemented or claimed and remains a measured promotion decision.",
+    "When lineNavigation, showSummary, or copyable is false, do not rely on the corresponding focus model, summary, copy event, callback, or status output; each is absent."
   ],
   "evidenceRequirements": {
     "automated": [

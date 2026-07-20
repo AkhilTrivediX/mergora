@@ -9,5 +9,6 @@ export type {
   NumberFieldProps,
   NumericFieldBaseProps,
   NumericFieldKind,
+  NumericFieldStatusRail,
   StepNumericValueOptions,
 } from "./number-field.js";

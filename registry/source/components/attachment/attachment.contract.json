@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "attachment",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, file-safety, transport, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "File identity is text; actions are native buttons; progress is native progress; status is a bounded live region.",
+    "naming": "Every action includes the visible file name through its named group; consumer action labels are localizable.",
+    "roleOverride": "The attachment is not made clickable as a whole and no file type is inferred as safe.",
+    "refTarget": "HTMLDivElement"
+  },
+  "interaction": {
+    "keyboard": "Enabled action buttons follow native Tab, Space, and Enter behavior.",
+    "pointer": "Preview, download, and removal are separate explicit targets.",
+    "touch": "Action controls retain the shared preferred target size and wrap at narrow widths.",
+    "speech": "Visible action labels and file identity create deterministic speech targets.",
+    "switchAccess": "Actions remain separate sequential scan stops with no timed requirement."
+  },
+  "preferences": {
+    "forcedColors": "Canvas, CanvasText, ButtonFace, ButtonText, and Highlight preserve boundaries and focus.",
+    "reducedMotion": "No meaning depends on motion; all descendant motion duration is removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "File names wrap and actions reflow without clipping."
+  },
+  "consumerResponsibilities": [
+    "Validate signature, type, malware policy, authorization, and safe disposition before preview or download.",
+    "Own transport, retry, persistence, URL creation, download, deletion confirmation, and irreversible effects.",
+    "Localize status, action, and safety language and do not describe an unverified file as safe."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "enhancement-isolation",
+      "semantic-actions",
+      "status-progress",
+      "narrow-rtl-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch",
+      "touch-file-actions"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Attachment never reads, scans, previews, downloads, uploads, persists, or deletes file bytes.",
+    "Manual assistive-technology, packed-consumer, lifecycle, and generated parity evidence remains unrecorded."
+  ]
+}

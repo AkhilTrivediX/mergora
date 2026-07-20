@@ -27,13 +27,19 @@ const elementRef = createRef<HTMLElement>();
 
 const validFixtures = [
   <Container key="container" ref={divRef} width="prose" />,
-  <Stack element="ol" gap="lg" key="stack" ref={elementRef} />,
-  <Inline align="baseline" justify="between" key="inline" ref={divRef} />,
-  <Grid columns={4} element="ul" key="grid" minimum="compact" ref={elementRef} />,
+  <Stack element="ol" gap="lg" key="stack" ref={elementRef} separated />,
+  <Inline align="baseline" justify="between" key="inline" ref={divRef} wrap={false} />,
+  <Grid columns={4} element="ul" equalRows key="grid" minimum="compact" ref={elementRef} />,
   <Center axis="both" key="center" maximum="content" ref={divRef} />,
   <Cluster key="cluster" orphan="fill" ref={divRef} />,
-  <AspectRatio key="aspect" ratio={[5, 4]} ref={divRef} />,
-  <Separator decorative={false} key="separator" orientation="vertical" ref={elementRef} />,
+  <AspectRatio fit="contain" key="aspect" ratio={[5, 4]} ref={divRef} />,
+  <Separator
+    decorative={false}
+    key="separator"
+    orientation="vertical"
+    ref={elementRef}
+    spacing="md"
+  />,
 ];
 
 // @ts-expect-error Container widths are deliberately closed.
@@ -50,6 +56,8 @@ const invalidCenter = <Center maximum="42rem" />;
 const invalidCluster = <Cluster orphan="balance" />;
 // @ts-expect-error Aspect ratio strings are limited to documented presets.
 const invalidAspectRatio = <AspectRatio ratio="cinema" />;
+// @ts-expect-error Media fitting is a closed capability.
+const invalidAspectFit = <AspectRatio fit="stretch" />;
 // @ts-expect-error Separator accepts no children.
 const invalidSeparator = <Separator>Resize</Separator>;
 
@@ -72,7 +80,8 @@ describe("P2 layout foundation type surface", () => {
       invalidCenter,
       invalidCluster,
       invalidAspectRatio,
+      invalidAspectFit,
       invalidSeparator,
-    ]).toHaveLength(8);
+    ]).toHaveLength(9);
   });
 });

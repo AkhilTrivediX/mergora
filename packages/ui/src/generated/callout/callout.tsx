@@ -21,16 +21,27 @@ export interface CalloutProps extends Omit<
   HTMLAttributes<HTMLElement>,
   "aria-atomic" | "aria-label" | "aria-labelledby" | "aria-live" | "children" | "role" | "title"
 > {
+  /** Reserved: Callout is intentionally non-live and owns announcement atomicity. */
   readonly "aria-atomic"?: never;
+  /** Reserved: use `landmarkLabel` to name an optional complementary landmark. */
   readonly "aria-label"?: never;
+  /** Reserved: Callout owns its visible heading structure. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: Callout never creates a live region. */
   readonly "aria-live"?: never;
+  /** Non-empty visible explanatory body content. */
   readonly children: ReactNode;
+  /** Native heading level used for `title`; defaults to 2. */
   readonly headingLevel?: CalloutHeadingLevel;
+  /** Non-empty name that upgrades the neutral root to a complementary `aside`. */
   readonly landmarkLabel?: string;
+  /** Non-empty visible heading for the callout. */
   readonly title: ReactNode;
+  /** Visual and textual callout treatment; defaults to `note`. */
   readonly variant?: CalloutVariant;
+  /** Localized visible override for the selected variant label. */
   readonly variantLabel?: string;
+  /** Reserved: root semantics are derived from the presence of `landmarkLabel`. */
   readonly role?: never;
 }
 

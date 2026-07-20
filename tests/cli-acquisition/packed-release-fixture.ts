@@ -7,6 +7,7 @@ import {
   type AcquisitionRegistryIdentity,
   type AcquisitionTransport,
 } from "../../packages/cli/src/index.ts";
+import { defineContractV1 } from "../../packages/contracts/src/index.ts";
 import { canonicalJson, sha256 } from "../../packages/cli/src/contracts.ts";
 import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.ts";
 import {
@@ -14,8 +15,10 @@ import {
   canonicalJsonFile,
   officialRegistryIdentityDigest,
   releaseArtifactDigest,
+  releaseCanonicalDigest,
   STABLE_RELEASE_SCHEMA_PATHS,
   type ReleaseEvidenceReference,
+  type ReleaseItemPayloadInput,
   type ReleaseProtocolArtifact,
   type ReleaseProtocolValidator,
   type StableReleaseProtocolBundle,
@@ -106,6 +109,10 @@ export interface PackedNpmPackageFixture {
   readonly license?: string | undefined;
 }
 
+export interface PackedReleaseContentFixture {
+  readonly includeExamples?: boolean | undefined;
+}
+
 interface BuiltPackedRelease {
   readonly bundle: StableReleaseProtocolBundle;
   readonly catalogArtifact: ReleaseProtocolArtifact;
@@ -124,6 +131,7 @@ function buildPackedRelease(
     id: "official",
     origin: ORIGIN,
   },
+  contentFixture: PackedReleaseContentFixture = {},
 ): BuiltPackedRelease {
   const itemId = "button";
   const identity = registryFixture;
@@ -134,6 +142,93 @@ function buildPackedRelease(
   const npmPackageUnscopedName = npmPackageName.includes("/")
     ? npmPackageName.split("/")[1]!
     : npmPackageName;
+  const exampleSource = `import { Button } from "mergora-ui/button";\n\nexport function ButtonExample() {\n  return <Button>Continue</Button>;\n}\n`;
+  const payload: ReleaseItemPayloadInput = {
+    schemaVersion: 1,
+    registryId: identity.id,
+    itemId,
+    kind: "component",
+    version,
+    lastChangedVersion: version,
+    maturity: "stable",
+    license: "MIT",
+    title: "Button",
+    description: "Verified packed command routing fixture.",
+    links: {
+      docs: `${identity.origin}/docs/button`,
+      source: `${identity.origin}/source/button`,
+      changelog: `${identity.origin}/changelog/button`,
+      passport: `${identity.origin}/passports/${version}/button.json`,
+      contract: `${identity.origin}/contracts/${version}/button.json`,
+    },
+    compatibility: compatibility(),
+    files: [
+      {
+        logicalPath: "ui/button/button.tsx",
+        targetRole: "component",
+        mediaType: "text/typescript-jsx",
+        bytes: Buffer.byteLength(source),
+        content: source,
+        digest: releaseArtifactDigest(source),
+        executable: false,
+        transformPipeline: [{ adapter: "none", version }],
+      },
+      ...(contentFixture.includeExamples === false
+        ? []
+        : [
+            {
+              logicalPath: "examples/button-basic.tsx",
+              targetRole: "example" as const,
+              mediaType: "text/typescript-jsx",
+              bytes: Buffer.byteLength(exampleSource),
+              content: exampleSource,
+              digest: releaseArtifactDigest(exampleSource),
+              executable: false as const,
+              transformPipeline: [{ adapter: "none" as const, version }],
+            },
+          ]),
+    ],
+    registryDependencies: [],
+    dependencies: { runtime: {}, development: {} },
+    structuredPatches: [],
+    migrations: [],
+    contract: { id: "button-contract", version },
+    passport: { id: "button-passport", version },
+    examples: contentFixture.includeExamples === false ? [] : ["examples/button-basic.tsx"],
+    importPaths: ["mergora-ui/button"],
+  };
+  const signedPayload = { ...payload, payloadDigest: releaseCanonicalDigest(payload) };
+  const payloadArtifactDigest = releaseArtifactDigest(canonicalJsonFile(signedPayload));
+  const contractContent = canonicalJsonFile(
+    defineContractV1({
+      schemaVersion: 1,
+      contractVersion: version,
+      contractId: "button-contract",
+      registryId: identity.id,
+      itemId,
+      payloadDigest: payloadArtifactDigest,
+      conformanceClaim: "automated-evidence-only",
+      limitations: [],
+      assertions: [
+        {
+          id: "button-source-present",
+          mode: "static",
+          evidenceType: "static-source",
+          target: { kind: "owned-file", logicalPath: "ui/button/button.tsx" },
+          expectedBehavior: "The installed Button source remains present for static inspection.",
+          severity: "S1",
+          remediationUrl: `${identity.origin}/docs/button`,
+          adapter: { kind: "file-exists", version: "1.0.0" },
+        },
+      ],
+    }),
+  );
+  const contract: ReleaseEvidenceReference = {
+    id: "button-contract",
+    artifact: publicRegistryUrl(`r/v1/contracts/${version}/button.json`, identity.origin),
+    digest: releaseArtifactDigest(contractContent),
+    content: contractContent,
+  };
   const input: StableReleaseProtocolInput = {
     registry: { ...identity, identityDigest: officialRegistryIdentityDigest(identity) },
     uiVersion: version,
@@ -168,46 +263,7 @@ function buildPackedRelease(
     },
     items: [
       {
-        payload: {
-          schemaVersion: 1,
-          registryId: identity.id,
-          itemId,
-          kind: "component",
-          version,
-          lastChangedVersion: version,
-          maturity: "stable",
-          license: "MIT",
-          title: "Button",
-          description: "Verified packed command routing fixture.",
-          links: {
-            docs: `${identity.origin}/docs/button`,
-            source: `${identity.origin}/source/button`,
-            changelog: `${identity.origin}/changelog/button`,
-            passport: `${identity.origin}/passports/${version}/button.json`,
-            contract: `${identity.origin}/contracts/${version}/button.json`,
-          },
-          compatibility: compatibility(),
-          files: [
-            {
-              logicalPath: "ui/button/button.tsx",
-              targetRole: "component",
-              mediaType: "text/typescript-jsx",
-              bytes: Buffer.byteLength(source),
-              content: source,
-              digest: releaseArtifactDigest(source),
-              executable: false,
-              transformPipeline: [{ adapter: "none", version }],
-            },
-          ],
-          registryDependencies: [],
-          dependencies: { runtime: {}, development: {} },
-          structuredPatches: [],
-          migrations: [],
-          contract: { id: "button-contract", version },
-          passport: { id: "button-passport", version },
-          examples: ["examples/button-basic.tsx"],
-          importPaths: ["mergora-ui/button"],
-        },
+        payload,
         catalog: {
           aliases: ["pressable"],
           category: "actions",
@@ -221,11 +277,7 @@ function buildPackedRelease(
           `r/v1/passports/${version}/button.json`,
           identity.origin,
         ),
-        contract: evidence(
-          "button-contract",
-          `r/v1/contracts/${version}/button.json`,
-          identity.origin,
-        ),
+        contract,
       },
     ],
   };
@@ -302,8 +354,9 @@ export function seedPackedCompleteNativeReleaseCache(
   version: string,
   source: string,
   npmPackageFixture?: PackedNpmPackageFixture,
+  contentFixture?: PackedReleaseContentFixture,
 ): SeededPackedRelease {
-  const built = buildPackedRelease(version, source, npmPackageFixture);
+  const built = buildPackedRelease(version, source, npmPackageFixture, undefined, contentFixture);
   for (const artifact of built.bundle.artifacts) {
     writeVerifiedCacheArtifact(projectRoot, artifact);
   }
@@ -446,6 +499,7 @@ export async function seedPackedNativeRelease(
       bytes: Buffer.byteLength(manifestArtifact.content),
     },
     itemIds: [itemId],
+    contractSelection: "stable",
     transport,
   });
   const referencePath = writeReference(projectRoot, version, reference);

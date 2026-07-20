@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "LoadingStates"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -63,7 +63,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "LoadingStates"
+      "story": "RecommendedMergora"
     },
     {
       "id": "empty",

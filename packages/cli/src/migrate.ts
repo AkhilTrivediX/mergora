@@ -378,13 +378,18 @@ export function listBuiltInMigrations(): readonly BuiltInMigrationId[] {
   return [...BUILT_IN_MIGRATION_IDS];
 }
 
-function migrationOperation(before: Buffer, after: Buffer, reason: string): OperationPlanFile {
+function migrationOperation(
+  before: Buffer,
+  after: Buffer,
+  reason: string,
+  owner = "migration:config-v0-to-v1",
+): OperationPlanFile {
   const beforeDigest = sha256(before);
   const afterDigest = sha256(after);
   return {
     operation: beforeDigest === afterDigest ? "no-op" : "structured-patch",
     target: CONFIG_PATH,
-    owner: "migration:config-v0-to-v1",
+    owner,
     base: beforeDigest,
     local: beforeDigest,
     remote: afterDigest,
@@ -656,44 +661,271 @@ function configPlan(
   };
 }
 
+interface ShadcnSettingsProjection {
+  readonly aliasPrefix: string;
+  readonly globalCss: string;
+  readonly sourceVersion: string;
+}
+
+function shadcnAliasPrefix(value: string, suffix: string): string | null {
+  const ending = `/${suffix}`;
+  if (!value.endsWith(ending)) return null;
+  const prefix = value.slice(0, -ending.length);
+  return /^[@~][A-Za-z0-9._-]*$/u.test(prefix) && !prefix.includes("..") ? prefix : null;
+}
+
+function projectShadcnSettings(
+  root: string,
+  value: unknown,
+): { readonly projection: ShadcnSettingsProjection | null; readonly issues: readonly string[] } {
+  const issues: string[] = [];
+  if (
+    !isObject(value) ||
+    !exactKeys(
+      value,
+      ["$schema", "tsx"],
+      ["style", "rsc", "tailwind", "iconLibrary", "aliases", "registries"],
+    )
+  ) {
+    return {
+      projection: null,
+      issues: [
+        "Repair components.json so it contains only the supported shadcn configuration fields.",
+      ],
+    };
+  }
+  if (value.$schema !== "https://ui.shadcn.com/schema.json") {
+    issues.push("Use the supported shadcn components.json schema identity before migration.");
+  }
+  if (value.tsx !== true) {
+    issues.push(
+      "Enable the shadcn TypeScript/TSX mode; Mergora does not infer a JavaScript transform.",
+    );
+  }
+  if (value.style !== undefined && typeof value.style !== "string") {
+    issues.push("Repair the shadcn style setting so it is a string.");
+  }
+  if (value.rsc !== undefined && typeof value.rsc !== "boolean") {
+    issues.push("Repair the shadcn RSC setting so it is a boolean.");
+  }
+  if (value.iconLibrary !== undefined && typeof value.iconLibrary !== "string") {
+    issues.push("Repair the shadcn iconLibrary setting so it is a string.");
+  }
+  if (value.registries !== undefined && !isObject(value.registries)) {
+    issues.push("Repair the shadcn registries setting so it is an object.");
+  }
+
+  const tailwind = isObject(value.tailwind) ? value.tailwind : null;
+  if (
+    tailwind === null ||
+    !exactKeys(tailwind, ["css"], ["config", "baseColor", "cssVariables", "prefix"])
+  ) {
+    issues.push("Add a supported shadcn tailwind.css path before migration.");
+  }
+  const globalCss = tailwind?.css;
+  if (typeof globalCss !== "string") {
+    issues.push("Set shadcn tailwind.css to one portable project-relative path.");
+  } else {
+    try {
+      assertPortableRelativePath(globalCss, "shadcn global CSS");
+      const cssBytes = safeRead(root, globalCss, true);
+      if (cssBytes === null) {
+        issues.push(`Create the configured shadcn global CSS file ${globalCss} before migration.`);
+      } else if (!/@import\s+["']tailwindcss["']/u.test(cssBytes.toString("utf8"))) {
+        issues.push(
+          `Migrate ${globalCss} to the required Tailwind CSS v4 import before importing it into Mergora.`,
+        );
+      }
+    } catch {
+      issues.push("Set shadcn tailwind.css to one safe portable project-relative path.");
+    }
+  }
+
+  const aliases = isObject(value.aliases) ? value.aliases : null;
+  if (aliases === null || !exactKeys(aliases, ["components", "lib", "hooks"], ["ui", "utils"])) {
+    issues.push("Add supported shadcn components, lib, and hooks aliases before migration.");
+  }
+  const aliasRules = [
+    ["components", "components"],
+    ["lib", "lib"],
+    ["hooks", "hooks"],
+    ["ui", "components/ui"],
+    ["utils", "lib/utils"],
+  ] as const;
+  const prefixes: string[] = [];
+  if (aliases !== null) {
+    for (const [key, suffix] of aliasRules) {
+      const alias = aliases[key];
+      if (alias === undefined) continue;
+      const prefix = typeof alias === "string" ? shadcnAliasPrefix(alias, suffix) : null;
+      if (prefix === null) {
+        issues.push(
+          `Map shadcn aliases.${key} to one portable project alias ending in /${suffix}.`,
+        );
+      } else {
+        prefixes.push(prefix);
+      }
+    }
+  }
+  const uniquePrefixes = [...new Set(prefixes)];
+  if (uniquePrefixes.length !== 1) {
+    issues.push("Make every shadcn alias share one unambiguous project prefix before migration.");
+  }
+  if (issues.length > 0 || typeof globalCss !== "string" || uniquePrefixes[0] === undefined) {
+    return { projection: null, issues };
+  }
+  return {
+    projection: {
+      aliasPrefix: uniquePrefixes[0],
+      globalCss,
+      sourceVersion: String(value.$schema),
+    },
+    issues: [],
+  };
+}
+
 function shadcnPlan(
   root: string,
   project: ProjectDigests,
   id: Extract<BuiltInMigrationId, "shadcn-components-v1-to-mergora-v1">,
-): PlannedMigration {
+): { readonly plan: PlannedMigration; readonly mutations: readonly TransactionMutation[] } {
   const bytes = safeRead(root, SHADCN_CONFIG_PATH, true);
   const value = parseJson(bytes, SHADCN_CONFIG_PATH, true);
   const sourceVersion =
-    isObject(value) && typeof value.$schema === "string"
-      ? value.$schema
-      : bytes === null
-        ? "missing"
-        : "unknown";
-  const descriptions =
-    bytes === null
-      ? ["Add or select a valid shadcn components.json before requesting shadcn migration."]
-      : !isObject(value)
-        ? ["Repair components.json so it contains one valid object before migration."]
-        : [
-            "Compare shadcn aliases, CSS variables, RSC mode, style, and Tailwind settings with mergora.json.",
-            "Plan only supported structured configuration patches; retain components.json by default.",
-            "For each compatible installed component, run adopt --from shadcn against an exact upstream payload.",
-            "Represent divergent local source explicitly and do not overwrite it during adoption.",
-          ];
-  return planBase({
-    project,
-    id,
-    target: "shadcn",
-    execution: "manual-only",
-    sourceVersion,
-    targetVersion: "mergora-config-v1",
-    steps: [],
-    manualChecklist: checklist(descriptions),
-    items: [],
-    fileOperations: [],
-    mutations: [],
-    componentsJsonRetained: true,
+    isObject(value) && typeof value.$schema === "string" ? value.$schema : "unknown";
+  if (bytes === null || project.configBytes === null) {
+    const descriptions = [
+      ...(bytes === null
+        ? ["Add or select a valid shadcn components.json before requesting shadcn migration."]
+        : []),
+      ...(project.configBytes === null
+        ? ["Run mergora init before importing compatible shadcn project settings."]
+        : []),
+    ];
+    return {
+      plan: planBase({
+        project,
+        id,
+        target: "shadcn",
+        execution: "manual-only",
+        sourceVersion: bytes === null ? "missing" : sourceVersion,
+        targetVersion: "mergora-config-v1",
+        steps: [],
+        manualChecklist: checklist(descriptions),
+        items: [],
+        fileOperations: [],
+        mutations: [],
+        componentsJsonRetained: true,
+      }),
+      mutations: [],
+    };
+  }
+  const config = validateMergoraConfig(project.configValue);
+  const installed = installedManifestItems(project.manifestValue);
+  if (installed.length > 0) {
+    return {
+      plan: planBase({
+        project,
+        id,
+        target: "shadcn",
+        execution: "manual-only",
+        sourceVersion,
+        targetVersion: "mergora-config-v1",
+        steps: [],
+        manualChecklist: checklist([
+          "Back up mergora.json, components.json, the provenance manifest, and every installed base.",
+          "Rebase installed Mergora transform contexts with ordinary B/L/R conflict protection before changing aliases or global CSS.",
+          "Resolve every local divergence and apply the settings plus provenance update as one reviewed transaction.",
+          "Adopt compatible shadcn source separately from an exact upstream payload; do not overwrite local source.",
+        ]),
+        items: installed.filter((item) => item !== "<unreadable-manifest-items>"),
+        fileOperations: [],
+        mutations: [],
+        componentsJsonRetained: true,
+      }),
+      mutations: [],
+    };
+  }
+  const projected = projectShadcnSettings(root, value);
+  if (projected.projection === null) {
+    return {
+      plan: planBase({
+        project,
+        id,
+        target: "shadcn",
+        execution: "manual-only",
+        sourceVersion,
+        targetVersion: "mergora-config-v1",
+        steps: [],
+        manualChecklist: checklist([
+          ...projected.issues,
+          "Keep shadcn-owned directories separate; Mergora will retain components.json and use its own target suffixes.",
+          "Adopt compatible shadcn source separately from an exact upstream payload; do not overwrite local source.",
+        ]),
+        items: [],
+        fileOperations: [],
+        mutations: [],
+        componentsJsonRetained: true,
+      }),
+      mutations: [],
+    };
+  }
+  const { aliasPrefix, globalCss } = projected.projection;
+  const nextConfig = validateMergoraConfig({
+    ...config,
+    aliases: {
+      components: `${aliasPrefix}/components/mergora`,
+      hooks: `${aliasPrefix}/hooks/mergora`,
+      lib: `${aliasPrefix}/lib/mergora`,
+      systems: `${aliasPrefix}/components/mergora-systems`,
+      kits: `${aliasPrefix}/features/mergora-kits`,
+      styles: `${aliasPrefix}/styles/mergora`,
+      tokens: `${aliasPrefix}/styles/mergora/tokens`,
+    },
+    styling: { ...config.styling, globalCss },
   });
+  const semanticChange = canonicalJson(nextConfig) !== canonicalJson(config);
+  const content = semanticChange ? prettyJson(nextConfig) : project.configBytes;
+  const mutation: TransactionMutation = {
+    target: CONFIG_PATH,
+    content,
+    beforeDigest: sha256(project.configBytes),
+  };
+  return {
+    plan: planBase({
+      project,
+      id,
+      target: "shadcn",
+      execution: semanticChange ? "transaction" : "no-op",
+      sourceVersion: projected.projection.sourceVersion,
+      targetVersion: "mergora-config-v1",
+      steps: [
+        {
+          sequence: 1,
+          id: `${id}:project-settings`,
+          kind: "structured-json",
+          target: CONFIG_PATH,
+          description:
+            "Import only the compatible alias prefix and Tailwind CSS entry while retaining Mergora-owned target suffixes and components.json.",
+          reversible: true,
+          inverse: "Restore the transaction's byte-identical mergora.json pre-state.",
+        },
+      ],
+      manualChecklist: [],
+      items: [],
+      fileOperations: [
+        migrationOperation(
+          project.configBytes,
+          content,
+          "Import compatible shadcn project settings without taking ownership of shadcn files.",
+          `migration:${id}`,
+        ),
+      ],
+      mutations: semanticChange ? [mutation] : [],
+      componentsJsonRetained: true,
+    }),
+    mutations: semanticChange ? [mutation] : [],
+  };
 }
 
 function frameworkPlan(
@@ -882,7 +1114,9 @@ function buildMigrationPlan(options: MigrationOptions): InternalMigrationPlan {
     planned = built.plan;
     mutations = built.mutations;
   } else if (selected.id === "shadcn-components-v1-to-mergora-v1") {
-    planned = shadcnPlan(root, project, selected.id);
+    const built = shadcnPlan(root, project, selected.id);
+    planned = built.plan;
+    mutations = built.mutations;
   } else if (selected.id in FRAMEWORK_MIGRATIONS) {
     planned = frameworkPlan(project, selected.id as keyof typeof FRAMEWORK_MIGRATIONS);
   } else {

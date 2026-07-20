@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "avatar-upload",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, and updater outputs.",
+    "Pass package/source parity, frozen packed consumers, preview lifecycle leak checks, and server lifecycle adapter gates.",
+    "Verify picker, validation, replacement, removal, controlled state, native FormData/reset, stale transform cancellation, retry hooks, and preferences in every supported browser engine.",
+    "Record narrow, zoom, text-spacing, RTL, touch, reduced-motion, enhanced-contrast, forced-colors, and risk-class manual assistive-technology evidence.",
+    "Document server replacement/removal ownership and a tested consumer crop adapter without coupling core to an image editor or upload vendor.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

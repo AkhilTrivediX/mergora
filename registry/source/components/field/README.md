@@ -8,4 +8,6 @@ Each Field supports one direct primary control and a non-empty visible label. De
 
 Required state is carried by the native control; the visual asterisk is hidden from assistive technology. `optionalLabel`, validation text, and every other user-facing string remain consumer-localizable. Errors are persistent rather than assertive; use `ValidationSummary` for submit-time focus and announcements.
 
+The Mergora field signature is a precise ink hierarchy on a literal Canvas surface with logical spacing and the shared violet two-layer focus seam. `contextualAction` is an optional label-adjacent recovery surface for actions such as restoring a suggested value. Omit it to remove its node, event path, focus target, and accessibility output completely.
+
 Promotion still requires generated output checks, packed consumers, package/source parity, narrow/RTL/forced-colors evidence, Semantic Sync fixtures, and current manual keyboard and screen-reader records bound to the candidate digest.

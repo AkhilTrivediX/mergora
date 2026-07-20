@@ -21,9 +21,9 @@ import {
 import { OFFICIAL_REGISTRY_ORIGIN } from "../../packages/cli/src/registry-data.ts";
 import { seedPackedCompleteNativeReleaseCache } from "../cli-acquisition/packed-release-fixture.ts";
 
-const VERSION = "1.2.3";
+const DEFAULT_VERSION = "1.2.3";
 const PACKAGE = "mergora-ui";
-const SOURCE = "export const Button = () => null;\n";
+const DEFAULT_SOURCE = "export const Button = () => null;\n";
 
 function tarString(header: Buffer, offset: number, length: number, value: string): void {
   const bytes = Buffer.from(value, "utf8");
@@ -57,9 +57,9 @@ function tarEntry(path: string, content: Buffer): Buffer {
   ]);
 }
 
-export function authenticNpmTarball(): Buffer {
+export function authenticNpmTarball(version = DEFAULT_VERSION): Buffer {
   const packageJson = Buffer.from(
-    `${JSON.stringify({ name: PACKAGE, version: VERSION, license: "MIT" })}\n`,
+    `${JSON.stringify({ name: PACKAGE, version, license: "MIT" })}\n`,
   );
   return gzipSync(
     Buffer.concat([
@@ -132,13 +132,13 @@ export function manifestForAuthenticState(
   };
 }
 
-function packagePatch() {
+function packagePatch(version: string) {
   return {
     id: "dependency-mergora-ui",
     adapter: "package-dependency" as const,
     target: "package.json",
     semanticKey: "dependencies.mergora-ui",
-    ownedValueDigest: sha256(VERSION),
+    ownedValueDigest: sha256(version),
   };
 }
 
@@ -166,9 +166,11 @@ export async function createAuthenticModeFixture(
   root: string,
   config: Record<string, unknown>,
   direction: "source-to-package" | "package-to-source",
+  version = DEFAULT_VERSION,
+  source = DEFAULT_SOURCE,
 ): Promise<AuthenticModeFixture> {
-  const tarball = authenticNpmTarball();
-  const seeded = seedPackedCompleteNativeReleaseCache(root, VERSION, SOURCE, {
+  const tarball = authenticNpmTarball(version);
+  const seeded = seedPackedCompleteNativeReleaseCache(root, version, source, {
     package: PACKAGE,
     bytes: tarball,
   });
@@ -183,10 +185,11 @@ export async function createAuthenticModeFixture(
   const acquired = await resolveNativeRegistryRelease({
     projectRoot: root,
     registry,
-    release: VERSION,
+    release: version,
     catalog: { path: "catalog.json", ...seeded.reference.catalog },
-    manifest: { path: `releases/${VERSION}/manifest.json`, ...seeded.reference.manifest },
+    manifest: { path: `releases/${version}/manifest.json`, ...seeded.reference.manifest },
     itemIds: ["button"],
+    contractSelection: "stable",
     offline: true,
   });
   const acquiredItem = acquired.items[0]!;
@@ -194,7 +197,7 @@ export async function createAuthenticModeFixture(
   const sourceBytes = Buffer.from(acquiredFile.content, "utf8");
   const sourceTarget = "src/components/mergora/button/button.tsx";
   const configDigest = sha256(canonicalJson(config));
-  const releaseRef = `official@${VERSION}`;
+  const releaseRef = `official@${version}`;
   const packageInventory = acquired.npmPackageInventory!.entries[0]!;
   if (packageInventory.disposition !== "include") throw new Error("fixture package was omitted");
   const release = {
@@ -202,13 +205,13 @@ export async function createAuthenticModeFixture(
     origin: OFFICIAL_REGISTRY_ORIGIN,
     trust: "official",
     identityDigest: registry.identityDigest,
-    release: VERSION,
-    manifestUrl: `${OFFICIAL_REGISTRY_ORIGIN}/releases/${VERSION}/manifest.json`,
+    release: version,
+    manifestUrl: `${OFFICIAL_REGISTRY_ORIGIN}/releases/${version}/manifest.json`,
     manifestDigest: acquired.manifestDigest,
     packages: {
       [PACKAGE]: {
         name: PACKAGE,
-        version: VERSION,
+        version,
         tarballDigest: packageInventory.digest,
       },
     },
@@ -217,8 +220,8 @@ export async function createAuthenticModeFixture(
     registry: "official",
     itemId: "button",
     kind: "component",
-    requested: `=${VERSION}`,
-    resolved: VERSION,
+    requested: `=${version}`,
+    resolved: version,
     releaseRef,
     payload: { url: acquiredItem.payloadUrl, digest: acquiredItem.payloadDigest },
     direct: true,
@@ -251,22 +254,22 @@ export async function createAuthenticModeFixture(
     files: [],
     packageClaims: [PACKAGE],
     importSubpaths: ["mergora-ui/button"],
-    dependencies: { runtime: { [PACKAGE]: VERSION }, development: {} },
-    structuredPatches: [packagePatch()],
+    dependencies: { runtime: { [PACKAGE]: version }, development: {} },
+    structuredPatches: [packagePatch(version)],
     lastMigration: direction === "source-to-package" ? "mode-source-to-package-v1" : null,
   };
   const packageOwnership = {
     [`runtime:${PACKAGE}`]: {
       scope: "runtime",
       package: PACKAGE,
-      range: VERSION,
+      range: version,
       owners: ["official:button"],
       retention: "remove-if-unowned",
     },
   };
   const patchOwnership = {
     "dependency-mergora-ui": {
-      ...packagePatch(),
+      ...packagePatch(version),
       owners: ["official:button"],
       retention: "remove-if-unowned",
     },
@@ -313,7 +316,7 @@ export async function createAuthenticModeFixture(
     `${JSON.stringify(
       direction === "source-to-package"
         ? { name: "consumer", dependencies: {} }
-        : { name: "consumer", dependencies: { [PACKAGE]: VERSION } },
+        : { name: "consumer", dependencies: { [PACKAGE]: version } },
       null,
       2,
     )}\n`,
@@ -321,7 +324,7 @@ export async function createAuthenticModeFixture(
   const packageAfter = Buffer.from(
     `${JSON.stringify(
       direction === "source-to-package"
-        ? { name: "consumer", dependencies: { [PACKAGE]: VERSION } }
+        ? { name: "consumer", dependencies: { [PACKAGE]: version } }
         : { name: "consumer", dependencies: {} },
       null,
       2,
@@ -333,9 +336,9 @@ export async function createAuthenticModeFixture(
     sourceFiles: {
       [sourceTarget]: direction === "source-to-package" ? acquiredFile.digest : null,
     },
-    dependencies: { [PACKAGE]: direction === "source-to-package" ? null : VERSION },
+    dependencies: { [PACKAGE]: direction === "source-to-package" ? null : version },
     patches: {
-      "dependency-mergora-ui": direction === "source-to-package" ? null : sha256(VERSION),
+      "dependency-mergora-ui": direction === "source-to-package" ? null : sha256(version),
     },
     projectFiles: { "src/app/page.tsx": sha256(pageBefore) },
     importRewrites: [
@@ -382,7 +385,7 @@ export async function createAuthenticModeFixture(
         {
           releaseRef,
           package: PACKAGE,
-          version: VERSION,
+          version,
           url: packageInventory.url,
           bytes: Buffer.from(tarball),
         },

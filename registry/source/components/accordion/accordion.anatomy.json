@@ -11,6 +11,12 @@
     { "slot": "accordion-item", "element": "div disclosure", "stability": "documented" },
     { "slot": "accordion-header", "element": "h1-h6", "stability": "documented" },
     { "slot": "accordion-trigger", "element": "button", "stability": "documented" },
-    { "slot": "accordion-panel", "element": "div region", "stability": "documented" }
+    { "slot": "accordion-panel", "element": "div region", "stability": "documented" },
+    {
+      "slot": "accordion-expansion-summary",
+      "element": "div role=status aria-live=polite",
+      "purpose": "Optionally summarizes the current expansion set without changing disclosure semantics.",
+      "stability": "documented"
+    }
   ]
 }

@@ -13,6 +13,6 @@
   "nativePolicy": [
     "Skeleton is always aria-hidden and rejects role, live-region, label, and child-content overrides at typed and runtime boundaries.",
     "Explicit logical block/inline dimensions preserve the future content footprint without exposing fake content.",
-    "Pulse motion disappears under reduced motion and forced colors preserves a boundary."
+    "Pulse motion is selectable with animated, disappears under reduced motion, and forced colors preserves a boundary; animated=false removes the animation hook and behavior."
   ]
 }

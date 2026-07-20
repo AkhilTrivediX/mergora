@@ -12,6 +12,8 @@ Use `value` with `onChange` for controlled ownership, or `defaultValue` for unco
 
 ## Known limitations
 
+The Mergora credential surface uses literal Canvas, a strong ink boundary, a violet focus seam, and restrained green rule completion. Consumer-supplied `rules` provide a useful policy checklist without inventing a strength score. Passing the default empty array removes the list, rule validation calls, description ID, state labels, and accessibility output while native credential editing, reveal, paste, autofill, reset, and serialization remain intact.
+
 - Recorded password-manager, passkey-adjacent, mobile keyboard, speech, switch, and manual screen-reader evidence is still required before promotion.
 - Revealing a password necessarily displays sensitive text on screen; applications should not force revelation or retain that state across resets.
 - Requirement status is only as accurate as the consumer's real authentication policy.

@@ -23,10 +23,13 @@
     overflow: visible;
     clip-path: none;
     white-space: normal;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
     border-radius: var(--mrg-semantic-radius-control);
     padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
     color: var(--mrg-semantic-color-foreground-primary);
     background: var(--mrg-semantic-color-background-canvas);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
     outline: var(--mrg-component-focus-indicator-width) solid
       var(--mrg-component-focus-indicator-color);
     outline-offset: var(--mrg-component-focus-indicator-offset);
@@ -36,6 +39,8 @@
     .mrg-visually-hidden[data-reveal-on-focus="true"]:focus-visible {
       color: CanvasText;
       background: Canvas;
+      border-color: CanvasText;
+      box-shadow: none;
       outline-color: Highlight;
       forced-color-adjust: auto;
     }

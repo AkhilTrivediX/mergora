@@ -44,6 +44,15 @@ const rootRef = createRef<HTMLDivElement>();
   ref={rootRef}
 />;
 
+<Listbox entries={entries} formatSelectionSummary={false} label="Summary disabled" value="alpha" />;
+
+<Select
+  entries={entries}
+  formatSelectionSummary={({ visibleTextValues }) => visibleTextValues.join(", ")}
+  label="Summary enabled"
+  value="alpha"
+/>;
+
 // @ts-expect-error Multiple Listbox values are key arrays.
 <Listbox entries={entries} label="Invalid multiple" selectionMode="multiple" value="alpha" />;
 

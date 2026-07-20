@@ -49,3 +49,15 @@
   list-style: none;
   padding-inline-start: 0;
 }
+
+.mrg-stack[data-separated="true"] > * + * {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  padding-block-start: var(--mrg-stack-gap);
+}
+
+@media (forced-colors: active) {
+  .mrg-stack[data-separated="true"] > * + * {
+    border-block-start-color: CanvasText;
+  }
+}

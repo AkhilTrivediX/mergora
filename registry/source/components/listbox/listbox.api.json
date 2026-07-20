@@ -69,13 +69,15 @@
     {
       "name": "formatSelectionSummary",
       "required": false,
-      "type": "bounded localized accessibility summary formatter"
+      "default": "locale-driven bounded formatter",
+      "type": "false | bounded localized accessibility summary formatter"
     }
   ],
   "compositionPolicy": {
     "collection": "Flat items and labelled sections share one strict global key space; string and numeric keys may not collide after canonical form serialization.",
     "selection": "One conditional controlled/uncontrolled API covers single and multiple Listbox selection. A bounded cache retains selected records and initial defaults across page/filter churn; never-observed selected keys fail closed. Select consumes the same model only in single mode.",
-    "virtualization": "React Aria ListLayout windows DOM rows, retains the focused row, supplies virtualized option position/set-size semantics, and is paired with a bounded persistent selected-text summary.",
+    "virtualization": "React Aria ListLayout optionally windows DOM rows, retains the focused row, and supplies virtualized option position/set-size semantics. It is independently selectable from the bounded persistent selected-text summary.",
+    "enhancementDisabling": "Omitting virtualization renders the ordinary collection directly. formatSelectionSummary=false removes summary calculation, formatter calls, summary markup, ids, and aria-describedby contribution.",
     "async": "useCollectionLoader aborts superseded work, rejects stale completions by request id, validates appended pages, and exposes explicit retry/load-more controls.",
     "forms": "Selected canonical keys project to one hidden successful control per key. Retained dynamic selections keep the same FormData until explicitly replaced; uncontrolled reset restores the original default unless reset is prevented. Required is an ARIA/application validation contract, not a fabricated native constraint."
   }

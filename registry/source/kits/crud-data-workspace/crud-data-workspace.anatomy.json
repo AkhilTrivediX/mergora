@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "crud-data-workspace",
+  "root": {
+    "element": "div with query tools, public table and dialog, native editor form, and recovery alerts",
+    "ref": "HTMLDivElement",
+    "slot": "crud-data-workspace",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "crud-data-workspace-tools",
+      "element": "labelled section",
+      "purpose": "Provides category filtering and optional saved-view application and creation.",
+      "stability": "documented"
+    },
+    {
+      "slot": "crud-data-workspace-bulk-actions",
+      "element": "optional action region",
+      "purpose": "Makes selected-row count and consumer-owned bulk mutation explicit.",
+      "stability": "documented"
+    },
+    {
+      "slot": "crud-data-workspace-mutation-timeline",
+      "element": "optional polite output",
+      "purpose": "Announces successful or cancelled mutation recovery only when enabled.",
+      "stability": "documented"
+    },
+    {
+      "slot": "crud-data-workspace-permission-note",
+      "element": "paragraph",
+      "purpose": "Explains read-only UI without claiming an authorization boundary.",
+      "stability": "documented"
+    }
+  ]
+}

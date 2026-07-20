@@ -31,6 +31,8 @@ const color = createSrgbColor({ alpha: 128, blue: 153, green: 102, red: 51 });
   inputRef={inputRef}
   onChange={(value) => value.alpha}
   ref={rootRef}
+  showContrast={false}
+  showPreview={false}
   swatches={[color]}
 />;
 

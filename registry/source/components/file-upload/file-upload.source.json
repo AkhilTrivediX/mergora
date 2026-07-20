@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "../dropzone/index.js",
+    "../file-trigger/file-trigger.js",
+    "../provider/index.js",
+    "../upload-progress/index.js",
+    "./file-upload.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/file-upload/file-upload.tsx",
+  "id": "file-upload",
+  "itemDependencies": ["dropzone", "file-trigger", "provider", "upload-progress"],
+  "outputRole": "component"
+}

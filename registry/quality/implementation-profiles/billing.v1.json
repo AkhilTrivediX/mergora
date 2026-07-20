@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "category": "billing",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "billing-subscription-kit",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn provides form, table, radio, and dialog primitives but no ordinary billing workflow that combines plan selection, invoice semantics, payment-provider boundaries, impact preview, and destructive cancellation review.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit combines controlled or uncontrolled native plan serialization, scoped invoice records, consumer-rendered provider fields, consumer-calculated change impact, and acknowledgement-gated cancellation without bundling payment integration or secrets.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/billing-subscription-kit/billing-subscription-kit.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": [
+          "change-impact-preview",
+          "payment-method-boundary",
+          "invoice-actions",
+          "cancellation-review"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The billing ledger uses literal white, crisp Ink rows, strong hierarchy, a Green header seam, Violet selection/focus, restrained corners, scoped overflow, touch targets, and preference fallbacks shared with Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "change-impact-preview",
+          "status": "evidence-backed",
+          "summary": "A consumer renderer explains authoritative effective-date, credit, tax, or invoice consequences before the plan request is submitted.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6BillingSubscriptionKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["changePreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["renderChangePreview"],
+            "enableWhen": "Provide a renderChangePreview callback."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No impact output or preview surface is rendered.",
+            "behavior": "Native plan selection, serialization, reset, and submission remain unchanged.",
+            "events": "The preview renderer is never invoked.",
+            "accessibility": "No output or impact description enters the accessibility tree."
+          }
+        },
+        {
+          "id": "payment-method-boundary",
+          "status": "evidence-backed",
+          "summary": "A clearly labelled shell accepts consumer or provider-hosted payment fields without collecting or transmitting card data itself.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["paymentMethod"],
+          "api": {
+            "kind": "prop",
+            "names": ["paymentMethodForm"],
+            "enableWhen": "Provide paymentMethodForm content."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No payment-method section, provider boundary copy, or supplied fields are rendered.",
+            "behavior": "Plan and invoice behavior remains unchanged.",
+            "events": "No supplied payment-field handlers or provider code is mounted.",
+            "accessibility": "No payment section, heading, fields, or descriptions enter the accessibility tree."
+          }
+        },
+        {
+          "id": "invoice-actions",
+          "status": "evidence-backed",
+          "summary": "Consumer-owned per-invoice actions are available without converting invoice identifiers into unsafe guessed links.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["invoiceActions"],
+          "api": {
+            "kind": "prop",
+            "names": ["onInvoiceOpen"],
+            "enableWhen": "Provide onInvoiceOpen."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No action column or invoice action buttons are rendered.",
+            "behavior": "The complete invoice table remains readable.",
+            "events": "No invoice action callback can fire.",
+            "accessibility": "No action header or per-row focus stops enter the accessibility tree."
+          }
+        },
+        {
+          "id": "cancellation-review",
+          "status": "evidence-backed",
+          "summary": "An inline review requires visible consequences and explicit acknowledgement before a consumer-owned cancellation request.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["cancellationReview"],
+          "api": {
+            "kind": "prop",
+            "names": ["cancellationReview"],
+            "enableWhen": "Provide a BillingCancellationReview object."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No cancellation section, review control, acknowledgement, or destructive action is rendered.",
+            "behavior": "Plan, invoice, and payment-method behavior remains unchanged.",
+            "events": "No cancellation state or onConfirm callback exists.",
+            "accessibility": "No destructive heading, consequence list, checkbox, status, or buttons enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6BillingSubscriptionKit.stories.tsx",
+          "exportName": "BasicBillingSubscriptionKit",
+          "enhancementControls": [
+            "changePreview",
+            "paymentMethod",
+            "invoiceActions",
+            "cancellationReview"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6BillingSubscriptionKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6BillingSubscriptionKit.stories.tsx",
+          "exportName": "RecommendedBillingSubscriptionKit",
+          "enhancementControls": [
+            "changePreview",
+            "paymentMethod",
+            "invoiceActions",
+            "cancellationReview"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6BillingSubscriptionKit.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated Chromium, Firefox, and WebKit axe coverage includes native plan forms, instance-scoped labelled regions, invoice tables, enhancement removal, read-only reset cancellation, acknowledgement, narrow RTL, reduced motion, forced colors, and target sizing; complete Risk Class 3 manual and financial review evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused Chromium, Firefox, and WebKit evidence covers enhancement removal, mutable and read-only native reset semantics, repeated-instance ARIA ownership, controlled and uncontrolled plan ownership, invoice actions, cancellation acknowledgement, RTL, reduced motion, forced colors, and narrow/touch presentation; authoritative finance, provider, lifecycle, and failure matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/billing-subscription-kit/billing-subscription-kit.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/billing-subscription-kit/billing-subscription-kit.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "billing-kit-evidence-incomplete",
+          "summary": "Dependency closure, financial/payment/security/privacy/legal review, large invoice and provider matrices, current manual assistive technology, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "The source workflow and focused evidence exist, but distribution, lifecycle, provider, financial, security, privacy, legal, browser, and manual assistive-technology gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navbar",
+  "entryExport": "Navbar",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML header attributes except owned children",
+  "exports": [
+    { "kind": "function", "name": "isSafeNavbarHref" },
+    { "kind": "component", "name": "Navbar" },
+    { "kind": "type", "name": "NavbarItem" },
+    { "kind": "type", "name": "NavbarProps" },
+    { "kind": "type", "name": "NavbarRouteStatus" },
+    { "kind": "type", "name": "NavbarSkipLink" }
+  ],
+  "controlledState": [
+    {
+      "state": "mobile disclosure",
+      "controlled": "open",
+      "uncontrolled": "defaultOpen",
+      "callback": "onOpenChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "route status rail",
+      "api": "routeStatus",
+      "disabled": "omission removes output, live semantics, busy state, and status attributes"
+    }
+  ]
+}

@@ -6,16 +6,26 @@ import { useMergoraContext, useMergoraMessage } from "../provider/index.js";
 import "./breadcrumb.css";
 
 export interface BreadcrumbItem {
+  /** Explicitly marks the final hierarchy item as the current page. */
   readonly current?: boolean;
+  /** Safe navigation destination required for every ancestor item. */
   readonly href?: string;
+  /** Stable non-empty identifier, unique within the hierarchy. */
   readonly id: string;
+  /** Non-empty visible content for this hierarchy item. */
   readonly label: ReactNode;
 }
 
 export interface BreadcrumbProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+  /** Container-aware hierarchy compaction. False removes compact markup and disclosure output. */
+  readonly collapse?: boolean;
+  /** Non-empty ordered hierarchy ending with the current page. */
   readonly items: readonly BreadcrumbItem[];
+  /** Accessible navigation name; omission uses localized provider copy. */
   readonly label?: string;
+  /** Maximum directly visible items before compact disclosure, with a minimum of two. */
   readonly maxVisible?: number;
+  /** Receives ancestor-link activation before native or framework navigation. */
   readonly onNavigate?: (id: string, event: MouseEvent<HTMLAnchorElement>) => void;
 }
 
@@ -62,11 +72,22 @@ function validateBreadcrumbItems(items: readonly BreadcrumbItem[]): void {
 }
 
 export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
-  { className, items, label: labelProp, maxVisible = 3, onNavigate, ...nativeProps },
+  {
+    className,
+    collapse = true,
+    items,
+    label: labelProp,
+    maxVisible = 3,
+    onNavigate,
+    ...nativeProps
+  },
   ref,
 ) {
   validateBreadcrumbItems(items);
-  if (!Number.isFinite(maxVisible) || !Number.isInteger(maxVisible) || maxVisible < 2) {
+  if (
+    collapse &&
+    (!Number.isFinite(maxVisible) || !Number.isInteger(maxVisible) || maxVisible < 2)
+  ) {
     throw new RangeError("Mergora Breadcrumb maxVisible must be a finite integer of at least 2.");
   }
   const { getMessage } = useMergoraContext();
@@ -76,21 +97,23 @@ export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Brea
   }
   const label = labelProp ?? defaultLabel;
   const currentIndex = items.length - 1;
-  const shouldCollapse = items.length > maxVisible;
-  const tailCount = Math.max(1, maxVisible - 1);
+  const shouldCollapse = collapse && items.length > maxVisible;
+  const tailCount = collapse ? Math.max(1, maxVisible - 1) : 1;
   const hiddenItems = shouldCollapse ? items.slice(1, -tailCount) : [];
   const visibleTail = shouldCollapse ? items.slice(-tailCount) : [];
-  const hiddenLabel = getMessage(
-    "breadcrumb.showHidden",
-    ({ locale: messageLocale, values }) => {
-      const count = Number(values.count ?? 0);
-      const formatted = new Intl.NumberFormat(messageLocale).format(count);
-      return new Intl.PluralRules(messageLocale).select(count) === "one"
-        ? `Show ${formatted} hidden breadcrumb`
-        : `Show ${formatted} hidden breadcrumbs`;
-    },
-    { count: hiddenItems.length },
-  );
+  const hiddenLabel = shouldCollapse
+    ? getMessage(
+        "breadcrumb.showHidden",
+        ({ locale: messageLocale, values }) => {
+          const count = Number(values.count ?? 0);
+          const formatted = new Intl.NumberFormat(messageLocale).format(count);
+          return new Intl.PluralRules(messageLocale).select(count) === "one"
+            ? `Show ${formatted} hidden breadcrumb`
+            : `Show ${formatted} hidden breadcrumbs`;
+        },
+        { count: hiddenItems.length },
+      )
+    : "";
 
   const renderItem = (
     item: BreadcrumbItem,

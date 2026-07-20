@@ -13,6 +13,15 @@ function guardRuntime(page: Page): string[] {
   runtimeFailures.set(page, failures);
   page.on("console", (message) => {
     if (message.type() === "warning" || message.type() === "error") {
+      if (
+        message.type() === "warning" &&
+        message.text().includes("Layout was forced before the page was fully loaded") &&
+        message.text().includes("chrome://juggler/content/content/main.js")
+      ) {
+        // Firefox's Playwright transport emits this before application code runs. Keep every
+        // application-origin warning and error strict.
+        return;
+      }
       failures.push(`console.${message.type()}: ${message.text()}`);
     }
   });
@@ -43,7 +52,17 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+    throw new Error("Storybook axe audit did not release its runner.");
   });
 }
 
@@ -131,15 +150,21 @@ test("non-modal Dialog leaves the application operable and does not trap focus",
   await expect(page.getByTestId("application-root")).not.toHaveAttribute("inert", "");
   await expect(page.locator("html")).not.toHaveAttribute("data-mergora-scroll-locked", "true");
   await expect(page.locator('[data-slot="dialog-overlay"]')).toHaveAttribute("data-modal", "false");
-  await page.getByTestId("nonmodal-background").click();
+  await page.mouse.click(2, 2);
   await expect(dialog).toBeHidden();
-  await expect(page.getByTestId("nonmodal-background")).toBeFocused();
+  await expect(trigger).toBeFocused();
+  await expect(page.getByTestId("nonmodal-dismissals")).toHaveText(
+    "Dismissals: outside-interaction",
+  );
 
   await trigger.click();
   await expect(dialog).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+  await expect(page.getByTestId("nonmodal-dismissals")).toHaveText(
+    "Dismissals: outside-interaction, escape-key",
+  );
   expect(await axeViolations(page)).toEqual([]);
 });
 
@@ -551,6 +576,118 @@ test("IME composition consumes Escape before Dialog dismissal", async ({ page })
   });
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
+});
+
+test("basic overlay workbench removes every optional enhancement cleanly", async ({ page }) => {
+  await openStory(page, "basic-defaults");
+
+  await page.getByRole("button", { name: "Review changes" }).click();
+  await expect(page.locator('[data-slot="dialog-dismiss-hint"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Return to diff" }).click();
+
+  await page.getByRole("button", { name: "Remove saved view" }).click();
+  await expect(page.locator('[data-slot="alert-dialog-acknowledgement-input"]')).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Remove view" })).toBeEnabled();
+  await page.getByRole("button", { name: "Keep view" }).click();
+
+  await page.getByRole("button", { name: "Open setup panel" }).click();
+  await expect(page.locator('[data-slot="sheet-progress"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Close setup" }).click();
+
+  await page.getByRole("button", { name: "Inspect token" }).click();
+  await expect(page.locator('[data-slot="popover-anchor-context"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Close inspector" }).click();
+
+  const tooltipTrigger = page.getByRole("button", { name: "Command details" });
+  await expect(tooltipTrigger).not.toHaveAttribute("aria-disabled", "true");
+  await tooltipTrigger.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible();
+  await expect(page.locator('[data-slot="tooltip-shortcut"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="tooltip-content"] > span')).toHaveCount(0);
+});
+
+test("blank and empty host enhancement content emits no overlay UI or relationships", async ({
+  page,
+}) => {
+  await openStory(page, "empty-enhancement-content");
+
+  await page.getByRole("button", { name: "Review changes" }).click();
+  await expect(page.locator('[data-slot="dialog-dismiss-hint"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Return to diff" }).click();
+
+  await page.getByRole("button", { name: "Remove saved view" }).click();
+  await expect(page.locator('[data-slot="alert-dialog-acknowledgement-input"]')).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Remove view" })).toBeEnabled();
+  await page.getByRole("button", { name: "Keep view" }).click();
+
+  await page.getByRole("button", { name: "Inspect token" }).click();
+  await expect(page.locator('[data-slot="popover-anchor-context"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Close inspector" }).click();
+
+  const tooltipTrigger = page.getByRole("button", { name: "Command details" });
+  await tooltipTrigger.hover();
+  await expect(page.getByRole("tooltip")).toBeVisible();
+  await expect(page.locator('[data-slot="tooltip-shortcut"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="tooltip-content"] > span')).toHaveCount(0);
+});
+
+test("AlertDialog acknowledgement supports controlled state", async ({ page }) => {
+  await openStory(page, "controlled-alert-acknowledgement");
+  await page.getByRole("button", { name: "Remove saved view" }).click();
+  const acknowledgement = page.getByRole("checkbox", {
+    name: "I understand that this saved view cannot be restored.",
+  });
+  const action = page.getByRole("button", { name: "Remove view" });
+  await expect(action).toBeDisabled();
+  await acknowledgement.check();
+  await expect(acknowledgement).toBeChecked();
+  await expect(action).toBeEnabled();
+});
+
+test("recommended overlay workbench exposes independent context and safety rails", async ({
+  page,
+}) => {
+  await openStory(page, "recommended-mergora");
+
+  await page.getByRole("button", { name: "Review changes" }).click();
+  const dialog = page.getByRole("dialog", { name: "Review changes" });
+  const dismissHint = page.locator('[data-slot="dialog-dismiss-hint"]');
+  await expect(dismissHint).toBeVisible();
+  await expect(dialog).toHaveAttribute("aria-describedby", /\S+\s+\S+/u);
+  await page.getByRole("button", { name: "Return to diff" }).click();
+
+  await page.getByRole("button", { name: "Remove saved view" }).click();
+  const acknowledgement = page.getByRole("checkbox", {
+    name: "I understand that this saved view cannot be restored.",
+  });
+  const destructiveAction = page.getByRole("button", { name: "Remove view" });
+  await expect(acknowledgement).not.toBeChecked();
+  await expect(destructiveAction).toBeDisabled();
+  await acknowledgement.check();
+  await expect(destructiveAction).toBeEnabled();
+  await destructiveAction.click();
+
+  await page.getByRole("button", { name: "Open setup panel" }).click();
+  await expect(page.getByRole("progressbar", { name: "Workspace setup" })).toHaveAttribute(
+    "value",
+    "2",
+  );
+  await page.getByRole("button", { name: "Close setup" }).click();
+
+  await page.getByRole("button", { name: "Inspect token" }).click();
+  const popover = page.getByRole("dialog", { name: "Token inspector" });
+  const anchorContext = page.locator('[data-slot="popover-anchor-context"]');
+  await expect(anchorContext).toHaveText("Selected token · border.default");
+  await expect(popover).toHaveAttribute("aria-describedby", /\S+\s+\S+/u);
+  await expect(page.getByRole("button", { name: "Close inspector" })).toBeFocused();
+  await page.getByRole("button", { name: "Close inspector" }).click();
+
+  const disabledTrigger = page.getByRole("button", { name: "Command unavailable" });
+  await expect(disabledTrigger).toHaveAttribute("aria-disabled", "true");
+  await disabledTrigger.hover();
+  await expect(page.getByRole("tooltip")).toContainText("Ctrl K");
+  await expect(page.locator('[data-slot="tooltip-shortcut"]')).toHaveText("Ctrl K");
+  expect(await axeViolations(page)).toEqual([]);
 });
 
 test("forced colors and reduced motion retain structural boundaries and static state", async ({

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "menubar",
+  "entryExport": "Menubar",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Menubar"
+    },
+    {
+      "kind": "type",
+      "name": "MenubarMenu"
+    },
+    {
+      "kind": "type",
+      "name": "MenubarProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "keyboardGuide",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "openMenuOnFocus",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "selectionSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "confirmDestructiveActions",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Menubar; optional output is additive and independently removable.",
+    "enhancement": "keyboardGuide and openMenuOnFocus are independent. Disabling the guide removes its UI and aria-describedby; disabling focus transfer removes that behavior and related open-state events."
+  }
+}

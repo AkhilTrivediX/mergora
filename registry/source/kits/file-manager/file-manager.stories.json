@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-manager",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicFileManager" },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFileManager"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledFileManager"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "offline",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerStateMatrix"
+    },
+    {
+      "id": "conflict",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFileManager"
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFileManager"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlFileManager"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlFileManager" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerPreferences"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "FileManagerPreferences"
+    }
+  ]
+}

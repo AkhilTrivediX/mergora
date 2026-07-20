@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chart",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicChart"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedChart"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "KeyboardAndPreferences"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "LoadingEmptyAndError"
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "LoadingEmptyAndError"
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedChart"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Error presentation belongs to consumer-composed content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state belongs to consumer-composed content or is not owned by this component contract."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "KeyboardAndPreferences"
+    },
+    {
+      "id": "long-content",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndRtl"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndRtl"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "KeyboardAndPreferences"
+    },
+    {
+      "id": "rtl",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndRtl"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndRtl"
+    }
+  ]
+}

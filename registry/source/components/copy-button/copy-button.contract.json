@@ -9,7 +9,8 @@
   "semantics": [
     "Clipboard rejection is visible and announced instead of being silently treated as success.",
     "Status remains present until the next attempt and focus stays on the native button.",
-    "The fallback removes its temporary textarea after every attempt."
+    "The fallback removes its temporary textarea after every attempt.",
+    "allowFallback=false removes the legacy fallback and preserves visible, announced rejection feedback."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

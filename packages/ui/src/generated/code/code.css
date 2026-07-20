@@ -1,6 +1,7 @@
 /* Generated from registry/source/components/code/code.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-code {
-  background: var(--mrg-semantic-color-background-surface-sunken);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
   border-radius: var(--mrg-semantic-radius-status);
   color: var(--mrg-semantic-color-foreground-primary);
   font-family: var(--mrg-semantic-font-family-machine);
@@ -9,6 +10,9 @@
   padding-block: var(--mrg-semantic-space-inline-xs);
   padding-inline: var(--mrg-semantic-space-inline-sm);
   user-select: text;
+}
+.mrg-code[data-bidi-isolated="true"] {
+  unicode-bidi: isolate;
 }
 .mrg-code[data-wrap="true"] {
   overflow-wrap: anywhere;
@@ -23,7 +27,7 @@
 @media (forced-colors: active) {
   .mrg-code {
     background: Canvas;
-    border: 1px solid CanvasText;
+    border-color: CanvasText;
     color: CanvasText;
   }
 }

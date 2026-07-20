@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "crud-data-workspace",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not an authorization boundary, database, conflict-resolution system, backend, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Public DataTable and Dialog semantics with labelled native editor inputs, explicit alerts, confirmation, status, and recovery controls.",
+    "rolePolicy": "Load and mutation failures use alerts, pending mutation state remains cancellable, successful mutation announcements are opt-in, and permission UI never replaces backend authorization.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through query tools, row selection, sort controls, row actions, editor fields, confirmation, and recovery actions in document order."
+    },
+    {
+      "key": "Enter",
+      "behavior": "Submits the editor native form without replacing browser validation or IME composition."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Closes the public editor dialog and restores focus according to its contract."
+    },
+    {
+      "key": "Space",
+      "behavior": "Toggles public DataTable row selection when bulk actions are enabled."
+    }
+  ],
+  "nonColor": "Selection, permissions, mutation, rollback, confirmation, status, loading, offline, empty, and error states use text and native state in addition to green or violet signals.",
+  "responsive": "Query tools become a vertical sequence at narrow widths, the data table remains horizontally inspectable, logical properties support RTL, and coarse input receives 44 CSS-pixel targets.",
+  "stableSelectors": {
+    "root": "[data-slot=crud-data-workspace]",
+    "parts": [
+      "crud-data-workspace-tools",
+      "crud-data-workspace-bulk-actions",
+      "crud-data-workspace-mutation-timeline",
+      "crud-data-workspace-permission-note"
+    ],
+    "attributes": ["aria-busy", "aria-invalid", "aria-selected"]
+  },
+  "consumerResponsibilities": [
+    "Authorize and validate every read and mutation on the backend; UI permissions and optimistic state are presentation only.",
+    "Supply abort-aware adapters with transactional, concurrency, versioning, conflict, retry, rollback, retention, audit, privacy, and offline policy.",
+    "Localize visible and spoken strings and validate realistic dense data, virtual keyboards, touch, zoom, assistive technology, destructive operations, and recovery."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "search-filter-saved-views",
+      "bulk-actions",
+      "create-edit-dialog",
+      "permission-path",
+      "optimistic-pessimistic",
+      "rollback",
+      "cancel",
+      "delete-confirmation",
+      "undo-disabled-path",
+      "loading-empty-offline-error",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "transaction-authorization-security-privacy-review"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "itemId": "ai-chat-workspace",
+  "entryExport": "AiChatWorkspace",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "AiChatWorkspace" },
+    { "kind": "type", "name": "AiChatWorkspaceAdapter" },
+    { "kind": "type", "name": "AiChatWorkspaceCitation" },
+    { "kind": "type", "name": "AiChatWorkspaceConversation" },
+    { "kind": "type", "name": "AiChatWorkspaceLoadState" },
+    { "kind": "type", "name": "AiChatWorkspaceMessage" },
+    { "kind": "value", "name": "AiChatWorkspacePage" },
+    { "kind": "type", "name": "AiChatWorkspaceProps" },
+    { "kind": "type", "name": "AiChatWorkspaceRole" },
+    { "kind": "type", "name": "AiChatWorkspaceSendInput" },
+    { "kind": "type", "name": "AiChatWorkspaceSnapshot" },
+    { "kind": "type", "name": "AiChatWorkspaceToolCall" },
+    { "kind": "type", "name": "UseAiChatWorkspaceOptions" },
+    { "kind": "value", "name": "createDeterministicAiChatWorkspaceAdapter" },
+    { "kind": "value", "name": "useAiChatWorkspace" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "AiChatWorkspaceAdapter" },
+    { "name": "followOutput", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceMessages", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "attachments",
+      "required": false,
+      "default": false,
+      "type": "false | readonly string[]"
+    },
+    {
+      "name": "suggestions",
+      "required": false,
+      "default": false,
+      "type": "false | readonly prompt[]"
+    },
+    { "name": "showRoleContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "showStreamingCursor", "required": false, "default": false, "type": "boolean" },
+    { "name": "showCitationDetails", "required": false, "default": false, "type": "boolean" },
+    { "name": "showToolDetails", "required": false, "default": false, "type": "boolean" },
+    { "name": "showCharacterBudget", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "submitShortcut",
+      "required": false,
+      "default": false,
+      "type": "false | \"enter\" | \"mod-enter\""
+    }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "The page composes canonical Message, MessageList, ChatComposer, PromptSuggestions, Citation, StreamingText and ToolCall source items.",
+    "adapter": "The consumer supplies all load/send/cancel/retry/edit/branch behavior; no provider SDK, credential, network endpoint or backend is bundled.",
+    "enhancements": "Follow-output, announcements, attachments, suggestions, role context, streaming cursor, citation detail, tool detail, character budget and composer shortcut remain independently selectable."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-trigger",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "single",
+    "multiple",
+    "directory",
+    "capture",
+    "empty",
+    "selected",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "file-trigger",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["disabled", "single", "multiple", "directory", "capture"]
+    },
+    {
+      "name": "file-trigger-label",
+      "semanticElement": "label",
+      "refTarget": "none",
+      "states": ["hover", "active", "focus-visible", "disabled"]
+    },
+    {
+      "name": "file-trigger-control",
+      "semanticElement": "input type=file",
+      "refTarget": "HTMLInputElement",
+      "states": ["disabled", "single", "multiple", "directory", "capture", "selected"]
+    },
+    {
+      "name": "file-trigger-description",
+      "semanticElement": "descriptive text",
+      "refTarget": "none",
+      "states": ["default"]
+    }
+  ],
+  "contract": { "id": "file-trigger-accessibility", "version": "0.1.0" },
+  "passport": { "id": "file-trigger-quality-passport", "version": "0.0.0" }
+}

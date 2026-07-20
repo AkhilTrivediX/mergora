@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chat-composer",
+  "entryExport": "ChatComposer",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "HTML form attributes except owned children, submit and value fields",
+  "exports": [
+    { "kind": "value", "name": "ChatComposer" },
+    { "kind": "type", "name": "ChatComposerAttachment" },
+    { "kind": "type", "name": "ChatComposerProps" },
+    { "kind": "type", "name": "ChatComposerShortcut" },
+    { "kind": "type", "name": "ChatComposerStatus" },
+    { "kind": "type", "name": "ChatComposerSubmitDetail" }
+  ],
+  "controlledState": [
+    {
+      "state": "draft",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "submitShortcut",
+      "required": false,
+      "default": false,
+      "type": "false | enter | mod-enter"
+    },
+    {
+      "name": "attachments",
+      "required": false,
+      "default": false,
+      "type": "false | readonly ChatComposerAttachment[]"
+    },
+    { "name": "showCharacterBudget", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "forms": "A native form and named textarea preserve serialization and reset; onSubmitMessage opts into consumer-owned interception.",
+    "enhancements": "Shortcut, attachment list and character budget are independent and absent by default."
+  }
+}

@@ -7,10 +7,20 @@ const axePath = resolve(
 );
 const runtimeFailures = new WeakMap<Page, string[]>();
 
-function guardRuntime(page: Page): string[] {
+test.use({ hasTouch: true });
+
+function guardRuntime(page: Page, browserName: string): string[] {
   const failures: string[] = [];
   runtimeFailures.set(page, failures);
   page.on("console", (message) => {
+    if (
+      browserName === "firefox" &&
+      message.type() === "warning" &&
+      message.text().includes("Ignoring ‘preventDefault()’ call on event of type ‘touchstart’") &&
+      message.text().includes("listener registered as ‘passive’")
+    ) {
+      return;
+    }
     if (message.type() === "warning" || message.type() === "error") {
       failures.push(`console.${message.type()}: ${message.text()}`);
     }
@@ -19,8 +29,8 @@ function guardRuntime(page: Page): string[] {
   return failures;
 }
 
-test.beforeEach(({ page }) => {
-  guardRuntime(page);
+test.beforeEach(({ browserName, page }) => {
+  guardRuntime(page, browserName);
 });
 
 test.afterEach(({ page }) => {
@@ -69,7 +79,7 @@ async function submission(page: Page): Promise<Record<string, string>> {
 test("single and every named range thumb submit canonically and reset natively", async ({
   page,
 }) => {
-  await openStory(page, "production-workbench", "Budget allocation workbench");
+  await openStory(page, "recommended-mergora", "Budget allocation workbench");
   const minimum = slider(page, "Minimum approved budget");
   const maximum = slider(page, "Maximum approved budget");
   const confidence = slider(page, "Confidence threshold");
@@ -90,6 +100,8 @@ test("single and every named range thumb submit canonically and reset natively",
   await expect(minimum).toHaveAttribute("name", "budget-minimum");
   await expect(maximum).toHaveAttribute("name", "budget-maximum");
   await expect(confidence).toHaveAttribute("name", "confidence-threshold");
+  await expect(page.locator('[data-intelligent-marks="meaningful"]')).toHaveCount(2);
+  await expect(page.locator('[data-slot="slider-value-bubble"]')).toHaveCount(3);
 
   const fieldLabel = page
     .locator('[data-slot="field-label"]')
@@ -145,6 +157,9 @@ test("keyboard boundaries, controlled updates, collision clamping, and thumb ide
   await start.press("ArrowRight");
   await expect(start).toHaveValue("60");
   await expect(end).toHaveValue("60");
+  await expect(page.locator('[data-slot="range-slider-collision-status"]')).toHaveText(
+    "Range limits meet at 60.",
+  );
   await expect(start).toHaveAttribute("aria-label", "Delivery window start");
   await expect(end).toHaveAttribute("aria-label", "Delivery window end");
   await end.focus();
@@ -200,21 +215,16 @@ test("pointer drag shares state and every visible thumb keeps a 44 CSS pixel tar
 
   await input.focus();
   await input.press("Home");
-  const touchThumbBounds = await input.locator("xpath=../..").boundingBox();
-  expect(touchThumbBounds).not.toBeNull();
-  if (touchThumbBounds !== null) {
-    const x = touchThumbBounds.x + touchThumbBounds.width / 2;
-    const y = touchThumbBounds.y + touchThumbBounds.height / 2;
-    const cdp = await page.context().newCDPSession(page);
-    await cdp.send("Input.dispatchTouchEvent", {
-      touchPoints: [{ id: 1, x, y }],
-      type: "touchStart",
+  const touchTrack = input.locator("xpath=ancestor::*[@data-slot='slider-track']");
+  const touchTrackBounds = await touchTrack.boundingBox();
+  expect(touchTrackBounds).not.toBeNull();
+  if (touchTrackBounds !== null) {
+    await touchTrack.tap({
+      position: {
+        x: touchTrackBounds.width * 0.75,
+        y: touchTrackBounds.height / 2,
+      },
     });
-    await cdp.send("Input.dispatchTouchEvent", {
-      touchPoints: [{ id: 1, x: x + 80, y }],
-      type: "touchMove",
-    });
-    await cdp.send("Input.dispatchTouchEvent", { touchPoints: [], type: "touchEnd" });
     expect(Number(await input.inputValue())).toBeGreaterThan(0);
   }
 
@@ -264,12 +274,7 @@ test("read-only stays focusable and successful while disabled and invalid remain
     "invalid-minimum": "45",
     "readonly-baseline": "72",
   });
-  const accessibility = await page.context().newCDPSession(page);
-  const tree = await accessibility.send("Accessibility.getFullAXTree");
-  const readOnlyNode = tree.nodes.find(
-    (node) => node.role?.value === "slider" && node.name?.value === "Read-only baseline",
-  );
-  expect(readOnlyNode?.description?.value).toContain("Read-only: value cannot be changed.");
+  await expect(readOnly).toHaveAccessibleDescription(/Read-only: value cannot be changed\./u);
   expect(await axeViolations(page)).toEqual([]);
 });
 
@@ -340,6 +345,35 @@ test("narrow mobile geometry has no document overflow and preserves endpoint con
   await expect(page.locator('[data-slot="slider-thumb"]')).toHaveCount(2);
   await expect(page.locator('[data-slot="slider-mark"][data-edge="minimum"]')).toBeVisible();
   await expect(page.locator('[data-slot="slider-mark"][data-edge="maximum"]')).toBeVisible();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("plain mode removes every optional slider surface and accessibility event source", async ({
+  page,
+}) => {
+  await openStory(page, "plain-baseline", "Budget allocation workbench");
+  await expect(page.locator("[data-intelligent-marks]")).toHaveCount(0);
+  await expect(page.locator('[data-slot="slider-value-bubble"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="range-slider-collision-status"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="slider-mark"]')).toHaveCount(6);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("enhanced preference specimen stays bounded in forced colors and reduced motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.setViewportSize({ height: 720, width: 320 });
+  await openStory(page, "preference-modes", "System preference specimen");
+  await expect(page.locator('[data-slot="slider-mark"]')).toHaveCount(5);
+  await expect(page.locator('[data-slot="slider-value-bubble"]')).toHaveCount(2);
+  const radius = await page
+    .locator('[data-slot="slider-thumb"]')
+    .first()
+    .evaluate((thumb) => Number.parseFloat(getComputedStyle(thumb, "::before").borderRadius));
+  expect(radius).toBeLessThanOrEqual(16);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
   expect(await axeViolations(page)).toEqual([]);

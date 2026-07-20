@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "upload-progress",
+  "entryExport": "UploadProgress",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the stable root except children",
+  "exports": [
+    { "kind": "component", "name": "UploadProgress" },
+    { "kind": "function", "name": "formatUploadBytes" },
+    { "kind": "type", "name": "UploadProgressMessages" },
+    { "kind": "type", "name": "UploadProgressProps" },
+    { "kind": "type", "name": "UploadProgressScope" },
+    { "kind": "type", "name": "UploadProgressStatus" }
+  ],
+  "controlledState": ["value", "status"],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "announceProgress", "required": false, "default": true, "type": "boolean" },
+    { "name": "scope", "required": false, "default": "file", "type": "file | aggregate" },
+    { "name": "status", "required": false, "default": "uploading", "type": "UploadProgressStatus" },
+    { "name": "value", "required": false, "type": "finite number 0..maximum" },
+    { "name": "maximum", "required": false, "default": 100, "type": "finite number above zero" },
+    { "name": "uploadedBytes", "required": false, "type": "non-negative safe integer" },
+    { "name": "totalBytes", "required": false, "type": "non-negative safe integer" },
+    { "name": "announcementStep", "required": false, "default": 10, "type": "integer 1..100" },
+    { "name": "message", "required": false, "type": "ReactNode" },
+    { "name": "messages", "required": false, "type": "localized UploadProgressMessages overrides" }
+  ],
+  "compositionPolicy": {
+    "progress": "The existing Mergora Progress primitive owns the labelled native progress element and visible locale-formatted percentage/byte value.",
+    "status": "Queued, uploading, paused, retrying, complete, error, and cancelled are explicit text plus data-state values rather than color-only projections.",
+    "announcements": "When announceProgress is true, a polite atomic region updates only when status or the configured percentage bucket changes; false removes the live region and announcement updates entirely.",
+    "transport": "The component displays consumer-owned state and never starts, retries, pauses, cancels, or removes an upload."
+  }
+}

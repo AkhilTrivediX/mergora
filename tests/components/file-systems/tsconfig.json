@@ -1,0 +1,37 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/avatar-upload/**/*.ts",
+    "../../../registry/source/components/avatar-upload/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/dropzone/**/*.ts",
+    "../../../registry/source/components/dropzone/**/*.tsx",
+    "../../../registry/source/components/file-trigger/**/*.ts",
+    "../../../registry/source/components/file-trigger/**/*.tsx",
+    "../../../registry/source/components/file-upload/**/*.ts",
+    "../../../registry/source/components/file-upload/**/*.tsx",
+    "../../../registry/source/components/progress/**/*.ts",
+    "../../../registry/source/components/progress/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../registry/source/components/upload-progress/**/*.ts",
+    "../../../registry/source/components/upload-progress/**/*.tsx",
+    "../../../apps/storybook/src/P4FileSystems.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

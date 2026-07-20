@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "FeedbackWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -77,7 +77,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "FeedbackVariants"
+      "story": "RecommendedMergora"
     },
     {
       "id": "partial",

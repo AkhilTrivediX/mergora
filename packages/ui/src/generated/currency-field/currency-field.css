@@ -1,6 +1,6 @@
 /* Generated from registry/source/components/currency-field/currency-field.css by @mergora-internal/source-transformer. Do not edit. */
 @layer mergora.components {
   .mrg-currency-field .mrg-number-field-input {
-    letter-spacing: 0.01em;
+    font-weight: var(--mrg-semantic-font-weight-strong);
   }
 }

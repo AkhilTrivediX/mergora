@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "scheduler-kit",
+  "contractStatus": "source-present-unreleased",
+  "claim": "Scheduler Kit targets Beta. No Stable, release, complete accessibility, temporal-correctness, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Canonical Calendar grid, native calendar filters, ordered agenda and labelled event form.",
+    "rolePolicy": "Calendar owns roving grid navigation; optional status and conflict output is absent when disabled.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Calendar arrow keys / Home / End / PageUp / PageDown",
+      "behavior": "Moves date focus according to the canonical Calendar contract and logical RTL direction."
+    },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through filters, agenda, editor and recovery actions in document order."
+    },
+    { "key": "Enter / Space", "behavior": "Activates focused native controls and selected dates." }
+  ],
+  "nonColor": "Calendar labels, event titles/times, Beta text, headings and explicit conflict descriptions accompany color.",
+  "responsive": "At narrow widths the agenda becomes the primary equivalent view and all editor controls reflow into one column.",
+  "stableSelectors": {
+    "root": "[data-slot=scheduler-kit]",
+    "parts": [
+      "[data-slot=scheduler-filters]",
+      "[data-slot=scheduler-agenda]",
+      "[data-slot=scheduler-editor]"
+    ],
+    "attributes": ["data-slot", "data-maturity", "data-view", "data-offline"]
+  },
+  "consumerResponsibilities": [
+    "Resolve local wall times, daylight-saving gaps/folds, recurrence and server conflicts in the adapter.",
+    "Authorize persistence and provide privacy, attendee, notification and legal policy.",
+    "Localize text and retest temporal boundaries, keyboard, touch, zoom, RTL, forced colors and assistive technologies.",
+    "Retain the Beta claim until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "temporal-boundaries",
+      "workflow-e2e",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text",
+      "temporal-domain-review"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -53,7 +53,8 @@
     {
       "name": "formatSelectionSummary",
       "required": false,
-      "type": "bounded locale-driven accessibility summary formatter"
+      "default": "locale-driven bounded formatter",
+      "type": "false | bounded locale-driven accessibility summary formatter"
     },
     {
       "name": "placement",
@@ -67,6 +68,7 @@
     "enhanced": "React Aria owns the non-editable trigger, hidden native form control, popup, listbox keyboard model, focus restoration, and validation state.",
     "native": "presentation=native renders the canonical NativeSelect and text-only option/optgroup model. It is explicit, never user-agent switched, and is recommended when simple platform/mobile picker behavior is preferable.",
     "collection": "Enhanced and native presentations validate and serialize the same stable keys and localized textValue records.",
-    "virtualization": "Enhanced presentation may window large collections through the same measured ListLayout contract; native presentation rejects virtualization because the platform owns option rendering."
+    "virtualization": "Enhanced presentation may window large collections through the same measured ListLayout contract; native presentation rejects virtualization because the platform owns option rendering.",
+    "enhancementDisabling": "Omitting virtualization renders the ordinary enhanced collection. formatSelectionSummary=false removes summary calculation, formatter calls, hidden markup, ids, and accessibility-description output."
   }
 }

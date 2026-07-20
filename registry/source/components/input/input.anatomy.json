@@ -35,6 +35,12 @@
       "element": "span aria-hidden",
       "purpose": "Decorative trailing content.",
       "stability": "documented"
+    },
+    {
+      "slot": "input-clear",
+      "element": "button",
+      "purpose": "Optional labelled, focus-retaining native value clear action.",
+      "stability": "documented"
     }
   ]
 }

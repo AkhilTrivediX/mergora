@@ -14,6 +14,8 @@
   ],
   "compositionPolicy": {
     "semantics": "Content remains in the accessibility tree; the utility never adds a role or name.",
-    "focusReveal": "Use revealOnFocus only when the hidden child is natively focusable or contains a focus target."
+    "focusReveal": "Use revealOnFocus only when the hidden child is natively focusable or contains a focus target.",
+    "advantage": "The optional reveal becomes a logical-start Mergora focus surface with literal Canvas, ink structure, and forced-colors mapping.",
+    "enhancementOptOut": "revealOnFocus=false removes the reveal attribute, visual surface, and focus-reveal behavior while retaining accessibility-tree content."
   }
 }

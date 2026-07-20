@@ -7,7 +7,7 @@
   "riskClass": 2,
   "semantics": {
     "nativeBasis": "code-block: div role=region; code-block-copy: button; code-block-scroll: pre; code-block-line: span",
-    "rolePolicy": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline; copy completion is announced in a concise status node.",
+    "rolePolicy": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline. Copy completion is announced only when copyable is enabled; disabling it removes the control, handler, callback path, and status node.",
     "refTarget": "HTMLDivElement"
   },
   "keyboard": [
@@ -25,12 +25,19 @@
       "[data-slot=code-block-scroll]",
       "[data-slot=code-block-line]"
     ],
-    "attributes": ["data-wrap", "data-copy-status", "data-focus", "data-highlighted"]
+    "attributes": [
+      "data-wrap",
+      "data-copyable",
+      "data-copy-status",
+      "data-focus",
+      "data-highlighted"
+    ]
   },
   "consumerResponsibilities": [
     "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
     "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
-    "The component uses bounded native scrolling rather than virtualization and does not tokenize source; callers can render tokens, but every token scheme must retain non-color cues."
+    "The component uses bounded native scrolling rather than virtualization and does not tokenize source; callers can render tokens, but every token scheme must retain non-color cues.",
+    "When copyable is false, do not depend on copy labels, onCopyComplete, or a copy status live region; none are rendered or invoked."
   ],
   "evidenceRequirements": {
     "automated": [

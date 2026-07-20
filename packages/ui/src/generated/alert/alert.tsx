@@ -22,23 +22,45 @@ interface AlertBaseProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "aria-atomic" | "aria-label" | "aria-labelledby" | "aria-live" | "children" | "role" | "title"
 > {
+  /** Reserved: Alert owns announcement atomicity through the shared announcer. */
   readonly "aria-atomic"?: never;
+  /** Reserved: the visible title and content provide the Alert's name and context. */
   readonly "aria-label"?: never;
+  /** Reserved: Alert owns the relationships for its visible heading and content. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: opt into announcements with `live` and `announcement` instead. */
   readonly "aria-live"?: never;
+  /** Action controls rendered after the visible alert content and outside live regions. */
   readonly actions?: ReactNode;
+  /** Additional visible alert body content; required when `description` is empty. */
   readonly children?: ReactNode;
+  /** Concise visible explanation; required when `children` is empty. */
   readonly description?: ReactNode;
+  /** Native heading level used for `title`; defaults to 2. */
   readonly headingLevel?: AlertHeadingLevel;
+  /** Non-empty visible heading for the alert. */
   readonly title: ReactNode;
+  /** Visual and textual severity treatment; defaults to `info`. */
   readonly variant?: AlertVariant;
+  /** Localized visible override for the selected variant label. */
   readonly variantLabel?: string;
+  /** Reserved: the visible Alert stays non-live while the shared announcer owns roles. */
   readonly role?: never;
 }
 
 type AlertAnnouncementPolicy =
-  | { readonly announcement?: never; readonly live?: "off" }
-  | { readonly announcement: string; readonly live: "assertive" | "polite" };
+  | {
+      /** Disabled when `live` is `off`, so no announcement copy or effect is emitted. */
+      readonly announcement?: never;
+      /** Keeps the Alert static and non-live; this is the default mode. */
+      readonly live?: "off";
+    }
+  | {
+      /** Concise non-empty summary enqueued through the nearest shared announcer. */
+      readonly announcement: string;
+      /** Politeness used by the shared announcer for this summary. */
+      readonly live: "assertive" | "polite";
+    };
 
 export type AlertProps = AlertBaseProps & AlertAnnouncementPolicy;
 

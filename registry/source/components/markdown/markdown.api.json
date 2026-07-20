@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown",
+  "entryExport": "Markdown",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML article attributes except owned children",
+  "exports": [
+    { "kind": "component", "name": "Markdown" },
+    { "kind": "type", "name": "MarkdownProps" },
+    { "kind": "type", "name": "MarkdownRenderContext" }
+  ],
+  "props": [
+    { "name": "source", "required": true, "type": "string" },
+    { "name": "render", "required": false, "type": "consumer renderer returning ReactNode" },
+    { "name": "streaming", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceStreamingUpdates", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRendererBoundary", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "safety": "Without render, source is emitted as literal text in pre; render output is consumer-owned React content and never receives an automatic sanitization claim.",
+    "streaming": "aria-busy is stable; optional announcements summarize character progress rather than replaying the entire document."
+  }
+}

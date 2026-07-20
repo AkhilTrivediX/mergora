@@ -4,6 +4,10 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 Callout is deliberately non-live explanatory content. It defaults to a neutral div and becomes a complementary landmark only when landmarkLabel explicitly names an aside.
 
+## Mergora signature and advantage
+
+Callout stays on a literal Canvas with an Ink boundary, compact contextual symbol, strong title, and a restrained violet/green semantic signal rather than copying a tinted Shadcn Alert. Its useful enhancement is an opt-in named complementary landmark for important explanatory regions. Omitting `landmarkLabel` keeps the lightweight div baseline and removes the aside landmark and accessible landmark name completely.
+
 ## Contract
 
 - No variant adds alert, status, or aria-live.

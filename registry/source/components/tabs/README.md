@@ -4,6 +4,8 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 `Tabs` composes `Root`, `List`, `Tab`, `Panels`, and `Panel` around React Aria. It supports controlled/uncontrolled selection, automatic/manual activation, horizontal/vertical layout, disabled values, explicit direction, long labels, and scrollable overflow.
 
+Mergora gives the tab strip an Ink baseline, Green selected underline, literal Canvas panels, and the shared Violet focus seam. `Tabs.List` can add a concise localized `keyboardHint` for discovery in manual or unfamiliar tab sets; the visible hint is connected to the tablist's accessible description. Omit the prop, or pass null, false, or empty content, to remove the hint node, id, and `aria-describedby` contribution completely, leaving the ordinary tab behavior unchanged.
+
 ## URL-state recipe
 
 Give each Tab a safe same-origin `href` such as `?section=billing`, derive Root `value` from the validated route/query value on first render, and update the router in `onValueChange`. Keep the corresponding Panel in the same response so native link navigation remains a progressive-enhancement fallback. Empty, `data:`, `javascript:`, and `vbscript:` href values are rejected.

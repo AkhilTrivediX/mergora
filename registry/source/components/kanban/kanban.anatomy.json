@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kanban",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "kanban",
+    "stableAttributes": ["data-slot", "data-maturity", "data-view"]
+  },
+  "parts": [
+    {
+      "slot": "kanban-card",
+      "element": "li",
+      "purpose": "Keeps card order beside pointer, keyboard, touch, speech, and switch move controls.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "kanban-wip-status",
+      "element": "optional text status",
+      "purpose": "Exposes per-column capacity without relying on color.",
+      "stability": "documented"
+    },
+    {
+      "slot": "kanban-announcer",
+      "element": "optional polite status",
+      "purpose": "Reports pickup, movement, rejection, drop, cancellation, rollback, and retry.",
+      "stability": "documented"
+    }
+  ]
+}

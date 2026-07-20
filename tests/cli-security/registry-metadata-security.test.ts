@@ -128,7 +128,7 @@ describe("malicious registry metadata", () => {
       origin: REDIRECT_ORIGIN,
       protocol: "shadcn-v1",
       authEnvironmentVariable: "SECURITY_REGISTRY_TOKEN",
-      environment: { SECURITY_REGISTRY_TOKEN: "never-forward-cross-origin" },
+      environment: { SECURITY_REGISTRY_TOKEN: "Bearer never-forward-cross-origin" },
       fetchImplementation,
     });
 

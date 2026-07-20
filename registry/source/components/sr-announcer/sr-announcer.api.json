@@ -26,6 +26,8 @@
     "polite": "Non-urgent summaries use role=status and a paced FIFO queue.",
     "assertive": "Only urgent interruption-worthy messages use role=alert.",
     "dedupe": "Stable keys deduplicate within the configured window; dedupe=false permits intentional repeats.",
-    "localization": "Message descriptors resolve through the nearest MergoraProvider."
+    "localization": "Message descriptors resolve through the nearest MergoraProvider.",
+    "advantage": "Independent paced priority queues, semantic-key deduplication, localization, and nested-provider reuse prevent duplicate live-region noise.",
+    "enhancementOptOut": "Without Provider, announce returns false and no queue or live-region accessibility output exists; dedupe=false removes only repeat suppression for that call."
   }
 }

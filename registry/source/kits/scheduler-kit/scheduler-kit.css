@@ -1,0 +1,327 @@
+@layer mergora.components {
+  .mrg-scheduler-kit {
+    display: grid;
+    grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+    max-inline-size: var(--mrg-semantic-size-content-wide);
+    overflow: clip;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-scheduler-kit h1,
+  .mrg-scheduler-kit h2,
+  .mrg-scheduler-kit h3,
+  .mrg-scheduler-kit p {
+    margin-block: 0;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-header"] {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-scheduler-kit h1 {
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-scheduler-kit h2 {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-header"] p,
+  .mrg-scheduler-kit [data-slot="scheduler-section-heading"] p,
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button span span {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-maturity"] {
+    display: inline-block;
+    margin-block-end: var(--mrg-semantic-space-stack-xs);
+    color: var(--mrg-semantic-color-accent-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-view"],
+  .mrg-scheduler-kit [data-slot="scheduler-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-filters"] {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-scheduler-kit fieldset {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    border: 0;
+    margin: 0;
+  }
+
+  .mrg-scheduler-kit legend,
+  .mrg-scheduler-kit label {
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-scheduler-kit fieldset label {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-calendar-mark"],
+  .mrg-scheduler-kit [data-slot="scheduler-event-mark"] {
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    flex: none;
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-brand-living);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-main"] {
+    display: grid;
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(18rem, 1.1fr);
+    min-inline-size: 0;
+  }
+
+  .mrg-scheduler-kit
+    [data-slot="scheduler-main"][data-view="agenda"]
+    [data-slot="scheduler-calendar-panel"] {
+    display: none;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-main"][data-view="agenda"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-calendar-panel"],
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"],
+  .mrg-scheduler-kit [data-slot="scheduler-editor"],
+  .mrg-scheduler-kit [data-slot="scheduler-conflicts"] {
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-calendar-panel"] {
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-editor"],
+  .mrg-scheduler-kit [data-slot="scheduler-conflicts"] {
+    grid-column: 1 / -1;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-section-heading"] {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    margin-block-end: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"] ol {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button {
+    display: flex;
+    align-items: start;
+    gap: var(--mrg-semantic-space-inline-sm);
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: inherit;
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    text-align: start;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button > span:last-child {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button[aria-pressed="true"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-scheduler-kit form {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.3fr) minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    max-inline-size: 48rem;
+    margin-block-start: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-scheduler-kit form > :not(label) {
+    min-inline-size: 0;
+  }
+
+  .mrg-scheduler-kit :is(input, select, textarea) {
+    min-block-size: var(--mrg-semantic-density-control-height);
+    padding: var(--mrg-semantic-density-control-padding-block)
+      var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-time-fields"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-time-fields"] label {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-duration"],
+  .mrg-scheduler-kit [data-slot="scheduler-timezone-context"],
+  .mrg-scheduler-kit [data-slot="scheduler-conflicts"] article {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-conflicts"] article + article {
+    margin-block-start: var(--mrg-semantic-space-stack-sm);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-offline"],
+  .mrg-scheduler-kit [data-slot="scheduler-error"] {
+    grid-column: 1 / -1;
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-warning-border);
+    color: var(--mrg-semantic-color-status-warning-foreground);
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-scheduler-kit :is(button, input, select, textarea):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-scheduler-kit [data-slot="scheduler-announcer"] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 58rem) {
+    .mrg-scheduler-kit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-scheduler-kit [data-slot="scheduler-filters"] {
+      border-inline-end: 0;
+      border-block-end: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-default);
+    }
+
+    .mrg-scheduler-kit [data-slot="scheduler-main"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-scheduler-kit [data-slot="scheduler-calendar-panel"] {
+      display: none;
+      border-inline-end: 0;
+    }
+
+    .mrg-scheduler-kit [data-slot="scheduler-agenda"]::before {
+      content: "Responsive agenda view";
+      display: block;
+      margin-block-end: var(--mrg-semantic-space-stack-sm);
+      color: var(--mrg-semantic-color-accent-foreground);
+      font-size: var(--mrg-semantic-font-size-label);
+      font-weight: var(--mrg-semantic-font-weight-label);
+    }
+  }
+
+  @media (max-width: 32rem) {
+    .mrg-scheduler-kit [data-slot="scheduler-header"],
+    .mrg-scheduler-kit [data-slot="scheduler-section-heading"] {
+      flex-direction: column;
+    }
+
+    .mrg-scheduler-kit form {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-scheduler-kit *,
+    .mrg-scheduler-kit *::before,
+    .mrg-scheduler-kit *::after {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+      animation-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-scheduler-kit,
+    .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button,
+    .mrg-scheduler-kit :is(input, select, textarea) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-scheduler-kit [data-slot="scheduler-agenda"] li button[aria-pressed="true"] {
+      border-color: Highlight;
+      color: HighlightText;
+      background: Highlight;
+    }
+  }
+}

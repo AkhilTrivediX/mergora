@@ -7,6 +7,7 @@
   "evidenceStatus": "incomplete",
   "recordedEvidence": [],
   "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora enhancement-off/on stories and selective controls in generated Storybook evidence.",
     "Generate and verify source/package/registry/docs outputs and subpath exports.",
     "Record 320 CSS pixel and 400% zoom wrapping for long German, Arabic, and unbreakable content.",
     "Verify focus order and logical start/end alignment in LTR and RTL browsers.",

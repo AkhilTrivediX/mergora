@@ -31,3 +31,7 @@ Component CSS references semantic Mergora tokens and no literal palette. Consume
 ## Current limitations and status
 
 Current status is `source-present-unreleased`. Generated distributions, real-browser native-scroll evidence, 320-pixel/400%-zoom geometry, packed-consumer parity, updater fixtures, manual keyboard/screen-reader/touch/forced-colors review, site dogfooding, and an approved Quality Passport remain required. This source record is not a conformance or Stable claim.
+
+## Mergora advantage
+
+Scrolling, momentum, wheel input, and scrollbars stay browser-native. A meaningful overflow region may opt into a named tab stop with `focusable`; `focusable={false}` removes the role, accessible name, and tab stop. Overscroll containment remains a separate `containOverscroll` switch.

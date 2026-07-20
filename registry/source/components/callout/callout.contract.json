@@ -5,12 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 1,
-  "summary": "Non-live explanatory content with explicit neutral or named-landmark behavior and non-color variants.",
+  "summary": "Canvas-and-Ink non-live explanatory content with an independently optional named complementary landmark.",
   "semantics": [
     "Callout never adds alert, status, or aria-live behavior.",
     "The default root is a neutral div; landmarkLabel intentionally renders a named aside.",
     "A native heading, visible variant label, distinct symbol, and body preserve structure and non-color meaning.",
-    "Role and owned ARIA overrides are rejected at both the typed and runtime boundaries; empty composite content is invalid."
+    "Role and owned ARIA overrides are rejected at both the typed and runtime boundaries; empty composite content is invalid.",
+    "Omitting landmarkLabel renders the plain div baseline and emits no aside landmark or accessible landmark name."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

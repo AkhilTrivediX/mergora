@@ -15,6 +15,7 @@
     "Visible localized variant text, a distinct symbol, and consumer text preserve meaning without color.",
     "Status has no interaction or focus behavior.",
     "The status.variantLabel formatter owns punctuation and grammatical order; an explicit variantLabel is emitted unchanged.",
-    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers."
+    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers.",
+    "live=off removes role, aria-live, aria-atomic, and live behavior while keeping the static non-color status cue."
   ]
 }

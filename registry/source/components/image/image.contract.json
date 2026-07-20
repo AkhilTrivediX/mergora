@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "image",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, source-security, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "The native img owns loading and alternative text; the figure exists only to pair optional status context.",
+    "naming": "The type-level informative/decorative union and runtime guard prevent an unnamed informative canonical example.",
+    "roleOverride": "Decorative mode uses empty alt and aria-hidden; informative mode preserves native image semantics.",
+    "refTarget": "HTMLElement figure"
+  },
+  "interaction": {
+    "keyboard": "The image adds no focus stop; links or controls belong to consumer composition.",
+    "pointer": "No image-wide action is inferred.",
+    "touch": "No gesture is required.",
+    "speech": "Informative alternative text is consumer supplied.",
+    "switchAccess": "No additional scan stop is introduced."
+  },
+  "preferences": {
+    "forcedColors": "The frame and failure output remain visible with system colors.",
+    "reducedMotion": "Load-state meaning has no motion dependency."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Media scales within its frame and fallback text wraps."
+  },
+  "consumerResponsibilities": [
+    "Provide context-specific alternative text or deliberately select decorative mode.",
+    "Authorize and validate remote sources, privacy, tracking, referrer, CORS, decoding, and performance policy.",
+    "Provide fallback content that communicates recovery rather than restating missing pixels."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "alt-contract",
+      "load-error-rejection",
+      "enhancement-isolation",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["screen-reader-informative-and-decorative", "zoom-reflow", "high-contrast"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The component does not authenticate, proxy, optimize, cache, or inspect image bytes.",
+    "Manual and generated parity evidence remains unrecorded."
+  ]
+}

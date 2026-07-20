@@ -16,7 +16,8 @@
     "className": "Slot class precedes child class without dropping either.",
     "style": "Child style values override slot style values key by key.",
     "contextAttributes": "Explicit Slot data attributes, dir, and lang identify and expose the composing contract; other child props remain authoritative.",
-    "dataSlot": "An explicit Slot data-slot identifies the composing contract; otherwise an explicit child slot is preserved, then slot is used."
+    "dataSlot": "An explicit Slot data-slot identifies the composing contract; otherwise an explicit child slot is preserved, then slot is used.",
+    "eventOptOut": "Each Slot-owned event handler is optional; when omitted no listener or event is added and the child handler remains authoritative."
   },
   "consumerResponsibilities": [
     "Choose a child whose native semantics match the action or content.",
@@ -29,6 +30,7 @@
       "ref-compose",
       "event-order",
       "prevent-default",
+      "event-handler-opt-out",
       "class-style-merge",
       "name-precedence",
       "invalid-child",

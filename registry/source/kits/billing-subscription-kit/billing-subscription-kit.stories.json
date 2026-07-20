@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "itemId": "billing-subscription-kit",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicBillingSubscriptionKit"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedBillingSubscriptionKit"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledBillingSubscriptionKit"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "BillingStateMatrix" },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "BillingStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "BillingStateMatrix"
+    },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "BillingStateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "BillingStateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedBillingSubscriptionKit"
+    },
+    { "id": "narrow", "applicability": { "status": "applicable" }, "story": "NarrowRtlBilling" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlBilling" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlBilling"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlBilling"
+    }
+  ]
+}

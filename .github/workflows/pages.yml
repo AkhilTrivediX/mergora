@@ -1,6 +1,9 @@
 name: Deploy Pages
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -8,15 +11,21 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
+    if: github.repository == 'AkhilTrivediX/mergora' && github.ref == 'refs/heads/main' && github.ref_protected
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
@@ -34,6 +43,12 @@ jobs:
         env:
           MERGORA_BASE_PATH: /mergora
         run: pnpm build
+      - name: Assemble precompiled Quality Lab specimens
+        run: node scripts/assemble-quality-lab.mjs
+      - name: Verify the static site artifact
+        env:
+          MERGORA_BASE_PATH: /mergora
+        run: node scripts/verify-static-export.mjs
       - name: Upload validated Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -53,9 +68,18 @@ jobs:
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+      - name: Probe deployed static routes
+        shell: bash
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          root="${PAGE_URL%/}/"
+          for path in "" "components/" "systems/" "kits/" "quality/" "studio/" "search-index.json" "m/v1/site.json" "quality-lab/index.json" "quality-lab/iframe.html"; do
+            curl --fail --location --retry 4 --retry-all-errors --silent --show-error "${root}${path}" --output /dev/null
+          done
+          status="$(curl --location --silent --output /dev/null --write-out '%{http_code}' "${root}definitely-missing-route/")"
+          test "$status" = "404"
 
-
-# Post-deploy root/nested/registry/assets/404/search probes remain a required
-# implementation gate before this workflow can support a release claim.
-# Automatic main deployment is enabled only after the P7 site gate replaces
-# the honest P0 scaffold with the real public discovery experience.
+# The repository-path deployment remains canonical until the separately owned
+# custom-domain DNS and Pages settings gate is completed.

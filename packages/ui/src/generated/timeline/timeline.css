@@ -1,0 +1,96 @@
+/* Generated from registry/source/components/timeline/timeline.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-timeline {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    list-style: none;
+  }
+  .mrg-timeline__event {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--mrg-semantic-size-target-minimum) minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-inline-md);
+    padding-block-end: var(--mrg-semantic-space-stack-lg);
+  }
+  .mrg-timeline__event:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-block: var(--mrg-semantic-size-target-minimum) 0;
+    inset-inline-start: calc(var(--mrg-semantic-size-target-minimum) / 2);
+    inline-size: var(--mrg-semantic-border-width-emphasis);
+    background: var(--mrg-semantic-color-border-strong);
+  }
+  .mrg-timeline__marker {
+    z-index: var(--mrg-semantic-layer-raised);
+    display: grid;
+    place-items: center;
+    inline-size: var(--mrg-semantic-size-target-minimum);
+    block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-emphasis) solid var(--mrg-semantic-color-brand-action);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-brand-action);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+  .mrg-timeline__content {
+    min-inline-size: 0;
+    padding-block-start: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-timeline__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+  .mrg-timeline__title {
+    font-size: var(--mrg-semantic-font-size-body-large);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    text-wrap: balance;
+  }
+  .mrg-timeline__status {
+    color: var(--mrg-semantic-color-brand-violet);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-timeline time,
+  .mrg-timeline__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-timeline__description {
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+    max-inline-size: 70ch;
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+  .mrg-timeline__duration {
+    margin-block-start: var(--mrg-semantic-space-stack-sm);
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    background: var(--mrg-semantic-color-status-info-background);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+  @media (forced-colors: active) {
+    .mrg-timeline {
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-timeline__marker,
+    .mrg-timeline__duration {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-timeline__event:not(:last-child)::after {
+      background: CanvasText;
+    }
+  }
+}

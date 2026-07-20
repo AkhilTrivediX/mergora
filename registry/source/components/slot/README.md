@@ -8,7 +8,7 @@
 </Slot>
 ```
 
-Child handlers run first; calling `preventDefault()` prevents the Slot handler. Slot classes precede child classes, child style values win, and both refs receive the same node. Explicit Slot `data-*`, `dir`, and `lang` attributes identify the composing public context. An explicit Slot `data-slot` wins; otherwise a child slot is preserved, then `slot` is used. Other native and accessible-name props remain child-authoritative. Fragments, text, arrays, and multiple children fail with a precise error.
+Child handlers run first; calling `preventDefault()` prevents the Slot handler. This cancellable child-first event contract is Mergora's advantage over a shallow prop clone. Slot-owned handlers are independently optional: omitting one adds no listener or event, while the child's own handler remains unchanged. Slot classes precede child classes, child style values win, and both refs receive the same node. Explicit Slot `data-*`, `dir`, and `lang` attributes identify the composing public context. An explicit Slot `data-slot` wins; otherwise a child slot is preserved, then `slot` is used. Other native and accessible-name props remain child-authoritative. Fragments, text, arrays, and multiple children fail with a precise error.
 
 Slot never makes a `div` into a button. Consumers must select the correct native element and retest keyboard behavior and accessible names after changing it.
 

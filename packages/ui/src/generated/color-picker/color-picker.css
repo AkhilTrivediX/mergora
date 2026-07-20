@@ -29,7 +29,7 @@
 
   .mrg-color-picker-area {
     aspect-ratio: 8 / 5;
-    border: var(--mrg-semantic-border-width-default) solid
+    border: var(--mrg-semantic-border-width-strong) solid
       var(--mrg-semantic-color-border-interactive);
     border-radius: var(--mrg-semantic-radius-surface);
     box-sizing: border-box;
@@ -49,7 +49,7 @@
     block-size: var(--mrg-semantic-size-target-preferred);
     border: calc(var(--mrg-semantic-border-width-default) * 2) solid
       var(--mrg-semantic-color-background-canvas);
-    border-radius: 50%;
+    border-radius: var(--mrg-semantic-radius-pill);
     box-sizing: border-box;
     inline-size: var(--mrg-semantic-size-target-preferred);
     outline: var(--mrg-semantic-border-width-default) solid
@@ -58,8 +58,11 @@
   }
 
   .mrg-color-picker-thumb[data-focus-visible] {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-color-picker-channel-grid {
@@ -151,7 +154,7 @@
   .mrg-color-picker-swatch-item[data-selected]::after {
     align-items: center;
     background: var(--mrg-semantic-color-background-canvas);
-    border-radius: 50%;
+    border-radius: var(--mrg-semantic-radius-pill);
     color: var(--mrg-semantic-color-foreground-primary);
     content: "✓";
     display: inline-flex;
@@ -165,8 +168,11 @@
   }
 
   .mrg-color-picker-swatch-item[data-focus-visible] {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-color-picker-swatch-item[data-disabled] {
@@ -215,6 +221,12 @@
   }
 
   @media (forced-colors: active) {
+    .mrg-color-picker-thumb[data-focus-visible],
+    .mrg-color-picker-swatch-item[data-focus-visible] {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+
     .mrg-color-picker-area,
     .mrg-color-picker-slider-track,
     .mrg-color-picker-swatch {

@@ -30,6 +30,7 @@
   ],
   "compositionPolicy": {
     "orphanStart": "The default leaves a final wrapped item on the logical leading edge.",
-    "orphanFill": "The final child may grow; consumers must opt in only when that child can stretch safely."
+    "orphanFill": "The final child may grow; consumers must opt in only when that child can stretch safely.",
+    "enhancement": "orphan=fill gives a wrapped final action meaningful remaining width; orphan=start removes that growth behavior."
   }
 }

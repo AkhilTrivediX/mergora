@@ -19,6 +19,9 @@
     "controlled",
     "uncontrolled",
     "collision",
+    "collision-announcement",
+    "intelligent-marks",
+    "value-bubbles",
     "horizontal",
     "vertical",
     "rtl"
@@ -65,6 +68,18 @@
       "semanticElement": "visual tick labels",
       "refTarget": "none",
       "states": ["horizontal", "vertical", "narrow"]
+    },
+    {
+      "name": "slider-value-bubble",
+      "semanticElement": "aria-hidden visual value",
+      "refTarget": "none",
+      "states": ["formatted", "horizontal", "vertical", "collision"]
+    },
+    {
+      "name": "range-slider-collision-status",
+      "semanticElement": "polite status",
+      "refTarget": "none",
+      "states": ["collision"]
     }
   ],
   "contract": { "id": "range-slider-accessibility", "version": "0.1.0" },

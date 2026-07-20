@@ -2,8 +2,8 @@ import { validateEvidenceIndex } from "./evidence.js";
 import type { AggregateState, EvidenceContext, EvidenceIndex } from "./evidence.js";
 import { validateManualEvidenceRecord } from "./manual-evidence.js";
 import type { ManualEvidenceRecord } from "./manual-evidence.js";
-import { RISK_CLASS_POLICIES } from "./risk-scheduling.js";
-import type { BehaviorChangeKind, ManualCoverageId, RiskClass } from "./risk-scheduling.js";
+import { MANUAL_DISTINCT_VERSION_PAIRS, RISK_CLASS_POLICIES } from "./risk-scheduling.js";
+import type { BehaviorChangeKind, ManualEvidenceLaneId, RiskClass } from "./risk-scheduling.js";
 import { compareText, isCatalogId, isExactIsoInstant, isSemver, isSha256 } from "./validation.js";
 
 export type Maturity = "experimental" | "beta" | "stable" | "deprecated";
@@ -325,7 +325,14 @@ function validateStableEvidence(
 }
 
 function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIssue[]): void {
-  const covered = new Map<ManualCoverageId, "pass" | "not-applicable">();
+  const validRecords: Array<{
+    readonly index: number;
+    readonly record: ManualEvidenceRecord;
+  }> = [];
+  const recordsByLane = new Map<
+    ManualEvidenceLaneId,
+    Array<{ readonly index: number; readonly record: ManualEvidenceRecord }>
+  >();
   const behavioralChange = candidate.changes.some(
     (change) => change !== "documentation-only" && change !== "visual-only",
   );
@@ -335,6 +342,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
 
   for (const [recordIndex, record] of candidate.manualEvidence.entries()) {
     const validation = validateManualEvidenceRecord(record, candidate.asOf);
+    let recordIsBound = validation.ok;
     for (const validationIssue of validation.issues) {
       addIssue(
         issues,
@@ -345,6 +353,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       );
     }
     if (record.itemId !== candidate.itemId || record.riskClass !== candidate.riskClass) {
+      recordIsBound = false;
       addIssue(
         issues,
         "maturity.manual-scope",
@@ -353,6 +362,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       );
     }
     if (record.releaseId !== candidate.releaseId) {
+      recordIsBound = false;
       addIssue(
         issues,
         "maturity.manual-release",
@@ -371,6 +381,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       ["contractVersion", candidate.contractVersion, record.contractVersion],
     ] as const) {
       if (expected !== actual) {
+        recordIsBound = false;
         addIssue(
           issues,
           "maturity.manual-binding",
@@ -380,6 +391,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       }
     }
     if (candidate.initialStable && record.carryForward !== undefined) {
+      recordIsBound = false;
       addIssue(
         issues,
         "maturity.initial-stable-carry-forward",
@@ -388,6 +400,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       );
     }
     if (manualEvidenceInvalidated && record.carryForward !== undefined) {
+      recordIsBound = false;
       addIssue(
         issues,
         "maturity.invalidated-manual-carry-forward",
@@ -401,6 +414,7 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
       behavioralChange &&
       record.carryForward !== undefined
     ) {
+      recordIsBound = false;
       addIssue(
         issues,
         "maturity.class-three-rc-refresh",
@@ -408,25 +422,79 @@ function validateManualCoverage(candidate: MaturityCandidate, issues: MaturityIs
         "Risk Class 3 behavior changes require refreshed manual evidence for every release candidate.",
       );
     }
-    if (record.overallOutcome === "pass") {
-      for (const coverage of record.coverage) {
-        if (coverage.outcome === "pass") covered.set(coverage.coverageId, "pass");
-        if (coverage.outcome === "not-applicable" && !covered.has(coverage.coverageId)) {
-          covered.set(coverage.coverageId, "not-applicable");
-        }
+    if (recordIsBound && record.overallOutcome === "pass") {
+      const validRecord = { index: recordIndex, record };
+      validRecords.push(validRecord);
+      const existing = recordsByLane.get(record.environment.laneId) ?? [];
+      existing.push(validRecord);
+      recordsByLane.set(record.environment.laneId, existing);
+    }
+  }
+
+  const invalidLanes = new Set<ManualEvidenceLaneId>();
+  for (const [laneId, records] of recordsByLane) {
+    if (records.length <= 1) continue;
+    invalidLanes.add(laneId);
+    for (const record of records) {
+      addIssue(
+        issues,
+        "maturity.duplicate-manual-lane",
+        `manualEvidence[${record.index}].environment.laneId`,
+        `Candidate evidence must contain one current passing record for lane "${laneId}".`,
+      );
+    }
+  }
+
+  const requiredLaneIds = new Set(
+    RISK_CLASS_POLICIES[candidate.riskClass].requiredManualLaneClaims.map((claim) => claim.laneId),
+  );
+  for (const pair of MANUAL_DISTINCT_VERSION_PAIRS) {
+    if (!requiredLaneIds.has(pair.currentLaneId) || !requiredLaneIds.has(pair.previousLaneId)) {
+      continue;
+    }
+    const current = recordsByLane.get(pair.currentLaneId)?.[0]?.record;
+    const previous = recordsByLane.get(pair.previousLaneId)?.[0]?.record;
+    if (current === undefined || previous === undefined) continue;
+    const currentVersion =
+      pair.field === "osVersion"
+        ? current.environment.osVersion
+        : current.environment.assistiveTechnology?.version;
+    const previousVersion =
+      pair.field === "osVersion"
+        ? previous.environment.osVersion
+        : previous.environment.assistiveTechnology?.version;
+    if (currentVersion === undefined || currentVersion !== previousVersion) continue;
+    invalidLanes.add(pair.currentLaneId);
+    invalidLanes.add(pair.previousLaneId);
+    addIssue(
+      issues,
+      "maturity.manual-version-slot-collision",
+      "manualEvidence",
+      `Current lane "${pair.currentLaneId}" and previous lane "${pair.previousLaneId}" must record different exact ${pair.field} values.`,
+    );
+  }
+
+  const coveredClaims = new Map<string, "pass" | "not-applicable">();
+  for (const { record } of validRecords) {
+    if (invalidLanes.has(record.environment.laneId)) continue;
+    for (const coverage of record.coverage) {
+      const key = `${record.environment.laneId}:${coverage.coverageId}`;
+      if (coverage.outcome === "pass") coveredClaims.set(key, "pass");
+      if (coverage.outcome === "not-applicable" && !coveredClaims.has(key)) {
+        coveredClaims.set(key, "not-applicable");
       }
     }
   }
 
-  for (const required of RISK_CLASS_POLICIES[candidate.riskClass].requiredManualCoverage) {
-    const outcome = covered.get(required);
-    const mayBeNotApplicable = required === "touch-screen-reader-where-applicable";
+  for (const required of RISK_CLASS_POLICIES[candidate.riskClass].requiredManualLaneClaims) {
+    const outcome = coveredClaims.get(`${required.laneId}:${required.coverageId}`);
+    const mayBeNotApplicable = required.coverageId === "touch-screen-reader-where-applicable";
     if (outcome === undefined || (outcome === "not-applicable" && !mayBeNotApplicable)) {
       addIssue(
         issues,
         "maturity.missing-manual-coverage",
         "manualEvidence",
-        `Stable Risk Class ${candidate.riskClass} requires passing ${required} evidence.`,
+        `Stable Risk Class ${candidate.riskClass} requires ${required.laneId} to provide passing ${required.coverageId} evidence.`,
       );
     }
   }

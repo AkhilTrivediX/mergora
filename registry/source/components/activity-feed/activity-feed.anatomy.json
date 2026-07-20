@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "activity-feed",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "activity-feed",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

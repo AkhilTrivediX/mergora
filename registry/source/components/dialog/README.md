@@ -6,7 +6,10 @@
 <Dialog.Root finalFocusRef={workflowRef} modality="modal">
   <Dialog.Trigger>Review changes</Dialog.Trigger>
   <Dialog.Overlay>
-    <Dialog.Content initialFocus="content">
+    <Dialog.Content
+      dismissHint="Use the visible return action to close this review."
+      initialFocus="content"
+    >
       <Dialog.Title>Review changes</Dialog.Title>
       <Dialog.Description>Inspect the affected files.</Dialog.Description>
       <Dialog.Close>Return to diff</Dialog.Close>
@@ -18,6 +21,8 @@
 Modal is the default and contains focus, prevents background interaction, locks document scrolling, and restores focus. Non-modal dialogs remain named but do not inert the background or trap focus; `Overlay.placement` accepts logical `start`/`end`. Escape closes only the topmost dismissible React Aria layer and is ignored during IME composition. `outside-and-escape`, `escape-only`, and `explicit` are the supported dismissal policies.
 
 Use `initialFocusRef` for a deliberate contained target, `initialFocus="content"` for long semantic content, or `initialFocus="none"` only for a non-modal surface. `finalFocusRef` is the required logical fallback when the trigger may be removed. Keep an explicit `Close` path visible at narrow widths.
+
+`dismissHint` is an optional Mergora discovery rail. When supplied, it is rendered visibly and joined to the dialog's accessible description. Omitting it removes the rail and its description ID completely; dismissal behavior remains governed only by `dismissPolicy`.
 
 The portal root repeats provider `lang`, `dir`, density, direction, locale, and configured portal container. Direction is independent from locale. CSS uses logical properties, visual-viewport bounds, safe-area insets, forced-color boundaries, and no transform under reduced motion.
 

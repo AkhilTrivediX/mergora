@@ -8,6 +8,10 @@ Requires an explicit semantic heading level or heading element while keeping vis
 </Heading>
 ```
 
+## Mergora advantage
+
+Semantic level and visual scale are independent, so a section can preserve a correct document outline without accepting an undersized or oversized presentation. Omit `size` to use the concise level-derived scale; no extra element, behavior, event, or accessibility output is introduced.
+
 ## Contract
 
 The public type requires level or as, so placement cannot silently fall back to a generic element. Consumers remain responsible for a non-skipping document outline.

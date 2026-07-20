@@ -6,6 +6,10 @@ Presents unified and split tabular diffs with non-color markers, roving row focu
 <DiffViewer label="Source changes" lines={lines} mode="split" />
 ```
 
+## Mergora advantage
+
+Semantic change summaries, non-color markers, copy feedback, controlled selection, and bounded row navigation make a diff inspectable without replacing its native table. Set `showSummary={false}`, `copyable={false}`, and `lineNavigation={false}` independently; each removes its UI, handlers, focus model, callbacks, and announcements while preserving readable diff rows.
+
 ## Contract
 
 A labelled region contains a native table. Every change has a visible symbol, spoken kind, line numbers, and text; one row is in the tab order and vertical/Home/End/Page keys navigate rows.

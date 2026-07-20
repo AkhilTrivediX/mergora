@@ -37,12 +37,19 @@ function useSheetContext(part: string): SheetContextValue {
 }
 
 export interface SheetRootProps {
+  /** Declarative Sheet parts owned by this root. */
   readonly children?: ReactNode;
+  /** Initial open state for uncontrolled use. */
   readonly defaultOpen?: boolean;
+  /** Fallback focus target used when the invoking trigger is unavailable after close. */
   readonly finalFocusRef?: RefObject<HTMLElement | null>;
+  /** Reports open-state changes with the originating dialog interaction. */
   readonly onOpenChange?: (open: boolean, details: DialogOpenChangeDetails) => void;
+  /** Controlled open state; pair with onOpenChange. */
   readonly open?: boolean;
+  /** Logical inline or physical block edge from which the sheet enters. */
   readonly side?: SheetSide;
+  /** Bounded width or height selected from the sheet size scale. */
   readonly size?: SheetSize;
 }
 
@@ -78,14 +85,65 @@ export const SheetOverlay = forwardRef<HTMLDivElement, SheetOverlayProps>(
 
 SheetOverlay.displayName = "Sheet.Overlay";
 
-export type SheetContentProps = ComponentPropsWithoutRef<typeof DialogContent>;
+export interface SheetContentProps extends ComponentPropsWithoutRef<typeof DialogContent> {
+  /** Optional controlled workflow progress shown as a native progress rail. */
+  readonly progress?: {
+    /** Visible and accessible label for the workflow progress value. */
+    readonly label: string;
+    /** Positive upper bound for progress; defaults to 100. */
+    readonly max?: number;
+    /** Current controlled progress value between zero and max. */
+    readonly value: number;
+  };
+}
 
-export const SheetContent = forwardRef<HTMLElement, SheetContentProps>(
-  function SheetContent(props, ref) {
-    const { side, size } = useSheetContext("Content");
-    return <DialogContent {...props} ref={ref} data-side={side} data-size={size} />;
-  },
-);
+/** @internal Strict progress validation; not exported from the public item entrypoint. */
+export function resolveSheetProgress(progress: SheetContentProps["progress"]):
+  | {
+      readonly label: string;
+      readonly max: number;
+      readonly value: number;
+    }
+  | undefined {
+  if (progress === undefined) return undefined;
+  const label = progress.label.trim();
+  if (label.length === 0) {
+    throw new Error("Mergora Sheet.Content progress.label must be a non-empty string.");
+  }
+  const max = progress.max ?? 100;
+  if (!Number.isFinite(max) || max <= 0) {
+    throw new RangeError("Mergora Sheet.Content progress.max must be finite and above zero.");
+  }
+  if (!Number.isFinite(progress.value) || progress.value < 0 || progress.value > max) {
+    throw new RangeError(
+      "Mergora Sheet.Content progress.value must be finite and between zero and progress.max.",
+    );
+  }
+  return { label, max, value: progress.value };
+}
+
+export const SheetContent = forwardRef<HTMLElement, SheetContentProps>(function SheetContent(
+  { children, progress, ...props },
+  ref,
+) {
+  const { side, size } = useSheetContext("Content");
+  const resolvedProgress = resolveSheetProgress(progress);
+  return (
+    <DialogContent {...props} ref={ref} data-side={side} data-size={size}>
+      {resolvedProgress === undefined ? null : (
+        <div className="mrg-sheet__progress" data-slot="sheet-progress">
+          <span>{resolvedProgress.label}</span>
+          <progress
+            aria-label={resolvedProgress.label}
+            max={resolvedProgress.max}
+            value={resolvedProgress.value}
+          />
+        </div>
+      )}
+      {children}
+    </DialogContent>
+  );
+});
 
 SheetContent.displayName = "Sheet.Content";
 

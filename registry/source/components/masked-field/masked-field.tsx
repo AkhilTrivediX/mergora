@@ -28,25 +28,35 @@ export type MaskSerialization = "formatted" | "raw";
 export type MaskAdapterPhase = "composition-end" | "input" | "render" | "reset";
 
 export interface MaskTextSelection {
+  /** Native selection direction, or null when the browser does not expose one. */
   readonly direction: "backward" | "forward" | "none" | null;
+  /** Exclusive UTF-16 selection end offset in the visible formatted value. */
   readonly end: number;
+  /** Inclusive UTF-16 selection start offset in the visible formatted value. */
   readonly start: number;
 }
 
 export interface MaskAdapterContext {
+  /** Active provider locale available for deterministic locale-aware formatting. */
   readonly locale: string;
+  /** Hard character boundary applied to adapter input and output. */
   readonly maxInputLength: number;
+  /** Render, input, composition-end, or reset lifecycle phase being resolved. */
   readonly phase: MaskAdapterPhase;
+  /** Previously rendered formatted value available for stable caret mapping. */
   readonly previousFormattedValue: string;
   /** UTF-16 offsets matching HTMLInputElement selectionStart/selectionEnd. */
   readonly selection: MaskTextSelection | null;
 }
 
 export interface MaskAdapterResult {
+  /** Exact bounded text rendered in the native input. */
   readonly formattedValue: string;
+  /** Canonical literal-free value available for callbacks and raw serialization. */
   readonly rawValue: string;
   /** Adapter-owned caret mapping after literals or normalization are applied. */
   readonly selection: MaskTextSelection | null;
+  /** Empty, incomplete, invalid, or valid interpretation of the adapter output. */
   readonly status: MaskAdapterStatus;
 }
 
@@ -56,15 +66,22 @@ export interface MaskAdapterResult {
  * supported input surface.
  */
 export interface DeterministicMaskAdapter {
+  /** Bounded lowercase identifier used in validation diagnostics. */
   readonly id: string;
+  /** Synchronously formats, validates, and maps caret state for trusted input. */
   readonly apply: (input: string, context: MaskAdapterContext) => MaskAdapterResult;
 }
 
 export interface MaskedFieldValue {
+  /** Exact bounded text currently rendered in the native input. */
   readonly formattedValue: string;
+  /** Canonical literal-free value produced by the trusted adapter. */
   readonly rawValue: string;
+  /** Adapter-owned caret mapping, or null when no mapping is required. */
   readonly selection: MaskTextSelection | null;
+  /** Raw or formatted value chosen by the serialization prop. */
   readonly serializedValue: string;
+  /** Adapter status, extended with composing while IME input remains provisional. */
   readonly status: MaskedFieldStatus;
 }
 
@@ -72,18 +89,27 @@ export interface MaskedFieldProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "name" | "onChange" | "type" | "value"
 > {
+  /** Trusted synchronous formatter, validator, and caret-mapping implementation. */
   readonly adapter: DeterministicMaskAdapter;
+  /** Initial visible input passed through the adapter for uncontrolled use and form reset. */
   readonly defaultValue?: string;
+  /** Additional class name applied to the visible editable input. */
   readonly inputClassName?: string;
+  /** Boolean invalid fallback merged with adapter, ARIA, and Field state. */
   readonly invalid?: boolean;
+  /** Localized native validation and visible recovery message for invalid input. */
   readonly invalidMessage?: string;
   /** Hard boundary applied before and after the trusted synchronous adapter. */
   readonly maxInputLength?: number;
   /** Name of the hidden raw or formatted form control. */
   readonly name?: string;
+  /** Receives formatted, raw, serialized, selection, and adapter status updates. */
   readonly onValueChange?: (value: MaskedFieldValue) => void;
+  /** Additional class name applied to the outer MaskedField wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer MaskedField wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Selects raw or formatted hidden form serialization; defaults to `raw`. */
   readonly serialization?: MaskSerialization;
   /** Controlled visible input. The adapter determines the rendered formatted value. */
   readonly value?: string;

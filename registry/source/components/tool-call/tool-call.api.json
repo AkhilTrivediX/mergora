@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tool-call",
+  "entryExport": "ToolCall",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML section attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "ToolCall" },
+    { "kind": "type", "name": "ToolCallDetails" },
+    { "kind": "type", "name": "ToolCallProps" },
+    { "kind": "type", "name": "ToolCallStatus" },
+    { "kind": "value", "name": "redactToolText" }
+  ],
+  "controlledState": [
+    {
+      "state": "sensitive reveal",
+      "controlled": "sensitiveRevealed",
+      "uncontrolled": "defaultSensitiveRevealed",
+      "callback": "onSensitiveRevealedChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "showDetails",
+      "required": false,
+      "default": false,
+      "type": "false | ToolCallDetails"
+    },
+    { "name": "allowSensitiveReveal", "required": false, "default": false, "type": "boolean" },
+    { "name": "showDuration", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "execution": "Cancel and retry are callbacks only; the component never executes tools.",
+    "safety": "Sensitive content is withheld unless both details and explicit reveal are selected; details false prevents value rendering and redaction work."
+  }
+}

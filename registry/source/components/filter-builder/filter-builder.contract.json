@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "filter-builder",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, complete overlay interoperability, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Each filter is a fieldset with labelled native field, operator, value, and action controls.",
+    "mobile": "The optional narrow presentation uses a native modal dialog with an explicit close action and trigger focus restoration.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through native filters, saved-filter selector, summary controls, and optional drawer in logical order."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Closes the optional native mobile dialog and restores trigger focus."
+    },
+    {
+      "key": "Enter / Space",
+      "behavior": "Activates focused add, remove, clear, open, or close buttons."
+    }
+  ],
+  "enhancementIsolation": {
+    "summaryFalse": "No summary output, render callback, live behavior, or accessibility node exists.",
+    "savedFalse": "No saved-filter selector, data, or apply event exists.",
+    "urlFalse": "No URL read, write, or serialization side effect occurs.",
+    "drawerFalse": "No trigger, dialog, duplicate editor, close behavior, or focus-restoration path exists."
+  },
+  "serialization": "Repeated URLSearchParams values preserve Unicode and reject duplicate IDs, malformed fields, and oversized values.",
+  "preferences": {
+    "forcedColors": "Dialog, controls, invalid state, summaries, and focus use system colors.",
+    "reducedMotion": "The drawer requires no motion and all authored transitions become immediate.",
+    "rtl": "Logical layout and inherited dialog direction preserve label and action order."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "url-roundtrip",
+      "saved-state",
+      "form-reset",
+      "dialog-focus",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch-device",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased evidence does not yet include generated parity, packed consumers, nested-layer interoperability, or manual assistive-technology sessions.",
+    "Consumers own saved-filter persistence, URL history policy, authorization, and domain-specific value editors."
+  ]
+}

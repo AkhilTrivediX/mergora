@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropzone",
+  "entryExport": "Dropzone",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the stable shell except owned children, drop, and paste handlers",
+  "exports": [
+    { "kind": "component", "name": "Dropzone" },
+    { "kind": "type", "name": "DropzoneMessages" },
+    { "kind": "type", "name": "DropzoneProps" },
+    { "kind": "type", "name": "FileRejectionReason" },
+    { "kind": "type", "name": "FileSelectionResult" },
+    { "kind": "type", "name": "RejectedFileSelection" }
+  ],
+  "controlledState": [],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "onFiles", "required": true, "type": "(accepted/rejected immutable result) => void" },
+    { "name": "acceptedFileTypes", "required": false, "type": "readonly MIME/extension token[]" },
+    { "name": "allowsMultiple", "required": false, "default": true, "type": "boolean" },
+    { "name": "maxFiles", "required": false, "default": 20, "type": "integer 1..100" },
+    {
+      "name": "maxSizeBytes",
+      "required": false,
+      "default": 104857600,
+      "type": "integer 1..2147483648"
+    },
+    { "name": "validateFileSize", "required": false, "default": true, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "name", "required": false, "type": "native form field name" },
+    { "name": "form", "required": false, "type": "native form owner id" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "onReset", "required": false, "type": "() => void after native owner reset" },
+    { "name": "messages", "required": false, "type": "localized DropzoneMessages overrides" }
+  ],
+  "compositionPolicy": {
+    "drop": "React Aria DropZone owns accessible drag/drop mode and exposes one copy operation; all item materialization is bounded to 100 entries and directories/text remain explicit rejections.",
+    "alternatives": "The same surface includes a native FileTrigger and accepts pasted FileList data; pointer drag is never the only selection path.",
+    "validation": "Every picker, paste, and dropped File passes the same count and normalized MIME/extension classifier before the consumer callback; validateFileSize independently enables or removes size rejection.",
+    "concurrency": "Only the latest asynchronous drop request may publish a result, preventing a slow earlier FileDropItem from replacing newer selection state.",
+    "form": "When name, form, or required participates, only accepted Files are synchronized into the one native input through a bounded DataTransfer path; failure clears the input and reports formDataSynchronized=false."
+  }
+}

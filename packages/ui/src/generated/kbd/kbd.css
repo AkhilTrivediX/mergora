@@ -1,6 +1,6 @@
 /* Generated from registry/source/components/kbd/kbd.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-kbd {
-  background: var(--mrg-semantic-color-background-surface);
+  background: var(--mrg-semantic-color-background-canvas);
   border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
   border-block-end-width: var(--mrg-semantic-border-width-strong);
   border-radius: var(--mrg-semantic-radius-status);
@@ -14,6 +14,9 @@
   padding-inline: var(--mrg-semantic-space-inline-sm);
   text-align: center;
   white-space: nowrap;
+}
+.mrg-kbd-chord[data-platform]:not([data-platform="generic"]) .mrg-kbd {
+  border-block-end-color: var(--mrg-semantic-color-brand-violet);
 }
 .mrg-kbd-chord {
   align-items: center;
@@ -38,5 +41,8 @@
   }
   .mrg-kbd-separator {
     color: CanvasText;
+  }
+  .mrg-kbd-chord[data-platform]:not([data-platform="generic"]) .mrg-kbd {
+    border-block-end-color: ButtonBorder;
   }
 }

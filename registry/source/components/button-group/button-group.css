@@ -2,9 +2,16 @@
   align-items: stretch;
   box-sizing: border-box;
   display: flex;
-  gap: var(--mrg-semantic-space-inline-xs);
+  gap: var(--mrg-component-control-gap);
   max-inline-size: 100%;
   min-inline-size: 0;
+}
+
+.mrg-button-group[data-mode="toolbar"] {
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
+  padding: var(--mrg-semantic-space-inline-xs);
 }
 
 .mrg-button-group[data-orientation="horizontal"] {
@@ -26,16 +33,43 @@
   scrollbar-gutter: stable;
 }
 
-.mrg-button-group[data-orientation="horizontal"] > :not(:first-child) {
+.mrg-button-group[data-orientation="horizontal"]
+  > :not(:first-child):not([data-slot="button-group-keyboard-hint"]) {
   margin-inline-start: calc(-1 * var(--mrg-semantic-border-width-default));
 }
 
-.mrg-button-group[data-orientation="vertical"] > :not(:first-child) {
+.mrg-button-group[data-orientation="vertical"]
+  > :not(:first-child):not([data-slot="button-group-keyboard-hint"]) {
   margin-block-start: calc(-1 * var(--mrg-semantic-border-width-default));
+}
+
+.mrg-button-group [data-slot="button-group-keyboard-hint"] {
+  align-self: center;
+  background: var(--mrg-semantic-color-status-loading-background);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-status-loading-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  margin-inline-start: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 32ch;
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-button-group {
+    scroll-behavior: auto;
+  }
 }
 
 @media (forced-colors: active) {
   .mrg-button-group {
+    border-color: ButtonBorder;
     forced-color-adjust: auto;
+  }
+
+  .mrg-button-group [data-slot="button-group-keyboard-hint"] {
+    background: Canvas;
+    color: CanvasText;
   }
 }

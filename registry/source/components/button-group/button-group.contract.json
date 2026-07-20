@@ -11,7 +11,8 @@
     "Toolbar mode assigns exactly one recognized enabled action as a tab stop during SSR and every render, then implements Home, End, orientation arrows, disabled skipping, and RTL spatial arrows.",
     "Router and custom action components may opt in through markButtonGroupAction when they forward toolbar props to exactly one native action root.",
     "Non-interactive separators remain unmanaged; unsupported custom or nested-action children are inert so they cannot add uncontrolled toolbar tab stops.",
-    "No button or link semantics are rewritten by the group."
+    "No button or link semantics are rewritten by the group.",
+    "keyboardHint exists only in toolbar mode, becomes visible descriptive text, and is absent when omitted."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, state, and focus.",

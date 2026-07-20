@@ -35,10 +35,9 @@
 
   .mrg-select-trigger {
     align-items: center;
-    background: var(--mrg-semantic-color-background-canvas);
-    border: var(--mrg-semantic-border-width-default) solid
-      var(--mrg-semantic-color-border-interactive);
-    border-radius: var(--mrg-semantic-radius-control);
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
     box-sizing: border-box;
     color: inherit;
     display: grid;
@@ -59,8 +58,11 @@
   }
 
   .mrg-select-trigger[data-focus-visible] {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-select-trigger[data-pressed] {
@@ -86,10 +88,10 @@
   }
 
   .mrg-select-popover {
-    background: var(--mrg-semantic-color-background-canvas);
-    border: var(--mrg-semantic-border-width-default) solid
-      var(--mrg-semantic-color-border-interactive);
-    border-radius: var(--mrg-semantic-radius-control);
+    background: var(--mrg-component-overlay-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+    border-radius: var(--mrg-component-overlay-radius);
+    box-shadow: var(--mrg-component-overlay-elevation);
     box-sizing: border-box;
     color: var(--mrg-semantic-color-foreground-primary);
     display: grid;
@@ -135,7 +137,7 @@
 
   .mrg-select-item {
     align-items: center;
-    border-radius: var(--mrg-semantic-radius-compact);
+    border-radius: var(--mrg-component-control-radius);
     box-sizing: border-box;
     color: inherit;
     display: grid;
@@ -175,16 +177,20 @@
   }
 
   .mrg-select-item[data-selected] {
-    background: var(--mrg-semantic-color-background-surface);
+    background: var(--mrg-component-control-background-selected);
+    color: var(--mrg-component-control-foreground-selected);
     font-weight: var(--mrg-semantic-font-weight-label);
     outline: var(--mrg-semantic-border-width-default) solid
-      var(--mrg-semantic-color-border-interactive);
+      var(--mrg-component-control-border-selected);
     outline-offset: calc(var(--mrg-semantic-border-width-default) * -1);
   }
 
   .mrg-select-item[data-focus-visible] {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
     z-index: 1;
   }
 
@@ -241,8 +247,11 @@
 
   .mrg-select-async button:focus-visible,
   .mrg-select-load-more:focus-visible {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-select-load-more {
@@ -337,6 +346,7 @@
     .mrg-select-item[data-focus-visible],
     .mrg-select-trigger[data-focus-visible] {
       outline-color: Highlight;
+      box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
     }
 
     .mrg-select-item[data-disabled],

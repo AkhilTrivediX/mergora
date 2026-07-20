@@ -24,6 +24,7 @@ import type {
 import {
   Children,
   createContext,
+  Fragment,
   forwardRef,
   isValidElement,
   useCallback,
@@ -52,6 +53,7 @@ import {
   getDialogNamingDiagnostics,
   joinDialogClassName,
   resolveDialogOpenChangeReason,
+  shouldDismissNonModalOutsideActivation,
 } from "./model.js";
 import type {
   DialogDismissPolicy,
@@ -81,6 +83,18 @@ function isDevelopmentRuntime(): boolean {
   ).env?.PROD;
   const runtime = globalThis as typeof globalThis & { readonly process?: ProcessLike };
   return viteProduction !== true && runtime.process?.env?.NODE_ENV !== "production";
+}
+
+/** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
+export function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
 }
 
 export type DialogModality = "modal" | "non-modal";
@@ -183,6 +197,29 @@ function resolveNonModalPlacement(
   return placement;
 }
 
+const FOREIGN_OVERLAY_OWNER_SELECTOR = [
+  "[data-react-aria-top-layer]",
+  "[data-slot$='-overlay']",
+  "[data-slot$='-positioner']",
+  "[role='alertdialog']",
+  "[role='dialog']",
+  "[role='listbox']",
+  "[role='menu']",
+  "[role='tooltip']",
+].join(",");
+
+function activationTarget(event: Event): Element | null {
+  for (const target of event.composedPath()) {
+    if (target instanceof Element) return target;
+  }
+  return event.target instanceof Element ? event.target : null;
+}
+
+function belongsToForeignOverlay(target: Element, overlay: Element): boolean {
+  const owner = target.closest(FOREIGN_OVERLAY_OWNER_SELECTOR);
+  return owner !== null && owner !== overlay && !overlay.contains(owner);
+}
+
 function elementCanReceiveFocus(element: HTMLElement | null): element is HTMLElement {
   if (
     element === null ||
@@ -203,6 +240,8 @@ interface DialogContextValue {
   readonly markReason: (reason: DialogOpenChangeReason) => void;
   readonly modality: DialogModality;
   readonly registerTrigger: (node: HTMLButtonElement | null) => void;
+  readonly requestClose: (reason: DialogOpenChangeReason) => void;
+  readonly triggerRef: RefObject<HTMLButtonElement | null>;
 }
 
 const DialogContext = createContext<DialogContextValue | null>(null);
@@ -222,17 +261,24 @@ interface DialogContentContextValue {
 const DialogContentContext = createContext<DialogContentContextValue | null>(null);
 
 export interface DialogRootProps {
+  /** Declarative Dialog parts owned by this root. */
   readonly children?: ReactNode;
+  /** Initial open state for uncontrolled use. */
   readonly defaultOpen?: boolean;
   /** Receives focus only when the invoking trigger no longer exists at close/unmount. */
   readonly finalFocusRef?: RefObject<HTMLElement | null>;
+  /** Chooses modal containment or a non-modal, background-operable surface. */
   readonly modality?: DialogModality;
+  /** Reports open-state changes with the originating dismissal or trigger reason. */
   readonly onOpenChange?: (open: boolean, details: DialogOpenChangeDetails) => void;
+  /** Controlled open state; pair with onOpenChange. */
   readonly open?: boolean;
 }
 
 interface DialogRootImplementationProps extends DialogRootProps {
+  /** Internal family namespace used by Dialog, AlertDialog, and Sheet parts. */
   readonly kind?: DialogPartKind;
+  /** Internal root-level dismissal override used by family wrappers. */
   readonly dismissPolicy?: DialogDismissPolicy;
 }
 
@@ -281,40 +327,56 @@ export function DialogRootImplementation({
     }
   }, [defaultOpen, inspection, open]);
 
-  const restoreFocus = useCallback(() => {
-    if (typeof document === "undefined") return;
-    const active = document.activeElement;
-    if (
-      active instanceof HTMLElement &&
-      active !== document.body &&
-      active.isConnected &&
-      active.closest("[data-slot$='-overlay'], [data-slot$='-positioner']") === null
-    ) {
-      return;
-    }
-    const trigger = triggerRef.current;
-    const fallback = finalFocusRef?.current ?? null;
-    const target = elementCanReceiveFocus(trigger)
-      ? trigger
-      : elementCanReceiveFocus(fallback)
-        ? fallback
-        : null;
-    target?.focus({ preventScroll: true });
-    if (target === null && isDevelopmentRuntime()) {
-      console.warn(
-        "Mergora Dialog.Root could not restore focus because its trigger was removed and finalFocusRef did not resolve to a connected focus target.",
-      );
-    }
-  }, [finalFocusRef]);
+  const restoreFocus = useCallback(
+    (warnWhenUnavailable = true): boolean => {
+      if (typeof document === "undefined") return true;
+      const active = document.activeElement;
+      if (
+        active instanceof HTMLElement &&
+        active !== document.body &&
+        active.isConnected &&
+        active.closest("[data-slot$='-overlay'], [data-slot$='-positioner']") === null
+      ) {
+        return true;
+      }
+      const trigger = triggerRef.current;
+      const fallback = finalFocusRef?.current ?? null;
+      const target = elementCanReceiveFocus(trigger)
+        ? trigger
+        : elementCanReceiveFocus(fallback)
+          ? fallback
+          : null;
+      target?.focus({ preventScroll: true });
+      if (target !== null && document.activeElement === target) return true;
+      if (warnWhenUnavailable && isDevelopmentRuntime()) {
+        console.warn(
+          "Mergora Dialog.Root could not restore focus because its trigger was removed and finalFocusRef did not resolve to a connected focus target.",
+        );
+      }
+      return false;
+    },
+    [finalFocusRef],
+  );
 
   useEffect(() => {
     const previouslyOpen = wasOpen.current;
     wasOpen.current = isOpen;
     if (!previouslyOpen || isOpen || typeof requestAnimationFrame === "undefined") return;
-    const first = requestAnimationFrame(() => {
-      requestAnimationFrame(restoreFocus);
-    });
-    return () => cancelAnimationFrame(first);
+    let cancelled = false;
+    let frame = 0;
+    let attempt = 0;
+    const retry = (): void => {
+      if (cancelled) return;
+      attempt += 1;
+      const finalAttempt = attempt >= 4;
+      if (restoreFocus(finalAttempt) || finalAttempt) return;
+      frame = requestAnimationFrame(retry);
+    };
+    frame = requestAnimationFrame(retry);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(frame);
+    };
   }, [isOpen, restoreFocus]);
 
   useEffect(
@@ -337,14 +399,27 @@ export function DialogRootImplementation({
     pendingReason.current = reason;
   }, []);
 
-  const handleOpenChange = useCallback(
-    (nextOpen: boolean) => {
-      if (open === undefined) setUncontrolledOpen(nextOpen);
-      const reason = resolveDialogOpenChangeReason(pendingReason.current, nextOpen);
+  const commitOpenChange = useCallback(
+    (nextOpen: boolean, explicitReason?: DialogOpenChangeReason) => {
+      const reason =
+        explicitReason ?? resolveDialogOpenChangeReason(pendingReason.current, nextOpen);
       pendingReason.current = null;
+      if (nextOpen === openRef.current) return;
+      openRef.current = nextOpen;
+      if (open === undefined) setUncontrolledOpen(nextOpen);
       onOpenChange?.(nextOpen, { reason });
     },
     [onOpenChange, open],
+  );
+
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => commitOpenChange(nextOpen),
+    [commitOpenChange],
+  );
+
+  const requestClose = useCallback(
+    (reason: DialogOpenChangeReason) => commitOpenChange(false, reason),
+    [commitOpenChange],
   );
 
   const context = useMemo<DialogContextValue>(
@@ -357,8 +432,10 @@ export function DialogRootImplementation({
       registerTrigger: (node) => {
         triggerRef.current = node;
       },
+      requestClose,
+      triggerRef,
     }),
-    [dismissPolicy, isOpen, kind, markReason, modality],
+    [dismissPolicy, isOpen, kind, markReason, modality, requestClose],
   );
 
   return (
@@ -382,6 +459,7 @@ DialogRoot.displayName = "Dialog.Root";
 markDialogPart(DialogRoot, "root");
 
 export interface DialogTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Trigger button content; native button semantics remain authoritative. */
   readonly children?: ReactNode;
 }
 
@@ -408,7 +486,11 @@ export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(
         className={joinDialogClassName(partClass(kind, "trigger"), className)}
         data-slot={slotName(kind, "trigger")}
         data-state={isOpen ? "open" : "closed"}
-        onPress={() => markReason("trigger")}
+        onPress={() => {
+          // Opening already resolves to `trigger`; recording only the close-side toggle avoids
+          // leaving a stale reason for a later Escape or outside dismissal.
+          if (isOpen) markReason("trigger");
+        }}
         type={type}
       >
         {children}
@@ -420,6 +502,7 @@ export const DialogTrigger = forwardRef<HTMLButtonElement, DialogTriggerProps>(
 DialogTrigger.displayName = "Dialog.Trigger";
 
 export interface DialogOverlayProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Dialog positioner and content rendered inside the managed overlay. */
   readonly children?: ReactNode;
   /** Placement used only by non-modal Dialog roots. */
   readonly placement?: DialogPlacement;
@@ -430,12 +513,144 @@ export const DialogOverlay = forwardRef<HTMLDivElement, DialogOverlayProps>(func
   forwardedRef,
 ) {
   const provider = useMergoraContext();
-  const { dismissPolicy, isOpen, kind, markReason, modality } = useDialogContext("Overlay");
+  const { dismissPolicy, isOpen, kind, markReason, modality, requestClose, triggerRef } =
+    useDialogContext("Overlay");
   const dismissBehavior = getDialogDismissBehavior(dismissPolicy);
   const slot = slotName(kind, "overlay");
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const mergedRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      overlayRef.current = node;
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef],
+  );
+
+  useEffect(() => {
+    if (modality !== "non-modal" || !isOpen || !dismissBehavior.allowsOutsideInteraction) {
+      return;
+    }
+    const overlay = overlayRef.current;
+    if (overlay === null) return;
+    const ownerDocument = overlay.ownerDocument;
+    const ownerWindow = ownerDocument.defaultView;
+    if (ownerWindow === null) return;
+
+    let closeFrame = 0;
+    let start:
+      | {
+          readonly event: Event;
+          readonly isPrimary: boolean;
+          readonly target: Element;
+        }
+      | undefined;
+
+    const isOutsideOwnedSurface = (event: Event, target: Element): boolean => {
+      const path = event.composedPath();
+      const trigger = triggerRef.current;
+      return (
+        !path.includes(overlay) &&
+        !overlay.contains(target) &&
+        (trigger === null || (!path.includes(trigger) && !trigger.contains(target)))
+      );
+    };
+
+    const reset = (): void => {
+      start = undefined;
+    };
+
+    const onPointerStart = (event: Event): void => {
+      const pointerEvent = event as MouseEvent & { readonly isPrimary?: boolean };
+      const target = activationTarget(event);
+      const isPrimary =
+        pointerEvent.button === 0 &&
+        (pointerEvent.isPrimary === undefined || pointerEvent.isPrimary);
+      if (
+        target === null ||
+        !isPrimary ||
+        !isOutsideOwnedSurface(event, target) ||
+        belongsToForeignOverlay(target, overlay)
+      ) {
+        reset();
+        return;
+      }
+      start = { event, isPrimary, target };
+    };
+
+    const onClick = (event: MouseEvent): void => {
+      const pointerStart = start;
+      reset();
+      const target = activationTarget(event);
+      if (pointerStart === undefined || target === null) return;
+
+      const clickEndedOutside = isOutsideOwnedSurface(event, target);
+      const topLayerOwned =
+        belongsToForeignOverlay(pointerStart.target, overlay) ||
+        belongsToForeignOverlay(target, overlay);
+      const sameTargetLineage =
+        pointerStart.target === target ||
+        pointerStart.target.contains(target) ||
+        target.contains(pointerStart.target);
+      if (
+        !shouldDismissNonModalOutsideActivation({
+          clickEndedOutside,
+          defaultPrevented: pointerStart.event.defaultPrevented || event.defaultPrevented,
+          isPrimary: pointerStart.isPrimary && event.button === 0,
+          pointerStartedOutside: true,
+          sameTargetLineage,
+          topLayerOwned,
+        })
+      ) {
+        return;
+      }
+
+      // React Aria normally closes first. Waiting one frame lets that state commit, while the
+      // guarded root transition makes this a no-op there and supplies the missing Safari path.
+      closeFrame = ownerWindow.requestAnimationFrame(() => {
+        requestClose("outside-interaction");
+      });
+    };
+
+    const startEvent = typeof ownerWindow.PointerEvent === "function" ? "pointerdown" : "mousedown";
+    ownerDocument.addEventListener(startEvent, onPointerStart, true);
+    ownerDocument.addEventListener("click", onClick, true);
+    ownerDocument.addEventListener("pointercancel", reset, true);
+    ownerDocument.addEventListener("dragstart", reset, true);
+    return () => {
+      ownerDocument.removeEventListener(startEvent, onPointerStart, true);
+      ownerDocument.removeEventListener("click", onClick, true);
+      ownerDocument.removeEventListener("pointercancel", reset, true);
+      ownerDocument.removeEventListener("dragstart", reset, true);
+      if (closeFrame !== 0) ownerWindow.cancelAnimationFrame(closeFrame);
+    };
+  }, [dismissBehavior.allowsOutsideInteraction, isOpen, modality, requestClose, triggerRef]);
+
+  useEffect(() => {
+    if (!isOpen || !dismissBehavior.allowsEscape) return;
+    const overlay = overlayRef.current;
+    if (overlay === null) return;
+    const ownerDocument = overlay.ownerDocument;
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (
+        event.key !== "Escape" ||
+        event.isComposing ||
+        overlay.dataset.layerTop !== "true" ||
+        (!event.composedPath().includes(overlay) &&
+          !(event.target instanceof Node && overlay.contains(event.target)))
+      ) {
+        return;
+      }
+      // React Aria owns the close; this capture listener only records the exact reason before its
+      // non-modal Popover handler consumes the event.
+      markReason("escape-key");
+    };
+    ownerDocument.addEventListener("keydown", onKeyDown, true);
+    return () => ownerDocument.removeEventListener("keydown", onKeyDown, true);
+  }, [dismissBehavior.allowsEscape, isOpen, markReason]);
+
   const sharedProps = {
     ...nativeProps,
-    ref: forwardedRef,
+    ref: mergedRef,
     className: joinDialogClassName(partClass(kind, "overlay"), className),
     "data-density": provider.density,
     "data-direction": provider.direction,
@@ -470,7 +685,7 @@ export const DialogOverlay = forwardRef<HTMLDivElement, DialogOverlayProps>(func
       >
         <ReactAriaPopover
           {...popoverProps}
-          ref={forwardedRef}
+          ref={mergedRef}
           containerPadding={12}
           isNonModal
           offset={8}
@@ -494,7 +709,7 @@ export const DialogOverlay = forwardRef<HTMLDivElement, DialogOverlayProps>(func
     >
       <ReactAriaModalOverlay
         {...modalProps}
-        ref={forwardedRef}
+        ref={mergedRef}
         onPointerDownCapture={(event) => {
           onPointerDownCapture?.(event);
           if (
@@ -525,9 +740,15 @@ export interface DialogContentProps extends Omit<
   ComponentPropsWithoutRef<"section">,
   "children" | "role"
 > {
+  /** Dialog body and named parts rendered inside the content surface. */
   readonly children?: ReactNode;
+  /** Optional visible dismissal guidance. When supplied it joins the dialog description. */
+  readonly dismissHint?: ReactNode;
+  /** Controls whether Escape and outside interaction may dismiss the surface. */
   readonly dismissPolicy?: DialogDismissPolicy;
+  /** Entry-focus policy, with modal roots always receiving contained focus. */
   readonly initialFocus?: DialogInitialFocus;
+  /** Preferred contained entry-focus target, with the content surface as fallback. */
   readonly initialFocusRef?: RefObject<HTMLElement | null>;
   /** AlertDialog uses this internally. General dialogs should retain role=dialog. */
   readonly role?: "dialog" | "alertdialog";
@@ -540,6 +761,7 @@ export const DialogContent = forwardRef<HTMLElement, DialogContentProps>(functio
     "aria-labelledby": ariaLabelledBy,
     children,
     className,
+    dismissHint,
     dismissPolicy = DEFAULT_DISMISS_POLICY,
     initialFocus,
     initialFocusRef,
@@ -552,6 +774,7 @@ export const DialogContent = forwardRef<HTMLElement, DialogContentProps>(functio
   const root = useDialogContext("Content");
   const contentRef = useRef<HTMLElement | null>(null);
   const descriptionId = useId();
+  const dismissHintId = useId();
   const inspection = useMemo(() => inspectDialogTree(children), [children]);
   const hasAriaLabel = typeof ariaLabel === "string" && ariaLabel.trim().length > 0;
   const hasAriaLabelledBy = typeof ariaLabelledBy === "string" && ariaLabelledBy.trim().length > 0;
@@ -560,7 +783,11 @@ export const DialogContent = forwardRef<HTMLElement, DialogContentProps>(functio
   const resolvedDescriptionId = usesAutomaticDescription
     ? (inspection.descriptionIds[0] ?? descriptionId)
     : undefined;
-  const resolvedAriaDescribedBy = ariaDescribedBy ?? resolvedDescriptionId;
+  const hasDismissHint = hasAccessibleContent(dismissHint);
+  const resolvedAriaDescribedBy =
+    [ariaDescribedBy ?? resolvedDescriptionId, hasDismissHint ? dismissHintId : undefined]
+      .filter((value): value is string => value !== undefined && value.length > 0)
+      .join(" ") || undefined;
   const requestedInitialFocus =
     initialFocus ?? (root.modality === "modal" ? "first-interactive" : "none");
   const resolvedInitialFocus =
@@ -677,6 +904,16 @@ export const DialogContent = forwardRef<HTMLElement, DialogContentProps>(functio
           }}
         >
           {children}
+          {hasDismissHint ? (
+            <p
+              className={partClass(root.kind, "dismiss-hint")}
+              data-dismiss-policy={dismissPolicy}
+              data-slot={slotName(root.kind, "dismiss-hint")}
+              id={dismissHintId}
+            >
+              {dismissHint}
+            </p>
+          ) : null}
         </div>
       </ReactAriaDialog>
     </DialogContentContext.Provider>
@@ -724,6 +961,7 @@ export const DialogFooter = forwardRef<HTMLDivElement, DialogFooterProps>(functi
 DialogFooter.displayName = "Dialog.Footer";
 
 export interface DialogTitleProps extends Omit<HTMLAttributes<HTMLHeadingElement>, "slot"> {
+  /** Semantic heading level used for the rendered dialog title. */
   readonly level?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
@@ -770,6 +1008,7 @@ export const DialogDescription = forwardRef<HTMLParagraphElement, DialogDescript
 DialogDescription.displayName = "Dialog.Description";
 
 export interface DialogCloseProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Close-button content; localized default text is used when omitted. */
   readonly children?: ReactNode;
 }
 

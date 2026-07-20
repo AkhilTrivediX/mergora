@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./sortable-list.css", "react"],
+  "entryPath": "registry/source/components/sortable-list/sortable-list.tsx",
+  "id": "sortable-list",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

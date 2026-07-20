@@ -6,10 +6,14 @@ const axePath = resolve(
   "../../../packages/test-utils/node_modules/axe-core/axe.min.js",
 );
 
-async function openStory(page: Page, story: string): Promise<void> {
-  await page.goto(`/iframe.html?viewMode=story&id=p2-intrinsic-layout-foundations--${story}`, {
-    waitUntil: "domcontentloaded",
-  });
+async function openStory(page: Page, story: string, args?: string): Promise<void> {
+  const storyArgs = args === undefined ? "" : `&args=${encodeURIComponent(args)}`;
+  await page.goto(
+    `/iframe.html?viewMode=story&id=p2-intrinsic-layout-foundations--${story}${storyArgs}`,
+    {
+      waitUntil: "domcontentloaded",
+    },
+  );
   await expect(page.locator("[data-slot]").first()).toBeVisible();
 }
 
@@ -21,7 +25,17 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
   });
 }
 
@@ -35,6 +49,63 @@ test("layout workbench has semantic roots and no automated accessibility violati
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Intrinsic layout workbench");
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ fullPage: true, path: testInfo.outputPath("layout-workbench.png") });
+});
+
+test("plain and recommended stories expose independently selectable layout intelligence", async ({
+  page,
+}, testInfo) => {
+  await openStory(page, "basic-defaults");
+  await expect(page.locator('[data-slot="aspect-ratio"]')).not.toHaveAttribute("data-fit");
+  await expect(page.locator('[data-slot="grid"]')).not.toHaveAttribute("data-equal-rows");
+  await expect(page.locator('[data-slot="stack"]')).not.toHaveAttribute("data-separated");
+  await expect(page.locator('[data-slot="container"]')).not.toHaveAttribute("data-query-container");
+  expect(await axeViolations(page)).toEqual([]);
+
+  await openStory(page, "recommended-mergora");
+  await expect(page.locator('[data-slot="aspect-ratio"]')).toHaveAttribute("data-fit", "contain");
+  await expect(page.locator('[data-slot="grid"]')).toHaveAttribute("data-equal-rows", "true");
+  await expect(page.locator('[data-slot="stack"]').first()).toHaveAttribute(
+    "data-separated",
+    "true",
+  );
+  await expect(page.locator('[data-slot="container"]')).toHaveAttribute(
+    "data-query-container",
+    "true",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ fullPage: true, path: testInfo.outputPath("recommended-layout.png") });
+});
+
+test("basic story controls can selectively enable the layout enhancements", async ({ page }) => {
+  await openStory(
+    page,
+    "basic-defaults",
+    [
+      "adaptiveWrap:true",
+      "equalRows:true",
+      "fillOrphan:true",
+      "fitMedia:true",
+      "queryContainer:true",
+      "safeArea:true",
+      "semanticMaximum:true",
+      "separatedStack:true",
+      "separatorSpacing:true",
+    ].join(";"),
+  );
+
+  await expect(page.locator('[data-slot="aspect-ratio"]')).toHaveAttribute("data-fit", "contain");
+  await expect(page.locator('[data-slot="grid"]')).toHaveAttribute("data-equal-rows", "true");
+  await expect(page.locator('[data-slot="stack"]')).toHaveAttribute("data-separated", "true");
+  await expect(page.locator('[data-slot="container"]')).toHaveAttribute(
+    "data-query-container",
+    "true",
+  );
+  await expect(page.locator('[data-slot="container"]')).toHaveAttribute("data-safe-area", "true");
+  await expect(page.locator('[data-slot="center"]')).toHaveAttribute("data-maximum", "prose");
+  await expect(page.locator('[data-slot="cluster"]')).toHaveAttribute("data-orphan", "fill");
+  await expect(page.locator('[data-slot="separator"]')).toHaveAttribute("data-spacing", "md");
+  await expect(page.locator('[data-slot="inline"]')).toHaveCSS("flex-wrap", "wrap");
+  expect(await axeViolations(page)).toEqual([]);
 });
 
 test("320 CSS pixel specimen reflows without document or component clipping", async ({

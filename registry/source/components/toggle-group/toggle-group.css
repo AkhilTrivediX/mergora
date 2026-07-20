@@ -1,7 +1,7 @@
 .mrg-toggle-group {
   box-sizing: border-box;
   display: flex;
-  gap: var(--mrg-semantic-space-inline-xs);
+  gap: var(--mrg-component-control-gap);
   max-inline-size: 100%;
   min-inline-size: 0;
 }
@@ -19,47 +19,90 @@
 .mrg-toggle-group-item {
   align-items: center;
   appearance: none;
-  background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: var(--mrg-semantic-radius-control);
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
   box-sizing: border-box;
-  color: var(--mrg-semantic-color-foreground-primary);
+  color: var(--mrg-component-control-foreground);
   cursor: pointer;
   display: inline-flex;
   font: inherit;
   font-weight: var(--mrg-semantic-font-weight-label);
   justify-content: center;
   max-inline-size: 100%;
-  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-block-size: max(
+    var(--mrg-component-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
   min-inline-size: var(--mrg-semantic-size-target-preferred);
   overflow-wrap: anywhere;
-  padding-block: var(--mrg-semantic-space-inline-sm);
-  padding-inline: var(--mrg-semantic-space-inline-md);
+  padding-block: var(--mrg-component-control-padding-block);
+  padding-inline: var(--mrg-component-control-padding-inline);
+  position: relative;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
 }
 
 .mrg-toggle-group-item[data-state="on"] {
-  background: var(--mrg-semantic-color-selection-background);
-  border-color: var(--mrg-semantic-color-selection-border);
-  color: var(--mrg-semantic-color-selection-foreground);
+  background: var(--mrg-component-control-background-selected);
+  border-color: var(--mrg-component-control-border-selected);
+  color: var(--mrg-component-control-foreground-selected);
   font-weight: var(--mrg-semantic-font-weight-strong);
 }
 
+.mrg-toggle-group-item[data-state="on"]::after {
+  background: var(--mrg-component-control-border-selected);
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inset-block-end: 0;
+  inset-inline: var(--mrg-semantic-space-inline-sm);
+  position: absolute;
+}
+
 .mrg-toggle-group-item:not(:disabled):hover {
-  border-color: var(--mrg-semantic-color-selection-border);
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-toggle-group-item[data-state="on"]:not(:disabled):hover {
+  background: var(--mrg-component-control-background-selected);
 }
 
 .mrg-toggle-group-item:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
   position: relative;
   z-index: 1;
 }
 
 .mrg-toggle-group-item:disabled {
-  border-color: var(--mrg-semantic-color-border-disabled);
-  color: var(--mrg-semantic-color-foreground-disabled);
+  background: var(--mrg-component-control-background-disabled);
+  border-color: var(--mrg-component-control-border-disabled);
+  color: var(--mrg-component-control-foreground-disabled);
   cursor: not-allowed;
+}
+
+.mrg-toggle-group [data-slot="toggle-group-summary"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  color: var(--mrg-semantic-color-status-loading-foreground);
+  flex-basis: 100%;
+  font-size: var(--mrg-semantic-font-size-label);
+  max-inline-size: 60ch;
+  overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-toggle-group-item {
+    transition: none;
+  }
 }
 
 @media (forced-colors: active) {
@@ -75,8 +118,17 @@
     color: HighlightText;
   }
 
+  .mrg-toggle-group-item[data-state="on"]::after {
+    background: HighlightText;
+  }
+
   .mrg-toggle-group-item:disabled {
     border-color: GrayText;
     color: GrayText;
+  }
+
+  .mrg-toggle-group [data-slot="toggle-group-summary"] {
+    border-color: CanvasText;
+    color: CanvasText;
   }
 }

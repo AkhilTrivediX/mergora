@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./table.css", "react"],
+  "entryPath": "registry/source/components/table/table.tsx",
+  "id": "table",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

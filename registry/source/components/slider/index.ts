@@ -2,6 +2,7 @@ export {
   Slider,
   SliderBase,
   assertSliderValues,
+  deriveIntelligentSliderMarks,
   normalizeSliderMarks,
   resolveSliderDomain,
   sliderValueIsAligned,
@@ -10,6 +11,8 @@ export {
 export type {
   SliderBaseProps,
   SliderDomain,
+  SliderIntelligentMarksOptions,
+  SliderIntelligentMarkStrategy,
   SliderMark,
   SliderOrientation,
   SliderProps,

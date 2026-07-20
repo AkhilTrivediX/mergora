@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "itemId": "settings-workspace",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicSettingsWorkspace"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSettingsWorkspace"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledSettingsWorkspace"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "SettingsStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "SettingsStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "SettingsStateMatrix"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "SettingsStateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSettingsWorkspace"
+    },
+    {
+      "id": "reset",
+      "applicability": { "status": "applicable" },
+      "story": "SettingsFormLifecycle"
+    },
+    { "id": "narrow", "applicability": { "status": "applicable" }, "story": "NarrowRtlSettings" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlSettings" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlSettings"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlSettings"
+    }
+  ]
+}

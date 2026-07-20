@@ -12,9 +12,9 @@
     "refTargets": "Root and Body refs target HTMLDivElement; Content ref targets its selected HTMLElement."
   },
   "focusNotObscured": {
-    "measurement": "ResizeObserver measures the sticky content block size after hydration and when zoom, localization, fonts, or text wrapping change it.",
-    "fallback": "estimatedSize supplies a deterministic server/no-observer scroll offset, defaulting to 44 CSS pixels.",
-    "clearance": "The occupied scroll-padding edge and focus descendants' logical scroll-margin include measured size, token offset, safe-area inset, and focus offset.",
+    "measurement": "manageFocusOffset enables ResizeObserver measurement after hydration and when zoom, localization, fonts, or text wrapping change size; false installs no observer.",
+    "fallback": "When focus management is enabled, estimatedSize supplies a deterministic server/no-observer scroll offset, defaulting to 44 CSS pixels.",
+    "clearance": "When enabled, the occupied scroll-padding edge and focus descendants' logical scroll-margin include measured size, token offset, safe-area inset, and focus offset; false emits none of those rules or variables.",
     "scope": "contained mode owns its scrollport; page mode applies descendant scroll margins for the nearest scrolling ancestor."
   },
   "responsive": {

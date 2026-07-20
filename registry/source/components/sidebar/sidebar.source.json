@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./sidebar.css", "react"],
+  "entryPath": "registry/source/components/sidebar/sidebar.tsx",
+  "id": "sidebar",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -22,6 +22,8 @@
   "compositionPolicy": {
     "server": "SSR and the first hydration pass render only fallback unless disabled is true.",
     "context": "React context crosses the portal and the wrapper writes native dir/lang plus density attributes.",
-    "relationships": "Consumers keep ID references unique and mounted on both sides of an accessible relationship."
+    "relationships": "Consumers keep ID references unique and mounted on both sides of an accessible relationship.",
+    "advantage": "The portal repeats locale, native direction, and density at the target instead of relying on React context alone.",
+    "enhancementOptOut": "fallback=null removes server/first-hydration UI and accessibility output; disabled=true removes portal movement and target lookup while retaining the inline context boundary."
   }
 }

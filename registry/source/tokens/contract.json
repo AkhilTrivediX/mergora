@@ -1,6 +1,6 @@
 {
   "$schema": "./mergora-contract.schema.json",
-  "contractVersion": "1.0.0",
+  "contractVersion": "1.1.0",
   "dtcgVersion": "2025.10",
   "cssVariablePrefix": "mrg",
   "defaultContext": { "theme": "light", "density": "comfortable" },
@@ -123,6 +123,13 @@
       "kind": "text"
     },
     {
+      "id": "text-disabled-on-disabled-surface",
+      "foreground": "semantic.color.foreground.disabled",
+      "background": "semantic.color.background.disabled",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
       "id": "action-default",
       "foreground": "semantic.color.action.foreground",
       "background": "semantic.color.action.background",
@@ -165,6 +172,13 @@
       "kind": "text"
     },
     {
+      "id": "selection-border",
+      "foreground": "semantic.color.selection.border",
+      "background": "semantic.color.selection.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
       "id": "interactive-border-canvas",
       "foreground": "semantic.color.border.interactive",
       "background": "semantic.color.background.canvas",
@@ -191,6 +205,34 @@
       "background": "semantic.color.action.background",
       "minimum": 3,
       "kind": "focus"
+    },
+    {
+      "id": "neutral-status-text",
+      "foreground": "semantic.color.status.neutral.foreground",
+      "background": "semantic.color.status.neutral.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "neutral-status-border",
+      "foreground": "semantic.color.status.neutral.border",
+      "background": "semantic.color.status.neutral.background",
+      "minimum": 3,
+      "kind": "ui"
+    },
+    {
+      "id": "loading-status-text",
+      "foreground": "semantic.color.status.loading.foreground",
+      "background": "semantic.color.status.loading.background",
+      "minimum": 4.5,
+      "kind": "text"
+    },
+    {
+      "id": "loading-status-border",
+      "foreground": "semantic.color.status.loading.border",
+      "background": "semantic.color.status.loading.background",
+      "minimum": 3,
+      "kind": "ui"
     },
     {
       "id": "success-text",
@@ -305,9 +347,11 @@
     "--color-surface": "semantic.color.background.surface",
     "--color-surface-raised": "semantic.color.background.surfaceRaised",
     "--color-surface-sunken": "semantic.color.background.surfaceSunken",
+    "--color-surface-disabled": "semantic.color.background.disabled",
     "--color-ink": "semantic.color.foreground.primary",
     "--color-muted-ink": "semantic.color.foreground.muted",
     "--color-line": "semantic.color.border.default",
+    "--color-line-subtle": "semantic.color.border.subtle",
     "--color-line-strong": "semantic.color.border.strong",
     "--color-living": "semantic.color.brand.living",
     "--color-action": "semantic.color.action.background",
@@ -318,7 +362,11 @@
     "--color-warning": "semantic.color.status.warning.foreground",
     "--color-danger": "semantic.color.status.danger.foreground",
     "--color-info": "semantic.color.status.info.foreground",
+    "--color-loading": "semantic.color.status.loading.foreground",
+    "--radius-compact": "semantic.radius.compact",
     "--radius-control": "semantic.radius.control",
+    "--radius-surface": "semantic.radius.surface",
+    "--radius-container": "semantic.radius.container",
     "--radius-panel": "semantic.radius.panel",
     "--radius-overlay": "semantic.radius.overlay",
     "--shadow-raised": "semantic.elevation.raised",
@@ -330,6 +378,15 @@
     "--breakpoint-xl": "semantic.breakpoint.xl"
   },
   "forcedSystemColors": {
+    "semantic.color.background.disabled": "Canvas",
+    "semantic.color.border.subtle": "CanvasText",
+    "semantic.color.focus.contrastBackground": "Canvas",
+    "semantic.color.status.neutral.background": "Canvas",
+    "semantic.color.status.neutral.foreground": "CanvasText",
+    "semantic.color.status.neutral.border": "CanvasText",
+    "semantic.color.status.loading.background": "Canvas",
+    "semantic.color.status.loading.foreground": "CanvasText",
+    "semantic.color.status.loading.border": "Highlight",
     "semantic.color.status.success.background": "Canvas",
     "semantic.color.status.success.foreground": "CanvasText",
     "semantic.color.status.success.border": "CanvasText",
@@ -360,11 +417,14 @@
   },
   "componentImpacts": {
     "component.button": ["Button"],
-    "component.field": ["Field", "Combobox", "Select", "TagsInput"],
+    "component.control": ["All interactive controls"],
+    "component.field": ["Field", "Combobox", "Select", "TagsInput", "Specialist input systems"],
     "component.dialog": ["Dialog", "AlertDialog", "Sheet"],
+    "component.overlay": ["Dialog", "Popover", "Menu", "Tooltip", "Sheet"],
     "component.dataGrid": ["DataGrid", "TreeGrid"],
     "component.badge": ["Badge", "Status"],
     "component.code": ["CodeBlock", "CommandOutput"],
+    "component.progress": ["Progress", "Meter", "UploadProgress", "Loading states"],
     "component.focusIndicator": ["All interactive components"]
   }
 }

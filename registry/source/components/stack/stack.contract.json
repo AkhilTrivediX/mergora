@@ -11,7 +11,7 @@
     "refTarget": "HTMLElement"
   },
   "layout": {
-    "intrinsic": "A one-dimensional flex column uses semantic stack gaps and zero minimum inline sizes.",
+    "intrinsic": "A one-dimensional flex column uses semantic stack gaps and zero minimum inline sizes; separated optionally adds tokenized rules without extra DOM.",
     "logicalDirection": "List indentation uses padding-inline-start and follows document direction.",
     "overflow": "Content is not clipped; descendants may grow in block size when text expands."
   },

@@ -27,7 +27,10 @@
 }
 
 .mrg-radio-group [data-slot="radio-group-error"] {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-status-danger-border);
   color: var(--mrg-semantic-color-status-danger-foreground);
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
 }
 
 .mrg-radio-group [data-slot="radio-group-items"] {
@@ -67,8 +70,8 @@
 }
 
 .mrg-radio-group-item[data-variant="card"] {
-  background: var(--mrg-semantic-color-background-surface);
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-default);
   border-radius: var(--mrg-semantic-radius-control);
   padding: var(--mrg-semantic-space-inline-md);
 }
@@ -92,9 +95,8 @@
 .mrg-radio-group-item [data-slot="radio-group-indicator"] {
   align-items: center;
   background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
-  border-radius: 50%;
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-pill);
   block-size: var(--mrg-semantic-size-target-minimum);
   display: flex;
   grid-column: 1;
@@ -105,7 +107,7 @@
 
 .mrg-radio-group-item[data-state="checked"] [data-slot="radio-group-indicator"]::after {
   background: var(--mrg-semantic-color-selection-border);
-  border-radius: 50%;
+  border-radius: var(--mrg-semantic-radius-pill);
   block-size: 0.65rem;
   content: "";
   inline-size: 0.65rem;
@@ -114,8 +116,11 @@
 .mrg-radio-group-item
   [data-slot="radio-group-input"]:focus-visible
   + [data-slot="radio-group-indicator"] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-radio-group-item [data-slot="radio-group-item-label"] {
@@ -160,6 +165,13 @@
 }
 
 @media (forced-colors: active) {
+  .mrg-radio-group-item
+    [data-slot="radio-group-input"]:focus-visible
+    + [data-slot="radio-group-indicator"] {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
   .mrg-radio-group-item [data-slot="radio-group-indicator"] {
     background: Field;
     border-color: FieldText;
@@ -171,5 +183,10 @@
 
   .mrg-radio-group-item[data-variant="card"] {
     border-color: CanvasText;
+  }
+
+  .mrg-radio-group [data-slot="radio-group-error"] {
+    border-color: CanvasText;
+    color: CanvasText;
   }
 }

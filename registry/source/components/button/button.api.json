@@ -40,6 +40,8 @@
   },
   "compositionPolicy": {
     "asChild": "not-supported",
-    "linkRendering": "Use the separate Link contract for navigation."
+    "linkRendering": "Use the separate Link contract for navigation.",
+    "familySignature": "Precise Ink borders, Living Green action state, Violet focus, and an optional loading rail identify the Living Workbench family.",
+    "enhancement": "pending and pendingLabel add focus-retaining progress semantics; false removes the indicator, busy state, loading rail, and activation guard."
   }
 }

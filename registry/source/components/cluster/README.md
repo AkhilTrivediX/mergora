@@ -15,3 +15,7 @@
 The stable root slot is `[data-slot="cluster"]`, with gap, alignment, justification, and orphan attributes. All alignment uses logical start/end behavior.
 
 Current status is `source-present-unreleased`; generation, narrow/zoom/focus browser evidence, packed-consumer parity, updater fixtures, manual review, public-site dogfooding, and a Passport remain promotion deltas.
+
+## Mergora advantage
+
+`orphan="fill"` lets a deliberate final action use the remaining wrapped row without turning every item into an equal-width pill. `orphan="start"` disables that growth behavior completely and preserves the ordinary logical-leading layout.

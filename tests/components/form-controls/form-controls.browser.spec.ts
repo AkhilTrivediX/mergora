@@ -54,6 +54,122 @@ async function axeViolations(page: Page): Promise<unknown[]> {
   });
 }
 
+test("basic and recommended Mergora form modes keep enhancements independent and native", async ({
+  page,
+}) => {
+  await openStory(page, "p2-form-controls--basic-defaults", "Mergora form foundation");
+  await expect(page.locator('[data-slot="field-contextual-action"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="fieldset-selection-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="form-submission-status"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="input-clear"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="textarea-count"]')).toHaveCount(0);
+  await expect(page.getByTestId("clear-event-count")).toHaveCount(0);
+  await expect(page.locator('[data-slot="native-select-selection-context"]')).toHaveCount(0);
+  await expect(page.getByRole("checkbox", { name: "Confirm review" })).not.toHaveAttribute(
+    "aria-describedby",
+  );
+  await expect(page.getByRole("group", { name: "Evidence channels" })).not.toHaveAttribute(
+    "aria-invalid",
+  );
+  await expect(page.locator('[data-slot="radio-group-item"][data-variant="card"]')).toHaveCount(0);
+  await expect(page.locator('input[type="hidden"][name="notifications"]')).toHaveCount(0);
+  const plainFocusTrigger = page.getByRole("button", { name: "Apply focus policy" });
+  await plainFocusTrigger.focus();
+  await plainFocusTrigger.press("Enter");
+  await expect(plainFocusTrigger).toBeFocused();
+
+  await openStory(page, "p2-form-controls--recommended-mergora", "Mergora form foundation");
+  const workspace = page.getByRole("textbox", { name: "Workspace name" });
+  const controlledClear = page.getByRole("button", { name: "Clear workspace name" });
+  await controlledClear.click();
+  await expect(workspace).toHaveValue("");
+  await expect(workspace).toBeFocused();
+  await expect(page.getByTestId("clear-event-count")).toHaveText("Clear actions: 1");
+  await page.getByRole("button", { name: "Use suggestion" }).click();
+  await expect(workspace).toHaveValue("Reference workspace");
+
+  const reference = page.getByRole("textbox", { name: "Reference label" });
+  await page.getByRole("button", { name: "Clear reference label" }).click();
+  await expect(reference).toHaveValue("");
+  await expect(reference).toBeFocused();
+  await page.getByRole("button", { name: "Restore defaults" }).click();
+  await expect(reference).toHaveValue("Draft reference");
+  await expect(workspace).toHaveValue("Northstar workspace");
+
+  await expect(page.locator('[data-slot="fieldset-selection-summary"]')).toHaveText(
+    "1 of 2 paths selected.",
+  );
+  const region = page.getByRole("combobox", { name: "Delivery region" });
+  await expect(page.locator('[data-slot="native-select-selection-context"]')).toHaveText(
+    "Uses the Asia Pacific maintenance window.",
+  );
+  await expect(region).toHaveAttribute("aria-describedby", /selection-context/u);
+  await expect(
+    page.getByText("Changes are announced only after this explicit review step."),
+  ).toBeVisible();
+  await expect(page.getByRole("checkbox", { name: "Confirm review" })).toHaveAttribute(
+    "aria-describedby",
+    /description/u,
+  );
+  await expect(page.getByRole("group", { name: "Evidence channels" })).toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
+  await expect(page.locator('[data-slot="radio-group-item"][data-variant="card"]')).toHaveCount(2);
+  await expect(page.locator('input[type="hidden"][name="notifications"]')).toHaveValue("enabled");
+  await page.getByRole("checkbox", { name: "Touch review" }).check();
+  await expect(page.locator('[data-slot="fieldset-selection-summary"]')).toHaveText(
+    "2 of 2 paths selected.",
+  );
+  await expect(page.locator('[data-slot="textarea-count"]')).toBeVisible();
+  await expect(page.locator('[data-slot="form-submission-status"]')).toHaveText(
+    "Ready for review.",
+  );
+  await page
+    .getByRole("group", { name: "Evidence channels" })
+    .getByRole("checkbox", { name: "Touch", exact: true })
+    .check();
+  await page.getByRole("button", { name: "Review native values" }).click();
+  await expect(page.locator('[data-slot="form-submission-status"]')).toContainText(
+    "native values reviewed",
+  );
+
+  await page.getByRole("button", { name: "Apply focus policy" }).click();
+  await expect(workspace).toBeFocused();
+  const focusVisual = await workspace.locator("..").evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { boxShadow: style.boxShadow, outlineStyle: style.outlineStyle };
+  });
+  expect(focusVisual.outlineStyle).not.toBe("none");
+  expect(focusVisual.boxShadow).not.toBe("none");
+
+  await page.goto(
+    "/iframe.html?id=p2-form-controls--recommended-mergora&viewMode=story&args=formStatusState:submitting",
+  );
+  await expect(
+    page.getByRole("heading", { name: "Mergora form foundation", level: 1 }),
+  ).toBeVisible();
+  await expect(page.getByRole("form", { name: "Workspace review" })).toHaveAttribute(
+    "aria-busy",
+    "true",
+  );
+  await expect(page.locator('[data-slot="form-submission-status"]')).toHaveText(
+    "Review in progress.",
+  );
+
+  await page.goto(
+    "/iframe.html?id=p2-form-controls--recommended-mergora&viewMode=story&args=formStatusState:error",
+  );
+  await expect(page.locator('[data-slot="form-submission-status"]')).toHaveAttribute(
+    "role",
+    "alert",
+  );
+  await expect(page.getByRole("form", { name: "Workspace review" })).not.toHaveAttribute(
+    "aria-busy",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("native semantics, field relationships, and stable accessible names hydrate without duplicate IDs", async ({
   page,
 }) => {

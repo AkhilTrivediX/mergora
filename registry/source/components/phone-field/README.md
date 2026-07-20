@@ -14,6 +14,8 @@ Use `value` with `onValueChange` for controlled visible text, or `defaultValue` 
 
 ## Known limitations
 
+The Mergora phone surface repeats the literal Canvas, strong ink, green valid boundary, isolated calling-code hierarchy, and violet focus seam. Canonical E.164 serialization (`name`) and separately labelled extension capture (`extension`) are independent enhancements. Omitting either removes its hidden successful control or visible input, callbacks, form value, and accessibility output without changing the native telephone editor.
+
 - Production accuracy and supported regions are entirely adapter-owned and require compatibility and numbering-data review before promotion.
 - The built-in extension control accepts decimal extensions. Pauses, waits, and service-code syntaxes require a separately reviewed composed control.
 - Current production-adapter, mobile, autofill, speech, switch, screen-reader, packed-consumer, and package/source-parity evidence is still required.

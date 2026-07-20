@@ -30,11 +30,14 @@
       "type": "standard or accounting"
     },
     { "name": "precision", "required": false, "type": "currency minor-unit precision by default" },
-    { "name": "formatOptions", "required": false, "type": "non-currency Intl.NumberFormatOptions" }
+    { "name": "formatOptions", "required": false, "type": "non-currency Intl.NumberFormatOptions" },
+    { "name": "showCanonicalPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "statusRail", "required": false, "default": false, "type": "false | auto" }
   ],
   "compositionPolicy": {
     "currency": "The required normalized currency code is independent from the numeric value and is exposed as data-currency.",
     "value": "Values and hidden form data use canonical major units; the symbol, code, grouping, sign, and decimal text are display concerns.",
-    "negative": "Negative values require allowNegative; accounting presentation remains a formatting choice rather than a different value model."
+    "negative": "Negative values require allowNegative; accounting presentation remains a formatting choice rather than a different value model.",
+    "enhancements": "showCanonicalPreview exposes the exact major-unit value beside its currency code, while statusRail=auto exposes localized bounds; both are independent and absent when disabled."
   }
 }

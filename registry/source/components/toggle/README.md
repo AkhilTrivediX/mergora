@@ -10,6 +10,8 @@ A controlled or uncontrolled native pressed button with pending behavior and nam
 - Consumer cancellation prevents the state transition.
 - Pending remains focusable and prevents state changes.
 
+The Green pressed rail, literal Canvas surface, Ink border, and Violet focus seam share the family signature. Focus-retaining `pending` feedback is the useful differentiator; `pending={false}` removes its indicator, loading rail, busy semantics, replacement text, and activation guard.
+
 The public ref resolves to `HTMLButtonElement`. Stable source styling starts at `data-slot="toggle"`; documented child slots are recorded in `toggle.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

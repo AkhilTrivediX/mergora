@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./audit-log.css", "react"],
+  "entryPath": "registry/source/components/audit-log/audit-log.tsx",
+  "id": "audit-log",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

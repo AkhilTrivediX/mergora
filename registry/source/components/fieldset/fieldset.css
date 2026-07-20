@@ -13,6 +13,7 @@
 }
 
 .mrg-fieldset [data-slot="fieldset-description"],
+.mrg-fieldset [data-slot="fieldset-selection-summary"],
 .mrg-fieldset [data-slot="fieldset-error"] {
   font-size: var(--mrg-semantic-font-size-label);
   margin-block: var(--mrg-semantic-space-stack-xs) 0;
@@ -22,6 +23,14 @@
 
 .mrg-fieldset [data-slot="fieldset-description"] {
   color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-fieldset [data-slot="fieldset-selection-summary"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  color: var(--mrg-semantic-color-status-success-foreground);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
 }
 
 .mrg-fieldset [data-slot="fieldset-error"] {

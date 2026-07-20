@@ -1,0 +1,133 @@
+/* Generated from registry/source/components/chart/chart.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-chart {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    margin: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-chart figcaption {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+  .mrg-chart figcaption strong {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+  }
+  .mrg-chart figcaption span {
+    max-inline-size: 70ch;
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+  .mrg-chart__plot {
+    inline-size: 100%;
+    block-size: 14rem;
+    overflow: visible;
+    color: var(--mrg-semantic-color-brand-action);
+  }
+  .mrg-chart__plot polyline {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--mrg-semantic-border-width-emphasis);
+  }
+  .mrg-chart__plot circle {
+    fill: var(--mrg-semantic-color-background-canvas);
+    stroke: var(--mrg-semantic-color-brand-violet);
+    stroke-width: var(--mrg-semantic-border-width-emphasis);
+  }
+  .mrg-chart__plot circle[data-active] {
+    fill: var(--mrg-semantic-color-brand-living);
+    stroke: var(--mrg-semantic-color-foreground-primary);
+  }
+  .mrg-chart__point-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mrg-chart__point-controls button {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    text-align: start;
+  }
+  .mrg-chart__point-controls button[aria-pressed="true"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+  .mrg-chart :is(button, summary):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  .mrg-chart__table {
+    overflow: auto;
+  }
+  .mrg-chart__table summary {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    cursor: pointer;
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-chart table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+  .mrg-chart th,
+  .mrg-chart td {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    text-align: start;
+  }
+  .mrg-chart__empty {
+    padding-block: var(--mrg-semantic-space-stack-lg);
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center;
+  }
+  @media (pointer: coarse) {
+    .mrg-chart__point-controls button,
+    .mrg-chart__table summary {
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-chart,
+    .mrg-chart__point-controls button {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-chart__plot {
+      color: CanvasText;
+    }
+    .mrg-chart__plot circle,
+    .mrg-chart__plot circle[data-active] {
+      fill: Canvas;
+      stroke: CanvasText;
+    }
+    .mrg-chart__point-controls button[aria-pressed="true"] {
+      color: HighlightText;
+      background: Highlight;
+    }
+    .mrg-chart :is(button, summary):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

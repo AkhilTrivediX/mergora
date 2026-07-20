@@ -12,7 +12,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     [data-presence] {
-      transition-duration: 1ms;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
     }
   }
 }

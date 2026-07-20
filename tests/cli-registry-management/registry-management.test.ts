@@ -8,6 +8,7 @@ import { canonicalJson, CliError, sha256 } from "../../packages/cli/src/contract
 import { CONFIG_SCHEMA, type MergoraConfig } from "../../packages/cli/src/configuration.js";
 import {
   applyRegistryConfigPlan,
+  discoverNativeReleaseReference,
   inspectRegistry,
   listRegistries,
   normalizeRegistryOrigin,
@@ -284,6 +285,95 @@ afterEach(() => {
   for (const root of temporaryRoots.splice(0)) rmSync(root, { force: true, recursive: true });
 });
 
+describe("automatic enrolled native release discovery", () => {
+  it("returns only a catalog- and immutable-manifest-bound current Stable reference", async () => {
+    const fixture = nativeFixture();
+    const enrollmentFetch = nativeFetch(fixture);
+    const metadata = await retrieveRegistryMetadata({
+      origin: PARTNER_ORIGIN,
+      protocol: "mergora-v1",
+      authEnvironmentVariable: "PARTNER_REGISTRY_TOKEN",
+      environment: { PARTNER_REGISTRY_TOKEN: "Bearer enrollment" },
+      fetchImplementation: enrollmentFetch,
+    });
+    const root = project(externalConfig(metadata.identityDigest));
+    const fetchImplementation = nativeFetch(fixture);
+
+    const reference = await discoverNativeReleaseReference({
+      projectRoot: root,
+      registryId: PARTNER_ID,
+      environment: { PARTNER_REGISTRY_TOKEN: "Bearer runtime" },
+      fetchImplementation,
+    });
+
+    expect(reference).toEqual({
+      schemaVersion: 1,
+      artifactKind: "mergora-native-release-reference",
+      registryId: PARTNER_ID,
+      release: "1.0.0",
+      catalog: {
+        digest: sha256(fixture.catalogText),
+        bytes: Buffer.byteLength(fixture.catalogText),
+      },
+      manifest: {
+        digest: sha256(fixture.manifestText),
+        bytes: Buffer.byteLength(fixture.manifestText),
+      },
+    });
+    expect(fetchImplementation.mock.calls.map(([input]) => String(input))).toEqual([
+      `${PARTNER_ORIGIN}/catalog.json`,
+      fixture.manifestUrl,
+    ]);
+  });
+
+  it("rejects a changed enrollment binding before fetching the immutable manifest", async () => {
+    const fixture = nativeFixture();
+    const root = project(externalConfig());
+    const fetchImplementation = nativeFetch(fixture);
+
+    await expect(
+      discoverNativeReleaseReference({
+        projectRoot: root,
+        registryId: PARTNER_ID,
+        environment: { PARTNER_REGISTRY_TOKEN: "Bearer runtime" },
+        fetchImplementation,
+      }),
+    ).rejects.toMatchObject({ code: "REGISTRY_IDENTITY_MISMATCH", exitCode: 5 });
+    expect(fetchImplementation).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects redirects on the immutable manifest even when they return identical bytes", async () => {
+    const fixture = nativeFixture();
+    const metadata = await retrieveRegistryMetadata({
+      origin: PARTNER_ORIGIN,
+      protocol: "mergora-v1",
+      authEnvironmentVariable: "PARTNER_REGISTRY_TOKEN",
+      environment: { PARTNER_REGISTRY_TOKEN: "Bearer enrollment" },
+      fetchImplementation: nativeFetch(fixture),
+    });
+    const root = project(externalConfig(metadata.identityDigest));
+    const redirected = `${PARTNER_ORIGIN}/releases/1.0.0/redirected-manifest.json`;
+    const fetchImplementation = vi.fn<typeof fetch>(async (input) => {
+      const url = String(input);
+      if (url === `${PARTNER_ORIGIN}/catalog.json`) return jsonResponse(fixture.catalogText);
+      if (url === fixture.manifestUrl) {
+        return new Response(null, { status: 302, headers: { location: redirected } });
+      }
+      if (url === redirected) return jsonResponse(fixture.manifestText);
+      return jsonResponse("{}", { status: 404 });
+    });
+
+    await expect(
+      discoverNativeReleaseReference({
+        projectRoot: root,
+        registryId: PARTNER_ID,
+        environment: { PARTNER_REGISTRY_TOKEN: "Bearer runtime" },
+        fetchImplementation,
+      }),
+    ).rejects.toMatchObject({ code: "REGISTRY_IMMUTABLE_REDIRECT_REJECTED", exitCode: 5 });
+  });
+});
+
 describe("registry origin and network boundary", () => {
   it("rejects credentials, non-HTTPS origins, and unacknowledged loopback HTTP", () => {
     expect(() => normalizeRegistryOrigin("https://user:secret@example.test/r/v1")).toThrow(
@@ -325,7 +415,7 @@ describe("registry origin and network boundary", () => {
       origin: "https://alias.example.test/r/v1",
       protocol: "mergora-v1",
       authEnvironmentVariable: "PARTNER_TOKEN",
-      environment: { PARTNER_TOKEN: "super-secret-token" },
+      environment: { PARTNER_TOKEN: "Bearer super-secret-token" },
       fetchImplementation,
     });
 
@@ -333,6 +423,36 @@ describe("registry origin and network boundary", () => {
     expect(headersByUrl.get(initial)).toBe("Bearer super-secret-token");
     expect(headersByUrl.get(`${PARTNER_ORIGIN}/catalog.json`)).toBeNull();
     expect(JSON.stringify(metadata)).not.toContain("super-secret-token");
+  });
+
+  it("requires a configured authorization environment variable before network access", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>();
+
+    await expect(
+      retrieveRegistryMetadata({
+        origin: PARTNER_ORIGIN,
+        protocol: "mergora-v1",
+        authEnvironmentVariable: "PARTNER_TOKEN",
+        environment: {},
+        fetchImplementation,
+      }),
+    ).rejects.toMatchObject({ code: "REGISTRY_AUTH_REQUIRED", exitCode: 11 });
+    expect(fetchImplementation).not.toHaveBeenCalled();
+  });
+
+  it("rejects authorization header injection before network access", async () => {
+    const fetchImplementation = vi.fn<typeof fetch>();
+
+    await expect(
+      retrieveRegistryMetadata({
+        origin: PARTNER_ORIGIN,
+        protocol: "mergora-v1",
+        authEnvironmentVariable: "PARTNER_TOKEN",
+        environment: { PARTNER_TOKEN: "Bearer safe\r\nX-Attacker: injected" },
+        fetchImplementation,
+      }),
+    ).rejects.toMatchObject({ code: "REGISTRY_AUTH_INVALID", exitCode: 11 });
+    expect(fetchImplementation).not.toHaveBeenCalled();
   });
 
   it("bounds redirects and response bytes and rejects invalid JSON", async () => {
@@ -595,6 +715,7 @@ describe("registry verification", () => {
     const result = await verifyRegistry({
       projectRoot: root,
       id: "partner",
+      environment: { PARTNER_REGISTRY_TOKEN: "Bearer verification-token" },
       fetchImplementation,
     });
 
@@ -618,6 +739,7 @@ describe("registry verification", () => {
     const result = await verifyRegistry({
       projectRoot: root,
       id: "partner",
+      environment: { PARTNER_REGISTRY_TOKEN: "Bearer verification-token" },
       fetchImplementation,
     });
 

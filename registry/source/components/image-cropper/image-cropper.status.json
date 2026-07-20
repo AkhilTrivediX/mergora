@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image-cropper",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Complete the Risk Class 3 desktop/mobile AT, voice, switch, pointer, touch, zoom, and orientation matrix.",
+    "Test a reviewed consumer pixel-export adapter, EXIF orientation policy, large-image memory lifecycle, and failure recovery while preserving the original.",
+    "Generate and verify package/source/native/Shadcn outputs, clean consumers, lifecycle updates, and parity."
+  ]
+}

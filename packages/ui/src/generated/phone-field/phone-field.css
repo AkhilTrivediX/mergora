@@ -20,8 +20,7 @@
 .mrg-phone-field [data-slot="phone-field-control"] {
   align-items: stretch;
   background: var(--mrg-semantic-color-background-canvas);
-  border: var(--mrg-semantic-border-width-default) solid
-    var(--mrg-semantic-color-border-interactive);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
   border-radius: var(--mrg-semantic-radius-control);
   box-sizing: border-box;
   display: grid;
@@ -33,8 +32,15 @@
 
 .mrg-phone-field [data-slot="phone-field-control"]:focus-within,
 .mrg-phone-field [data-slot="phone-field-extension-input"]:focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-phone-field[data-status="valid"] [data-slot="phone-field-control"] {
+  border-color: var(--mrg-semantic-color-status-success-border);
 }
 
 .mrg-phone-field [data-slot="phone-field-country"] {
@@ -176,5 +182,11 @@
   .mrg-phone-field[data-disabled="true"] [data-slot="phone-field-extension-input"] {
     border-color: GrayText;
     color: GrayText;
+  }
+
+  .mrg-phone-field [data-slot="phone-field-control"]:focus-within,
+  .mrg-phone-field [data-slot="phone-field-extension-input"]:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
   }
 }

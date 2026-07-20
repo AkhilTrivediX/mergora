@@ -24,35 +24,54 @@ import "./layer-manager.css";
 export type LayerDismissReason = "escape";
 
 export interface LayerDismissDetail {
+  /** Identifies the topmost layer receiving managed dismissal. */
   readonly id: string;
+  /** Identifies Escape as the manager-owned dismissal cause. */
   readonly reason: LayerDismissReason;
 }
 
 export interface LayerRegistration {
+  /** Provides a stable unique identifier within this layer manager. */
   readonly id: string;
+  /** Supplies the concrete layer element used for containment and environment management. */
   readonly element: HTMLElement;
+  /** Marks whether the layer should isolate outside content. */
   readonly modal: boolean;
+  /** Allows the topmost layer to receive managed Escape dismissal. */
   readonly dismissible: boolean;
   /** False when a single external behavior engine already owns inerting and scroll prevention. */
   readonly manageEnvironment?: boolean;
+  /** Receives managed dismissal with the stable layer identifier and cause. */
   readonly onDismiss: (detail: LayerDismissDetail) => void;
 }
 
 export interface LayerManagerSnapshot {
+  /** Increments after each registration, update, or application-root change. */
   readonly version: number;
+  /** Lists registered layer identifiers in stacking order. */
   readonly layerIds: readonly string[];
+  /** Lists registered modal identifiers in stacking order. */
   readonly modalLayerIds: readonly string[];
+  /** Identifies the current top layer or null when the stack is empty. */
   readonly topLayerId: string | null;
 }
 
 export interface LayerManagerApi {
+  /** Adds a unique layer and returns an idempotent unregister callback. */
   readonly registerLayer: (registration: LayerRegistration) => () => void;
+  /** Replaces an existing registration without changing its stack position. */
   readonly updateLayer: (registration: LayerRegistration) => void;
+  /** Adds an application root and returns an idempotent unregister callback. */
   readonly registerApplicationRoot: (element: HTMLElement) => () => void;
+  /** Dismisses the top eligible layer and reports whether a callback ran. */
   readonly dismissTopLayer: (reason: LayerDismissReason) => boolean;
+  /** Subscribes to stable snapshot changes and returns an unsubscribe callback. */
   readonly subscribe: (listener: () => void) => () => void;
+  /** Returns the referentially stable current external-store snapshot. */
   readonly getSnapshot: () => LayerManagerSnapshot;
+  /** Returns registrations in their current stacking order. */
   readonly getLayers: () => readonly LayerRegistration[];
+  /** Returns application roots currently managed for modal isolation. */
   readonly getApplicationRoots: () => readonly HTMLElement[];
 }
 
@@ -260,7 +279,9 @@ function applyModalEnvironment(manager: LayerManagerApi, scrollLock: boolean): (
 }
 
 export interface LayerManagerProviderProps {
+  /** Layer-aware subtree that shares the nearest manager or owns a new root manager. */
   readonly children: ReactNode;
+  /** Locks document scrolling while this provider owns an environment-managed modal layer. */
   readonly scrollLock?: boolean;
 }
 
@@ -317,7 +338,9 @@ export function useLayerManager(): LayerManagerApi {
 }
 
 interface SharedBoundaryProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+  /** Merges layer semantics into one concrete child; false renders the component’s native wrapper. */
   readonly asChild?: boolean;
+  /** Supplies the single slottable child or native-wrapper content for the managed boundary. */
   readonly children: ReactNode;
 }
 
@@ -350,14 +373,19 @@ export const LayerApplication = forwardRef<HTMLElement, LayerApplicationProps>(
 LayerApplication.displayName = "LayerManager.Application";
 
 export interface LayerProps extends SharedBoundaryProps {
+  /** Registers this layer in the managed stack when true. */
   readonly active?: boolean;
   /** Internal/public slot identity; defaults to layer and may be preserved when composing asChild. */
   readonly "data-slot"?: string;
+  /** Allows this layer to receive managed Escape dismissal when it is topmost. */
   readonly dismissible?: boolean;
+  /** Stable layer identifier; a React-derived identifier is used when omitted. */
   readonly id?: string;
   /** Disable only when one named external behavior engine owns modal inerting and scroll lock. */
   readonly manageEnvironment?: boolean;
+  /** Marks the layer as modal for stack state and optional environment management. */
   readonly modal?: boolean;
+  /** Called with the managed dismissal detail when this dismissible layer is topmost. */
   readonly onDismiss?: (detail: LayerDismissDetail) => void;
 }
 

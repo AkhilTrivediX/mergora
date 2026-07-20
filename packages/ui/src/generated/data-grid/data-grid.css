@@ -3,7 +3,7 @@
   .mrg-data-grid {
     max-inline-size: 100%;
     overflow: auto;
-    border: 1px solid var(--mrg-component-data-grid-line);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-data-grid-line);
     border-radius: var(--mrg-semantic-radius-panel);
     color: var(--mrg-component-data-grid-foreground);
     background: var(--mrg-component-data-grid-background);
@@ -16,6 +16,8 @@
   .mrg-data-grid:focus-visible,
   .mrg-data-grid__sort:focus-visible,
   .mrg-data-grid input:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
     outline: var(--mrg-component-focus-indicator-width) solid
       var(--mrg-component-focus-indicator-color);
     outline-offset: var(--mrg-component-focus-indicator-offset);
@@ -31,13 +33,15 @@
   .mrg-data-grid caption {
     padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
     text-align: start;
-    font-weight: 700;
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-weight: var(--mrg-semantic-font-weight-heading);
   }
 
   .mrg-data-grid th,
   .mrg-data-grid td {
     block-size: var(--mrg-component-data-grid-row-height);
-    border-block-start: 1px solid var(--mrg-component-data-grid-line);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
     padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
     text-align: start;
     vertical-align: middle;
@@ -47,7 +51,7 @@
     color: var(--mrg-semantic-color-foreground-muted);
     background: var(--mrg-semantic-color-background-surface);
     font-size: var(--mrg-semantic-font-size-label);
-    font-weight: 700;
+    font-weight: var(--mrg-semantic-font-weight-label);
   }
 
   .mrg-data-grid [data-align="center"] {
@@ -76,19 +80,19 @@
 
   .mrg-data-grid__sort-indicator {
     min-inline-size: 1em;
+    color: var(--mrg-semantic-color-brand-violet);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+
+  .mrg-data-grid__sort[data-sorted] {
+    color: var(--mrg-semantic-color-brand-action);
   }
 
   .mrg-data-grid tr[data-selected] td {
     color: var(--mrg-component-data-grid-selection-foreground);
     background: var(--mrg-component-data-grid-selection-background);
-  }
-
-  .mrg-data-grid tr[data-selected] td:first-child {
-    box-shadow: inset 3px 0 0 var(--mrg-component-data-grid-selection-border);
-  }
-
-  [dir="rtl"] .mrg-data-grid tr[data-selected] td:first-child {
-    box-shadow: inset -3px 0 0 var(--mrg-component-data-grid-selection-border);
+    transition: background-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
   }
 
   .mrg-data-grid__selection-heading,
@@ -99,9 +103,23 @@
   }
 
   .mrg-data-grid__selection-cell input {
-    inline-size: 1rem;
-    block-size: 1rem;
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
     accent-color: var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-data-grid__selection-summary {
+    position: sticky;
+    inset-inline: 0;
+    display: block;
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-success-border);
+    background: var(--mrg-semantic-color-status-success-background);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    text-wrap: pretty;
   }
 
   .mrg-data-grid__empty {
@@ -119,6 +137,12 @@
     white-space: nowrap;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-data-grid tr[data-selected] td {
+      transition: none;
+    }
+  }
+
   @media (forced-colors: active) {
     .mrg-data-grid {
       border-color: CanvasText;
@@ -134,6 +158,19 @@
     .mrg-data-grid tr[data-selected] td {
       color: HighlightText;
       background: Highlight;
+    }
+
+    .mrg-data-grid__selection-summary {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .mrg-data-grid:focus-visible,
+    .mrg-data-grid__sort:focus-visible,
+    .mrg-data-grid input:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
     }
   }
 }

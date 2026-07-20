@@ -28,28 +28,42 @@ export type SplitPaneChangeReason =
   "keyboard" | "pointer" | "step-control" | "collapse" | "restore" | "persistence-restore";
 
 export interface SplitPaneChangeDetails {
+  /** Identifies the separator that changed sizes, or null for persistence restoration. */
   readonly handleIndex: number | null;
+  /** Reports the logical axis used for this size change. */
   readonly orientation: SplitPaneOrientation;
+  /** Identifies the interaction or persistence operation that caused the change. */
   readonly reason: SplitPaneChangeReason;
 }
 
 export interface SplitPaneMessages {
+  /** Labels the optional action that collapses the panel after a separator. */
   readonly collapseAfter: string;
+  /** Labels the optional action that collapses the panel before a separator. */
   readonly collapseBefore: string;
+  /** Names each optional group of explicit separator controls. */
   readonly controls: string;
+  /** Labels the optional action that decreases the panel before a separator. */
   readonly decreaseBefore: string;
+  /** Labels the optional action that increases the panel before a separator. */
   readonly increaseBefore: string;
+  /** Labels the optional action that restores the panel after a separator. */
   readonly restoreAfter: string;
+  /** Labels the optional action that restores the panel before a separator. */
   readonly restoreBefore: string;
 }
 
 export interface SplitPanePersistenceAdapter {
+  /** Reads previously stored percentages and returns null when no value exists. */
   readonly read: (key: string) => readonly number[] | null;
+  /** Stores normalized panel percentages under the consumer-owned key. */
   readonly write: (key: string, sizes: readonly number[]) => void;
 }
 
 export interface SplitPanePersistence {
+  /** Supplies consumer-controlled synchronous storage without choosing a persistence backend. */
   readonly adapter: SplitPanePersistenceAdapter;
+  /** Names the consumer-owned record passed to the persistence adapter. */
   readonly key: string;
 }
 
@@ -183,6 +197,7 @@ interface SplitPaneContextValue {
   readonly orientation: SplitPaneOrientation;
   readonly panelId: (index: number) => string;
   readonly rootRef: RefObject<HTMLDivElement | null>;
+  readonly showStepControls: boolean;
   readonly sizes: readonly number[];
   readonly step: number;
   readonly adjustHandle: (
@@ -215,23 +230,42 @@ export interface SplitPaneRootProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "defaultValue" | "onChange"
 > {
+  /** Supplies ordered panel and separator parts within one sizing context. */
   readonly children?: ReactNode;
+  /** Controls all panel percentages when supplied. */
   readonly value?: readonly number[];
+  /** Sets initial panel percentages for uncontrolled use. */
   readonly defaultValue?: readonly number[];
+  /** Reports every controlled or uncontrolled size update with its interaction reason. */
   readonly onValueChange?: (sizes: readonly number[], details: SplitPaneChangeDetails) => void;
+  /** Reports normalized sizes after an interaction commits. */
   readonly onValueCommit?: (sizes: readonly number[], details: SplitPaneChangeDetails) => void;
+  /** Sets the smallest expanded percentage for each corresponding panel. */
   readonly minSizes?: readonly number[];
+  /** Sets the largest percentage for each corresponding panel. */
   readonly maxSizes?: readonly number[];
+  /** Lists panel indexes that separators may collapse to zero. */
   readonly collapsiblePanels?: readonly number[];
+  /** Chooses whether resizing changes inline widths or block heights. */
   readonly orientation?: SplitPaneOrientation;
+  /** Enables narrow-screen stacking or keeps the resizable layout at every width. */
   readonly stackAt?: SplitPaneStackAt;
+  /** Sets the keyboard and explicit-control increment in percentage points. */
   readonly step?: number;
+  /** Prevents pointer, keyboard, collapse, restore, and explicit-control changes. */
   readonly disabled?: boolean;
+  /** Overrides provider locale for the default percentage formatter. */
   readonly locale?: string;
+  /** Overrides individual localized labels while preserving defaults for omitted entries. */
   readonly messages?: Partial<SplitPaneMessages>;
+  /** Formats a panel percentage for separator value text. */
   readonly formatValue?: (value: number, panelIndex: number) => string;
+  /** Opts uncontrolled sizes into consumer-owned persistence; omit it to remove all storage IO. */
   readonly persistence?: SplitPanePersistence;
+  /** Receives persistence read or write failures without converting them into render failures. */
   readonly onPersistenceError?: (error: unknown, operation: "read" | "write") => void;
+  /** Renders explicit decrement, collapse, and increment buttons beside every separator. */
+  readonly showStepControls?: boolean;
 }
 
 export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(function SplitPaneRoot(
@@ -251,6 +285,7 @@ export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(func
     onValueCommit,
     orientation = "horizontal",
     persistence,
+    showStepControls = true,
     stackAt = "narrow",
     step = 5,
     value: controlledValue,
@@ -531,6 +566,7 @@ export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(func
       orientation,
       panelId,
       rootRef,
+      showStepControls,
       sizes,
       step,
       togglePanel,
@@ -547,6 +583,7 @@ export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(func
       moveHandleTo,
       orientation,
       panelId,
+      showStepControls,
       sizes,
       step,
       togglePanel,
@@ -563,6 +600,7 @@ export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(func
         data-orientation={orientation}
         data-panel-count={sizes.length}
         data-slot="split-pane-root"
+        data-step-controls={showStepControls ? "true" : undefined}
       >
         <div
           className="mrg-split-pane__layout"
@@ -580,7 +618,9 @@ export const SplitPaneRoot = forwardRef<HTMLDivElement, SplitPaneRootProps>(func
 SplitPaneRoot.displayName = "SplitPane.Root";
 
 export interface SplitPanePanelProps extends HTMLAttributes<HTMLDivElement> {
+  /** Associates this panel with the corresponding root size and adjacent separators. */
   readonly index: number;
+  /** Adds region semantics and an accessible name only when supplied. */
   readonly regionLabel?: string;
 }
 
@@ -616,14 +656,26 @@ export const SplitPanePanel = forwardRef<HTMLDivElement, SplitPanePanelProps>(
 SplitPanePanel.displayName = "SplitPane.Panel";
 
 type SplitPaneHandleName =
-  | { readonly "aria-label": string; readonly "aria-labelledby"?: string }
-  | { readonly "aria-label"?: string; readonly "aria-labelledby": string };
+  | {
+      /** Supplies a direct accessible name and is mutually exclusive with aria-labelledby. */
+      readonly "aria-label": string;
+      /** References an accessible name and is mutually exclusive with aria-label. */
+      readonly "aria-labelledby"?: string;
+    }
+  | {
+      /** Supplies a direct accessible name and is mutually exclusive with aria-labelledby. */
+      readonly "aria-label"?: string;
+      /** References an accessible name and is mutually exclusive with aria-label. */
+      readonly "aria-labelledby": string;
+    };
 
 type SplitPaneHandleBaseProps = Omit<
   HTMLAttributes<HTMLDivElement>,
   "aria-label" | "aria-labelledby" | "children" | "role" | "tabIndex"
 > & {
+  /** Chooses which adjacent collapsible panel the optional action toggles. */
   readonly collapseTarget?: "before" | "after";
+  /** Associates the separator with panels at this index and the following index. */
   readonly index: number;
 };
 
@@ -795,38 +847,40 @@ export const SplitPaneHandle = forwardRef<HTMLDivElement, SplitPaneHandleProps>(
         >
           <span aria-hidden="true" className="mrg-split-pane__grip" />
         </div>
-        <div
-          aria-label={context.messages.controls}
-          className="mrg-split-pane__controls"
-          role="group"
-        >
-          <button
-            aria-label={context.messages.decreaseBefore}
-            disabled={context.disabled || value <= effectiveMinimum + EPSILON}
-            onClick={() => context.adjustHandle(index, -context.step, "step-control", true)}
-            type="button"
+        {context.showStepControls ? (
+          <div
+            aria-label={context.messages.controls}
+            className="mrg-split-pane__controls"
+            role="group"
           >
-            <span aria-hidden="true">−</span>
-          </button>
-          {targetIsCollapsible && (
             <button
-              aria-label={collapseLabel}
-              disabled={context.disabled}
-              onClick={() => context.togglePanel(index, collapseTarget ?? "before")}
+              aria-label={context.messages.decreaseBefore}
+              disabled={context.disabled || value <= effectiveMinimum + EPSILON}
+              onClick={() => context.adjustHandle(index, -context.step, "step-control", true)}
               type="button"
             >
-              <span aria-hidden="true">{targetIsCollapsed ? "↥" : "↧"}</span>
+              <span aria-hidden="true">−</span>
             </button>
-          )}
-          <button
-            aria-label={context.messages.increaseBefore}
-            disabled={context.disabled || value >= effectiveMaximum - EPSILON}
-            onClick={() => context.adjustHandle(index, context.step, "step-control", true)}
-            type="button"
-          >
-            <span aria-hidden="true">+</span>
-          </button>
-        </div>
+            {targetIsCollapsible && (
+              <button
+                aria-label={collapseLabel}
+                disabled={context.disabled}
+                onClick={() => context.togglePanel(index, collapseTarget ?? "before")}
+                type="button"
+              >
+                <span aria-hidden="true">{targetIsCollapsed ? "↥" : "↧"}</span>
+              </button>
+            )}
+            <button
+              aria-label={context.messages.increaseBefore}
+              disabled={context.disabled || value >= effectiveMaximum - EPSILON}
+              onClick={() => context.adjustHandle(index, context.step, "step-control", true)}
+              type="button"
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+          </div>
+        ) : null}
       </div>
     );
   },

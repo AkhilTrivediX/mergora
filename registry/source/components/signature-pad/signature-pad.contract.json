@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "signature-pad",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, legal-validity, biometric, file-safety, package-parity, or recorded manual Risk Class 3 claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A visible label names a focusable canvas group; native buttons provide undo/clear and optional keyboard movement; optional text/file alternatives are native fields.",
+    "naming": "Visible method, movement, mark, undo, clear, text, file, and caveat labels are localizable.",
+    "roleOverride": "Canvas is not exposed as an image-only signature and stored normalized vectors are not called biometric proof.",
+    "refTarget": "HTMLDivElement composite shell"
+  },
+  "interaction": {
+    "keyboard": "Focused canvas arrows move a logical cursor with Shift acceleration and RTL mirroring; Enter/Space marks a point; explicit buttons expose movement, mark, undo, and clear when enabled.",
+    "pointer": "One primary captured pointer draws a cancellable normalized stroke.",
+    "touch": "touch-action is limited to the canvas; typed/file/button alternatives remain outside the gesture surface.",
+    "speech": "Visible method and action labels create deterministic targets.",
+    "switchAccess": "Optional keyboard-control buttons plus text/file alternatives avoid a canvas-only workflow."
+  },
+  "formBehavior": "Optional name serializes normalized vector or text JSON; file bytes use a separate native file control. Disabled controls are omitted, reset restores initial value and clears consumer file state callback, and required draw mode uses a native validation proxy that returns focus to the canvas with visible recovery text.",
+  "preferences": {
+    "forcedColors": "Canvas, controls, selected method, caveat, and focus retain system colors.",
+    "reducedMotion": "Drawing and method changes do not require motion; all descendant duration is removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Actions wrap; canvas stays inline-bounded; alternatives remain in reading order."
+  },
+  "consumerResponsibilities": [
+    "Determine legal consent, signer identity, intent, audit, retention, jurisdiction, and evidentiary requirements outside this visual control.",
+    "Validate uploaded file signatures/content and authorize storage; never treat vector dynamics as biometrics without a separate reviewed policy.",
+    "Enable and test a non-canvas alternative appropriate to the workflow and provide persistent validation recovery."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-uncontrolled-reset",
+      "pointer-cancel-vector",
+      "keyboard-rtl-undo-clear",
+      "text-file-isolation",
+      "form-serialization",
+      "narrow-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "all-desktop-at-pairs",
+      "voiceover-ios-draw-alternative",
+      "talkback-chrome-draw-alternative",
+      "speech-and-switch",
+      "real-touch-canvas",
+      "zoom-reflow"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "This is not identity proof, a biometric system, a legal signature service, or a file scanner.",
+    "Complete Risk Class 3 manual, legal review, packed-consumer, and generated parity evidence remains unrecorded."
+  ]
+}

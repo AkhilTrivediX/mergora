@@ -36,7 +36,8 @@
   "state": {
     "controlled": "value owns visible state; onValueChange reports each proposal and onValueCommit reports discrete or completed pointer changes.",
     "uncontrolled": "defaultValue initializes internal state; the same callbacks remain observable.",
-    "collapse": "Collapsed primary content uses the native hidden state so it cannot retain focus or remain exposed offscreen; restore returns to the last expanded value."
+    "collapse": "Collapsed primary content uses the native hidden state so it cannot retain focus or remain exposed offscreen; restore returns to the last expanded value.",
+    "stepControls": "showStepControls=false omits the complete button group, button events, labels, and accessibility nodes while preserving separator input."
   },
   "responsive": "Panels have zero intrinsic minimums and wrap content; no fixed text-bearing height is introduced. Consumers must choose a sequential alternative when both panels cannot remain useful at 320 CSS pixels.",
   "stableSelectors": {

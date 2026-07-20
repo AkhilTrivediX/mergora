@@ -268,4 +268,24 @@ describe("color field and picker server rendering", () => {
       /<input[^>]+type="hidden"[^>]+name="interface-color"[^>]+value="#2f7a57cc"/u,
     );
   });
+
+  it("removes preview, contrast, and preset enhancements independently", () => {
+    const color = createSrgbColor({ alpha: 255, blue: 126, green: 58, red: 83 });
+    const plain = renderToStaticMarkup(
+      <>
+        <ColorField defaultValue={color} showContrast={false} showPreview={false} />
+        <ColorPicker defaultValue={color} showContrast={false} showPreview={false} swatches={[]} />
+      </>,
+    );
+    expect(plain).not.toContain('data-slot="color-field-preview"');
+    expect(plain).not.toContain('data-slot="color-field-contrast"');
+    expect(plain).not.toContain('data-slot="color-picker-swatches-section"');
+
+    const enhanced = renderToStaticMarkup(
+      <ColorPicker defaultValue={color} showContrast showPreview swatches={[color]} />,
+    );
+    expect(enhanced).toContain('data-slot="color-field-preview"');
+    expect(enhanced).toContain('data-slot="color-field-contrast"');
+    expect(enhanced).toContain('data-slot="color-picker-swatches-section"');
+  });
 });

@@ -23,7 +23,17 @@ async function buttonAxeViolations(page: Page): Promise<unknown[]> {
     ).axe;
     const target = document.querySelector('[data-slot="button"]');
     if (target === null) throw new Error("Button story did not render its root slot.");
-    return (await axe.run(target)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(target)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
   });
 }
 

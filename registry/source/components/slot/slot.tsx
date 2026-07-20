@@ -51,6 +51,7 @@ function mergeEventHandlers(
 export interface SlotProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
   /** Exactly one non-Fragment element. The child's semantic element remains authoritative. */
   readonly children: ReactElement;
+  /** Mergora part identifier; omission preserves the child's value or falls back to slot. */
   readonly "data-slot"?: string;
 }
 

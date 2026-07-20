@@ -4,6 +4,8 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 `Breadcrumb` renders a named nav landmark and ordered hierarchy. Ancestors are real links, the final item is the current page, and a container-query compact view keeps every hidden ancestor available through native `details`.
 
+Mergora gives the hierarchy an Ink link structure, a Green current-page signal, a Violet focus seam, and a literal Canvas overflow surface. Responsive hierarchy recovery is optional: `collapse` defaults to `true`, and `maxVisible` bounds the compact path. Set `collapse={false}` to remove the alternate compact hierarchy, native `details`, hidden-message lookup, and compact accessibility output entirely; the ordered full hierarchy remains the concise baseline.
+
 ## Contract
 
 - Item ids are non-empty and unique; labels expose content; every ancestor has a non-empty safe href; current state is unique and final.

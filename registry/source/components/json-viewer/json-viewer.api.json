@@ -94,6 +94,16 @@
       "type": "See exported TypeScript declaration."
     },
     {
+      "name": "copyable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "showActivePath",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
       "name": "copiedPathLabel",
       "required": false,
       "type": "See exported TypeScript declaration."
@@ -110,7 +120,7 @@
     }
   ],
   "compositionPolicy": {
-    "semantics": "The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion; toolbar buttons copy the selected path or value.",
+    "semantics": "The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion. Copy controls and visible active-path context are independent and disappear completely when disabled.",
     "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
   }
 }

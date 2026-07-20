@@ -32,9 +32,11 @@
       "name": "estimatedSize",
       "required": false,
       "type": "non-negative CSS pixel number"
-    }
+    },
+    { "default": true, "name": "manageFocusOffset", "required": false, "type": "boolean" }
   ],
   "contentProps": [
     { "default": "div", "name": "element", "required": false, "type": "div | header | footer" }
-  ]
+  ],
+  "enhancementPolicy": "manageFocusOffset=true measures localized sticky content and reserves focus clearance; false removes ResizeObserver work, the measured CSS variable, scroll padding, and descendant scroll margins."
 }

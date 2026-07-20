@@ -68,6 +68,11 @@
       "type": "See exported TypeScript declaration."
     },
     {
+      "name": "copyable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
       "name": "copyLabel",
       "required": false,
       "type": "See exported TypeScript declaration."
@@ -89,7 +94,7 @@
     }
   ],
   "compositionPolicy": {
-    "semantics": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline; copy completion is announced in a concise status node.",
+    "semantics": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline; when copyable is true, copy completion is announced in a concise status node. Disabling copyable removes the control, handler, callback path, and status node.",
     "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
   }
 }

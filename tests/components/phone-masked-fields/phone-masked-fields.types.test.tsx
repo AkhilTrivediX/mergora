@@ -39,6 +39,8 @@ const maskAdapter = {
   country={{ callingCode: "+1", code: "US", label: "United States" }}
   extension
   extensionLabel="Extension"
+  extensionName="phone-extension"
+  name="phone"
   onValueChange={(next: PhoneFieldValue) => next.e164}
   ref={inputRef}
   value="4155552671"
@@ -46,6 +48,7 @@ const maskAdapter = {
 
 <MaskedField
   adapter={maskAdapter}
+  name="inventory-code"
   onValueChange={(next: MaskedFieldValue) => next.rawValue}
   ref={inputRef}
   serialization="formatted"

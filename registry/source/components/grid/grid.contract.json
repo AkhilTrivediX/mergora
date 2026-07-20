@@ -13,6 +13,7 @@
   "layout": {
     "intrinsic": "Auto mode uses auto-fit and a minmax bound that cannot exceed the available inline size.",
     "fixedColumns": "Explicit column counts use minmax(0, 1fr) and do not create a horizontal minimum.",
+    "equalRows": "equalRows opts into one-fr implicit rows; false removes that override without changing column behavior.",
     "overflow": "Direct items have zero minimum inline size and anywhere wrapping; content is not clipped."
   },
   "stableSelectors": {

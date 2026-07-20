@@ -1,10 +1,11 @@
 /* Generated from registry/source/components/callout/callout.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-callout {
-  --mrg-callout-background: var(--mrg-semantic-color-background-surface-sunken);
-  --mrg-callout-border: var(--mrg-semantic-color-border-default);
+  --mrg-callout-signal: var(--mrg-semantic-color-brand-violet);
+  --mrg-callout-signal-background: var(--mrg-semantic-color-accent-background-subtle);
+  --mrg-callout-signal-foreground: var(--mrg-semantic-color-accent-foreground-on-subtle);
   align-items: start;
-  background: var(--mrg-callout-background);
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-callout-border);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
   border-radius: var(--mrg-semantic-radius-panel);
   box-sizing: border-box;
   color: var(--mrg-semantic-color-foreground-primary);
@@ -14,57 +15,71 @@
   inline-size: 100%;
   max-inline-size: 100%;
   min-inline-size: 0;
-  padding: var(--mrg-semantic-space-stack-lg) var(--mrg-semantic-space-inline-lg);
+  padding: var(--mrg-semantic-density-panel-padding);
 }
 
 .mrg-callout[data-variant="info"] {
-  --mrg-callout-background: var(--mrg-semantic-color-status-info-background);
-  --mrg-callout-border: var(--mrg-semantic-color-status-info-border);
+  --mrg-callout-signal: var(--mrg-semantic-color-status-info-border);
+  --mrg-callout-signal-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-callout-signal-foreground: var(--mrg-semantic-color-status-info-foreground);
 }
 
 .mrg-callout[data-variant="tip"] {
-  --mrg-callout-background: var(--mrg-semantic-color-status-success-background);
-  --mrg-callout-border: var(--mrg-semantic-color-status-success-border);
+  --mrg-callout-signal: var(--mrg-semantic-color-status-success-border);
+  --mrg-callout-signal-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-callout-signal-foreground: var(--mrg-semantic-color-status-success-foreground);
 }
 
 .mrg-callout[data-variant="warning"] {
-  --mrg-callout-background: var(--mrg-semantic-color-status-warning-background);
-  --mrg-callout-border: var(--mrg-semantic-color-status-warning-border);
+  --mrg-callout-signal: var(--mrg-semantic-color-status-warning-border);
+  --mrg-callout-signal-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-callout-signal-foreground: var(--mrg-semantic-color-status-warning-foreground);
 }
 
-[data-slot="callout-icon"] {
+.mrg-callout [data-slot="callout-icon"] {
   align-items: center;
-  border: var(--mrg-semantic-border-width-default) solid currentColor;
-  border-radius: var(--mrg-semantic-radius-pill);
+  background: var(--mrg-callout-signal-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-callout-signal);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-callout-signal-foreground);
   display: inline-flex;
   inline-size: var(--mrg-semantic-size-target-minimum);
   justify-content: center;
   min-block-size: var(--mrg-semantic-size-target-minimum);
 }
 
-[data-slot="callout-content"] {
+.mrg-callout [data-slot="callout-content"] {
   display: grid;
   gap: var(--mrg-semantic-space-stack-xs);
   min-inline-size: 0;
 }
 
-[data-slot="callout-variant-label"] {
+.mrg-callout [data-slot="callout-variant-label"] {
+  color: var(--mrg-callout-signal-foreground);
   font-size: var(--mrg-semantic-font-size-caption);
   font-weight: var(--mrg-semantic-font-weight-strong);
-  text-transform: uppercase;
 }
 
-[data-slot="callout-title"] {
+.mrg-callout [data-slot="callout-title"] {
   font-size: var(--mrg-semantic-font-size-heading-small);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
   margin: 0;
+  text-wrap: balance;
 }
 
-[data-slot="callout-body"] {
+.mrg-callout [data-slot="callout-body"] {
+  max-inline-size: var(--mrg-semantic-size-content-prose);
   overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
 
 @media (forced-colors: active) {
-  .mrg-callout {
+  .mrg-callout,
+  .mrg-callout [data-slot="callout-icon"] {
+    background: Canvas;
     border-color: CanvasText;
+    color: CanvasText;
   }
 }

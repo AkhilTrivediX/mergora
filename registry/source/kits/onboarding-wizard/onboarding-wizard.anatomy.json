@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "onboarding-wizard",
+  "root": {
+    "element": "form with progress navigation and current step",
+    "ref": "HTMLFormElement",
+    "slot": "onboarding-wizard",
+    "stableAttributes": ["data-slot", "aria-busy"]
+  },
+  "parts": [
+    {
+      "slot": "onboarding-step-content",
+      "element": "consumer-rendered step content",
+      "purpose": "Keeps domain fields consumer-owned while the workflow owns progress and recovery.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "onboarding-errors",
+      "element": "alert summary",
+      "purpose": "Explains how to recover before moving to the next step.",
+      "stability": "documented"
+    },
+    {
+      "slot": "onboarding-persistence",
+      "element": "optional saved-draft aside",
+      "purpose": "Loads, saves, retries, and clears a consumer-owned persisted draft.",
+      "stability": "documented"
+    },
+    {
+      "slot": "onboarding-completion-error",
+      "element": "alert with retry",
+      "purpose": "Retains the completed draft when finalization fails.",
+      "stability": "behavioral"
+    }
+  ]
+}

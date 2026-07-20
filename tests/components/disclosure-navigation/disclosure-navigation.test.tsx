@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   validateStoryStateMatrix,
@@ -135,11 +135,54 @@ describe("P2 disclosure and navigation records", () => {
       }
       expect(css).not.toMatch(/^\s*(?:margin|padding|inset|border)-(?:left|right)\s*:/mu);
       expect(css).not.toMatch(/#[0-9a-f]{3,8}|(?:oklch|rgb|hsl)\(/iu);
+      expect(css).toContain("var(--mrg-component-focus-indicator-contrast-background)");
+    }
+  });
+
+  it("links every component to operative basic and recommended stories", () => {
+    const storySource = readFileSync(
+      resolve(root, "apps/storybook/src/P2DisclosureNavigation.stories.tsx"),
+      "utf8",
+    );
+    expect(storySource).toContain("export const BasicDefaults");
+    expect(storySource).toContain("export const RecommendedMergora");
+    for (const itemId of itemIds) {
+      const stories = readJson<StoryStateMatrix>(itemId, `${itemId}.stories.json`);
+      const names = stories.states?.flatMap((state) =>
+        "story" in state && typeof state.story === "string" ? [state.story] : [],
+      );
+      expect(names, `${itemId} basic story`).toContain("BasicDefaults");
+      expect(names, `${itemId} enhanced story`).toContain("RecommendedMergora");
     }
   });
 });
 
 describe("P2 disclosure server semantics", () => {
+  it("adds expansion context only when its renderer is supplied", () => {
+    const plain = renderToStaticMarkup(
+      <Accordion.Root defaultValue={["identity"]}>Plain</Accordion.Root>,
+    );
+    const enhanced = renderToStaticMarkup(
+      <Accordion.Root
+        defaultValue={["identity"]}
+        renderExpansionSummary={(values) => `${String(values.length)} section expanded`}
+      >
+        Enhanced
+      </Accordion.Root>,
+    );
+    expect(plain).not.toContain("accordion-expansion-summary");
+    expect(enhanced).toContain('data-slot="accordion-expansion-summary"');
+    expect(enhanced).toContain('role="status"');
+    expect(enhanced).toContain("1 section expanded");
+    for (const emptySummary of [null, false, "", "   "] as const) {
+      const empty = renderToStaticMarkup(
+        <Accordion.Root renderExpansionSummary={() => emptySummary}>Empty summary</Accordion.Root>,
+      );
+      expect(empty).not.toContain("accordion-expansion-summary");
+      expect(empty).not.toContain('role="status"');
+    }
+  });
+
   it("renders semantic accordion headings, native triggers, panels, and disabled state", () => {
     const markup = renderToStaticMarkup(
       <Accordion.Root defaultValue={["identity"]}>
@@ -178,6 +221,34 @@ describe("P2 disclosure server semantics", () => {
     expect(markup).not.toMatch(/<h[1-6]/u);
   });
 
+  it("adds visible collapsible state wording only when requested", () => {
+    const plain = renderToStaticMarkup(
+      <Collapsible.Root>
+        <Collapsible.Trigger>Details</Collapsible.Trigger>
+      </Collapsible.Root>,
+    );
+    const enhanced = renderToStaticMarkup(
+      <Collapsible.Root defaultOpen>
+        <Collapsible.Trigger stateText={{ closed: "Collapsed", open: "Expanded" }}>
+          Details
+        </Collapsible.Trigger>
+      </Collapsible.Root>,
+    );
+    expect(plain).not.toContain("collapsible-state-text");
+    expect(enhanced).toContain('data-slot="collapsible-state-text"');
+    expect(enhanced).toContain("Expanded");
+    for (const emptyState of [null, false, "", "   "] as const) {
+      const empty = renderToStaticMarkup(
+        <Collapsible.Root defaultOpen>
+          <Collapsible.Trigger stateText={{ closed: "Collapsed", open: emptyState }}>
+            Details
+          </Collapsible.Trigger>
+        </Collapsible.Root>,
+      );
+      expect(empty).not.toContain("collapsible-state-text");
+    }
+  });
+
   it("creates unique control relationships for repeated disclosures", () => {
     const markup = renderToStaticMarkup(
       <div>
@@ -214,6 +285,37 @@ describe("P2 disclosure server semantics", () => {
 });
 
 describe("P2 tab semantics and URL policy", () => {
+  it("connects optional keyboard discovery without changing the tablist name", () => {
+    const plain = renderToStaticMarkup(
+      <Tabs.Root defaultValue="overview">
+        <Tabs.List label="Plain sections">
+          <Tabs.Tab value="overview">Overview</Tabs.Tab>
+        </Tabs.List>
+      </Tabs.Root>,
+    );
+    const enhanced = renderToStaticMarkup(
+      <Tabs.Root defaultValue="overview">
+        <Tabs.List keyboardHint="Use arrow keys to move." label="Guided sections">
+          <Tabs.Tab value="overview">Overview</Tabs.Tab>
+        </Tabs.List>
+      </Tabs.Root>,
+    );
+    expect(plain).not.toContain("tabs-keyboard-hint");
+    expect(enhanced).toContain('data-slot="tabs-keyboard-hint"');
+    expect(enhanced).toContain('aria-label="Guided sections"');
+    for (const emptyHint of [null, false, "", "   "] as const) {
+      const empty = renderToStaticMarkup(
+        <Tabs.Root defaultValue="overview">
+          <Tabs.List keyboardHint={emptyHint} label="Empty hint sections">
+            <Tabs.Tab value="overview">Overview</Tabs.Tab>
+          </Tabs.List>
+        </Tabs.Root>,
+      );
+      expect(empty).not.toContain("tabs-keyboard-hint");
+      expect(empty).not.toContain("aria-describedby");
+    }
+  });
+
   it("renders tablist, selected tab, disabled tab, and labelled panel relationships", () => {
     const markup = renderToStaticMarkup(
       <Tabs.Root defaultValue="overview" disabledValues={["release"]}>
@@ -252,6 +354,19 @@ describe("P2 tab semantics and URL policy", () => {
 });
 
 describe("P2 breadcrumb and pagination semantics", () => {
+  it("removes responsive overflow UI, messages, and disclosure semantics when disabled", () => {
+    const hiddenMessage = vi.fn(() => "Hidden path");
+    const markup = renderToStaticMarkup(
+      <MergoraProvider messages={{ "breadcrumb.showHidden": hiddenMessage }}>
+        <Breadcrumb collapse={false} items={pathItems} maxVisible={0} />
+      </MergoraProvider>,
+    );
+    expect(markup).not.toContain('data-view="compact"');
+    expect(markup).not.toContain("breadcrumb-overflow-trigger");
+    expect(markup).not.toContain("<details");
+    expect(hiddenMessage).not.toHaveBeenCalled();
+  });
+
   it("renders a localized ordered landmark, safe ancestor links, and one current page", () => {
     const markup = renderToStaticMarkup(
       <MergoraProvider

@@ -19,10 +19,18 @@
     { "kind": "type", "name": "TabsPanelsProps" },
     { "kind": "type", "name": "TabsPanelProps" }
   ],
+  "props": [
+    {
+      "name": "keyboardHint",
+      "required": false,
+      "type": "ReactNode on Tabs.List; null, false, or empty content suppresses output"
+    }
+  ],
   "controlledState": ["value"],
   "nativePolicy": [
     "Tab, tablist, and tabpanel relationships are owned by React Aria with stable string keys.",
     "Automatic and manual activation, horizontal and vertical orientation, disabled keys, and RTL spatial arrows are explicit.",
-    "Optional href values support URL-state recipes but reject empty or executable protocols."
+    "Optional href values support URL-state recipes but reject empty or executable protocols.",
+    "Tabs.List keyboardHint optionally contributes visible discovery copy and the tablist accessible description; omitting it or passing null, false, or empty content removes both outputs."
   ]
 }

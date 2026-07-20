@@ -1,7 +1,15 @@
 // Generated from registry/source/components/accordion/accordion.tsx by @mergora-internal/source-transformer. Do not edit.
 "use client";
 
-import { forwardRef, type HTMLAttributes, type KeyboardEventHandler, type ReactNode } from "react";
+import {
+  Fragment,
+  forwardRef,
+  isValidElement,
+  useState,
+  type HTMLAttributes,
+  type KeyboardEventHandler,
+  type ReactNode,
+} from "react";
 import {
   Button as AriaButton,
   Disclosure as AriaDisclosure,
@@ -16,15 +24,34 @@ import {
 
 import "./accordion.css";
 
+function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
+}
+
 export interface AccordionRootProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Accordion items rendered inside the disclosure group. */
   readonly children: ReactNode;
+  /** Initial expanded item identifiers for uncontrolled use. */
   readonly defaultValue?: readonly string[];
+  /** Disables expansion controls for the complete accordion group. */
   readonly disabled?: boolean;
+  /** Allows more than one item to remain expanded at a time. */
   readonly multiple?: boolean;
+  /** Reports the complete expanded-identifier set after a change. */
   readonly onValueChange?: (value: readonly string[]) => void;
+  /** Optional visible, polite context derived from the current expanded values. */
+  readonly renderExpansionSummary?: (value: readonly string[]) => ReactNode;
+  /** Controlled expanded item identifiers; pair with onValueChange. */
   readonly value?: readonly string[];
 }
 
@@ -57,6 +84,7 @@ export const AccordionRoot = forwardRef<HTMLDivElement, AccordionRootProps>(func
     multiple = false,
     onKeyDown,
     onValueChange,
+    renderExpansionSummary,
     value,
     ...nativeProps
   },
@@ -70,6 +98,10 @@ export const AccordionRoot = forwardRef<HTMLDivElement, AccordionRootProps>(func
   if (!multiple && (defaultValue?.length ?? 0) > 1) {
     throw new Error("Mergora Accordion single mode accepts at most one default value.");
   }
+  const [uncontrolledValue, setUncontrolledValue] = useState<readonly string[]>(defaultValue ?? []);
+  const resolvedValue = value ?? uncontrolledValue;
+  const expansionSummary = renderExpansionSummary?.(resolvedValue);
+  const hasExpansionSummary = hasAccessibleContent(expansionSummary);
 
   const handleKeyDown: KeyboardEventHandler<HTMLDivElement> = (event) => {
     onKeyDown?.(event);
@@ -102,10 +134,24 @@ export const AccordionRoot = forwardRef<HTMLDivElement, AccordionRootProps>(func
         allowsMultipleExpanded={multiple}
         data-slot="accordion-group"
         isDisabled={disabled}
-        onExpandedChange={(keys) => onValueChange?.([...keys].map(String))}
+        onExpandedChange={(keys) => {
+          const nextValue = [...keys].map(String);
+          if (value === undefined) setUncontrolledValue(nextValue);
+          onValueChange?.(nextValue);
+        }}
       >
         {children}
       </AriaDisclosureGroup>
+      {hasExpansionSummary ? (
+        <div
+          aria-live="polite"
+          className="mrg-accordion__summary"
+          data-slot="accordion-expansion-summary"
+          role="status"
+        >
+          {expansionSummary}
+        </div>
+      ) : null}
     </div>
   );
 });
@@ -116,8 +162,11 @@ export interface AccordionItemProps extends Omit<
   AriaDisclosureProps,
   "children" | "className" | "id" | "isDisabled"
 > {
+  /** Header, trigger, and panel parts owned by this disclosure item. */
   readonly children: ReactNode;
+  /** Disables activation for this item while preserving its relationships. */
   readonly disabled?: boolean;
+  /** Stable non-empty identifier used by root expansion state. */
   readonly value: string;
 }
 
@@ -148,7 +197,9 @@ export interface AccordionHeaderProps extends Omit<
   AriaHeadingProps,
   "children" | "className" | "level"
 > {
+  /** Heading content, normally containing one Accordion.Trigger. */
   readonly children: ReactNode;
+  /** Semantic heading level used for this accordion item. */
   readonly level: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
@@ -171,6 +222,7 @@ export const AccordionHeader = forwardRef<HTMLHeadingElement, AccordionHeaderPro
 AccordionHeader.displayName = "AccordionHeader";
 
 export interface AccordionTriggerProps extends Omit<AriaButtonProps, "children" | "className"> {
+  /** Visible name rendered inside the native disclosure button. */
   readonly children: ReactNode;
 }
 
@@ -199,6 +251,7 @@ export interface AccordionPanelProps extends Omit<
   AriaDisclosurePanelProps,
   "children" | "className"
 > {
+  /** Content controlled by the associated accordion trigger. */
   readonly children: ReactNode;
 }
 

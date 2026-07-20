@@ -2,6 +2,8 @@
 
 Status: source present and unreleased. No Stable, package-parity, conformance, password-manager-compatibility, authentication, security, or manual assistive-technology claim is made.
 
+Strong Ink structure, literal Canvas segments, Green completeness, Violet focus, tabular entry, and a bounded warning rail align PinField with Mergora. Visibility, paste policy, and consumer-owned completion integration stay independently configurable; the default keeps native password and paste behavior.
+
 `PinField` is deliberately a reusable-secret control, not an OTP control. The required `purpose="reusable-secret"` prop makes that choice explicit, and a localized programmatic description reinforces it. Use `OtpField` for codes that expire or are valid once.
 
 One real native input owns focus, editing, selection, caret, composition, password-manager discovery, paste, validation, form submission, and reset. Decorative segment guides are `aria-hidden`; there is one label and one tab stop. `displayMode="secure"` uses native `type="password"`, while `displayMode="visible"` uses native `type="text"`. Visible mode deliberately exposes the PIN on screen.

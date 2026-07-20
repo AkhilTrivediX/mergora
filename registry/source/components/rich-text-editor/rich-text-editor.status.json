@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rich-text-editor",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased-labs",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Select and review a maintained licensed editor engine, then implement and freeze its document schema, serialization, migration, paste/import/export, history, collaboration, and security contracts.",
+    "Complete the entire Risk Class 3 desktop/mobile editing and reading AT matrix, IME, voice, switch, touch, reflow, virtual-keyboard, data-loss, performance, and lifecycle evidence.",
+    "Generate and verify prerelease Labs distribution, packed consumers, updater lifecycle, and package/source parity without including the item in Stable counts."
+  ]
+}

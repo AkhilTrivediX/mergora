@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prompt-suggestions",
+  "entryExport": "PromptSuggestions",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "type", "name": "PromptSuggestion" },
+    { "kind": "value", "name": "PromptSuggestions" },
+    { "kind": "type", "name": "PromptSuggestionsProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "selected suggestion",
+      "controlled": "selectedKey",
+      "uncontrolled": "defaultSelectedKey",
+      "callback": "onSelectionChange"
+    }
+  ],
+  "props": [
+    { "name": "selectionMode", "required": false, "default": false, "type": "boolean" },
+    { "name": "showDescriptions", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "actions": "The default is a concise group of native action buttons.",
+    "selection": "selectionMode adds listbox/option semantics, roving focus and controlled or uncontrolled selection; false removes all of them."
+  }
+}

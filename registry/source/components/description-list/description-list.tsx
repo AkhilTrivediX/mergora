@@ -6,7 +6,9 @@ export type DescriptionListLayout = "stacked" | "columns" | "responsive";
 export type DescriptionListDensity = "compact" | "comfortable";
 
 export interface DescriptionListProps extends HTMLAttributes<HTMLDListElement> {
+  /** Selects compact or comfortable spacing without changing native list semantics. */
   readonly density?: DescriptionListDensity;
+  /** Selects stacked, column, or responsive term-detail layout. */
   readonly layout?: DescriptionListLayout;
 }
 

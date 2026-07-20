@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../dialog/index.js", "../direction/index.js", "./lightbox.css", "react"],
+  "entryPath": "registry/source/components/lightbox/lightbox.tsx",
+  "id": "lightbox",
+  "itemDependencies": ["dialog", "direction"],
+  "outputRole": "component"
+}

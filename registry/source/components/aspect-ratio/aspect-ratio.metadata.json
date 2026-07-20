@@ -14,6 +14,8 @@
     "portrait",
     "wide",
     "custom",
+    "fit-contain",
+    "fit-cover",
     "fallback",
     "long-content",
     "narrow",
@@ -24,7 +26,7 @@
       "name": "aspect-ratio",
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
-      "states": ["ratio", "custom-ratio", "fallback"]
+      "states": ["ratio", "custom-ratio", "fit", "fallback"]
     }
   ],
   "contract": { "id": "aspect-ratio-accessibility", "version": "0.1.0" },

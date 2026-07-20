@@ -7,6 +7,8 @@ const axePath = resolve(
 );
 const runtimeFailures = new WeakMap<Page, string[]>();
 
+test.use({ hasTouch: true });
+
 function guardRuntime(page: Page): string[] {
   const failures: string[] = [];
   runtimeFailures.set(page, failures);
@@ -58,6 +60,35 @@ function radio(page: Page | Locator, name: string): Locator {
   return page.getByRole("radio", { exact: true, name });
 }
 
+test("basic and recommended review modes keep clear and save-on-blur behavior independent", async ({
+  page,
+}) => {
+  await openStory(page, "basic-defaults", "Mergora review controls");
+  const basicGroup = page.getByRole("group", { name: "Documentation quality" });
+  await expect(basicGroup.getByRole("radio")).toHaveCount(5);
+  await expect(basicGroup.getByRole("radio", { name: "No rating" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Edit Review note" }).click();
+  const basicEditor = page.getByRole("textbox", { name: "Review note" });
+  await basicEditor.fill("Draft remains explicit");
+  await page.getByRole("heading", { name: "Mergora review controls" }).click();
+  await expect(basicEditor).toBeVisible();
+  await expect(basicEditor).toHaveValue("Draft remains explicit");
+
+  await openStory(page, "recommended-mergora", "Mergora review controls");
+  const enhancedGroup = page.getByRole("group", { name: "Documentation quality" });
+  await expect(enhancedGroup.getByRole("radio")).toHaveCount(6);
+  await expect(enhancedGroup.getByRole("radio", { name: "No rating" })).toBeVisible();
+  await page.getByRole("button", { name: "Edit Review note" }).click();
+  const enhancedEditor = page.getByRole("textbox", { name: "Review note" });
+  await enhancedEditor.fill("Saved when focus leaves");
+  await page.getByRole("heading", { name: "Mergora review controls" }).click();
+  await expect(page.getByText("Saved when focus leaves", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("inline-mode-saved-value")).toHaveText(
+    "Saved inline value: Saved when focus leaves",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("editable ratings keep radio, keyboard, touch, controlled, form, and reset state aligned", async ({
   page,
 }) => {
@@ -92,12 +123,7 @@ test("editable ratings keep radio, keyboard, touch, controlled, form, and reset 
   if (bounds !== null) {
     expect(bounds.width).toBeGreaterThanOrEqual(44);
     expect(bounds.height).toBeGreaterThanOrEqual(44);
-    const cdp = await page.context().newCDPSession(page);
-    await cdp.send("Input.dispatchTouchEvent", {
-      touchPoints: [{ id: 1, x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }],
-      type: "touchStart",
-    });
-    await cdp.send("Input.dispatchTouchEvent", { touchPoints: [], type: "touchEnd" });
+    await touchTarget.tap();
     await expect(radio(qualityGroup, "2 out of 5")).toBeChecked();
   }
 

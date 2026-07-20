@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chart",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "chart",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

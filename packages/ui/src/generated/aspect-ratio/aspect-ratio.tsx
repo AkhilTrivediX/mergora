@@ -5,8 +5,12 @@ import "./aspect-ratio.css";
 
 export type AspectRatioPreset = "square" | "video" | "portrait" | "wide";
 export type AspectRatioValue = AspectRatioPreset | readonly [width: number, height: number];
+export type AspectRatioFit = "none" | "contain" | "cover";
 
 export interface AspectRatioProps extends HTMLAttributes<HTMLDivElement> {
+  /** Opts direct media children into bounded fitting without replacing their native semantics. */
+  readonly fit?: AspectRatioFit;
+  /** Selects a named media ratio or a positive width-and-height tuple; video is the default. */
   readonly ratio?: AspectRatioValue;
 }
 
@@ -41,7 +45,7 @@ function joinAspectRatioClassName(className: string | undefined): string {
 }
 
 export const AspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(function AspectRatio(
-  { className, ratio = "video", style, ...nativeProps },
+  { className, fit = "none", ratio = "video", style, ...nativeProps },
   forwardedRef,
 ) {
   const resolved = resolveAspectRatio(ratio);
@@ -56,6 +60,7 @@ export const AspectRatio = forwardRef<HTMLDivElement, AspectRatioProps>(function
       {...nativeProps}
       ref={forwardedRef}
       className={joinAspectRatioClassName(className)}
+      data-fit={fit === "none" ? undefined : fit}
       data-ratio={typeof ratio === "string" ? ratio : "custom"}
       data-slot="aspect-ratio"
       style={mergedStyle}

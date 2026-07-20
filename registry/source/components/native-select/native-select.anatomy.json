@@ -29,6 +29,12 @@
       "element": "span aria-hidden",
       "purpose": "Decorative single-select indicator.",
       "stability": "documented"
+    },
+    {
+      "slot": "native-select-selection-context",
+      "element": "span",
+      "purpose": "Optional contextual detail for the current selection, associated through aria-describedby.",
+      "stability": "documented"
     }
   ]
 }

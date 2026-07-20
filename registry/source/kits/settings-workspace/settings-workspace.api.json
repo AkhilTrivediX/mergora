@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "settings-workspace",
+  "entryExport": "SettingsWorkspace",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "HTML form attributes except owned children and submit behavior",
+  "exports": [
+    { "kind": "value", "name": "SettingsWorkspace" },
+    { "kind": "value", "name": "SettingsWorkspacePage" },
+    { "kind": "type", "name": "SettingsDestructiveAction" },
+    { "kind": "type", "name": "SettingsSaveRequest" },
+    { "kind": "type", "name": "SettingsWorkspaceProps" },
+    { "kind": "type", "name": "SettingsWorkspaceRenderContext" },
+    { "kind": "type", "name": "SettingsWorkspaceSection" },
+    { "kind": "type", "name": "SettingsWorkspaceSectionId" }
+  ],
+  "props": [
+    { "name": "sections", "required": true, "type": "readonly SettingsWorkspaceSection[]" },
+    { "name": "renderSection", "required": true, "type": "section renderer" },
+    { "name": "activeSectionId", "required": false, "type": "SettingsWorkspaceSectionId" },
+    { "name": "dirty", "required": false, "type": "boolean" },
+    { "name": "protectUnsavedChanges", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "destructiveAction",
+      "required": false,
+      "default": false,
+      "type": "false | SettingsDestructiveAction"
+    }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Button, Field, and Input while section renderers use public canonical controls.",
+    "adapter": "The consumer owns persistence, authorization, sessions, notification delivery, account operations, audit, privacy, and network behavior.",
+    "enhancements": "Unsaved-change protection and destructive typed confirmation are independent opt-ins."
+  }
+}

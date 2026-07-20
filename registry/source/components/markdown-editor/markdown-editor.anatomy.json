@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown-editor",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "markdown-editor",
+    "stableAttributes": [
+      "data-slot",
+      "data-layout",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid",
+      "data-pending"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "markdown-editor-toolbar",
+      "element": "optional toolbar",
+      "purpose": "Provides roving arrow discovery and common formatting shortcuts without replacing text editing.",
+      "stability": "documented"
+    },
+    {
+      "slot": "markdown-editor-textarea",
+      "element": "textarea",
+      "purpose": "Owns source editing, native form serialization, validation, reset, paste, and IME composition.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "markdown-editor-preview",
+      "element": "optional region or tabpanel",
+      "purpose": "Renders consumer-controlled preview output separately from editable source.",
+      "stability": "documented"
+    },
+    {
+      "slot": "markdown-editor-word-count",
+      "element": "optional output",
+      "purpose": "Counts Unicode letter/number word runs without limiting input.",
+      "stability": "documented"
+    }
+  ]
+}

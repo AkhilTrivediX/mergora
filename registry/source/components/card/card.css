@@ -1,0 +1,96 @@
+@layer mergora.components {
+  .mrg-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-inline-size: 100%;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow: clip;
+  }
+  .mrg-card__status {
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-living);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-card__header,
+  .mrg-card__content,
+  .mrg-card__footer {
+    padding-inline: var(--mrg-semantic-density-panel-padding);
+  }
+  .mrg-card__header {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding-block-start: var(--mrg-semantic-density-panel-padding);
+  }
+  .mrg-card__content {
+    padding-block: var(--mrg-semantic-space-stack-md);
+  }
+  .mrg-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-density-control-gap);
+    padding-block-end: var(--mrg-semantic-density-panel-padding);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-subtle);
+    padding-block-start: var(--mrg-semantic-space-stack-sm);
+  }
+  .mrg-card__action {
+    position: absolute;
+    inset-block-start: var(--mrg-semantic-space-inset-md);
+    inset-inline-end: var(--mrg-semantic-space-inset-md);
+  }
+  .mrg-card[data-has-status] .mrg-card__action {
+    inset-block-start: calc(
+      var(--mrg-semantic-space-inset-xl) + var(--mrg-semantic-space-inset-sm)
+    );
+  }
+  .mrg-card__title {
+    margin: 0;
+    padding-inline-end: var(--mrg-semantic-size-target-preferred);
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+  .mrg-card__description {
+    margin: 0;
+    max-inline-size: 70ch;
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-body);
+    text-wrap: pretty;
+  }
+  .mrg-card :where(button, a):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  @media (forced-colors: active) {
+    .mrg-card {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-card__status,
+    .mrg-card__footer {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-card :where(button, a):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

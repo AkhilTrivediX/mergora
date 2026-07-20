@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "multi-select",
+  "entryExport": "MultiSelect",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "value", "name": "MultiSelect" },
+    { "kind": "type", "name": "MultiSelectOption" },
+    { "kind": "type", "name": "MultiSelectProps" }
+  ],
+  "props": [
+    { "name": "showSelectionSummary", "required": false, "type": "boolean" },
+    { "name": "maximum", "required": false, "type": "number" },
+    { "name": "maximumVisibleTokens", "required": false, "type": "number" },
+    { "name": "loading", "required": false, "type": "boolean" },
+    { "name": "loadingMessage", "required": false, "type": "string" },
+    { "name": "loadError", "required": false, "type": "string" },
+    { "name": "onRetry", "required": false, "type": "() => void" },
+    { "name": "hasMore", "required": false, "type": "boolean" },
+    { "name": "onLoadMore", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve visible labelling, editable combobox/listbox relationships, removable token names, repeat-name serialization, reset, validation, disabled, and read-only behavior.",
+    "enhancement": "showSelectionSummary is independently removable; false removes its UI, live output, behavior, events, and accessibility relationship. maximum, token overflow, loading, retry, and pagination are separate opt-ins and never own remote transport."
+  }
+}

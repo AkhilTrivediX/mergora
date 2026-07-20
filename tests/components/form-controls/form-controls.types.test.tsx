@@ -58,12 +58,30 @@ const tanstackField = {
 } satisfies InputProps;
 
 const validFixtures = [
-  <Form action={serverAction} key="form" ref={formRef} />,
-  <Field key="field" label="Email">
-    <Input {...rhfRegistration} autoComplete="email" rootClassName="root" type="email" />
+  <Form
+    action={serverAction}
+    key="form"
+    ref={formRef}
+    submissionStatus={{ message: "Saving", state: "submitting" }}
+  />,
+  <Field contextualAction={<button type="button">Use suggestion</button>} key="field" label="Email">
+    <Input
+      {...rhfRegistration}
+      autoComplete="email"
+      clearable
+      onClear={() => undefined}
+      rootClassName="root"
+      type="email"
+    />
   </Field>,
-  <Fieldset key="fieldset" legend="Options" ref={fieldsetRef} />,
-  <ValidationSummary headingLevel={3} issues={[]} key="summary" />,
+  <Fieldset key="fieldset" legend="Options" ref={fieldsetRef} selectionSummary="1 selected" />,
+  <ValidationSummary
+    focusKey={1}
+    focusPolicy="first-error"
+    headingLevel={3}
+    issues={[]}
+    key="summary"
+  />,
   <Input {...tanstackField} inputMode="text" key="input" ref={inputRef} />,
   <Textarea
     autoGrow
@@ -72,8 +90,15 @@ const validFixtures = [
     maxRows={4}
     ref={textareaRef}
     rootStyle={{ inlineSize: 320 }}
+    showCount
   />,
-  <NativeSelect key="select" multiple ref={selectRef} rootClassName="root">
+  <NativeSelect
+    key="select"
+    multiple
+    ref={selectRef}
+    rootClassName="root"
+    selectionContext={<span>Repeated values</span>}
+  >
     <option value="one">One</option>
   </NativeSelect>,
   <Checkbox key="checkbox" ref={inputRef} rootClassName="root">
@@ -120,6 +145,10 @@ const invalidSwitch = <Switch />;
 const invalidRequiredSwitch = <Switch required>Updates</Switch>;
 // @ts-expect-error Input invalid state is boolean.
 const invalidInput = <Input invalid="true" />;
+// @ts-expect-error Input clear labels are localized strings.
+const invalidClearLabel = <Input clearLabel={3} clearable />;
+// @ts-expect-error Form status uses the bounded submission state vocabulary.
+const invalidFormStatus = <Form submissionStatus={{ message: "Waiting", state: "idle" }} />;
 // @ts-expect-error Textarea maxRows is numeric.
 const invalidTextarea = <Textarea maxRows="4" />;
 // @ts-expect-error Textarea maxGraphemes is numeric.
@@ -152,10 +181,12 @@ describe("P2 form controls type surface", () => {
       invalidSwitch,
       invalidRequiredSwitch,
       invalidInput,
+      invalidClearLabel,
+      invalidFormStatus,
       invalidTextarea,
       invalidGraphemeLimit,
       invalidCombinedTextareaLimits,
       invalidSummary,
-    ]).toHaveLength(12);
+    ]).toHaveLength(14);
   });
 });

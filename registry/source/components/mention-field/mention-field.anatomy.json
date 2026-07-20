@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "mention-field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLTextAreaElement",
+    "slot": "mention-field",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid"]
+  },
+  "parts": [
+    { "element": "textarea", "slot": "mention-field-input" },
+    { "element": "ul", "slot": "mention-field-listbox" },
+    { "element": "output", "slot": "mention-field-summary" }
+  ]
+}

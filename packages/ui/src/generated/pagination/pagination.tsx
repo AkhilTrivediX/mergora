@@ -9,32 +9,48 @@ import "./pagination.css";
 export type PaginationRangeItem = number | "start-ellipsis" | "end-ellipsis";
 
 interface PaginationCommonProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
+  /** Accessible navigation name; omission uses localized provider copy. */
   readonly label?: string;
+  /** Visible and accessible next-destination label. */
   readonly nextLabel?: string;
+  /** Visible and accessible previous-destination label. */
   readonly previousLabel?: string;
 }
 
 export interface PaginationPageProps extends PaginationCommonProps {
+  /** Number of page links retained at each range boundary. */
   readonly boundaryCount?: number;
+  /** Produces a safe navigation destination for a page number. */
   readonly getHref: (page: number) => string;
+  /** Optional discriminant selecting numbered-page mode. */
   readonly mode?: "pages";
+  /** Receives page-link activation before native or framework navigation. */
   readonly onNavigate?: (page: number, event: MouseEvent<HTMLAnchorElement>) => void;
+  /** Current one-based page number within pageCount. */
   readonly page: number;
+  /** Positive total number of pages. */
   readonly pageCount: number;
+  /** Number of page links retained on each side of the current page. */
   readonly siblingCount?: number;
 }
 
 export interface PaginationCursorProps extends PaginationCommonProps {
+  /** Non-empty visible content naming the current cursor position. */
   readonly currentLabel: ReactNode;
+  /** Required discriminant selecting cursor mode. */
   readonly mode: "cursor";
+  /** Safe next destination; omission renders a noninteractive disabled label. */
   readonly nextHref?: string;
+  /** Receives previous or next activation before native or framework navigation. */
   readonly onNavigate?: (
     direction: "previous" | "next",
     event: MouseEvent<HTMLAnchorElement>,
   ) => void;
+  /** Safe previous destination; omission renders a noninteractive disabled label. */
   readonly previousHref?: string;
 }
 
+/** Public discriminated union for numbered-page and cursor navigation modes. */
 export type PaginationProps = PaginationPageProps | PaginationCursorProps;
 
 function assertNonnegativeInteger(value: number, name: string): void {

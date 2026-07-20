@@ -116,6 +116,7 @@ describe("P4 collection foundation registry records", () => {
       expect(css, itemId).toContain("@media (forced-colors: active)");
       expect(css, itemId).toContain("@media (prefers-reduced-motion: reduce)");
       expect(css, itemId).toContain("var(--mrg-semantic-size-target-preferred)");
+      expect(css, itemId).toContain("var(--mrg-component-focus-indicator-contrast-background)");
     }
   });
 });
@@ -215,6 +216,51 @@ describe("shared stable collection and selection model", () => {
 });
 
 describe("server-rendered semantic contracts", () => {
+  it("removes selected-value context completely when the enhancement is disabled", () => {
+    const listboxMarkup = renderToStaticMarkup(
+      <MergoraProvider>
+        <Listbox
+          defaultValue="accessibility"
+          entries={entries}
+          formatSelectionSummary={false}
+          label="Plain owner"
+        />
+      </MergoraProvider>,
+    );
+    const selectMarkup = renderToStaticMarkup(
+      <MergoraProvider>
+        <Select
+          entries={entries}
+          formatSelectionSummary={false}
+          label="Plain default owner"
+          value="accessibility"
+        />
+      </MergoraProvider>,
+    );
+    expect(listboxMarkup).not.toContain("listbox-selection-summary");
+    expect(selectMarkup).not.toContain("select-selection-summary");
+    expect(listboxMarkup).not.toContain("-selection-summary");
+    expect(selectMarkup).not.toContain("-selection-summary");
+  });
+
+  it("invokes and connects selected-value context only when enabled and populated", () => {
+    const markup = renderToStaticMarkup(
+      <MergoraProvider>
+        <Listbox
+          defaultValue="accessibility"
+          entries={entries}
+          formatSelectionSummary={({ visibleTextValues }) =>
+            `Current owner: ${visibleTextValues.join(", ")}`
+          }
+          label="Contextual owner"
+        />
+      </MergoraProvider>,
+    );
+    expect(markup).toContain('data-slot="listbox-selection-summary"');
+    expect(markup).toContain("Current owner: Accessibility");
+    expect(markup).toMatch(/aria-describedby="[^"]*selection-summary/u);
+  });
+
   it("resolves option label and description IDREFs for rich collection records", () => {
     const markup = renderToStaticMarkup(
       <MergoraProvider>

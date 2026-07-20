@@ -16,6 +16,24 @@
   overflow-wrap: anywhere;
 }
 
+.mrg-aspect-ratio[data-fit] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-aspect-ratio[data-fit] > :is(img, video, canvas, svg) {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: var(--mrg-aspect-ratio-fit);
+}
+
+.mrg-aspect-ratio[data-fit="contain"] {
+  --mrg-aspect-ratio-fit: contain;
+}
+
+.mrg-aspect-ratio[data-fit="cover"] {
+  --mrg-aspect-ratio-fit: cover;
+}
+
 @supports not (aspect-ratio: 1) {
   .mrg-aspect-ratio::before {
     content: "";

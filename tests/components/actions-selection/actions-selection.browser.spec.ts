@@ -27,8 +27,9 @@ test.afterEach(({ page }) => {
   expect(runtimeFailures.get(page) ?? []).toEqual([]);
 });
 
-async function openStory(page: Page, story: string): Promise<void> {
-  await page.goto(`/iframe.html?viewMode=story&id=p2-actions-and-selection--${story}`, {
+async function openStory(page: Page, story: string, args?: string): Promise<void> {
+  const storyArgs = args === undefined ? "" : `&args=${encodeURIComponent(args)}`;
+  await page.goto(`/iframe.html?viewMode=story&id=p2-actions-and-selection--${story}${storyArgs}`, {
     waitUntil: "domcontentloaded",
   });
   await expect(page.locator("[data-slot]").first()).toBeVisible();
@@ -42,7 +43,17 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!(error instanceof Error) || !error.message.includes("Axe is already running")) {
+          throw error;
+        }
+        await new Promise((resolveDelay) => setTimeout(resolveDelay, 50));
+      }
+    }
+    throw new Error("Timed out waiting for the Storybook accessibility audit to finish.");
   });
 }
 
@@ -94,6 +105,109 @@ test("actions workbench exposes native semantics, names, targets, and no axe vio
   await page.screenshot({ fullPage: true, path: testInfo.outputPath("actions-workbench.png") });
 });
 
+test("basic defaults remove every optional enhancement and preserve native form reset", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async () => undefined },
+    });
+  });
+  await openStory(page, "basic-defaults");
+  await expect(page.locator('[data-slot="button-group-keyboard-hint"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="link-external-context"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="toggle-group-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="segmented-control-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-pending="true"]')).toHaveCount(0);
+
+  const compact = page.getByRole("radio", { name: "Compact" });
+  await compact.check();
+  await expect(compact).toBeChecked();
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect(page.getByRole("radio", { name: "Comfortable" })).toBeChecked();
+  await expect(page.getByText("Form reset to the saved view")).toBeVisible();
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("basic story controls can enable each optional action enhancement independently", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: undefined });
+    Object.defineProperty(document, "execCommand", {
+      configurable: true,
+      value: () => true,
+    });
+  });
+  await openStory(
+    page,
+    "basic-defaults",
+    [
+      "clipboardFallback:true",
+      "destructiveConfirmation:true",
+      "externalContext:true",
+      "iconTooltip:true",
+      "pendingFeedback:true",
+      "selectionSummaries:true",
+      "toolbarDiscovery:true",
+    ].join(";"),
+  );
+
+  await expect(page.getByText("Arrow keys move focus; Enter activates.")).toBeVisible();
+  await expect(page.locator('[data-slot="link-external-context"]')).toHaveText("New tab");
+  await expect(page.locator('[data-slot="toggle-group-summary"]')).toBeVisible();
+  await expect(page.locator('[data-slot="segmented-control-summary"]')).toBeVisible();
+  await expect(page.locator('[data-pending="true"]')).not.toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Adding section" })).toHaveAttribute(
+    "title",
+    "Add a section after the current one",
+  );
+
+  const copy = page.locator('[data-slot="copy-button"]');
+  await copy.click();
+  await expect(copy).toContainText("Copied");
+
+  await page.getByRole("button", { name: "Document actions" }).click();
+  await page.getByRole("menuitem", { name: "Delete document" }).click();
+  await expect(page.getByRole("menuitem", { name: "Confirm delete document" })).toBeVisible();
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("recommended Mergora mode exposes independent workbench advantages", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async () => undefined },
+    });
+  });
+  await openStory(page, "recommended-mergora");
+  await expect(page.getByText("Arrow keys move focus; Enter activates.")).toBeVisible();
+  await expect(page.getByText("New tab")).toBeVisible();
+  await expect(page.locator('[data-slot="toggle-group-summary"]')).toContainText(
+    "Selected layout: balanced",
+  );
+  await expect(page.locator('[data-slot="segmented-control-summary"]')).toContainText(
+    "Current density: comfortable",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("disabled enhancements leave no UI, accessibility output, or confirmation step", async ({
+  page,
+}) => {
+  await openStory(page, "enhancements-disabled");
+  await expect(page.locator('[data-slot="button-group-keyboard-hint"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="link-external-context"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="toggle-group-summary"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="segmented-control-summary"]')).toHaveCount(0);
+  const trigger = page.getByRole("button", { name: "Destructive document actions" });
+  await trigger.click();
+  await page.getByRole("menuitem", { name: "Delete document" }).click();
+  await expect(page.getByRole("menu", { name: "Destructive document actions" })).toBeHidden();
+  await expect(page.getByText("This confirmation must not render")).toHaveCount(0);
+});
+
 test("pending actions retain focus and expose replacement names", async ({ page }) => {
   await openStory(page, "pending-and-destructive");
   const publishing = page.getByRole("button", { name: "Publishing" });
@@ -118,8 +232,9 @@ test("clipboard success and rejection remain visible without moving focus", asyn
     });
   });
   await openStory(successPage, "clipboard-states");
-  await successPage.getByRole("button", { name: "Copy install command" }).click();
   const successButton = successPage.locator('[data-slot="copy-button"]');
+  await successButton.focus();
+  await successButton.press("Enter");
   await expect(successButton).toHaveAttribute("data-status", "copied");
   await expect(successButton).toContainText("Copied");
   await expect(successButton).toBeFocused();
@@ -135,8 +250,9 @@ test("clipboard success and rejection remain visible without moving focus", asyn
     });
   });
   await openStory(rejectionPage, "clipboard-states");
-  await rejectionPage.getByRole("button", { name: "Copy install command" }).click();
   const rejectionButton = rejectionPage.locator('[data-slot="copy-button"]');
+  await rejectionButton.focus();
+  await rejectionButton.press("Enter");
   await expect(rejectionButton).toHaveAttribute("data-status", "error");
   await expect(rejectionButton).toContainText("Copy failed");
   await expect(rejectionButton).toBeFocused();

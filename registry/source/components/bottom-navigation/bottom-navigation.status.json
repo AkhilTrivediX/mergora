@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "bottom-navigation",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, and updater outputs.",
+    "Pass package/source parity, frozen packed consumers, responsive safe-area, and cross-browser routing gates.",
+    "Record current manual keyboard, screen-reader, speech, switch, touch, RTL, zoom, and forced-colors evidence."
+  ]
+}

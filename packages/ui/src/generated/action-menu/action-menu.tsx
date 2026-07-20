@@ -20,21 +20,29 @@ import { useMergoraContext } from "../provider/index.js";
 import "./action-menu.css";
 
 interface ActionMenuItemBase {
+  /** Provides the stable collection identifier reported after successful activation. */
   readonly id: string;
+  /** Presents the action’s localized visible and accessible name. */
   readonly label: string;
+  /** Prevents focus and activation for this individual action. */
   readonly disabled?: boolean;
+  /** Adds localized supporting text without changing activation behavior. */
   readonly description?: string;
+  /** Runs after any required destructive confirmation succeeds. */
   readonly onSelect?: () => void;
 }
 
 export interface ActionMenuDefaultItem extends ActionMenuItemBase {
+  /** Distinguishes ordinary and destructive activation requirements. */
   readonly intent?: "default";
+  /** Supplies second-step text only for destructive actions. */
   readonly confirmLabel?: never;
 }
 
 export interface ActionMenuDestructiveItem extends ActionMenuItemBase {
+  /** Distinguishes ordinary and destructive activation requirements. */
   readonly intent: "destructive";
-  /** Required second-step text, for example “Confirm delete project”. */
+  /** Supplies second-step text only for destructive actions. */
   readonly confirmLabel: string;
 }
 
@@ -60,16 +68,29 @@ export interface ActionMenuProps extends Omit<
   HTMLAttributes<HTMLSpanElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Localizable accessible name shared by the trigger and menu collection. */
   readonly label: string;
+  /** Ordered menu actions; each item supplies a unique ID and its own localizable visible label. */
   readonly items: readonly ActionMenuItem[];
+  /** Controlled open state. Pending state always renders the menu closed. */
   readonly open?: boolean;
+  /** Initial open state when the component is uncontrolled. */
   readonly defaultOpen?: boolean;
+  /** Called whenever the trigger or dismissal behavior requests an open-state change. */
   readonly onOpenChange?: (open: boolean) => void;
+  /** Called with the selected item ID after any required destructive confirmation succeeds. */
   readonly onAction?: (id: string) => void;
+  /** Overrides inherited text direction for logical placement and collection behavior. */
   readonly direction?: DirectionValue;
+  /** Aligns the popover to the logical start or end edge of the trigger. */
   readonly placement?: ActionMenuPlacement;
+  /** Keeps the trigger focusable but busy, blocks opening, and closes an open menu. */
   readonly pending?: boolean;
+  /** Localizable trigger label used while pending when the string is non-empty. */
   readonly pendingLabel?: string;
+  /** Keeps the safer second activation for destructive items. Disable only when the consumer supplies an equivalent safeguard. */
+  readonly confirmDestructiveActions?: boolean;
+  /** Native trigger attributes, excluding state and activation fields owned by ActionMenu. */
   readonly triggerProps?: Omit<
     ButtonHTMLAttributes<HTMLButtonElement>,
     "aria-expanded" | "aria-haspopup" | "children" | "onClick"
@@ -94,6 +115,7 @@ export function resolveMenuIndex(input: {
 export const ActionMenu = forwardRef<HTMLButtonElement, ActionMenuProps>(function ActionMenu(
   {
     className,
+    confirmDestructiveActions = true,
     defaultOpen = false,
     direction,
     items,
@@ -144,7 +166,7 @@ export const ActionMenu = forwardRef<HTMLButtonElement, ActionMenuProps>(functio
   };
   const activateItem = (item: ActionMenuItem): void => {
     if (item.disabled) return;
-    if (item.intent === "destructive" && confirmationId !== item.id) {
+    if (confirmDestructiveActions && item.intent === "destructive" && confirmationId !== item.id) {
       setConfirmationId(item.id);
       return;
     }
@@ -203,7 +225,10 @@ export const ActionMenu = forwardRef<HTMLButtonElement, ActionMenuProps>(functio
                 data-slot="action-menu-content"
               >
                 {items.map((item, index) => {
-                  const confirming = item.intent === "destructive" && confirmationId === item.id;
+                  const confirming =
+                    confirmDestructiveActions &&
+                    item.intent === "destructive" &&
+                    confirmationId === item.id;
                   const descriptionId = `${layerId}-item-${index}-description`;
                   return (
                     <AriaMenuItem
@@ -218,7 +243,9 @@ export const ActionMenu = forwardRef<HTMLButtonElement, ActionMenuProps>(functio
                       id={item.id}
                       key={item.id}
                       onAction={() => activateItem(item)}
-                      shouldCloseOnSelect={item.intent !== "destructive" || confirming}
+                      shouldCloseOnSelect={
+                        !confirmDestructiveActions || item.intent !== "destructive" || confirming
+                      }
                       textValue={item.label}
                     >
                       <span data-slot="action-menu-item-label">

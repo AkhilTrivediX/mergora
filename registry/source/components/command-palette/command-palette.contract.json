@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "command-palette",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled modal dialog or embedded region contains an editable combobox and owned listbox with grouped commands and nested pages.",
+    "rolePolicy": "Modal containment/restoration applies only to modal presentation. Embedded mode has region semantics and never traps or restores focus. Execution preview is absent when disabled.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    { "key": "ArrowDown / ArrowUp / Home / End", "behavior": "Moves the active enabled command." },
+    { "key": "Enter", "behavior": "Opens a child page or executes the active leaf once." },
+    {
+      "key": "Escape",
+      "behavior": "Returns from a child page, or closes and restores focus in modal mode."
+    },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Cycles only within modal presentation; embedded mode keeps document tab order."
+    }
+  ],
+  "nonColor": "Text, structure, shortcut labels, and disabled state accompany color.",
+  "responsive": "Modal and embedded presentations reflow at narrow widths and use logical properties; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=command-palette]",
+    "parts": ["[data-slot=command-palette-execution-preview]"],
+    "attributes": ["data-slot", "data-presentation"]
+  },
+  "consumerResponsibilities": [
+    "Control global shortcut registration outside this component.",
+    "Own async search transport and route effects; navigationAdapter only receives executed leaf commands.",
+    "Provide localized commands and explain destructive effects before use.",
+    "Do not claim Stable until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "keyboard",
+      "focus-restoration",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

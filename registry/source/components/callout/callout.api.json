@@ -14,6 +14,7 @@
     "Callout is non-live explanatory content and never adds alert or status semantics.",
     "The default root is a neutral div; landmarkLabel intentionally promotes it to a named aside.",
     "A native heading plus visible variant text and shape prevents color-only meaning.",
-    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers."
+    "Role and owned ARIA overrides are rejected for TypeScript and runtime JavaScript consumers.",
+    "Omitting landmarkLabel removes the optional aside landmark and accessible landmark name while preserving the plain static callout."
   ]
 }

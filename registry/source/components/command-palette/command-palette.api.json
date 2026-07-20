@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-palette",
+  "entryExport": "CommandPalette",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "value", "name": "CommandPalette" },
+    { "kind": "type", "name": "CommandPaletteItem" },
+    { "kind": "type", "name": "CommandPaletteNavigationAdapter" },
+    { "kind": "type", "name": "CommandPaletteProps" }
+  ],
+  "props": [
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "showExecutionPreview", "required": false, "type": "boolean" },
+    { "name": "shouldFilter", "required": false, "type": "boolean" },
+    { "name": "presentation", "required": false, "type": "'modal' | 'embedded'" },
+    {
+      "name": "navigationAdapter",
+      "required": false,
+      "type": "false | CommandPaletteNavigationAdapter"
+    },
+    { "name": "loading", "required": false, "type": "boolean" },
+    { "name": "loadError", "required": false, "type": "string" },
+    { "name": "onRetry", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve modal dialog focus containment/restoration when modal, labelled region semantics when embedded, editable combobox/listbox state, disabled commands, groups, and nested-page back navigation.",
+    "enhancement": "showExecutionPreview is additive and false removes preview UI, live output, callbacks, and accessibility output. shouldFilter=false removes internal matching so an independently ranked local or remote result set is preserved. presentation and navigationAdapter remain independently selectable; embedded mode adds no modal semantics or focus trap."
+  }
+}

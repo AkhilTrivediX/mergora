@@ -39,3 +39,7 @@ Stable slots are `resizable-root`, `resizable-primary`, `resizable-handle`, `res
 The initial tree and percentage are deterministic during SSR; browser geometry is read only from pointer events. Consumers must supply a localized Handle name, keep controlled state synchronized, and avoid overriding separator ARIA/value/focus attributes.
 
 Current status is `source-present-unreleased`. Required generation, browser/AT evidence, cancellation/rapid-update/RTL/zoom cases, clean packed consumers, parity, updater fixtures, site dogfooding, and Quality Passport approval remain incomplete. This source record is not a Stable or accessibility-conformance claim.
+
+## Mergora advantage
+
+The named value-bearing separator supports pointer, keyboard, RTL spatial arrows, controlled/uncontrolled state, localization, and optional collapse. Explicit 44-pixel step controls are independently selectable: `showStepControls={false}` removes their group, labels, buttons, events, and accessibility output while leaving the separator fully operable.

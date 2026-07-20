@@ -12,6 +12,8 @@ A semantic visual action group whose opt-in toolbar mode implements one-tab-stop
 
 Toolbar children may be direct native `button`/`a[href]` elements, Mergora action components, non-interactive separators, or those elements inside Fragments. Each action item must render exactly one concrete focusable action. Router links and other custom action components opt in with `markButtonGroupAction`; the marked component must forward `tabIndex` and data attributes to exactly one native button or anchor root. Unsupported unmarked custom or nested-action children receive a development diagnostic and an inert boundary, so their descendants cannot create uncontrolled tab stops. Group mode does not clone children and preserves every native tab stop. Toolbar mode intentionally owns action `tabIndex`; use group mode when consumer-authored tab order is required.
 
+The optional toolbar is a bordered Ink workbench rail. `keyboardHint` adds concise visible and programmatic keyboard discovery only in toolbar mode. Use `mode="group"` and omit `keyboardHint` to remove roving focus, hint UI, and its description relationship completely.
+
 The public ref resolves to `HTMLDivElement`. Stable source styling starts at `data-slot="button-group"`; documented child slots are recorded in `button-group.anatomy.json`. User-facing labels and status messages are consumer-localizable.
 
 ## Source records

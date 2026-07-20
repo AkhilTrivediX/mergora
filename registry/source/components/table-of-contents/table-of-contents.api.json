@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "table-of-contents",
+  "entryExport": "TableOfContents",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML nav attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "TableOfContents" },
+    { "kind": "type", "name": "TableOfContentsItem" },
+    { "kind": "type", "name": "TableOfContentsObserverOptions" },
+    { "kind": "type", "name": "TableOfContentsProps" },
+    { "kind": "type", "name": "TableOfContentsSummaryContext" },
+    { "kind": "function", "name": "collectTableOfContentsItems" },
+    { "kind": "function", "name": "isSafeTableOfContentsHref" }
+  ],
+  "controlledState": [
+    {
+      "state": "current section",
+      "controlled": "currentId",
+      "uncontrolled": "defaultCurrentId",
+      "callback": "onCurrentIdChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "intersection observation",
+      "api": "observeCurrent",
+      "disabled": "false creates no observer, observer callbacks, or observer attributes"
+    },
+    {
+      "name": "current section summary",
+      "api": "renderCurrentSummary",
+      "disabled": "omission calls no formatter and emits no output"
+    }
+  ]
+}

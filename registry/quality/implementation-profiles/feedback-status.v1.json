@@ -1,0 +1,2622 @@
+{
+  "schemaVersion": 1,
+  "category": "feedback-status",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "alert",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Alert provides a styled static alert composition; shared, deduplicated announcement ownership remains consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/alert"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves a concise static Alert by default and can enqueue one explicit polite or assertive summary through the shared announcer without placing visible copy or actions in a live region.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert/alert.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["shared-announcement"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas panel, precise Ink boundary, compact squared severity symbol, strong heading, and restrained semantic signal seam identify the Mergora feedback family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert/alert.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "workbench-structure",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-status"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "shared-announcement",
+          "status": "evidence-backed",
+          "summary": "Mergora preserves a concise static Alert by default and can enqueue one explicit polite or assertive summary through the shared announcer without placing visible copy or actions in a live region.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/alert/alert.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announceAlert"],
+          "api": {
+            "kind": "prop",
+            "names": ["live", "announcement"],
+            "enableWhen": "Set live to polite or assertive and provide a non-empty announcement."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The visible Alert remains, with no enhancement-only announcement UI.",
+            "behavior": "No shared-announcer effect, queueing, or deduplication behavior runs.",
+            "events": "No announcement event is enqueued.",
+            "accessibility": "No alert/status role, aria-live, aria-atomic, or hidden announcement output is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicAlert",
+          "enhancementControls": ["announceAlert"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedAlert",
+          "enhancementControls": ["announceAlert"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert/alert.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Static rendering, explicit live modes, provider ownership, announcement transitions, deduplication, and clean live-off removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/alert/alert.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert/alert.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/alert/alert.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "badge",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Badge provides styled noninteractive labels and variants, without a discriminated localized status/count contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/badge"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps the default category badge lightweight while opt-in status mode localizes severity and count mode visually bounds large values while preserving the exact localized accessible count.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/badge/badge.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["semantic-status-count"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A compact squared label, Ink boundary, readable type, and restrained semantic fills provide status recognition without excessive pill styling.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/badge/badge.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "workbench-structure",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-radius-compact"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "semantic-status-count",
+          "status": "evidence-backed",
+          "summary": "Mergora keeps the default category badge lightweight while opt-in status mode localizes severity and count mode visually bounds large values while preserving the exact localized accessible count.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/badge/badge.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showBadgeSemantics"],
+          "api": {
+            "kind": "prop",
+            "names": ["kind", "variant", "count", "label", "maximum"],
+            "enableWhen": "Set kind to status or count and provide the props required by that discriminated mode."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Only the concise category label is rendered; status and count specimens are absent.",
+            "behavior": "No severity or count formatting path runs.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "No localized severity prefix, hidden exact count, overflow state, or count label is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicBadge",
+          "enhancementControls": ["showBadgeSemantics"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedBadge",
+          "enhancementControls": ["showBadgeSemantics"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/badge/badge.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Category, status, count, overflow, localization, wrapping, and complete removal of inactive discriminated-mode output are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/badge/badge.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/badge/badge.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/badge/badge.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "banner",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn compositions combine Alert and Button for a dismissible banner; controlled persistence, hydration policy, and adapter ownership remain application work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/alert"
+          },
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora Banner supports mutually exclusive controlled and uncontrolled dismissal plus injected persistence with SSR-safe pre-paint resolution and consumer-owned failure handling.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/banner/banner.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["injected-dismissal-persistence"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A page-width Canvas surface, strong Ink frame, compact dismiss control, strong heading, and severity seam extend the same feedback-family language to banners.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/banner/banner.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "touch-target-treatment",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-motion-duration-feedback",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "injected-dismissal-persistence",
+          "status": "evidence-backed",
+          "summary": "Mergora Banner supports mutually exclusive controlled and uncontrolled dismissal plus injected persistence with SSR-safe pre-paint resolution and consumer-owned failure handling.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/banner/banner.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["persistBannerDismissal"],
+          "api": {
+            "kind": "prop",
+            "names": ["persistence"],
+            "enableWhen": "Use uncontrolled dismissal and provide a BannerPersistenceAdapter."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No persistence-pending suppression state or persistence-specific UI is rendered.",
+            "behavior": "No adapter read, write, or pre-paint persistence resolution runs; ordinary dismissal remains available when dismissible.",
+            "events": "No persistence error event can fire.",
+            "accessibility": "No persistence-specific accessible output is emitted; the named non-live aside contract remains unchanged."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicBanner",
+          "enhancementControls": ["persistBannerDismissal"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedBanner",
+          "enhancementControls": ["persistBannerDismissal"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/banner/banner.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled dismissal, persistence read/write timing, SSR hydration, touch target, focus states, and persistence omission are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/banner/banner.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/banner/banner.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/banner/banner.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "callout",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn uses Alert-like composition for explanatory callouts; a deliberate non-live baseline and optional named complementary landmark remain consumer decisions.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/alert"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora Callout stays deliberately non-live and can opt into a correctly named complementary landmark for important explanatory regions without changing its visible composition.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/callout/callout.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["named-complementary-landmark"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas surface, Ink edge, compact contextual symbol, strong title, and restrained violet/green signal distinguish explanatory content from generic tinted cards.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/callout/callout.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "violet-context-signal",
+          "green-state-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "named-complementary-landmark",
+          "status": "evidence-backed",
+          "summary": "Mergora Callout stays deliberately non-live and can opt into a correctly named complementary landmark for important explanatory regions without changing its visible composition.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/callout/callout.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["landmarkCallout"],
+          "api": {
+            "kind": "prop",
+            "names": ["landmarkLabel"],
+            "enableWhen": "Provide a non-empty landmarkLabel."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The same visible callout remains without enhancement-only UI.",
+            "behavior": "The root stays a neutral div.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "No complementary landmark or accessible landmark name is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicCallout",
+          "enhancementControls": ["landmarkCallout"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedCallout",
+          "enhancementControls": ["landmarkCallout"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/callout/callout.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Neutral and named-landmark rendering, owned semantics, invalid override rejection, narrow layout, RTL, and forced-colors behavior are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/callout/callout.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/callout/callout.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/callout/callout.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "empty-state",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Empty provides a composable empty-state layout; labelled, validated recovery suggestions and their clean semantic removal remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/empty"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora EmptyState preserves native consumer-owned actions and can add a validated labelled list of concrete recovery suggestions that disappears completely when omitted.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/empty-state/empty-state.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["recovery-suggestions"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas, Ink frame, compact violet context marker, strong heading, and edge-to-edge recovery rail create a workbench state rather than a generic centered card.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/empty-state/empty-state.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "violet-context-signal",
+          "workbench-structure",
+          "strong-type-hierarchy"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-accent-border",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "recovery-suggestions",
+          "status": "evidence-backed",
+          "summary": "Mergora EmptyState preserves native consumer-owned actions and can add a validated labelled list of concrete recovery suggestions that disappears completely when omitted.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/empty-state/empty-state.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showRecoverySuggestions"],
+          "api": {
+            "kind": "prop",
+            "names": ["recoverySuggestions"],
+            "enableWhen": "Provide recoverySuggestions with a non-empty label and at least one non-empty item."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No suggestion rail, label, or item list is rendered.",
+            "behavior": "No suggestion validation or rendering path runs; primary and secondary recovery actions remain unchanged.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "No labelled suggestion list or suggestion items enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicEmptyState",
+          "enhancementControls": ["showRecoverySuggestions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedEmptyState",
+          "enhancementControls": ["showRecoverySuggestions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/empty-state/empty-state.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native action ownership, context variants, recovery suggestion validation and removal, narrow layout, RTL, touch, and axe checks are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/empty-state/empty-state.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/empty-state/empty-state.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/empty-state/empty-state.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "error-state",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn composes Alert, Button, and disclosure primitives for an error state; recoverability and optional diagnostic disclosure remain application-owned.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/alert"
+          },
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora ErrorState has an explicit recoverable retry contract and can reveal technical context through a native disclosure without forcing diagnostics into the concise default state.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/error-state/error-state.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["technical-details-disclosure"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal Canvas, strong Ink and danger seam, compact error marker, firm heading, and restrained native action/disclosure treatment make recovery clear without decorative clutter.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/error-state/error-state.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "touch-target-treatment",
+          "distinctive-focus"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-status-danger-foreground",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "technical-details-disclosure",
+          "status": "evidence-backed",
+          "summary": "Mergora ErrorState has an explicit recoverable retry contract and can reveal technical context through a native disclosure without forcing diagnostics into the concise default state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/error-state/error-state.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showErrorDetails"],
+          "api": {
+            "kind": "prop",
+            "names": ["technicalDetails"],
+            "enableWhen": "Provide technicalDetails."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No technical-details summary, panel, or diagnostic rail is rendered.",
+            "behavior": "No disclosure interaction exists; recoverable retry behavior remains independently available.",
+            "events": "No disclosure toggle event or enhancement-only callback is produced.",
+            "accessibility": "No details/summary disclosure semantics or technical text enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicErrorState",
+          "enhancementControls": ["showErrorDetails"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedErrorState",
+          "enhancementControls": ["showErrorDetails"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/error-state/error-state.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Recoverable and unrecoverable modes, retry activation, details disclosure, live policy, focus feedback, touch targets, and clean optional-output removal are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/error-state/error-state.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/error-state/error-state.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/error-state/error-state.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "meter",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn Progress is the nearest ordinary styled measurement primitive, but it does not provide a native meter contract or optional threshold context.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/progress"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native meter semantics and can render localized low, high, and optimum thresholds as visible context linked with aria-describedby.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/meter/meter.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["threshold-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Ink typography and measurement structure pair with a restrained green native signal and a non-pill threshold rail.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/meter/meter.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "workbench-structure",
+          "ink-structure",
+          "green-state-signal",
+          "status-rail",
+          "strong-type-hierarchy"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-status-success-foreground",
+          "--mrg-semantic-font-weight-label"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "threshold-summary",
+          "status": "evidence-backed",
+          "summary": "Mergora preserves native meter semantics and can render localized low, high, and optimum thresholds as visible context linked with aria-describedby.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/meter/meter.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showMeterThresholds"],
+          "api": {
+            "kind": "prop",
+            "names": ["showThresholdSummary"],
+            "enableWhen": "Set showThresholdSummary to true and configure one or more low, high, or optimum thresholds."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No threshold summary rail or threshold labels are rendered.",
+            "behavior": "No threshold-summary formatting work runs; the native meter continues unchanged.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "No generated threshold description or aria-describedby relationship is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicMeter",
+          "enhancementControls": ["showMeterThresholds"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedMeter",
+          "enhancementControls": ["showMeterThresholds"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/meter/meter.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Native range semantics, threshold formatting, consumer description merging, threshold omission, localization, RTL, and forced-colors behavior are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/meter/meter.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/meter/meter.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/meter/meter.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "progress",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Progress provides an accessible styled progress bar, commonly without a built-in visible localized value context.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/progress"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora uses native progress semantics with a visible localized value context that can be independently removed while preserving the visible label and determinate or indeterminate model.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/progress/progress.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["localized-value-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Ink label hierarchy, a crisp native track, Living Green determinate fill, and Deep Violet indeterminate signal form a precise Mergora measurement pattern.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/progress/progress.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "workbench-structure",
+          "ink-structure",
+          "green-state-signal",
+          "violet-context-signal",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-accent-border",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-motion-duration-deliberate"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "localized-value-context",
+          "status": "evidence-backed",
+          "summary": "Mergora uses native progress semantics with a visible localized value context that can be independently removed while preserving the visible label and determinate or indeterminate model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/progress/progress.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showProgressValue"],
+          "api": {
+            "kind": "prop",
+            "names": ["showValue"],
+            "enableWhen": "Keep showValue true, which is the backward-compatible default."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The visible localized value is not rendered.",
+            "behavior": "No value formatter or provider lookup runs; native determinate or indeterminate progress continues unchanged.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "aria-valuetext is omitted while the visible label continues to name the native progress element."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicProgress",
+          "enhancementControls": ["showProgressValue"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedProgress",
+          "enhancementControls": ["showProgressValue"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/progress/progress.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Determinate and indeterminate models, visible-label naming, value formatting, value-output removal, localization, reduced motion, and forced colors are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/progress/progress.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/progress/progress.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/progress/progress.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "skeleton",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Skeleton provides a styled loading placeholder with fixed animation behavior.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/skeleton"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora Skeleton preserves logical footprint and strict decorative semantics while allowing consumers to remove pulse motion independently without changing geometry.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/skeleton/skeleton.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selectable-purposeful-motion"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Restrained corners, a precise Ink-like boundary, Surface fill, and purposeful opacity motion preserve future layout without presenting a decorative card.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/skeleton/skeleton.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "workbench-structure",
+          "ink-structure",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-surface-sunken",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-radius-compact",
+          "--mrg-semantic-motion-duration-deliberate"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selectable-purposeful-motion",
+          "status": "evidence-backed",
+          "summary": "Mergora Skeleton preserves logical footprint and strict decorative semantics while allowing consumers to remove pulse motion independently without changing geometry.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/skeleton/skeleton.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["animateSkeleton"],
+          "api": {
+            "kind": "prop",
+            "names": ["animated"],
+            "enableWhen": "Keep animated true, which is the backward-compatible default."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The same loading geometry remains without animated opacity changes.",
+            "behavior": "The animation data hook and pulse behavior are removed.",
+            "events": "No animation-driven event or enhancement-only callback is produced.",
+            "accessibility": "The placeholder remains aria-hidden with no role, label, live-region, or fake-content output."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicSkeleton",
+          "enhancementControls": ["animateSkeleton"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedSkeleton",
+          "enhancementControls": ["animateSkeleton"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/skeleton/skeleton.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Logical dimensions, shape contracts, forbidden semantic overrides, animation selection, reduced motion, forced colors, and static-output parity are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/skeleton/skeleton.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/skeleton/skeleton.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/skeleton/skeleton.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "spinner",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Spinner provides decorative loading motion, while ownership of a named busy region and deduplicated announcements remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/spinner"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora pairs a decorative Spinner with BusyRegion, which owns a named aria-busy relationship and can announce only the start of a busy period through the shared announcer.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/spinner/spinner.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["owned-busy-announcement"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A compact Living Green and Deep Violet mark provides recognizable loading state, with a static two-pattern fallback when reduced motion is requested.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/spinner/spinner.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-motion-duration-deliberate",
+          "--mrg-semantic-size-icon-md"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "owned-busy-announcement",
+          "status": "evidence-backed",
+          "summary": "Mergora pairs a decorative Spinner with BusyRegion, which owns a named aria-busy relationship and can announce only the start of a busy period through the shared announcer.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/spinner/spinner.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announceBusyState"],
+          "api": {
+            "kind": "compound-part",
+            "names": ["BusyRegion", "announce", "busyMessage"],
+            "enableWhen": "Render BusyRegion with announce true, busy true, a name, and an optional busyMessage."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The decorative Spinner and visible busy content remain without announcement UI.",
+            "behavior": "No announcement effect, queueing, or deduplication behavior runs; the named aria-busy region remains.",
+            "events": "No busy-start announcement event is enqueued.",
+            "accessibility": "No live announcement output is emitted; Spinner stays aria-hidden and BusyRegion keeps only its named region and aria-busy semantics."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicSpinner",
+          "enhancementControls": ["announceBusyState"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedSpinner",
+          "enhancementControls": ["announceBusyState"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/spinner/spinner.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Named busy-region ownership, busy transitions, opt-in announcements, deduplication, decorative spinner semantics, reduced motion, and forced colors are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/spinner/spinner.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/spinner/spinner.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/spinner/spinner.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "status",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Badge can style a status label, but explicit atomic polite/assertive live semantics and a truly static default remain consumer-owned.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/badge"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora Status preserves a non-color static cue by default and can opt into atomic polite status or assertive alert semantics without changing visible composition.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/status/status.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["atomic-live-status"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A compact squared semantic marker, strong label, Ink text, and restrained state palette repeat the recognizable Mergora feedback language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/status/status.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-static-contracts.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "ink-structure",
+          "green-state-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-status-success-border",
+          "--mrg-semantic-font-weight-strong",
+          "--mrg-semantic-radius-compact"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "atomic-live-status",
+          "status": "evidence-backed",
+          "summary": "Mergora Status preserves a non-color static cue by default and can opt into atomic polite status or assertive alert semantics without changing visible composition.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/status/status.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["liveStatus"],
+          "api": {
+            "kind": "prop",
+            "names": ["live"],
+            "enableWhen": "Set live to polite or assertive."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The same visible text-and-shape status cue remains.",
+            "behavior": "No live-region behavior runs.",
+            "events": "No enhancement-only callback or event is produced.",
+            "accessibility": "Role, aria-live, and aria-atomic are all omitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicStatus",
+          "enhancementControls": ["liveStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedStatus",
+          "enhancementControls": ["liveStatus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated native semantics, naming, keyboard-relevant behavior, axe, narrow layout, RTL, touch, forced-colors, and reduced-motion evidence is current; contract-required manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/status/status.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Static, polite, and assertive modes, localized non-color cues, clean live-off removal, RTL, narrow layout, and forced-colors behavior are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/feedback-status/feedback-status.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/status/status.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/status/status.status.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/status/status.contract.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "notification-center",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn supplies Button, Scroll Area and feedback primitives, but consumers must compose read state, grouped/bulk behavior, large lists and a position-safe live-update policy.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora can queue live notifications outside the active reading position, then reveal them explicitly; grouping, bulk actions, virtualization and announcements remain independent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/notification-center/notification-center.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          }
+        ],
+        "enhancementIds": [
+          "position-safe-live-queue",
+          "notification-grouping",
+          "bulk-read-actions",
+          "notification-windowing",
+          "read-announcements"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal white ordered stream uses ink separators, green unread marks, a violet queued-update rail, strong hierarchy, restrained corners and shared focus geometry.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/notification-center/notification-center.css"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "restrained-corners",
+          "status-rail",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-accent-background-subtle",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "position-safe-live-queue",
+          "status": "evidence-backed",
+          "summary": "New arrivals wait in a polite contextual rail until explicitly revealed, preserving the current read position.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.tsx"
+            }
+          ],
+          "storybookControlNames": ["liveQueue"],
+          "api": {
+            "kind": "prop",
+            "names": ["liveUpdatePolicy", "pendingLiveCount", "onRevealPending"],
+            "enableWhen": "Set liveUpdatePolicy to queue and provide pending count plus reveal callback."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The queued-update rail and reveal control are absent.",
+            "behavior": "Pending count is not formatted and reading position is untouched.",
+            "events": "onRevealPending is never called.",
+            "accessibility": "No queued-update live region or reveal control enters the accessibility tree."
+          }
+        },
+        {
+          "id": "notification-grouping",
+          "status": "evidence-backed",
+          "summary": "Notifications may be grouped under real category or localized date headings.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.tsx"
+            }
+          ],
+          "storybookControlNames": ["grouped"],
+          "api": {
+            "kind": "prop",
+            "names": ["groupBy"],
+            "enableWhen": "Set groupBy to category or date."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "A single flat ordered list remains.",
+            "behavior": "No group map or localized heading is created.",
+            "events": "No enhancement event exists.",
+            "accessibility": "No group headings or nested labelled sections are exposed."
+          }
+        },
+        {
+          "id": "bulk-read-actions",
+          "status": "evidence-backed",
+          "summary": "Native checkboxes support explicit visible selection and bulk read-state changes.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.tsx"
+            }
+          ],
+          "storybookControlNames": ["bulkActions"],
+          "api": {
+            "kind": "prop",
+            "names": ["bulkActions"],
+            "enableWhen": "Set bulkActions to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Selection checkboxes and bulk action rail are absent.",
+            "behavior": "No selection state is reachable.",
+            "events": "No bulk read-state callback is emitted.",
+            "accessibility": "No selection controls or bulk action group enters the accessibility tree."
+          }
+        },
+        {
+          "id": "notification-windowing",
+          "status": "evidence-backed",
+          "summary": "A bounded visible slice and measured spacers support consumer-controlled large-list windowing.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.tsx"
+            }
+          ],
+          "storybookControlNames": ["virtualized"],
+          "api": {
+            "kind": "prop",
+            "names": ["virtualWindow"],
+            "enableWhen": "Pass a bounded virtualWindow object."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Every filtered notification is rendered without spacers.",
+            "behavior": "No slicing or virtual-window validation runs.",
+            "events": "No enhancement event exists.",
+            "accessibility": "The complete filtered sequence remains in the accessibility tree."
+          }
+        },
+        {
+          "id": "read-announcements",
+          "status": "evidence-backed",
+          "summary": "Read-state changes can be announced without forcing live output on basic usage.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.tsx"
+            }
+          ],
+          "storybookControlNames": ["announceReadChanges"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceReadChanges"],
+            "enableWhen": "Set announceReadChanges to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No hidden output is rendered.",
+            "behavior": "Read changes do not update announcement text.",
+            "events": "No announcement event is emitted.",
+            "accessibility": "The polite live region is absent."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "BasicNotificationCenter",
+          "enhancementControls": [
+            "liveQueue",
+            "grouped",
+            "bulkActions",
+            "virtualized",
+            "announceReadChanges"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx",
+          "exportName": "RecommendedNotificationCenter",
+          "enhancementControls": [
+            "liveQueue",
+            "grouped",
+            "bulkActions",
+            "virtualized",
+            "announceReadChanges"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2FeedbackStatusComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/feedback-status-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native structure and focused browser/axe fixtures exist; the complete Risk Class 3 manual assistive-technology matrix remains unrecorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/notification-center/notification-center.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Controlled/uncontrolled read state, exact enhancement isolation, queued reveal, narrow/RTL, forced colors and reduced motion have fixtures; scale and full browsers remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-and-scale-evidence-incomplete",
+          "summary": "Manual assistive-technology and large-data virtualization/performance evidence is incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/notification-center/notification-center.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/notification-center/notification-center.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

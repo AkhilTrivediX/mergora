@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "StateMatrix"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",

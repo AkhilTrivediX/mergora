@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "category": "onboarding",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "onboarding-wizard",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn primitives can compose a multi-step form, while controlled draft ownership, optional-step recovery, persistence adapters, completion retry, native reset, and bounded announcement policy remain application work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The wizard coordinates controlled or uncontrolled steps and draft values, recovery-oriented validation, optional skipping, native reset, completion retry, and an independently removable consumer-owned persistence boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/onboarding-wizard/onboarding-wizard.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["persisted-draft", "progress-context", "step-announcements"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The wizard uses a literal-white workbench, Ink progress rail, strong hierarchy, Green completion seam, Violet focus and selection, restrained corners, touch targets, and reduced-motion/forced-colors fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "persisted-draft",
+          "status": "evidence-backed",
+          "summary": "A consumer adapter loads, saves, retries, and clears a draft without bundling storage, credentials, migration policy, or network behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["persistence"],
+          "api": {
+            "kind": "prop",
+            "names": ["persistence"],
+            "enableWhen": "Provide an OnboardingPersistenceAdapter."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No saved-draft aside, status, save, or clear controls are rendered.",
+            "behavior": "The in-memory controlled or uncontrolled wizard remains fully usable.",
+            "events": "No load, save, clear, retry, abort, or adapter callback occurs.",
+            "accessibility": "No persistence heading, status, errors, or focus stops enter the accessibility tree."
+          }
+        },
+        {
+          "id": "progress-context",
+          "status": "evidence-backed",
+          "summary": "Optional native progress and concise position context complement the visible stepper without changing navigation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6OnboardingWizard.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["progressContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showProgressContext"],
+            "enableWhen": "Set showProgressContext to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No progress bar or position summary is rendered.",
+            "behavior": "Step validation, back, continue, skip, complete, and reset behavior is unchanged.",
+            "events": "No progress formatter is invoked.",
+            "accessibility": "No additional progressbar or position summary enters the accessibility tree."
+          }
+        },
+        {
+          "id": "step-announcements",
+          "status": "evidence-backed",
+          "summary": "A separate opt-in live region announces deliberate step changes for workflows that need it.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announceStepChanges"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceStepChanges"],
+            "enableWhen": "Set announceStepChanges to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No announcement node is rendered.",
+            "behavior": "Visible step state and keyboard navigation are unchanged.",
+            "events": "No live-region update occurs.",
+            "accessibility": "No polite live region enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6OnboardingWizard.stories.tsx",
+          "exportName": "BasicOnboardingWizard",
+          "enhancementControls": ["persistence", "progressContext", "announceStepChanges"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6OnboardingWizard.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6OnboardingWizard.stories.tsx",
+          "exportName": "RecommendedOnboardingWizard",
+          "enhancementControls": ["persistence", "progressContext", "announceStepChanges"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6OnboardingWizard.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated Chromium, Firefox, and WebKit axe coverage includes the native form, canonical stepper, enhancement removal, read-only reset cancellation, recovery output, narrow RTL, reduced motion, forced colors, and target sizing; complete Risk Class 3 mobile-keyboard and manual assistive-technology evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused Chromium, Firefox, and WebKit evidence covers enhancement removal, validation recovery, mutable and read-only native reset semantics, controlled and uncontrolled draft ownership, persistence, RTL, reduced motion, forced colors, and narrow/touch presentation; stale snapshot, migration, lifecycle, and mobile-keyboard matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/kits/onboarding-wizard/onboarding-wizard.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/onboarding-wizard/onboarding-wizard.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/product-kits.playwright.config.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "onboarding-kit-evidence-incomplete",
+          "summary": "Dependency closure, draft migration/staleness review, security/privacy/legal review, mobile keyboard, current manual assistive technology, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "The source workflow and focused evidence exist, but distribution, lifecycle, persistence migration, browser/device, privacy, legal, and manual assistive-technology gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/onboarding-wizard/onboarding-wizard.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

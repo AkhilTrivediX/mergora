@@ -30,6 +30,7 @@ const publicOperationPlanners = [
   { name: "planAcquiredSourceAdd", source: "source-operations.ts" },
   { name: "planSourceRemove", source: "source-operations.ts" },
   { name: "planSourceAdopt", source: "source-operations.ts" },
+  { name: "planShadcnAdoption", source: "shadcn-adoption.ts" },
   { name: "planSemanticUpdate", source: "semantic-update.ts" },
   { name: "planAcquiredSemanticUpdate", source: "semantic-update.ts" },
   { name: "planSemanticResolveChoice", source: "semantic-update.ts" },
@@ -40,6 +41,10 @@ const publicOperationPlanners = [
   { name: "planThemeImport", source: "theme.ts" },
   { name: "planMigration", source: "migrate.ts" },
   { name: "planDistributionModeTransaction", source: "distribution-mode-migration.ts" },
+  { name: "planProjectDistributionModeMigration", source: "distribution-mode-command.ts" },
+  { name: "planPackageDistributionAdd", source: "distribution-operations.ts" },
+  { name: "planPackageDistributionRemove", source: "distribution-operations.ts" },
+  { name: "planPackageDistributionUpdate", source: "distribution-operations.ts" },
   { name: "planClean", source: "clean.ts" },
   { name: "planRegistryEnrollment", source: "registry-management.ts" },
   { name: "planRegistryRemoval", source: "registry-management.ts" },
@@ -55,6 +60,7 @@ const publicOperationMutators = [
   { name: "applyAcquiredSourceAdd", source: "source-operations.ts" },
   { name: "applySourceRemove", source: "source-operations.ts" },
   { name: "applySourceAdopt", source: "source-operations.ts" },
+  { name: "applyShadcnAdoption", source: "shadcn-adoption.ts" },
   { name: "applySemanticUpdate", source: "semantic-update.ts" },
   { name: "applyAcquiredSemanticUpdate", source: "semantic-update.ts" },
   { name: "applySemanticResolveChoice", source: "semantic-update.ts" },
@@ -65,6 +71,10 @@ const publicOperationMutators = [
   { name: "importTheme", source: "theme.ts" },
   { name: "applyMigration", source: "migrate.ts" },
   { name: "applyDistributionModeTransaction", source: "distribution-mode-migration.ts" },
+  { name: "applyProjectDistributionModeMigration", source: "distribution-mode-command.ts" },
+  { name: "applyPackageDistributionAdd", source: "distribution-operations.ts" },
+  { name: "applyPackageDistributionRemove", source: "distribution-operations.ts" },
+  { name: "applyPackageDistributionUpdate", source: "distribution-operations.ts" },
   { name: "applyClean", source: "clean.ts" },
   { name: "applyRegistryConfigPlan", source: "registry-management.ts" },
   { name: "applyVendor", source: "vendor.ts" },
@@ -294,6 +304,7 @@ describe("canonical operation-plan v1 schema boundary", () => {
     const expected = [
       ...publicOperationPlanners.map(({ name }) => name),
       // This is an in-memory package.json diff helper, not a material operation planner.
+      "planOwnedPackageDependencyChange",
       "planPackageDependencies",
     ].sort((left, right) => left.localeCompare(right, "en-US"));
     expect(discovered).toEqual(expected);

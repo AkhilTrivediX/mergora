@@ -12,6 +12,16 @@
     { "slot": "empty-state-title", "element": "h1-h6", "stability": "documented" },
     { "slot": "empty-state-description", "element": "div", "stability": "documented" },
     { "slot": "empty-state-body", "element": "div", "stability": "documented" },
+    {
+      "slot": "empty-state-suggestions",
+      "element": "optional labelled suggestion list container",
+      "stability": "documented"
+    },
+    {
+      "slot": "empty-state-suggestions-label",
+      "element": "optional span",
+      "stability": "documented"
+    },
     { "slot": "empty-state-actions", "element": "div", "stability": "documented" }
   ]
 }

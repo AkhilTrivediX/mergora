@@ -149,6 +149,8 @@ const SOURCE_BLUEPRINTS: readonly SourceBlueprint[] = [
     documentationPath: "registry/source/components/combobox/README.md",
     publicExports: [
       "Combobox",
+      "ComboboxClear",
+      "ComboboxClearProps",
       "ComboboxDescription",
       "ComboboxDescriptionProps",
       "ComboboxErrorMessage",

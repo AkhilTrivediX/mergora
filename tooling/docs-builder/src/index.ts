@@ -40,6 +40,15 @@ export interface DocsArtifacts {
       readonly sourceAvailable: false;
       readonly apiAvailable: false;
       readonly evidenceAvailable: false;
+      readonly serverBoundary: "unavailable";
+      readonly directions: readonly [];
+      readonly locales: readonly [];
+      readonly registryDependencies: readonly [];
+      readonly runtimeDependencies: readonly [];
+      readonly distribution: {
+        readonly package: "planned";
+        readonly source: "planned";
+      };
     }[];
   };
   readonly search: {
@@ -126,6 +135,15 @@ export function buildDocsArtifacts(definitions: readonly DocsCatalogDefinition[]
     sourceAvailable: false as const,
     apiAvailable: false as const,
     evidenceAvailable: false as const,
+    serverBoundary: "unavailable" as const,
+    directions: [] as const,
+    locales: [] as const,
+    registryDependencies: [] as const,
+    runtimeDependencies: [] as const,
+    distribution: {
+      package: "planned" as const,
+      source: "planned" as const,
+    },
   }));
 
   return {

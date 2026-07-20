@@ -9,10 +9,20 @@
     { "kind": "type", "name": "BreadcrumbItem" },
     { "kind": "type", "name": "BreadcrumbProps" }
   ],
+  "props": [
+    { "name": "collapse", "required": false, "default": true, "type": "boolean" },
+    {
+      "name": "maxVisible",
+      "required": false,
+      "default": 3,
+      "type": "integer >= 2 when collapse=true; ignored when collapse=false"
+    }
+  ],
   "controlledState": [],
   "nativePolicy": [
     "A named nav landmark contains an ordered hierarchy and exactly one final aria-current page.",
     "Ancestors remain real links and executable or empty href values are rejected.",
-    "Responsive collapse keeps the first, tail, current, and hidden hierarchy available through native details disclosure."
+    "Responsive collapse keeps the first, tail, current, and hidden hierarchy available through native details disclosure.",
+    "collapse=false removes the compact duplicate hierarchy, details disclosure, hidden-message lookup, and compact accessibility output."
   ]
 }

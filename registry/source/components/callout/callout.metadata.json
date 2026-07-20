@@ -8,7 +8,7 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["default", "warning"],
+  "stateGroups": ["default", "warning", "plain-baseline", "recommended-mergora"],
   "slots": [
     {
       "name": "callout",

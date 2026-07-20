@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./multi-select.css", "react"],
+  "entryPath": "registry/source/components/multi-select/multi-select.tsx",
+  "id": "multi-select",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

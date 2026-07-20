@@ -240,13 +240,13 @@ function detectSourceRoot(root: string, override: string | undefined): string {
       target: sourceRoot,
     });
   }
-  if (sourceRoot === ".") {
-    throw new CliError(
-      "The published v1 config schema requires a named source root; pass --source-root with a project directory.",
-      { code: "SOURCE_ROOT_SCHEMA_UNSUPPORTED", exitCode: 7 },
-    );
-  }
   return sourceRoot;
+}
+
+function sourcePath(sourceRoot: string, suffix: string): string {
+  const path = sourceRoot === "." ? suffix : `${sourceRoot}/${suffix}`;
+  assertPortableRelativePath(path, "Detected source path");
+  return path;
 }
 
 function detectAliasPrefix(
@@ -271,8 +271,7 @@ function detectAliasPrefix(
             target === `${sourceRoot}/*` ||
             target === `./${sourceRoot}/*` ||
             target === "./*" ||
-            target === "*" ||
-            target === "src/*",
+            target === "*",
         )
       ) {
         candidates.push(key.slice(0, -2));
@@ -335,10 +334,10 @@ function detectGlobalCss(
     return override;
   }
   const candidates = [
-    `${sourceRoot}/app/globals.css`,
-    `${sourceRoot}/styles/globals.css`,
-    `${sourceRoot}/styles/global.css`,
-    `${sourceRoot}/index.css`,
+    sourcePath(sourceRoot, "app/globals.css"),
+    sourcePath(sourceRoot, "styles/globals.css"),
+    sourcePath(sourceRoot, "styles/global.css"),
+    sourcePath(sourceRoot, "index.css"),
   ].filter((path) => hasRegularFile(root, path));
   if (candidates.length > 1) {
     throw new CliError(
@@ -349,8 +348,8 @@ function detectGlobalCss(
   if (candidates.length === 1) return candidates[0]!;
   const expected =
     framework === "next-app" || framework === "next-pages"
-      ? `${sourceRoot}/app/globals.css`
-      : `${sourceRoot}/index.css`;
+      ? sourcePath(sourceRoot, "app/globals.css")
+      : sourcePath(sourceRoot, "index.css");
   throw new CliError(
     `No global CSS entry was found; create it or pass --global-css (${expected}).`,
     {

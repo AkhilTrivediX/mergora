@@ -6,4 +6,6 @@ Status: source present and unreleased. No Stable, package-parity, conformance, o
 
 React Hook Form and TanStack Form adapters belong at the call site: spread each library's returned native props onto Mergora controls and pass its submit handler to `onSubmit`. Those examples require no Mergora runtime dependency on either adapter. Never intercept paste, autofill, password-manager mutation, or browser authentication assistance.
 
+`submissionStatus` is the optional Mergora refinement: a non-empty message renders a stable semantic status rail, derives `aria-busy` only while submitting, and distinguishes success from recoverable error without shifting individual fields. Omit it or pass `false`/`null` to disable it. Disabled values and statically empty message content emit no status node, role, live region, `data-submission-state`, or derived busy state, leaving submission entirely native.
+
 Promotion still requires server-action consumers, adapter fixtures, native submission/reset coverage, generation, package/source parity, Semantic Sync, and current manual evidence.

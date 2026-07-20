@@ -29,6 +29,7 @@ export interface ButtonOwnProps {
 
 export interface ButtonProps
   extends ButtonOwnProps, Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps> {
+  /** Visible button label content and the default accessible-name source. */
   readonly children?: ReactNode;
 }
 

@@ -54,14 +54,25 @@ const railStyle = {
 } satisfies CSSProperties;
 
 const specimenStyle = {
-  background: "var(--mrg-semantic-color-background-surface)",
-  borderRadius: "var(--mrg-semantic-radius-panel)",
+  background: "var(--mrg-semantic-color-background-canvas)",
+  borderBlockStart:
+    "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default)",
   display: "flex",
   flexDirection: "column",
   gap: "var(--mrg-semantic-space-stack-sm)",
   minInlineSize: 0,
   padding: "var(--mrg-semantic-density-panel-padding)",
 } satisfies CSSProperties;
+
+interface WorkbenchControls {
+  readonly clipboardFallback: boolean;
+  readonly destructiveConfirmation: boolean;
+  readonly externalContext: boolean;
+  readonly iconTooltip: boolean;
+  readonly pendingFeedback: boolean;
+  readonly selectionSummaries: boolean;
+  readonly toolbarDiscovery: boolean;
+}
 
 function PlusIcon() {
   return (
@@ -94,6 +105,245 @@ function Canvas({
         </main>
       </LayerManager.Provider>
     </MergoraProvider>
+  );
+}
+
+function BasicDefaultsWorkbench({
+  clipboardFallback,
+  destructiveConfirmation,
+  externalContext,
+  iconTooltip,
+  pendingFeedback,
+  selectionSummaries,
+  toolbarDiscovery,
+}: WorkbenchControls) {
+  const [submission, setSubmission] = useState("No form submission yet");
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Basic action defaults</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Native actions and selection remain concise when every optional enhancement is absent.
+        </p>
+      </header>
+      <section aria-labelledby="basic-actions-heading" style={specimenStyle}>
+        <h2 id="basic-actions-heading" style={{ margin: 0 }}>
+          Actions
+        </h2>
+        <div style={railStyle}>
+          <Button pending={pendingFeedback} pendingLabel="Saving document">
+            Save document
+          </Button>
+          <IconButton
+            label="Add section"
+            pending={pendingFeedback}
+            pendingLabel="Adding section"
+            {...(iconTooltip ? { tooltip: "Add a section after the current one" } : {})}
+          >
+            <PlusIcon />
+          </IconButton>
+          <CopyButton allowFallback={clipboardFallback} text="document-42" />
+          <Link
+            external
+            externalContext={externalContext ? "New tab" : false}
+            href="https://example.com/document-details"
+          >
+            Document details
+          </Link>
+          <ActionMenu
+            confirmDestructiveActions={destructiveConfirmation}
+            items={[
+              { id: "rename", label: "Rename document" },
+              { id: "duplicate", label: "Duplicate document" },
+              {
+                confirmLabel: "Confirm delete document",
+                id: "delete",
+                intent: "destructive",
+                label: "Delete document",
+              },
+            ]}
+            label="Document actions"
+          />
+        </div>
+      </section>
+      <form
+        onReset={() => setSubmission("Form reset to the saved view")}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const view = new FormData(event.currentTarget).get("view");
+          setSubmission(`Submitted view: ${String(view)}`);
+        }}
+        style={specimenStyle}
+      >
+        <h2 style={{ margin: 0 }}>Native form and reset</h2>
+        <Toggle pending={pendingFeedback} pendingLabel="Updating pin">
+          Pin document
+        </Toggle>
+        <ToggleGroup
+          defaultValue="preview"
+          label="Display mode"
+          {...(selectionSummaries
+            ? {
+                renderSelectionSummary: (values: readonly string[]) =>
+                  `Selected display mode: ${values[0] ?? "none"}`,
+              }
+            : {})}
+          type="single"
+        >
+          <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+          <ToggleGroupItem value="outline">Outline</ToggleGroupItem>
+        </ToggleGroup>
+        <SegmentedControl
+          defaultValue="comfortable"
+          label="View density"
+          name="view"
+          {...(selectionSummaries
+            ? {
+                renderSelectionSummary: (value: string | undefined) =>
+                  `Selected density: ${value ?? "none"}`,
+              }
+            : {})}
+          required
+        >
+          <SegmentedControlItem value="comfortable">Comfortable</SegmentedControlItem>
+          <SegmentedControlItem value="compact">Compact</SegmentedControlItem>
+        </SegmentedControl>
+        <ButtonGroup
+          {...(toolbarDiscovery ? { keyboardHint: "Arrow keys move focus; Enter activates." } : {})}
+          label="Form actions"
+          mode={toolbarDiscovery ? "toolbar" : "group"}
+        >
+          <Button type="submit">Apply view</Button>
+          <Button type="reset" variant="secondary">
+            Reset
+          </Button>
+        </ButtonGroup>
+        <output aria-live="polite">{submission}</output>
+      </form>
+    </Canvas>
+  );
+}
+
+function RecommendedWorkbench({
+  clipboardFallback,
+  destructiveConfirmation,
+  externalContext,
+  iconTooltip,
+  pendingFeedback,
+  selectionSummaries,
+  toolbarDiscovery,
+}: WorkbenchControls) {
+  const [layout, setLayout] = useState<string | null>("balanced");
+  const [density, setDensity] = useState("comfortable");
+  const [menuResult, setMenuResult] = useState("No action selected");
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Recommended Mergora actions</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Workbench rails expose progress, navigation context, keyboard discovery, selection
+          summaries, and safer destructive actions only when requested.
+        </p>
+      </header>
+      <section aria-labelledby="recommended-actions-heading" style={specimenStyle}>
+        <h2 id="recommended-actions-heading" style={{ margin: 0 }}>
+          Context-aware actions
+        </h2>
+        <div style={railStyle}>
+          <Button pending={pendingFeedback} pendingLabel="Saving document" variant="primary">
+            Save document
+          </Button>
+          <IconButton
+            {...(iconTooltip ? { tooltip: "Add a section after the current one" } : {})}
+            label="Add section"
+            pending={pendingFeedback}
+            pendingLabel="Adding section"
+          >
+            <PlusIcon />
+          </IconButton>
+          <CopyButton
+            allowFallback={clipboardFallback}
+            copyLabel="Copy document id"
+            text="document-42"
+          />
+          <Link
+            external
+            externalContext={externalContext ? "New tab" : false}
+            href="https://example.com/reference"
+          >
+            Open reference
+          </Link>
+        </div>
+      </section>
+      <section aria-labelledby="recommended-selection-heading" style={specimenStyle}>
+        <h2 id="recommended-selection-heading" style={{ margin: 0 }}>
+          Discoverable selection
+        </h2>
+        <ButtonGroup
+          {...(toolbarDiscovery ? { keyboardHint: "Arrow keys move focus; Enter activates." } : {})}
+          label="Document editing actions"
+          mode={toolbarDiscovery ? "toolbar" : "group"}
+        >
+          <Button variant="secondary">Undo</Button>
+          <Button variant="secondary">Redo</Button>
+          <Button variant="secondary">Compare</Button>
+        </ButtonGroup>
+        <ToggleGroup
+          {...(selectionSummaries
+            ? {
+                renderSelectionSummary: (values: readonly string[]) =>
+                  values.length === 0 ? "No layout selected" : `Selected layout: ${values[0]}`,
+              }
+            : {})}
+          allowEmpty
+          label="Page layout"
+          onValueChange={setLayout}
+          type="single"
+          value={layout}
+        >
+          <ToggleGroupItem value="balanced">Balanced</ToggleGroupItem>
+          <ToggleGroupItem value="focused">Focused</ToggleGroupItem>
+          <ToggleGroupItem value="wide">Wide</ToggleGroupItem>
+        </ToggleGroup>
+        <SegmentedControl
+          {...(selectionSummaries
+            ? {
+                renderSelectionSummary: (value: string | undefined) =>
+                  `Current density: ${value ?? "none"}`,
+              }
+            : {})}
+          label="View density"
+          onValueChange={setDensity}
+          value={density}
+        >
+          <SegmentedControlItem value="comfortable">Comfortable</SegmentedControlItem>
+          <SegmentedControlItem value="compact">Compact</SegmentedControlItem>
+          <SegmentedControlItem value="spacious">Spacious</SegmentedControlItem>
+        </SegmentedControl>
+      </section>
+      <section aria-labelledby="recommended-menu-heading" style={specimenStyle}>
+        <h2 id="recommended-menu-heading" style={{ margin: 0 }}>
+          Consequential actions
+        </h2>
+        <div style={railStyle}>
+          <ActionMenu
+            confirmDestructiveActions={destructiveConfirmation}
+            items={[
+              { id: "duplicate", label: "Duplicate document" },
+              {
+                confirmLabel: "Confirm delete document",
+                id: "delete",
+                intent: "destructive",
+                label: "Delete document",
+                onSelect: () => setMenuResult("Document deleted"),
+              },
+            ]}
+            label="Document actions"
+          />
+          <output aria-live="polite">{menuResult}</output>
+        </div>
+      </section>
+    </Canvas>
   );
 }
 
@@ -230,15 +480,84 @@ function DynamicRovingWorkbench() {
   );
 }
 
-const meta = {
-  component: Button,
+const meta: Meta<WorkbenchControls> = {
+  argTypes: {
+    clipboardFallback: { control: "boolean" },
+    destructiveConfirmation: { control: "boolean" },
+    externalContext: { control: "boolean" },
+    iconTooltip: { control: "boolean" },
+    pendingFeedback: { control: "boolean" },
+    selectionSummaries: { control: "boolean" },
+    toolbarDiscovery: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Actions and Selection",
-} satisfies Meta<typeof Button>;
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<WorkbenchControls>;
+
+export const BasicDefaults: Story = {
+  args: {
+    clipboardFallback: false,
+    destructiveConfirmation: false,
+    externalContext: false,
+    iconTooltip: false,
+    pendingFeedback: false,
+    selectionSummaries: false,
+    toolbarDiscovery: false,
+  },
+  render: (args) => <BasicDefaultsWorkbench {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  args: {
+    clipboardFallback: true,
+    destructiveConfirmation: true,
+    externalContext: true,
+    iconTooltip: true,
+    pendingFeedback: false,
+    selectionSummaries: true,
+    toolbarDiscovery: true,
+  },
+  render: (args) => <RecommendedWorkbench {...args} />,
+};
+
+export const EnhancementsDisabled: Story = {
+  render: () => (
+    <Canvas>
+      <h1 style={{ margin: 0 }}>Optional enhancements disabled</h1>
+      <ButtonGroup keyboardHint="This must not render in group mode" label="Document actions">
+        <Button variant="secondary">Rename</Button>
+        <Button variant="secondary">Duplicate</Button>
+      </ButtonGroup>
+      <Link external externalContext={false} href="https://example.com/reference">
+        Open reference
+      </Link>
+      <ToggleGroup defaultValue="preview" label="Display mode" type="single">
+        <ToggleGroupItem value="preview">Preview</ToggleGroupItem>
+        <ToggleGroupItem value="outline">Outline</ToggleGroupItem>
+      </ToggleGroup>
+      <SegmentedControl defaultValue="comfortable" label="View density">
+        <SegmentedControlItem value="comfortable">Comfortable</SegmentedControlItem>
+        <SegmentedControlItem value="compact">Compact</SegmentedControlItem>
+      </SegmentedControl>
+      <ActionMenu
+        confirmDestructiveActions={false}
+        items={[
+          {
+            confirmLabel: "This confirmation must not render",
+            id: "delete",
+            intent: "destructive",
+            label: "Delete document",
+          },
+        ]}
+        label="Destructive document actions"
+      />
+    </Canvas>
+  ),
+};
 
 export const ActionsWorkbench: Story = { render: () => <InteractiveWorkbench /> };
 

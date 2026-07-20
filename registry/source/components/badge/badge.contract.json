@@ -5,12 +5,13 @@
   "contractStatus": "source-present-evidence-incomplete",
   "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
   "riskClass": 1,
-  "summary": "A strictly noninteractive category, status, or localized count badge.",
+  "summary": "A compact Ink-bounded noninteractive category baseline with explicit localized status and exact-count enhancements.",
   "semantics": [
     "Badge always renders a span and rejects every React event handler plus href, accessKey, editable/drag state, focus, role, dangerous HTML, and generic accessible-name overrides at type and runtime boundaries.",
     "Status mode uses badge.status to localize punctuation and severity/label order while preserving fully wrapping visible text.",
     "Count mode exposes a localized exact accessible label even when only the visual count is capped.",
-    "Interactive use wraps Badge in a correctly named Button or Link without changing Badge semantics."
+    "Interactive use wraps Badge in a correctly named Button or Link without changing Badge semantics.",
+    "Category mode emits neither status-prefix output nor hidden exact-count content and performs no count formatting."
   ],
   "preferences": {
     "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",

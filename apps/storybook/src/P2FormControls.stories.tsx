@@ -69,6 +69,30 @@ const buttonStyle = {
   paddingInline: "var(--mrg-semantic-space-inline-md)",
 } satisfies CSSProperties;
 
+const secondaryButtonStyle = {
+  ...buttonStyle,
+  background: "var(--mrg-semantic-color-background-canvas)",
+  border:
+    "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-interactive)",
+  color: "var(--mrg-semantic-color-foreground-primary)",
+} satisfies CSSProperties;
+
+interface FormEnhancementArgs {
+  readonly checkboxDescription: boolean;
+  readonly checkboxGroupConstraints: boolean;
+  readonly fieldContextualAction: boolean;
+  readonly fieldsetSelectionSummary: boolean;
+  readonly formSubmissionStatus: boolean;
+  readonly formStatusState: "error" | "submitting" | "success";
+  readonly inputClearAction: boolean;
+  readonly nativeSelectSelectionContext: boolean;
+  readonly radioCardOptions: boolean;
+  readonly switchFormSerialization: boolean;
+  readonly textareaAutoGrow: boolean;
+  readonly textareaCount: boolean;
+  readonly validationFocusPolicy: "first-error" | "none" | "summary";
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -250,6 +274,247 @@ function SubmitWorkbench() {
       <output aria-live="polite" data-testid="submission-output">
         {result}
       </output>
+    </Canvas>
+  );
+}
+
+function MergoraFormModes({
+  checkboxDescription = true,
+  checkboxGroupConstraints = true,
+  fieldContextualAction = true,
+  fieldsetSelectionSummary = true,
+  formSubmissionStatus = true,
+  formStatusState = "success",
+  inputClearAction = true,
+  nativeSelectSelectionContext = true,
+  radioCardOptions = true,
+  switchFormSerialization = true,
+  textareaAutoGrow = true,
+  textareaCount = true,
+  validationFocusPolicy = "first-error",
+}: Partial<FormEnhancementArgs> = {}) {
+  const [workspace, setWorkspace] = useState("Northstar workspace");
+  const [selectedChecks, setSelectedChecks] = useState(["keyboard"]);
+  const [groupChecks, setGroupChecks] = useState<readonly string[]>([]);
+  const [region, setRegion] = useState("apac");
+  const [focusKey, setFocusKey] = useState(0);
+  const [submissionMessage, setSubmissionMessage] = useState("Ready for review.");
+  const [clearCount, setClearCount] = useState(0);
+  const issue: ValidationIssue = {
+    controlId: "mergora-workspace-name",
+    id: "workspace-name-required",
+    message: "Confirm the workspace name before continuing.",
+  };
+
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Mergora form foundation</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Native values, reset, and validation remain intact while each contextual aid can be
+          removed independently.
+        </p>
+      </header>
+      <ValidationSummary focusKey={focusKey} focusPolicy={validationFocusPolicy} issues={[issue]} />
+      <Form
+        aria-label="Workspace review"
+        onReset={() => {
+          setWorkspace("Northstar workspace");
+          setSelectedChecks(["keyboard"]);
+          setGroupChecks([]);
+          setRegion("apac");
+          setSubmissionMessage("Ready for review.");
+          setClearCount(0);
+        }}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const count = [...new FormData(event.currentTarget).entries()].length;
+          setSubmissionMessage(`${count} native values reviewed.`);
+        }}
+        {...(formSubmissionStatus
+          ? {
+              submissionStatus: {
+                message:
+                  formStatusState === "submitting"
+                    ? "Review in progress."
+                    : formStatusState === "error"
+                      ? "Review could not be completed. Check the form and try again."
+                      : submissionMessage,
+                state: formStatusState,
+              },
+            }
+          : {})}
+      >
+        <Field
+          contextualAction={
+            fieldContextualAction ? (
+              <button
+                onClick={() => setWorkspace("Reference workspace")}
+                style={secondaryButtonStyle}
+                type="button"
+              >
+                Use suggestion
+              </button>
+            ) : undefined
+          }
+          controlId="mergora-workspace-name"
+          description="This value is serialized by the native text input."
+          label="Workspace name"
+          required
+        >
+          <Input
+            clearable={inputClearAction}
+            clearLabel="Clear workspace name"
+            name="workspace"
+            onChange={(event) => setWorkspace(event.currentTarget.value)}
+            onClear={() => setClearCount((current) => current + 1)}
+            value={workspace}
+          />
+        </Field>
+        {inputClearAction ? (
+          <output aria-live="polite" data-testid="clear-event-count">
+            Clear actions: {clearCount}
+          </output>
+        ) : null}
+        <Field label="Reference label">
+          <Input
+            clearable={inputClearAction}
+            clearLabel="Clear reference label"
+            defaultValue="Draft reference"
+            name="reference-label"
+          />
+        </Field>
+        <Field
+          description="Grapheme-aware counting can be enabled without automatic resizing."
+          label="Review note"
+        >
+          <Textarea
+            autoGrow={textareaAutoGrow}
+            defaultValue="Evidence is ready for review."
+            maxGraphemes={80}
+            maxRows={4}
+            name="review-note"
+            showCount={textareaCount}
+          />
+        </Field>
+        <Fieldset
+          legend="Verification paths"
+          selectionSummary={
+            fieldsetSelectionSummary ? `${selectedChecks.length} of 2 paths selected.` : undefined
+          }
+        >
+          {(
+            [
+              ["keyboard", "Keyboard review"],
+              ["touch", "Touch review"],
+            ] as const
+          ).map(([value, label]) => (
+            <label key={value}>
+              <input
+                checked={selectedChecks.includes(value)}
+                name="verification"
+                onChange={(event) => {
+                  setSelectedChecks((current) =>
+                    event.currentTarget.checked
+                      ? [...current, value]
+                      : current.filter((entry) => entry !== value),
+                  );
+                }}
+                type="checkbox"
+                value={value}
+              />{" "}
+              {label}
+            </label>
+          ))}
+        </Fieldset>
+        <Field label="Delivery region">
+          <NativeSelect
+            name="region"
+            onChange={(event) => setRegion(event.currentTarget.value)}
+            selectionContext={
+              nativeSelectSelectionContext
+                ? region === "apac"
+                  ? "Uses the Asia Pacific maintenance window."
+                  : "Uses the European maintenance window."
+                : undefined
+            }
+            value={region}
+          >
+            <option value="apac">Asia Pacific</option>
+            <option value="eu">Europe</option>
+          </NativeSelect>
+        </Field>
+        <Checkbox
+          description={
+            checkboxDescription
+              ? "Changes are announced only after this explicit review step."
+              : undefined
+          }
+          defaultChecked
+          name="reviewed"
+          value="yes"
+        >
+          Confirm review
+        </Checkbox>
+        <CheckboxGroup
+          label="Evidence channels"
+          name="evidence-channels"
+          onValueChange={setGroupChecks}
+          value={groupChecks}
+          {...(checkboxGroupConstraints ? { maxSelected: 2, minSelected: 1 } : {})}
+        >
+          <CheckboxGroupItem value="keyboard">Keyboard</CheckboxGroupItem>
+          <CheckboxGroupItem value="screen-reader">Screen reader</CheckboxGroupItem>
+          <CheckboxGroupItem value="touch">Touch</CheckboxGroupItem>
+        </CheckboxGroup>
+        <RadioGroup defaultValue="source" label="Delivery mode" name="delivery-mode">
+          <RadioGroupItem
+            description={
+              radioCardOptions
+                ? "Editable files remain within the application repository."
+                : undefined
+            }
+            value="source"
+            variant={radioCardOptions ? "card" : "plain"}
+          >
+            Source files
+          </RadioGroupItem>
+          <RadioGroupItem
+            description={
+              radioCardOptions
+                ? "Versioned imports are updated through the package manager."
+                : undefined
+            }
+            value="package"
+            variant={radioCardOptions ? "card" : "plain"}
+          >
+            Package
+          </RadioGroupItem>
+        </RadioGroup>
+        <Switch
+          defaultValue
+          {...(switchFormSerialization
+            ? { name: "notifications", offValue: "disabled", onValue: "enabled" }
+            : {})}
+        >
+          Review notifications
+        </Switch>
+        <div style={buttonRailStyle}>
+          <button style={buttonStyle} type="submit">
+            Review native values
+          </button>
+          <button style={secondaryButtonStyle} type="reset">
+            Restore defaults
+          </button>
+          <button
+            onClick={() => setFocusKey((current) => current + 1)}
+            style={secondaryButtonStyle}
+            type="button"
+          >
+            Apply focus policy
+          </button>
+        </div>
+      </Form>
     </Canvas>
   );
 }
@@ -603,6 +868,7 @@ function IndeterminateWorkbench() {
 function AuditEdgeWorkbench() {
   const [disableFirst, setDisableFirst] = useState(false);
   const [showFirst, setShowFirst] = useState(true);
+  const [externalChecks, setExternalChecks] = useState<readonly string[]>([]);
   const [focusKey, setFocusKey] = useState(1);
   const [focusCount, setFocusCount] = useState(0);
   const [issues, setIssues] = useState<readonly ValidationIssue[]>([
@@ -649,6 +915,7 @@ function AuditEdgeWorkbench() {
       <Form
         aria-label="External owner"
         id="external-owner"
+        onReset={() => setExternalChecks([])}
         onSubmit={(event) => {
           event.preventDefault();
           setSubmission(JSON.stringify([...new FormData(event.currentTarget).entries()]));
@@ -687,7 +954,9 @@ function AuditEdgeWorkbench() {
         label="External checks"
         name="external-checks"
         nativeValidationMessage="Choose at least one external check."
+        onValueChange={setExternalChecks}
         required
+        value={externalChecks}
       >
         {showFirst ? (
           <CheckboxGroupItem disabled={disableFirst} value="first">
@@ -711,14 +980,20 @@ function AuditEdgeWorkbench() {
       </Form>
       <div style={buttonRailStyle}>
         <button
-          onClick={() => setDisableFirst((current) => !current)}
+          onClick={() => {
+            setDisableFirst((current) => !current);
+            setExternalChecks((current) => current.filter((value) => value !== "first"));
+          }}
           style={buttonStyle}
           type="button"
         >
           Toggle first check disabled
         </button>
         <button
-          onClick={() => setShowFirst((current) => !current)}
+          onClick={() => {
+            setShowFirst((current) => !current);
+            setExternalChecks((current) => current.filter((value) => value !== "first"));
+          }}
           style={buttonStyle}
           type="button"
         >
@@ -826,14 +1101,72 @@ function InvalidUsageDiagnosticsWorkbench() {
 }
 
 const meta = {
-  component: Form,
+  args: {
+    checkboxDescription: true,
+    checkboxGroupConstraints: true,
+    fieldContextualAction: true,
+    fieldsetSelectionSummary: true,
+    formSubmissionStatus: true,
+    formStatusState: "success",
+    inputClearAction: true,
+    nativeSelectSelectionContext: true,
+    radioCardOptions: true,
+    switchFormSerialization: true,
+    textareaAutoGrow: true,
+    textareaCount: true,
+    validationFocusPolicy: "first-error",
+  },
+  argTypes: {
+    checkboxDescription: { control: "boolean" },
+    checkboxGroupConstraints: { control: "boolean" },
+    fieldContextualAction: { control: "boolean" },
+    fieldsetSelectionSummary: { control: "boolean" },
+    formSubmissionStatus: { control: "boolean" },
+    formStatusState: {
+      control: "select",
+      options: ["submitting", "success", "error"],
+    },
+    inputClearAction: { control: "boolean" },
+    nativeSelectSelectionContext: { control: "boolean" },
+    radioCardOptions: { control: "boolean" },
+    switchFormSerialization: { control: "boolean" },
+    textareaAutoGrow: { control: "boolean" },
+    textareaCount: { control: "boolean" },
+    validationFocusPolicy: {
+      control: "select",
+      options: ["none", "summary", "first-error"],
+    },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Form Controls",
-} satisfies Meta<typeof Form>;
+} satisfies Meta<FormEnhancementArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<FormEnhancementArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    checkboxDescription: false,
+    checkboxGroupConstraints: false,
+    fieldContextualAction: false,
+    fieldsetSelectionSummary: false,
+    formSubmissionStatus: false,
+    formStatusState: "success",
+    inputClearAction: false,
+    nativeSelectSelectionContext: false,
+    radioCardOptions: false,
+    switchFormSerialization: false,
+    textareaAutoGrow: false,
+    textareaCount: false,
+    validationFocusPolicy: "none",
+  },
+  render: (args) => <MergoraFormModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraFormModes {...args} />,
+};
 
 export const CompositionWorkbench: Story = { render: () => <SubmitWorkbench /> };
 export const AsyncValidation: Story = { render: () => <AsyncValidationWorkbench /> };

@@ -8,13 +8,23 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["auto-fit", "fixed-columns", "minimum", "gap", "align", "list", "narrow", "rtl"],
+  "stateGroups": [
+    "auto-fit",
+    "equal-rows",
+    "fixed-columns",
+    "minimum",
+    "gap",
+    "align",
+    "list",
+    "narrow",
+    "rtl"
+  ],
   "slots": [
     {
       "name": "grid",
       "semanticElement": "div | section | ul | ol",
       "refTarget": "HTMLElement",
-      "states": ["element", "columns", "minimum", "gap", "align", "list-style"]
+      "states": ["element", "columns", "minimum", "gap", "align", "equal-rows", "list-style"]
     }
   ],
   "contract": { "id": "grid-accessibility", "version": "0.1.0" },

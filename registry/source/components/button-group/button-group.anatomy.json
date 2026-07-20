@@ -7,5 +7,11 @@
     "ref": "HTMLDivElement",
     "stableAttributes": ["data-slot"]
   },
-  "parts": []
+  "parts": [
+    {
+      "slot": "button-group-keyboard-hint",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
 }

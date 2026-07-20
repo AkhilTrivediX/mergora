@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "crud-data-workspace",
+  "entryExport": "CrudDataWorkspace",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change behavior",
+  "exports": [
+    { "kind": "value", "name": "CrudDataWorkspace" },
+    { "kind": "value", "name": "CrudDataWorkspacePage" },
+    { "kind": "type", "name": "CrudDataWorkspaceProps" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "CrudDataWorkspaceAdapter" },
+    { "name": "savedViews", "required": false, "default": false, "type": "boolean" },
+    { "name": "bulkActions", "required": false, "default": false, "type": "boolean" },
+    { "name": "optimisticMutations", "required": false, "default": false, "type": "boolean" },
+    { "name": "enableUndo", "required": false, "default": false, "type": "boolean" },
+    { "name": "showMutationTimeline", "required": false, "default": false, "type": "boolean" },
+    { "name": "offline", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical DataTable, Dialog, Button, Alert, Badge, and Skeleton source items around native labelled editor fields.",
+    "adapter": "The consumer owns persistence, authorization, validation, conflict resolution, audit, network, privacy, retention, and every side effect.",
+    "enhancements": "Saved views, bulk actions, optimistic mutations, delete undo, and the mutation timeline are independent opt-ins."
+  }
+}

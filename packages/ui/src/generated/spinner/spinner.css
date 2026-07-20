@@ -2,11 +2,11 @@
 .mrg-spinner {
   animation: mrg-spinner-rotate var(--mrg-semantic-motion-duration-deliberate) linear infinite;
   aspect-ratio: 1;
-  border: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-brand-living);
   border-block-start-color: transparent;
+  border-inline-end-color: var(--mrg-semantic-color-brand-violet);
   border-radius: var(--mrg-semantic-radius-pill);
   box-sizing: border-box;
-  color: var(--mrg-semantic-color-action-background);
   display: inline-block;
   inline-size: var(--mrg-semantic-size-icon-md);
 }
@@ -33,13 +33,15 @@
 @media (prefers-reduced-motion: reduce) {
   .mrg-spinner {
     animation: none;
-    border-block-start-color: currentColor;
+    border-block-start-color: var(--mrg-semantic-color-brand-living);
     border-inline-end-style: dotted;
   }
 }
 
 @media (forced-colors: active) {
   .mrg-spinner {
-    color: CanvasText;
+    border-color: CanvasText;
+    border-block-start-color: transparent;
+    border-inline-end-color: LinkText;
   }
 }

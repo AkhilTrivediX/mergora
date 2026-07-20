@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "itemId": "signature-pad",
+  "entryExport": "SignaturePad",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children, defaultValue, and change handling",
+  "exports": [
+    { "kind": "type", "name": "DrawnSignatureValue" },
+    { "kind": "type", "name": "SignatureChangeReason" },
+    { "kind": "component", "name": "SignaturePad" },
+    { "kind": "type", "name": "SignaturePadProps" },
+    { "kind": "type", "name": "SignaturePoint" },
+    { "kind": "type", "name": "SignatureValue" },
+    { "kind": "type", "name": "TypedSignatureValue" },
+    { "kind": "function", "name": "serializeSignatureValue" }
+  ],
+  "controlledState": [
+    {
+      "state": "drawn or typed signature",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange(value, reason)"
+    }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "enableTextAlternative", "required": false, "default": false, "type": "boolean" },
+    { "name": "enableFileAlternative", "required": false, "default": false, "type": "boolean" },
+    { "name": "showKeyboardControls", "required": false, "default": false, "type": "boolean" },
+    { "name": "showLegalCaveat", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceChanges", "required": false, "default": false, "type": "boolean" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "name/form",
+      "required": false,
+      "type": "disabled-aware vector/text JSON plus native file field"
+    }
+  ],
+  "compositionPolicy": {
+    "canvas": "Pointer strokes use normalized vectors; focused canvas arrows move a keyboard cursor and Enter/Space marks a point.",
+    "enhancements": "Visible keyboard controls, typed alternative, native file alternative, legal caveat, and announcements are independently gated and cleanly absent when disabled."
+  }
+}

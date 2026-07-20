@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message-list",
+  "entryExport": "MessageList",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and scroll handling",
+  "exports": [
+    { "kind": "value", "name": "MessageList" },
+    { "kind": "type", "name": "MessageListFollowMode" },
+    { "kind": "type", "name": "MessageListProps" },
+    { "kind": "type", "name": "MessageListVirtualization" }
+  ],
+  "props": [
+    {
+      "name": "virtualization",
+      "required": false,
+      "default": false,
+      "type": "false | MessageListVirtualization"
+    },
+    {
+      "name": "followOutput",
+      "required": false,
+      "default": false,
+      "type": "false | instant | smooth"
+    },
+    { "name": "showFollowControl", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceNewMessages", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "baseline": "A labelled native scrolling region containing an ordered list.",
+    "enhancements": "Virtualization, follow-output, resume control and announcements are separately selected and absent by default."
+  }
+}

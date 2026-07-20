@@ -4,6 +4,7 @@ import { createElement, forwardRef, type HTMLAttributes } from "react";
 import "./separator.css";
 
 export type SeparatorOrientation = "horizontal" | "vertical";
+export type SeparatorSpacing = "none" | "sm" | "md" | "lg";
 
 export interface SeparatorProps extends Omit<
   HTMLAttributes<HTMLElement>,
@@ -11,7 +12,10 @@ export interface SeparatorProps extends Omit<
 > {
   /** Decorative separators are removed from the accessibility tree. */
   readonly decorative?: boolean;
+  /** Selects horizontal or vertical rendering and the matching accessible orientation. */
   readonly orientation?: SeparatorOrientation;
+  /** Applies logical breathing room while preserving the native separator element. */
+  readonly spacing?: SeparatorSpacing;
 }
 
 function joinSeparatorClassName(className: string | undefined): string {
@@ -21,7 +25,7 @@ function joinSeparatorClassName(className: string | undefined): string {
 }
 
 export const Separator = forwardRef<HTMLElement, SeparatorProps>(function Separator(
-  { className, decorative = true, orientation = "horizontal", ...nativeProps },
+  { className, decorative = true, orientation = "horizontal", spacing = "none", ...nativeProps },
   forwardedRef,
 ) {
   const accessibilityProps = decorative
@@ -37,6 +41,7 @@ export const Separator = forwardRef<HTMLElement, SeparatorProps>(function Separa
     className: joinSeparatorClassName(className),
     "data-decorative": decorative ? "true" : "false",
     "data-orientation": orientation,
+    "data-spacing": spacing === "none" ? undefined : spacing,
     "data-slot": "separator",
   });
 });

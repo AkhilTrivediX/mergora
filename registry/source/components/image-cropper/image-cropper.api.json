@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image-cropper",
+  "entryExport": "ImageCropper",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children, defaultValue, and change handling",
+  "exports": [
+    { "kind": "component", "name": "ImageCropper" },
+    { "kind": "type", "name": "ImageCropChangeReason" },
+    { "kind": "type", "name": "ImageCropperProps" },
+    { "kind": "type", "name": "ImageCropValue" },
+    { "kind": "function", "name": "normalizeImageCropValue" }
+  ],
+  "controlledState": [
+    {
+      "state": "crop rectangle and zoom",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange(value, reason)"
+    }
+  ],
+  "props": [
+    { "name": "src", "required": true, "type": "string" },
+    { "name": "alt", "required": true, "type": "non-empty string" },
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "aspectRatio", "required": false, "type": "positive finite number" },
+    {
+      "name": "sourceAspectRatio",
+      "required": false,
+      "default": 1.6,
+      "type": "positive finite number used by stage and crop geometry"
+    },
+    { "name": "showNumericControls", "required": false, "default": false, "type": "boolean" },
+    { "name": "showPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRuleOfThirds", "required": false, "default": false, "type": "boolean" },
+    { "name": "name/form", "required": false, "type": "native hidden JSON serialization" }
+  ],
+  "compositionPolicy": {
+    "original": "The source URL and bytes are never mutated; value describes a normalized crop plan only.",
+    "enhancements": "Numeric controls, visual preview, and rule-of-thirds overlay are independently gated and leave no controls or semantic output when disabled."
+  }
+}

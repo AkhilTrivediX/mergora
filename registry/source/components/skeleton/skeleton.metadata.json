@@ -8,13 +8,13 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["loading"],
+  "stateGroups": ["loading", "plain-baseline", "recommended-mergora"],
   "slots": [
     {
       "name": "skeleton",
       "semanticElement": "span aria-hidden",
       "refTarget": "HTMLSpanElement",
-      "states": []
+      "states": ["animated", "static"]
     }
   ],
   "contract": { "id": "skeleton-accessibility", "version": "0.1.0" },

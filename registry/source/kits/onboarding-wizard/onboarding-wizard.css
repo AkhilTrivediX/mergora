@@ -1,0 +1,153 @@
+@layer mergora.components {
+  .mrg-onboarding-wizard {
+    display: grid;
+    grid-template-columns: minmax(14rem, 19rem) minmax(0, 1fr);
+    max-inline-size: 70rem;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow: clip;
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-header"] {
+    grid-column: 1 / -1;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-onboarding-wizard h1,
+  .mrg-onboarding-wizard h2,
+  .mrg-onboarding-wizard h3,
+  .mrg-onboarding-wizard p {
+    margin-block-start: 0;
+  }
+
+  .mrg-onboarding-wizard h1 {
+    margin-block-end: var(--mrg-semantic-space-stack-xs);
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-header"] p,
+  .mrg-onboarding-wizard [data-slot="onboarding-step-heading"] p {
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    margin-block-end: 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-onboarding-wizard > [data-slot="stepper"] {
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-main"] {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-lg);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-step-content"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    max-inline-size: 40rem;
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-onboarding-wizard
+    :is(
+      [data-slot="onboarding-errors"],
+      [data-slot="onboarding-complete"],
+      [data-slot="onboarding-completion-error"],
+      [data-slot="onboarding-persistence"]
+    ) {
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-errors"],
+  .mrg-onboarding-wizard [data-slot="onboarding-completion-error"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-onboarding-wizard [data-slot="onboarding-complete"] {
+    border-color: var(--mrg-semantic-color-status-success-border);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+
+  .mrg-onboarding-wizard button:focus-visible,
+  .mrg-onboarding-wizard :is(input, select, textarea):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 48rem) {
+    .mrg-onboarding-wizard {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-onboarding-wizard > [data-slot="stepper"] {
+      border-inline-end: 0;
+      border-block-end: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-default);
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-onboarding-wizard button,
+    .mrg-onboarding-wizard :is(input, select, textarea) {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-onboarding-wizard * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-onboarding-wizard,
+    .mrg-onboarding-wizard [data-slot="onboarding-header"],
+    .mrg-onboarding-wizard > [data-slot="stepper"],
+    .mrg-onboarding-wizard
+      :is(
+        [data-slot="onboarding-errors"],
+        [data-slot="onboarding-complete"],
+        [data-slot="onboarding-completion-error"],
+        [data-slot="onboarding-persistence"]
+      ) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-onboarding-wizard button:focus-visible,
+    .mrg-onboarding-wizard :is(input, select, textarea):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

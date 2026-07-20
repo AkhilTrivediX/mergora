@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "lightbox",
+  "root": {
+    "element": "div gallery with thumbnail buttons and a modal dialog",
+    "ref": "HTMLDivElement",
+    "slot": "lightbox",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "lightbox-thumbnail",
+      "element": "button",
+      "stability": "documented"
+    },
+    {
+      "slot": "lightbox-stage",
+      "element": "figure inside a named dialog",
+      "stability": "documented"
+    },
+    {
+      "slot": "lightbox-position-summary",
+      "element": "output aria-live=polite",
+      "purpose": "Optionally provides current/total context.",
+      "stability": "documented"
+    },
+    {
+      "slot": "lightbox-zoom-controls",
+      "element": "group of buttons and output",
+      "purpose": "Optionally provides bounded zoom, reset, and non-gesture pan alternatives.",
+      "stability": "documented"
+    }
+  ]
+}

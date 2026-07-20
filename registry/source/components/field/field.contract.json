@@ -12,7 +12,7 @@
     "refTarget": "documented in anatomy and API records"
   },
   "interaction": {
-    "keyboard": "The native descendant control owns keyboard behavior.",
+    "keyboard": "The native descendant control owns editing behavior; an optional contextual action remains an ordinary independently focusable control.",
     "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
     "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
     "speech": "Visible labels remain available for voice targeting.",
@@ -20,12 +20,12 @@
   },
   "formBehavior": "Required, invalid, described-by, and error-message relationships are shared with the descendant Mergora control.",
   "states": {
-    "attributes": ["data-layout", "data-required", "data-invalid"],
+    "attributes": ["data-layout", "data-required", "data-invalid", "data-contextual-action"],
     "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
   },
   "stableSelectors": {
     "root": "[data-slot=field]",
-    "attributes": ["data-layout", "data-required", "data-invalid"]
+    "attributes": ["data-layout", "data-required", "data-invalid", "data-contextual-action"]
   },
   "preferences": {
     "dark": "Uses semantic theme tokens.",
@@ -41,7 +41,7 @@
     "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
   },
   "internationalization": {
-    "consumerStrings": ["label", "description", "error", "optionalLabel"],
+    "consumerStrings": ["label", "description", "error", "optionalLabel", "contextualAction"],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
     "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",

@@ -12,6 +12,8 @@
       "data-invalid",
       "data-orientation",
       "data-has-marks",
+      "data-intelligent-marks",
+      "data-show-value-bubbles",
       "data-collision-behavior"
     ]
   },
@@ -57,6 +59,18 @@
       "element": "div",
       "purpose": "Displays non-interactive, step-aligned visual tick labels.",
       "stability": "documented"
+    },
+    {
+      "slot": "slider-value-bubble",
+      "element": "aria-hidden span",
+      "purpose": "Optionally keeps each localized visual value attached to its semantic thumb identity.",
+      "stability": "documented"
+    },
+    {
+      "slot": "range-slider-collision-status",
+      "element": "visually hidden span with role=status",
+      "purpose": "Optionally announces the formatted value where neighboring boundaries meet.",
+      "stability": "behavioral"
     }
   ]
 }

@@ -86,6 +86,11 @@ const passwordRules = [
   },
 ] as const;
 
+interface SpecialistEnhancementArgs {
+  readonly passwordRuleChecklist: boolean;
+  readonly searchStatusRail: boolean;
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -194,13 +199,83 @@ function ResetWorkbenchContent() {
   );
 }
 
+function MergoraSpecialistModes({
+  passwordRuleChecklist = true,
+  searchStatusRail = true,
+}: Partial<SpecialistEnhancementArgs> = {}) {
+  const [password, setPassword] = useState("Workbench2026");
+  const [query, setQuery] = useState("dialog");
+
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Specialist text controls</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Native credential and search behavior stays predictable while policy and result context
+          can be selected independently.
+        </p>
+      </header>
+      <Field
+        description="Autofill, paste, and password-manager discovery remain native."
+        label="Account password"
+      >
+        <PasswordField
+          autoComplete="current-password"
+          name="account-password"
+          onChange={setPassword}
+          rules={passwordRuleChecklist ? passwordRules : []}
+          value={password}
+        />
+      </Field>
+      <Field
+        description="The result rail is linked only when it is enabled."
+        label="Component query"
+      >
+        <SearchField
+          name="component-query"
+          onChange={setQuery}
+          resultsId="specialist-example-results"
+          status={
+            searchStatusRail
+              ? { message: "3 matching components available.", state: "results" }
+              : { state: "idle" }
+          }
+          value={query}
+        />
+      </Field>
+      <ul id="specialist-example-results">
+        <li>Dialog</li>
+        <li>Alert dialog</li>
+        <li>Drawer dialog</li>
+      </ul>
+    </Canvas>
+  );
+}
+
 const meta = {
+  args: {
+    passwordRuleChecklist: true,
+    searchStatusRail: true,
+  },
+  argTypes: {
+    passwordRuleChecklist: { control: "boolean" },
+    searchStatusRail: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   title: "P4/Specialist text fields",
-} satisfies Meta;
+} satisfies Meta<SpecialistEnhancementArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const BasicDefaults: Story = {
+  args: { passwordRuleChecklist: false, searchStatusRail: false },
+  render: (args) => <MergoraSpecialistModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraSpecialistModes {...args} />,
+};
 
 export const AuthenticationWorkbench: Story = {
   render: () => (

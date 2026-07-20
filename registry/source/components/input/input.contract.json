@@ -13,7 +13,7 @@
   },
   "interaction": {
     "keyboard": "The browser owns type-specific editing, selection, undo, paste, validation, and submission.",
-    "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
+    "pointer": "Native pointer activation and cancellation remain authoritative; the optional clear button dispatches the native input path and restores editor focus.",
     "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
     "speech": "Visible labels remain available for voice targeting.",
     "switchAccess": "No duplicate proxy focus target is introduced."
@@ -23,6 +23,8 @@
     "attributes": [
       "data-disabled",
       "data-invalid",
+      "data-clearable",
+      "data-empty",
       "id",
       "name",
       "type",
@@ -36,7 +38,7 @@
   },
   "stableSelectors": {
     "root": "[data-slot=input-root]",
-    "attributes": ["data-disabled", "data-invalid"]
+    "attributes": ["data-disabled", "data-invalid", "data-clearable", "data-empty"]
   },
   "preferences": {
     "dark": "Uses semantic theme tokens.",
@@ -52,7 +54,13 @@
     "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
   },
   "internationalization": {
-    "consumerStrings": ["field-label", "field-description", "field-error", "placeholder"],
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "placeholder",
+      "clearLabel"
+    ],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
     "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",
@@ -69,6 +77,8 @@
       "ssr-hydration",
       "field-association",
       "native-validation-submission-reset",
+      "controlled-uncontrolled-clear-and-reset",
+      "clear-disabled-absence",
       "mobile-input",
       "autofill-probes",
       "narrow-rtl-forced-colors",

@@ -21,7 +21,7 @@
       "name": "slot",
       "semanticElement": "consumer element",
       "refTarget": "HTMLElement",
-      "states": ["composed"]
+      "states": ["composed", "child-cancelled", "slot-handler-omitted"]
     }
   ],
   "contract": { "id": "slot-accessibility", "version": "0.1.0" },

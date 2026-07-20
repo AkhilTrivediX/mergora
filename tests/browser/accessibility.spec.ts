@@ -40,11 +40,7 @@ test("@a11y axe scans default and modal states without waivers", async ({
   });
 });
 
-test("@browser @a11y Chromium forced-colors keeps visible system focus", async ({
-  browserName,
-  page,
-}) => {
-  test.skip(browserName !== "chromium", "Playwright forced-colors evidence is Chromium-only here.");
+test("@browser @a11y forced-colors keeps visible system focus", async ({ page }) => {
   await page.emulateMedia({ forcedColors: "active" });
   await loadFixture(page);
 
@@ -54,12 +50,17 @@ test("@browser @a11y Chromium forced-colors keeps visible system focus", async (
   const focusStyle = await button.evaluate((element) => {
     const style = getComputedStyle(element);
     return {
-      forcedColorAdjust: style.forcedColorAdjust,
+      forcedColorAdjust: style.getPropertyValue("forced-color-adjust"),
       outlineStyle: style.outlineStyle,
       outlineWidth: style.outlineWidth,
+      supportsForcedColorAdjust: CSS.supports("forced-color-adjust", "auto"),
     };
   });
-  expect(focusStyle.forcedColorAdjust).toBe("auto");
+  if (focusStyle.supportsForcedColorAdjust) {
+    expect(focusStyle.forcedColorAdjust).toBe("auto");
+  } else {
+    expect(focusStyle.forcedColorAdjust).toBe("");
+  }
   expect(focusStyle.outlineStyle).not.toBe("none");
   expect(Number.parseFloat(focusStyle.outlineWidth)).toBeGreaterThanOrEqual(2);
 });

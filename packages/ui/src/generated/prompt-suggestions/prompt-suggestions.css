@@ -1,0 +1,80 @@
+/* Generated from registry/source/components/prompt-suggestions/prompt-suggestions.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-prompt-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    min-inline-size: 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-prompt-suggestions [data-slot="prompt-suggestion"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    max-inline-size: min(100%, var(--mrg-semantic-size-content-prose));
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    text-align: start;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-prompt-suggestions [data-slot="prompt-suggestion"] small {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+    font-weight: var(--mrg-semantic-font-weight-body);
+  }
+
+  .mrg-prompt-suggestions[data-selection-mode]
+    [data-slot="prompt-suggestion"][aria-selected="true"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-prompt-suggestions [data-slot="prompt-suggestion"]:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 32rem) {
+    .mrg-prompt-suggestions {
+      display: grid;
+    }
+    .mrg-prompt-suggestions [data-slot="prompt-suggestion"] {
+      inline-size: 100%;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-prompt-suggestions [data-slot="prompt-suggestion"] {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-prompt-suggestions [data-slot="prompt-suggestion"] {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-prompt-suggestions[data-selection-mode]
+      [data-slot="prompt-suggestion"][aria-selected="true"] {
+      border-color: Highlight;
+      color: HighlightText;
+      background: Highlight;
+    }
+    .mrg-prompt-suggestions [data-slot="prompt-suggestion"]:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

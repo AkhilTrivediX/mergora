@@ -15,6 +15,12 @@
       "semanticElement": "div role=group or toolbar",
       "refTarget": "HTMLDivElement",
       "states": []
+    },
+    {
+      "name": "button-group-keyboard-hint",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["toolbar-only"]
     }
   ],
   "contract": {

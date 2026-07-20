@@ -3,7 +3,7 @@
 
 import { Fragment, forwardRef, isValidElement, type HTMLAttributes, type ReactNode } from "react";
 
-import { useMergoraContext, useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import "./badge.css";
 
 export type BadgeVariant = "neutral" | "info" | "success" | "warning" | "error";
@@ -31,24 +31,34 @@ type NonInteractiveBadgeAttributes = Omit<
 >;
 
 interface BadgeBaseProps extends NonInteractiveBadgeAttributes {
+  /** Visual severity treatment for category and status badges; defaults to `neutral`. */
   readonly variant?: BadgeVariant;
 }
 
 export interface BadgeCategoryProps extends BadgeBaseProps {
+  /** Non-empty visible badge content; count badges use their numeric count and label instead. */
   readonly children: ReactNode;
+  /** Discriminates the category, status, or count presentation and its accessible contract. */
   readonly kind?: "category";
 }
 
 export interface BadgeStatusProps extends BadgeBaseProps {
+  /** Non-empty visible badge content; count badges use their numeric count and label instead. */
   readonly children: ReactNode;
+  /** Discriminates the category, status, or count presentation and its accessible contract. */
   readonly kind: "status";
+  /** Localized visible override for the selected status variant label. */
   readonly variantLabel?: string;
 }
 
 export interface BadgeCountProps extends Omit<BadgeBaseProps, "variant"> {
+  /** Exact non-negative integer exposed in the accessible count label. */
   readonly count: number;
+  /** Discriminates the category, status, or count presentation and its accessible contract. */
   readonly kind: "count";
+  /** Non-empty localized noun or phrase identifying what is counted. */
   readonly label: string;
+  /** Positive integer visual cap; exact accessible output remains uncapped. Defaults to 99. */
   readonly maximum?: number;
 }
 
@@ -130,15 +140,6 @@ function renderStatusContent(template: string, variantLabel: string, children: R
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(props, ref) {
   assertNonInteractiveBadgeProps(props as unknown as Readonly<Record<string, unknown>>);
   const { locale, getMessage } = useMergoraContext();
-  const statusNeutral = useMergoraMessage("badge.neutral", "Status");
-  const statusInfo = useMergoraMessage("badge.info", "Information");
-  const statusSuccess = useMergoraMessage("badge.success", "Success");
-  const statusWarning = useMergoraMessage("badge.warning", "Warning");
-  const statusError = useMergoraMessage("badge.error", "Error");
-  const statusTemplate = getMessage("badge.status", "{variant}: {label}", {
-    label: STATUS_LABEL_MARKER,
-    variant: STATUS_VARIANT_MARKER,
-  });
 
   if (props.kind === "count") {
     const { className, count, kind, label, maximum = 99, ...nativeProps } = props;
@@ -184,13 +185,23 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(prop
     throw new Error("Mergora Badge variantLabel must be non-empty when provided.");
   }
   const defaultLabel = {
-    error: statusError,
-    info: statusInfo,
-    neutral: statusNeutral,
-    success: statusSuccess,
-    warning: statusWarning,
+    error: "Error",
+    info: "Information",
+    neutral: "Status",
+    success: "Success",
+    warning: "Warning",
   }[variant];
-  const resolvedVariantLabel = variantLabelProp ?? defaultLabel;
+  const statusContent =
+    kind === "status"
+      ? renderStatusContent(
+          getMessage("badge.status", "{variant}: {label}", {
+            label: STATUS_LABEL_MARKER,
+            variant: STATUS_VARIANT_MARKER,
+          }),
+          variantLabelProp ?? getMessage(`badge.${variant}`, defaultLabel),
+          children,
+        )
+      : undefined;
   return (
     <span
       {...nativeProps}
@@ -200,11 +211,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(prop
       data-variant={variant}
       ref={ref}
     >
-      {kind === "status" ? (
-        renderStatusContent(statusTemplate, resolvedVariantLabel, children)
-      ) : (
-        <span data-slot="badge-label">{children}</span>
-      )}
+      {kind === "status" ? statusContent : <span data-slot="badge-label">{children}</span>}
     </span>
   );
 });

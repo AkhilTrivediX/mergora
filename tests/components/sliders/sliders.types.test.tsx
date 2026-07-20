@@ -12,6 +12,7 @@ const rootRef = createRef<HTMLDivElement>();
 <Slider
   defaultValue={0.5}
   formatOptions={{ style: "percent" }}
+  intelligentMarks={false}
   marks={[
     { label: "Start", value: 0 },
     { label: "End", value: 1 },
@@ -25,9 +26,12 @@ const rootRef = createRef<HTMLDivElement>();
 />;
 
 <RangeSlider
+  announceCollisions
   defaultValue={[10, 50, 90]}
+  intelligentMarks={{ maximumVisible: 6, strategy: "meaningful" }}
   names={["minimum", "target", "maximum"]}
   onChange={(value) => value[0].toFixed(0)}
+  showValueBubbles
   thumbLabels={["Minimum score", "Target score", "Maximum score"]}
 />;
 
@@ -52,6 +56,9 @@ const controlled: RangeSliderValues = [1000, 10000];
 
 // @ts-expect-error Range form names require at least two entries.
 <RangeSlider names={["only-one"]} value={[20, 80]} />;
+
+// @ts-expect-error Intelligent mark strategies are intentionally bounded.
+<Slider intelligentMarks={{ strategy: "dense" }} />;
 
 describe("P4 slider type surface", () => {
   it("keeps refs and ordered tuple values strict", () => {

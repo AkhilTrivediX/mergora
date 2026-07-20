@@ -8,6 +8,10 @@ Maps readable text to a closed set of semantic elements, visual roles, and a foc
 </Text>
 ```
 
+## Mergora advantage
+
+Optional truncation preserves the complete value for keyboard, touch, copy, and assistive-technology recovery instead of hiding data behind an ellipsis. Set `truncate={false}` to remove focusability, the title, the accessible full-value override, and reveal behavior completely.
+
 ## Contract
 
 The chosen native text element is preserved. Truncated values become focusable and expose their complete string as an accessible name, title, and focus/touch expansion.

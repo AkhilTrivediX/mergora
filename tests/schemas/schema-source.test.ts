@@ -132,6 +132,27 @@ describe("schema negotiation and valid documents", () => {
     expect(result.ok).toBe(true);
   });
 
+  it("accepts only the exact package-root sentinel for config project.sourceRoot", () => {
+    const packageRoot = fixture("valid", "config.json") as {
+      project: { sourceRoot: string };
+      targets: { components: string };
+    };
+    packageRoot.project.sourceRoot = ".";
+    const result = validateSchemaDocument("config", packageRoot);
+    expect(formatValidationErrors(result.errors)).toBe("");
+    expect(result.ok).toBe(true);
+
+    for (const unsafe of ["./", "./src", "..", "src/.", "src/../other"]) {
+      const document = structuredClone(packageRoot);
+      document.project.sourceRoot = unsafe;
+      expect(validateSchemaDocument("config", document).ok, unsafe).toBe(false);
+    }
+
+    const targetRoot = structuredClone(packageRoot);
+    targetRoot.targets.components = ".";
+    expect(codes(validateSchemaDocument("config", targetRoot))).toContain("UNSAFE_PATH");
+  });
+
   it("rejects missing, unsupported, and newer versions readably", () => {
     expect(codes(validateSchemaDocument("config", {}))).toContain("SCHEMA_VERSION_MISSING");
     expect(codes(validateSchemaDocument("config", { schemaVersion: 0 }))).toContain(

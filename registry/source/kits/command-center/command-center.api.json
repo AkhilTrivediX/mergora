@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-center",
+  "entryExport": "CommandCenter",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned change behavior",
+  "exports": [
+    { "kind": "value", "name": "CommandCenter" },
+    { "kind": "value", "name": "CommandCenterPage" },
+    { "kind": "type", "name": "CommandCenterProps" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "CommandCenterAdapter" },
+    { "name": "recentCommands", "required": false, "default": false, "type": "boolean" },
+    { "name": "showShortcuts", "required": false, "default": false, "type": "boolean" },
+    { "name": "showExecutionPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceResultCount", "required": false, "default": false, "type": "boolean" },
+    { "name": "globalShortcut", "required": false, "default": false, "type": "false | \"mod-k\"" },
+    { "name": "mobileEntryLabel", "required": false, "default": false, "type": "false | string" },
+    { "name": "query", "required": false, "type": "string" },
+    { "name": "defaultQuery", "required": false, "default": "", "type": "string" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical CommandPalette, Button, and Alert source items.",
+    "adapter": "The consumer owns indexing, ranking, authorization, navigation, execution, analytics, persistence, network, and every side effect.",
+    "enhancements": "Recent commands, shortcut labels, execution preview, result announcements, the global shortcut, and mobile entry are independent opt-ins."
+  }
+}

@@ -4,6 +4,14 @@
   "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
   "stories": [
     {
+      "id": "basic-defaults",
+      "covers": ["dedupe-default", "polite", "assertive", "provider-composition"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["paced-queues", "semantic-dedupe", "localization", "intentional-repeat"]
+    },
+    {
       "id": "announcement-queue",
       "covers": [
         "polite",

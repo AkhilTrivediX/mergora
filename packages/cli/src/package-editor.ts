@@ -16,7 +16,7 @@ export interface DependencyRequirement {
 export interface PackageDependencyChange {
   readonly scope: "runtime";
   readonly package: string;
-  readonly operation: "add" | "remove";
+  readonly operation: "add" | "change" | "remove";
   readonly from: string | null;
   readonly to: string | null;
   readonly owners: readonly string[];
@@ -109,6 +109,37 @@ function rootProperties(text: string): readonly RootProperty[] {
     if (character === "{") depth += 1;
     else if (character === "}") depth -= 1;
     else if (character === '"') {
+      const end = stringEnd(text, index);
+      if (depth === 1) {
+        let colon = end + 1;
+        while (/\s/u.test(text[colon] ?? "")) colon += 1;
+        if (text[colon] === ":") {
+          let valueStart = colon + 1;
+          while (/\s/u.test(text[valueStart] ?? "")) valueStart += 1;
+          properties.push({
+            key: JSON.parse(text.slice(index, end + 1)) as string,
+            keyStart: index,
+            valueStart,
+          });
+        }
+      }
+      index = end;
+    }
+  }
+  return properties;
+}
+
+function objectProperties(text: string, objectOpen: number): readonly RootProperty[] {
+  if (text[objectOpen] !== "{") return [];
+  let depth = 0;
+  const properties: RootProperty[] = [];
+  for (let index = objectOpen; index < text.length; index += 1) {
+    const character = text[index]!;
+    if (character === "{") depth += 1;
+    else if (character === "}") {
+      depth -= 1;
+      if (depth === 0) break;
+    } else if (character === '"') {
       const end = stringEnd(text, index);
       if (depth === 1) {
         let colon = end + 1;
@@ -361,4 +392,89 @@ export function planPackageDependencies(
   }
   after = insertDependencies(after, additions);
   return { before, after, dependencies, changes };
+}
+
+/**
+ * Replaces one exact dependency range only when portable provenance proves the current value. This
+ * is intentionally narrower than a general package.json editor: it cannot add/remove fields,
+ * reformat the document, or replace a user-owned/incompatible declaration.
+ */
+export function planOwnedPackageDependencyChange(
+  packagePath: string,
+  packageName: string,
+  from: string,
+  to: string,
+  owners: readonly string[],
+): PackageDependencyPlan {
+  const before = readFileSync(packagePath, "utf8");
+  const { dependencies } = parsePackage(before);
+  if (
+    !/^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*$/u.test(packageName) ||
+    from.length === 0 ||
+    to.length === 0 ||
+    /(?:git|https?|file|workspace|link|portal|patch|github):/iu.test(from) ||
+    /(?:git|https?|file|workspace|link|portal|patch|github):/iu.test(to)
+  ) {
+    throw new CliError("Owned dependency replacement is invalid.", {
+      code: "DEPENDENCY_PLAN_INVALID",
+      exitCode: 7,
+      target: "package.json",
+    });
+  }
+  const existing = dependencies[packageName];
+  if (existing !== from) {
+    throw new CliError(
+      `Dependency ${JSON.stringify(packageName)} is ${JSON.stringify(existing ?? null)}, not the exact provenance-owned ${JSON.stringify(from)} value.`,
+      {
+        code: "DEPENDENCY_OWNERSHIP_PRECONDITION_FAILED",
+        exitCode: 6,
+        target: "package.json",
+      },
+    );
+  }
+  if (from === to) {
+    return { before, after: before, dependencies, changes: [] };
+  }
+  const dependencyProperty = rootProperties(before).find(({ key }) => key === "dependencies");
+  const objectOpen = dependencyProperty?.valueStart;
+  if (objectOpen === undefined || before[objectOpen] !== "{") {
+    throw new CliError("package.json dependencies must be an object.", {
+      code: "PACKAGE_DEPENDENCIES_INVALID",
+      exitCode: 3,
+      target: "package.json",
+    });
+  }
+  const property = objectProperties(before, objectOpen).find(({ key }) => key === packageName);
+  if (property === undefined || before[property.valueStart] !== '"') {
+    throw new CliError("The owned package dependency is not represented by one JSON string.", {
+      code: "DEPENDENCY_OWNERSHIP_PRECONDITION_FAILED",
+      exitCode: 6,
+      target: "package.json",
+    });
+  }
+  const end = stringEnd(before, property.valueStart);
+  const serializedExisting = JSON.parse(before.slice(property.valueStart, end + 1)) as unknown;
+  if (serializedExisting !== from) {
+    throw new CliError("The owned dependency changed during exact materialization.", {
+      code: "DEPENDENCY_OWNERSHIP_PRECONDITION_FAILED",
+      exitCode: 6,
+      target: "package.json",
+    });
+  }
+  const after = `${before.slice(0, property.valueStart)}${JSON.stringify(to)}${before.slice(end + 1)}`;
+  return {
+    before,
+    after,
+    dependencies: { ...dependencies, [packageName]: to },
+    changes: [
+      {
+        scope: "runtime",
+        package: packageName,
+        operation: "change",
+        from,
+        to,
+        owners: [...new Set(owners)].sort((left, right) => left.localeCompare(right, "en-US")),
+      },
+    ],
+  };
 }

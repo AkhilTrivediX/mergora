@@ -339,7 +339,11 @@
             },
             "else": {
               "properties": {
-                "files": { "maxItems": 0 },
+                "files": {
+                  "items": {
+                    "properties": { "role": { "enum": ["contract", "example"] } }
+                  }
+                },
                 "packageClaims": { "minItems": 1 },
                 "importSubpaths": { "minItems": 1 }
               }

@@ -2,6 +2,8 @@
 
 Status: source present and unreleased. No Stable, package-parity, conformance, or manual assistive-technology claim is made.
 
+The exact Canvas editor, strong Ink boundary, tabular canonical output, Green valid signal, Violet focus seam, and restrained status structure give ColorField a recognizable Mergora identity. Preview and contrast analysis remain independently removable through `showPreview` and `showContrast`.
+
 `ColorField` edits one typed, immutable 8-bit sRGB value. `createSrgbColor` validates integer red, green, blue, and alpha channels from 0 through 255. The text surface supports hexadecimal, numeric comma-separated RGB/RGBA, and HSL/HSLA. Fractional RGB and alpha input is rounded to the nearest 8-bit channel. HSL converts deterministically into the canonical 8-bit sRGB model; it is not retained as a separate wide-gamut or authoring-space value.
 
 `alphaPolicy="opaque"` is the default and rejects non-opaque input or controlled values. `alphaPolicy="allow"` stores alpha as an eighth bit channel and always serializes a successful form value as lowercase `#rrggbbaa`; opaque policy serializes `#rrggbb`. The visible, possibly incomplete text is never submitted as the canonical value.

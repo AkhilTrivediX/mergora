@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navbar",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "current",
+    "open",
+    "loading",
+    "error",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "navbar",
+      "semanticElement": "header",
+      "refTarget": "HTMLElement",
+      "states": ["default", "loading", "error", "rtl"]
+    },
+    {
+      "name": "navbar-mobile",
+      "semanticElement": "responsive nav",
+      "refTarget": "none",
+      "states": ["open", "focus-visible"]
+    },
+    {
+      "name": "navbar-route-status",
+      "semanticElement": "optional output",
+      "refTarget": "none",
+      "states": ["loading", "error"]
+    }
+  ],
+  "contract": { "id": "navbar-accessibility", "version": "0.1.0" },
+  "passport": { "id": "navbar-quality-passport", "version": "0.0.0" }
+}

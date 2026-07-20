@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "transfer-list",
+  "root": {
+    "element": "fieldset",
+    "ref": "HTMLFieldSetElement",
+    "slot": "transfer-list",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "parts": [
+    { "element": "select", "slot": "transfer-list-source" },
+    { "element": "select", "slot": "transfer-list-destination" },
+    { "element": "output", "slot": "transfer-list-summary" }
+  ]
+}

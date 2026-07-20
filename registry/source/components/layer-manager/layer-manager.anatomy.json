@@ -23,6 +23,7 @@
         "data-layer-active",
         "data-layer-modal",
         "data-layer-dismissible",
+        "data-layer-manages-environment",
         "data-layer-top"
       ]
     }

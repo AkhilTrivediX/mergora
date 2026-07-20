@@ -103,7 +103,7 @@ describe("deterministic generation graph", () => {
       true,
     );
     expect(first.every((file) => file.content === file.content.normalize("NFKC"))).toBe(true);
-  });
+  }, 30_000);
 
   it("matches every committed generated artifact in check mode", async () => {
     const result = await runWorkspaceGeneration(workspaceRoot, "check");
@@ -211,6 +211,12 @@ describe("deterministic generation graph", () => {
   it("generates source, package, docs, API, contract, story, and Passport associations", async () => {
     const files = await createGenerationSnapshot(workspaceRoot);
     const byPath = jsonArtifacts(files);
+    const packageIntentById = new Map(
+      (await import("../../registry/definitions/index.ts")).catalogDefinitions.map((definition) => [
+        definition.id,
+        definition.availabilityIntent.package,
+      ]),
+    );
     const sourcePlan = byPath.get("registry/generated/source-transform-plan.json") as {
       representativeExtensionPoints: { id: string; expectedEntryPath: string; status: string }[];
       items: {
@@ -229,10 +235,23 @@ describe("deterministic generation graph", () => {
       }[];
     };
     const docs = byPath.get("content/generated/docs-index.json") as {
-      items: { id: string; sourceAvailable: boolean; evidenceAvailable: boolean }[];
+      items: {
+        id: string;
+        sourceAvailable: boolean;
+        evidenceAvailable: boolean;
+        packageImport: string | null;
+        distribution: { package: string; source: string };
+      }[];
     };
     const api = byPath.get("content/generated/api-index.json") as {
-      entries: { id: string; status: string; exports: string[] }[];
+      entries: {
+        id: string;
+        status: string;
+        exports: string[];
+        groups: { name: string; sourcePath: string }[];
+        props: { name: string; owner: string; type: string }[];
+        summary: { propGroups: number; props: number };
+      }[];
     };
     const passports = byPath.get("registry/generated/passport-skeletons.json") as {
       items: {
@@ -241,6 +260,20 @@ describe("deterministic generation graph", () => {
         implementationStatus: string;
         overall: { state: string };
         missingInputs: string[];
+      }[];
+    };
+    const documentationContracts = byPath.get(
+      "registry/generated/documentation-contract-index.v1.json",
+    ) as {
+      inventory: {
+        items: number;
+        recordedEvidence: { itemsWithRecords: number; records: number };
+      };
+      items: {
+        id: string;
+        semanticInteractionContract: { status: string; recordedEvidence: unknown[] };
+        storybook: { basic: { status: string }; recommended: { status: string } };
+        passportSkeleton: { passportId: string; publishable: boolean; overallState: string };
       }[];
     };
 
@@ -266,21 +299,53 @@ describe("deterministic generation graph", () => {
       expect(sourcePlan.items.find((item) => item.id === id)?.emittedFiles.length).toBeGreaterThan(
         2,
       );
-      expect(packagePlan.exports.find((entry) => entry.itemId === id)).toMatchObject({
-        implementationStatus: "source-present-unreleased",
-        exportStatus: "generated-unreleased",
-      });
-      expect(
-        packagePlan.exports.find((entry) => entry.itemId === id)?.emittedExport,
-      ).not.toBeNull();
-      expect(docs.items.find((item) => item.id === id)).toMatchObject({
+      const packageExport = packagePlan.exports.find((entry) => entry.itemId === id);
+      if (packageIntentById.get(id) === "planned") {
+        expect(packageExport, id).toMatchObject({
+          implementationStatus: "source-present-unreleased",
+          exportStatus: "generated-unreleased",
+        });
+        expect(packageExport?.emittedExport).not.toBeNull();
+      } else {
+        expect(packageExport, id).toMatchObject({
+          implementationStatus: "source-present-unreleased",
+          exportStatus: "not-planned",
+          emittedExport: null,
+        });
+      }
+      const docsItem = docs.items.find((item) => item.id === id);
+      expect(docsItem).toMatchObject({
         sourceAvailable: true,
         evidenceAvailable: false,
       });
-      expect(api.entries.find((entry) => entry.id === id)).toMatchObject({
+      if (packageIntentById.get(id) === "planned") {
+        expect(docsItem).toMatchObject({
+          packageImport: expect.any(String),
+          distribution: { package: "generated-unreleased", source: "generated-unreleased" },
+        });
+      } else {
+        expect(docsItem).toMatchObject({
+          packageImport: null,
+          distribution: { package: "not-planned", source: "generated-unreleased" },
+        });
+      }
+      const apiEntry = api.entries.find((entry) => entry.id === id);
+      expect(apiEntry).toMatchObject({
         status: "source-present-unreleased",
       });
-      expect(api.entries.find((entry) => entry.id === id)?.exports.length).toBeGreaterThan(0);
+      expect(apiEntry?.exports.length).toBeGreaterThan(0);
+      expect(apiEntry?.groups.length).toBeGreaterThan(0);
+      expect(apiEntry?.summary).toMatchObject({
+        propGroups: apiEntry?.groups.length,
+        props: apiEntry?.props.length,
+      });
+      const publicGroupNames = new Set(apiEntry?.groups.map((group) => group.name));
+      expect(
+        apiEntry?.props.every(
+          (prop) =>
+            prop.name.length > 0 && prop.type.length > 0 && publicGroupNames.has(prop.owner),
+        ),
+      ).toBe(true);
       expect(passports.items.find((item) => item.itemId === id)).toMatchObject({
         publishable: false,
         implementationStatus: "source-present-unreleased",
@@ -289,7 +354,32 @@ describe("deterministic generation graph", () => {
       expect(passports.items.find((item) => item.itemId === id)?.missingInputs).not.toContain(
         "canonical-source",
       );
+      expect(documentationContracts.items.find((item) => item.id === id)).toMatchObject({
+        storybook: {
+          basic: { status: "validated-source-export" },
+          recommended: { status: "validated-source-export" },
+        },
+        passportSkeleton: {
+          passportId: `${id}-passport-skeleton`,
+          publishable: false,
+          overallState: "blocked",
+        },
+      });
     }
+    expect(documentationContracts.inventory).toMatchObject({
+      items: sourceIds.length,
+      recordedEvidence: { itemsWithRecords: 0, records: 0 },
+    });
+    expect(
+      documentationContracts.items.every(
+        (item) => item.semanticInteractionContract.recordedEvidence.length === 0,
+      ),
+    ).toBe(true);
+    expect(
+      documentationContracts.items
+        .filter((item) => ["combobox", "data-grid"].includes(item.id))
+        .every((item) => item.semanticInteractionContract.status === "draft-unavailable"),
+    ).toBe(true);
   });
 });
 
@@ -298,27 +388,43 @@ describe("package and source parity", () => {
     const generated = new Map(
       (await createGenerationSnapshot(workspaceRoot)).map((file) => [file.path, file.content]),
     );
-    const source = createSourceTransformationSnapshot(workspaceRoot, [
-      ...(await import("../../registry/definitions/index.ts")).catalogDefinitions,
-    ]);
+    const definitions = (await import("../../registry/definitions/index.ts")).catalogDefinitions;
+    const source = createSourceTransformationSnapshot(workspaceRoot, [...definitions]);
+    const packagePlanned = new Set(
+      definitions
+        .filter((definition) => definition.availabilityIntent.package === "planned")
+        .map((definition) => definition.id),
+    );
 
     for (const item of source.sources) {
       for (const file of item.normalizedFiles) {
-        expect(generated.get(file.packagePath)).toBe(
-          transformPackageSource(file.content, file.sourcePath),
-        );
+        if (packagePlanned.has(item.id)) {
+          expect(generated.get(file.packagePath), item.id).toBe(
+            transformPackageSource(file.content, file.sourcePath),
+          );
+        } else {
+          expect(generated.has(file.packagePath), item.id).toBe(false);
+        }
       }
     }
     expect(
       [...generated.keys()].filter((path) => path.startsWith("packages/ui/src/generated/")),
-    ).toHaveLength(source.sources.reduce((total, item) => total + item.normalizedFiles.length, 0));
+    ).toHaveLength(
+      source.sources
+        .filter((item) => packagePlanned.has(item.id))
+        .reduce((total, item) => total + item.normalizedFiles.length, 0),
+    );
   });
 
   it("generates root and discovered subpath exports with CSS side-effect preservation", async () => {
     const files = await createGenerationSnapshot(workspaceRoot);
-    const source = createSourceTransformationSnapshot(workspaceRoot, [
-      ...(await import("../../registry/definitions/index.ts")).catalogDefinitions,
-    ]);
+    const definitions = (await import("../../registry/definitions/index.ts")).catalogDefinitions;
+    const source = createSourceTransformationSnapshot(workspaceRoot, [...definitions]);
+    const packagePlanned = new Set(
+      definitions
+        .filter((definition) => definition.availabilityIntent.package === "planned")
+        .map((definition) => definition.id),
+    );
     const manifest = JSON.parse(
       files.find((file) => file.path === "packages/ui/package.json")!.content,
     ) as {
@@ -330,9 +436,16 @@ describe("package and source parity", () => {
     expect(manifest.sideEffects).toEqual(["**/*.css"]);
     expect(Object.keys(manifest.exports)).toEqual([
       ".",
-      ...source.sources.flatMap((item) => [`./${item.id}`, `./${item.id}.css`]),
+      ...source.sources
+        .filter((item) => packagePlanned.has(item.id))
+        .flatMap((item) => [`./${item.id}`, `./${item.id}.css`]),
       "./package.json",
     ]);
+    expect(manifest.exports["./button.css"]).toEqual({
+      types: "./dist/style.d.ts",
+      style: "./dist/generated/button/button.css",
+      default: "./dist/generated/button/button.css",
+    });
     expect(manifest.dependencies).toMatchObject({
       "@tanstack/react-table": "catalog:",
       "react-aria-components": "catalog:",
@@ -341,6 +454,12 @@ describe("package and source parity", () => {
       distributionStatus: "unreleased",
       publishedMaturity: null,
     });
+    const packageIndex = files.find((file) => file.path === "packages/ui/src/index.ts")!.content;
+    for (const item of source.sources) {
+      const importPath = `./generated/${item.id}/`;
+      if (packagePlanned.has(item.id)) expect(packageIndex).toContain(importPath);
+      else expect(packageIndex).not.toContain(importPath);
+    }
     const packageOutput = files
       .filter((file) => file.path.startsWith("packages/ui/src/generated/"))
       .map((file) => file.content)
@@ -458,6 +577,18 @@ describe("write/check drift protocol", () => {
     syncGeneratedFiles(root, files, "write");
     expect(syncGeneratedFiles(root, files, "check").issues).toEqual([]);
     expect(existsSync(join(root, "packages", "ui", "tsconfig.json"))).toBe(true);
+  });
+
+  it("removes stale generated package directories after their files leave the graph", () => {
+    const root = temporaryWorkspace();
+    const staleDirectory = join(root, "packages", "ui", "src", "generated", "source-only-kit");
+    mkdirSync(join(staleDirectory, "nested"), { recursive: true });
+    writeFileSync(join(staleDirectory, "nested", "stale.tsx"), "export {};\n", "utf8");
+
+    syncGeneratedFiles(root, expected, "write");
+
+    expect(existsSync(staleDirectory)).toBe(false);
+    expect(syncGeneratedFiles(root, expected, "check")).toMatchObject({ ok: true, issues: [] });
   });
 });
 

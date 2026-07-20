@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "category": "command-search",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "command-center",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn does not provide an ordinary installable global command workflow with consumer-ranked async results, abort policy, recent items, mobile entry, IME-safe shortcuts, and explicit execution boundaries.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit composes the public Command Palette around an abort-aware adapter and preserves external ranking by disabling a destructive second filter while supporting controlled state and recovery.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/command-center/command-center.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/command-center/command-center-state.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["command-discovery-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The literal-white command workbench uses Ink structure, a restrained Violet context rail, Green execution signals from public controls, strong type, precise focus, logical layout, and restrained corners.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/command-center/command-center.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-status-info-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "command-discovery-context",
+          "status": "evidence-backed",
+          "summary": "Recent requests, shortcut labels, execution preview, result announcements, the global shortcut, and mobile entry are independent command-specific controls.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/command-center/command-center.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "recentCommands",
+            "showShortcuts",
+            "showExecutionPreview",
+            "announceResultCount",
+            "globalShortcut",
+            "mobileEntry"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "recentCommands",
+              "showShortcuts",
+              "showExecutionPreview",
+              "announceResultCount",
+              "globalShortcut",
+              "mobileEntryLabel"
+            ],
+            "enableWhen": "Each property is explicitly enabled independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No recent group, shortcut labels, execution preview, result-count output, shortcut hint, or mobile-only entry is rendered.",
+            "behavior": "The embedded public Command Palette remains searchable and adapter-ranked with explicit loading, empty, and retry state.",
+            "events": "No recent request, global key listener, result announcement, preview update, or mobile-entry action runs.",
+            "accessibility": "No result-count live region, shortcut descriptions, preview content, recent group, or additional entry control enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "BasicCommandCenter",
+          "enhancementControls": [
+            "recentCommands",
+            "showShortcuts",
+            "showExecutionPreview",
+            "announceResultCount",
+            "globalShortcut",
+            "mobileEntry"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "RecommendedCommandCenter",
+          "enhancementControls": [
+            "recentCommands",
+            "showShortcuts",
+            "showExecutionPreview",
+            "announceResultCount",
+            "globalShortcut",
+            "mobileEntry"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Public combobox/listbox semantics, IME guards, optional announcement-off paths, focus restoration, narrow/RTL/forced-colors CSS, and focused axe coverage exist; complete Risk Class 3 manual evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/command-center/command-center.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Async search cancellation, grouped results, recent disabled path, controlled state, shortcut, mobile entry, empty and error recovery have focused tests; large-result, timeout, offline, and full lifecycle matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "kit-evidence-incomplete",
+          "summary": "Dependency closure, clean-consumer lifecycle, large-result and failure evidence, current manual assistive technology, authorization/security/privacy/legal review, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/command-center/command-center.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/command-center/command-center.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

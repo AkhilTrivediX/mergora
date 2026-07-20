@@ -1,0 +1,2047 @@
+{
+  "schemaVersion": 1,
+  "category": "typography-content",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "blockquote",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Typography provides a styled blockquote example.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves figure, blockquote, figcaption, cite, and optional source-link semantics so attribution and provenance remain structured rather than decorative text.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/blockquote/blockquote.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["citation-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/blockquote/blockquote.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "citation-context",
+          "status": "evidence-backed",
+          "summary": "Mergora preserves figure, blockquote, figcaption, cite, and optional source-link semantics so attribution and provenance remain structured rather than decorative text.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/blockquote/blockquote.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["citationContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["attribution", "citeUrl", "sourceTitle"],
+            "enableWhen": "Supply attribution and/or sourceTitle, with citeUrl when a source link is appropriate."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No caption, attribution, source title, or source link is rendered.",
+            "behavior": "The quotation remains ordinary block content.",
+            "events": "No source-link navigation target or event path exists.",
+            "accessibility": "No attribution or source context is added to the reading order."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicBlockquote",
+          "enhancementControls": ["citationContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedBlockquote",
+          "enhancementControls": ["citationContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/blockquote/blockquote.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Semantic quote and optional citation anatomy, link focus, wrapping, RTL, forced colors, and narrow presentation are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/blockquote/blockquote.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/blockquote/blockquote.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "code",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Typography provides inline code styling.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora can isolate machine text bidirectionally so code tokens remain readable inside opposite-direction prose without forcing isolation on ordinary inline code.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code/code.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["bidi-isolation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code/code.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "bidi-isolation",
+          "status": "evidence-backed",
+          "summary": "Mergora can isolate machine text bidirectionally so code tokens remain readable inside opposite-direction prose without forcing isolation on ordinary inline code.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/code/code.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["bidiIsolation"],
+          "api": {
+            "kind": "prop",
+            "names": ["isolateBidi"],
+            "enableWhen": "Set isolateBidi true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No bidi-isolation data state is rendered.",
+            "behavior": "Inline code follows the surrounding Unicode bidirectional context.",
+            "events": "No enhancement-specific events exist.",
+            "accessibility": "No direction-isolation attribute or extra accessible output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicCode",
+          "enhancementControls": ["bidiIsolation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedCode",
+          "enhancementControls": ["bidiIsolation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code/code.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Inline selection, wrapping, bidi isolation, RTL prose, forced colors, and reduced motion are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/code/code.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code/code.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "code-block",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Typography styles code, while labelled blocks, line evidence, clipboard recovery, and status announcements require composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides labelled code, optional line evidence, exact copy state with failure recovery, line numbering, and overflow that remains keyboard and touch reachable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code-block/code-block.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["copy-control"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code-block/code-block.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "copy-control",
+          "status": "evidence-backed",
+          "summary": "Mergora provides labelled code, optional line evidence, exact copy state with failure recovery, line numbering, and overflow that remains keyboard and touch reachable.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/code-block/code-block.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["codeCopy"],
+          "api": {
+            "kind": "prop",
+            "names": ["copyable"],
+            "enableWhen": "Keep copyable true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The copy action and copy-status rail are not rendered.",
+            "behavior": "The component performs no clipboard write or copy-state transition.",
+            "events": "No copy handler, clipboard request, or copy callback path is installed.",
+            "accessibility": "No copy button, live region, copied status, or failure status is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicCodeBlock",
+          "enhancementControls": ["codeCopy"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedCodeBlock",
+          "enhancementControls": ["codeCopy"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code-block/code-block.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Copy success and failure, keyboard focus, line highlights, numbering, overflow, touch, RTL, and preferences are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/code-block/code-block.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/code-block/code-block.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "description-list",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn Typography documents common text elements but does not ship a description-list component with responsive semantic layouts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora retains native dl, dt, and dd ownership while offering density and a responsive columns-to-stack layout that never turns terms into presentational grid labels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/description-list/description-list.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["responsive-layout"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/description-list/description-list.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "responsive-layout",
+          "status": "evidence-backed",
+          "summary": "Mergora retains native dl, dt, and dd ownership while offering density and a responsive columns-to-stack layout that never turns terms into presentational grid labels.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/description-list/description-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["descriptionLayout"],
+          "api": {
+            "kind": "prop",
+            "names": ["layout"],
+            "enableWhen": "Choose columns or responsive instead of stacked."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Stacked mode removes the column layout and presents each term directly above its details.",
+            "behavior": "No responsive column transition is applied.",
+            "events": "No layout-specific event handler exists.",
+            "accessibility": "Native dl, dt, and dd semantics remain with no layout-generated accessible output."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicDescriptionList",
+          "enhancementControls": ["descriptionLayout"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedDescriptionList",
+          "enhancementControls": ["descriptionLayout"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/description-list/description-list.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Stacked, columns, responsive reflow, density, long content, RTL, zoom, and forced colors are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/description-list/description-list.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/description-list/description-list.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "diff-viewer",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn Typography has no interactive semantic diff viewer.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora exposes added, removed, changed, and context rows with an optional concise change summary, row navigation, copy recovery, controlled focus, and non-color state labels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/diff-viewer/diff-viewer.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["change-summary"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/diff-viewer/diff-viewer.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "change-summary",
+          "status": "evidence-backed",
+          "summary": "Mergora exposes added, removed, changed, and context rows with an optional concise change summary, row navigation, copy recovery, controlled focus, and non-color state labels.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/diff-viewer/diff-viewer.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["diffSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSummary"],
+            "enableWhen": "Keep showSummary true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The added, removed, and changed summary rail is not rendered.",
+            "behavior": "Diff rows, controlled navigation, and copy remain unchanged.",
+            "events": "No summary-specific handler or callback is installed.",
+            "accessibility": "No summary text is added to the reading order or labelled region."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicDiffViewer",
+          "enhancementControls": ["diffSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedDiffViewer",
+          "enhancementControls": ["diffSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/diff-viewer/diff-viewer.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled and uncontrolled active rows, keyboard row navigation, copy success and failure, summary removal, non-color state, overflow, touch, RTL, and preferences are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/diff-viewer/diff-viewer.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/diff-viewer/diff-viewer.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "heading",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Typography provides separately styled heading examples.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps the native h1 through h6 level explicit while allowing an independently chosen visual scale, preventing visual size from silently rewriting document structure.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/heading/heading.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["independent-visual-scale"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/heading/heading.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "independent-visual-scale",
+          "status": "evidence-backed",
+          "summary": "Mergora keeps the native h1 through h6 level explicit while allowing an independently chosen visual scale, preventing visual size from silently rewriting document structure.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/heading/heading.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["headingScale"],
+          "api": {
+            "kind": "prop",
+            "names": ["size"],
+            "enableWhen": "Supply size when visual emphasis should differ from the semantic heading level."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Visual size derives predictably from the semantic heading element.",
+            "behavior": "No independent visual-scale override is applied.",
+            "events": "No enhancement-specific events exist.",
+            "accessibility": "The native heading level remains unchanged and no extra accessible output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicHeading",
+          "enhancementControls": ["headingScale"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedHeading",
+          "enhancementControls": ["headingScale"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/heading/heading.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "All six semantic levels, explicit visual scales, long wrapping, RTL, zoom, forced colors, and document hierarchy are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/heading/heading.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/heading/heading.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "json-viewer",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn Typography has no accessible expandable JSON tree or path-inspection component.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides bounded controlled or uncontrolled expansion, keyboard tree navigation, typed values, copy recovery, and an optional active-path rail without editing or executing data.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/json-viewer/json-viewer.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["active-path-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/json-viewer/json-viewer.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "active-path-context",
+          "status": "evidence-backed",
+          "summary": "Mergora provides bounded controlled or uncontrolled expansion, keyboard tree navigation, typed values, copy recovery, and an optional active-path rail without editing or executing data.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/json-viewer/json-viewer.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["jsonPath"],
+          "api": {
+            "kind": "prop",
+            "names": ["showActivePath"],
+            "enableWhen": "Keep showActivePath true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The visible active-path rail is not rendered.",
+            "behavior": "Tree expansion, focus, selection, and copy continue without path context.",
+            "events": "No path-display update is emitted beyond existing controlled active-path behavior.",
+            "accessibility": "The active path is not added as contextual reading-order text."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicJsonViewer",
+          "enhancementControls": ["jsonPath"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedJsonViewer",
+          "enhancementControls": ["jsonPath"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/json-viewer/json-viewer.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Controlled expansion and active path, tree keyboard navigation, copy success and failure, path removal, empty and error data, touch, RTL, overflow, and preferences are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/json-viewer/json-viewer.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/json-viewer/json-viewer.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "kbd",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Kbd displays keyboard keys and grouped shortcuts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/kbd"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora normalizes named keys and can map a logical chord to platform-specific labels while preserving a localizable full accessible chord name.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kbd/kbd.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["platform-mapping"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kbd/kbd.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "platform-mapping",
+          "status": "evidence-backed",
+          "summary": "Mergora normalizes named keys and can map a logical chord to platform-specific labels while preserving a localizable full accessible chord name.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/kbd/kbd.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["keyPlatform"],
+          "api": {
+            "kind": "prop",
+            "names": ["platform"],
+            "enableWhen": "Choose mac, windows, or linux instead of generic."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Generic key labels and separators are rendered.",
+            "behavior": "No operating-system-specific key substitution is applied.",
+            "events": "No enhancement-specific events exist.",
+            "accessibility": "The accessible chord name uses the generic localized key sequence."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicKbd",
+          "enhancementControls": ["keyPlatform"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedKbd",
+          "enhancementControls": ["keyPlatform"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kbd/kbd.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Generic and platform-specific key mapping, localized chord naming, long shortcuts, RTL, forced colors, and wrapping are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/kbd/kbd.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/kbd/kbd.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "prose",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Typography documents individually styled prose elements rather than a bounded semantic prose container.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora supplies deliberate readable measures and consistent authored-element rhythm while allowing nested interface islands to opt out without card-like decoration.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prose/prose.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["reading-measure"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prose/prose.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "reading-measure",
+          "status": "evidence-backed",
+          "summary": "Mergora supplies deliberate readable measures and consistent authored-element rhythm while allowing nested interface islands to opt out without card-like decoration.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/prose/prose.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["proseMeasure"],
+          "api": {
+            "kind": "prop",
+            "names": ["measure"],
+            "enableWhen": "Choose prose or wide instead of none."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No component-owned maximum reading measure is applied.",
+            "behavior": "Content fills its containing inline size.",
+            "events": "No enhancement-specific events exist.",
+            "accessibility": "No measure-related accessible output or semantics are added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicProse",
+          "enhancementControls": ["proseMeasure"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedProse",
+          "enhancementControls": ["proseMeasure"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prose/prose.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "None, prose, and wide measures, nested unstyled controls, long authored content, narrow reflow, RTL, zoom, and preferences are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/prose/prose.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prose/prose.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "text",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Typography provides styled text examples and leaves recoverable truncation to the consumer.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/typography"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora can truncate visually while retaining the complete value for keyboard focus, touch, title, copy, and assistive-technology recovery.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/text/text.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["recoverable-truncation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The component uses literal white workbench surfaces, precise Ink boundaries or rules, strong type hierarchy, restrained Living Green and Violet evidence cues, purposeful preference-safe motion, and shared radii no greater than 16 CSS pixels.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/text/text.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-heading"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "recoverable-truncation",
+          "status": "evidence-backed",
+          "summary": "Mergora can truncate visually while retaining the complete value for keyboard focus, touch, title, copy, and assistive-technology recovery.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/text/text.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["textRecovery"],
+          "api": {
+            "kind": "prop",
+            "names": ["truncate", "fullValue"],
+            "enableWhen": "Set truncate true and provide fullValue when children are not plain text."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Text is not clipped and no truncation affordance is shown.",
+            "behavior": "The full inline value renders naturally without reveal behavior.",
+            "events": "No truncation-specific focus, hover, touch, or copy path is installed.",
+            "accessibility": "No full-value aria-label or truncation recovery metadata is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "BasicText",
+          "enhancementControls": ["textRecovery"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx",
+          "exportName": "RecommendedText",
+          "enhancementControls": ["textRecovery"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2TypographyContentComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/typography-content-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated semantic, keyboard, focus, axe, 320 CSS-pixel, touch, RTL, forced-colors, and reduced-motion evidence is current; contract-required manual screen-reader, speech, and switch records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/text/text.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Plain and recoverably truncated values, keyboard focus, hover and touch recovery, copy, long values, RTL, forced colors, and narrow overflow are covered.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/typography-content/typography-content.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and applicable touch evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/text/text.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/text/text.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

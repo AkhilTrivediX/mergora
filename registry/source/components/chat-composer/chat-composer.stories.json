@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chat-composer",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicChatComposer" },
+    {
+      "id": "attachments",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedChatComposer"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "offline", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "form-reset", "applicability": { "status": "applicable" }, "story": "FormLifecycle" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

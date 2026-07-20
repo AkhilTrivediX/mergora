@@ -2,6 +2,8 @@
 
 Status: source present and unreleased. No Stable, package-parity, conformance, autofill-compatibility, authentication, security, or manual assistive-technology claim is made.
 
+One strong Ink control, literal Canvas cells, Green completion state, Violet focus seam, tabular characters, and purposeful grouping establish the Mergora signature. Grouping and consumer-owned `onComplete` integration are independently selectable; omitting the callback emits no completion event or accessibility output.
+
 `OtpField` keeps one real native text input as the focus, editing, autofill, paste, validation, form, and reset control. The visible grouping guides are `aria-hidden` decoration, not separate inputs, so a six-character code has one label and one tab stop. The forwarded ref targets that input.
 
 The default `autocomplete="one-time-code"`, `inputMode="numeric"`, and `[0-9]*` pattern provide mobile and autofill hints without replacing browser behavior. `characterSet="alphanumeric"` is available for protocols that genuinely use ASCII letters and digits. Values are NFKC-normalized, filtered to the selected machine-character set, bounded to the total of `groups`, and serialized without visual separators. Paste reads only the current paste event text to insert and normalize the complete bounded value; it is never logged, persisted, transmitted, or blocked. Composition remains native until `compositionend`, then follows the same bounded normalization.

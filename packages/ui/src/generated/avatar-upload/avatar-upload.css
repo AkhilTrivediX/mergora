@@ -1,0 +1,188 @@
+/* Generated from registry/source/components/avatar-upload/avatar-upload.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-avatar-upload {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-intake"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-lg);
+  grid-template-columns: auto minmax(0, 1fr);
+  padding-block: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-visual"] {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  display: flex;
+  inline-size: 7rem;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-visual"][data-empty="true"] {
+  border-style: dashed;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-preview"] {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: cover;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-placeholder"],
+.mrg-avatar-upload [data-slot="avatar-upload-preview-status"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding: var(--mrg-semantic-space-inset-sm);
+  text-align: center;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-controls"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-label"] {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  overflow-wrap: anywhere;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-actions"] button,
+.mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] > button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-actions"] button:focus-visible,
+.mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] > button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-metadata"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  display: grid;
+  margin: 0;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-metadata"] div {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-md);
+  grid-template-columns: minmax(5rem, 0.3fr) minmax(0, 1fr);
+  padding-block: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-metadata"] dt {
+  font-weight: var(--mrg-semantic-font-weight-label);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-metadata"] dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] > button {
+  justify-self: start;
+}
+
+.mrg-avatar-upload [data-slot="avatar-upload-rejection"],
+.mrg-avatar-upload [data-slot="avatar-upload-form-error"] {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-avatar-upload[data-readonly="true"] [data-slot="avatar-upload-intake"] {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+@media (max-width: 30rem) {
+  .mrg-avatar-upload [data-slot="avatar-upload-intake"] {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-avatar-upload [data-slot="avatar-upload-visual"] {
+    inline-size: min(7rem, 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-avatar-upload *,
+  .mrg-avatar-upload *::before,
+  .mrg-avatar-upload *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-avatar-upload [data-slot="avatar-upload-intake"],
+  .mrg-avatar-upload [data-slot="avatar-upload-visual"],
+  .mrg-avatar-upload [data-slot="avatar-upload-metadata"],
+  .mrg-avatar-upload [data-slot="avatar-upload-metadata"] div,
+  .mrg-avatar-upload [data-slot="avatar-upload-rejection"],
+  .mrg-avatar-upload [data-slot="avatar-upload-form-error"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-avatar-upload [data-slot="avatar-upload-actions"] button,
+  .mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] > button {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mrg-avatar-upload [data-slot="avatar-upload-actions"] button:focus-visible,
+  .mrg-avatar-upload [data-slot="avatar-upload-lifecycle"] > button:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

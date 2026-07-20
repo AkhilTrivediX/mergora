@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "category": "crud-data",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "crud-data-workspace",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn does not provide an ordinary installable CRUD workflow with adapter-owned data, search and filters, saved views, bulk selection, create/edit layers, permission paths, transaction modes, rollback, cancellation, confirmation, and undo.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit composes the public Data Table and Dialog around an abort-aware adapter with explicit permission, pessimistic and optimistic mutation, exact rollback, safe deletion confirmation, cancellation, and recovery seams.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/crud-data-workspace/crud-data-workspace-state.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["transaction-recovery-tools"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The literal-white records workbench uses Ink table structure, a measured Green heading rail, Violet selection and focus, compact status signals, strong type, restrained corners, logical layout, and preference fallbacks.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "transaction-recovery-tools",
+          "status": "evidence-backed",
+          "summary": "Saved views, bulk selection/actions, optimistic transactions, adapter-backed delete undo, and mutation announcements are separate CRUD-specific controls.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "savedViews",
+            "bulkActions",
+            "optimisticMutations",
+            "enableUndo",
+            "showMutationTimeline"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "savedViews",
+              "bulkActions",
+              "optimisticMutations",
+              "enableUndo",
+              "showMutationTimeline"
+            ],
+            "enableWhen": "Each property is explicitly enabled independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No saved-view controls, row selection, bulk toolbar, undo alert, or mutation timeline is rendered.",
+            "behavior": "Search, category filtering, permission-aware create/edit, safe deletion confirmation, and pessimistic adapter mutations remain usable.",
+            "events": "No saved-view request, selection callback, bulk mutation, optimistic local patch, restore request, or success announcement runs.",
+            "accessibility": "No saved-view controls, selection checkboxes, bulk action region, undo action, or mutation live output enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "BasicCrudDataWorkspace",
+          "enhancementControls": [
+            "savedViews",
+            "bulkActions",
+            "optimisticMutations",
+            "enableUndo",
+            "showMutationTimeline"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "RecommendedCrudDataWorkspace",
+          "enhancementControls": [
+            "savedViews",
+            "bulkActions",
+            "optimisticMutations",
+            "enableUndo",
+            "showMutationTimeline"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Public table and dialog semantics, labelled native editor fields, deletion confirmation, mutation alerts, optional announcement-off paths, narrow/RTL/forced-colors CSS, and focused axe coverage exist; complete Risk Class 3 manual evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Deterministic load, search, filter, saved views, bulk selection, create/edit, permission, pessimistic/optimistic, rollback, cancellation, deletion, and undo paths have focused tests; full concurrency and lifecycle matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "kit-evidence-incomplete",
+          "summary": "Dependency closure, clean-consumer lifecycle, large-data and transactional conflict evidence, current manual assistive technology, authorization/security/privacy/legal review, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/crud-data-workspace/crud-data-workspace.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

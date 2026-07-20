@@ -1,15 +1,29 @@
 // Generated from registry/source/components/native-select/native-select.tsx by @mergora-internal/source-transformer. Do not edit.
 "use client";
 
-import { forwardRef, useEffect, type CSSProperties, type SelectHTMLAttributes } from "react";
+import {
+  forwardRef,
+  Fragment,
+  isValidElement,
+  useEffect,
+  useId,
+  type CSSProperties,
+  type ReactNode,
+  type SelectHTMLAttributes,
+} from "react";
 
 import { mergeFieldIdRefs, useFieldControlState } from "../field/index.js";
 import "./native-select.css";
 
 export interface NativeSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Additional class name applied to the outer NativeSelect wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer NativeSelect wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Optional context for the current selection, associated through aria-describedby. */
+  readonly selectionContext?: ReactNode;
 }
 
 interface ProcessLike {
@@ -30,6 +44,17 @@ function isSemanticallyInvalid(
   return value === true || value === "true" || value === "grammar" || value === "spelling";
 }
 
+function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
+}
+
 export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(function NativeSelect(
   {
     "aria-describedby": ariaDescribedBy,
@@ -43,12 +68,14 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(fun
     required,
     rootClassName,
     rootStyle,
+    selectionContext,
     size,
     ...nativeProps
   },
   ref,
 ) {
   const field = useFieldControlState();
+  const generatedId = useId().replaceAll(":", "");
   const resolvedAriaInvalid =
     ariaInvalid !== undefined
       ? ariaInvalid
@@ -58,10 +85,15 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(fun
   const resolvedInvalid = isSemanticallyInvalid(resolvedAriaInvalid);
   const resolvedId = field?.controlId ?? id;
   const listboxPresentation = multiple || (size !== undefined && size > 1);
+  const hasSelectionContext = hasAccessibleContent(selectionContext);
+  const selectionContextId = hasSelectionContext
+    ? `${resolvedId ?? `mrg-native-select-${generatedId}`}-selection-context`
+    : undefined;
   const describedBy = mergeFieldIdRefs(
     ariaDescribedBy,
     field?.descriptionId,
     resolvedInvalid ? field?.errorMessageId : undefined,
+    selectionContextId,
   );
   const errorMessage = mergeFieldIdRefs(
     ariaErrorMessage,
@@ -85,6 +117,7 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(fun
       data-invalid={resolvedInvalid || undefined}
       data-listbox={listboxPresentation || undefined}
       data-multiple={multiple || undefined}
+      data-selection-context={hasSelectionContext || undefined}
       data-slot="native-select-root"
       style={rootStyle}
     >
@@ -109,6 +142,11 @@ export const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(fun
       {listboxPresentation ? null : (
         <span aria-hidden="true" data-slot="native-select-indicator">
           ▾
+        </span>
+      )}
+      {!hasSelectionContext ? null : (
+        <span data-slot="native-select-selection-context" id={selectionContextId}>
+          {selectionContext}
         </span>
       )}
     </span>

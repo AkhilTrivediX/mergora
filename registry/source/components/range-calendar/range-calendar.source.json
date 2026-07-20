@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../calendar/index.js",
+    "../date-field/date-time-utils.js",
+    "./range-calendar.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/range-calendar/range-calendar.tsx",
+  "id": "range-calendar",
+  "itemDependencies": ["calendar", "date-field"],
+  "outputRole": "system"
+}

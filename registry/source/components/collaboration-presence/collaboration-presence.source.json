@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./collaboration-presence.css", "react"],
+  "entryPath": "registry/source/components/collaboration-presence/collaboration-presence.tsx",
+  "id": "collaboration-presence",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

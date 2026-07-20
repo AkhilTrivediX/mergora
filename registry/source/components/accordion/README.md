@@ -4,6 +4,8 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 `Accordion` composes `Root`, `Item`, `Header`, `Trigger`, and `Panel` around React Aria disclosure primitives. Root supports controlled or uncontrolled single/multiple expansion. Each trigger remains a native button inside an explicit semantic heading level.
 
+Mergora uses literal Canvas panels, precise Ink separators, a Green expanded signal, and the shared Violet focus seam. `renderExpansionSummary` is an optional useful overview for long or multi-open sets; it receives the current controlled or uncontrolled keys and renders a polite status rail. Omit the prop to remove the formatter call, or return null, false, or empty content to suppress the rail and live-region output while retaining the ordinary accordion behavior.
+
 ## Contract
 
 - `value` and `defaultValue` contain non-empty unique string keys; single mode accepts at most one.

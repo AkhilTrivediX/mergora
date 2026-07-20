@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-manager",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package/source/native/Shadcn dependency closure and ownership-aware removal.",
+    "Pass upload, permission, conflict, recovery-expiry, storage failure, frozen-install, packed Next/Vite and lifecycle fixtures.",
+    "Complete current browser, visual, performance and Risk Class 3 manual assistive-technology/security/privacy evidence.",
+    "Dogfood public generated output and approve a Quality Passport before any Stable claim."
+  ]
+}

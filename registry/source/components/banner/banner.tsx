@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { useMergoraMessage } from "../provider/index.js";
+import { useMergoraContext } from "../provider/index.js";
 import "./banner.css";
 
 export type BannerScope = "page" | "site";
@@ -22,13 +22,18 @@ export type BannerVariant = "info" | "success" | "warning" | "error";
 export type BannerHeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface BannerPersistenceAdapter {
+  /** Reads consumer-owned dismissal state for the stable banner identifier. */
   readonly read: (id: string) => boolean | undefined;
+  /** Writes consumer-owned dismissal state without choosing a storage backend. */
   readonly write: (id: string, dismissed: boolean) => void;
 }
 
 export interface BannerStorageLike {
+  /** Reads a stored string or null using Web Storage-compatible behavior. */
   readonly getItem: (key: string) => string | null;
+  /** Removes stored state using Web Storage-compatible behavior. */
   readonly removeItem: (key: string) => void;
+  /** Stores string state using Web Storage-compatible behavior. */
   readonly setItem: (key: string, value: string) => void;
 }
 
@@ -65,38 +70,65 @@ interface BannerBaseProps extends Omit<
   | "role"
   | "title"
 > {
+  /** Reserved: Banner is intentionally non-live and owns announcement atomicity. */
   readonly "aria-atomic"?: never;
+  /** Reserved: dismissal controls whether Banner renders instead of hiding its root. */
   readonly "aria-hidden"?: never;
+  /** Reserved: the visible title supplies the named aside's accessible name. */
   readonly "aria-label"?: never;
+  /** Reserved: Banner links its generated title to the named aside. */
   readonly "aria-labelledby"?: never;
+  /** Reserved: Banner is intentionally non-live. */
   readonly "aria-live"?: never;
+  /** Reserved: Banner does not expose a configurable live-region relevance policy. */
   readonly "aria-relevant"?: never;
+  /** Reserved: Banner exposes native aside semantics without a role description. */
   readonly "aria-roledescription"?: never;
+  /** Action controls rendered after the banner body and before the dismiss control. */
   readonly actions?: ReactNode;
+  /** Non-empty visible banner body content. */
   readonly children: ReactNode;
+  /** Enables the native dismiss button and dismissal state path; defaults to true. */
   readonly dismissible?: boolean;
+  /** Localized accessible and visible label for the dismiss button. */
   readonly dismissLabel?: string;
+  /** Native heading level used for `title`; defaults to 2. */
   readonly headingLevel?: BannerHeadingLevel;
+  /** Reserved: use controlled or uncontrolled dismissal state instead. */
   readonly hidden?: never;
+  /** Stable non-empty identity, also used as the optional persistence key. */
   readonly id: string;
+  /** Receives each proposed controlled or committed uncontrolled dismissal change. */
   readonly onDismissedChange?: (dismissed: boolean) => void;
+  /** Receives persistence read or write failures without letting them escape. */
   readonly onPersistenceError?: (error: unknown) => void;
+  /** Reserved: Banner always renders a named native aside. */
   readonly role?: never;
+  /** Page- or site-level scope metadata; defaults to `page`. */
   readonly scope?: BannerScope;
+  /** Non-empty visible heading that names the banner. */
   readonly title: ReactNode;
+  /** Visual and textual severity treatment; defaults to `info`. */
   readonly variant?: BannerVariant;
+  /** Localized visible override for the selected variant label. */
   readonly variantLabel?: string;
 }
 
 interface BannerControlledDismissalProps {
+  /** Unavailable in controlled mode because `dismissed` owns the initial state. */
   readonly defaultDismissed?: never;
+  /** Controlled dismissal state; changes are proposed through `onDismissedChange`. */
   readonly dismissed: boolean;
+  /** Unavailable in controlled mode; persistence is owned by the controlling consumer. */
   readonly persistence?: never;
 }
 
 interface BannerUncontrolledDismissalProps {
+  /** Initial uncontrolled dismissal state; defaults to false. */
   readonly defaultDismissed?: boolean;
+  /** Omit to let Banner own and commit its dismissal state. */
   readonly dismissed?: never;
+  /** Optional synchronous adapter used only for uncontrolled dismissible banners. */
   readonly persistence?: BannerPersistenceAdapter;
 }
 
@@ -196,8 +228,11 @@ export const Banner = forwardRef<HTMLElement, BannerProps>(function Banner(props
     usesPersistence &&
     (resolvedPersistence?.adapter !== persistence || resolvedPersistence.id !== id);
   const resolvedDismissed = dismissed ?? internalDismissed;
-  const defaultDismissLabel = useMergoraMessage("banner.dismiss", "Dismiss message");
-  const defaultVariantLabel = useMergoraMessage(
+  const { getMessage } = useMergoraContext();
+  const defaultDismissLabel = dismissible
+    ? getMessage("banner.dismiss", "Dismiss message")
+    : undefined;
+  const defaultVariantLabel = getMessage(
     `banner.${variant}`,
     {
       error: "Error",

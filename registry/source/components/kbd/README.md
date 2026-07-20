@@ -6,6 +6,10 @@ Represents individual keys and localized spoken key chords with explicit platfor
 <KbdChord keys={[{ key: "Meta", spokenLabel: "Command" }, { key: "K" }]} platform="mac" />
 ```
 
+## Mergora advantage
+
+Platform-specific glyph mapping is separated from the localized spoken chord, so familiar symbols never replace an understandable accessible name. Use `platform="generic"` and omit custom `spokenLabel`, `label`, and `separator` values for the plain deterministic chord without platform-specific presentation.
+
 ## Contract
 
 Native kbd elements retain key semantics. Chords expose one localized spoken group label while decorative glyphs and separators are hidden from the accessibility tree.

@@ -8,12 +8,19 @@ export type TextWeight = "regular" | "medium" | "semibold" | "strong";
 export type TextTone = "primary" | "muted" | "success" | "warning" | "danger";
 
 export interface TextProps extends HTMLAttributes<HTMLElement> {
+  /** Native text-level or block element used for the semantic boundary. */
   readonly as?: TextElement;
+  /** Visible text or inline content rendered by the selected element. */
   readonly children?: ReactNode;
+  /** Complete readable value required when non-text children are truncated. */
   readonly fullValue?: string;
+  /** Selects the shared caption-through-large text scale. */
   readonly size?: TextSize;
+  /** Applies a semantic foreground tone with forced-colors fallback. */
   readonly tone?: TextTone;
+  /** Enables ellipsis plus focus/hover reveal and an accessible full value. */
   readonly truncate?: boolean;
+  /** Selects the shared regular-through-strong font weight. */
   readonly weight?: TextWeight;
 }
 

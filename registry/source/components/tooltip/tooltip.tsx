@@ -13,7 +13,9 @@ import {
 import type { TooltipProps as ReactAriaTooltipProps } from "react-aria-components/Tooltip";
 import {
   createContext,
+  Fragment,
   forwardRef,
+  isValidElement,
   useContext,
   useEffect,
   useMemo,
@@ -39,6 +41,18 @@ function isDevelopmentRuntime(): boolean {
   ).env?.PROD;
   const runtime = globalThis as typeof globalThis & { readonly process?: ProcessLike };
   return viteProduction !== true && runtime.process?.env?.NODE_ENV !== "production";
+}
+
+/** @internal Shared optional-content predicate; not exported from the public item entrypoint. */
+export function hasAccessibleContent(value: ReactNode): boolean {
+  if (value === null || value === undefined || typeof value === "boolean") return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.some(hasAccessibleContent);
+  if (isValidElement<{ readonly children?: ReactNode }>(value)) {
+    if (value.type === Fragment) return hasAccessibleContent(value.props.children);
+    return typeof value.type === "string" ? hasAccessibleContent(value.props.children) : true;
+  }
+  return true;
 }
 
 function joinClassName(base: string, className: string | undefined): string {
@@ -68,13 +82,21 @@ function useTooltipContext(part: string): TooltipContextValue {
 }
 
 export interface TooltipRootProps {
+  /** Tooltip trigger and content parts owned by this root. */
   readonly children: ReactNode;
+  /** Delay in milliseconds before a departed tooltip closes. */
   readonly closeDelay?: number;
+  /** Initial open state for uncontrolled use. */
   readonly defaultOpen?: boolean;
+  /** Delay in milliseconds before hover or focus opens the tooltip. */
   readonly delay?: number;
+  /** Disables tooltip opening while retaining the declared parts. */
   readonly disabled?: boolean;
+  /** Reports every committed tooltip open-state change. */
   readonly onOpenChange?: (open: boolean) => void;
+  /** Controlled open state; pair with onOpenChange. */
   readonly open?: boolean;
+  /** Declares touch behavior; the current policy registers no long-press interaction. */
   readonly touchPolicy?: TooltipTouchPolicy;
 }
 
@@ -127,6 +149,7 @@ export function TooltipRoot({
 TooltipRoot.displayName = "Tooltip.Root";
 
 export interface TooltipTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Trigger button content; native button semantics remain authoritative. */
   readonly children?: ReactNode;
 }
 
@@ -156,6 +179,7 @@ export interface TooltipDisabledTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "disabled"
 > {
+  /** Content of the focusable aria-disabled trigger adapter. */
   readonly children?: ReactNode;
 }
 
@@ -190,12 +214,20 @@ export const TooltipDisabledTrigger = forwardRef<HTMLButtonElement, TooltipDisab
 TooltipDisabledTrigger.displayName = "Tooltip.DisabledTrigger";
 
 export interface TooltipContentProps extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
+  /** Supplemental, noninteractive description exposed by the tooltip lifecycle. */
   readonly children: ReactNode;
+  /** Minimum collision padding, in CSS pixels, from the viewport edge. */
   readonly containerPadding?: number;
+  /** Cross-axis displacement in CSS pixels from the aligned position. */
   readonly crossOffset?: number;
+  /** Distance in CSS pixels between the trigger and tooltip. */
   readonly offset?: number;
+  /** Requested logical or physical edge before collision adjustment. */
   readonly placement?: TooltipPlacement;
+  /** Allows collision handling to flip the requested placement. */
   readonly shouldFlip?: boolean;
+  /** Optional keyboard shortcut shown and announced with the supplemental description. */
+  readonly shortcut?: ReactNode;
 }
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
@@ -208,6 +240,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
       offset = 8,
       placement = "top",
       shouldFlip = true,
+      shortcut,
       ...nativeProps
     },
     forwardedRef,
@@ -215,6 +248,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
     const provider = useMergoraContext();
     const context = useTooltipContext("Content");
     const [element, setElement] = useState<HTMLDivElement | null>(null);
+    const hasShortcut = hasAccessibleContent(shortcut);
 
     useEffect(() => {
       if (!context.isOpen || element === null || !isDevelopmentRuntime()) return;
@@ -263,7 +297,16 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
           }}
         >
           <div className="mrg-tooltip__content" data-slot="tooltip-content">
-            {children}
+            {hasShortcut ? (
+              <>
+                <span>{children}</span>
+                <kbd className="mrg-tooltip__shortcut" data-slot="tooltip-shortcut">
+                  {shortcut}
+                </kbd>
+              </>
+            ) : (
+              children
+            )}
           </div>
         </ReactAriaTooltip>
       </LayerManager.Layer>
@@ -274,6 +317,7 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
 TooltipContent.displayName = "Tooltip.Content";
 
 export interface TooltipArrowProps extends ComponentPropsWithoutRef<"svg"> {
+  /** Arrow width and height in CSS pixels. */
   readonly size?: number;
 }
 

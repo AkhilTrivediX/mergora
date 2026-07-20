@@ -60,6 +60,12 @@ const outputStyle = {
   padding: "var(--mrg-semantic-space-inset-md)",
 } satisfies CSSProperties;
 
+interface PhoneMaskedEnhancementArgs {
+  readonly maskedCanonicalSerialization: boolean;
+  readonly phoneCanonicalSerialization: boolean;
+  readonly phoneExtension: boolean;
+}
+
 const buttonStyle = {
   background: "var(--mrg-semantic-color-action-background)",
   border: 0,
@@ -495,13 +501,106 @@ function DelayedControlledMaskWorkbench() {
   );
 }
 
+function MergoraPhoneMaskedModes({
+  maskedCanonicalSerialization = true,
+  phoneCanonicalSerialization = true,
+  phoneExtension = true,
+}: Partial<PhoneMaskedEnhancementArgs> = {}) {
+  const [submission, setSubmission] = useState("Submit to inspect native values.");
+
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Canonical contact and identifier entry</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Deterministic formatting remains in the visible native editors; canonical form values and
+          extension capture can be removed independently.
+        </p>
+      </header>
+      <form
+        onSubmit={(event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          setSubmission(
+            JSON.stringify(
+              Object.fromEntries(
+                [...new FormData(event.currentTarget).entries()].map(([name, value]) => [
+                  name,
+                  String(value),
+                ]),
+              ),
+            ),
+          );
+        }}
+      >
+        <Field description="The visible national format stays editable." label="Support phone">
+          <PhoneField
+            adapter={fixedTenDigitPhoneAdapter}
+            country={unitedStates}
+            defaultValue="4155552671"
+            extension={phoneExtension}
+            {...(phoneExtension
+              ? {
+                  defaultExtensionValue: "204",
+                  extensionLabel: "Extension",
+                  extensionName: "support-extension",
+                }
+              : {})}
+            {...(phoneCanonicalSerialization ? { name: "support-phone" } : {})}
+          />
+        </Field>
+        <Field
+          description="The adapter keeps a stable formatted view and raw identifier."
+          label="Inventory code"
+        >
+          <MaskedField
+            adapter={productCodeMaskAdapter}
+            defaultValue="AB2048QZ"
+            maxInputLength={10}
+            {...(maskedCanonicalSerialization ? { name: "inventory-code" } : {})}
+            serialization="raw"
+          />
+        </Field>
+        <button style={buttonStyle} type="submit">
+          Inspect native values
+        </button>
+      </form>
+      <output aria-live="polite" data-testid="enhancement-form-values" style={outputStyle}>
+        {submission}
+      </output>
+    </Canvas>
+  );
+}
+
 const meta = {
+  args: {
+    maskedCanonicalSerialization: true,
+    phoneCanonicalSerialization: true,
+    phoneExtension: true,
+  },
+  argTypes: {
+    maskedCanonicalSerialization: { control: "boolean" },
+    phoneCanonicalSerialization: { control: "boolean" },
+    phoneExtension: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   title: "P4/Phone and masked fields",
-} satisfies Meta;
+} satisfies Meta<PhoneMaskedEnhancementArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const BasicDefaults: Story = {
+  args: {
+    maskedCanonicalSerialization: false,
+    phoneCanonicalSerialization: false,
+    phoneExtension: false,
+  },
+  render: (args) => <MergoraPhoneMaskedModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraPhoneMaskedModes {...args} />,
+};
 
 export const PhoneWorkbench: Story = {
   render: () => (

@@ -175,6 +175,21 @@ export interface StableVendorVerificationResult {
   readonly writePerformed: false;
 }
 
+export interface DiscoveredStableVendorReleaseReference {
+  readonly schemaVersion: 1;
+  readonly artifactKind: "mergora-native-release-reference";
+  readonly registryId: "official";
+  readonly release: string;
+  readonly catalog: {
+    readonly digest: Digest;
+    readonly bytes: number;
+  };
+  readonly manifest: {
+    readonly digest: Digest;
+    readonly bytes: number;
+  };
+}
+
 function vendorReaderError(message: string, code: string, target?: string): CliError {
   return new CliError(message, {
     code,
@@ -2443,6 +2458,55 @@ export function verifyStableVendorBundle(
   const vendorRoot = options.vendorRoot ?? DEFAULT_VENDOR_ROOT;
   safeRelativePath(vendorRoot, "Stable vendor root");
   return verifyStableVendor(root, vendorRoot)?.verification ?? null;
+}
+
+/**
+ * Returns the exact native release reference carried by the one configured
+ * Stable vendor directory. The complete closed bundle is verified before the
+ * catalog or manifest digest is exposed; an absent unreleased-local bundle is
+ * deliberately not treated as Stable evidence.
+ */
+export function discoverStableVendorReleaseReference(
+  options: StableAcquisitionVendorReaderOptions,
+): DiscoveredStableVendorReleaseReference | null {
+  const root = validatedProjectRoot(options.projectRoot);
+  const vendorRoot = options.vendorRoot ?? DEFAULT_VENDOR_ROOT;
+  safeRelativePath(vendorRoot, "Stable vendor root");
+  const verified = verifyStableVendor(root, vendorRoot);
+  if (verified === null) return null;
+  const catalogTarget = `${vendorRoot}/r/v1/catalog.json`;
+  const manifestTarget = `${vendorRoot}/r/v1/releases/${verified.release}/manifest.json`;
+  const catalog = safeRead(root, catalogTarget, "Stable vendor catalog", MAX_MANIFEST_BYTES);
+  const manifest = safeRead(
+    root,
+    manifestTarget,
+    "Stable vendor release manifest",
+    MAX_MANIFEST_BYTES,
+  );
+  if (
+    sha256(catalog) !== verified.verification.catalogDigest ||
+    sha256(manifest) !== verified.verification.releaseManifestDigest
+  ) {
+    throw vendorReaderError(
+      "Stable vendor release reference changed after bundle verification.",
+      "VENDOR_STABLE_MUTATED",
+      vendorRoot,
+    );
+  }
+  return {
+    schemaVersion: 1,
+    artifactKind: "mergora-native-release-reference",
+    registryId: "official",
+    release: verified.release,
+    catalog: {
+      digest: verified.verification.catalogDigest,
+      bytes: catalog.byteLength,
+    },
+    manifest: {
+      digest: verified.verification.releaseManifestDigest,
+      bytes: manifest.byteLength,
+    },
+  };
 }
 
 /**

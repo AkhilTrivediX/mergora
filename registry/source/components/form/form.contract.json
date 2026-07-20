@@ -18,14 +18,14 @@
     "speech": "Visible labels remain available for voice targeting.",
     "switchAccess": "No duplicate proxy focus target is introduced."
   },
-  "formBehavior": "No submit or reset event is intercepted; native URL actions and React server actions pass through.",
+  "formBehavior": "No submit or reset event is intercepted; native URL actions and React server actions pass through. Non-empty optional submission status is consumer-owned output and derives aria-busy only while submitting; false, null, omitted, and statically empty messages emit no status semantics or derived state.",
   "states": {
-    "attributes": ["data-layout"],
-    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+    "attributes": ["data-layout", "data-submission-state", "aria-busy"],
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines. Disabled or statically empty submission status emits no visual, event, data-state, role, live-region, or derived busy output."
   },
   "stableSelectors": {
     "root": "[data-slot=form]",
-    "attributes": ["data-layout"]
+    "attributes": ["data-layout", "data-submission-state", "aria-busy"]
   },
   "preferences": {
     "dark": "Uses semantic theme tokens.",
@@ -41,7 +41,7 @@
     "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
   },
   "internationalization": {
-    "consumerStrings": [],
+    "consumerStrings": ["submissionStatus"],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
     "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",
@@ -60,6 +60,7 @@
       "server-action",
       "adapter-fixtures",
       "successful-controls",
+      "submission-status-disabled-absence",
       "packed-consumer",
       "package-source-parity"
     ],

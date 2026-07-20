@@ -7,9 +7,13 @@ export type ProseMeasure = "prose" | "wide" | "none";
 export type ProseSize = "compact" | "default" | "large";
 
 export interface ProseProps extends HTMLAttributes<HTMLElement> {
+  /** Native article, section, or div element used for the prose boundary. */
   readonly as?: ProseElement;
+  /** Long-form content receiving the shared readable typography treatment. */
   readonly children?: ReactNode;
+  /** Selects prose, wide, or unconstrained readable line measure. */
   readonly measure?: ProseMeasure;
+  /** Selects compact, default, or large prose type density. */
   readonly size?: ProseSize;
 }
 

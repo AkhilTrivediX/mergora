@@ -22,13 +22,13 @@
       "name": "sr-announcer-polite",
       "semanticElement": "role=status live region",
       "refTarget": "none",
-      "states": ["idle", "announcing"]
+      "states": ["idle", "announcing", "deduplicated"]
     },
     {
       "name": "sr-announcer-assertive",
       "semanticElement": "role=alert live region",
       "refTarget": "none",
-      "states": ["idle", "announcing"]
+      "states": ["idle", "announcing", "deduplicated"]
     }
   ],
   "contract": { "id": "sr-announcer-accessibility", "version": "0.1.0" },

@@ -6,6 +6,10 @@ Combines a labelled, scrollable pre/code region with line emphasis and resilient
 <CodeBlock code="pnpm test" label="Verification command" filename="package.json" />
 ```
 
+## Mergora advantage
+
+Line-number evidence, spoken highlights, resilient copy feedback, caller-rendered tokens, and bounded scrolling remain independently composable. Set `copyable={false}`, `showLineNumbers={false}`, omit `highlightedLines`, and omit `renderLine` to remove their controls, behavior, callbacks, announcements, and visual output.
+
 ## Contract
 
 A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline; copy completion is announced in a concise status node.

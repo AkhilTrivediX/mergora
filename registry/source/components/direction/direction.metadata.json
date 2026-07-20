@@ -21,7 +21,7 @@
       "name": "direction-boundary",
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
-      "states": ["ltr", "rtl"]
+      "states": ["ltr", "rtl", "isolated"]
     }
   ],
   "contract": { "id": "direction-accessibility", "version": "0.1.0" },

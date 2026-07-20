@@ -16,7 +16,8 @@
     "single-row selection through labelled native radios",
     "empty state",
     "focusable labelled narrow-screen scrolling region",
-    "controlled and uncontrolled sorting and selection"
+    "controlled and uncontrolled sorting and selection",
+    "optional live selection summary with complete disabled-path removal"
   ],
   "completionDelta": [
     "interactive ARIA grid mode and its complete keyboard model",
@@ -30,8 +31,8 @@
     "scale, browser, assistive-technology, speech, and switch evidence"
   ],
   "evidence": {
-    "automated": "not-tested",
-    "browser": "not-tested",
+    "automated": "pass",
+    "browser": "pass",
     "manualAssistiveTechnology": "not-supplied",
     "packageSourceParity": "not-tested"
   }

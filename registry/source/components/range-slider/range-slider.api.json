@@ -44,18 +44,27 @@
       "default": "clamp",
       "type": "clamp"
     },
+    { "name": "announceCollisions", "required": false, "default": false, "type": "boolean" },
     { "name": "marks", "required": false, "type": "readonly SliderMark[]" },
+    {
+      "name": "intelligentMarks",
+      "required": false,
+      "default": false,
+      "type": "false | SliderIntelligentMarksOptions"
+    },
     { "name": "formatOptions", "required": false, "type": "Intl.NumberFormatOptions" },
     { "name": "form", "required": false, "type": "string" },
     { "name": "disabled", "required": false, "default": false, "type": "boolean" },
     { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
     { "name": "readOnlyMessage", "required": false, "type": "localized string" },
     { "name": "invalid", "required": false, "default": false, "type": "boolean" },
-    { "name": "showOutput", "required": false, "default": true, "type": "boolean" }
+    { "name": "showOutput", "required": false, "default": true, "type": "boolean" },
+    { "name": "showValueBubbles", "required": false, "default": false, "type": "boolean" }
   ],
   "compositionPolicy": {
     "order": "Values are non-decreasing. A thumb may meet its neighbor, but React Aria clamps it before crossing and thumb indices never swap.",
     "naming": "Every thumb has a distinct accessible label; optional form names must also be non-empty, distinct, and count-aligned.",
-    "field": "Field names the slider group while thumbLabels identify each adjustable boundary."
+    "field": "Field names the slider group while thumbLabels identify each adjustable boundary.",
+    "enhancements": "Optional intelligent marks and visual value bubbles share Slider behavior. announceCollisions adds a polite status only when adjacent thumbs first meet; disabling it removes that live region and announcement output."
   }
 }

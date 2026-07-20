@@ -65,14 +65,27 @@ function Canvas({
 }
 
 function StandardAccordion({
+  expansionSummary = false,
   headingLevel = 3,
   multiple = false,
 }: {
+  readonly expansionSummary?: boolean;
   readonly headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   readonly multiple?: boolean;
 }) {
   return (
-    <Accordion.Root defaultValue={["identity"]} multiple={multiple}>
+    <Accordion.Root
+      defaultValue={["identity"]}
+      multiple={multiple}
+      {...(expansionSummary
+        ? {
+            renderExpansionSummary: (values: readonly string[]) =>
+              values.length === 0
+                ? "All sections are collapsed."
+                : `${new Intl.NumberFormat("en-US").format(values.length)} section${values.length === 1 ? "" : "s"} expanded.`,
+          }
+        : {})}
+    >
       <Accordion.Item value="identity">
         <Accordion.Header level={headingLevel}>
           <Accordion.Trigger>Identity and provenance</Accordion.Trigger>
@@ -100,10 +113,12 @@ function StandardAccordion({
 function StandardTabs({
   activationMode = "automatic",
   direction,
+  keyboardHint = false,
   orientation = "horizontal",
 }: {
   readonly activationMode?: "automatic" | "manual";
   readonly direction?: "ltr" | "rtl";
+  readonly keyboardHint?: boolean;
   readonly orientation?: "horizontal" | "vertical";
 }) {
   return (
@@ -114,7 +129,12 @@ function StandardTabs({
       disabledValues={["release"]}
       orientation={orientation}
     >
-      <Tabs.List label="Artifact sections">
+      <Tabs.List
+        {...(keyboardHint
+          ? { keyboardHint: "Use arrow keys to move; press Enter in manual mode." }
+          : {})}
+        label="Artifact sections"
+      >
         <Tabs.Tab value="overview">Overview</Tabs.Tab>
         <Tabs.Tab value="evidence">Evidence</Tabs.Tab>
         <Tabs.Tab value="release">Release unavailable</Tabs.Tab>
@@ -137,6 +157,61 @@ const breadcrumbItems = [
   { href: "/docs/components/navigation/disclosure", id: "disclosure", label: "Disclosure" },
   { id: "accordion", label: "Accordion" },
 ] as const;
+
+interface NavigationStoryArgs {
+  readonly collapsibleStateText: boolean;
+  readonly cursorPagination: boolean;
+  readonly expansionSummary: boolean;
+  readonly keyboardHint: boolean;
+  readonly responsiveBreadcrumb: boolean;
+}
+
+function NavigationModes(args: NavigationStoryArgs) {
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Disclosure and navigation modes</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "70ch" }}>
+          Native disclosure, hierarchy, tab, and link semantics remain intact as each optional
+          context aid is toggled independently.
+        </p>
+      </header>
+      <section aria-label="Accordion mode" style={specimenStyle}>
+        <StandardAccordion expansionSummary={args.expansionSummary} headingLevel={2} multiple />
+      </section>
+      <section aria-label="Collapsible mode" style={specimenStyle}>
+        <Collapsible.Root>
+          <Collapsible.Trigger
+            {...(args.collapsibleStateText
+              ? { stateText: { closed: "Collapsed", open: "Expanded" } }
+              : {})}
+          >
+            Technical details
+          </Collapsible.Trigger>
+          <Collapsible.Content>
+            Keyboard and pointer activation share the same controlled disclosure state.
+          </Collapsible.Content>
+        </Collapsible.Root>
+      </section>
+      <section aria-label="Tabs mode" style={specimenStyle}>
+        <StandardTabs activationMode="manual" keyboardHint={args.keyboardHint} />
+      </section>
+      <section aria-label="Navigation mode" style={specimenStyle}>
+        <Breadcrumb collapse={args.responsiveBreadcrumb} items={breadcrumbItems} />
+        {args.cursorPagination ? (
+          <Pagination
+            currentLabel="Items 41 through 60"
+            mode="cursor"
+            nextHref="?after=item-60"
+            previousHref="?before=item-41"
+          />
+        ) : (
+          <Pagination getHref={(page) => `?page=${page}`} page={3} pageCount={8} />
+        )}
+      </section>
+    </Canvas>
+  );
+}
 
 function Workbench() {
   return (
@@ -211,13 +286,42 @@ function UrlStateTabs() {
 }
 
 const meta = {
+  argTypes: {
+    collapsibleStateText: { control: "boolean" },
+    cursorPagination: { control: "boolean" },
+    expansionSummary: { control: "boolean" },
+    keyboardHint: { control: "boolean" },
+    responsiveBreadcrumb: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
   title: "P2/Disclosure and Navigation",
-} satisfies Meta;
+} satisfies Meta<NavigationStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<NavigationStoryArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    collapsibleStateText: false,
+    cursorPagination: false,
+    expansionSummary: false,
+    keyboardHint: false,
+    responsiveBreadcrumb: false,
+  },
+  render: (args) => <NavigationModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  args: {
+    collapsibleStateText: true,
+    cursorPagination: true,
+    expansionSummary: true,
+    keyboardHint: true,
+    responsiveBreadcrumb: true,
+  },
+  render: (args) => <NavigationModes {...args} />,
+};
 
 export const DisclosureNavigationWorkbench: Story = { render: () => <Workbench /> };
 

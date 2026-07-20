@@ -113,6 +113,14 @@ const outputStyle = {
   padding: "var(--mrg-semantic-space-inset-md)",
 } satisfies CSSProperties;
 
+interface CredentialEnhancementArgs {
+  readonly otpCompletionHook: boolean;
+  readonly otpGroupedDisplay: boolean;
+  readonly pinCompletionHook: boolean;
+  readonly pinDisplayMode: "secure" | "visible";
+  readonly pinPastePolicy: "allow" | "block";
+}
+
 function Canvas({
   children,
   direction = "ltr",
@@ -128,6 +136,80 @@ function Canvas({
         <div style={workbenchStyle}>{children}</div>
       </main>
     </MergoraProvider>
+  );
+}
+
+function MergoraCredentialModes({
+  otpCompletionHook,
+  otpGroupedDisplay,
+  pinCompletionHook,
+  pinDisplayMode,
+  pinPastePolicy,
+}: CredentialEnhancementArgs) {
+  const [otpCompletions, setOtpCompletions] = useState(0);
+  const [pinCompletions, setPinCompletions] = useState(0);
+  const [submission, setSubmission] = useState("No credential values submitted.");
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ marginBlock: 0 }}>Mergora credential fields</h1>
+        <p style={{ marginBlockEnd: 0, maxInlineSize: "68ch" }}>
+          Each credential remains one native input while grouping, completion hooks, visibility, and
+          paste policy remain explicit choices.
+        </p>
+      </header>
+      <form
+        aria-label="Credential field modes"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSubmission(
+            JSON.stringify(Object.fromEntries(new FormData(event.currentTarget).entries())),
+          );
+        }}
+      >
+        <Field label="Verification code">
+          <OtpField
+            groups={otpGroupedDisplay ? [3, 3] : [6]}
+            name="verification-code"
+            {...(otpCompletionHook
+              ? { onComplete: () => setOtpCompletions((count) => count + 1) }
+              : {})}
+          />
+        </Field>
+        {otpCompletionHook ? (
+          <output aria-live="polite" data-testid="otp-completion-hook">
+            OTP completions: {otpCompletions}
+          </output>
+        ) : null}
+        <Field label="Reusable PIN">
+          <PinField
+            displayMode={pinDisplayMode}
+            name="access-pin"
+            pastePolicy={pinPastePolicy}
+            purpose="reusable-secret"
+            {...(pinCompletionHook
+              ? { onComplete: () => setPinCompletions((count) => count + 1) }
+              : {})}
+          />
+        </Field>
+        {pinCompletionHook ? (
+          <output aria-live="polite" data-testid="pin-completion-hook">
+            PIN completions: {pinCompletions}
+          </output>
+        ) : null}
+        <div style={buttonRailStyle}>
+          <button style={buttonStyle} type="submit">
+            Inspect native values
+          </button>
+          <button style={secondaryButtonStyle} type="reset">
+            Restore defaults
+          </button>
+        </div>
+      </form>
+      <output aria-live="polite" data-testid="credential-mode-submission" style={outputStyle}>
+        {submission}
+      </output>
+    </Canvas>
   );
 }
 
@@ -355,12 +437,42 @@ function DelayedParentWorkbench() {
 }
 
 const meta = {
+  args: {
+    otpCompletionHook: true,
+    otpGroupedDisplay: true,
+    pinCompletionHook: true,
+    pinDisplayMode: "secure",
+    pinPastePolicy: "allow",
+  },
+  argTypes: {
+    otpCompletionHook: { control: "boolean" },
+    otpGroupedDisplay: { control: "boolean" },
+    pinCompletionHook: { control: "boolean" },
+    pinDisplayMode: { control: "select", options: ["secure", "visible"] },
+    pinPastePolicy: { control: "select", options: ["allow", "block"] },
+  },
   parameters: { layout: "fullscreen" },
+  tags: ["autodocs"],
   title: "P4/OTP PIN fields",
-} satisfies Meta;
+} satisfies Meta<CredentialEnhancementArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<CredentialEnhancementArgs>;
+
+export const BasicDefaults: Story = {
+  args: {
+    otpCompletionHook: false,
+    otpGroupedDisplay: false,
+    pinCompletionHook: false,
+    pinDisplayMode: "secure",
+    pinPastePolicy: "allow",
+  },
+  render: (args) => <MergoraCredentialModes {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <MergoraCredentialModes {...args} />,
+};
 
 export const EntryWorkbench: Story = {
   render: () => <SubmissionWorkbench />,

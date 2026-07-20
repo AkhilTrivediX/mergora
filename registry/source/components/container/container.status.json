@@ -7,6 +7,7 @@
   "evidenceStatus": "incomplete",
   "recordedEvidence": [],
   "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora enhancement-off/on stories and selective controls in generated Storybook evidence.",
     "Generate and verify source/package/registry/docs outputs and subpath exports.",
     "Record browser geometry at 320 CSS pixels and 400% zoom for every width and gutter.",
     "Record LTR/RTL safe-area behavior on a physical mobile viewport.",

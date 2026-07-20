@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./timeline.css", "react"],
+  "entryPath": "registry/source/components/timeline/timeline.tsx",
+  "id": "timeline",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

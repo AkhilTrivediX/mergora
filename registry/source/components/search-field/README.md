@@ -10,6 +10,8 @@ The clear action is a real non-submit button. It is unavailable while the input 
 
 ## Known limitations
 
+The Mergora search surface combines a strong ink boundary, literal Canvas editor, restrained green submit action, violet focus seam, and state-specific result rail. Passing the default `{ state: "idle" }` disables the optional status enhancement completely: no status node, live region, description ID, error-message ID, or derived busy state is emitted. Search editing, clear, Enter submission, and results ownership continue unchanged.
+
 - Consumers must prevent stale remote responses from replacing or announcing the current query's result state.
 - Recorded mobile keyboard, IME, speech, switch, and manual screen-reader evidence is still required before promotion.
 - Browser-native search affordances vary; Mergora suppresses the WebKit cancel glyph to avoid a duplicate unlabeled clear action.

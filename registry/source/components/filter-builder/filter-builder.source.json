@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./filter-builder.css", "react"],
+  "entryPath": "registry/source/components/filter-builder/filter-builder.tsx",
+  "id": "filter-builder",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

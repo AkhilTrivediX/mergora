@@ -21,10 +21,13 @@ import {
   type ListBoxItemRenderProps,
   type ListBoxProps as AriaListBoxProps,
   type PopoverProps as AriaPopoverProps,
+  ComboBoxStateContext as AriaComboBoxStateContext,
 } from "react-aria-components/ComboBox";
 import { Header as AriaHeader } from "react-aria-components/Header";
 import {
+  createContext,
   forwardRef,
+  useContext,
   type ButtonHTMLAttributes,
   type ForwardedRef,
   type HTMLAttributes,
@@ -34,43 +37,79 @@ import {
   type RefAttributes,
 } from "react";
 
+/** Canonical string or safe numeric identity accepted by compound combobox items. */
 export type ComboboxKey = string | number;
+/** Interaction channel allowed to open the compound combobox menu. */
 export type ComboboxMenuTrigger = "focus" | "input" | "manual";
 
 export interface ComboboxValueChangeDetail {
+  /** Selection interaction that committed the next canonical key. */
   readonly reason: "selection";
 }
 
 export interface ComboboxInputChangeDetail {
+  /** Direct input edit that committed the next search text. */
   readonly reason: "input";
 }
 
 export interface ComboboxOpenChangeDetail {
+  /** Focus, input, manual, or dismiss interaction that changed popup visibility. */
   readonly reason: ComboboxMenuTrigger | "dismiss";
 }
 
+interface ComboboxRootContextValue {
+  /** Whether the root blocks all child-control interaction. */
+  readonly disabled: boolean;
+  /** Whether the root preserves interaction while blocking value changes. */
+  readonly readOnly: boolean;
+}
+
+const ComboboxRootContext = createContext<ComboboxRootContextValue | null>(null);
+
 export interface ComboboxRootProps {
+  /** Compound Combobox parts rendered inside the React Aria collection root. */
   readonly children: ReactNode;
+  /** Controlled canonical selected key, or null for no selection. */
   readonly value?: ComboboxKey | null;
+  /** Initial canonical selected key for uncontrolled use and form reset. */
   readonly defaultValue?: ComboboxKey | null;
+  /** Reports canonical key selection with a stable interaction detail. */
   readonly onValueChange?: (value: ComboboxKey | null, detail: ComboboxValueChangeDetail) => void;
+  /** Controlled input text used for search and optional custom values. */
   readonly inputValue?: string;
+  /** Initial input text for uncontrolled use. */
   readonly defaultInputValue?: string;
+  /** Reports direct input edits with a stable interaction detail. */
   readonly onInputValueChange?: (value: string, detail: ComboboxInputChangeDetail) => void;
+  /** Reports popup visibility and the focus, input, manual, or dismiss reason. */
   readonly onOpenChange?: (open: boolean, detail: ComboboxOpenChangeDetail) => void;
+  /** Allows unlisted input text to remain a valid value; false requires collection selection. */
   readonly allowsCustomValue?: boolean;
+  /** Allows the popup to open with no items; false uses the library's normal empty handling. */
   readonly allowsEmptyCollection?: boolean;
+  /** Focus, input, or manual interaction that opens the listbox. */
   readonly menuTrigger?: ComboboxMenuTrigger;
+  /** Canonical keys kept visible while removed from selection and focus. */
   readonly disabledKeys?: Iterable<ComboboxKey>;
+  /** Disables input, trigger, clear, selection, and native form interaction. */
   readonly isDisabled?: boolean;
+  /** Preserves navigation while blocking input, clear, and selection changes. */
   readonly isReadOnly?: boolean;
+  /** Requires a non-empty value through the configured validation behavior. */
   readonly isRequired?: boolean;
+  /** Exposes invalid semantics and the Mergora validation treatment. */
   readonly isInvalid?: boolean;
+  /** Native form field name managed by the React Aria combobox root. */
   readonly name?: string;
+  /** Chooses whether native form serialization submits the selected key or input text. */
   readonly formValue?: "key" | "text";
+  /** Chooses browser-native constraint validation or ARIA-only validation semantics. */
   readonly validationBehavior?: "aria" | "native";
+  /** Additional class name merged onto the root element. */
   readonly className?: string;
+  /** Direct accessible name used when no visible Combobox.Label is rendered. */
   readonly "aria-label"?: string;
+  /** Id reference supplying the accessible name from external visible content. */
   readonly "aria-labelledby"?: string;
 }
 
@@ -145,17 +184,22 @@ function ComboboxRootInner(
   };
 
   return (
-    <AriaComboBox<Record<string, unknown>, "single">
-      {...ariaProps}
-      ref={ref}
-      data-slot="combobox-root"
-    />
+    <ComboboxRootContext.Provider
+      value={{ disabled: isDisabled === true, readOnly: isReadOnly === true }}
+    >
+      <AriaComboBox<Record<string, unknown>, "single">
+        {...ariaProps}
+        ref={ref}
+        data-slot="combobox-root"
+      />
+    </ComboboxRootContext.Provider>
   );
 }
 
 export const ComboboxRoot = forwardRef<HTMLDivElement, ComboboxRootProps>(ComboboxRootInner);
 
 export interface ComboboxLabelProps extends HTMLAttributes<HTMLLabelElement> {
+  /** Additional class name merged onto the visible label element. */
   readonly className?: string;
 }
 
@@ -174,6 +218,7 @@ export interface ComboboxInputProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "className" | "defaultValue" | "onChange" | "style" | "value"
 > {
+  /** Additional class name merged onto the native combobox input. */
   readonly className?: string;
 }
 
@@ -195,7 +240,9 @@ export interface ComboboxTriggerProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "className" | "style"
 > {
+  /** Additional class name merged onto the popup trigger button. */
   readonly className?: string;
+  /** Localized accessible name used when aria-label is not supplied. */
   readonly label?: string;
 }
 
@@ -216,9 +263,58 @@ export const ComboboxTrigger = forwardRef<HTMLButtonElement, ComboboxTriggerProp
   },
 );
 
-export interface ComboboxPopoverProps extends HTMLAttributes<HTMLElement> {
+export interface ComboboxClearProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "className" | "type"
+> {
+  /** Additional class name merged onto the clear action button. */
   readonly className?: string;
+  /** Localized accessible name; the clear part is omitted entirely unless composed. */
+  readonly label?: string;
+}
+
+export const ComboboxClear = forwardRef<HTMLButtonElement, ComboboxClearProps>(
+  ({ children, className, disabled, label = "Clear selection", onClick, ...props }, ref) => {
+    const root = useContext(ComboboxRootContext);
+    const state = useContext(AriaComboBoxStateContext);
+    if (root === null) throw new Error("Mergora Combobox.Clear requires Combobox.Root.");
+    // React Aria renders compound children once without state while building the option collection.
+    // The clear control is not a collection node and must remain absent from that inert pass.
+    if (state === null) return null;
+    const accessibleLabel = props["aria-label"] ?? label;
+    if (accessibleLabel.trim().length === 0) {
+      throw new Error("Mergora Combobox.Clear label must be non-empty.");
+    }
+    const isEmpty = state.inputValue.length === 0 && state.selectedKey === null;
+    return (
+      <button
+        {...props}
+        aria-label={accessibleLabel}
+        className={classes("mrg-combobox__clear", className)}
+        data-slot="combobox-clear"
+        disabled={disabled === true || root.disabled || root.readOnly || isEmpty}
+        onClick={(event) => {
+          onClick?.(event);
+          if (event.defaultPrevented) return;
+          state.setSelectedKey(null);
+          state.setInputValue("");
+          state.close();
+        }}
+        ref={ref}
+        type="button"
+      >
+        {children ?? <span aria-hidden="true">{"\u00d7"}</span>}
+      </button>
+    );
+  },
+);
+
+export interface ComboboxPopoverProps extends HTMLAttributes<HTMLElement> {
+  /** Additional class name merged onto the listbox popover. */
+  readonly className?: string;
+  /** Logical preferred popover placement with automatic collision handling. */
   readonly placement?: "bottom" | "bottom start" | "bottom end" | "top" | "top start" | "top end";
+  /** Distance in pixels between the trigger and popover; defaults to six. */
   readonly offset?: number;
 }
 
@@ -239,10 +335,15 @@ export const ComboboxPopover = forwardRef<HTMLElement, ComboboxPopoverProps>(
 );
 
 export interface ComboboxListBoxProps<T extends object = Record<string, unknown>> {
+  /** Static option parts or a renderer for each item supplied through items. */
   readonly children: ReactNode | ((item: T) => ReactElement);
+  /** Optional iterable model used for dynamic collection rendering. */
   readonly items?: Iterable<T>;
+  /** Visible non-interactive result rendered when the collection is empty. */
   readonly emptyContent?: ReactNode;
+  /** Additional class name merged onto the listbox element. */
   readonly className?: string;
+  /** Direct accessible name when the listbox needs a name separate from the root label. */
   readonly "aria-label"?: string;
 }
 
@@ -266,6 +367,7 @@ function ComboboxListBoxInner<T extends object>(
   return <AriaListBox<T> {...ariaProps} ref={ref} data-slot="combobox-listbox" />;
 }
 
+/** Generic ref-aware call signature preserved by the forwarded ListBox implementation. */
 export interface ComboboxListBoxComponent {
   <T extends object = Record<string, unknown>>(
     props: ComboboxListBoxProps<T> & RefAttributes<HTMLDivElement>,
@@ -275,21 +377,34 @@ export interface ComboboxListBoxComponent {
 export const ComboboxListBox = forwardRef(ComboboxListBoxInner) as ComboboxListBoxComponent;
 
 export interface ComboboxItemState {
+  /** Whether the item is unavailable for selection. */
   readonly isDisabled: boolean;
+  /** Whether the item currently owns composite focus. */
   readonly isFocused: boolean;
+  /** Whether focus should receive the keyboard-visible treatment. */
   readonly isFocusVisible: boolean;
+  /** Whether a pointing device currently hovers the item. */
   readonly isHovered: boolean;
+  /** Whether the item is currently pressed. */
   readonly isPressed: boolean;
+  /** Whether the item matches the root's canonical selected key. */
   readonly isSelected: boolean;
 }
 
 export interface ComboboxItemProps<T extends object = Record<string, unknown>> {
+  /** Stable canonical item key; inferred by React Aria when omitted in dynamic collections. */
   readonly id?: ComboboxKey;
+  /** Consumer-owned item model used by dynamic collection rendering. */
   readonly value?: T;
+  /** Plain localized text used for typeahead and accessible naming. */
   readonly textValue?: string;
+  /** Keeps the item visible while removing it from focus and selection. */
   readonly isDisabled?: boolean;
+  /** Additional class name merged onto the option element. */
   readonly className?: string;
+  /** Static content or state renderer for the option's visible content. */
   readonly children: ReactNode | ((state: ComboboxItemState) => ReactNode);
+  /** Direct accessible name when visible content cannot provide one. */
   readonly "aria-label"?: string;
 }
 
@@ -340,6 +455,7 @@ function ComboboxItemInner<T extends object>(
   return <AriaListBoxItem<T> {...ariaProps} ref={ref} data-slot="combobox-item" />;
 }
 
+/** Generic ref-aware call signature preserved by the forwarded Item implementation. */
 export interface ComboboxItemComponent {
   <T extends object = Record<string, unknown>>(
     props: ComboboxItemProps<T> & RefAttributes<HTMLDivElement>,
@@ -349,9 +465,13 @@ export interface ComboboxItemComponent {
 export const ComboboxItem = forwardRef(ComboboxItemInner) as ComboboxItemComponent;
 
 export interface ComboboxSectionProps {
+  /** Stable section key for dynamic collection rendering. */
   readonly id?: ComboboxKey;
+  /** Visible heading that names this group of options. */
   readonly title: ReactNode;
+  /** Ordered Combobox.Item parts contained in the section. */
   readonly children: ReactNode;
+  /** Additional class name merged onto the section element. */
   readonly className?: string;
 }
 
@@ -378,6 +498,7 @@ function ComboboxSectionInner(
 export const ComboboxSection = forwardRef<HTMLElement, ComboboxSectionProps>(ComboboxSectionInner);
 
 export interface ComboboxDescriptionProps extends HTMLAttributes<HTMLElement> {
+  /** Additional class name merged onto the associated description element. */
   readonly className?: string;
 }
 
@@ -394,6 +515,7 @@ export const ComboboxDescription = forwardRef<HTMLElement, ComboboxDescriptionPr
 );
 
 export interface ComboboxErrorMessageProps extends HTMLAttributes<HTMLElement> {
+  /** Additional class name merged onto the associated field-error element. */
   readonly className?: string;
 }
 
@@ -414,6 +536,7 @@ export const ComboboxErrorMessage = forwardRef<HTMLElement, ComboboxErrorMessage
 ComboboxLabel.displayName = "Combobox.Label";
 ComboboxInput.displayName = "Combobox.Input";
 ComboboxTrigger.displayName = "Combobox.Trigger";
+ComboboxClear.displayName = "Combobox.Clear";
 ComboboxPopover.displayName = "Combobox.Popover";
 ComboboxDescription.displayName = "Combobox.Description";
 ComboboxErrorMessage.displayName = "Combobox.ErrorMessage";
@@ -423,6 +546,7 @@ export const Combobox = {
   Label: ComboboxLabel,
   Input: ComboboxInput,
   Trigger: ComboboxTrigger,
+  Clear: ComboboxClear,
   Popover: ComboboxPopover,
   ListBox: ComboboxListBox,
   Section: ComboboxSection,

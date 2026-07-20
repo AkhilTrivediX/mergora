@@ -11,17 +11,28 @@ import {
 } from "../../../packages/test-utils/src/index.ts";
 import { validateSchemaDocument } from "../../../registry/schemas/index.ts";
 import { AlertDialog } from "../../../registry/source/components/alert-dialog/index.js";
+import {
+  hasAccessibleContent as hasAlertDialogAccessibleContent,
+  hasAcknowledgementStateConflict,
+} from "../../../registry/source/components/alert-dialog/alert-dialog.js";
 import { Dialog } from "../../../registry/source/components/dialog/index.js";
-import { getDialogDismissBehavior } from "../../../registry/source/components/dialog/model.js";
+import { hasAccessibleContent as hasDialogAccessibleContent } from "../../../registry/source/components/dialog/dialog.js";
+import {
+  getDialogDismissBehavior,
+  shouldDismissNonModalOutsideActivation,
+} from "../../../registry/source/components/dialog/model.js";
 import {
   Popover,
   resolvePopoverPlacement,
 } from "../../../registry/source/components/popover/index.js";
+import { hasAccessibleContent as hasPopoverAccessibleContent } from "../../../registry/source/components/popover/popover.js";
 import { Sheet } from "../../../registry/source/components/sheet/index.js";
+import { resolveSheetProgress } from "../../../registry/source/components/sheet/sheet.js";
 import {
   Tooltip,
   resolveTooltipPlacement,
 } from "../../../registry/source/components/tooltip/index.js";
+import { hasAccessibleContent as hasTooltipAccessibleContent } from "../../../registry/source/components/tooltip/tooltip.js";
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(testDirectory, "../../..");
@@ -35,7 +46,61 @@ function readJson<Value = Record<string, unknown>>(name: string, file: string): 
   return JSON.parse(readComponent(name, file)) as Value;
 }
 
+function expectCanonicalFocusSeam(css: string): void {
+  expect(css).toMatch(
+    /box-shadow:\s*0 0 0 var\(--mrg-component-focus-indicator-width\)\s+var\(--mrg-component-focus-indicator-contrast-background\);/u,
+  );
+  expect(css).toMatch(
+    /outline:\s*var\(--mrg-component-focus-indicator-width\) solid\s+var\(--mrg-component-focus-indicator-color\);/u,
+  );
+  expect(css).toContain("outline-offset: var(--mrg-component-focus-indicator-offset)");
+  expect(css).toMatch(
+    /@media \(forced-colors: active\)[\s\S]*box-shadow:\s*none;[\s\S]*outline-color:\s*Highlight;/u,
+  );
+  expect(css).not.toMatch(
+    /box-shadow:\s*0 0 0 var\(--mrg-semantic-border-width-default\)\s+var\(--mrg-component-focus-indicator-contrast-background\)/u,
+  );
+}
+
 describe("P2 overlay state and placement models", () => {
+  it("suppresses null, false, blank, Fragment-only, and empty host enhancement content", () => {
+    for (const predicate of [
+      hasDialogAccessibleContent,
+      hasAlertDialogAccessibleContent,
+      hasPopoverAccessibleContent,
+      hasTooltipAccessibleContent,
+    ]) {
+      expect(predicate(null)).toBe(false);
+      expect(predicate(false)).toBe(false);
+      expect(predicate("   ")).toBe(false);
+      expect(predicate(<></>)).toBe(false);
+      expect(predicate(<span />)).toBe(false);
+      expect(predicate(<span>Context</span>)).toBe(true);
+    }
+  });
+
+  it("rejects invalid Sheet progress before native progress markup can contain NaN", () => {
+    expect(resolveSheetProgress(undefined)).toBeUndefined();
+    expect(resolveSheetProgress({ label: " Setup ", value: 2, max: 4 })).toEqual({
+      label: "Setup",
+      max: 4,
+      value: 2,
+    });
+    expect(() => resolveSheetProgress({ label: " ", value: 1 })).toThrow(/non-empty/u);
+    expect(() => resolveSheetProgress({ label: "Setup", value: 1, max: Number.NaN })).toThrow(
+      /finite/u,
+    );
+    expect(() => resolveSheetProgress({ label: "Setup", value: Number.NaN })).toThrow(/finite/u);
+    expect(() => resolveSheetProgress({ label: "Setup", value: 5, max: 4 })).toThrow(/between/u);
+  });
+
+  it("detects controlled/default acknowledgement conflicts without treating false as absent", () => {
+    expect(hasAcknowledgementStateConflict(undefined, undefined)).toBe(false);
+    expect(hasAcknowledgementStateConflict(false, undefined)).toBe(false);
+    expect(hasAcknowledgementStateConflict(false, false)).toBe(true);
+    expect(hasAcknowledgementStateConflict(true, true)).toBe(true);
+  });
+
   it("maps every dialog dismissal policy without an implicit path", () => {
     expect(getDialogDismissBehavior("outside-and-escape")).toEqual({
       allowsEscape: true,
@@ -49,6 +114,28 @@ describe("P2 overlay state and placement models", () => {
       allowsEscape: false,
       allowsOutsideInteraction: false,
     });
+  });
+
+  it("limits the non-modal fallback to one unprevented primary outside activation", () => {
+    const valid = {
+      clickEndedOutside: true,
+      defaultPrevented: false,
+      isPrimary: true,
+      pointerStartedOutside: true,
+      sameTargetLineage: true,
+      topLayerOwned: false,
+    } as const;
+    expect(shouldDismissNonModalOutsideActivation(valid)).toBe(true);
+    for (const rejected of [
+      { ...valid, clickEndedOutside: false },
+      { ...valid, defaultPrevented: true },
+      { ...valid, isPrimary: false },
+      { ...valid, pointerStartedOutside: false },
+      { ...valid, sameTargetLineage: false },
+      { ...valid, topLayerOwned: true },
+    ]) {
+      expect(shouldDismissNonModalOutsideActivation(rejected)).toBe(false);
+    }
   });
 
   it("maps logical popover and tooltip placement independently from locale", () => {
@@ -268,5 +355,11 @@ describe("P2 overlay canonical records", () => {
     }
     expect(readComponent("sheet", "sheet.css")).toContain("env(safe-area-inset-top, 0px)");
     expect(readComponent("popover", "popover.css")).toContain("var(--available-height");
+  });
+
+  it("uses the canonical two-layer focus seam across every overlay family boundary", () => {
+    for (const name of ["dialog", "alert-dialog", "popover", "tooltip"]) {
+      expectCanonicalFocusSeam(readComponent(name, `${name}.css`));
+    }
   });
 });

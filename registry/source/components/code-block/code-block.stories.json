@@ -7,7 +7,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "TypographyWorkbench"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",
@@ -77,7 +77,7 @@
       "applicability": {
         "status": "applicable"
       },
-      "story": "InteractiveViewers"
+      "story": "RecommendedMergora"
     },
     {
       "id": "partial",

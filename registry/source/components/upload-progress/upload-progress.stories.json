@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "itemId": "upload-progress",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "UploadAnnouncementWorkbench"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Progress presentation is not interactive."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Progress presentation is not interactive."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Progress presentation adds no focus stop."
+      }
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A status display is present or absent; transport actions own disabled state."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Progress is already non-editable status."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid file selection belongs to FileUpload; transport failure uses error."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "not-applicable", "reason": "Progress is not a form control." }
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "UploadAnnouncementWorkbench"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "UploadAnnouncementWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "UploadAnnouncementWorkbench"
+    },
+    {
+      "id": "success",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "warning",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Cancel and remove actions are separate named buttons."
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "notification-center",
+  "root": {
+    "element": "section",
+    "ref": "HTMLElement",
+    "slot": "notification-center",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    { "name": "header", "element": "header", "slot": "notification-center-header" },
+    { "name": "live-queue", "element": "aside", "slot": "notification-center-live-queue" },
+    { "name": "bulk", "element": "div", "slot": "notification-center-bulk" },
+    { "name": "groups", "element": "div", "slot": "notification-center-groups" },
+    { "name": "announcer", "element": "output", "slot": "notification-center-announcer" }
+  ]
+}

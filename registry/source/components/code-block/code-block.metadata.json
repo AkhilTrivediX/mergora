@@ -12,6 +12,7 @@
     "copy-idle",
     "copy-success",
     "copy-error",
+    "copy-disabled",
     "highlighted-lines",
     "wrapped",
     "long-content",
@@ -22,7 +23,7 @@
       "name": "code-block",
       "semanticElement": "div role=region",
       "refTarget": "HTMLDivElement",
-      "states": ["wrap"]
+      "states": ["wrap", "copyable"]
     },
     {
       "name": "code-block-copy",

@@ -1,7 +1,9 @@
 /* Generated from registry/source/components/blockquote/blockquote.css by @mergora-internal/source-transformer. Do not edit. */
 .mrg-blockquote {
-  background: var(--mrg-semantic-color-background-surface);
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-block-start-color: var(--mrg-semantic-color-brand-living);
+  border-block-start-width: var(--mrg-semantic-border-width-strong);
   border-radius: var(--mrg-semantic-radius-panel);
   color: var(--mrg-semantic-color-foreground-primary);
   font-family: var(--mrg-semantic-font-family-prose);
@@ -27,7 +29,7 @@
   font-weight: var(--mrg-semantic-font-weight-label);
 }
 .mrg-blockquote [data-slot="blockquote-source"] {
-  color: var(--mrg-semantic-color-foreground-muted);
+  color: var(--mrg-semantic-color-brand-violet);
 }
 .mrg-blockquote [data-slot="blockquote-source"]::before {
   content: "— ";
@@ -35,6 +37,13 @@
 .mrg-blockquote a {
   color: var(--mrg-semantic-color-brand-action);
   text-underline-offset: 0.18em;
+}
+.mrg-blockquote a:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 @media (forced-colors: active) {
   .mrg-blockquote {
@@ -47,5 +56,9 @@
   }
   .mrg-blockquote a {
     color: LinkText;
+  }
+  .mrg-blockquote a:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
   }
 }

@@ -1,7 +1,12 @@
 import type { Direction, MotionPreference, Theme } from "./environment.js";
 import type { EvidenceReference } from "./evidence.js";
-import { MANUAL_COVERAGE_IDS } from "./risk-scheduling.js";
-import type { ManualCoverageId, RiskClass } from "./risk-scheduling.js";
+import { MANUAL_COVERAGE_IDS, manualEvidenceLane } from "./risk-scheduling.js";
+import type {
+  ManualCoverageId,
+  ManualEvidenceLaneId,
+  ManualInput,
+  RiskClass,
+} from "./risk-scheduling.js";
 import {
   compareText,
   isCatalogId,
@@ -37,6 +42,7 @@ export interface ManualTester {
 }
 
 export interface ManualEnvironment {
+  readonly laneId: ManualEvidenceLaneId;
   readonly os: string;
   readonly osVersion: string;
   readonly browser: string;
@@ -45,7 +51,7 @@ export interface ManualEnvironment {
     readonly name: string;
     readonly version: string;
   };
-  readonly input: "keyboard" | "pointer" | "touch" | "switch" | "voice";
+  readonly input: ManualInput;
   readonly locale: string;
   readonly direction: Direction;
   readonly viewport: { readonly width: number; readonly height: number };
@@ -97,6 +103,16 @@ function validateEnvironment(
   path: string,
 ): readonly ValidationIssue[] {
   const issues: ValidationIssue[] = [];
+  const lane = manualEvidenceLane(environment.laneId);
+  if (lane === undefined) {
+    issues.push(
+      issue(
+        "manual.environment-lane",
+        `${path}.laneId`,
+        `Manual evidence lane "${environment.laneId}" is not recognized.`,
+      ),
+    );
+  }
   if (!nonEmpty(environment.os) || !exactVersionPattern.test(environment.osVersion)) {
     issues.push(
       issue(
@@ -127,6 +143,57 @@ function validateEnvironment(
         "Assistive technology must include a name and exact numeric version.",
       ),
     );
+  }
+  if (lane !== undefined) {
+    const expected = lane.environment;
+    for (const [field, actual, expectedValue] of [
+      ["os", environment.os, expected.os],
+      ["browser", environment.browser, expected.browser],
+      ["input", environment.input, expected.input],
+      ["locale", environment.locale, expected.locale],
+      ["direction", environment.direction, expected.direction],
+      ["zoomPercent", environment.zoomPercent, expected.zoomPercent],
+      ["theme", environment.theme, expected.theme],
+      ["motion", environment.motion, expected.motion],
+    ] as const) {
+      if (actual !== expectedValue) {
+        issues.push(
+          issue(
+            "manual.environment-lane-mismatch",
+            `${path}.${field}`,
+            `Lane "${lane.id}" requires ${field}=${String(expectedValue)}; received ${String(actual)}.`,
+          ),
+        );
+      }
+    }
+    if (
+      environment.viewport.width !== expected.viewport.width ||
+      environment.viewport.height !== expected.viewport.height
+    ) {
+      issues.push(
+        issue(
+          "manual.environment-lane-mismatch",
+          `${path}.viewport`,
+          `Lane "${lane.id}" requires viewport ${expected.viewport.width}x${expected.viewport.height}.`,
+        ),
+      );
+    }
+    const actualAssistiveTechnology = environment.assistiveTechnology?.name;
+    if (
+      (expected.assistiveTechnology === null && actualAssistiveTechnology !== undefined) ||
+      (expected.assistiveTechnology !== null &&
+        actualAssistiveTechnology !== expected.assistiveTechnology)
+    ) {
+      issues.push(
+        issue(
+          "manual.environment-lane-mismatch",
+          `${path}.assistiveTechnology`,
+          expected.assistiveTechnology === null
+            ? `Lane "${lane.id}" does not permit an assistive-technology claim.`
+            : `Lane "${lane.id}" requires ${expected.assistiveTechnology}.`,
+        ),
+      );
+    }
   }
   if (!localePattern.test(environment.locale)) {
     issues.push(issue("manual.environment-locale", `${path}.locale`, "Locale is not canonical."));
@@ -176,6 +243,9 @@ export function validateManualEvidenceRecord(
   }
   if (!isCatalogId(record.releaseId)) {
     issues.push(issue("manual.release-id", "releaseId", "releaseId must be a catalog id."));
+  }
+  if (record.riskClass !== 1 && record.riskClass !== 2 && record.riskClass !== 3) {
+    issues.push(issue("manual.risk-class", "riskClass", "riskClass must be 1, 2, or 3."));
   }
   for (const [field, digest] of [
     ["sourceDigest", record.sourceDigest],
@@ -235,8 +305,23 @@ export function validateManualEvidenceRecord(
     );
   }
   issues.push(...validateEnvironment(record.environment, "environment"));
+  const lane = manualEvidenceLane(record.environment.laneId);
+  if (lane !== undefined && record.riskClass < lane.minimumRiskClass) {
+    issues.push(
+      issue(
+        "manual.lane-risk-class",
+        "environment.laneId",
+        `Lane "${lane.id}" requires Risk Class ${lane.minimumRiskClass} or higher.`,
+      ),
+    );
+  }
 
   const coverageIds = new Set<ManualCoverageId>();
+  if (record.coverage.length === 0) {
+    issues.push(
+      issue("manual.no-coverage", "coverage", "Manual evidence requires a coverage claim."),
+    );
+  }
   for (const [index, coverage] of record.coverage.entries()) {
     if (!(MANUAL_COVERAGE_IDS as readonly string[]).includes(coverage.coverageId)) {
       issues.push(
@@ -244,6 +329,31 @@ export function validateManualEvidenceRecord(
           "manual.coverage-id",
           `coverage[${index}].coverageId`,
           `Unknown coverage id "${coverage.coverageId}".`,
+        ),
+      );
+    }
+    if (
+      coverage.outcome !== "pass" &&
+      coverage.outcome !== "fail" &&
+      coverage.outcome !== "not-applicable"
+    ) {
+      issues.push(
+        issue(
+          "manual.coverage-outcome",
+          `coverage[${index}].outcome`,
+          "Coverage outcome must be pass, fail, or not-applicable.",
+        ),
+      );
+    }
+    if (
+      lane !== undefined &&
+      !(lane.allowedCoverage as readonly string[]).includes(coverage.coverageId)
+    ) {
+      issues.push(
+        issue(
+          "manual.lane-coverage",
+          `coverage[${index}].coverageId`,
+          `Lane "${lane.id}" cannot claim ${coverage.coverageId} coverage.`,
         ),
       );
     }
@@ -298,6 +408,15 @@ export function validateManualEvidenceRecord(
         ),
       );
     }
+    if (task.outcome !== "pass" && task.outcome !== "fail") {
+      issues.push(
+        issue(
+          "manual.task-outcome",
+          `tasks[${index}].outcome`,
+          "Task outcome must be pass or fail.",
+        ),
+      );
+    }
     if (taskIds.has(task.id)) {
       issues.push(
         issue("manual.duplicate-task", `tasks[${index}].id`, `Task "${task.id}" is duplicated.`),
@@ -308,6 +427,11 @@ export function validateManualEvidenceRecord(
   const hasFailure =
     record.tasks.some((task) => task.outcome === "fail") ||
     record.coverage.some((coverage) => coverage.outcome === "fail");
+  if (record.overallOutcome !== "pass" && record.overallOutcome !== "fail") {
+    issues.push(
+      issue("manual.overall-outcome", "overallOutcome", "Overall outcome must be pass or fail."),
+    );
+  }
   if ((record.overallOutcome === "pass") === hasFailure) {
     issues.push(
       issue(
@@ -329,6 +453,8 @@ export function validateManualEvidenceRecord(
       ),
     );
   }
+  const artifactIds = new Set<string>();
+  const artifactLocations = new Set<string>();
   for (const [index, artifact] of record.artifacts.entries()) {
     if (
       !isCatalogId(artifact.id) ||
@@ -343,6 +469,17 @@ export function validateManualEvidenceRecord(
         ),
       );
     }
+    if (artifactIds.has(artifact.id) || artifactLocations.has(artifact.artifact)) {
+      issues.push(
+        issue(
+          "manual.duplicate-artifact",
+          `artifacts[${index}]`,
+          "Artifact ids and locations must be unique within a manual record.",
+        ),
+      );
+    }
+    artifactIds.add(artifact.id);
+    artifactLocations.add(artifact.artifact);
   }
 
   if (record.carryForward !== undefined) {

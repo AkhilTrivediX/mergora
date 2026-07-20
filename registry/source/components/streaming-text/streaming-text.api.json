@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "streaming-text",
+  "entryExport": "StreamingText",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "StreamingText" },
+    { "kind": "type", "name": "StreamingTextProps" },
+    { "kind": "type", "name": "StreamingTextSegment" },
+    { "kind": "type", "name": "StreamingTextStatus" },
+    { "kind": "value", "name": "appendStreamingTextSegment" }
+  ],
+  "props": [
+    { "name": "announceUpdates", "required": false, "default": false, "type": "boolean" },
+    { "name": "showCursor", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "announcementDelay",
+      "required": false,
+      "default": 700,
+      "type": "non-negative milliseconds"
+    }
+  ],
+  "compositionPolicy": {
+    "stability": "Stable segment ids preserve prior DOM as text is appended.",
+    "announcements": "The debounced polite live region exists only when announceUpdates is true; cursor output is separately controlled."
+  }
+}

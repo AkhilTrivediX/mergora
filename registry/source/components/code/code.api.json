@@ -16,13 +16,18 @@
   ],
   "props": [
     {
+      "name": "isolateBidi",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
       "name": "wrap",
       "required": false,
       "type": "See exported TypeScript declaration."
     }
   ],
   "compositionPolicy": {
-    "semantics": "The root is native code and remains selectable. No syntax role or fabricated interactive behavior is added.",
+    "semantics": "The root is native code and remains selectable. Wrapping and bidirectional isolation are independent; no syntax role or fabricated interactive behavior is added.",
     "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
   }
 }

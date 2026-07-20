@@ -33,6 +33,14 @@ Authenticated read-only checks completed on 2026-07-18. The authenticated accoun
 
 The fixed selection algorithm therefore chose the approved unscoped tier. `EXT-NPM-AUTH-001` is resolved for package-map selection and is not an active blocker.
 
+On 2026-07-20, `npm whoami` succeeded again, resolving `EXT-NPM-AUTH-002`. That confirms only the
+presence of an authenticated session. It does not prove current ownership of the selected names,
+trusted-publisher configuration, provenance, or release readiness.
+
+An authenticated read-only refresh on the same date returned npm `E404` for each of the seven
+selected exact names. This is current availability evidence only; it does not reserve a name or
+authorize publication.
+
 ## Evidence boundary
 
 Registry availability is mutable. An `E404` observation is time-bound and is not a reservation or a guarantee that publication will succeed later. The existing `@mergora/gora` package is recorded as a similarity observation only. This report does not claim trademark, legal, or confusion clearance, and no empty package will be published merely to reserve a name.

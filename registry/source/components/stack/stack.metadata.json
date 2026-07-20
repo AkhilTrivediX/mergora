@@ -15,6 +15,7 @@
     "section",
     "unordered-list",
     "ordered-list",
+    "separated",
     "narrow",
     "rtl"
   ],
@@ -23,7 +24,7 @@
       "name": "stack",
       "semanticElement": "div | section | ul | ol",
       "refTarget": "HTMLElement",
-      "states": ["element", "gap", "align", "list-style"]
+      "states": ["element", "gap", "align", "list-style", "separated"]
     }
   ],
   "contract": { "id": "stack-accessibility", "version": "0.1.0" },

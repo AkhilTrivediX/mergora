@@ -10,7 +10,7 @@
   .mrg-number-field-group {
     align-items: stretch;
     background: var(--mrg-semantic-color-background-canvas);
-    border: var(--mrg-semantic-border-width-default) solid
+    border: var(--mrg-semantic-border-width-strong) solid
       var(--mrg-semantic-color-border-interactive);
     border-radius: var(--mrg-semantic-radius-control);
     box-sizing: border-box;
@@ -22,8 +22,11 @@
   }
 
   .mrg-number-field-group:focus-within {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-number-field[data-invalid] .mrg-number-field-group {
@@ -45,6 +48,7 @@
     flex: 1 1 auto;
     font: inherit;
     font-variant-numeric: tabular-nums;
+    font-weight: var(--mrg-semantic-font-weight-body);
     inline-size: 100%;
     line-height: var(--mrg-semantic-font-line-height-body);
     min-block-size: var(--mrg-semantic-size-target-minimum);
@@ -101,8 +105,11 @@
 
   .mrg-number-field-stepper[data-focus-visible],
   .mrg-number-field-scrub:focus-visible {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: calc(var(--mrg-semantic-focus-width) * -1);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: calc(var(--mrg-component-focus-indicator-width) * -1);
     position: relative;
     z-index: 1;
   }
@@ -116,6 +123,46 @@
   .mrg-number-field-scrub {
     cursor: ew-resize;
     touch-action: none;
+  }
+
+  .mrg-number-field-insights {
+    align-items: baseline;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-subtle);
+    color: var(--mrg-semantic-color-foreground-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: var(--mrg-semantic-font-size-caption);
+    gap: var(--mrg-semantic-space-stack-xs) var(--mrg-semantic-space-inline-md);
+    justify-content: space-between;
+    line-height: var(--mrg-semantic-font-line-height-body);
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+    padding-block-start: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-number-field-status {
+    max-inline-size: 65ch;
+    text-wrap: pretty;
+  }
+
+  .mrg-number-field-canonical-preview {
+    align-items: baseline;
+    color: var(--mrg-semantic-color-foreground-primary);
+    display: inline-flex;
+    flex-wrap: wrap;
+    font-weight: var(--mrg-semantic-font-weight-label);
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-number-field-canonical-preview data {
+    background: var(--mrg-semantic-color-selection-background);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-selection-foreground);
+    font-family: var(--mrg-semantic-font-family-machine);
+    font-variant-numeric: tabular-nums;
+    font-weight: var(--mrg-semantic-font-weight-code);
+    padding-inline: var(--mrg-semantic-space-inline-xs);
+    unicode-bidi: plaintext;
   }
 
   .mrg-number-field[data-readonly] .mrg-number-field-stepper,
@@ -134,6 +181,13 @@
     .mrg-number-field-stepper,
     .mrg-number-field-scrub {
       inline-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .mrg-number-field-insights {
+      align-items: stretch;
+      flex-direction: column;
     }
   }
 
@@ -161,6 +215,23 @@
       background: ButtonFace;
       border-color: ButtonText;
       color: ButtonText;
+    }
+
+    .mrg-number-field-insights {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+
+    .mrg-number-field-canonical-preview data {
+      background: Highlight;
+      color: HighlightText;
+    }
+
+    .mrg-number-field-group:focus-within,
+    .mrg-number-field-stepper[data-focus-visible],
+    .mrg-number-field-scrub:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
     }
   }
 }

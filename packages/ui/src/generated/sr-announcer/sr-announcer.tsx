@@ -19,11 +19,14 @@ import "./sr-announcer.css";
 export type AnnouncementPriority = "polite" | "assertive";
 
 export interface AnnouncementMessage {
+  /** Optionally identifies a provider message-catalog entry and semantic dedupe key. */
   readonly key?: string;
+  /** Supplies localized fallback copy when no catalog entry exists. */
   readonly defaultMessage: string;
 }
 
 export interface AnnouncementOptions {
+  /** Selects polite or assertive delivery; polite is the default. */
   readonly priority?: AnnouncementPriority;
   /** Identical messages are ignored within the provider's dedupe window by default. */
   readonly dedupe?: boolean;
@@ -32,16 +35,24 @@ export interface AnnouncementOptions {
 }
 
 export interface AnnouncementRecord {
+  /** Provides the queue-local monotonically increasing record identifier. */
   readonly id: number;
+  /** Stores the trimmed text delivered to the live region. */
   readonly message: string;
+  /** Records the live-region priority used for delivery. */
   readonly priority: AnnouncementPriority;
+  /** Records the semantic identity used by time-window deduplication. */
   readonly dedupeKey: string;
 }
 
 export interface AnnouncementQueue {
+  /** Adds non-empty text unless deduplication suppresses it. */
   readonly enqueue: (message: string, options?: AnnouncementOptions) => AnnouncementRecord | null;
+  /** Removes and returns the oldest record for one priority. */
   readonly take: (priority: AnnouncementPriority) => AnnouncementRecord | null;
+  /** Reports whether one priority currently has queued records. */
   readonly has: (priority: AnnouncementPriority) => boolean;
+  /** Removes every queued record and its recent dedupe history. */
   readonly clear: () => void;
 }
 
@@ -90,10 +101,12 @@ export function createAnnouncementQueue(
 }
 
 export interface AnnouncerApi {
+  /** Resolves and queues text, returning false when empty or deduplicated. */
   readonly announce: (
     message: string | AnnouncementMessage,
     options?: AnnouncementOptions,
   ) => boolean;
+  /** Clears queued, visible, and scheduled live announcements. */
   readonly clear: () => void;
 }
 
@@ -105,8 +118,11 @@ const inertApi: AnnouncerApi = {
 const AnnouncerContext = createContext<AnnouncerApi>(inertApi);
 
 export interface AnnouncerProviderProps extends PropsWithChildren {
+  /** Window in milliseconds during which matching semantic messages are suppressed. */
   readonly dedupeWindowMs?: number;
+  /** Delivery interval in milliseconds for the polite FIFO live region. */
   readonly politeIntervalMs?: number;
+  /** Delivery interval in milliseconds for the assertive FIFO live region. */
   readonly assertiveIntervalMs?: number;
 }
 

@@ -29,7 +29,7 @@
       "data-focus-visible",
       "data-dragging"
     ],
-    "synchronization": "All spatial, channel, preset, text, preview, contrast, and form surfaces derive from one immutable 8-bit sRGB value and controlled owner."
+    "synchronization": "All spatial, channel, optional preset, text, optional preview, optional contrast, and form surfaces derive from one immutable 8-bit sRGB value and controlled owner. Disabled enhancements emit no corresponding UI or accessibility output."
   },
   "stableSelectors": {
     "root": "[data-slot=color-picker]",

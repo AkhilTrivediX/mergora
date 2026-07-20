@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../dropdown-menu/index.js", "./context-menu.css", "react"],
+  "entryPath": "registry/source/components/context-menu/context-menu.tsx",
+  "id": "context-menu",
+  "itemDependencies": ["dropdown-menu"],
+  "outputRole": "component"
+}

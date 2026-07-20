@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../button/button.js", "./notification-center.css", "react"],
+  "entryPath": "registry/source/components/notification-center/notification-center.tsx",
+  "id": "notification-center",
+  "itemDependencies": ["button"],
+  "outputRole": "component"
+}

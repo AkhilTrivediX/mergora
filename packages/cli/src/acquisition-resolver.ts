@@ -8,6 +8,7 @@ import {
   type AcquisitionValidationContext,
   type AcquisitionVendorReader,
 } from "./acquisition.js";
+import { validateContractDefinitionV1 } from "mergora-contracts";
 import { canonicalJson, CliError, sha256 } from "./contracts.js";
 
 const DIGEST = /^sha256:[a-f0-9]{64}$/u;
@@ -128,8 +129,11 @@ export interface ResolveNativeRegistryReleaseOptions {
   readonly catalog: NativeReleaseArtifactReference;
   readonly manifest: NativeReleaseArtifactReference;
   readonly itemIds: readonly string[];
+  /** Contract documents are acquired only for an add path that explicitly owns their use. */
+  readonly contractSelection?: "all" | "none" | "stable" | undefined;
   readonly offline?: boolean | undefined;
   readonly mirrorOrigins?: readonly string[] | undefined;
+  readonly authorization?: string | undefined;
   readonly vendor?: AcquisitionVendorReader | undefined;
   readonly transport?: AcquisitionTransport | undefined;
   readonly validateDocument?: NativeRegistryDocumentValidator | undefined;
@@ -213,6 +217,13 @@ export interface AcquiredNativeRegistryItem {
   readonly structuredPatches: readonly Readonly<Record<string, unknown>>[];
   readonly migrations: readonly Readonly<Record<string, unknown>>[];
   readonly contract: { readonly id: string; readonly version: string };
+  readonly contractDocument?:
+    | {
+        readonly content: string;
+        readonly digest: Digest;
+        readonly url: string;
+      }
+    | undefined;
   readonly passport: { readonly id: string; readonly version: string };
   readonly examples: readonly string[];
   readonly importPaths: readonly string[];
@@ -1725,10 +1736,11 @@ function assertBound(
 export async function resolveNativeRegistryRelease(
   options: ResolveNativeRegistryReleaseOptions,
 ): Promise<AcquiredNativeRegistryRelease> {
-  if (options.registry.trust === "local-development") {
+  const contractSelection = options.contractSelection ?? "none";
+  if (!(["all", "none", "stable"] as const).includes(contractSelection)) {
     throw resolverError(
-      "Immutable native release routing does not yet support loopback HTTP catalogs.",
-      "REGISTRY_NATIVE_LOCAL_TRANSPORT_UNSUPPORTED",
+      "Native Contract acquisition selection is invalid.",
+      "REGISTRY_CONTRACT_SELECTION_INVALID",
     );
   }
   if (options.registry.trust === "enrolled" && options.registry.enrollmentDigest === undefined) {
@@ -1802,6 +1814,7 @@ export async function resolveNativeRegistryRelease(
     projectRoot: options.projectRoot,
     offline: options.offline,
     mirrorOrigins: options.mirrorOrigins,
+    authorization: options.authorization,
     vendor: options.vendor,
     transport: options.transport,
     timeoutMs: options.timeoutMs,
@@ -2038,9 +2051,69 @@ export async function resolveNativeRegistryRelease(
         transformPipeline: file.transformPipeline,
       });
     }
+    const acquireContract =
+      contractSelection === "all" ||
+      (contractSelection === "stable" && catalogItem.maturity === "stable");
+    let contractDocument: AcquiredNativeRegistryItem["contractDocument"];
+    if (acquireContract) {
+      const contractArtifact = manifest.artifactsByUrl.get(manifestItem.contract.artifact)!;
+      if (contractArtifact.bytes > maxItemBytes) {
+        throw resolverError(
+          `Native Contract for ${itemId} exceeds the configured item byte policy.`,
+          "REGISTRY_CONTRACT_OVERSIZE",
+          itemId,
+        );
+      }
+      const contractPath = pathFromImmutableUrl(
+        manifestItem.contract.artifact,
+        options.registry.origin,
+        `Native Contract ${itemId} URL`,
+      );
+      const contractAcquisition = await acquireImmutableArtifact({
+        ...commonAcquisition,
+        request: {
+          registry: options.registry,
+          path: contractPath,
+          digest: manifestItem.contract.digest,
+          bytes: contractArtifact.bytes,
+          maxBytes: maxItemBytes,
+          acceptedMediaTypes: ["application/json"],
+          release: options.release,
+        },
+        validate: (bytes) => {
+          const value = canonicalDocument(bytes, `Native Contract ${itemId}`);
+          const validation = validateContractDefinitionV1(value);
+          const definition = validation.value;
+          if (
+            !validation.valid ||
+            definition === null ||
+            definition.registryId !== options.registry.id ||
+            definition.itemId !== itemId ||
+            definition.contractId !== payload.contract.id ||
+            definition.contractVersion !== payload.contract.version ||
+            definition.payloadDigest !== manifestItem.payload.digest
+          ) {
+            throw resolverError(
+              `Native Contract for ${itemId} does not match its exact registry, item, version, and payload binding.`,
+              "REGISTRY_CONTRACT_INVALID",
+              itemId,
+            );
+          }
+        },
+      });
+      sources.push(contractAcquisition.source);
+      itemSources.push(contractAcquisition.source);
+      countBytes(contractAcquisition.bytes.byteLength);
+      contractDocument = {
+        content: new TextDecoder("utf-8", { fatal: true }).decode(contractAcquisition.bytes),
+        digest: manifestItem.contract.digest,
+        url: manifestItem.contract.artifact,
+      };
+    }
     items.push({
       ...payload,
       files,
+      ...(contractDocument === undefined ? {} : { contractDocument }),
       payloadUrl: manifestItem.payload.artifact,
       payloadDigest: manifestItem.payload.digest,
       acquisitionSource: aggregateSource(itemSources),

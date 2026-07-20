@@ -16,36 +16,63 @@ import "./json-viewer.css";
 
 export type JsonPrimitive = boolean | null | number | string;
 export interface JsonObject {
+  /** Maps each JSON object key to another recursively compatible JSON value. */
   readonly [key: string]: JsonValue;
 }
 export type JsonValue = JsonPrimitive | JsonObject | readonly JsonValue[];
 export type JsonValueType = "array" | "boolean" | "null" | "number" | "object" | "string";
 
 export interface JsonTreeNode {
+  /** Direct descendant paths used to expose expandable tree state. */
   readonly childPaths: readonly string[];
+  /** Object key, array index, or root label represented by this node. */
   readonly key: string;
+  /** One-based aria tree level in the normalized JSON hierarchy. */
   readonly level: number;
+  /** Parent node path, omitted only for the root node. */
   readonly parentPath?: string;
+  /** Stable JSON-style path used for focus, expansion, and clipboard actions. */
   readonly path: string;
+  /** One-based position within the node's sibling set. */
   readonly position: number;
+  /** Total number of siblings exposed through aria-setsize. */
   readonly setSize: number;
+  /** Normalized JSON value category shown with localized type context. */
   readonly type: JsonValueType;
+  /** Original JSON-compatible value represented by this normalized node. */
   readonly value: JsonValue;
 }
 
 export interface JsonViewerProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Controlled active JSON path for the roving tree focus model. */
   readonly activePath?: string;
+  /** Localized status announced after copying the selected path. */
   readonly copiedPathLabel?: string;
+  /** Localized status announced after copying the selected value. */
   readonly copiedValueLabel?: string;
+  /** Localized status announced when either clipboard action fails. */
   readonly copyErrorLabel?: string;
+  /** Localized accessible label for the path-copy action. */
   readonly copyPathLabel?: string;
+  /** Localized accessible label for the value-copy action. */
   readonly copyValueLabel?: string;
+  /** Adds path/value clipboard actions and their private live status. */
+  readonly copyable?: boolean;
+  /** Initial active JSON path for uncontrolled roving focus. */
   readonly defaultActivePath?: string;
+  /** Initial one-based expansion depth used only when expansion is uncontrolled. */
   readonly defaultExpandedDepth?: number;
+  /** Controlled set of JSON paths whose descendant tree rows are visible. */
   readonly expandedPaths?: readonly string[];
+  /** Accessible name used for the viewer region and tree. */
   readonly label: string;
+  /** Reports active-path changes with the exact represented JSON value. */
   readonly onActivePathChange?: (path: string, value: JsonValue) => void;
+  /** Reports the complete next controlled expansion-path set. */
   readonly onExpandedPathsChange?: (paths: readonly string[]) => void;
+  /** Shows the selected JSON path as persistent non-color context. */
+  readonly showActivePath?: boolean;
+  /** JSON-compatible value normalized into an accessible navigable tree. */
   readonly value: JsonValue;
 }
 
@@ -192,12 +219,14 @@ export const JsonViewer = forwardRef<HTMLDivElement, JsonViewerProps>(function J
     copyErrorLabel: copyErrorLabelProp,
     copyPathLabel: copyPathLabelProp,
     copyValueLabel: copyValueLabelProp,
+    copyable = true,
     defaultActivePath = "$",
     defaultExpandedDepth = 1,
     expandedPaths,
     label,
     onActivePathChange,
     onExpandedPathsChange,
+    showActivePath = true,
     value,
     ...nativeProps
   },
@@ -344,29 +373,35 @@ export const JsonViewer = forwardRef<HTMLDivElement, JsonViewerProps>(function J
           ? "mrg-json-viewer"
           : `mrg-json-viewer ${className}`
       }
+      data-copyable={copyable ? "true" : "false"}
+      data-show-active-path={showActivePath ? "true" : "false"}
       data-slot="json-viewer"
       data-virtualized="false"
       role="region"
     >
       <div data-slot="json-toolbar">
         <strong>{label}</strong>
-        <code data-slot="json-active-path">{currentPath}</code>
-        <button
-          aria-describedby={statusId}
-          data-slot="json-copy-path"
-          onClick={() => void copy("path")}
-          type="button"
-        >
-          {copyPathLabel}
-        </button>
-        <button
-          aria-describedby={statusId}
-          data-slot="json-copy-value"
-          onClick={() => void copy("value")}
-          type="button"
-        >
-          {copyValueLabel}
-        </button>
+        {showActivePath ? <code data-slot="json-active-path">{currentPath}</code> : null}
+        {copyable ? (
+          <>
+            <button
+              aria-describedby={statusId}
+              data-slot="json-copy-path"
+              onClick={() => void copy("path")}
+              type="button"
+            >
+              {copyPathLabel}
+            </button>
+            <button
+              aria-describedby={statusId}
+              data-slot="json-copy-value"
+              onClick={() => void copy("value")}
+              type="button"
+            >
+              {copyValueLabel}
+            </button>
+          </>
+        ) : null}
       </div>
       <div aria-label={treeLabel} data-slot="json-tree" role="tree">
         {visibleNodes.map((node) => {
@@ -428,15 +463,17 @@ export const JsonViewer = forwardRef<HTMLDivElement, JsonViewerProps>(function J
           );
         })}
       </div>
-      <span className="mrg-json-sr-only" id={statusId} role="status">
-        {copyStatus === "path"
-          ? copiedPathLabel
-          : copyStatus === "value"
-            ? copiedValueLabel
-            : copyStatus === "error"
-              ? copyErrorLabel
-              : ""}
-      </span>
+      {copyable ? (
+        <span className="mrg-json-sr-only" id={statusId} role="status">
+          {copyStatus === "path"
+            ? copiedPathLabel
+            : copyStatus === "value"
+              ? copiedValueLabel
+              : copyStatus === "error"
+                ? copyErrorLabel
+                : ""}
+        </span>
+      ) : null}
     </div>
   );
 });

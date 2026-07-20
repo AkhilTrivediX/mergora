@@ -1,0 +1,154 @@
+/* Generated from registry/source/components/media-player/media-player.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-media-player {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-media-player__heading {
+  align-items: baseline;
+  border-block-end: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-md);
+  justify-content: space-between;
+  padding-block-end: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-media-player__heading strong {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-media-player__heading span {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-media-player__media {
+  background: var(--mrg-semantic-color-background-surface);
+  border-radius: var(--mrg-semantic-radius-container);
+  inline-size: 100%;
+  max-inline-size: 100%;
+}
+
+.mrg-media-player[data-kind="audio"] .mrg-media-player__media {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  border-radius: 0;
+}
+
+.mrg-media-player [data-slot="media-player-chapters"] {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+}
+
+.mrg-media-player [data-slot="media-player-chapters"] ol {
+  display: grid;
+  list-style: decimal;
+  margin: 0;
+  padding: 0;
+}
+
+.mrg-media-player [data-slot="media-player-chapters"] li {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  list-style-position: inside;
+}
+
+.mrg-media-player [data-slot="media-player-chapters"] button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  gap: var(--mrg-semantic-space-inline-sm);
+  justify-content: space-between;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding: var(--mrg-semantic-space-inset-sm);
+  text-align: start;
+  inline-size: calc(100% - var(--mrg-semantic-space-inline-md));
+}
+
+.mrg-media-player [data-slot="media-player-chapters"] time {
+  color: var(--mrg-semantic-color-brand-violet);
+  font-family: var(--mrg-semantic-font-family-code);
+}
+
+.mrg-media-player :where(button, summary):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-media-player__transcript {
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-control);
+  padding: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-media-player__transcript summary {
+  cursor: pointer;
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-media-player__transcript > div {
+  max-inline-size: 70ch;
+  padding-block-start: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-media-player__error {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  padding: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-media-player__announcement {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-media-player *,
+  .mrg-media-player *::before,
+  .mrg-media-player *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-media-player,
+  .mrg-media-player__media,
+  .mrg-media-player__transcript,
+  .mrg-media-player__error,
+  .mrg-media-player [data-slot="media-player-chapters"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-media-player :where(button, summary):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

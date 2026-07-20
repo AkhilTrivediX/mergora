@@ -119,6 +119,54 @@ describe("PasswordField semantics", () => {
     { id: "number", label: "Contains a number", validate: (value) => /\d/u.test(value) },
   ];
 
+  it("removes the optional requirement checklist and search status relationships cleanly", () => {
+    const resolvedMessages: string[] = [];
+    const plain = renderToStaticMarkup(
+      <MergoraProvider
+        messages={{
+          "passwordField.ruleMet": () => {
+            resolvedMessages.push("ruleMet");
+            return "Met";
+          },
+          "passwordField.ruleUnmet": () => {
+            resolvedMessages.push("ruleUnmet");
+            return "Not met";
+          },
+          "passwordField.rules": () => {
+            resolvedMessages.push("rules");
+            return "Password requirements";
+          },
+          "passwordField.capsLock": () => {
+            resolvedMessages.push("capsLock");
+            return "Caps Lock is on";
+          },
+        }}
+      >
+        <PasswordField defaultValue="Workbench2026" rules={[]} />
+        <SearchField defaultValue="dialog" status={{ state: "idle" }} />
+      </MergoraProvider>,
+    );
+    expect(plain).not.toContain('data-slot="password-field-rules"');
+    expect(plain).not.toContain('data-slot="password-field-caps-lock"');
+    expect(plain).not.toContain('data-slot="search-field-status"');
+    expect(plain).not.toContain('aria-busy="true"');
+    expect(resolvedMessages).toEqual([]);
+
+    const enhanced = renderToStaticMarkup(
+      <>
+        <PasswordField defaultValue="Workbench2026" rules={rules} />
+        <SearchField
+          defaultValue="dialog"
+          status={{ message: "3 results available", state: "results" }}
+        />
+      </>,
+    );
+    expect(enhanced).toContain('data-slot="password-field-rules"');
+    expect(enhanced).toContain('aria-label="Password requirements"');
+    expect(enhanced).toContain('data-slot="search-field-status"');
+    expect(enhanced).toContain('role="status"');
+  });
+
   it("preserves the native credential input, Field relationships, and explicit reveal state", () => {
     const markup = renderToStaticMarkup(
       <MergoraProvider>
@@ -171,6 +219,34 @@ describe("PasswordField semantics", () => {
         />,
       ),
     ).toThrow(/must be unique/u);
+  });
+
+  it("rejects inaccessible rule and checklist labels without emitting empty semantics", () => {
+    for (const label of [null, false, "   ", <></>, <span key="empty" />]) {
+      expect(() =>
+        renderToStaticMarkup(
+          <PasswordField rules={[{ id: "label", label, validate: () => false }]} />,
+        ),
+      ).toThrow(/requires a non-empty label/u);
+    }
+
+    expect(() =>
+      renderToStaticMarkup(
+        <PasswordField
+          rules={[{ id: "length", label: "At least 12 characters", validate: () => false }]}
+          rulesLabel=" "
+        />,
+      ),
+    ).toThrow(/rulesLabel must be a non-empty string/u);
+    expect(() =>
+      renderToStaticMarkup(
+        <MergoraProvider messages={{ "passwordField.rules": () => " " }}>
+          <PasswordField
+            rules={[{ id: "length", label: "At least 12 characters", validate: () => false }]}
+          />
+        </MergoraProvider>,
+      ),
+    ).toThrow(/rulesLabel must be a non-empty string/u);
   });
 });
 
@@ -225,5 +301,23 @@ describe("SearchField semantics", () => {
     expect(errorMarkup).toContain('role="alert"');
     expect(errorMarkup).toMatch(/aria-errormessage="[^"]+-search-status"/u);
     expect(errorMarkup).toContain('aria-controls="failed-results"');
+  });
+
+  it("suppresses blank status messages without linking empty live or error regions", () => {
+    for (const state of ["loading", "results", "empty", "error"] as const) {
+      for (const message of [null, false, "   "] as const) {
+        const markup = renderToStaticMarkup(
+          <SearchField status={{ message: message as unknown as string, state }} />,
+        );
+        expect(markup).not.toContain('data-slot="search-field-status"');
+        expect(markup).not.toContain("-search-status");
+        expect(markup).not.toContain("aria-live");
+        expect(markup).not.toContain("aria-errormessage");
+        expect(markup).not.toContain('role="alert"');
+        expect(markup).not.toContain('role="status"');
+        expect(markup).not.toContain('aria-busy="true"');
+        expect(markup).not.toContain('aria-invalid="true"');
+      }
+    }
   });
 });

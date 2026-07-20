@@ -42,9 +42,21 @@
     }
   ],
   "controlledState": ["value"],
+  "props": [
+    {
+      "default": "not rendered",
+      "name": "renderSelectionSummary",
+      "required": false,
+      "type": "(values: readonly string[]) => ReactNode"
+    }
+  ],
   "nativePolicy": [
     "Roving focus supports Home, End, orientation arrows, RTL spatial arrows, wrapping, and disabled skipping.",
     "Arrow movement never changes selection; native activation does.",
     "Single selection cannot become empty unless allowEmpty is explicit."
-  ]
+  ],
+  "compositionPolicy": {
+    "familySignature": "Each pressed action carries the shared Green state rail, Ink structure, and Violet focus seam.",
+    "enhancement": "renderSelectionSummary adds a live summary rail for single or multiple selection; omitting it removes the rail and live region."
+  }
 }

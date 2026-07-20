@@ -103,6 +103,26 @@ describe("P2 layout foundation records", () => {
     }
   });
 
+  it("records plain and recommended Mergora modes plus an explicit enhancement contract", () => {
+    const storySource = readFileSync(
+      resolve(root, "apps/storybook/src/P2LayoutFoundations.stories.tsx"),
+      "utf8",
+    );
+    expect(storySource).toContain("export const BasicDefaults");
+    expect(storySource).toContain("export const RecommendedMergora");
+
+    for (const itemId of itemIds) {
+      const storyNames = readJson<StoryStateMatrix>(
+        itemId,
+        `${itemId}.stories.json`,
+      ).states.flatMap((state) => ("story" in state ? [state.story] : []));
+      expect(storyNames, `${itemId} basic story`).toContain("BasicDefaults");
+      expect(storyNames, `${itemId} enhanced story`).toContain("RecommendedMergora");
+      expect(readItem(itemId, "README.md")).toContain("## Mergora advantage");
+      expect(readItem(itemId, `${itemId}.api.json`)).toMatch(/enhancement/iu);
+    }
+  });
+
   it("uses only declared semantic or component-local variables and logical edge properties", () => {
     const tokenCss = readFileSync(
       resolve(root, "packages/tokens/src/generated/tokens.css"),
@@ -131,6 +151,8 @@ describe("P2 layout foundation records", () => {
       expect(css).not.toMatch(/^\s*(?:margin|padding|inset|border)-(?:left|right)\s*:/mu);
       expect(css).not.toMatch(/#[0-9a-f]{3,8}|(?:oklch|rgb|hsl)\(/iu);
       expect(css).not.toMatch(/overflow\s*:\s*(?:hidden|clip)/u);
+      expect(css).not.toMatch(/(?:linear|radial|conic)-gradient|backdrop-filter/iu);
+      expect(css).not.toMatch(/border-radius\s*:\s*(?:1[7-9]|[2-9]\d)px/iu);
     }
 
     const aspectRatioCss = readItem("aspect-ratio", "aspect-ratio.css");
@@ -144,12 +166,12 @@ describe("P2 layout foundation server semantics", () => {
   it("renders closed native roots, forwarded attributes, and stable layout slots", () => {
     const markup = renderToStaticMarkup(
       <Container className="consumer-container" queryContainer safeArea width="wide">
-        <Stack element="section" gap="lg">
-          <Inline align="baseline" justify="between">
+        <Stack element="section" gap="lg" separated>
+          <Inline align="baseline" justify="between" wrap={false}>
             <span>Source</span>
             <span>Package</span>
           </Inline>
-          <Grid columns="auto" element="ul" listStyle="none" minimum="compact">
+          <Grid columns="auto" element="ul" equalRows listStyle="none" minimum="compact">
             <li>One</li>
             <li>Two</li>
           </Grid>
@@ -169,10 +191,13 @@ describe("P2 layout foundation server semantics", () => {
     expect(markup).toContain('data-query-container="true"');
     expect(markup).toContain("<section");
     expect(markup).toContain('data-slot="stack"');
+    expect(markup).toContain('data-separated="true"');
     expect(markup).toContain('data-slot="inline"');
+    expect(markup).toContain('data-wrap="false"');
     expect(markup).toContain("<ul");
     expect(markup).toContain('data-slot="grid"');
     expect(markup).toContain('data-minimum="compact"');
+    expect(markup).toContain('data-equal-rows="true"');
     expect(markup).toContain('data-slot="center"');
     expect(markup).toContain('data-maximum="prose"');
     expect(markup).toContain('data-slot="cluster"');
@@ -188,12 +213,18 @@ describe("P2 layout foundation server semantics", () => {
     expect(() => resolveAspectRatio([Number.NaN, 4])).toThrow(RangeError);
 
     const markup = renderToStaticMarkup(
-      <AspectRatio aria-label="Preview geometry" className="consumer-ratio" ratio={[5, 4]}>
+      <AspectRatio
+        aria-label="Preview geometry"
+        className="consumer-ratio"
+        fit="cover"
+        ratio={[5, 4]}
+      >
         <img alt="Evidence preview" src="/preview.png" />
       </AspectRatio>,
     );
     expect(markup).toContain('class="mrg-aspect-ratio consumer-ratio"');
     expect(markup).toContain('data-ratio="custom"');
+    expect(markup).toContain('data-fit="cover"');
     expect(markup).toContain("--mrg-aspect-ratio:1.25");
     expect(markup).toContain("--mrg-aspect-ratio-fallback:80%");
     expect(markup).toContain('alt="Evidence preview"');
@@ -201,7 +232,7 @@ describe("P2 layout foundation server semantics", () => {
   });
 
   it("renders native and ARIA separator modes without interactive splitter behavior", () => {
-    const semanticHorizontal = renderToStaticMarkup(<Separator decorative={false} />);
+    const semanticHorizontal = renderToStaticMarkup(<Separator decorative={false} spacing="md" />);
     const semanticVertical = renderToStaticMarkup(
       <Separator aria-label="Source and package" decorative={false} orientation="vertical" />,
     );
@@ -209,6 +240,7 @@ describe("P2 layout foundation server semantics", () => {
 
     expect(semanticHorizontal).toMatch(/^<hr/u);
     expect(semanticHorizontal).toContain('data-orientation="horizontal"');
+    expect(semanticHorizontal).toContain('data-spacing="md"');
     expect(semanticHorizontal).not.toContain("aria-hidden");
     expect(semanticVertical).toMatch(/^<div/u);
     expect(semanticVertical).toContain('role="separator"');
@@ -227,5 +259,31 @@ describe("P2 layout foundation server semantics", () => {
       expect(markup).not.toContain("tabindex=");
       expect(markup).not.toContain("aria-live=");
     }
+  });
+
+  it("removes optional enhancement output when each capability is disabled", () => {
+    const markup = renderToStaticMarkup(
+      <Container queryContainer={false} safeArea={false}>
+        <Stack separated={false}>
+          <Inline wrap={false}>
+            <span>One logical line</span>
+          </Inline>
+          <Grid columns={1} equalRows={false}>
+            <Center maximum="none">Plain content</Center>
+          </Grid>
+          <Cluster orphan="start">Plain cluster</Cluster>
+          <AspectRatio fit="none">Plain ratio</AspectRatio>
+          <Separator spacing="none" />
+        </Stack>
+      </Container>,
+    );
+
+    expect(markup).not.toContain("data-query-container");
+    expect(markup).not.toContain("data-separated");
+    expect(markup).not.toContain("data-equal-rows");
+    expect(markup).not.toContain("data-fit");
+    expect(markup).not.toContain("data-spacing");
+    expect(markup).not.toContain("aria-live");
+    expect(markup).not.toContain('role="region"');
   });
 });

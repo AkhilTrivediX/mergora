@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sidebar",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "focus-visible", "disabled", "current", "collapsed", "open", "rtl"],
+  "slots": [
+    {
+      "name": "sidebar",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "collapsed", "open", "rtl"]
+    },
+    {
+      "name": "sidebar-desktop",
+      "semanticElement": "aside",
+      "refTarget": "none",
+      "states": ["default", "collapsed", "current"]
+    },
+    {
+      "name": "sidebar-mobile",
+      "semanticElement": "responsive aside",
+      "refTarget": "none",
+      "states": ["open", "focus-visible"]
+    }
+  ],
+  "contract": { "id": "sidebar-accessibility", "version": "0.1.0" },
+  "passport": { "id": "sidebar-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "itemId": "media-player",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "audio",
+    "video",
+    "loading",
+    "playing",
+    "paused",
+    "error",
+    "source-rejected",
+    "transcript",
+    "chapters",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "media-player",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["audio", "video", "source-rejected"]
+    },
+    {
+      "name": "media-player-chapters",
+      "semanticElement": "optional nav with ordered list",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "media-player-transcript",
+      "semanticElement": "optional details",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "media-player-accessibility", "version": "0.1.0" },
+  "passport": { "id": "media-player-quality-passport", "version": "0.0.0" }
+}

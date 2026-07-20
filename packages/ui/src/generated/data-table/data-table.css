@@ -1,0 +1,169 @@
+/* Generated from registry/source/components/data-table/data-table.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-data-table {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-data-table__search {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    max-inline-size: var(--mrg-semantic-size-content-default);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-data-table__search input,
+  .mrg-data-table select,
+  .mrg-data-table button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+  .mrg-data-table__search input {
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-data-table button {
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    cursor: pointer;
+  }
+  .mrg-data-table button:disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    cursor: not-allowed;
+  }
+  .mrg-data-table :is(button, input, select, .mrg-data-table__region):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  .mrg-data-table__region {
+    max-inline-size: 100%;
+    overflow: auto;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    background: var(--mrg-semantic-color-background-canvas);
+    scrollbar-gutter: stable;
+  }
+  .mrg-data-table table {
+    inline-size: 100%;
+    min-inline-size: 42rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .mrg-data-table caption {
+    padding: var(--mrg-semantic-space-inset-md);
+    text-align: start;
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+  .mrg-data-table th,
+  .mrg-data-table td {
+    min-block-size: var(--mrg-semantic-density-row-height);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    text-align: start;
+  }
+  .mrg-data-table th {
+    color: var(--mrg-semantic-color-foreground-muted);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-data-table th button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    inline-size: 100%;
+    border: 0;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    text-align: inherit;
+  }
+  .mrg-data-table tr[data-selected] td {
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+  .mrg-data-table [data-align="center"] {
+    text-align: center;
+  }
+  .mrg-data-table [data-align="end"] {
+    text-align: end;
+  }
+  .mrg-data-table__empty {
+    padding-block: var(--mrg-semantic-space-stack-lg) !important;
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center !important;
+  }
+  .mrg-data-table__pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+  .mrg-data-table__pagination label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    margin-inline-start: auto;
+  }
+  .mrg-data-table__summary {
+    display: block;
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-success-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-data-table__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  @media (pointer: coarse) {
+    .mrg-data-table__search input,
+    .mrg-data-table select,
+    .mrg-data-table button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-data-table__region,
+    .mrg-data-table__search input,
+    .mrg-data-table select,
+    .mrg-data-table button,
+    .mrg-data-table__summary {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-data-table th,
+    .mrg-data-table td {
+      border-color: CanvasText;
+    }
+    .mrg-data-table tr[data-selected] td {
+      color: HighlightText;
+      background: Highlight;
+    }
+    .mrg-data-table :is(button, input, select, .mrg-data-table__region):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

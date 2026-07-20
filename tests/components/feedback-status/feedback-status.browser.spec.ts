@@ -12,6 +12,14 @@ function guardRuntime(page: Page): string[] {
   runtimeFailures.set(page, failures);
   page.on("console", (message) => {
     if (message.type() === "warning" || message.type() === "error") {
+      if (
+        message.type() === "warning" &&
+        message.text().includes("Layout was forced before the page was fully loaded") &&
+        message.text().includes("chrome://juggler/content/content/main.js")
+      ) {
+        // This warning originates in Firefox's Playwright transport before application code.
+        return;
+      }
       failures.push(`console.${message.type()}: ${message.text()}`);
     }
   });
@@ -27,8 +35,9 @@ test.afterEach(({ page }) => {
   expect(runtimeFailures.get(page) ?? []).toEqual([]);
 });
 
-async function openStory(page: Page, story: string): Promise<void> {
-  await page.goto(`/iframe.html?viewMode=story&id=p2-feedback-status--${story}`, {
+async function openStory(page: Page, story: string, args?: string): Promise<void> {
+  const storyArgs = args === undefined ? "" : `&args=${encodeURIComponent(args)}`;
+  await page.goto(`/iframe.html?viewMode=story&id=p2-feedback-status--${story}${storyArgs}`, {
     waitUntil: "domcontentloaded",
   });
   await expect(page.locator("[data-slot]").first()).toBeVisible();
@@ -103,6 +112,119 @@ test("workbench keeps static feedback quiet while preserving native semantics", 
   expect(undersized).toEqual([]);
   expect(await axeViolations(page)).toEqual([]);
   await page.screenshot({ fullPage: true, path: testInfo.outputPath("feedback-workbench.png") });
+});
+
+test("basic defaults remove every optional feedback enhancement cleanly", async ({
+  page,
+}, testInfo) => {
+  await openStory(page, "basic-defaults");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Plain feedback defaults");
+  await expect(page.locator('[data-slot^="sr-announcer-"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="alert"]')).toHaveAttribute("data-live", "off");
+  await expect(page.locator('[data-slot="callout"]')).toHaveAttribute("data-landmark", "false");
+  await expect(page.locator('[data-slot="banner-dismiss"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="badge"][data-kind="status"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="badge"][data-kind="count"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="status"]')).not.toHaveAttribute("role");
+  await expect(page.locator('[data-slot="progress-value"]')).toHaveCount(0);
+  await expect(page.getByRole("progressbar")).not.toHaveAttribute("aria-valuetext");
+  await expect(page.locator('[data-slot="meter-thresholds"]')).toHaveCount(0);
+  await expect(page.getByRole("meter")).not.toHaveAttribute("aria-describedby");
+  await expect(page.locator('[data-slot="skeleton"]')).not.toHaveAttribute("data-animated");
+  await expect(page.locator('[data-slot="empty-state-suggestions"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="error-state-retry"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="error-state-details"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="busy-region"]')).toHaveAttribute(
+    "data-announcement",
+    "off",
+  );
+  expect(
+    await page
+      .locator('[data-slot="skeleton"]')
+      .evaluate((element) => getComputedStyle(element).animationName),
+  ).toBe("none");
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ fullPage: true, path: testInfo.outputPath("feedback-basic.png") });
+});
+
+test("basic story controls can enable every optional feedback enhancement", async ({ page }) => {
+  await openStory(
+    page,
+    "basic-defaults",
+    [
+      "animateSkeleton:true",
+      "announceAlert:true",
+      "announceBusyState:true",
+      "landmarkCallout:true",
+      "liveStatus:true",
+      "persistBannerDismissal:true",
+      "showBadgeSemantics:true",
+      "showErrorDetails:true",
+      "showMeterThresholds:true",
+      "showProgressValue:true",
+      "showRecoverySuggestions:true",
+    ].join(";"),
+  );
+
+  await expect(page.locator('[data-slot="sr-announcer-polite"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="alert"]')).toHaveAttribute("data-live", "polite");
+  await expect(page.getByRole("complementary", { name: "Source review guidance" })).toBeVisible();
+  await expect(page.locator('[data-slot="banner-dismiss"]')).toBeVisible();
+  await expect(page.locator('[data-slot="badge"][data-kind="status"]')).toBeVisible();
+  await expect(page.locator('[data-slot="badge"][data-kind="count"]')).toBeVisible();
+  await expect(page.locator('[data-slot="status"]')).toHaveAttribute("role", "status");
+  await expect(page.locator('[data-slot="progress-value"]')).toHaveText("42%");
+  await expect(page.locator('[data-slot="meter-thresholds"]')).toBeVisible();
+  await expect(page.locator('[data-slot="skeleton"]')).toHaveAttribute("data-animated", "true");
+  await expect(page.locator('[data-slot="empty-state-suggestions"]')).toBeVisible();
+  await expect(page.locator('[data-slot="error-state-details"]')).toBeVisible();
+  await expect(page.locator('[data-slot="busy-region"]')).toHaveAttribute(
+    "data-announcement",
+    "polite",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
+test("recommended Mergora mode exposes useful context through independently owned output", async ({
+  page,
+}, testInfo) => {
+  await openStory(page, "recommended-mergora");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Recommended Mergora feedback");
+  await expect(page.locator('[data-slot="sr-announcer-polite"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="sr-announcer-assertive"]')).toHaveCount(1);
+  await expect(page.locator('[data-slot="alert"]')).toHaveAttribute("data-live", "polite");
+  await expect(page.locator('[data-slot="callout"]')).toHaveAttribute("data-landmark", "true");
+  await expect(page.getByRole("complementary", { name: "Editing guidance" })).toBeVisible();
+  await expect(page.locator('[data-slot="banner-dismiss"]')).toBeVisible();
+  await expect(page.locator('[data-slot="badge"][data-kind="status"]')).toBeVisible();
+  await expect(page.locator('[data-slot="badge"][data-kind="count"]')).toBeVisible();
+  await expect(page.locator('[data-slot="status"]')).toHaveAttribute("role", "status");
+  await expect(page.locator('[data-slot="progress-value"]')).toHaveText("72%");
+  const thresholdSummary = page.locator('[data-slot="meter-thresholds"]');
+  await expect(thresholdSummary).toContainText("Low 55");
+  await expect(thresholdSummary).toContainText("High 85");
+  await expect(thresholdSummary).toContainText("Optimum 35");
+  const thresholdId = await thresholdSummary.getAttribute("id");
+  expect(thresholdId).not.toBeNull();
+  await expect(page.getByRole("meter")).toHaveAttribute("aria-describedby", thresholdId ?? "");
+  const enhancedSkeletons = page.locator('[data-slot="skeleton"]');
+  await expect(enhancedSkeletons).toHaveCount(2);
+  expect(
+    await enhancedSkeletons.evaluateAll((elements) =>
+      elements.every((element) => element.getAttribute("data-animated") === "true"),
+    ),
+  ).toBe(true);
+  await expect(page.locator('[data-slot="empty-state-suggestions"]')).toContainText(
+    "Ways to recover",
+  );
+  await expect(page.locator('[data-slot="error-state-retry"]')).toBeVisible();
+  await expect(page.locator('[data-slot="error-state-details"]')).toBeVisible();
+  await expect(page.locator('[data-slot="busy-region"]')).toHaveAttribute(
+    "data-announcement",
+    "polite",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+  await page.screenshot({ fullPage: true, path: testInfo.outputPath("feedback-recommended.png") });
 });
 
 test("complete variant story renders every feedback severity it claims", async ({ page }) => {
@@ -360,7 +482,8 @@ test("empty and error states expose recovery, safe details, and stable retry foc
   const retryBounds = await retry.boundingBox();
   expect(retryBounds?.height ?? 0).toBeGreaterThanOrEqual(44);
   expect(retryBounds?.width ?? 0).toBeGreaterThanOrEqual(44);
-  await retry.click();
+  await retry.focus();
+  await retry.press("Enter");
   await expect(retry).toBeFocused();
   await expect(page.getByText("Retry attempts: 1")).toBeVisible();
   const details = page.locator('[data-slot="error-state-details"]');
@@ -509,6 +632,37 @@ test("320 CSS pixels and 200 percent text reflow without clipping or document ov
   await expect(page.getByRole("button", { name: "Clear all catalog filters" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Try again" })).toBeVisible();
   expect(await axeViolations(page)).toEqual([]);
+});
+
+test("touch dismissal and retry keep recovery controls reachable on a narrow mobile surface", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    hasTouch: true,
+    isMobile: true,
+    viewport: { height: 740, width: 360 },
+  });
+  const page = await context.newPage();
+  const failures = guardRuntime(page);
+
+  await openStory(page, "banner-interactions");
+  const dismiss = page.getByRole("button", { name: "Dismiss message" });
+  const dismissBounds = await dismiss.boundingBox();
+  expect(dismissBounds?.height ?? 0).toBeGreaterThanOrEqual(44);
+  expect(dismissBounds?.width ?? 0).toBeGreaterThanOrEqual(44);
+  await dismiss.tap();
+  await expect(page.locator('[data-slot="banner"]')).toBeHidden();
+
+  await openStory(page, "recovery-states");
+  const retry = page.getByRole("button", { name: "Try again" });
+  const retryBounds = await retry.boundingBox();
+  expect(retryBounds?.height ?? 0).toBeGreaterThanOrEqual(44);
+  expect(retryBounds?.width ?? 0).toBeGreaterThanOrEqual(44);
+  await retry.tap();
+  await expect(page.getByText("Retry attempts: 1")).toBeVisible();
+  expect(await axeViolations(page)).toEqual([]);
+  expect(failures).toEqual([]);
+  await context.close();
 });
 
 test("forced colors and reduced motion preserve focus and non-color status cues", async ({

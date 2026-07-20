@@ -8,13 +8,13 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["gap", "align", "justify", "wrapping", "long-content", "narrow", "rtl"],
+  "stateGroups": ["gap", "align", "justify", "wrapping", "nowrap", "long-content", "narrow", "rtl"],
   "slots": [
     {
       "name": "inline",
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
-      "states": ["gap", "align", "justify"]
+      "states": ["gap", "align", "justify", "wrap"]
     }
   ],
   "contract": { "id": "inline-accessibility", "version": "0.1.0" },

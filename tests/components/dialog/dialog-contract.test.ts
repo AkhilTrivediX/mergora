@@ -58,7 +58,8 @@ describe("Dialog canonical contract inputs", () => {
   it("defines semantic-token styles and explicit preference paths", () => {
     const css = readSource("dialog.css");
     expect(css).toMatch(/var\(\s*--mrg-component-dialog-background/u);
-    expect(css).toContain("var(--mrg-semantic-color-focus-ring)");
+    expect(css).toContain("var(--mrg-component-focus-indicator-color)");
+    expect(css).toContain("var(--mrg-component-focus-indicator-contrast-background)");
     expect(css).toContain("var(--visual-viewport-height, 100dvb)");
     expect(css).toContain("padding-inline: max(");
     expect(css).toContain("env(safe-area-inset-left, 0px)");

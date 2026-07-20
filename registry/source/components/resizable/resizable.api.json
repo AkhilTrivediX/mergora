@@ -54,10 +54,12 @@
       "name": "messages/formatValue",
       "required": false,
       "type": "localization overrides"
-    }
+    },
+    { "default": true, "name": "showStepControls", "required": false, "type": "boolean" }
   ],
   "handlePolicy": {
     "accessibleName": "aria-label or aria-labelledby is required by the Handle type.",
-    "controls": "The separator and its 44-pixel decrement/increment/collapse controls are rendered as siblings, never nested interactive content."
+    "controls": "The separator and its 44-pixel decrement/increment/collapse controls are rendered as siblings, never nested interactive content.",
+    "enhancement": "showStepControls=false removes the button group, button events, labels, and touch-control accessibility output while preserving pointer and keyboard separator behavior."
   }
 }

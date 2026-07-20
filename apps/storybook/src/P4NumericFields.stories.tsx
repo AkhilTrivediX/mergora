@@ -33,14 +33,13 @@ const matrixStyle = {
   gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))",
 } satisfies CSSProperties;
 
-const cardStyle = {
-  background: "var(--mrg-semantic-color-background-surface)",
-  border: "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-subtle)",
-  borderRadius: "var(--mrg-semantic-radius-surface)",
+const specimenStyle = {
+  borderBlockStart:
+    "var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-subtle)",
   display: "grid",
   gap: "var(--mrg-semantic-space-stack-md)",
   minInlineSize: 0,
-  padding: "var(--mrg-semantic-space-inset-lg)",
+  paddingBlockStart: "var(--mrg-semantic-space-stack-md)",
 } satisfies CSSProperties;
 
 const buttonStyle = {
@@ -58,6 +57,12 @@ const buttonRailStyle = {
   flexWrap: "wrap",
   gap: "var(--mrg-semantic-space-inline-sm)",
 } satisfies CSSProperties;
+
+interface NumericEnhancementArgs {
+  readonly scrub: boolean;
+  readonly showCanonicalPreview: boolean;
+  readonly statusRail: boolean;
+}
 
 function Canvas({
   children,
@@ -77,7 +82,11 @@ function Canvas({
   );
 }
 
-function SubmitWorkbench() {
+function SubmitWorkbench({
+  scrub = true,
+  showCanonicalPreview = true,
+  statusRail = true,
+}: Partial<NumericEnhancementArgs> = {}) {
   const [result, setResult] = useState("No submission yet");
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -111,6 +120,8 @@ function SubmitWorkbench() {
             maxValue={10000}
             minValue={1000}
             name="monthly-budget"
+            showCanonicalPreview={showCanonicalPreview}
+            statusRail={statusRail ? "auto" : false}
             step={250}
           />
         </Field>
@@ -119,6 +130,8 @@ function SubmitWorkbench() {
             defaultValue={0.15}
             maxValue={0.5}
             name="contingency-target"
+            showCanonicalPreview={showCanonicalPreview}
+            statusRail={statusRail ? "auto" : false}
             step={0.005}
           />
         </Field>
@@ -129,6 +142,9 @@ function SubmitWorkbench() {
             minValue={0}
             name="review-score"
             precision={1}
+            scrub={scrub}
+            showCanonicalPreview={showCanonicalPreview}
+            statusRail={statusRail ? "auto" : false}
           />
         </Field>
         <div style={buttonRailStyle}>
@@ -148,15 +164,34 @@ function SubmitWorkbench() {
 }
 
 const meta = {
+  args: {
+    scrub: true,
+    showCanonicalPreview: true,
+    statusRail: true,
+  },
+  argTypes: {
+    scrub: { control: "boolean" },
+    showCanonicalPreview: { control: "boolean" },
+    statusRail: { control: "boolean" },
+  },
   parameters: { layout: "fullscreen" },
   title: "P4/Numeric fields",
-} satisfies Meta;
+} satisfies Meta<NumericEnhancementArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ProductionWorkbench: Story = {
-  render: () => <SubmitWorkbench />,
+  render: (args) => <SubmitWorkbench {...args} />,
+};
+
+export const RecommendedMergora: Story = {
+  render: (args) => <SubmitWorkbench {...args} />,
+};
+
+export const PlainBaseline: Story = {
+  args: { scrub: false, showCanonicalPreview: false, statusRail: false },
+  render: (args) => <SubmitWorkbench {...args} />,
 };
 
 export const LocaleMatrix: Story = {
@@ -175,7 +210,7 @@ export const LocaleMatrix: Story = {
             key={example.locale}
             locale={example.locale}
           >
-            <section aria-label={example.title} style={cardStyle}>
+            <section aria-label={example.title} style={specimenStyle}>
               <h2 style={{ margin: 0 }}>{example.title}</h2>
               <Field label="Localized number">
                 <NumberField defaultValue={1234567.89} precision={2} showStepper={false} />
@@ -203,32 +238,32 @@ export const StateMatrix: Story = {
     <Canvas>
       <h1 style={{ margin: 0 }}>Production state matrix</h1>
       <div style={matrixStyle}>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field description="Accepts a new numeric value." label="Empty">
             <NumberField name="empty-number" />
           </Field>
         </section>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field label="Disabled amount">
             <CurrencyField currency="USD" defaultValue={6400} disabled name="disabled-amount" />
           </Field>
         </section>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field label="Read-only allocation">
             <PercentageField defaultValue={0.4} readOnly />
           </Field>
         </section>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field error="Use a value from 1 through 10." label="Invalid score">
             <NumberField defaultValue={12} maxValue={10} minValue={1} />
           </Field>
         </section>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field label="Required budget" required>
             <CurrencyField currency="GBP" name="required-budget" />
           </Field>
         </section>
-        <section style={cardStyle}>
+        <section style={specimenStyle}>
           <Field description="The percentage contract remains fractional." label="Extended growth">
             <PercentageField defaultValue={1.35} maxValue={3} />
           </Field>
@@ -281,6 +316,53 @@ export const RightToLeft: Story = {
       <Field label="عدد الوحدات">
         <NumberField defaultValue={1234.5} precision={1} />
       </Field>
+    </Canvas>
+  ),
+};
+
+function ControlledNumericSpecimen() {
+  const [quantity, setQuantity] = useState(24);
+  return (
+    <Canvas>
+      <h1 style={{ margin: 0 }}>Controlled and uncontrolled values</h1>
+      <Field description="The consumer owns this canonical number." label="Controlled quantity">
+        <NumberField
+          maxValue={100}
+          minValue={0}
+          onChange={setQuantity}
+          showCanonicalPreview
+          statusRail="auto"
+          value={quantity}
+        />
+      </Field>
+      <output aria-live="polite">Controlled value: {quantity}</output>
+      <Field description="Native reset restores the initial value." label="Uncontrolled quantity">
+        <NumberField defaultValue={12} name="uncontrolled-quantity" showCanonicalPreview />
+      </Field>
+    </Canvas>
+  );
+}
+
+export const ControlledAndUncontrolled: Story = {
+  render: () => <ControlledNumericSpecimen />,
+};
+
+export const NarrowAndPreferences: Story = {
+  render: () => (
+    <Canvas>
+      <div style={{ inlineSize: "min(100%, 20rem)", marginInline: "auto" }}>
+        <h1 style={{ marginBlockStart: 0 }}>Narrow preference specimen</h1>
+        <p style={{ maxInlineSize: "65ch" }}>
+          Status context stacks below the control, forced colors retain structural boundaries, and
+          no numeric behavior depends on motion.
+        </p>
+        <Field
+          description="Fractional storage remains visible without crowding the input."
+          label="Completion"
+        >
+          <PercentageField defaultValue={0.625} showCanonicalPreview statusRail="auto" />
+        </Field>
+      </div>
     </Canvas>
   ),
 };

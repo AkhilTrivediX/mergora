@@ -12,7 +12,7 @@
   .mrg-color-field-input {
     appearance: none;
     background: var(--mrg-semantic-color-background-canvas);
-    border: var(--mrg-semantic-border-width-default) solid
+    border: var(--mrg-semantic-border-width-strong) solid
       var(--mrg-semantic-color-border-interactive);
     border-radius: var(--mrg-semantic-radius-control);
     box-sizing: border-box;
@@ -33,8 +33,11 @@
   }
 
   .mrg-color-field-input:focus-visible {
-    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-    outline-offset: var(--mrg-semantic-focus-offset);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
   }
 
   .mrg-color-field[data-invalid] .mrg-color-field-input {
@@ -120,6 +123,11 @@
   }
 
   @media (forced-colors: active) {
+    .mrg-color-field-input:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+
     .mrg-color-field-input {
       background: Field;
       border-color: FieldText;

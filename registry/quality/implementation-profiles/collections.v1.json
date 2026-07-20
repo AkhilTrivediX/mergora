@@ -1,0 +1,2256 @@
+{
+  "schemaVersion": 1,
+  "category": "collections",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "combobox",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Combobox composes an editable trigger, popup, command-style filtering, and option selection; a selection-aware clear action remains consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/combobox"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves the React Aria editable-combobox focus and form model while offering an optional clear compound part that resets both committed selection and editable text through controlled or uncontrolled boundaries.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/combobox/combobox.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.test.tsx"
+          }
+        ],
+        "enhancementIds": ["clear-action"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The editable control and popup use literal Canvas surfaces, precise Ink boundaries, strong labels, a Green selection signal, the shared Violet focus seam, purposeful reduced motion, and restrained control radii.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/combobox/combobox.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "clear-action",
+          "status": "evidence-backed",
+          "summary": "A localized native button clears the selected key and editable query, closes the popup, and disables itself when both values are empty.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/combobox/combobox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4Combobox.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/combobox/combobox.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["clearAction"],
+          "api": {
+            "kind": "compound-part",
+            "names": ["Combobox.Clear"],
+            "enableWhen": "Compose Combobox.Clear inside Combobox.Root."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No clear button is rendered.",
+            "behavior": "Input editing, selection, popup, and form behavior follow the ordinary combobox path.",
+            "events": "No clear click or clear-state callbacks can occur.",
+            "accessibility": "No clear control, accessible name, disabled state, or tab stop is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4Combobox.stories.tsx",
+          "exportName": "BasicDefaults",
+          "enhancementControls": ["clearAction"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4Combobox.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/combobox/combobox.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4Combobox.stories.tsx",
+          "exportName": "RecommendedMergora",
+          "enhancementControls": ["clearAction"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4Combobox.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/combobox/combobox.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native combobox/listbox semantics, virtual focus, localized naming, SSR, keyboard, touch, narrow, RTL, forced-colors, reduced-motion, and axe coverage are current; manual screen-reader, speech, switch, and mobile assistive-technology records remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/combobox/contract.draft.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers optional composition and clean removal, controlled clearing, filtering, keyboard selection, dismissal, focus return, narrow layout, RTL, preference modes, touch, target geometry, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/combobox/combobox.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/combobox/contract.draft.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/combobox/contract.draft.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "listbox",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Ordinary Shadcn does not publish a standalone Listbox; Select supplies a common single-selection popup baseline, while multiple selection, measured virtualization, and retained off-window selection context remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/select"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines a strict shared collection and form model with independently selectable measured virtualization and bounded selected-text context that survives filtering and off-window rendering.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/listbox/listbox.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["selection-context", "windowed-collection"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The listbox uses a literal Canvas surface, Ink row structure, strong label hierarchy, a Green selected edge/check cue, the shared Violet focus seam, purposeful reduced motion, and restrained radii.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/listbox/listbox.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "A bounded locale-driven accessibility summary retains selected option names when selected rows are filtered or outside a virtual window.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/listbox/listbox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["selectionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["formatSelectionSummary"],
+            "enableWhen": "Leave formatSelectionSummary undefined for the locale-driven default or provide a localized formatter."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No hidden selected-text summary is rendered.",
+            "behavior": "Summary records are not formatted; ordinary selection and virtualization continue independently.",
+            "events": "The summary formatter is never called.",
+            "accessibility": "No summary id, node, or aria-describedby contribution is exposed."
+          }
+        },
+        {
+          "id": "windowed-collection",
+          "status": "evidence-backed",
+          "summary": "Measured React Aria ListLayout virtualization bounds rendered rows while retaining focused-row and option-position semantics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/listbox/listbox.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionFoundation.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["virtualization"],
+          "api": {
+            "kind": "prop",
+            "names": ["virtualization"],
+            "enableWhen": "Pass measured item and optional section-heading estimates."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "All collection rows render through the ordinary non-virtualized listbox path.",
+            "behavior": "No ListLayout or Virtualizer participates in collection rendering.",
+            "events": "No virtualizer layout or scroll-window events occur.",
+            "accessibility": "No virtualization-only position, set-size, or window-retention output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4CollectionComponentProof.stories.tsx",
+          "exportName": "BasicListbox",
+          "enhancementControls": ["selectionSummary", "virtualization"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/collection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4CollectionComponentProof.stories.tsx",
+          "exportName": "RecommendedListbox",
+          "enhancementControls": ["selectionSummary", "virtualization"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/collection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated listbox semantics, focus, selection, forms, summary removal, virtualization, keyboard, touch, narrow, RTL, forced-colors, reduced-motion, and axe coverage are current; manual screen-reader, speech, switch, and device records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/listbox/listbox.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers independent enhancement removal, selection, filtering/page retention, forms/reset, async recovery, virtualization, keyboard, touch, and preference modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/listbox/listbox.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/listbox/listbox.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "select",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Select supplies an accessible single-selection trigger, popup, groups, items, and form-compatible value; measured large-collection rendering and retained off-window selection context remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/select"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps enhanced and explicit native picker presentations on one canonical collection/form model while independently offering measured virtualization and bounded selected-text context in enhanced mode.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/select/select.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          }
+        ],
+        "enhancementIds": ["selection-context", "windowed-collection"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The trigger and popup use literal Canvas surfaces, crisp Ink boundaries, strong label hierarchy, a Green selected cue, the shared Violet focus seam, purposeful reduced motion, and restrained radii.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/select/select.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "restrained-corners",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-context",
+          "status": "evidence-backed",
+          "summary": "A bounded locale-driven accessibility summary keeps the selected option represented when enhanced options are filtered or outside a virtual window.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/select/select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["selectionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["formatSelectionSummary"],
+            "enableWhen": "Leave formatSelectionSummary undefined for the locale-driven default or provide a localized formatter in enhanced presentation."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No hidden selected-text summary is rendered.",
+            "behavior": "Summary records are not formatted; ordinary enhanced selection and optional virtualization continue independently.",
+            "events": "The summary formatter is never called.",
+            "accessibility": "No summary id, node, or accessibility-description contribution is exposed."
+          }
+        },
+        {
+          "id": "windowed-collection",
+          "status": "evidence-backed",
+          "summary": "Measured React Aria ListLayout virtualization bounds enhanced option rendering while preserving focused-row and option-position semantics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/select/select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionFoundation.stories.tsx"
+            }
+          ],
+          "storybookControlNames": ["virtualization"],
+          "api": {
+            "kind": "prop",
+            "names": ["virtualization"],
+            "enableWhen": "Use enhanced presentation and pass measured item and optional section-heading estimates."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Enhanced options render through the ordinary non-virtualized listbox path.",
+            "behavior": "No ListLayout or Virtualizer participates in option rendering.",
+            "events": "No virtualizer layout or scroll-window events occur.",
+            "accessibility": "No virtualization-only position, set-size, or window-retention output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4CollectionComponentProof.stories.tsx",
+          "exportName": "BasicSelect",
+          "enhancementControls": ["selectionSummary", "virtualization"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/collection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4CollectionComponentProof.stories.tsx",
+          "exportName": "RecommendedSelect",
+          "enhancementControls": ["selectionSummary", "virtualization"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4CollectionComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/collection-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated trigger/listbox semantics, native presentation, focus restoration, forms/reset, clean summary removal, virtualization, keyboard, touch, narrow, RTL, forced-colors, reduced-motion, and axe coverage are current; manual assistive-technology records remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/select/select.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused unit and Storybook browser evidence covers independent enhancement removal, enhanced/native contracts, selection, forms/reset, keyboard, touch, focus restoration, virtualization, and preference modes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/collection-foundation/collection-foundation.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Contract-required manual screen-reader, speech, switch, mobile picker, and relevant device evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/select/select.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/select/select.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "autocomplete",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Combobox baseline supports filtering and option selection but does not own native text serialization or explicit match-position context.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/combobox"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional visible and polite match context reports result count and active position without changing baseline combobox behavior.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/autocomplete/autocomplete.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["match-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, strong labels, restrained selected-state signals, bounded corners, shared focus, and forced-colors mappings keep Autocomplete in the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/autocomplete/autocomplete.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "match-context",
+          "status": "evidence-backed",
+          "summary": "Reports filtered count and active option position.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/autocomplete/autocomplete.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showMatchContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showMatchContext"],
+            "enableWhen": "Set showMatchContext to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No match-context output is rendered.",
+            "behavior": "Filtering and selection continue without context work.",
+            "events": "No enhancement-only event or formatter runs.",
+            "accessibility": "No live region or enhancement-specific description enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicAutocomplete",
+          "enhancementControls": ["showMatchContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedAutocomplete",
+          "enhancementControls": ["showMatchContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, schema, keyboard, form, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; full manual risk-class evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/autocomplete/autocomplete.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/autocomplete/autocomplete.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/autocomplete/autocomplete.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "command-palette",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Command baseline provides searchable commands but does not own this complete modal focus-restoration and optional execution-preview contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/command"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional execution preview and a true embedded presentation add context and composition flexibility while keeping the baseline palette concise.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/command-palette/command-palette.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["execution-preview", "embedded-presentation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white overlay structure, ink rules, strong type, restrained selection, bounded corners, shared focus, and forced-colors mappings keep Command Palette in the family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/command-palette/command-palette.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "execution-preview",
+          "status": "evidence-backed",
+          "summary": "Explains the active command before immediate execution.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/command-palette/command-palette.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showExecutionPreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["showExecutionPreview"],
+            "enableWhen": "Set showExecutionPreview to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No command preview is rendered.",
+            "behavior": "Search and execution continue without preview work.",
+            "events": "No enhancement-only event runs.",
+            "accessibility": "No preview live region or related description enters the tree."
+          }
+        },
+        {
+          "id": "embedded-presentation",
+          "status": "evidence-backed",
+          "summary": "Places grouped and nested command pages in document flow without modal behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/command-palette/command-palette.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["embeddedPalette"],
+          "api": {
+            "kind": "prop",
+            "names": ["presentation"],
+            "enableWhen": "Set presentation to embedded."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The default presentation uses the modal backdrop and close control.",
+            "behavior": "No embedded region behavior is installed.",
+            "events": "Document-flow navigation emits no embedded-only event.",
+            "accessibility": "Region semantics are absent; modal semantics, focus containment, and restoration remain."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicCommandPalette",
+          "enhancementControls": ["showExecutionPreview", "embeddedPalette"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedCommandPalette",
+          "enhancementControls": ["showExecutionPreview", "embeddedPalette"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, keyboard, focus restoration, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; complete manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/command-palette/command-palette.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/command-palette/command-palette.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/command-palette/command-palette.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "creatable-select",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn documents Combobox but has no direct general Creatable Select with native form/reset and enhancement-off contracts.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/combobox"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional canonical-value preview exposes normalized intent before creation without changing submitted value.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/creatable-select/creatable-select.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["canonical-preview"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, strong labels, bounded overlays, shared focus, restrained selection, and forced-colors mappings keep Creatable Select coherent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/creatable-select/creatable-select.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "canonical-preview",
+          "status": "evidence-backed",
+          "summary": "Shows a formatter-derived canonical preview before create.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/creatable-select/creatable-select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showCanonicalPreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["showCanonicalPreview", "formatCanonicalValue"],
+            "enableWhen": "Set showCanonicalPreview to true; formatter remains optional."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No canonical preview is rendered.",
+            "behavior": "Choose/create continues without preview formatting.",
+            "events": "formatCanonicalValue is not called.",
+            "accessibility": "No preview output or description enters the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicCreatableSelect",
+          "enhancementControls": ["showCanonicalPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedCreatableSelect",
+          "enhancementControls": ["showCanonicalPreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, form/reset, enhancement-off, keyboard, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; full manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/creatable-select/creatable-select.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/creatable-select/creatable-select.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/creatable-select/creatable-select.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mention-field",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no direct general Mention Field with native textarea semantics, caret recovery, and opt-in mention evidence.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "An optional mention summary and configurable entity triggers make recognized identities inspectable without changing native textarea behavior.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/mention-field/mention-field.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["mention-summary", "entity-triggers"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, strong labels, bounded suggestions, shared focus, restrained selection, and forced-colors mappings keep Mention Field coherent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/mention-field/mention-field.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "mention-summary",
+          "status": "evidence-backed",
+          "summary": "Lists recognized mentions in a visible polite rail.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/mention-field/mention-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showMentionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showMentionSummary"],
+            "enableWhen": "Set showMentionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No mention summary is rendered.",
+            "behavior": "Textarea and mention insertion continue without summary scanning output.",
+            "events": "No enhancement-only event runs.",
+            "accessibility": "No live summary or enhancement relationship enters the tree."
+          }
+        },
+        {
+          "id": "entity-triggers",
+          "status": "evidence-backed",
+          "summary": "Maps distinct trigger symbols to typed query contexts for multiple entity families.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/mention-field/mention-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["multiEntityTriggers"],
+          "api": {
+            "kind": "prop",
+            "names": ["triggers", "onQueryChange"],
+            "enableWhen": "Provide multiple trigger/entity mappings."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No additional entity-trigger suggestions are shown.",
+            "behavior": "The default @ people trigger remains available without multi-entity matching.",
+            "events": "No query event for an unconfigured trigger is emitted.",
+            "accessibility": "No options or entity labels for unconfigured triggers enter the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicMentionField",
+          "enhancementControls": ["showMentionSummary", "multiEntityTriggers"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedMentionField",
+          "enhancementControls": ["showMentionSummary", "multiEntityTriggers"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, native textarea/form, caret, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/mention-field/mention-field.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/mention-field/mention-field.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/mention-field/mention-field.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "multi-select",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no direct general Multi Select with repeat-name serialization, native reset, read-only mode, and opt-in selection context.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/combobox"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional selection context, bounded selection, and literal token overflow keep large multi-value choices understandable without changing form-array output.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/multi-select/multi-select.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["selection-summary", "selection-limit", "token-overflow"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, named compact tokens, strong labels, shared focus, restrained selection, and forced-colors mappings keep Multi Select coherent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/multi-select/multi-select.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "selection-summary",
+          "status": "evidence-backed",
+          "summary": "Reports selected and current-filter counts.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/multi-select/multi-select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showSelectionSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSelectionSummary"],
+            "enableWhen": "Set showSelectionSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No selection summary is rendered.",
+            "behavior": "Filtering and selection continue without summary work.",
+            "events": "No enhancement-only event runs.",
+            "accessibility": "No live summary or enhancement relationship enters the tree."
+          }
+        },
+        {
+          "id": "selection-limit",
+          "status": "evidence-backed",
+          "summary": "Prevents additional choices at a consumer-defined maximum while preserving removal.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/multi-select/multi-select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["limitSelections"],
+          "api": {
+            "kind": "prop",
+            "names": ["maximum"],
+            "enableWhen": "Provide maximum."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No options are disabled by a selection limit.",
+            "behavior": "Selection count is unbounded by the component.",
+            "events": "No choice is suppressed by a component maximum.",
+            "accessibility": "No limit-derived disabled option state enters the tree."
+          }
+        },
+        {
+          "id": "token-overflow",
+          "status": "evidence-backed",
+          "summary": "Bounds visible selected tokens and reports the exact omitted count.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/multi-select/multi-select.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["collapseSelectedTokens"],
+          "api": {
+            "kind": "prop",
+            "names": ["maximumVisibleTokens"],
+            "enableWhen": "Provide maximumVisibleTokens."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Every selected token remains visible and no overflow row is rendered.",
+            "behavior": "No selected-token slicing or omitted-count work runs.",
+            "events": "Selection and removal events remain unchanged.",
+            "accessibility": "No overflow summary enters the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicMultiSelect",
+          "enhancementControls": [
+            "showSelectionSummary",
+            "limitSelections",
+            "collapseSelectedTokens"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedMultiSelect",
+          "enhancementControls": [
+            "showSelectionSummary",
+            "limitSelections",
+            "collapseSelectedTokens"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, form/reset/serialization, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/multi-select/multi-select.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/multi-select/multi-select.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/multi-select/multi-select.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tags-input",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no direct general Tags Input with repeated form values, reset behavior, and independently removable duplicate recovery.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional duplicate recovery and explicit reorder controls make conflicts and ordering recoverable for keyboard and touch users.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tags-input/tags-input.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["duplicate-recovery", "reorder-controls"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, named compact tags, strong labels, shared focus, restrained selection, and forced-colors mappings keep Tags Input coherent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tags-input/tags-input.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "duplicate-recovery",
+          "status": "evidence-backed",
+          "summary": "Announces and focuses the matching tag on duplicate entry.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tags-input/tags-input.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["recoverDuplicates"],
+          "api": {
+            "kind": "prop",
+            "names": ["recoverDuplicates", "onDuplicateTag"],
+            "enableWhen": "Set recoverDuplicates to true; callback remains optional."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No duplicate-recovery output is rendered.",
+            "behavior": "Duplicate entry is ignored without focus movement.",
+            "events": "onDuplicateTag is not called.",
+            "accessibility": "No live region or enhancement relationship enters the tree."
+          }
+        },
+        {
+          "id": "reorder-controls",
+          "status": "evidence-backed",
+          "summary": "Adds named earlier/later actions as a non-drag ordering alternative.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tags-input/tags-input.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["reorderable"],
+          "api": {
+            "kind": "prop",
+            "names": ["reorderable"],
+            "enableWhen": "Set reorderable to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No earlier or later controls are rendered.",
+            "behavior": "Tag order changes only through controlled values supplied by the consumer.",
+            "events": "No reorder reason is emitted.",
+            "accessibility": "No reorder actions or names enter the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicTagsInput",
+          "enhancementControls": ["recoverDuplicates", "reorderable"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedTagsInput",
+          "enhancementControls": ["recoverDuplicates", "reorderable"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, form/reset/serialization, focus recovery, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tags-input/tags-input.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tags-input/tags-input.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tags-input/tags-input.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "transfer-list",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no direct Transfer List with native multiple-select behavior, repeated form values, reset, and an enhancement-off transfer status contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional transfer context and independent source/destination filters keep dual-list movement understandable without changing native selection.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/transfer-list/transfer-list.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["transfer-summary", "collection-filters"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal white, ink structure, strong grouped labels, shared focus, restrained selection, bounded corners, and forced-colors mappings keep Transfer List coherent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/transfer-list/transfer-list.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "transfer-summary",
+          "status": "evidence-backed",
+          "summary": "Reports list counts and the most recent transfer.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/transfer-list/transfer-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showTransferSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTransferSummary"],
+            "enableWhen": "Set showTransferSummary to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No transfer summary is rendered.",
+            "behavior": "Moves continue without status computation.",
+            "events": "No enhancement-only event runs.",
+            "accessibility": "No live status or enhancement relationship enters the tree."
+          }
+        },
+        {
+          "id": "collection-filters",
+          "status": "evidence-backed",
+          "summary": "Adds independent source and destination filters while preserving selected membership.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/transfer-list/transfer-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["filterable"],
+          "api": {
+            "kind": "prop",
+            "names": ["filterable"],
+            "enableWhen": "Set filterable to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No source or destination search inputs are rendered.",
+            "behavior": "Both native lists show every item in their current membership set.",
+            "events": "No filter state or filter event exists.",
+            "accessibility": "No filter controls or names enter the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "BasicTransferList",
+          "enhancementControls": ["showTransferSummary", "filterable"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AdvancedCollections.stories.tsx",
+          "exportName": "RecommendedTransferList",
+          "enhancementControls": ["showTransferSummary", "filterable"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AdvancedCollections.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source, SSR, native selection, form/reset/serialization, enhancement-off, RTL, narrow, forced-colors, and reduced-motion evidence is scoped; manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/transfer-list/transfer-list.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this control's primary flow and enhancement isolation; the family suite also covers controlled forms, keyboard and pointer behavior, coarse touch, narrow RTL layout, forced colors, reduced motion, target geometry, runtime failures, and axe.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-collections/advanced-collections.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, visual, supported-browser, public dogfood, Quality Passport, and manual evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/transfer-list/transfer-list.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/transfer-list/transfer-list.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

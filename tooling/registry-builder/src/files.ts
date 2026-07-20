@@ -3,6 +3,7 @@ import {
   mkdirSync,
   readFileSync,
   readdirSync,
+  rmdirSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -127,6 +128,23 @@ function actualGeneratedPaths(workspaceRoot: string): readonly string[] {
   ].sort();
 }
 
+function pruneEmptyGeneratedDirectories(workspaceRoot: string): void {
+  const pruneChildren = (directory: string): void => {
+    if (!existsSync(directory)) return;
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      if (!entry.isDirectory()) continue;
+      const child = resolve(directory, entry.name);
+      pruneChildren(child);
+      if (readdirSync(child).length === 0) rmdirSync(child);
+    }
+  };
+
+  const resolvedWorkspace = resolve(workspaceRoot);
+  for (const root of ALLOWED_GENERATED_ROOTS) {
+    pruneChildren(resolve(resolvedWorkspace, ...root.split("/")));
+  }
+}
+
 function validateFileSet(files: readonly GeneratedFile[]): readonly GeneratedFile[] {
   const paths = new Map<string, string>();
   const ordered = [...files].sort((left, right) => left.path.localeCompare(right.path, "en-US"));
@@ -199,6 +217,8 @@ export function syncGeneratedFiles(
       unlinkSync(target);
     }
   }
+
+  if (mode === "write") pruneEmptyGeneratedDirectories(workspaceRoot);
 
   return {
     ok: mode === "write" || issues.length === 0,

@@ -12,10 +12,15 @@ This tracer proves that Mergora can wrap TanStack Table's data model without exp
   columns={columns}
   selectionMode="single"
   getRowLabel={(incident) => `Select ${incident.title}`}
+  renderSelectionSummary={(incident) =>
+    incident === null ? "No incident selected" : `Selected ${incident.title}`
+  }
 />
 ```
 
 `caption`, stable row IDs, and meaningful cell rendering are required. When selection is enabled, provide `getRowLabel` for localized, task-specific radio names. The region label defaults to a caption-derived English string only as a development convenience; production localized surfaces should supply `regionLabel`.
+
+`renderSelectionSummary` is an optional Mergora status rail. It receives the selected source row, renders in a polite live `output`, and is never invoked when omitted. Selection, sorting, and native table semantics remain unchanged without it.
 
 The local [P1 browser evidence](../../../../docs/quality/BROWSER_EVIDENCE.md) covers only this
 tracer's semantic-table sort, single-row selection, labelled narrow scroll region, preferences,

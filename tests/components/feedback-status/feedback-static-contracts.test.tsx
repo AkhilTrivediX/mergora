@@ -203,6 +203,50 @@ describe("EmptyState recovery and content boundaries", () => {
       ).toThrow("body");
     }
   });
+
+  it("adds contextual recovery suggestions only when explicitly supplied", () => {
+    const primaryAction = <button type="button">Reset</button>;
+    const plain = runtimeElement(
+      <EmptyState description="Try again." primaryAction={primaryAction} title="No results" />,
+    );
+    expect(plain).not.toContain('data-slot="empty-state-suggestions"');
+
+    const enhanced = runtimeElement(
+      <EmptyState
+        description="Try again."
+        primaryAction={primaryAction}
+        recoverySuggestions={{
+          items: ["Remove one filter", "Search by title"],
+          label: "Ways to recover",
+        }}
+        title="No results"
+      />,
+    );
+    expect(enhanced).toContain('data-slot="empty-state-suggestions"');
+    expect(enhanced).toContain("Ways to recover");
+    expect(enhanced.match(/<li>/gu)).toHaveLength(2);
+
+    expect(() =>
+      runtimeElement(
+        <EmptyState
+          description="Try again."
+          primaryAction={primaryAction}
+          recoverySuggestions={{ items: ["Try again"], label: " " }}
+          title="No results"
+        />,
+      ),
+    ).toThrow("non-empty label");
+    expect(() =>
+      runtimeElement(
+        <EmptyState
+          description="Try again."
+          primaryAction={primaryAction}
+          recoverySuggestions={{ items: [], label: "Ways to recover" }}
+          title="No results"
+        />,
+      ),
+    ).toThrow("non-empty items");
+  });
 });
 
 describe("Progress and Meter native semantic ownership", () => {
@@ -233,7 +277,9 @@ describe("Progress and Meter native semantic ownership", () => {
     expect(progress).toContain('max="200"');
     expect(progress).toContain('value="50"');
     expect(progress).not.toContain("aria-label=");
-    expect(progress).not.toContain("aria-labelledby=");
+    const progressLabelId = progress.match(/id="(mrg-progress-[^"]+-label)"/u)?.[1];
+    expect(progressLabelId).toBeDefined();
+    expect(progress).toContain(`aria-labelledby="${progressLabelId}"`);
 
     const meter = runtimeElement(
       <Meter high={80} label="Storage" low={20} maximum={100} optimum={10} value={62} />,

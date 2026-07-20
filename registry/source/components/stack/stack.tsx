@@ -10,10 +10,14 @@ export type StackListStyle = "preserve" | "none";
 export interface StackProps extends HTMLAttributes<HTMLElement> {
   /** A restricted native element set keeps layout separate from arbitrary polymorphism. */
   readonly element?: StackElement;
+  /** Sets tokenized block-axis space without accepting arbitrary CSS lengths. */
   readonly gap?: StackGap;
+  /** Aligns direct children along the logical inline axis. */
   readonly align?: StackAlign;
   /** Applies only to ul/ol roots; preserve keeps native markers and indentation. */
   readonly listStyle?: StackListStyle;
+  /** Adds tokenized structural rules between direct children without extra DOM or semantics. */
+  readonly separated?: boolean;
 }
 
 function joinStackClassName(className: string | undefined): string {
@@ -29,6 +33,7 @@ export const Stack = forwardRef<HTMLElement, StackProps>(function Stack(
     element = "div",
     gap = "md",
     listStyle = "preserve",
+    separated = false,
     ...nativeProps
   },
   forwardedRef,
@@ -41,6 +46,7 @@ export const Stack = forwardRef<HTMLElement, StackProps>(function Stack(
     "data-element": element,
     "data-gap": gap,
     "data-list-style": listStyle,
+    "data-separated": separated ? "true" : undefined,
     "data-slot": "stack",
   });
 });

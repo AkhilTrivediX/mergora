@@ -1,0 +1,15 @@
+{
+  "declaredImports": [
+    "../../components/alert/alert.js",
+    "../../components/button/button.js",
+    "../../components/command-palette/command-palette.js",
+    "./command-center-adapter.js",
+    "./command-center-state.js",
+    "./command-center.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/command-center/command-center.tsx",
+  "id": "command-center",
+  "itemDependencies": ["alert", "button", "command-palette"],
+  "outputRole": "kit"
+}

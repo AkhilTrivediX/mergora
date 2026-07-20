@@ -25,9 +25,11 @@
       "data-disabled",
       "data-invalid",
       "data-readonly",
-      "data-required"
+      "data-required",
+      "data-has-status-rail",
+      "data-shows-canonical-preview"
     ],
-    "synchronization": "Visible localized percentage text, fractional numeric state, validation, step controls, and hidden form serialization share one NumberField engine."
+    "synchronization": "Visible localized percentage text, fractional numeric state, optional localized bound context, optional non-live fractional preview, validation, step controls, and hidden form serialization share one NumberField engine. Disabled enhancements add no DOM, events, or accessibility output."
   },
   "stableSelectors": {
     "root": "[data-slot=percentage-field]",
@@ -53,7 +55,9 @@
       "field-error",
       "incrementLabel",
       "decrementLabel",
-      "scrubLabel"
+      "scrubLabel",
+      "status rail messages",
+      "canonical fractional preview label"
     ],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
@@ -64,7 +68,8 @@
     "Treat values, defaults, bounds, and steps as fractions rather than whole-number percentages.",
     "Choose explicit bounds for signed change, over-100-percent, or variance domains.",
     "Describe what the percentage measures when the visible label is not self-evident.",
-    "Do not infer the canonical fraction from the localized visible string."
+    "Do not infer the canonical fraction from the localized visible string.",
+    "Use the canonical preview to explain scale, not to convert application contracts between fractions, whole percentages, or basis points."
   ],
   "evidenceRequirements": {
     "automated": [
@@ -72,6 +77,8 @@
       "ssr-hydration",
       "locale-percent-parsing-formatting",
       "fractional-serialization",
+      "canonical-fraction-preview-and-disabled-absence",
+      "localized-status-rail-description",
       "precision-and-boundaries",
       "ime-and-caret",
       "form-submission-reset",

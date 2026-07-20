@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collaboration-presence",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify every distribution surface.",
+    "Pass stale/offline, non-color, privacy documentation, packed-consumer, browser, visual and accessibility gates.",
+    "Record screen-reader, speech, switch, touch, RTL and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

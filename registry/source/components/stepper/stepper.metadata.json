@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "stepper",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "focus-visible", "disabled", "current", "complete", "error", "rtl"],
+  "slots": [
+    {
+      "name": "stepper",
+      "semanticElement": "nav",
+      "refTarget": "HTMLElement",
+      "states": ["default", "current", "complete", "error", "rtl"]
+    },
+    {
+      "name": "stepper-progress",
+      "semanticElement": "optional progress",
+      "refTarget": "none",
+      "states": ["current", "complete"]
+    },
+    {
+      "name": "stepper-announcement",
+      "semanticElement": "optional polite status",
+      "refTarget": "none",
+      "states": ["current"]
+    }
+  ],
+  "contract": { "id": "stepper-accessibility", "version": "0.1.0" },
+  "passport": { "id": "stepper-quality-passport", "version": "0.0.0" }
+}

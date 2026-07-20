@@ -7,6 +7,7 @@ import {
   cloneElement,
   forwardRef,
   isValidElement,
+  useId,
   useState,
   type FocusEventHandler,
   type HTMLAttributes,
@@ -47,12 +48,20 @@ export function markButtonGroupAction<Component extends object>(component: Compo
 }
 
 export interface ButtonGroupProps extends Omit<HTMLAttributes<HTMLDivElement>, "aria-label"> {
+  /** Localizable accessible name applied to the group or toolbar root. */
   readonly label: string;
+  /** Rendered actions; each child owns its visible label and accessible name. */
   readonly children: ReactNode;
+  /** Chooses ordinary group semantics or one-tab-stop toolbar keyboard behavior. */
   readonly mode?: ButtonGroupMode;
+  /** Sets toolbar arrow-key geometry and the exposed aria-orientation value. */
   readonly orientation?: ButtonGroupOrientation;
+  /** Allows or prevents visual wrapping without changing keyboard order. */
   readonly wrap?: boolean;
+  /** Overrides inherited text direction for toolbar arrow-key behavior. */
   readonly direction?: DirectionValue;
+  /** Optional visible keyboard discovery text for toolbar mode. */
+  readonly keyboardHint?: string;
 }
 
 function enabledToolbarItems(root: HTMLElement): HTMLElement[] {
@@ -168,9 +177,11 @@ export function resolveToolbarIndex(input: {
 
 export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function ButtonGroup(
   {
+    "aria-describedby": ariaDescribedBy,
     children,
     className,
     direction,
+    keyboardHint,
     label,
     mode = "group",
     onFocus,
@@ -181,8 +192,15 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function
   },
   forwardedRef,
 ) {
+  const generatedHintId = useId();
   const inheritedDirection = useDirection();
   const resolvedDirection = direction ?? inheritedDirection;
+  const usableKeyboardHint = keyboardHint?.trim() ? keyboardHint : undefined;
+  const keyboardHintId = `mrg-button-group-${generatedHintId.replaceAll(":", "")}-hint`;
+  const describedBy =
+    mode === "toolbar" && usableKeyboardHint !== undefined
+      ? [ariaDescribedBy, keyboardHintId].filter(Boolean).join(" ")
+      : ariaDescribedBy;
   const [requestedTabStop, setRequestedTabStop] = useState(0);
   const toolbarChildren = mode === "toolbar" ? flattenToolbarChildren(children) : [];
   const enabledChildIndexes = toolbarChildren
@@ -238,6 +256,7 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function
   return (
     <div
       {...nativeProps}
+      aria-describedby={describedBy}
       aria-label={label}
       aria-orientation={mode === "toolbar" ? orientation : undefined}
       className={className === undefined ? "mrg-button-group" : `mrg-button-group ${className}`}
@@ -252,6 +271,11 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function
       role={mode}
     >
       {renderedChildren}
+      {mode === "toolbar" && usableKeyboardHint !== undefined ? (
+        <span data-slot="button-group-keyboard-hint" id={keyboardHintId}>
+          {usableKeyboardHint}
+        </span>
+      ) : null}
     </div>
   );
 });

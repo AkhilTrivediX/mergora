@@ -31,16 +31,27 @@ export interface RadioGroupProps extends Omit<
   FieldsetHTMLAttributes<HTMLFieldSetElement>,
   "children" | "defaultValue" | "onChange"
 > {
+  /** Direct RadioGroupItem controls rendered inside the native fieldset. */
   readonly children?: ReactNode;
+  /** Initial selected item value for uncontrolled use. */
   readonly defaultValue?: string;
+  /** Optional persistent group help text linked to every item. */
   readonly description?: ReactNode;
+  /** Keyboard direction for horizontal arrows; inherited from document direction when omitted. */
   readonly direction?: RadioGroupDirection;
+  /** Optional persistent group error that marks every item invalid. */
   readonly error?: ReactNode;
+  /** Non-empty visible native legend naming the radio group. */
   readonly label: ReactNode;
+  /** Stacked, inline, or column visual arrangement; defaults to `stacked`. */
   readonly layout?: RadioGroupLayout;
+  /** Non-empty shared native form name assigned to every radio item. */
   readonly name: string;
+  /** Receives proposed controlled or committed uncontrolled selection changes. */
   readonly onValueChange?: (value: string) => void;
+  /** Applies native required validation to the radio group. */
   readonly required?: boolean;
+  /** Controlled selected item value; changes are proposed through `onValueChange`. */
   readonly value?: string;
 }
 
@@ -308,11 +319,17 @@ export interface RadioGroupItemProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "checked" | "children" | "defaultChecked" | "name" | "onChange" | "required" | "type"
 > {
+  /** Non-empty visible item label; use an explicit accessible name when needed. */
   readonly children: ReactNode;
+  /** Optional persistent item help text linked to its native radio. */
   readonly description?: ReactNode;
+  /** Additional class name applied to the outer RadioGroupItem wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer RadioGroupItem wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Non-empty unique native value identifying this direct group item. */
   readonly value: string;
+  /** Plain or bordered-card visual treatment without proxy-control semantics. */
   readonly variant?: "plain" | "card";
 }
 

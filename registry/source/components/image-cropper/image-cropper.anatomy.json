@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image-cropper",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "image-cropper",
+    "stableAttributes": ["data-slot", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "image-cropper-stage",
+      "element": "div with informative img",
+      "purpose": "Provides the bounded pointer coordinate system while preserving the original source.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "image-cropper-area",
+      "element": "focusable named group",
+      "purpose": "Moves the normalized crop by pointer or mirrored arrow-key input.",
+      "stability": "documented"
+    },
+    {
+      "slot": "image-cropper-numeric",
+      "element": "optional fieldset",
+      "purpose": "Provides non-spatial direct values for x, y, width, and height.",
+      "stability": "documented"
+    },
+    {
+      "slot": "image-cropper-preview",
+      "element": "optional figure",
+      "purpose": "Gives a separate labelled preview without exporting pixels.",
+      "stability": "documented"
+    }
+  ]
+}

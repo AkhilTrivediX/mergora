@@ -24,6 +24,7 @@
     "React Aria owns hover/focus delay grouping, hover persistence, Escape dismissal, portal positioning, collision/flip, and aria-describedby lifecycle.",
     "Tooltip content is descriptive and noninteractive; actionable content belongs in Popover.",
     "DisabledTrigger is a documented aria-disabled focusable adapter that suppresses activation while preserving tooltip access.",
-    "Touch has no long-press-only path and tooltip text cannot be essential."
+    "Touch has no long-press-only path and tooltip text cannot be essential.",
+    "shortcut optionally renders keyboard context as part of the tooltip description and is absent by default."
   ]
 }

@@ -69,6 +69,10 @@
   align-items: end;
 }
 
+.mrg-grid[data-equal-rows="true"] {
+  grid-auto-rows: 1fr;
+}
+
 .mrg-grid:is(ul, ol) {
   margin-block: 0;
   padding-inline-start: var(--mrg-semantic-space-stack-lg);

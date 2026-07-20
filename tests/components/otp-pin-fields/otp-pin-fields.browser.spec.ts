@@ -42,18 +42,69 @@ async function axeViolations(page: Page): Promise<unknown[]> {
         axe: { run(target: Element): Promise<{ violations: unknown[] }> };
       }
     ).axe;
-    return (await axe.run(document.body)).violations;
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      try {
+        return (await axe.run(document.body)).violations;
+      } catch (error) {
+        if (!String(error).includes("Axe is already running") || attempt === 19) throw error;
+        await new Promise((resolveRetry) => setTimeout(resolveRetry, 50));
+      }
+    }
+    return [];
   });
 }
 
 async function pasteText(page: Page, target: Locator, value: string): Promise<void> {
+  await target.focus();
+  if (page.context().browser()?.browserType().name() !== "chromium") {
+    await target.evaluate((element, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text", text);
+      const event = new ClipboardEvent("paste", {
+        bubbles: true,
+        cancelable: true,
+        clipboardData,
+      });
+      if (event.clipboardData?.getData("text") !== text) {
+        Object.defineProperty(event, "clipboardData", { value: clipboardData });
+      }
+      element.dispatchEvent(event);
+    }, value);
+    return;
+  }
   await page.context().grantPermissions(["clipboard-read", "clipboard-write"], {
     origin: new URL(page.url()).origin,
   });
   await page.evaluate((text) => navigator.clipboard.writeText(text), value);
-  await target.focus();
   await page.keyboard.press("Control+V");
 }
+
+test("basic and recommended credential modes keep grouping and completion hooks independent", async ({
+  page,
+}) => {
+  await openStory(page, "basic-defaults", "Mergora credential fields");
+  await expect(page.locator('[data-slot="otp-field-group"]')).toHaveCount(1);
+  await expect(page.getByTestId("otp-completion-hook")).toHaveCount(0);
+  await expect(page.getByTestId("pin-completion-hook")).toHaveCount(0);
+  const basicPin = page.locator('[data-slot="pin-field-input"]');
+  await expect(basicPin).toHaveAttribute("type", "password");
+  await pasteText(page, basicPin, "1234");
+  await expect(basicPin).toHaveValue("1234");
+
+  await openStory(page, "recommended-mergora", "Mergora credential fields");
+  await expect(page.locator('[data-slot="otp-field-group"]')).toHaveCount(2);
+  const otp = page.getByRole("textbox", { name: "Verification code" });
+  const pin = page.locator('[data-slot="pin-field-input"]');
+  await otp.fill("123456");
+  await expect(page.getByTestId("otp-completion-hook")).toHaveText("OTP completions: 1");
+  await pin.fill("2468");
+  await expect(page.getByTestId("pin-completion-hook")).toHaveText("PIN completions: 1");
+  await page.getByRole("button", { name: "Inspect native values" }).click();
+  expect(
+    JSON.parse((await page.getByTestId("credential-mode-submission").textContent()) ?? "{}"),
+  ).toEqual({ "access-pin": "2468", "verification-code": "123456" });
+  expect(await axeViolations(page)).toEqual([]);
+});
 
 test("OTP paste, mobile and autofill hints, grouping, completion, and form semantics stay unified", async ({
   page,

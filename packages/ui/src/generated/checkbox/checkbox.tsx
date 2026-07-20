@@ -25,13 +25,21 @@ export interface CheckboxProps extends Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "children" | "type"
 > {
+  /** Visible checkbox label content; use an explicit accessible name when omitted. */
   readonly children?: ReactNode;
+  /** Initial uncontrolled mixed-state flag, restored on native form reset. */
   readonly defaultIndeterminate?: boolean;
+  /** Optional persistent item help text linked to the native checkbox. */
   readonly description?: ReactNode;
+  /** Controlled native mixed-state flag; it is not a third submitted value. */
   readonly indeterminate?: boolean;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Receives the native checked value after each user change. */
   readonly onCheckedChange?: (checked: boolean) => void;
+  /** Additional class name applied to the outer Checkbox wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer Checkbox wrapper. */
   readonly rootStyle?: CSSProperties;
 }
 

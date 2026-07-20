@@ -1,5 +1,8 @@
 .mrg-diff-viewer {
-  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-block-start-color: var(--mrg-semantic-color-brand-living);
+  border-block-start-width: var(--mrg-semantic-border-width-strong);
   border-radius: var(--mrg-semantic-radius-panel);
   color: var(--mrg-semantic-color-foreground-primary);
   font-family: var(--mrg-semantic-font-family-prose);
@@ -17,7 +20,7 @@
   padding: var(--mrg-semantic-space-inline-sm);
 }
 .mrg-diff-viewer [data-slot="diff-summary"] {
-  color: var(--mrg-semantic-color-foreground-muted);
+  color: var(--mrg-semantic-color-brand-violet);
   margin-inline-end: auto;
 }
 .mrg-diff-viewer [data-slot="diff-copy"] {
@@ -30,11 +33,29 @@
   min-block-size: var(--mrg-semantic-size-target-minimum);
   padding-block: var(--mrg-semantic-space-inline-xs);
   padding-inline: var(--mrg-semantic-space-inline-sm);
+  transition:
+    background var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-feedback) var(--mrg-semantic-motion-easing-standard);
+}
+.mrg-diff-viewer [data-slot="diff-copy"]:hover {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+.mrg-diff-viewer [data-slot="diff-copy"][data-copy-status="copied"] {
+  background: var(--mrg-semantic-color-selection-background);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+.mrg-diff-viewer [data-slot="diff-copy"][data-copy-status="error"] {
+  background: var(--mrg-semantic-color-status-danger-background);
+  color: var(--mrg-semantic-color-status-danger-foreground);
 }
 .mrg-diff-viewer
   :is([data-slot="diff-copy"], [data-slot="diff-scroll"], [data-slot="diff-line"]):focus-visible {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 .mrg-diff-viewer [data-slot="diff-scroll"] {
   max-block-size: 34rem;
@@ -137,9 +158,14 @@
   .mrg-diff-viewer [data-active="true"] {
     outline-color: Highlight;
   }
+  .mrg-diff-viewer
+    :is([data-slot="diff-copy"], [data-slot="diff-scroll"], [data-slot="diff-line"]):focus-visible {
+    box-shadow: none;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .mrg-diff-viewer * {
     scroll-behavior: auto;
+    transition-duration: var(--mrg-semantic-motion-duration-reduced);
   }
 }

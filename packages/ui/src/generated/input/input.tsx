@@ -6,21 +6,48 @@ import {
   Fragment,
   forwardRef,
   isValidElement,
+  useCallback,
   useEffect,
+  useId,
+  useRef,
+  useState,
+  type ChangeEvent,
   type CSSProperties,
   type InputHTMLAttributes,
   type ReactNode,
+  type Ref,
 } from "react";
 
 import { mergeFieldIdRefs, useFieldControlState } from "../field/index.js";
 import "./input.css";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  /** Adds an explicit value-clearing action while preserving the native input. */
+  readonly clearable?: boolean;
+  /** Non-empty localized accessible label for the optional clear button. */
+  readonly clearLabel?: string;
+  /** Decorative, non-focusable content rendered after the native input. */
   readonly endAdornment?: ReactNode;
+  /** Boolean invalid fallback merged with explicit ARIA and enclosing Field state. */
   readonly invalid?: boolean;
+  /** Called after the clear action dispatches the native bubbling input event. */
+  readonly onClear?: () => void;
+  /** Additional class name applied to the outer Input wrapper. */
   readonly rootClassName?: string;
+  /** Inline style applied to the outer Input wrapper. */
   readonly rootStyle?: CSSProperties;
+  /** Decorative, non-focusable content rendered before the native input. */
   readonly startAdornment?: ReactNode;
+}
+
+function assignRef<T>(ref: Ref<T> | undefined, value: T | null): void {
+  if (typeof ref === "function") ref(value);
+  else if (ref !== null && ref !== undefined) ref.current = value;
+}
+
+function hasInputValue(value: InputHTMLAttributes<HTMLInputElement>["value"]): boolean {
+  if (value === undefined || value === null) return false;
+  return Array.isArray(value) ? value.length > 0 : String(value).length > 0;
 }
 
 interface ProcessLike {
@@ -48,6 +75,22 @@ const interactiveAdornmentTags = new Set([
   "select",
   "summary",
   "textarea",
+]);
+
+const clearableInputTypes = new Set([
+  "date",
+  "datetime-local",
+  "email",
+  "file",
+  "month",
+  "number",
+  "password",
+  "search",
+  "tel",
+  "text",
+  "time",
+  "url",
+  "week",
 ]);
 
 function assertDecorativeAdornment(value: ReactNode, name: string): void {
@@ -101,20 +144,42 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     "aria-errormessage": ariaErrorMessage,
     "aria-invalid": ariaInvalid,
     className,
+    clearable = false,
+    clearLabel = "Clear value",
+    defaultValue,
     disabled = false,
     endAdornment,
+    form,
     id,
     invalid,
+    onChange,
+    onClear,
+    readOnly = false,
     required,
     rootClassName,
     rootStyle,
     startAdornment,
     type = "text",
+    value,
     ...nativeProps
   },
-  ref,
+  forwardedRef,
 ) {
   const field = useFieldControlState();
+  const generatedId = useId().replaceAll(":", "");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const controlled = value !== undefined;
+  const [uncontrolledHasValue, setUncontrolledHasValue] = useState(() =>
+    hasInputValue(defaultValue),
+  );
+  const valuePresent = controlled ? hasInputValue(value) : uncontrolledHasValue;
+  if (clearable && !clearableInputTypes.has(type)) {
+    throw new RangeError(`Mergora Input clearable is not supported for type="${type}".`);
+  }
+  if (clearable && clearLabel.trim().length === 0) {
+    throw new RangeError("Mergora Input clearLabel must not be empty or whitespace-only.");
+  }
   assertDecorativeAdornment(startAdornment, "startAdornment");
   assertDecorativeAdornment(endAdornment, "endAdornment");
   const resolvedAriaInvalid =
@@ -125,7 +190,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         : field?.invalid || undefined;
   const resolvedInvalid = isSemanticallyInvalid(resolvedAriaInvalid);
   const resolvedRequired = required ?? field?.required;
-  const resolvedId = field?.controlId ?? id;
+  const resolvedId = field?.controlId ?? id ?? (clearable ? `mrg-input-${generatedId}` : undefined);
   const describedBy = mergeFieldIdRefs(
     ariaDescribedBy,
     field?.descriptionId,
@@ -135,6 +200,30 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     ariaErrorMessage,
     resolvedInvalid ? field?.errorMessageId : undefined,
   );
+  const setInputRef = useCallback(
+    (node: HTMLInputElement | null) => {
+      inputRef.current = node;
+      assignRef(forwardedRef, node);
+    },
+    [forwardedRef],
+  );
+
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!clearable || controlled || input === null || input.form === null) return;
+    const ownedForm = input.form;
+    const handleReset = (event: Event) => {
+      if (resetTimer.current !== null) clearTimeout(resetTimer.current);
+      resetTimer.current = setTimeout(() => {
+        if (!event.defaultPrevented) setUncontrolledHasValue(input.value.length > 0);
+      }, 0);
+    };
+    ownedForm.addEventListener("reset", handleReset);
+    return () => {
+      ownedForm.removeEventListener("reset", handleReset);
+      if (resetTimer.current !== null) clearTimeout(resetTimer.current);
+    };
+  }, [clearable, controlled, form]);
 
   useEffect(() => {
     if (isDevelopmentRuntime() && field !== null && id !== undefined && id !== field.controlId) {
@@ -144,10 +233,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     }
   }, [field, id]);
 
+  const clear = (): void => {
+    const input = inputRef.current;
+    if (input === null || disabled || readOnly || !valuePresent) return;
+    const valueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
+    valueSetter?.call(input, "");
+    if (!controlled) setUncontrolledHasValue(false);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    onClear?.();
+    input.focus({ preventScroll: true });
+  };
+
   return (
     <span
       className={rootClassName === undefined ? "mrg-input" : `mrg-input ${rootClassName}`}
+      data-clearable={clearable || undefined}
       data-disabled={disabled || undefined}
+      data-empty={clearable && !valuePresent ? "true" : undefined}
       data-invalid={resolvedInvalid || undefined}
       data-slot="input-root"
       style={rootStyle}
@@ -164,16 +266,41 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         aria-invalid={resolvedAriaInvalid}
         className={className === undefined ? "mrg-input-control" : `mrg-input-control ${className}`}
         data-slot="input"
+        defaultValue={defaultValue}
         disabled={disabled}
+        form={form}
         id={resolvedId}
-        ref={ref}
+        onChange={
+          clearable
+            ? (event: ChangeEvent<HTMLInputElement>) => {
+                if (!controlled) setUncontrolledHasValue(event.currentTarget.value.length > 0);
+                onChange?.(event);
+              }
+            : onChange
+        }
+        readOnly={readOnly}
+        ref={clearable ? setInputRef : forwardedRef}
         required={resolvedRequired}
         type={type}
+        value={value}
       />
       {endAdornment === undefined || endAdornment === null ? null : (
         <span aria-hidden="true" data-slot="input-end-adornment">
           {endAdornment}
         </span>
+      )}
+      {!clearable ? null : (
+        <button
+          aria-controls={resolvedId}
+          aria-label={clearLabel}
+          className="mrg-input-clear"
+          data-slot="input-clear"
+          disabled={disabled || readOnly || !valuePresent}
+          onClick={clear}
+          type="button"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
       )}
     </span>
   );

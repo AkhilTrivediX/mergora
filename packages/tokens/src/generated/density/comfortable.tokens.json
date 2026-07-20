@@ -11,6 +11,10 @@
         "$type": "dimension",
         "$value": "{primitive.size.10}"
       },
+      "controlPaddingBlock": {
+        "$type": "dimension",
+        "$value": "{primitive.space.2}"
+      },
       "controlPaddingInline": {
         "$type": "dimension",
         "$value": "{primitive.space.3}"

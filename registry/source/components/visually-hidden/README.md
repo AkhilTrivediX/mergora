@@ -9,7 +9,7 @@
 </button>
 ```
 
-Use `as="a"` with `revealOnFocus` for skip links and similar focusable content. The focus treatment restores readable geometry at the logical start edge and uses system colors under forced-colors. Choose `as="div"` only where a block container is valid; the default is `span`.
+Use `as="a"` with `revealOnFocus` for skip links and similar focusable content. The Mergora focus treatment restores a literal white, ink-bordered surface at the logical start edge and uses system colors under forced-colors. With `revealOnFocus={false}` (the default), the reveal attribute, visual surface, and focus-reveal behavior are absent while the content remains available to accessibility APIs. Do not create a focusable permanently hidden element in that mode. Choose `as="div"` only where a block container is valid; the default is `span`.
 
 Consumers own the text, the target of any skip link, and the decision that a second screen-reader-only copy will not create duplicate announcement noise.
 

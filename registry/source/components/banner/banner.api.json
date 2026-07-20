@@ -18,6 +18,7 @@
     "A persistent named aside owns its accessible name and non-live semantics; role, hidden, naming, live-region, and aria-hidden overrides are rejected while safe native attributes remain available.",
     "Controlled dismissal only proposes changes through onDismissedChange. Uncontrolled dismissal alone accepts defaults and injected persistence, and writes only after the internal state commits.",
     "Persistence-enabled markup remains visually pending until a pre-paint layout effect resolves the synchronous adapter; adapter and observer failures are contained without crashing the banner.",
-    "The dismiss action is a 44 CSS-pixel native button and an intrinsic container query reflows embedded banners at narrow container widths without sticky or focus-obscuring behavior."
+    "The dismiss action is a 44 CSS-pixel native button and an intrinsic container query reflows embedded banners at narrow container widths without sticky or focus-obscuring behavior.",
+    "Omitting persistence removes adapter work and pending state; dismissible=false independently removes the dismiss control, click path, accessible name, and dismissal event."
   ]
 }

@@ -8,7 +8,7 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["empty"],
+  "stateGroups": ["empty", "plain-baseline", "recommended-mergora"],
   "slots": [
     {
       "name": "empty-state",
@@ -27,6 +27,12 @@
       "semanticElement": "div",
       "refTarget": "HTMLDivElement",
       "states": []
+    },
+    {
+      "name": "empty-state-suggestions",
+      "semanticElement": "optional labelled suggestion list",
+      "refTarget": "HTMLDivElement",
+      "states": ["present", "absent"]
     }
   ],
   "contract": { "id": "empty-state-accessibility", "version": "0.1.0" },

@@ -26,15 +26,22 @@ export type ResizableChangeReason =
   "keyboard" | "pointer" | "step-control" | "collapse" | "restore";
 
 export interface ResizableChangeDetails {
+  /** Reports the logical axis used for this value change. */
   readonly orientation: ResizableOrientation;
+  /** Identifies whether keyboard, pointer, controls, collapse, or restore caused the change. */
   readonly reason: ResizableChangeReason;
 }
 
 export interface ResizableMessages {
+  /** Labels the optional action that reduces the primary panel to its collapsed value. */
   readonly collapse: string;
+  /** Names the optional group of explicit resize controls. */
   readonly controls: string;
+  /** Labels the optional action that decreases the primary panel size. */
   readonly decrease: string;
+  /** Labels the optional action that increases the primary panel size. */
   readonly increase: string;
+  /** Labels the optional action that restores a collapsed primary panel. */
   readonly restore: string;
 }
 
@@ -107,6 +114,7 @@ interface ResizableContextValue {
   readonly orientation: ResizableOrientation;
   readonly primaryId: string;
   readonly rootRef: RefObject<HTMLDivElement | null>;
+  readonly showStepControls: boolean;
   readonly valueMinimum: number;
   readonly step: number;
   readonly value: number;
@@ -129,21 +137,38 @@ export interface ResizableRootProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
   "defaultValue" | "onChange"
 > {
+  /** Supplies the primary, separator handle, and secondary panel parts. */
   readonly children?: ReactNode;
+  /** Controls the primary panel percentage when supplied. */
   readonly value?: number;
+  /** Sets the initial primary panel percentage for uncontrolled use. */
   readonly defaultValue?: number;
+  /** Reports every controlled or uncontrolled value update with its interaction reason. */
   readonly onValueChange?: (value: number, details: ResizableChangeDetails) => void;
+  /** Reports the final value after an interaction commits. */
   readonly onValueCommit?: (value: number, details: ResizableChangeDetails) => void;
+  /** Sets the smallest expanded primary-panel percentage. */
   readonly min?: number;
+  /** Sets the largest primary-panel percentage. */
   readonly max?: number;
+  /** Sets the keyboard and explicit-control increment in percentage points. */
   readonly step?: number;
+  /** Chooses whether resizing changes inline width or block height. */
   readonly orientation?: ResizableOrientation;
+  /** Prevents pointer, keyboard, collapse, restore, and explicit-control changes. */
   readonly disabled?: boolean;
+  /** Allows the primary panel to toggle below its expanded minimum. */
   readonly collapsible?: boolean;
+  /** Sets the primary panel percentage used while collapsed. */
   readonly collapsedValue?: number;
+  /** Overrides provider locale for the default percentage formatter. */
   readonly locale?: string;
+  /** Overrides individual localized labels while preserving defaults for omitted entries. */
   readonly messages?: Partial<ResizableMessages>;
+  /** Formats the current percentage for the separator value text. */
   readonly formatValue?: (value: number) => string;
+  /** Renders explicit decrement, collapse, and increment buttons beside the separator. */
+  readonly showStepControls?: boolean;
 }
 
 export const ResizableRoot = forwardRef<HTMLDivElement, ResizableRootProps>(function ResizableRoot(
@@ -162,6 +187,7 @@ export const ResizableRoot = forwardRef<HTMLDivElement, ResizableRootProps>(func
     onValueChange,
     onValueCommit,
     orientation = "horizontal",
+    showStepControls = true,
     step = 5,
     style,
     value: controlledValue,
@@ -276,6 +302,7 @@ export const ResizableRoot = forwardRef<HTMLDivElement, ResizableRootProps>(func
       orientation,
       primaryId,
       rootRef,
+      showStepControls,
       step,
       toggleCollapsed,
       value,
@@ -293,6 +320,7 @@ export const ResizableRoot = forwardRef<HTMLDivElement, ResizableRootProps>(func
       min,
       orientation,
       primaryId,
+      showStepControls,
       step,
       toggleCollapsed,
       value,
@@ -314,6 +342,7 @@ export const ResizableRoot = forwardRef<HTMLDivElement, ResizableRootProps>(func
         data-orientation={orientation}
         data-slot="resizable-root"
         data-state={value === collapsedValue ? "collapsed" : "expanded"}
+        data-step-controls={showStepControls ? "true" : undefined}
         style={rootStyle}
       >
         {children}
@@ -364,8 +393,18 @@ export const ResizableSecondary = forwardRef<HTMLDivElement, ResizableSecondaryP
 ResizableSecondary.displayName = "Resizable.Secondary";
 
 type ResizableHandleName =
-  | { readonly "aria-label": string; readonly "aria-labelledby"?: string }
-  | { readonly "aria-label"?: string; readonly "aria-labelledby": string };
+  | {
+      /** Supplies a direct accessible name and is mutually exclusive with aria-labelledby. */
+      readonly "aria-label": string;
+      /** References an accessible name and is mutually exclusive with aria-label. */
+      readonly "aria-labelledby"?: string;
+    }
+  | {
+      /** Supplies a direct accessible name and is mutually exclusive with aria-labelledby. */
+      readonly "aria-label"?: string;
+      /** References an accessible name and is mutually exclusive with aria-label. */
+      readonly "aria-labelledby": string;
+    };
 
 type ResizableHandleBaseProps = Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -508,38 +547,46 @@ export const ResizableHandle = forwardRef<HTMLDivElement, ResizableHandleProps>(
         >
           <span aria-hidden="true" className="mrg-resizable__grip" />
         </div>
-        <div
-          aria-label={context.messages.controls}
-          className="mrg-resizable__controls"
-          role="group"
-        >
-          <button
-            aria-label={context.messages.decrease}
-            disabled={context.disabled || context.value <= context.minimum}
-            onClick={() => context.changeValue(context.value - context.step, "step-control", true)}
-            type="button"
+        {context.showStepControls ? (
+          <div
+            aria-label={context.messages.controls}
+            className="mrg-resizable__controls"
+            role="group"
           >
-            <span aria-hidden="true">−</span>
-          </button>
-          {context.collapsible && (
             <button
-              aria-label={context.collapsed ? context.messages.restore : context.messages.collapse}
-              disabled={context.disabled}
-              onClick={context.toggleCollapsed}
+              aria-label={context.messages.decrease}
+              disabled={context.disabled || context.value <= context.minimum}
+              onClick={() =>
+                context.changeValue(context.value - context.step, "step-control", true)
+              }
               type="button"
             >
-              <span aria-hidden="true">{context.collapsed ? "↥" : "↧"}</span>
+              <span aria-hidden="true">−</span>
             </button>
-          )}
-          <button
-            aria-label={context.messages.increase}
-            disabled={context.disabled || context.value >= context.maximum}
-            onClick={() => context.changeValue(context.value + context.step, "step-control", true)}
-            type="button"
-          >
-            <span aria-hidden="true">+</span>
-          </button>
-        </div>
+            {context.collapsible && (
+              <button
+                aria-label={
+                  context.collapsed ? context.messages.restore : context.messages.collapse
+                }
+                disabled={context.disabled}
+                onClick={context.toggleCollapsed}
+                type="button"
+              >
+                <span aria-hidden="true">{context.collapsed ? "↥" : "↧"}</span>
+              </button>
+            )}
+            <button
+              aria-label={context.messages.increase}
+              disabled={context.disabled || context.value >= context.maximum}
+              onClick={() =>
+                context.changeValue(context.value + context.step, "step-control", true)
+              }
+              type="button"
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+          </div>
+        ) : null}
       </div>
     );
   },

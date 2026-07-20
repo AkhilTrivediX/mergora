@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "category": "ai-chat",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "ai-chat-workspace",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn does not provide an ordinary installable AI chat workflow with provider-neutral adapters, streaming policy, conversation navigation, citations, tool states, mutation recovery, and explicit product boundaries.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit composes canonical public components around a consumer-supplied abort-aware adapter, deterministic local fake, stable segment streaming, retry/edit/branch paths, and honest offline/error/empty states.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace-adapter.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["workspace-output-policy"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The two-region living workbench uses literal white, Ink structure, measured Green rails, Violet selection/focus, strong hierarchy, restrained corners, responsive landmarks and preference fallbacks shared with the library.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "workspace-output-policy",
+          "status": "evidence-backed",
+          "summary": "Follow-output, screen-reader announcements, attachments, prompt suggestions, role context, streaming cursor, citation detail, tool detail, character budget and the composer shortcut are separate component-specific controls layered over the provider-neutral baseline.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "followOutput",
+            "announceMessages",
+            "showAttachments",
+            "showDescriptions",
+            "showRoleContext",
+            "showCursor",
+            "showSourceDetail",
+            "showDetails",
+            "showCharacterBudget",
+            "submitShortcut"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "followOutput",
+              "announceMessages",
+              "attachments",
+              "suggestions",
+              "showRoleContext",
+              "showStreamingCursor",
+              "showCitationDetails",
+              "showToolDetails",
+              "showCharacterBudget",
+              "submitShortcut"
+            ],
+            "enableWhen": "Each property is explicitly enabled independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No resume control, announcement nodes, attachment list, suggestion actions, role context, streaming cursor, citation detail, tool disclosure, character budget, or shortcut hint is rendered.",
+            "behavior": "Conversation navigation, readable messages and native composer submission remain usable with the supplied adapter.",
+            "events": "No follow callback, announcement timer, attachment event, suggestion action, disclosure action, or shortcut interception runs.",
+            "accessibility": "No enhancement live regions, focus stops, lists, role context, descriptions, disclosures, or controls enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicAiChatWorkspace",
+          "enhancementControls": [
+            "followOutput",
+            "announceMessages",
+            "showAttachments",
+            "showDescriptions",
+            "showRoleContext",
+            "showCursor",
+            "showSourceDetail",
+            "showDetails",
+            "showCharacterBudget",
+            "submitShortcut"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedAiChatWorkspace",
+          "enhancementControls": [
+            "followOutput",
+            "announceMessages",
+            "showAttachments",
+            "showDescriptions",
+            "showRoleContext",
+            "showCursor",
+            "showSourceDetail",
+            "showDetails",
+            "showCharacterBudget",
+            "submitShortcut"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Canonical landmarks, public component composition, optional announcement off paths, narrow/RTL/forced-colors CSS and focused axe stories exist; complete Risk Class 3 desktop/mobile manual evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "kit-evidence-incomplete",
+          "summary": "Dependency closure, clean-consumer install/update/remove, full browser/workflow failure evidence, security/privacy/legal review, current manual assistive technology, public dogfooding and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "The source workflow and focused evidence exist, but the kit-wide lifecycle, distribution, browser, manual accessibility, security, privacy, legal, and publication gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/ai-chat-workspace/ai-chat-workspace.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,149 @@
+/* Generated from registry/source/components/tags-input/tags-input.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-tags-input {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: 100%;
+  }
+  .mrg-tags-input > label {
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-tags-input__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    max-inline-size: 70ch;
+  }
+  .mrg-tags-input__control {
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-tags-input__control:focus-within {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+  .mrg-tags-input__control ul {
+    display: contents;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mrg-tags-input__control li {
+    align-items: center;
+    background: var(--mrg-semantic-color-selection-background);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-selection-foreground);
+    display: inline-flex;
+    gap: var(--mrg-semantic-space-inline-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline-start: var(--mrg-semantic-space-inset-sm);
+  }
+  .mrg-tags-input__control button {
+    align-items: center;
+    align-self: stretch;
+    background: transparent;
+    border: 0;
+    border-inline-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    color: inherit;
+    display: inline-flex;
+    font: inherit;
+    justify-content: center;
+    min-inline-size: var(--mrg-semantic-size-target-minimum);
+  }
+  .mrg-tags-input__actions {
+    align-self: stretch;
+    display: inline-flex;
+  }
+  .mrg-tags-input__actions button:disabled {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+  .mrg-tags-input__control input {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    flex: 1 1 10rem;
+    font: inherit;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    min-inline-size: 7rem;
+    outline: none;
+    padding-inline: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-tags-input button:focus-visible {
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: calc(var(--mrg-component-focus-indicator-offset) * -1);
+  }
+  .mrg-tags-input__recovery {
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    min-block-size: 1lh;
+    padding-block-start: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-tags-input__error,
+  .mrg-tags-input__validation {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-tags-input[data-invalid] .mrg-tags-input__control {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+  .mrg-tags-input[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+  @container (max-width: 20rem) {
+    .mrg-tags-input__control input {
+      flex-basis: 100%;
+    }
+  }
+  @media (pointer: coarse) {
+    .mrg-tags-input__control li,
+    .mrg-tags-input__control input {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+    .mrg-tags-input__control button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-tags-input__control {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-tags-input__control,
+    .mrg-tags-input__control li {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+    .mrg-tags-input__control:focus-within,
+    .mrg-tags-input button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-tags-input__recovery,
+    .mrg-tags-input__error,
+    .mrg-tags-input__validation {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+}

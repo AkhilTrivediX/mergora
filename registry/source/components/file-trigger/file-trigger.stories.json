@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-trigger",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Native file inputs do not expose a read-only state; disable only when selection is unavailable."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Upload loading belongs to FileUpload and UploadProgress."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "NativeFileInputAndForm"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The trigger selects files atomically; queue progress is a separate system state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": { "status": "not-applicable", "reason": "Selection is not upload success." }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning policy belongs to the surrounding Field; FileTrigger itself exposes native required and invalid states."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Opening a file picker is not destructive."
+      }
+    }
+  ]
+}

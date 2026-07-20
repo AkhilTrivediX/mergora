@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "chat-composer",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "native form, visible label, textarea and submit or stop buttons",
+    "rolePolicy": "Persistent errors use alert semantics; busy state is applied to the form only while work is in flight.",
+    "refTarget": "HTMLFormElement"
+  },
+  "keyboard": [
+    {
+      "key": "Enter",
+      "behavior": "In the default mode inserts a newline. The explicit enter shortcut submits while Shift+Enter remains multiline."
+    },
+    {
+      "key": "Ctrl/Meta+Enter",
+      "behavior": "Submits only when the mod-enter enhancement is selected."
+    },
+    { "key": "IME composition", "behavior": "Never submits while composition is active." }
+  ],
+  "formBehavior": "The named textarea participates in native FormData and reset. With no onSubmitMessage callback, native form submission remains authoritative.",
+  "nonColor": "Offline, error, submitting and streaming states use text, disabled actions and native busy semantics.",
+  "responsive": "The textarea resizes vertically, actions wrap, attachments remain named, and coarse pointers receive preferred targets.",
+  "stableSelectors": {
+    "root": "[data-slot=chat-composer]",
+    "parts": [
+      "chat-composer-field",
+      "chat-composer-attachments",
+      "chat-composer-error",
+      "chat-composer-actions"
+    ],
+    "attributes": ["data-status"]
+  },
+  "consumerResponsibilities": [
+    "Own network, storage, upload, model and tool execution.",
+    "Validate and authorize submitted content at the trusted boundary.",
+    "Localize all labels, errors, shortcuts and attachment actions.",
+    "Do not put secrets in visible drafts or attachment metadata."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-uncontrolled",
+      "native-formdata",
+      "reset",
+      "ime-submit",
+      "shortcuts-off",
+      "attachments-off",
+      "offline-error-stop",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "mobile-virtual-keyboard",
+      "screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "zoom"
+    ],
+    "recordedEvidence": []
+  }
+}

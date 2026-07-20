@@ -4,6 +4,14 @@
   "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
   "stories": [
     {
+      "id": "basic-defaults",
+      "covers": ["screen-reader-only", "focus-reveal-disabled", "no-focusable-hidden-link"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["focus-reveal-enabled", "logical-start", "forced-colors"]
+    },
+    {
       "id": "focus-and-hidden-content",
       "covers": ["screen-reader-only", "focus-reveal", "long-localized-text", "forced-colors"]
     }

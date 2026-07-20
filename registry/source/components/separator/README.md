@@ -17,3 +17,7 @@ Separator is never focusable or resizable. Use the later Resizable primitive whe
 The stable root is `[data-slot="separator"]`, with `data-orientation` and `data-decorative`. Forced-colors mode uses `CanvasText` so the line remains visible without a custom color override.
 
 Current status is `source-present-unreleased`; generated outputs, accessibility-tree and high-contrast browser evidence, packed consumers, parity, updater fixtures, manual review, site use, and a Passport remain promotion requirements.
+
+## Mergora advantage
+
+Optional logical `spacing` keeps structural rhythm consistent in both directions without a wrapper or physical margins. `spacing="none"` removes all component-owned margin while decorative and semantic modes remain unchanged.

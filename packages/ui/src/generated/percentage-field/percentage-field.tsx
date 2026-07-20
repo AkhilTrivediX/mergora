@@ -15,6 +15,7 @@ export interface PercentageFieldProps extends Omit<
   NumberFieldProps,
   "formatOptions" | "precision"
 > {
+  /** Additional Intl percent options excluding component-owned formatting keys. */
   readonly formatOptions?: PercentageFieldFormatOptions;
   /** Maximum fraction digits in the displayed percentage. */
   readonly precision?: number;

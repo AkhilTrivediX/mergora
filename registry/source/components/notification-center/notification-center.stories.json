@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "itemId": "notification-center",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicNotificationCenter"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedNotificationCenter"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledNotificationCenter"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationStateMatrix"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationStateMatrix"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedNotificationCenter"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlNotifications"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlNotifications" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationPreferences"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NotificationPreferences"
+    }
+  ]
+}

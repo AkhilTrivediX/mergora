@@ -4,6 +4,8 @@ Status: source present and unreleased. Automated workbench evidence is not relea
 
 `Collapsible` composes `Root`, `Trigger`, and `Content` around one React Aria disclosure. It intentionally does not synthesize accordion, heading, tab, or unrelated composite semantics.
 
+Mergora pairs a literal Canvas disclosure surface with an Ink boundary, Green expanded signal, and Violet focus seam. `Trigger` may receive localized `stateText` to show an immediately useful open/closed cue without duplicating screen-reader output; `aria-expanded` stays authoritative. Omit `stateText`, or use null, false, or empty content for the active state, to remove the extra text and presentation node completely while preserving controlled/uncontrolled disclosure behavior.
+
 ## Contract
 
 - `open`/`defaultOpen` and `onOpenChange` support controlled or uncontrolled ownership through the same native trigger path.

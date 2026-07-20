@@ -9,6 +9,10 @@ Keeps native dl/dt/dd relationships while adapting name/value geometry to its co
 </DescriptionList>
 ```
 
+## Mergora advantage
+
+`layout="responsive"` adapts term/detail geometry to its container without changing native `dl` order, while density remains independently selectable. Use `layout="stacked"` and the default density for the plain semantic baseline; no responsive layout behavior or extra accessibility output remains.
+
 ## Contract
 
 The public parts render only native dl, dt, and dd elements. CSS changes columns without reordering the DOM or fabricating table roles.

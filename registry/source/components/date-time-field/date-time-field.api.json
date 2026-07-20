@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-time-field",
+  "entryExport": "DateTimeField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React input attributes except owned type, value, defaultValue, and change fields",
+  "exports": [
+    { "kind": "component", "name": "DateTimeField" },
+    { "kind": "type", "name": "DateTimeAmbiguityPolicy" },
+    { "kind": "type", "name": "DateTimeFieldProps" },
+    { "kind": "type", "name": "DateTimeWallTimeAdapter" },
+    { "kind": "type", "name": "DateTimeWallTimeResolution" },
+    { "kind": "type", "name": "DateTimeWallTimeStatus" }
+  ],
+  "controlledState": [
+    {
+      "state": "local-date-time",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "showTimeZoneContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "timeZone", "required": false, "type": "IANA time-zone label" },
+    { "name": "timeZoneContext", "required": false, "type": "ReactNode | (timeZone) => ReactNode" },
+    {
+      "name": "wallTimeAdapter",
+      "required": false,
+      "default": false,
+      "type": "false | DateTimeWallTimeAdapter"
+    },
+    {
+      "name": "ambiguityPolicy",
+      "required": false,
+      "default": "reject",
+      "type": "earlier | later | reject"
+    },
+    { "name": "resolvedName", "required": false, "type": "hidden resolved-instant form name" },
+    {
+      "name": "getWallTimeMessage",
+      "required": false,
+      "type": "(status: DateTimeWallTimeStatus) => string"
+    },
+    {
+      "name": "onWallTimeResolutionChange",
+      "required": false,
+      "type": "(status: DateTimeWallTimeStatus | null) => void"
+    }
+  ],
+  "compositionPolicy": {
+    "model": "datetime-local remains an explicitly unzoned local wall-time value.",
+    "zone": "Optional zone context describes consumer interpretation but never silently converts or changes serialization.",
+    "native": "The real input owns validation, reset, mobile behavior, and canonical local serialization.",
+    "wallTime": "An explicit synchronous consumer adapter can classify valid, repeated, or nonexistent local times; reject is the default ambiguity policy, and successful resolved instants serialize only through an explicitly named hidden control."
+  }
+}

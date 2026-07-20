@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "tokenReferencePolicy": "semantic-only",
+  "maximumCornerRadiusCssPx": 16,
+  "patterns": [
+    {
+      "id": "literal-white-surface",
+      "description": "Use literal white as the primary light surface through semantic surface tokens, with dark and forced-color mappings supplied by the theme contract."
+    },
+    {
+      "id": "ink-structure",
+      "description": "Use precise ink-like borders, dividers, and structural lines rather than floating card decoration."
+    },
+    {
+      "id": "strong-type-hierarchy",
+      "description": "Use deliberate label, value, context, and machine-text hierarchy with the shared semantic typography tokens."
+    },
+    {
+      "id": "distinctive-focus",
+      "description": "Use the shared two-layer focus-visible treatment with forced-colors mapping and no color-only focus cue."
+    },
+    {
+      "id": "green-state-signal",
+      "description": "Use restrained green semantic signals for selected, confirmed, or ready states when text or shape also conveys meaning."
+    },
+    {
+      "id": "violet-context-signal",
+      "description": "Use restrained violet semantic signals for secondary context, provenance, comparison, or evidence states."
+    },
+    {
+      "id": "workbench-structure",
+      "description": "Use aligned rails, measured spacing, flush regions, and visible state structure from the Living Workbench language."
+    },
+    {
+      "id": "purposeful-motion",
+      "description": "Use motion only to clarify state or spatial change, with a complete reduced-motion fallback."
+    },
+    {
+      "id": "restrained-corners",
+      "description": "Use semantic radius tokens with no rendered corner radius greater than 16 CSS pixels."
+    },
+    {
+      "id": "status-rail",
+      "description": "Use a stable contextual status or validation rail that avoids layout jumps and never relies on color alone."
+    },
+    {
+      "id": "selected-pressed-identity",
+      "description": "Use shared selected and pressed treatments with clear text, shape, or border state in every color mode."
+    },
+    {
+      "id": "touch-target-treatment",
+      "description": "Use the shared coarse-pointer target treatment without visually inflating every control or replacing native interaction."
+    }
+  ]
+}

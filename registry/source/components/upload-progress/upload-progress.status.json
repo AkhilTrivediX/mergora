@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "upload-progress",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify native determinate/indeterminate progress, all lifecycle statuses, exact complete behavior, file/aggregate scopes, locale percentage/IEC byte formatting, and validation bounds.",
+    "Verify polite announcement bucketing under rapid updates without suppressing immediate terminal status changes.",
+    "Record LTR, RTL, 320 CSS pixel, zoom, text-spacing, reduced-motion, enhanced-contrast, forced-colors, and current risk-class manual assistive-technology evidence.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

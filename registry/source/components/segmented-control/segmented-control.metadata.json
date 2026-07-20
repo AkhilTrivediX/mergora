@@ -53,6 +53,12 @@
       "semanticElement": "span",
       "refTarget": "none",
       "states": []
+    },
+    {
+      "name": "segmented-control-summary",
+      "semanticElement": "output aria-live=polite",
+      "refTarget": "none",
+      "states": ["optional-summary"]
     }
   ],
   "contract": {

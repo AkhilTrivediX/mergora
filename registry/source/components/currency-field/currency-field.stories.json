@@ -5,7 +5,7 @@
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "ProductionWorkbench"
+      "story": "PlainBaseline"
     },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "ProductionWorkbench" },
     { "id": "active", "applicability": { "status": "applicable" }, "story": "ScrubAndKeyboard" },

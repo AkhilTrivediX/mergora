@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./tour.css", "react"],
+  "entryPath": "registry/source/components/tour/tour.tsx",
+  "id": "tour",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

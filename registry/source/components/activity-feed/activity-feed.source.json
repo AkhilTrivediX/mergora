@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./activity-feed.css", "react"],
+  "entryPath": "registry/source/components/activity-feed/activity-feed.tsx",
+  "id": "activity-feed",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

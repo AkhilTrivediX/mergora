@@ -17,6 +17,9 @@
     "empty",
     "controlled",
     "keyboard",
+    "summary-disabled",
+    "copy-disabled",
+    "navigation-disabled",
     "long-content",
     "rtl"
   ],
@@ -25,7 +28,7 @@
       "name": "diff-viewer",
       "semanticElement": "div role=region",
       "refTarget": "HTMLDivElement",
-      "states": ["mode", "wrap"]
+      "states": ["mode", "wrap", "copyable", "line-navigation", "summary"]
     },
     {
       "name": "diff-copy",

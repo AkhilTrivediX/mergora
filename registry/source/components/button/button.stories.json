@@ -1,11 +1,12 @@
 {
   "schemaVersion": 1,
   "itemId": "button",
+  "canonicalStoryFile": "apps/storybook/src/Button.stories.tsx",
   "states": [
     {
       "id": "default",
       "applicability": { "status": "applicable" },
-      "story": "Default"
+      "story": "BasicDefaults"
     },
     {
       "id": "hover",

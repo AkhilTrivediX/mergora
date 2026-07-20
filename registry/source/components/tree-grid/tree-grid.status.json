@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-grid",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, and updater outputs.",
+    "Pass complete APG interoperability, 10k-row virtual-window performance, edit recovery, packed-consumer, deterministic generation, and full cross-browser gates.",
+    "Record Risk Class 3 desktop/mobile screen-reader, speech, switch, keyboard, touch, zoom, RTL, and forced-colors evidence."
+  ]
+}

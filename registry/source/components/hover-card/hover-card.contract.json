@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "hover-card",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, complete manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A native button controls a non-modal React Aria Popover containing a named supplemental dialog.",
+    "rolePolicy": "The preview is a labelled dialog because it may contain inspectable content; the trigger owns expanded and controls relationships.",
+    "refTarget": "See exported TypeScript declaration."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Focuses the trigger and opens the supplemental preview."
+    },
+    {
+      "key": "Enter / Space",
+      "behavior": "Pins the preview only when pinOnPress is enabled."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Dismisses the preview and clears pinned state."
+    }
+  ],
+  "nonColor": "Text, native state, structure, symbols, or explicit labels accompany every Green or Violet signal.",
+  "responsive": "Logical properties, safe-area-aware containment, wrapping, and scoped overflow preserve operation at 320 CSS pixels, RTL, and 400% zoom; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=hover-card]",
+    "parts": [
+      "[data-slot=hover-card-trigger]",
+      "[data-slot=hover-card-content]",
+      "[data-slot=hover-card-pin-rail]"
+    ],
+    "attributes": ["data-slot", "data-pinned"]
+  },
+  "consumerResponsibilities": [
+    "Provide concise localized accessible names, descriptions, actions, and status text.",
+    "Preserve native elements, relationships, logical order, and documented dismissal and focus-restoration behavior when composing or styling.",
+    "Retest long content, RTL, zoom, touch, forced colors, reduced motion, and assistive technology for consumer-specific content.",
+    "Do not claim Stable or complete conformance until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "semantic-structure",
+      "keyboard",
+      "pointer-touch",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "supported-browser",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

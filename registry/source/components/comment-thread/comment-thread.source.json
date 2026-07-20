@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./comment-thread.css", "react"],
+  "entryPath": "registry/source/components/comment-thread/comment-thread.tsx",
+  "id": "comment-thread",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

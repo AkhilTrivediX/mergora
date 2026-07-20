@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collaboration-presence",
+  "riskClass": 2,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "available",
+    "away",
+    "busy",
+    "stale",
+    "offline",
+    "empty",
+    "summary",
+    "narrow",
+    "rtl",
+    "forced-colors"
+  ],
+  "slots": [
+    {
+      "name": "collaboration-presence-list",
+      "semanticElement": "labelled ul",
+      "refTarget": "HTMLUListElement",
+      "states": ["empty", "populated"]
+    },
+    {
+      "name": "collaboration-presence-label",
+      "semanticElement": "visible status text",
+      "refTarget": "none",
+      "states": ["available", "away", "busy", "stale", "offline"]
+    }
+  ],
+  "contract": { "id": "collaboration-presence-accessibility", "version": "0.1.0" },
+  "passport": { "id": "collaboration-presence-quality-passport", "version": "0.0.0" }
+}

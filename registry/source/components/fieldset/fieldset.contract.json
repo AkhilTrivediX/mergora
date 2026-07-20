@@ -18,7 +18,7 @@
     "speech": "Visible labels remain available for voice targeting.",
     "switchAccess": "No duplicate proxy focus target is introduced."
   },
-  "formBehavior": "Native disabled propagation excludes descendant controls from activation and successful-control submission.",
+  "formBehavior": "Native disabled propagation excludes descendant controls from activation and successful-control submission; an optional selection summary changes neither successful controls nor values.",
   "states": {
     "attributes": [
       "data-layout",
@@ -48,7 +48,7 @@
     "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
   },
   "internationalization": {
-    "consumerStrings": ["legend", "description", "error"],
+    "consumerStrings": ["legend", "description", "error", "selectionSummary"],
     "directions": ["ltr", "rtl"],
     "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
     "imePolicy": "Native edit controls retain browser composition behavior; non-edit controls do not intercept composition.",

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navigation-menu",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "focus-visible", "disabled", "current", "open", "preview", "rtl"],
+  "slots": [
+    {
+      "name": "navigation-menu",
+      "semanticElement": "nav",
+      "refTarget": "HTMLElement",
+      "states": ["default", "current", "open", "rtl"]
+    },
+    {
+      "name": "navigation-menu-panel",
+      "semanticElement": "disclosure div",
+      "refTarget": "none",
+      "states": ["open", "focus-visible"]
+    },
+    {
+      "name": "navigation-menu-preview",
+      "semanticElement": "optional aside",
+      "refTarget": "none",
+      "states": ["preview"]
+    }
+  ],
+  "contract": { "id": "navigation-menu-accessibility", "version": "0.1.0" },
+  "passport": { "id": "navigation-menu-quality-passport", "version": "0.0.0" }
+}

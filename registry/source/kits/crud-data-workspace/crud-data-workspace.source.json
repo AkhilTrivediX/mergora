@@ -1,0 +1,18 @@
+{
+  "declaredImports": [
+    "../../components/alert/alert.js",
+    "../../components/badge/badge.js",
+    "../../components/button/button.js",
+    "../../components/data-table/data-table.js",
+    "../../components/dialog/dialog.js",
+    "../../components/skeleton/skeleton.js",
+    "./crud-data-workspace-adapter.js",
+    "./crud-data-workspace-state.js",
+    "./crud-data-workspace.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/crud-data-workspace/crud-data-workspace.tsx",
+  "id": "crud-data-workspace",
+  "itemDependencies": ["alert", "badge", "button", "data-table", "dialog", "skeleton"],
+  "outputRole": "kit"
+}

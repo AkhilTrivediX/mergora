@@ -4,6 +4,14 @@
   "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
   "stories": [
     {
+      "id": "basic-defaults",
+      "covers": ["required-fallback", "client-ready-callback-disabled", "no-wrapper"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["client-ready-callback-enabled", "one-shot-callback", "hydration-safe-replacement"]
+    },
+    {
       "id": "portal-and-client-boundary",
       "covers": ["server-fallback", "first-hydration-fallback", "client-ready", "layout-stability"]
     }

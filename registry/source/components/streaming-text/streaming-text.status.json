@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "streaming-text",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify every distribution surface.",
+    "Pass DOM-stability, announcement-rate, packed-consumer, browser, visual, and accessibility gates.",
+    "Record desktop/mobile assistive-technology and selection evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

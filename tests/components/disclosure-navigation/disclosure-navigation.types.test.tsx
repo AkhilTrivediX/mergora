@@ -25,7 +25,12 @@ const buttonRef = createRef<HTMLButtonElement>();
 const navRef = createRef<HTMLElement>();
 
 const validFixtures = [
-  <Accordion.Root defaultValue={["one"]} key="accordion" ref={divRef}>
+  <Accordion.Root
+    defaultValue={["one"]}
+    key="accordion"
+    ref={divRef}
+    renderExpansionSummary={(values) => `${String(values.length)} open`}
+  >
     <Accordion.Item value="one">
       <Accordion.Header level={3} ref={headingRef}>
         <Accordion.Trigger ref={buttonRef}>One</Accordion.Trigger>
@@ -34,7 +39,9 @@ const validFixtures = [
     </Accordion.Item>
   </Accordion.Root>,
   <Collapsible.Root key="collapsible" onOpenChange={() => undefined} open ref={divRef}>
-    <Collapsible.Trigger ref={buttonRef}>Details</Collapsible.Trigger>
+    <Collapsible.Trigger ref={buttonRef} stateText={{ closed: "Closed", open: "Open" }}>
+      Details
+    </Collapsible.Trigger>
     <Collapsible.Content>Content</Collapsible.Content>
   </Collapsible.Root>,
   <Tabs.Root
@@ -46,7 +53,7 @@ const validFixtures = [
     ref={divRef}
     value="one"
   >
-    <Tabs.List label="Sections">
+    <Tabs.List keyboardHint="Use arrow keys." label="Sections">
       <Tabs.Tab value="one">One</Tabs.Tab>
     </Tabs.List>
     <Tabs.Panels>
@@ -54,6 +61,7 @@ const validFixtures = [
     </Tabs.Panels>
   </Tabs.Root>,
   <Breadcrumb
+    collapse={false}
     items={[
       { href: "/docs", id: "docs", label: "Docs" },
       { id: "current", label: "Current" },

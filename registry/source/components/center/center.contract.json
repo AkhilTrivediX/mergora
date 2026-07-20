@@ -12,7 +12,7 @@
   },
   "layout": {
     "intrinsic": "Flex centering consumes only available space and sets no fixed dimensions.",
-    "maximum": "Direct children use min(100%, semantic maximum) to remain inside narrow containers.",
+    "maximum": "Direct children use min(100%, semantic maximum) to remain inside narrow containers; none removes the semantic maximum.",
     "overflow": "Neither axis clips content; expanded text increases block size."
   },
   "stableSelectors": {

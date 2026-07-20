@@ -4,13 +4,16 @@ export default [
   {
     ignores: [
       "**/.next/**",
+      "**/.codex-runs/**",
       "**/.turbo/**",
+      "**/artifacts/**",
       "**/coverage/**",
       "**/dist/**",
       "**/node_modules/**",
       "**/out/**",
       "**/playwright-report/**",
       "**/storybook-static/**",
+      "**/test-results/**",
       "PLANS/**",
       "docs/**",
     ],

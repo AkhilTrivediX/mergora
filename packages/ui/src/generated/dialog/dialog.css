@@ -74,11 +74,10 @@
   overflow: auto;
   overflow-wrap: anywhere;
   padding: var(--mrg-semantic-density-panel-padding);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
   border-radius: var(--mrg-component-dialog-radius, var(--mrg-semantic-radius-overlay));
-  background: var(
-    --mrg-component-dialog-background,
-    var(--mrg-semantic-color-background-surface-raised)
-  );
+  background: var(--mrg-component-dialog-background, var(--mrg-semantic-color-background-canvas));
   box-shadow: var(--mrg-component-dialog-elevation, var(--mrg-semantic-elevation-modal));
   color: var(--mrg-component-dialog-foreground, var(--mrg-semantic-color-foreground-primary));
   font-family: var(--mrg-semantic-font-family-prose);
@@ -95,17 +94,11 @@
 .mrg-dialog__content:focus-visible,
 .mrg-dialog__trigger[data-focus-visible],
 .mrg-dialog__close[data-focus-visible] {
-  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
-  outline-offset: var(--mrg-semantic-focus-offset);
-}
-
-.mrg-dialog__content:focus-visible,
-.mrg-dialog__close[data-focus-visible] {
-  box-shadow: 0 0 0 var(--mrg-semantic-focus-width) var(--mrg-semantic-color-background-canvas);
-}
-
-.mrg-dialog__trigger[data-focus-visible] {
-  box-shadow: 0 0 0 var(--mrg-semantic-focus-width) var(--mrg-semantic-color-focus-ring-on-action);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
 }
 
 .mrg-dialog__header {
@@ -142,6 +135,20 @@
     --mrg-component-dialog-description-foreground,
     var(--mrg-semantic-color-foreground-primary)
   );
+  text-wrap: pretty;
+}
+
+.mrg-dialog__dismiss-hint,
+.mrg-alert-dialog__dismiss-hint,
+.mrg-sheet__dismiss-hint {
+  margin-block: var(--mrg-semantic-space-stack-md) 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  color: var(--mrg-semantic-color-status-neutral-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
   text-wrap: pretty;
 }
 
@@ -261,6 +268,13 @@
     border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
     box-shadow: none;
     forced-color-adjust: auto;
+  }
+
+  .mrg-dialog__content:focus-visible,
+  .mrg-dialog__trigger[data-focus-visible],
+  .mrg-dialog__close[data-focus-visible] {
+    box-shadow: none;
+    outline-color: Highlight;
   }
 
   .mrg-dialog__trigger,

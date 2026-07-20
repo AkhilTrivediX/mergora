@@ -8,4 +8,6 @@ Adornments are visual and hidden from the accessibility tree. Detectable interac
 
 Native `className` and `style` target the real input. Use `rootClassName` and `rootStyle` only for the visual wrapper.
 
+The Mergora input uses a literal Canvas editor, strong ink boundary, restrained green action, and a two-layer violet focus seam that maps to forced colors. `clearable` optionally adds a labelled, focus-retaining clear action for controlled or uncontrolled editable-value types (text, search, email, URL, telephone, password, number, temporal, and file inputs). Button-like, hidden, checkbox, radio, color, and range inputs reject this incompatible option. With `clearable={false}` (the default), no button, click handler, generated ID, or accessibility output is added; native editing, autofill, serialization, validation, and reset remain unchanged.
+
 Use purpose-specific autocomplete tokens (`name`, `email`, `username`, `current-password`, or `new-password`) and an appropriate mobile `inputMode`. Do not disable paste or require memory/transcription puzzles for authentication. Promotion requires real autofill/password-manager/manual authentication review in addition to generated, browser, consumer, and parity evidence.

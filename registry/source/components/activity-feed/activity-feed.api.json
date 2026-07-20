@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "activity-feed",
+  "entryExport": "ActivityFeed",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "ActivityFeed"
+    },
+    {
+      "kind": "type",
+      "name": "ActivityFeedEvent"
+    },
+    {
+      "kind": "type",
+      "name": "ActivityFeedProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showContinuationStatus",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Activity Feed; enhancement output is additive and independently removable.",
+    "enhancement": "An optional polite continuation rail distinguishes loaded, loading, interrupted, more-available, and terminal feed states without layout jumps. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "itemId": "listbox",
   "states": [
-    { "id": "default", "applicability": { "status": "applicable" }, "story": "SelectionWorkbench" },
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
     { "id": "hover", "applicability": { "status": "applicable" }, "story": "SelectionWorkbench" },
     { "id": "active", "applicability": { "status": "applicable" }, "story": "SelectionWorkbench" },
     {
       "id": "focus-visible",
       "applicability": { "status": "applicable" },
-      "story": "SelectionWorkbench"
+      "story": "RecommendedMergora"
     },
     {
       "id": "disabled",

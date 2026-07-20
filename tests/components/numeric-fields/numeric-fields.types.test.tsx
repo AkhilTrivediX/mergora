@@ -18,6 +18,8 @@ const inputRef = createRef<HTMLInputElement>();
   precision={2}
   ref={rootRef}
   scrub
+  showCanonicalPreview
+  statusRail="auto"
   step={0.25}
 />;
 
@@ -29,6 +31,8 @@ const inputRef = createRef<HTMLInputElement>();
   defaultValue={-1250.5}
   formatOptions={{ useGrouping: true }}
   precision={2}
+  showCanonicalPreview
+  statusRail="auto"
 />;
 
 <PercentageField
@@ -37,6 +41,7 @@ const inputRef = createRef<HTMLInputElement>();
   maxValue={2}
   minValue={-1}
   precision={2}
+  showCanonicalPreview
   step={0.005}
 />;
 
@@ -51,6 +56,9 @@ const inputRef = createRef<HTMLInputElement>();
 
 // @ts-expect-error Canonical values are numbers rather than localized strings.
 <NumberField value="1,25" />;
+
+// @ts-expect-error Numeric status rails deliberately expose one predictable mode.
+<NumberField statusRail="verbose" />;
 
 describe("P4 numeric-field type surface", () => {
   it("keeps canonical value and ref contracts strict", () => {

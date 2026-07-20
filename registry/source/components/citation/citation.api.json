@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "citation",
+  "entryExport": "Citation",
+  "refTarget": "HTMLSpanElement",
+  "nativeProps": "HTML span attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "Citation" },
+    { "kind": "type", "name": "CitationProps" },
+    { "kind": "value", "name": "isSafeCitationUrl" }
+  ],
+  "props": [{ "name": "showSourceDetail", "required": false, "default": false, "type": "boolean" }],
+  "compositionPolicy": {
+    "urls": "Only relative-root, HTTP and HTTPS URLs without embedded credentials become links.",
+    "enhancement": "showSourceDetail adds a named note; false removes its DOM and accessibility output."
+  }
+}

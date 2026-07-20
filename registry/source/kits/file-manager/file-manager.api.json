@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-manager",
+  "entryExport": "FileManager",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change/value props",
+  "exports": [
+    { "kind": "value", "name": "FileManager" },
+    { "kind": "value", "name": "FileManagerPage" },
+    { "kind": "type", "name": "FileManagerProps" },
+    { "kind": "type", "name": "FileManagerView" },
+    { "kind": "type", "name": "FileManagerVirtualWindow" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "FileManagerAdapter" },
+    { "name": "enableRecoveryActions", "required": false, "default": false, "type": "boolean" },
+    { "name": "showConflictGuidance", "required": false, "default": false, "type": "boolean" },
+    { "name": "showStorageContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "announceOperations", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "virtualWindow",
+      "required": false,
+      "default": false,
+      "type": "false | FileManagerVirtualWindow"
+    }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Button, TreeView, and UploadProgress items plus native forms and structural landmarks.",
+    "adapter": "Consumers own storage, network, permissions, security scanning, retention, and persistence.",
+    "enhancements": "Recovery, conflict guidance, storage context, operation announcements, and file virtualization remain independently selectable."
+  }
+}

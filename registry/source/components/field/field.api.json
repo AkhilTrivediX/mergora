@@ -23,10 +23,12 @@
     },
     { "name": "required", "required": false, "default": false, "type": "boolean" },
     { "name": "layout", "required": false, "default": "stacked", "type": "stacked | inline" },
-    { "name": "optionalLabel", "required": false, "type": "ReactNode" }
+    { "name": "optionalLabel", "required": false, "type": "ReactNode" },
+    { "name": "contextualAction", "required": false, "type": "ReactNode" }
   ],
   "compositionPolicy": {
     "association": "Mergora controls consume the generated label, description, error, required, and invalid state; third-party controls use the same explicit controlId.",
-    "announcements": "Persistent field errors are not assertive; submit-time focus and announcements belong to ValidationSummary."
+    "announcements": "Persistent field errors are not assertive; submit-time focus and announcements belong to ValidationSummary.",
+    "enhancement": "contextualAction adds a responsive label-adjacent recovery or reset affordance. Omitting it adds no node, event path, or accessibility output."
   }
 }

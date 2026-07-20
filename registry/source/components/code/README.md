@@ -6,6 +6,10 @@ Renders selectable inline code with explicit wrapping or native horizontal overf
 <Code>pnpm add mergora-ui</Code>
 ```
 
+## Mergora advantage
+
+Long inline values can choose wrapping or owned horizontal overflow, while `isolateBidi` protects machine text from surrounding bidirectional reordering. Set `wrap={false}` and `isolateBidi={false}` for an ordinary native code element without either enhancement.
+
 ## Contract
 
 The root is native code and remains selectable. No syntax role or fabricated interactive behavior is added.

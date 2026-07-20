@@ -17,25 +17,48 @@ export type DiffViewerMode = "unified" | "split";
 export type DiffLineKind = "context" | "added" | "removed" | "changed";
 
 export interface DiffLine {
+  /** Primary line content used by unified rendering and clipboard serialization. */
   readonly content: string;
+  /** Optional stable consumer identity for the logical line. */
   readonly id?: string;
+  /** Semantic change classification that determines marker and accessible change text. */
   readonly kind: DiffLineKind;
+  /** Replacement-side content for split changed-line presentation. */
   readonly newContent?: string;
+  /** One-based destination line number when the line exists in the new source. */
   readonly newLineNumber?: number;
+  /** Original-side content for split changed-line presentation. */
   readonly oldContent?: string;
+  /** One-based source line number when the line exists in the old source. */
   readonly oldLineNumber?: number;
 }
 
 export interface DiffViewerProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
+  /** Zero-based controlled roving-focus line index. */
   readonly activeLine?: number;
+  /** Localized status announced after a successful clipboard write. */
   readonly copiedLabel?: string;
+  /** Adds the exact unified-diff clipboard action and private live status. */
+  readonly copyable?: boolean;
+  /** Localized status announced when copying the diff fails. */
   readonly copyErrorLabel?: string;
+  /** Localized accessible label for the copy action. */
   readonly copyLabel?: string;
+  /** Initial zero-based roving-focus line index for uncontrolled use. */
   readonly defaultActiveLine?: number;
+  /** Accessible name for the diff region and its change table. */
   readonly label: string;
+  /** Ordered semantic lines used for rendering, navigation, summary, and copying. */
   readonly lines: readonly DiffLine[];
+  /** Enables Home/End, arrow, and page-key roving navigation between diff rows. */
+  readonly lineNavigation?: boolean;
+  /** Selects one unified content column or paired old/new columns. */
   readonly mode?: DiffViewerMode;
+  /** Reports a keyboard-selected line without mutating controlled state. */
   readonly onActiveLineChange?: (index: number, line: DiffLine) => void;
+  /** Shows the locale-aware additions and removals summary. */
+  readonly showSummary?: boolean;
+  /** Allows diff content to wrap instead of preserving horizontal source layout. */
   readonly wrap?: boolean;
 }
 
@@ -95,13 +118,16 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
     activeLine,
     className,
     copiedLabel: copiedLabelProp,
+    copyable = true,
     copyErrorLabel: copyErrorLabelProp,
     copyLabel: copyLabelProp,
     defaultActiveLine = 0,
     label,
     lines,
+    lineNavigation = true,
     mode = "unified",
     onActiveLineChange,
+    showSummary = true,
     wrap = false,
     ...nativeProps
   },
@@ -205,23 +231,28 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
           ? "mrg-diff-viewer"
           : `mrg-diff-viewer ${className}`
       }
+      data-copyable={copyable ? "true" : "false"}
       data-mode={mode}
+      data-line-navigation={lineNavigation ? "true" : "false"}
+      data-show-summary={showSummary ? "true" : "false"}
       data-slot="diff-viewer"
       data-wrap={wrap ? "true" : "false"}
       role="region"
     >
       <div data-slot="diff-toolbar">
         <strong>{label}</strong>
-        <span data-slot="diff-summary">{summary}</span>
-        <button
-          aria-describedby={statusId}
-          data-copy-status={copyStatus}
-          data-slot="diff-copy"
-          onClick={() => void copy()}
-          type="button"
-        >
-          {copyStatus === "copied" ? copiedLabel : copyLabel}
-        </button>
+        {showSummary ? <span data-slot="diff-summary">{summary}</span> : null}
+        {copyable ? (
+          <button
+            aria-describedby={statusId}
+            data-copy-status={copyStatus}
+            data-slot="diff-copy"
+            onClick={() => void copy()}
+            type="button"
+          >
+            {copyStatus === "copied" ? copiedLabel : copyLabel}
+          </button>
+        ) : null}
       </div>
       {lines.length === 0 ? (
         <p data-slot="diff-empty">{emptyLabel}</p>
@@ -265,20 +296,26 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
                 return (
                   <tr
                     aria-label={accessibleLabel}
-                    data-active={currentIndex === index ? "true" : "false"}
+                    data-active={
+                      lineNavigation ? (currentIndex === index ? "true" : "false") : undefined
+                    }
                     data-kind={line.kind}
                     data-slot="diff-line"
                     key={line.id ?? `${line.kind}-${String(index)}`}
-                    onClick={() => moveTo(index)}
-                    onFocus={() => {
-                      if (activeLine === undefined) setUncontrolledActive(index);
-                    }}
-                    onKeyDown={(event) => onLineKeyDown(event, index)}
+                    onClick={lineNavigation ? () => moveTo(index) : undefined}
+                    onFocus={
+                      lineNavigation
+                        ? () => {
+                            if (activeLine === undefined) setUncontrolledActive(index);
+                          }
+                        : undefined
+                    }
+                    onKeyDown={lineNavigation ? (event) => onLineKeyDown(event, index) : undefined}
                     ref={(node) => {
                       if (node === null) rowRefs.current.delete(index);
                       else rowRefs.current.set(index, node);
                     }}
-                    tabIndex={currentIndex === index ? 0 : -1}
+                    tabIndex={lineNavigation ? (currentIndex === index ? 0 : -1) : undefined}
                   >
                     {mode === "unified" ? (
                       <>
@@ -318,9 +355,11 @@ export const DiffViewer = forwardRef<HTMLDivElement, DiffViewerProps>(function D
           </table>
         </div>
       )}
-      <span className="mrg-diff-sr-only" id={statusId} role="status">
-        {copyStatus === "copied" ? copiedLabel : copyStatus === "error" ? copyErrorLabel : ""}
-      </span>
+      {copyable ? (
+        <span className="mrg-diff-sr-only" id={statusId} role="status">
+          {copyStatus === "copied" ? copiedLabel : copyStatus === "error" ? copyErrorLabel : ""}
+        </span>
+      ) : null}
     </div>
   );
 });

@@ -213,6 +213,7 @@ describe("P2 typography and content semantic rendering", () => {
     expect(markup).toContain('tabindex="0"');
     expect(markup).toContain('aria-label="immutable-reference-with-complete-value"');
     expect(markup).toContain("<code");
+    expect(markup).toContain('data-bidi-isolated="false"');
     expect(markup).toContain("<section");
     expect(markup).not.toContain('role="heading"');
   });
@@ -270,6 +271,20 @@ describe("P2 typography and content semantic rendering", () => {
     expect(markup).toContain('data-highlighted="true"');
     expect(markup).toContain("Highlighted: ");
     expect(markup).toContain('role="status"');
+
+    const plain = renderToStaticMarkup(
+      <CodeBlock code="const a = 1;" copyable={false} label="Plain example" />,
+    );
+    expect(plain).toContain('data-copyable="false"');
+    expect(plain).not.toContain('data-slot="code-block-copy"');
+    expect(plain).not.toContain('role="status"');
+  });
+
+  it("removes inline bidirectional isolation when the enhancement is disabled", () => {
+    const enhanced = renderToStaticMarkup(<Code isolateBidi>status=ready</Code>);
+    const plain = renderToStaticMarkup(<Code isolateBidi={false}>status=ready</Code>);
+    expect(enhanced).toContain('data-bidi-isolated="true"');
+    expect(plain).toContain('data-bidi-isolated="false"');
   });
 });
 
@@ -299,6 +314,26 @@ describe("P2 structured viewers", () => {
     expect(renderToStaticMarkup(<DiffViewer label="Empty" lines={[]} />)).toContain(
       "No differences.",
     );
+  });
+
+  it("renders a plain diff table without summary, copy, navigation, events, or live output", () => {
+    const markup = renderToStaticMarkup(
+      <DiffViewer
+        copyable={false}
+        label="Plain source diff"
+        lineNavigation={false}
+        lines={lines}
+        showSummary={false}
+      />,
+    );
+    expect(markup).toContain('data-line-navigation="false"');
+    expect(markup).toContain('data-copyable="false"');
+    expect(markup).toContain('data-show-summary="false"');
+    expect(markup).not.toContain('data-slot="diff-summary"');
+    expect(markup).not.toContain('data-slot="diff-copy"');
+    expect(markup).not.toContain("data-active=");
+    expect(markup).not.toContain('tabindex="-1"');
+    expect(markup).not.toContain('role="status"');
   });
 
   it("builds deterministic JSON paths, relationships, and serialization", () => {
@@ -356,6 +391,24 @@ describe("P2 structured viewers", () => {
     expect(markup).toContain('aria-posinset="1"');
     expect(markup).toContain('aria-setsize="1"');
     expect(markup).toContain('data-path="$.release.published"');
+  });
+
+  it("keeps the JSON tree complete when copy and visible path context are disabled", () => {
+    const markup = renderToStaticMarkup(
+      <JsonViewer
+        copyable={false}
+        label="Plain JSON"
+        showActivePath={false}
+        value={{ ready: true }}
+      />,
+    );
+    expect(markup).toContain('role="tree"');
+    expect(markup).toContain('data-copyable="false"');
+    expect(markup).toContain('data-show-active-path="false"');
+    expect(markup).not.toContain('data-slot="json-active-path"');
+    expect(markup).not.toContain('data-slot="json-copy-path"');
+    expect(markup).not.toContain('data-slot="json-copy-value"');
+    expect(markup).not.toContain('role="status"');
   });
 
   it("resolves built-in viewer and chord text through stable provider message keys", () => {

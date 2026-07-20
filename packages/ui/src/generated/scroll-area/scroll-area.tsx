@@ -8,8 +8,18 @@ export type ScrollAreaSize = "sm" | "md" | "lg" | "viewport";
 export type ScrollAreaPadding = "none" | "sm" | "md";
 
 type AccessibleName =
-  | { readonly "aria-label": string; readonly "aria-labelledby"?: string }
-  | { readonly "aria-label"?: string; readonly "aria-labelledby": string };
+  | {
+      /** Supplies an optional direct region name and is excluded when focusable is false. */
+      readonly "aria-label": string;
+      /** References an optional region name and is excluded when focusable is false. */
+      readonly "aria-labelledby"?: string;
+    }
+  | {
+      /** Supplies an optional direct region name and is excluded when focusable is false. */
+      readonly "aria-label"?: string;
+      /** References an optional region name and is excluded when focusable is false. */
+      readonly "aria-labelledby": string;
+    };
 
 interface ScrollAreaBaseProps extends Omit<
   HTMLAttributes<HTMLDivElement>,
@@ -27,10 +37,16 @@ interface ScrollAreaBaseProps extends Omit<
 
 export type ScrollAreaProps = ScrollAreaBaseProps &
   (
-    | ({ readonly focusable: true } & AccessibleName)
+    | ({
+        /** Controls opt-in region focus; true requires a name and false removes region semantics. */
+        readonly focusable: true;
+      } & AccessibleName)
     | {
+        /** Controls opt-in region focus; true requires a name and false removes region semantics. */
         readonly focusable?: false;
+        /** Supplies an optional direct region name and is excluded when focusable is false. */
         readonly "aria-label"?: never;
+        /** References an optional region name and is excluded when focusable is false. */
         readonly "aria-labelledby"?: never;
       }
   );

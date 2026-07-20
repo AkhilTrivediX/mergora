@@ -30,6 +30,7 @@
     "../../../registry/source/components/slot/**/*.tsx",
     "../../../registry/source/components/tooltip/**/*.ts",
     "../../../registry/source/components/tooltip/**/*.tsx",
+    "../../../apps/storybook/src/Dialog.stories.tsx",
     "../../../apps/storybook/src/P2Overlays.stories.tsx",
     "./*.ts",
     "./*.tsx"

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "reasoning",
+  "root": {
+    "element": "details",
+    "ref": "HTMLDetailsElement",
+    "slot": "reasoning",
+    "stableAttributes": ["data-slot", "data-status", "open"]
+  },
+  "parts": [
+    "reasoning-summary",
+    "reasoning-progress",
+    "reasoning-content",
+    "reasoning-announcement"
+  ]
+}

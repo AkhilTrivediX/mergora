@@ -1,0 +1,16 @@
+{
+  "declaredImports": [
+    "../layer-manager/index.js",
+    "../provider/index.js",
+    "./hover-card.css",
+    "react",
+    "react-aria-components/Button",
+    "react-aria-components/Dialog",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/Popover"
+  ],
+  "entryPath": "registry/source/components/hover-card/hover-card.tsx",
+  "id": "hover-card",
+  "itemDependencies": ["layer-manager", "provider"],
+  "outputRole": "component"
+}

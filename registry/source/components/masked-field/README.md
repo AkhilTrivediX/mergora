@@ -14,6 +14,8 @@ Use `value` with `onValueChange` for controlled visible input, or `defaultValue`
 
 ## Known limitations
 
+The Mergora mask surface repeats the literal Canvas, strong ink, green valid boundary, and violet focus signature while leaving correction text visible. Providing `name` opts into explicit raw or formatted native serialization; omitting it removes the hidden control and successful form value without changing adapter formatting, validation, events, or the accessibility tree.
+
 - Mergora does not provide a universal mask grammar; consumers must supply and review an adapter appropriate to the field purpose, locale, character set, and server contract.
 - Bounded input/output cannot preempt blocking code inside a defective trusted adapter module.
 - Current mobile, paste, IME, speech, switch, screen-reader, packed-consumer, and package/source-parity evidence is still required.

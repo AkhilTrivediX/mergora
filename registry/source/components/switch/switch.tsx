@@ -21,14 +21,23 @@ export interface SwitchProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   "aria-checked" | "children" | "defaultValue" | "name" | "role" | "type" | "value"
 > {
+  /** Non-empty visible setting label that supplies the switch accessible name. */
   readonly children: ReactNode;
+  /** Initial boolean state for uncontrolled use; defaults to false. */
   readonly defaultValue?: boolean;
+  /** Optional native form name enabling hidden enum serialization. */
   readonly name?: string;
+  /** Localized visible off-state text hidden from accessibility APIs. */
   readonly offLabel?: ReactNode;
+  /** Hidden form value serialized while off; defaults to `off`. */
   readonly offValue?: string;
+  /** Localized visible on-state text hidden from accessibility APIs. */
   readonly onLabel?: ReactNode;
+  /** Hidden form value serialized while on; defaults to `on`. */
   readonly onValue?: string;
+  /** Receives proposed controlled or committed uncontrolled state changes. */
   readonly onValueChange?: (value: boolean) => void;
+  /** Controlled boolean state; changes are proposed through `onValueChange`. */
   readonly value?: boolean;
 }
 

@@ -10,10 +10,36 @@ import {
   cssVariableName,
   defaultWorkspaceRoot,
   resolveTokenDocument,
+  tokenValueToCss,
 } from "../../tooling/token-compiler/src/compiler.mjs";
 
 function tokenDocument(value: Record<string, unknown>) {
   return value;
+}
+
+function normalizedCssValue(value: string): string {
+  return value.replaceAll(/\s+/gu, " ").trim();
+}
+
+function resolvedColor(token: { readonly resolvedValue: unknown; readonly type: string }) {
+  expect(token.type).toBe("color");
+  expect(token.resolvedValue).toBeTypeOf("object");
+  expect(token.resolvedValue).not.toBeNull();
+  return token.resolvedValue as Record<string, unknown>;
+}
+
+function customProperties(css: string, selector: string): ReadonlyMap<string, string> {
+  const marker = `${selector} {`;
+  const start = css.indexOf(marker);
+  expect(start, `${selector} should be emitted`).toBeGreaterThanOrEqual(0);
+  const bodyStart = start + marker.length;
+  const end = css.indexOf("\n}", bodyStart);
+  expect(end, `${selector} should have a closing brace`).toBeGreaterThan(bodyStart);
+  const properties = new Map<string, string>();
+  for (const match of css.slice(bodyStart, end).matchAll(/^\s*(--[a-z0-9-]+):\s*([\s\S]*?);/gimu)) {
+    properties.set(match[1]!, normalizedCssValue(match[2]!));
+  }
+  return properties;
 }
 
 describe("Mergora token compiler", () => {
@@ -35,7 +61,7 @@ describe("Mergora token compiler", () => {
       "light-compact",
       "light-touch",
     ]);
-    expect(result.contrastEvidence).toHaveLength(120);
+    expect(result.contrastEvidence).toHaveLength(144);
     expect(result.contrastEvidence.every((entry) => entry.passes === true)).toBe(true);
   });
 
@@ -59,13 +85,71 @@ describe("Mergora token compiler", () => {
 
     expect(css).toContain(':root[data-theme="dark"]');
     expect(css).toContain(':root[data-contrast="enhanced"]');
+    expect(css).toContain(':root[data-contrast="forced-colors"]');
     expect(css).toContain(':root[data-density="compact"]');
     expect(css).toContain(':root[data-density="touch"]');
+    expect(css).toContain(':root[data-motion="reduced"]');
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
     expect(css).toContain("@media (forced-colors: active)");
     expect(css).toContain("--mrg-semantic-color-focus-ring: Highlight;");
+    expect(css).toContain("--mrg-semantic-color-status-loading-border: Highlight;");
+    expect(css).toContain("--mrg-component-control-background-selected: Highlight;");
+    expect(css).toContain("--mrg-component-field-status-rail-danger: Highlight;");
+    expect(css).toContain("--mrg-component-progress-error: Highlight;");
+    expect(css).toContain("--mrg-semantic-density-control-padding-block: 12px;");
     expect(tailwind).toContain("@theme inline");
     expect(tailwind).toContain("--color-action: var(--mrg-semantic-color-action-background);");
+    expect(tailwind).toContain("--radius-surface: var(--mrg-semantic-radius-surface);");
+  });
+
+  it("emits a complete enhanced-contrast context that safely overrides dark theme", () => {
+    const result = compileWorkspace({ mode: "memory" });
+    const css = result.artifacts.get(
+      resolve(defaultWorkspaceRoot, "packages/tokens/src/generated/tokens.css"),
+    )!;
+    const dark = result.contexts.get("dark-comfortable")!;
+    const enhanced = result.contexts.get("enhanced-contrast-comfortable")!;
+    const darkDeclarations = customProperties(css, ':root[data-theme="dark"]');
+    const enhancedDeclarations = customProperties(css, ':root[data-contrast="enhanced"]');
+    const composedDeclarations = new Map([...darkDeclarations, ...enhancedDeclarations]);
+
+    expect(enhancedDeclarations.size).toBe(enhanced.size);
+    for (const [path, token] of enhanced) {
+      const variable = cssVariableName(path);
+      const expected = normalizedCssValue(tokenValueToCss(token.type, token.resolvedValue));
+      expect(enhancedDeclarations.get(variable), path).toBe(expected);
+      expect(composedDeclarations.get(variable), `dark + enhanced ${path}`).toBe(expected);
+    }
+
+    for (const density of ["compact", "touch"] as const) {
+      const densityDeclarations = customProperties(css, `:root[data-density="${density}"]`);
+      const enhancedDensity = result.contexts.get(`enhanced-contrast-${density}`)!;
+      const composedDensity = new Map([
+        ...darkDeclarations,
+        ...enhancedDeclarations,
+        ...densityDeclarations,
+      ]);
+      for (const [path, token] of enhancedDensity) {
+        const variable = cssVariableName(path);
+        const expected = normalizedCssValue(tokenValueToCss(token.type, token.resolvedValue));
+        expect(composedDensity.get(variable), `dark + enhanced + ${density} ${path}`).toBe(
+          expected,
+        );
+      }
+    }
+
+    const actionForeground = enhanced.get("semantic.color.action.foreground")!;
+    const darkActionForeground = dark.get("semantic.color.action.foreground")!;
+    const actionBackground = enhanced.get("semantic.color.action.background")!;
+    expect(
+      contrastRatio(resolvedColor(darkActionForeground), resolvedColor(actionBackground)),
+    ).toBeLessThan(4.5);
+    expect(
+      contrastRatio(resolvedColor(actionForeground), resolvedColor(actionBackground)),
+    ).toBeGreaterThanOrEqual(4.5);
+    expect(enhancedDeclarations.get("--mrg-semantic-color-action-foreground")).toBe(
+      normalizedCssValue(tokenValueToCss(actionForeground.type, actionForeground.resolvedValue)),
+    );
   });
 
   it("emits interoperable unqualified WOFF2 sources for variable font faces", () => {

@@ -33,6 +33,8 @@
     "escape": "Only the top layer is considered; a non-dismissible top layer blocks dismissal behind it.",
     "modal": "Registered application roots outside the top environment-managed modal become inert while any such modal is active; externally managed modals remain in stack order without duplicating those effects.",
     "scroll": "Body styles, scrollbar compensation, and scroll coordinates restore exactly after the final modal closes.",
-    "nesting": "Nested providers reuse the nearest manager so one Escape listener and one modal environment owner remain authoritative."
+    "nesting": "Nested providers reuse the nearest manager so one Escape listener and one modal environment owner remain authoritative.",
+    "advantage": "Shared visual and Escape order stay deterministic even when an external engine independently owns modal document effects.",
+    "enhancementOptOut": "manageEnvironment=false removes application inerting, body style mutation, scroll locking, and their cleanup while retaining stack order; modal=false additionally removes modal membership."
   }
 }

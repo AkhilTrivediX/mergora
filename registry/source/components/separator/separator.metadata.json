@@ -8,13 +8,21 @@
   "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
   "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
   "densities": ["comfortable", "compact", "touch"],
-  "stateGroups": ["decorative", "semantic", "horizontal", "vertical", "forced-colors", "rtl"],
+  "stateGroups": [
+    "decorative",
+    "semantic",
+    "horizontal",
+    "vertical",
+    "spaced",
+    "forced-colors",
+    "rtl"
+  ],
   "slots": [
     {
       "name": "separator",
       "semanticElement": "hr | div",
       "refTarget": "HTMLElement",
-      "states": ["decorative", "orientation"]
+      "states": ["decorative", "orientation", "spacing"]
     }
   ],
   "contract": { "id": "separator-accessibility", "version": "0.1.0" },

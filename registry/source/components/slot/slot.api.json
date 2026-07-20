@@ -14,6 +14,8 @@
     "precedence": "Child semantics, accessible-name attributes, style values, and native props are authoritative.",
     "events": "Child handlers run first; slot handlers run unless the child prevents default.",
     "refs": "Forwarded and child refs receive the same concrete DOM node.",
-    "invalidChildren": "Fragments and non-elements fail with a precise error."
+    "invalidChildren": "Fragments and non-elements fail with a precise error.",
+    "advantage": "Child-first cancellable events, deterministic context attributes, refs, classes, styles, semantics, and names are merged under one documented precedence contract.",
+    "enhancementOptOut": "Omitting any Slot-owned event handler adds no listener or event; the child handler and all native semantics remain unchanged."
   }
 }

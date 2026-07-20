@@ -41,8 +41,14 @@ const validFixtures = [
   <Heading key="heading" level={2} ref={headingRef} size="lg" />,
   <Heading as="h3" key="heading-as" ref={headingRef} />,
   <Prose as="section" key="prose" measure="wide" ref={elementRef} />,
-  <Code key="code" ref={elementRef} wrap={false} />,
-  <CodeBlock code="const ok = true;" key="code-block" label="Example" ref={divRef} />,
+  <Code isolateBidi key="code" ref={elementRef} wrap={false} />,
+  <CodeBlock
+    code="const ok = true;"
+    copyable={false}
+    key="code-block"
+    label="Example"
+    ref={divRef}
+  />,
   <Kbd key="kbd" ref={elementRef}>
     Esc
   </Kbd>,
@@ -54,8 +60,23 @@ const validFixtures = [
     <DescriptionTerm>Name</DescriptionTerm>
     <DescriptionDetails>Value</DescriptionDetails>
   </DescriptionList>,
-  <DiffViewer key="diff" label="Diff" lines={[]} ref={divRef} />,
-  <JsonViewer key="json" label="JSON" ref={divRef} value={{ ok: true }} />,
+  <DiffViewer
+    copyable={false}
+    key="diff"
+    label="Diff"
+    lineNavigation={false}
+    lines={[]}
+    ref={divRef}
+    showSummary={false}
+  />,
+  <JsonViewer
+    copyable={false}
+    key="json"
+    label="JSON"
+    ref={divRef}
+    showActivePath={false}
+    value={{ ok: true }}
+  />,
 ];
 
 // @ts-expect-error Text elements are deliberately closed.

@@ -1,0 +1,170 @@
+/* Generated from registry/source/components/signature-pad/signature-pad.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-signature-pad {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-signature-pad__validation-proxy {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.mrg-signature-pad__heading {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-signature-pad__heading strong {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-signature-pad__heading span,
+.mrg-signature-pad__file small {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-signature-pad__modes,
+.mrg-signature-pad__actions,
+.mrg-signature-pad__keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-signature-pad :where(button) {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-signature-pad__modes button[aria-checked="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+
+.mrg-signature-pad__canvas {
+  background: var(--mrg-semantic-color-background-canvas);
+  block-size: 13rem;
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  color: var(--mrg-semantic-color-foreground-primary);
+  inline-size: 100%;
+  touch-action: none;
+}
+
+.mrg-signature-pad :where(button, input, canvas):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-signature-pad__keyboard {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-brand-violet);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-signature-pad__text,
+.mrg-signature-pad__file {
+  display: grid;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-signature-pad :where(input[type="text"], input[type="file"]) {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-signature-pad__error,
+.mrg-signature-pad__legal {
+  background: var(--mrg-semantic-color-status-warning-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-warning-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-status-warning-foreground);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-signature-pad__error {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border-color: var(--mrg-semantic-color-status-danger-border);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-signature-pad__announcement {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.mrg-signature-pad[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-signature-pad *,
+  .mrg-signature-pad *::before,
+  .mrg-signature-pad *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-signature-pad,
+  .mrg-signature-pad__modes button,
+  .mrg-signature-pad__actions button,
+  .mrg-signature-pad__keyboard,
+  .mrg-signature-pad__keyboard button,
+  .mrg-signature-pad__canvas,
+  .mrg-signature-pad :where(input[type="text"], input[type="file"]),
+  .mrg-signature-pad__legal {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-signature-pad__modes button[aria-checked="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-signature-pad :where(button, input, canvas):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

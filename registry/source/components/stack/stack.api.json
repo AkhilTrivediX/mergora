@@ -21,10 +21,12 @@
       "required": false,
       "type": "stretch | start | center | end"
     },
-    { "default": "preserve", "name": "listStyle", "required": false, "type": "preserve | none" }
+    { "default": "preserve", "name": "listStyle", "required": false, "type": "preserve | none" },
+    { "default": false, "name": "separated", "required": false, "type": "boolean" }
   ],
   "compositionPolicy": {
     "polymorphism": "Restricted to four native structural elements; arbitrary components and unsafe asChild cloning are not supported.",
-    "lists": "ul and ol preserve native list semantics and markers unless listStyle=none is deliberate."
+    "lists": "ul and ol preserve native list semantics and markers unless listStyle=none is deliberate.",
+    "enhancement": "separated=true adds semantic-token rules between direct children without extra DOM; false removes those rules and their forced-colors mapping."
   }
 }

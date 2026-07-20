@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "attachment",
+  "entryExport": "Attachment",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "component", "name": "Attachment" },
+    { "kind": "type", "name": "AttachmentActionContext" },
+    { "kind": "type", "name": "AttachmentProps" },
+    { "kind": "type", "name": "AttachmentSafety" },
+    { "kind": "type", "name": "AttachmentStatus" },
+    { "kind": "function", "name": "formatAttachmentSize" }
+  ],
+  "props": [
+    { "name": "id", "required": true, "type": "string" },
+    { "name": "name", "required": true, "type": "string" },
+    { "name": "status", "required": false, "default": "ready", "type": "AttachmentStatus" },
+    { "name": "showPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "showStatusRail", "required": false, "default": false, "type": "boolean" },
+    { "name": "showSafetyGuidance", "required": false, "default": false, "type": "boolean" },
+    { "name": "showChecksum", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "onPreview/onDownload/onRemove",
+      "required": false,
+      "type": "reasoned action callbacks"
+    }
+  ],
+  "compositionPolicy": {
+    "actions": "Only explicitly supplied action callbacks render controls; the component never fetches, downloads, previews, scans, or deletes a file.",
+    "enhancements": "Preview, lifecycle status, safety guidance, and checksum are independently gated and leave no event or accessibility output when disabled."
+  }
+}

@@ -1,0 +1,104 @@
+/* Generated from registry/source/components/date-range-picker/date-range-picker.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-date-range-picker {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-fields"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-fields"] label {
+  display: grid;
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-presets"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-presets"] button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: inherit;
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-duration"] {
+  background: var(--mrg-semantic-color-status-success-background);
+  border-inline-start: var(--mrg-semantic-border-width-emphasis) solid
+    var(--mrg-semantic-color-status-success-border);
+  color: var(--mrg-semantic-color-status-success-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-date-range-picker [data-slot="date-range-picker-duration-error"] {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-date-range-picker button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+@media (max-width: 32rem) {
+  .mrg-date-range-picker [data-slot="date-range-picker-fields"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (pointer: coarse) {
+  .mrg-date-range-picker [data-slot="date-range-picker-presets"] button {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-date-range-picker [data-slot="date-range-picker-duration"] {
+    background: Canvas;
+    border-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-date-range-picker [data-slot="date-range-picker-duration-error"] {
+    background: Canvas;
+    border-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-date-range-picker [data-slot="date-range-picker-presets"] button {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mrg-date-range-picker button:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

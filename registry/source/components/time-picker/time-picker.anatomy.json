@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "time-picker",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "time-picker",
+    "stableAttributes": ["data-slot", "data-intervals"]
+  },
+  "parts": [
+    {
+      "slot": "time-field",
+      "element": "Mergora TimeField",
+      "purpose": "native time editing and form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "time-picker-intervals",
+      "element": "optional button group",
+      "purpose": "available interval selection",
+      "stability": "documented"
+    }
+  ]
+}

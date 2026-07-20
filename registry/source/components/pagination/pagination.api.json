@@ -16,6 +16,6 @@
   "nativePolicy": [
     "Navigable destinations are real links; unavailable previous and next controls are noninteractive aria-disabled text.",
     "Page mode exposes one localized aria-current page and named ellipsis, previous, next, and page links.",
-    "Cursor mode preserves server-owned navigation while rejecting empty or executable href values."
+    "Cursor mode is an explicit optional enhancement that preserves server-owned navigation while rejecting empty or executable href values; omitting mode keeps the finite page baseline and removes cursor-only labels and destinations."
   ]
 }
