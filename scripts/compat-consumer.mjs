@@ -266,7 +266,7 @@ function compilerOptions(module, moduleResolution) {
     forceConsistentCasingInFileNames: true,
     isolatedModules: true,
     jsx: "react-jsx",
-    lib: ["ES2022", "DOM", "DOM.Iterable"],
+    lib: ["ES2024", "DOM", "DOM.Iterable"],
     module,
     moduleResolution,
     noEmit: true,
@@ -310,8 +310,21 @@ function writeCommonFixture(fixtureDirectory, profile, artifactDependencies, act
       ...frameworkDevDependencies,
       typescript: profile.typescriptVersion,
     },
+    overrides: artifactDependencies,
+    resolutions: artifactDependencies,
   };
   write(resolve(fixtureDirectory, "package.json"), `${JSON.stringify(packageJson, null, 2)}\n`);
+  write(
+    resolve(fixtureDirectory, "pnpm-workspace.yaml"),
+    [
+      "strictDepBuilds: false",
+      "allowBuilds:",
+      "  compat-lifecycle-sentinel: false",
+      "overrides:",
+      ...Object.entries(artifactDependencies).map(([name, specifier]) => `  ${name}: ${specifier}`),
+      "",
+    ].join("\n"),
+  );
   write(resolve(fixtureDirectory, "src/type-boundary.tsx"), typeBoundary);
   write(
     resolve(fixtureDirectory, "tsconfig.node.json"),

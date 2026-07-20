@@ -38,7 +38,7 @@ interface CompatibilityMatrix {
   };
   readonly policy: {
     readonly frameworks: {
-      readonly next: { readonly primary: string };
+      readonly next: { readonly primary: string; readonly react18Compatibility: string };
       readonly vite: { readonly previousProbe: string; readonly primary: string };
     };
     readonly node: { readonly minimum: string; readonly primary: string };
@@ -93,28 +93,27 @@ describe("executable compatibility matrix", () => {
       primary: "6.0.3",
     });
     expect(matrix.policy.frameworks).toEqual({
-      next: { primary: "16.2.10" },
+      next: { primary: "16.2.10", react18Compatibility: "15.5.9" },
       vite: { previousProbe: "7.3.6", primary: "8.1.5" },
     });
 
-    const primaryProfiles = matrix.frameworkProfiles.filter(
-      ({ frameworkVersion }) => frameworkVersion === "16.2.10" || frameworkVersion === "8.1.5",
-    );
-    const crossProduct = primaryProfiles
+    const frameworkCoverage = matrix.frameworkProfiles
       .map(
-        ({ framework, reactVersion, typescriptVersion }) =>
-          `${framework}:${reactVersion}:${typescriptVersion}`,
+        ({ framework, frameworkVersion, reactVersion, typescriptVersion }) =>
+          `${framework}:${frameworkVersion}:${reactVersion}:${typescriptVersion}`,
       )
       .sort();
-    expect(crossProduct).toEqual(
-      ["next", "vite"]
-        .flatMap((framework) =>
-          ["18.3.1", "19.2.7"].flatMap((react) =>
-            ["5.9.3", "6.0.3"].map((typescript) => `${framework}:${react}:${typescript}`),
-          ),
-        )
-        .sort(),
-    );
+    expect(frameworkCoverage).toEqual([
+      "next:15.5.9:18.3.1:5.9.3",
+      "next:15.5.9:18.3.1:6.0.3",
+      "next:16.2.10:19.2.7:5.9.3",
+      "next:16.2.10:19.2.7:6.0.3",
+      "vite:7.3.6:19.2.7:6.0.3",
+      "vite:8.1.5:18.3.1:5.9.3",
+      "vite:8.1.5:18.3.1:6.0.3",
+      "vite:8.1.5:19.2.7:5.9.3",
+      "vite:8.1.5:19.2.7:6.0.3",
+    ]);
     expect(matrix.frameworkProfiles).toContainEqual(
       expect.objectContaining({
         framework: "vite",
@@ -238,6 +237,9 @@ describe("executable compatibility matrix", () => {
     });
     const consumerRunner = text("scripts/compat-consumer.mjs");
     expect(consumerRunner).toContain("package-owned CSS export typing");
+    expect(consumerRunner).toContain('lib: ["ES2024", "DOM", "DOM.Iterable"]');
+    expect(consumerRunner).toContain("pnpm-workspace.yaml");
+    expect(consumerRunner).toContain("strictDepBuilds: false");
     expect(consumerRunner).not.toContain('declare module "*.css"');
   });
 
