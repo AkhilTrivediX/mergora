@@ -1,7 +1,7 @@
 # Execution state
 
-- Updated: 2026-07-20T07:47:46Z
-- Commit: `58d6de0` plus the active uncommitted Data Grid safe-CSV integration
+- Updated: 2026-07-20T12:20:00Z
+- Commit: `329b58e`
 - Branch: `feature/foundation`
 - Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
 - Phase result: locally green checkpoint awaiting an exact pushed CI run
@@ -72,6 +72,20 @@
   formula-injection protection by default, and no download, storage, or network side effects.
   Its Storybook control proves complete removal when disabled; unit, generation, and cross-browser
   Data Grid evidence are current for the active worktree.
+- Added independently optional, native semantic-table Data Grid column sizing and detail rows. Both
+  support controlled and uncontrolled ownership, native form reset, clean disabled removal, bounded
+  source-ID/value guards, Storybook controls, source/package/Shadcn parity, and cross-browser
+  interaction proof without promoting the Experimental system.
+- Regenerated the 1,051 deterministic artifacts after each Data Grid batch. The current local
+  checkpoint passed generation/API parity, `pnpm check` (200 files, 1,546 passing tests and one
+  intentional skip), unchanged visual comparison after a Firefox runner retry, and the packed
+  Next/Vite consumer evidence WRITE plus immediate NO-WRITE replay.
+- Pushed `106ac7d` (semantic detail rows) and `329b58e` (a CI-stable delayed-controlled mask
+  Storybook fixture) to `feature/foundation`. The earlier exact CI failure was reproduced as a
+  60 ms transient-state assertion race in Firefox; the fixture now exposes the same controlled
+  ownership state for 240 ms. Chromium and WebKit focused evidence pass. This Windows host still
+  intermittently reports Firefox's separate `_maybeDontRestoreTabs` context-close transport defect
+  after passing test bodies; exact Linux CI is the remaining authority for that engine.
 - Reverified the complete local `pnpm check` gate: 200 test files passed, 1,540 tests passed, and one
   intentional test was skipped; the serial official-browser audit passed 5/5. Formatting, lint,
   root and all 21 workspace typechecks, generation, Storybook, site, registry, API, documentation,
@@ -96,12 +110,12 @@
 
 ## Next atomic batch
 
-1. Commit and push the coherent locally green `feature/*` Data Grid safe-CSV checkpoint, obtain
-   fresh exact-commit GitHub Actions evidence, and fix any reproducible failure without waiting for
-   PR review.
-2. Continue the next dependency-ordered hardening batch: complete Data Grid's Stable-target
-   contract, large-data/virtualization evidence, temporal edge cases, upload adapters, package-shape
-   checks, coverage enforcement, CSP/social metadata, and broader consumer matrices.
+1. Monitor the fresh `329b58e` GitHub Actions run; repair any reproducible exact-commit failure
+   without waiting for PR review, and record the all-green result when it exists.
+2. Continue the next dependency-ordered hardening batch: Data Grid's remaining Stable-target
+   contract (large-data/virtualization, Interactive Grid only where justified, grouping/aggregation,
+   edit/recovery, saved views, and narrow-screen alternative), then temporal/upload/package-shape
+   evidence without weakening experimental maturity claims.
 3. Refresh the P3 security/data-loss review and public evidence records against the exact checkpoint.
    Verify the official mirror only when a real release payload exists.
 4. Execute the required manual AT, touch/mobile, RTL, forced-colors, reduced-motion, and independent
