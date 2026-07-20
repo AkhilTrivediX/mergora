@@ -1,6 +1,6 @@
 # Definition of Done traceability
 
-- Updated: 2026-07-20 (merged checkpoint `4a1ef67`; candidate `28a2eb6` in PR #9)
+- Updated: 2026-07-20 (merged checkpoint `e03524f` from PR #9; previous checkpoint `4a1ef67`)
 - Authoritative inventory: `registry/generated/catalog.json`
 - Current evidence vocabulary: [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md)
 - DoD assertions mapped: 306 of 306

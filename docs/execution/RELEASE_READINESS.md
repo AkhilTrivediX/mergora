@@ -1,9 +1,9 @@
 # Release readiness
 
 - Updated: 2026-07-20
-- Merged checkpoint: `4a1ef67` (PR #7)
-- Candidate checkpoint: `28a2eb6` ([PR #9](https://github.com/AkhilTrivediX/mergora/pull/9))
-- Current scope: merged Pages-probe checkpoint plus the in-flight Data Grid candidate
+- Merged checkpoint: `e03524f` ([PR #9](https://github.com/AkhilTrivediX/mergora/pull/9))
+- Previous merged checkpoint: `4a1ef67` (PR #7)
+- Current scope: merged Data Grid large-data checkpoint and post-merge deployment evidence
 - Release state: no prerelease or Stable release
 
 This record reports phase gates, not a completion percentage. Later-phase source can exist while an
@@ -11,7 +11,7 @@ earlier gate remains failed.
 
 | Phase                | Status      | Current evidence                                                                                                                                                                                                                                                                                                                                 | Blocking IDs                                                             |
 | -------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
-| P0 Audit/bootstrap   | in-progress | Public repository, package map, governance, ADRs, pinned toolchain, workflows, and privacy boundaries exist. Exact-current CI is not green.                                                                                                                                                                                                      | `BLK-CI-001`                                                             |
+| P0 Audit/bootstrap   | in-progress | Public repository, package map, governance, ADRs, pinned toolchain, workflows, and privacy boundaries exist. PR #9 exact-candidate CI is green; post-merge `main` CI and release evidence remain.                                                                                                                                                | `BLK-CI-001`                                                             |
 | P1 Contracts/tracer  | in-progress | 405 tokens, 12 theme/density contexts, 144 contrast records, schemas, generators, matrix, exact-tarball consumers, and vertical-slice foundations exist. No release-bound evidence set exists.                                                                                                                                                   | `BLK-RELEASE-001`, `BLK-MATURITY-001`                                    |
 | P2 Core primitives   | gate-failed | Every required P2 entry has source and generated delivery surfaces plus Basic/Recommended story references. None is Stable; manual and complete risk evidence are absent.                                                                                                                                                                        | `BLK-MATURITY-001`, `BLK-A11Y-001`                                       |
 | P3 CLI/sync          | gate-failed | The exact-tarball lifecycle proves customize/update/conflict/resolve/audit/rollback/recover/remove/vendor/migrate/adopt with deterministic replay. Enrolled-current Stable, offline verified vendor, and Shadcn protocol/adoption routing pass locally (474 tests, one intentional skip). Exact-commit CI and a real release-time mirror remain. | `BLK-CLI-001`, `BLK-CI-001`                                              |
@@ -59,9 +59,11 @@ See [`CATALOG_STATUS.md`](CATALOG_STATUS.md) for the full breakdown.
 ## Current GitHub and publication facts
 
 - Repository: <https://github.com/AkhilTrivediX/mergora>
-- Latest candidate: [PR #9](https://github.com/AkhilTrivediX/mergora/pull/9) at `28a2eb6`.
-- Candidate CI: repository quality, packed Next/Vite consumers, Storybook/site/performance,
-  dependency review/audit, and CodeQL are green; browser/accessibility/visual is still running.
+- Latest merged change: [PR #9](https://github.com/AkhilTrivediX/mergora/pull/9), squash-merged as
+  `e03524f`.
+- PR #9 CI: repository quality, packed Next/Vite consumers, Storybook/site/performance,
+  browser/accessibility/visual, dependency review/audit, and CodeQL all passed. Post-merge `main`
+  deployment and release gates remain separate.
 - Package map: approved unscoped names in `config/public-packages.json`; availability observations
   are time-bound.
 - Current npm authentication: `npm whoami` succeeds; package ownership, trusted publishing, and
