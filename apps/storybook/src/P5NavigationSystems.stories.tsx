@@ -237,7 +237,8 @@ function NavigationWorkbench(args: NavigationStoryArgs & { readonly evidenceMode
   );
   const loadChildren = async (item: TreeViewItem) => {
     if (item.id !== "evidence-folder") return;
-    await new Promise((resolve) => globalThis.setTimeout(resolve, 40));
+    // Keep this state observable across engines before completing the intentionally lazy fixture.
+    await new Promise((resolve) => globalThis.setTimeout(resolve, 240));
     setTreeItems((current) => {
       const root = current[0];
       if (root?.children === undefined) return current;
