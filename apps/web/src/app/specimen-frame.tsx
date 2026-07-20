@@ -39,7 +39,7 @@ export function SpecimenFrame({
   const [motion, setMotion] = useState("full");
   const [resetNonce, setResetNonce] = useState(0);
   const [resetPending, setResetPending] = useState(false);
-  const shouldLoad = true;
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [stories, setStories] = useState<ResolvedStories | null>(null);
   const [theme, setTheme] = useState("light");
   const [viewport, setViewport] = useState<SpecimenViewport>("responsive");
@@ -203,6 +203,11 @@ export function SpecimenFrame({
         >
           {resetPending ? "Resetting example" : "Reset example"}
         </button>
+        {shouldLoad ? null : (
+          <button onClick={() => setShouldLoad(true)} type="button">
+            Load live specimen
+          </button>
+        )}
         <a href={qualityLabSource}>Open controls in Quality Lab</a>
       </div>
       <div className="specimen-frame__canvas" data-viewport={viewport}>

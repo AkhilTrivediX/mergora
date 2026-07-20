@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 
 import {
   buildStateLabSearch,
@@ -51,6 +51,8 @@ export function StateLab({ model }: { readonly model: StateLabModel }) {
   const [resolvedIds, setResolvedIds] = useState<Readonly<Record<string, string | null>> | null>(
     null,
   );
+  const [shouldLoadPreview, setShouldLoadPreview] = useState(false);
+  const stateLabRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const syncFromUrl = () => {
@@ -64,6 +66,23 @@ export function StateLab({ model }: { readonly model: StateLabModel }) {
   }, [model]);
 
   useEffect(() => {
+    const boundary = stateLabRef.current;
+    if (boundary === null) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setShouldLoadPreview(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting !== true) return;
+      setShouldLoadPreview(true);
+      observer.disconnect();
+    });
+    observer.observe(boundary);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!shouldLoadPreview) return;
     const controller = new AbortController();
     const load = async () => {
       try {
@@ -83,7 +102,7 @@ export function StateLab({ model }: { readonly model: StateLabModel }) {
     };
     void load();
     return () => controller.abort();
-  }, [model]);
+  }, [model, shouldLoadPreview]);
 
   const selectedStory = stateLabStoryForConfiguration(model, configuration);
   const selectedStoryId = selectedStory === null ? null : resolvedIds?.[selectedStory.key];
@@ -134,6 +153,7 @@ export function StateLab({ model }: { readonly model: StateLabModel }) {
       data-selected-story={selectedStory?.key ?? "none"}
       data-state-inventory-status={model.inventoryStatus}
       id="state-lab"
+      ref={stateLabRef}
     >
       <header className="state-lab__header">
         <div>
@@ -288,7 +308,9 @@ export function StateLab({ model }: { readonly model: StateLabModel }) {
               </div>
             ) : iframeSource === null ? (
               <p aria-live="polite" className="state-lab__preview-status">
-                Resolving the exact story pointer…
+                {shouldLoadPreview
+                  ? "Resolving the exact story pointer…"
+                  : "Preview loads when this State Lab enters view."}
               </p>
             ) : (
               <iframe

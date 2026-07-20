@@ -464,6 +464,7 @@ test("component docs resolve Basic and Recommended live specimens", async ({ pag
   await page.goto("/components/button/", { waitUntil: "networkidle" });
   const specimen = page.locator(".specimen-frame");
   await specimen.scrollIntoViewIfNeeded();
+  await specimen.getByRole("button", { exact: true, name: "Load live specimen" }).click();
   const iframe = specimen.locator("iframe");
   await expect(iframe).toBeVisible();
   const frame = page.frameLocator(".specimen-frame iframe");
