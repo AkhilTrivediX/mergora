@@ -170,8 +170,8 @@ jobs:
       fail-fast: false
       matrix:
         profile:
-          - next15-r18-ts59
-          - next15-r18-ts60
+          - next14-r18-ts59
+          - next14-r18-ts60
           - next16-r19-ts59
           - next16-r19-ts60
           - vite-r18-ts59
