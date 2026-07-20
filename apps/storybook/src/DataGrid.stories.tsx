@@ -80,6 +80,7 @@ interface LibraryGridStoryArgs {
   readonly paginationEnabled: boolean;
   readonly queryAdapterEnabled: boolean;
   readonly showQuerySummary: boolean;
+  readonly virtualizationEnabled: boolean;
 }
 
 function rowSearchText(row: LibraryRecord): string {
@@ -132,6 +133,7 @@ function LibraryGrid({
   paginationEnabled,
   queryAdapterEnabled,
   showQuerySummary,
+  virtualizationEnabled,
 }: LibraryGridStoryArgs): ReactElement {
   const [adapterWrites, setAdapterWrites] = useState(0);
   const [csvPreview, setCsvPreview] = useState("CSV not prepared");
@@ -161,7 +163,7 @@ function LibraryGrid({
       caption={caption}
       columnSizing={columnSizingEnabled ? { defaultWidths: { owner: 160 } } : false}
       detailRows={
-        detailRowsEnabled
+        detailRowsEnabled && !virtualizationEnabled
           ? {
               defaultExpandedRowIds: ["artifact-2"],
               getDetailLabel: (row, expanded) =>
@@ -182,6 +184,11 @@ function LibraryGrid({
       getRowId={(row) => row.id}
       operationMode={operationMode}
       operationStatus={operationStatus}
+      virtualization={
+        virtualizationEnabled
+          ? { overscan: 2, rowHeight: 48, showRange: true, viewportHeight: 192 }
+          : false
+      }
       pagination={
         paginationEnabled
           ? {
@@ -359,6 +366,42 @@ function ControlledDetailRowsExample(): ReactElement {
       />
       <output aria-live="polite" data-story-controlled-detail-rows="">
         {lastChange}
+      </output>
+    </div>
+  );
+}
+
+const largeDataRows: readonly LibraryRecord[] = Array.from({ length: 320 }, (_, index) => ({
+  id: `record-${index + 1}`,
+  owner: `Maintainer ${(index % 12) + 1}`,
+  state: (["Draft", "Ready", "Review"] as const)[index % 3]!,
+  title: `Library record ${String(index + 1).padStart(3, "0")}`,
+}));
+
+function LargeDataExample(): ReactElement {
+  const [scrollOffset, setScrollOffset] = useState(0);
+  const [range, setRange] = useState("Showing rows 1–8 of 320");
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Large library record set"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={largeDataRows}
+        virtualization={{
+          onScrollOffsetChange: (next, detail) => {
+            setScrollOffset(next);
+            setRange(`Showing rows ${detail.firstRowIndex + 1}–${detail.lastRowIndex} of 320`);
+          },
+          overscan: 3,
+          rowHeight: 48,
+          scrollOffset,
+          showRange: true,
+          viewportHeight: 240,
+        }}
+      />
+      <output aria-live="polite" data-story-virtual-range="">
+        {range}
       </output>
     </div>
   );
@@ -654,6 +697,7 @@ const meta = {
     },
     paginationEnabled: { control: "boolean" },
     queryAdapterEnabled: { control: "boolean" },
+    virtualizationEnabled: { control: "boolean" },
     rows: { control: false },
     selectionMode: { control: "inline-radio", options: ["none", "single"] },
     showQuerySummary: { control: "boolean" },
@@ -672,6 +716,7 @@ const meta = {
     operationStatusState: "off",
     paginationEnabled: false,
     queryAdapterEnabled: false,
+    virtualizationEnabled: false,
     rows,
     selectionMode: "none",
     showQuerySummary: false,
@@ -720,6 +765,10 @@ export const ControlledColumnSizing: Story = {
 
 export const ControlledDetailRows: Story = {
   render: () => <ControlledDetailRowsExample />,
+};
+
+export const LargeDataVirtualized: Story = {
+  render: () => <LargeDataExample />,
 };
 
 export const ColumnVisibilityAdapterHydration: Story = {
@@ -798,6 +847,7 @@ export const NarrowAndRtl: Story = {
         selectionMode="single"
         showQuerySummary
         showSelectionSummary
+        virtualizationEnabled={false}
       />
     </div>
   ),

@@ -81,6 +81,13 @@
       "story": "RecommendedMergora"
     },
     {
+      "id": "large-data",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "LargeDataVirtualized"
+    },
+    {
       "id": "partial",
       "applicability": {
         "status": "not-applicable",
