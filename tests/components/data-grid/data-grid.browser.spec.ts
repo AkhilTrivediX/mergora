@@ -85,6 +85,29 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   expect(await axeViolations(page)).toEqual([]);
 });
 
+test("large-data virtualization bounds DOM rows and reports a controlled native scroll range", async ({
+  page,
+}) => {
+  await openStory(page, "large-data-virtualized");
+  const viewport = page.locator('[data-slot="data-grid-virtual-viewport"]');
+  await expect(viewport).toBeVisible();
+  await expect(page.locator('[data-slot="data-grid-virtual-range"]')).toContainText(
+    /Showing rows 1.+8 of 320/u,
+  );
+  await expect(page.locator('[data-slot="data-grid-row"]')).toHaveCount(8);
+  await expect(page.getByText("Library record 001", { exact: true })).toBeVisible();
+  await viewport.evaluate((element) => {
+    element.scrollTop = 480;
+    element.dispatchEvent(new Event("scroll", { bubbles: true }));
+  });
+  await expect(page.locator("[data-story-virtual-range]")).toContainText(
+    /Showing rows 8.+18 of 320/u,
+  );
+  await expect(page.getByText("Library record 008", { exact: true })).toBeVisible();
+  await expect(page.getByText("Library record 001", { exact: true })).toHaveCount(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("Storybook controls enable independent enhancements without creating illegal combinations", async ({
   page,
 }) => {

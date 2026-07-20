@@ -295,6 +295,7 @@ describe("catalog implementation matrix", () => {
       "selectionMode",
       "showQuerySummary",
       "showSelectionSummary",
+      "virtualizationEnabled",
     ];
     expect(
       profile?.optionalEnhancements

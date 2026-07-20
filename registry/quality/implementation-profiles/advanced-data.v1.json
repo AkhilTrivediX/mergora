@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing and semantic detail rows, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, independently controlled or uncontrolled bounded native column sizing, semantic detail rows, and fixed-row large-data virtualization, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -54,7 +54,8 @@
           "column-visibility",
           "column-visibility-persistence",
           "column-sizing",
-          "detail-rows"
+          "detail-rows",
+          "large-data-virtualization"
         ]
       },
       "visualSignature": {
@@ -587,6 +588,51 @@
             "events": "No expanded-row callback can fire.",
             "accessibility": "No disclosure button, expanded state, controls relationship, details heading, or detail content is exposed."
           }
+        },
+        {
+          "id": "large-data-virtualization",
+          "status": "evidence-backed",
+          "summary": "Consumers can independently bound a large, read-oriented row set with a fixed-height native scroll viewport, controlled or uncontrolled offset, overscan, and an optional visible live range while keeping the underlying semantic table.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["virtualizationEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "virtualization",
+              "virtualization.rowHeight",
+              "virtualization.viewportHeight",
+              "virtualization.overscan",
+              "virtualization.scrollOffset",
+              "virtualization.defaultScrollOffset",
+              "virtualization.onScrollOffsetChange",
+              "virtualization.showRange"
+            ],
+            "enableWhen": "Provide virtualization with positive fixed rowHeight and viewportHeight; omit it or pass false to retain the complete semantic table."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No scroll viewport, spacer rows, range rail, or virtual data attributes are rendered.",
+            "behavior": "Every visible result row is rendered in the ordinary semantic table; no scroll-offset state is owned.",
+            "events": "No virtualization scroll-offset callback can fire.",
+            "accessibility": "No virtual-viewport label, focus stop, or range status output is exposed."
+          }
         }
       ],
       "storybook": {
@@ -609,7 +655,8 @@
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
             "columnSizingEnabled",
-            "detailRowsEnabled"
+            "detailRowsEnabled",
+            "virtualizationEnabled"
           ],
           "references": [
             {
@@ -641,7 +688,8 @@
             "columnVisibilityEnabled",
             "columnVisibilityPersistenceEnabled",
             "columnSizingEnabled",
-            "detailRowsEnabled"
+            "detailRowsEnabled",
+            "virtualizationEnabled"
           ],
           "references": [
             {
@@ -657,7 +705,7 @@
       },
       "accessibilityEvidence": {
         "status": "partial",
-        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, labelled native detail disclosure, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
+        "summary": "Automated native table, caption, scoped header, labelled filter and pagination, native range sizing, labelled native detail disclosure, bounded fixed-row viewport and optional range status, radio naming, form/reset, busy and recoverable-error semantics, focus recovery, narrow RTL layout, coarse targets, forced colors, reduced motion, and axe evidence is current across Chromium, Firefox, and WebKit; Risk Class 3 manual records remain incomplete.",
         "references": [
           {
             "kind": "repository-file",
@@ -671,7 +719,7 @@
       },
       "interactionEvidence": {
         "status": "verified",
-        "summary": "Native sorting and selection, bounded controlled or uncontrolled native column sizing, controlled or uncontrolled semantic detail rows, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, deterministic safe CSV serialization, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
+        "summary": "Native sorting and selection, bounded controlled or uncontrolled native column sizing, controlled or uncontrolled semantic detail rows, controlled or uncontrolled fixed-row virtualization, deterministic controlled or uncontrolled aggregate queries, client filter-sort-page order, manual page and cursor delegation, adapter writes, native form/reset, retained-row async recovery, focus restoration, empty state, live summaries, deterministic safe CSV serialization, and complete independent enhancement removal are covered for this Experimental semantic-table phase.",
         "references": [
           {
             "kind": "repository-file",
@@ -708,7 +756,7 @@
       "blockers": [
         {
           "code": "production-grid-contract-incomplete",
-          "summary": "Interactive Grid mode, editing, row and column virtualization, column state, advanced selection, detail and tree rows, grouping and aggregation, saved views, permissions, responsive alternatives, scale evidence, and the full independent Risk Class 3 manual matrix remain open.",
+          "summary": "Interactive Grid mode, column virtualization, broader column state, advanced selection, tree rows, grouping and aggregation, saved views, permissions, responsive alternatives, scale evidence, and the full independent Risk Class 3 manual matrix remain open.",
           "references": [
             {
               "kind": "repository-file",

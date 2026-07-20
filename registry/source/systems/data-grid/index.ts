@@ -8,6 +8,8 @@ export {
   type DataGridColumnWidths,
   type DataGridDetailRowsChangeDetail,
   type DataGridDetailRowsOptions,
+  type DataGridVirtualizationChangeDetail,
+  type DataGridVirtualizationOptions,
   type DataGridExpandedRowIds,
   type DataGridColumnVisibility,
   type DataGridColumnVisibilityAdapter,

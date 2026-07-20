@@ -124,6 +124,53 @@ describe("Data Grid Experimental canonical source", () => {
     expect(html).toContain('type="radio"');
   });
 
+  it("bounds large-data rendering only when virtualization is explicitly enabled", () => {
+    const largeRows = Array.from({ length: 100 }, (_, index) => ({
+      id: `row-${index + 1}`,
+      name: `Row ${index + 1}`,
+      score: index + 1,
+    }));
+    const basic = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={largeRows}
+        virtualization={false}
+      />,
+    );
+    expect(basic).toContain("Row 100");
+    expect(basic).not.toContain('data-slot="data-grid-virtual-viewport"');
+    expect(basic).not.toContain('data-slot="data-grid-virtual-range"');
+
+    const virtualized = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={largeRows}
+        virtualization={{ overscan: 1, rowHeight: 48, viewportHeight: 96 }}
+      />,
+    );
+    expect(virtualized).toContain('data-slot="data-grid-virtual-viewport"');
+    expect(virtualized).toContain('data-slot="data-grid-virtual-range"');
+    expect(virtualized).toMatch(/Showing rows 1.+3 of 100/u);
+    expect(virtualized).toContain("Row 3");
+    expect(virtualized).not.toContain("Row 4");
+    expect(virtualized).toContain('data-slot="data-grid-virtual-spacer"');
+
+    const rangeDisabled = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={largeRows}
+        virtualization={{ rowHeight: 48, showRange: false, viewportHeight: 96 }}
+      />,
+    );
+    expect(rangeDisabled).not.toContain('data-slot="data-grid-virtual-range"');
+  });
+
   it("processes client rows in filter, sort, then page order and serializes the effective query", () => {
     const query: DataGridQuery = {
       filter: "review",
@@ -688,6 +735,22 @@ describe("Data Grid Experimental canonical source", () => {
         },
       }),
     ).toThrow(/controlled detail rows cannot be combined/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        virtualization: {
+          defaultScrollOffset: 0,
+          rowHeight: 48,
+          scrollOffset: 0,
+          viewportHeight: 240,
+        },
+      }),
+    ).toThrow(/controlled virtualization cannot be combined/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        detailRows: { renderDetail: () => null },
+        virtualization: { rowHeight: 48, viewportHeight: 240 },
+      }),
+    ).toThrow(/does not support detailRows/u);
     expect(() =>
       renderToStaticMarkup(
         <DataGrid

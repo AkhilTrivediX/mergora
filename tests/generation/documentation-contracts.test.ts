@@ -195,7 +195,7 @@ describe("documentation contract index", () => {
       item.stateApplicability.status === "available" ? item.stateApplicability.states : [],
     );
     const applicable = states.filter((state) => state.applicability === "applicable");
-    expect(applicable).toHaveLength(1730);
+    expect(applicable).toHaveLength(1731);
     expect(applicable.every((state) => state.story?.status === "validated-source-export")).toBe(
       true,
     );

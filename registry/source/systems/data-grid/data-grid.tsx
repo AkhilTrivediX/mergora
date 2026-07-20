@@ -21,6 +21,7 @@ import {
   useRef,
   useState,
   type HTMLAttributes,
+  type CSSProperties,
   type ReactElement,
   type ReactNode,
   type RefAttributes,
@@ -264,6 +265,44 @@ export interface DataGridDetailRowsOptions<TData extends object> {
   readonly getDetailLabel?: (row: TData, expanded: boolean) => string;
 }
 
+export interface DataGridVirtualizationChangeDetail {
+  /** Identifies the native scroll viewport as the request cause. */
+  readonly reason: "scroll";
+  /** Reports the clamped vertical offset in CSS pixels. */
+  readonly scrollOffset: number;
+  /** Identifies the first source row rendered in the bounded window. */
+  readonly firstRowIndex: number;
+  /** Identifies the final source row rendered in the bounded window, exclusively. */
+  readonly lastRowIndex: number;
+}
+
+/**
+ * Opt-in fixed-row virtualization for large, read-oriented datasets.
+ *
+ * It deliberately stays separate from pagination: it bounds DOM work within the rows that the
+ * current query has already selected. Detail rows are excluded because their variable height
+ * would make fixed-window positioning inaccurate.
+ */
+export interface DataGridVirtualizationOptions {
+  /** Fixed, positive row block-size in CSS pixels. Cells truncate rather than change this height. */
+  readonly rowHeight: number;
+  /** Fixed, positive vertical viewport size in CSS pixels. */
+  readonly viewportHeight: number;
+  /** Extra rows rendered before and after the visible window; defaults to 4. */
+  readonly overscan?: number;
+  /** Controls the viewport offset in CSS pixels. */
+  readonly scrollOffset?: number;
+  /** Initializes the uncontrolled viewport offset in CSS pixels. */
+  readonly defaultScrollOffset?: number;
+  /** Reports a native viewport scroll request with the bounded rendered range. */
+  readonly onScrollOffsetChange?: (
+    scrollOffset: number,
+    detail: DataGridVirtualizationChangeDetail,
+  ) => void;
+  /** Shows the Mergora range rail; false removes its visible and live-region output. */
+  readonly showRange?: boolean;
+}
+
 export type DataGridColumnVisibility = Readonly<{
   /** Stores the visible state for a declared column ID; omitted IDs remain visible. */
   [columnId: string]: boolean;
@@ -340,6 +379,8 @@ interface DataGridCommonProps<TData extends object> extends Omit<
   readonly columnSizing?: false | DataGridColumnSizingOptions;
   /** Enables optional controlled or uncontrolled semantic detail rows. */
   readonly detailRows?: false | DataGridDetailRowsOptions<TData>;
+  /** Adds bounded fixed-row rendering for large result sets; false preserves the complete table. */
+  readonly virtualization?: false | DataGridVirtualizationOptions;
 }
 
 interface DataGridSelectionDisabledProps {
@@ -1133,6 +1174,72 @@ export function assertDataGridConfiguration(props: Readonly<Record<string, unkno
     }
   }
   if (
+    props.virtualization !== undefined &&
+    props.virtualization !== false &&
+    !isPlainObject(props.virtualization)
+  ) {
+    throw new TypeError("Mergora DataGrid virtualization must be false or an options object.");
+  }
+  if (isPlainObject(props.virtualization)) {
+    const virtualization = props.virtualization;
+    for (const key of ["rowHeight", "viewportHeight"] as const) {
+      const value = virtualization[key];
+      if (typeof value !== "number" || !Number.isFinite(value) || value <= 0) {
+        throw new RangeError(
+          `Mergora DataGrid virtualization.${key} must be a positive finite number.`,
+        );
+      }
+    }
+    if (
+      virtualization.overscan !== undefined &&
+      (typeof virtualization.overscan !== "number" ||
+        !Number.isInteger(virtualization.overscan) ||
+        virtualization.overscan < 0)
+    ) {
+      throw new RangeError(
+        "Mergora DataGrid virtualization.overscan must be a non-negative integer when supplied.",
+      );
+    }
+    for (const key of ["scrollOffset", "defaultScrollOffset"] as const) {
+      if (
+        virtualization[key] !== undefined &&
+        (typeof virtualization[key] !== "number" ||
+          !Number.isFinite(virtualization[key]) ||
+          (virtualization[key] as number) < 0)
+      ) {
+        throw new RangeError(
+          `Mergora DataGrid virtualization.${key} must be a non-negative finite number when supplied.`,
+        );
+      }
+    }
+    if (
+      hasDefinedOwn(virtualization, "scrollOffset") &&
+      hasDefinedOwn(virtualization, "defaultScrollOffset")
+    ) {
+      throw new Error(
+        "Mergora DataGrid controlled virtualization cannot be combined with defaultScrollOffset.",
+      );
+    }
+    if (
+      virtualization.onScrollOffsetChange !== undefined &&
+      typeof virtualization.onScrollOffsetChange !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid virtualization.onScrollOffsetChange must be a function when supplied.",
+      );
+    }
+    if (virtualization.showRange !== undefined && typeof virtualization.showRange !== "boolean") {
+      throw new TypeError(
+        "Mergora DataGrid virtualization.showRange must be a boolean when supplied.",
+      );
+    }
+    if (props.detailRows !== undefined && props.detailRows !== false) {
+      throw new Error(
+        "Mergora DataGrid virtualization does not support detailRows because detail content has variable height.",
+      );
+    }
+  }
+  if (
     props.operationMode !== undefined &&
     props.operationMode !== "client" &&
     props.operationMode !== "manual"
@@ -1516,6 +1623,7 @@ function DataGridInner<TData extends object>(
     columnVisibility = false,
     columnSizing = false,
     detailRows = false,
+    virtualization = false,
     selectionMode = "none",
     selectedRowId,
     defaultSelectedRowId = null,
@@ -1543,6 +1651,7 @@ function DataGridInner<TData extends object>(
   } = props;
   const generatedRadioName = useId();
   const regionRef = useRef<HTMLDivElement | null>(null);
+  const virtualViewportRef = useRef<HTMLDivElement | null>(null);
   const filteringOptions = typeof filtering === "object" ? filtering : undefined;
   const filteringEnabled = filtering === true || filteringOptions !== undefined;
   const aggregateQueryOwnership = hasAggregateQueryOwnership(
@@ -1558,6 +1667,7 @@ function DataGridInner<TData extends object>(
   const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
   const columnSizingOptions = columnSizing === false ? null : columnSizing;
   const detailRowsOptions = detailRows === false ? null : detailRows;
+  const virtualizationOptions = virtualization === false ? null : virtualization;
   const columnVisibilityAdapterReadRef = useRef(false);
   const initialColumnVisibilityRef = useRef<DataGridColumnVisibility | null>(null);
   if (initialColumnVisibilityRef.current === null) {
@@ -1580,6 +1690,10 @@ function DataGridInner<TData extends object>(
         ? []
         : resolveExpandedRowIds(rowIds, detailRowsOptions.defaultExpandedRowIds);
   }
+  const initialVirtualScrollOffsetRef = useRef<number | null>(null);
+  if (initialVirtualScrollOffsetRef.current === null) {
+    initialVirtualScrollOffsetRef.current = virtualizationOptions?.defaultScrollOffset ?? 0;
+  }
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
     selectionMode === "single" ? defaultSelectedRowId : null,
   );
@@ -1596,6 +1710,9 @@ function DataGridInner<TData extends object>(
   );
   const [uncontrolledExpandedRowIds, setUncontrolledExpandedRowIds] =
     useState<DataGridExpandedRowIds>(initialExpandedRowIdsRef.current);
+  const [uncontrolledVirtualScrollOffset, setUncontrolledVirtualScrollOffset] = useState<number>(
+    initialVirtualScrollOffsetRef.current,
+  );
 
   useEffect(() => {
     if (
@@ -1855,6 +1972,39 @@ function DataGridInner<TData extends object>(
           effectivePagination.page * effectivePagination.pageSize,
         )
       : sortedRows;
+  const virtualizationEnabled = virtualizationOptions !== null;
+  const virtualRowHeight = virtualizationOptions?.rowHeight ?? 0;
+  const virtualViewportHeight = virtualizationOptions?.viewportHeight ?? 0;
+  const virtualOverscan = virtualizationOptions?.overscan ?? 4;
+  const virtualMaxScrollOffset = virtualizationEnabled
+    ? Math.max(0, visibleRows.length * virtualRowHeight - virtualViewportHeight)
+    : 0;
+  const requestedVirtualScrollOffset =
+    virtualizationOptions?.scrollOffset ?? uncontrolledVirtualScrollOffset;
+  const virtualScrollOffset = virtualizationEnabled
+    ? Math.min(requestedVirtualScrollOffset, virtualMaxScrollOffset)
+    : 0;
+  const virtualStartIndex = virtualizationEnabled
+    ? Math.max(0, Math.floor(virtualScrollOffset / virtualRowHeight) - virtualOverscan)
+    : 0;
+  const virtualEndIndex = virtualizationEnabled
+    ? Math.min(
+        visibleRows.length,
+        Math.ceil((virtualScrollOffset + virtualViewportHeight) / virtualRowHeight) +
+          virtualOverscan,
+      )
+    : visibleRows.length;
+  const renderedRows = virtualizationEnabled
+    ? visibleRows.slice(virtualStartIndex, virtualEndIndex)
+    : visibleRows;
+  const virtualTopSpacerHeight = virtualizationEnabled ? virtualStartIndex * virtualRowHeight : 0;
+  const virtualBottomSpacerHeight = virtualizationEnabled
+    ? (visibleRows.length - virtualEndIndex) * virtualRowHeight
+    : 0;
+  const virtualRangeText =
+    visibleRows.length === 0
+      ? "No rows available"
+      : `Showing rows ${virtualStartIndex + 1}–${virtualEndIndex} of ${visibleRows.length}`;
   const visibleColumns = table.getVisibleLeafColumns();
   const columnCount =
     visibleColumns.length +
@@ -1865,7 +2015,7 @@ function DataGridInner<TData extends object>(
       ? null
       : (rows.find((row) => rowIdByRow.get(row) === currentSelection) ?? null);
   const hasVisibleSelection =
-    selectedSourceRow !== null && visibleRows.some((row) => row.id === currentSelection);
+    selectedSourceRow !== null && renderedRows.some((row) => row.id === currentSelection);
   const selectionSummary =
     selectionMode === "single" && renderSelectionSummary !== undefined
       ? renderSelectionSummary(selectedSourceRow)
@@ -1929,6 +2079,9 @@ function DataGridInner<TData extends object>(
         if (detailRowsOptions !== null && detailRowsOptions.expandedRowIds === undefined) {
           setUncontrolledExpandedRowIds(initialExpandedRowIdsRef.current!);
         }
+        if (virtualizationOptions !== null && virtualizationOptions.scrollOffset === undefined) {
+          setUncontrolledVirtualScrollOffset(initialVirtualScrollOffsetRef.current!);
+        }
       }, 0);
     };
     form.addEventListener("reset", handleReset);
@@ -1944,6 +2097,26 @@ function DataGridInner<TData extends object>(
     selectedRowId,
     selectionMode,
     sorting,
+    virtualizationOptions?.scrollOffset,
+  ]);
+
+  useEffect(() => {
+    if (!virtualizationEnabled) return;
+    const viewport = virtualViewportRef.current;
+    if (viewport !== null && Math.abs(viewport.scrollTop - virtualScrollOffset) > 0.5) {
+      viewport.scrollTop = virtualScrollOffset;
+    }
+    if (
+      virtualizationOptions?.scrollOffset === undefined &&
+      uncontrolledVirtualScrollOffset !== virtualScrollOffset
+    ) {
+      setUncontrolledVirtualScrollOffset(virtualScrollOffset);
+    }
+  }, [
+    uncontrolledVirtualScrollOffset,
+    virtualScrollOffset,
+    virtualizationEnabled,
+    virtualizationOptions?.scrollOffset,
   ]);
 
   const setRegionRef = (node: HTMLDivElement | null): void => {
@@ -1986,6 +2159,24 @@ function DataGridInner<TData extends object>(
     });
   };
 
+  const handleVirtualScroll = (scrollTop: number): void => {
+    if (virtualizationOptions === null) return;
+    const next = Math.min(Math.max(0, scrollTop), virtualMaxScrollOffset);
+    if (next === virtualScrollOffset) return;
+    if (virtualizationOptions.scrollOffset === undefined) setUncontrolledVirtualScrollOffset(next);
+    const nextStartIndex = Math.max(0, Math.floor(next / virtualRowHeight) - virtualOverscan);
+    const nextEndIndex = Math.min(
+      visibleRows.length,
+      Math.ceil((next + virtualViewportHeight) / virtualRowHeight) + virtualOverscan,
+    );
+    virtualizationOptions.onScrollOffsetChange?.(next, {
+      firstRowIndex: nextStartIndex,
+      lastRowIndex: nextEndIndex,
+      reason: "scroll",
+      scrollOffset: next,
+    });
+  };
+
   return (
     <div
       {...regionProps}
@@ -1996,6 +2187,7 @@ function DataGridInner<TData extends object>(
       tabIndex={0}
       data-operation={operationStatus === false ? undefined : operationStatus.state}
       data-slot="data-grid-region"
+      data-virtualized={virtualizationEnabled || undefined}
       data-maturity="experimental"
       className={classes("mrg-data-grid", className)}
     >
@@ -2048,205 +2240,263 @@ function DataGridInner<TData extends object>(
           </div>
         </details>
       ) : null}
-      <table data-slot="data-grid-table" className="mrg-data-grid__table">
-        <caption>{caption}</caption>
-        <colgroup>
-          {detailRowsOptions !== null ? <col /> : null}
-          {selectionMode === "single" ? <col /> : null}
-          {visibleColumns.map((column) => {
-            const meta = column.columnDef.meta as { width?: string } | undefined;
-            return (
-              <col
-                key={column.id}
-                style={meta?.width === undefined ? undefined : { inlineSize: meta.width }}
-              />
-            );
-          })}
-        </colgroup>
-        <thead data-slot="data-grid-header">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} data-slot="data-grid-header-row">
-              {detailRowsOptions !== null ? (
-                <th scope="col" data-slot="data-grid-detail-heading">
-                  <span className="mrg-data-grid__visually-hidden">Details</span>
-                </th>
-              ) : null}
-              {selectionMode === "single" ? (
-                <th scope="col" className="mrg-data-grid__selection-heading">
-                  <span className="mrg-data-grid__visually-hidden">
-                    {resolvedMessages.selectionColumnLabel}
-                  </span>
-                </th>
-              ) : null}
-              {headerGroup.headers.map((header) => {
-                const sorted = header.column.getIsSorted();
-                const meta = header.column.columnDef.meta as
-                  | {
-                      alignment?: DataGridColumnAlignment;
-                      sizing?: DataGridColumnSizeOptions;
-                      width?: string;
-                    }
-                  | undefined;
-                const sizingControlEnabled =
-                  columnSizingOptions !== null && meta?.sizing !== undefined;
-                const sizing = meta?.sizing;
-                return (
-                  <th
-                    key={header.id}
-                    scope="col"
-                    aria-sort={
-                      sorted === "asc" ? "ascending" : sorted === "desc" ? "descending" : undefined
-                    }
-                    data-slot="data-grid-column-header"
-                    data-align={meta?.alignment ?? "start"}
-                    style={meta?.width === undefined ? undefined : { inlineSize: meta.width }}
-                  >
-                    {header.column.getCanSort() ? (
-                      <button
-                        type="button"
-                        className="mrg-data-grid__sort"
-                        data-slot="data-grid-sort"
-                        disabled={isLoading}
-                        onClick={(event) => {
-                          header.column.getToggleSortingHandler()?.(event);
-                          restoreFocus(event.currentTarget, regionRef.current);
-                        }}
-                        data-sorted={sorted || undefined}
-                      >
-                        <span>
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                        <span aria-hidden="true" className="mrg-data-grid__sort-indicator">
-                          {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : "↕"}
-                        </span>
-                      </button>
-                    ) : (
-                      flexRender(header.column.columnDef.header, header.getContext())
-                    )}
-                    {sizingControlEnabled && sizing !== undefined ? (
-                      <label
-                        data-slot="data-grid-column-sizing-control"
-                        data-column-id={header.column.id}
-                      >
-                        <span className="mrg-data-grid__visually-hidden">
-                          {`Adjust ${sizing.label ?? header.column.id} width`}
-                        </span>
-                        <input
-                          aria-label={`Adjust ${sizing.label ?? header.column.id} width`}
-                          data-slot="data-grid-column-sizing-input"
-                          disabled={isLoading}
-                          max={sizing.max}
-                          min={sizing.min}
-                          step={sizing.step ?? 8}
-                          style={{
-                            minBlockSize: "var(--mrg-semantic-size-target-preferred)",
-                            minInlineSize: "var(--mrg-semantic-size-target-preferred)",
-                          }}
-                          type="range"
-                          value={currentColumnWidths[header.column.id]}
-                          onChange={(event) =>
-                            setColumnWidth(header.column.id, Number(event.currentTarget.value))
-                          }
-                        />
-                      </label>
-                    ) : null}
-                  </th>
-                );
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody data-slot="data-grid-body">
-          {visibleRows.length === 0 ? (
-            <tr data-slot="data-grid-empty-row">
-              <td colSpan={columnCount} className="mrg-data-grid__empty">
-                {emptyContent}
-              </td>
-            </tr>
-          ) : (
-            visibleRows.map((row, visibleIndex) => {
-              const rowId = row.id;
-              const selected = currentSelection === rowId;
-              const expanded = currentExpandedRowIds.includes(rowId);
-              const detailId = `mrg-data-grid-detail-${generatedRadioName}-${rowId}`;
-              const detailLabel =
-                detailRowsOptions?.getDetailLabel?.(row.original, expanded) ??
-                `${expanded ? "Hide" : "Show"} details for ${rowId}`;
+      {virtualizationEnabled && virtualizationOptions?.showRange !== false ? (
+        <p
+          className="mrg-data-grid__virtual-range"
+          data-slot="data-grid-virtual-range"
+          role="status"
+        >
+          {virtualRangeText}
+        </p>
+      ) : null}
+      <div
+        aria-label={virtualizationEnabled ? `${caption}: virtualized rows` : undefined}
+        className={virtualizationEnabled ? "mrg-data-grid__virtual-viewport" : undefined}
+        data-slot={virtualizationEnabled ? "data-grid-virtual-viewport" : undefined}
+        ref={virtualizationEnabled ? virtualViewportRef : undefined}
+        style={
+          virtualizationEnabled
+            ? ({
+                blockSize: `${virtualViewportHeight}px`,
+                "--data-grid-virtual-row-height": `${virtualRowHeight}px`,
+              } as CSSProperties)
+            : undefined
+        }
+        tabIndex={virtualizationEnabled ? 0 : undefined}
+        onScroll={
+          virtualizationEnabled
+            ? (event) => handleVirtualScroll(event.currentTarget.scrollTop)
+            : undefined
+        }
+      >
+        <table data-slot="data-grid-table" className="mrg-data-grid__table">
+          <caption>{caption}</caption>
+          <colgroup>
+            {detailRowsOptions !== null ? <col /> : null}
+            {selectionMode === "single" ? <col /> : null}
+            {visibleColumns.map((column) => {
+              const meta = column.columnDef.meta as { width?: string } | undefined;
               return (
-                <Fragment key={rowId}>
-                  <tr
-                    data-slot="data-grid-row"
-                    data-expanded={expanded || undefined}
-                    data-selected={selected || undefined}
-                  >
-                    {detailRowsOptions !== null ? (
-                      <td data-slot="data-grid-detail-action-cell">
+                <col
+                  key={column.id}
+                  style={meta?.width === undefined ? undefined : { inlineSize: meta.width }}
+                />
+              );
+            })}
+          </colgroup>
+          <thead data-slot="data-grid-header">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} data-slot="data-grid-header-row">
+                {detailRowsOptions !== null ? (
+                  <th scope="col" data-slot="data-grid-detail-heading">
+                    <span className="mrg-data-grid__visually-hidden">Details</span>
+                  </th>
+                ) : null}
+                {selectionMode === "single" ? (
+                  <th scope="col" className="mrg-data-grid__selection-heading">
+                    <span className="mrg-data-grid__visually-hidden">
+                      {resolvedMessages.selectionColumnLabel}
+                    </span>
+                  </th>
+                ) : null}
+                {headerGroup.headers.map((header) => {
+                  const sorted = header.column.getIsSorted();
+                  const meta = header.column.columnDef.meta as
+                    | {
+                        alignment?: DataGridColumnAlignment;
+                        sizing?: DataGridColumnSizeOptions;
+                        width?: string;
+                      }
+                    | undefined;
+                  const sizingControlEnabled =
+                    columnSizingOptions !== null && meta?.sizing !== undefined;
+                  const sizing = meta?.sizing;
+                  return (
+                    <th
+                      key={header.id}
+                      scope="col"
+                      aria-sort={
+                        sorted === "asc"
+                          ? "ascending"
+                          : sorted === "desc"
+                            ? "descending"
+                            : undefined
+                      }
+                      data-slot="data-grid-column-header"
+                      data-align={meta?.alignment ?? "start"}
+                      style={meta?.width === undefined ? undefined : { inlineSize: meta.width }}
+                    >
+                      {header.column.getCanSort() ? (
                         <button
-                          aria-controls={detailId}
-                          aria-expanded={expanded}
-                          data-slot="data-grid-detail-trigger"
-                          disabled={isLoading}
-                          style={{
-                            minBlockSize: "var(--mrg-semantic-size-target-preferred)",
-                            minInlineSize: "var(--mrg-semantic-size-target-preferred)",
-                          }}
                           type="button"
-                          onClick={() => setRowExpanded(rowId, !expanded)}
+                          className="mrg-data-grid__sort"
+                          data-slot="data-grid-sort"
+                          disabled={isLoading}
+                          onClick={(event) => {
+                            header.column.getToggleSortingHandler()?.(event);
+                            restoreFocus(event.currentTarget, regionRef.current);
+                          }}
+                          data-sorted={sorted || undefined}
                         >
-                          {detailLabel}
+                          <span>
+                            {flexRender(header.column.columnDef.header, header.getContext())}
+                          </span>
+                          <span aria-hidden="true" className="mrg-data-grid__sort-indicator">
+                            {sorted === "asc" ? "↑" : sorted === "desc" ? "↓" : "↕"}
+                          </span>
                         </button>
-                      </td>
-                    ) : null}
-                    {selectionMode === "single" ? (
-                      <td
-                        data-slot="data-grid-selection-cell"
-                        className="mrg-data-grid__selection-cell"
-                      >
-                        <label className="mrg-data-grid__selection-control">
+                      ) : (
+                        flexRender(header.column.columnDef.header, header.getContext())
+                      )}
+                      {sizingControlEnabled && sizing !== undefined ? (
+                        <label
+                          data-slot="data-grid-column-sizing-control"
+                          data-column-id={header.column.id}
+                        >
+                          <span className="mrg-data-grid__visually-hidden">
+                            {`Adjust ${sizing.label ?? header.column.id} width`}
+                          </span>
                           <input
-                            type="radio"
-                            name={radioName}
-                            value={rowId}
-                            checked={selected}
-                            aria-label={
-                              getRowLabel?.(row.original) ??
-                              resolvedMessages.selectRowLabel(visibleIndex + 1)
-                            }
-                            onChange={() => {
-                              if (selectedRowId === undefined) setUncontrolledSelection(rowId);
-                              onSelectedRowIdChange?.(rowId, { reason: "radio" });
+                            aria-label={`Adjust ${sizing.label ?? header.column.id} width`}
+                            data-slot="data-grid-column-sizing-input"
+                            disabled={isLoading}
+                            max={sizing.max}
+                            min={sizing.min}
+                            step={sizing.step ?? 8}
+                            style={{
+                              minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                              minInlineSize: "var(--mrg-semantic-size-target-preferred)",
                             }}
+                            type="range"
+                            value={currentColumnWidths[header.column.id]}
+                            onChange={(event) =>
+                              setColumnWidth(header.column.id, Number(event.currentTarget.value))
+                            }
                           />
                         </label>
-                      </td>
-                    ) : null}
-                    {row.getVisibleCells().map((cell) => {
-                      const meta = cell.column.columnDef.meta as
-                        { alignment?: DataGridColumnAlignment } | undefined;
-                      return (
-                        <td
-                          key={cell.id}
-                          data-slot="data-grid-cell"
-                          data-align={meta?.alignment ?? "start"}
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      );
-                    })}
+                      ) : null}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody data-slot="data-grid-body">
+            {visibleRows.length === 0 ? (
+              <tr data-slot="data-grid-empty-row">
+                <td colSpan={columnCount} className="mrg-data-grid__empty">
+                  {emptyContent}
+                </td>
+              </tr>
+            ) : (
+              <>
+                {virtualTopSpacerHeight > 0 ? (
+                  <tr aria-hidden="true" data-slot="data-grid-virtual-spacer">
+                    <td
+                      colSpan={columnCount}
+                      style={{ blockSize: `${virtualTopSpacerHeight}px`, padding: 0 }}
+                    />
                   </tr>
-                  {detailRowsOptions !== null && expanded ? (
-                    <tr data-slot="data-grid-detail-row">
-                      <td colSpan={columnCount} data-slot="data-grid-detail-content" id={detailId}>
-                        {detailRowsOptions.renderDetail(row.original)}
-                      </td>
-                    </tr>
-                  ) : null}
-                </Fragment>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+                ) : null}
+                {renderedRows.map((row, renderedIndex) => {
+                  const rowId = row.id;
+                  const selected = currentSelection === rowId;
+                  const expanded = currentExpandedRowIds.includes(rowId);
+                  const detailId = `mrg-data-grid-detail-${generatedRadioName}-${rowId}`;
+                  const detailLabel =
+                    detailRowsOptions?.getDetailLabel?.(row.original, expanded) ??
+                    `${expanded ? "Hide" : "Show"} details for ${rowId}`;
+                  return (
+                    <Fragment key={rowId}>
+                      <tr
+                        data-slot="data-grid-row"
+                        data-expanded={expanded || undefined}
+                        data-selected={selected || undefined}
+                      >
+                        {detailRowsOptions !== null ? (
+                          <td data-slot="data-grid-detail-action-cell">
+                            <button
+                              aria-controls={detailId}
+                              aria-expanded={expanded}
+                              data-slot="data-grid-detail-trigger"
+                              disabled={isLoading}
+                              style={{
+                                minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                                minInlineSize: "var(--mrg-semantic-size-target-preferred)",
+                              }}
+                              type="button"
+                              onClick={() => setRowExpanded(rowId, !expanded)}
+                            >
+                              {detailLabel}
+                            </button>
+                          </td>
+                        ) : null}
+                        {selectionMode === "single" ? (
+                          <td
+                            data-slot="data-grid-selection-cell"
+                            className="mrg-data-grid__selection-cell"
+                          >
+                            <label className="mrg-data-grid__selection-control">
+                              <input
+                                type="radio"
+                                name={radioName}
+                                value={rowId}
+                                checked={selected}
+                                aria-label={
+                                  getRowLabel?.(row.original) ??
+                                  resolvedMessages.selectRowLabel(
+                                    virtualStartIndex + renderedIndex + 1,
+                                  )
+                                }
+                                onChange={() => {
+                                  if (selectedRowId === undefined) setUncontrolledSelection(rowId);
+                                  onSelectedRowIdChange?.(rowId, { reason: "radio" });
+                                }}
+                              />
+                            </label>
+                          </td>
+                        ) : null}
+                        {row.getVisibleCells().map((cell) => {
+                          const meta = cell.column.columnDef.meta as
+                            { alignment?: DataGridColumnAlignment } | undefined;
+                          return (
+                            <td
+                              key={cell.id}
+                              data-slot="data-grid-cell"
+                              data-align={meta?.alignment ?? "start"}
+                            >
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                      {detailRowsOptions !== null && expanded ? (
+                        <tr data-slot="data-grid-detail-row">
+                          <td
+                            colSpan={columnCount}
+                            data-slot="data-grid-detail-content"
+                            id={detailId}
+                          >
+                            {detailRowsOptions.renderDetail(row.original)}
+                          </td>
+                        </tr>
+                      ) : null}
+                    </Fragment>
+                  );
+                })}
+                {virtualBottomSpacerHeight > 0 ? (
+                  <tr aria-hidden="true" data-slot="data-grid-virtual-spacer">
+                    <td
+                      colSpan={columnCount}
+                      style={{ blockSize: `${virtualBottomSpacerHeight}px`, padding: 0 }}
+                    />
+                  </tr>
+                ) : null}
+              </>
+            )}
+          </tbody>
+        </table>
+      </div>
       {paginationOptions !== null && effectivePagination !== null ? (
         <nav
           aria-label={resolvedMessages.paginationLabel(caption)}

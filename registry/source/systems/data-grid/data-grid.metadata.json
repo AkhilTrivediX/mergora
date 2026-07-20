@@ -16,6 +16,7 @@
     "loading",
     "error",
     "form-reset",
+    "large-data",
     "manual-operations",
     "narrow",
     "rtl",
@@ -136,6 +137,24 @@
       "semanticElement": "input",
       "refTarget": "HTMLInputElement",
       "states": ["enhancement-enabled", "form-reset"]
+    },
+    {
+      "name": "data-grid-virtual-viewport",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["enhancement-enabled", "large-data", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-virtual-range",
+      "semanticElement": "p",
+      "refTarget": "HTMLParagraphElement",
+      "states": ["enhancement-enabled", "large-data"]
+    },
+    {
+      "name": "data-grid-virtual-spacer",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["enhancement-enabled", "large-data"]
     },
     {
       "name": "data-grid-table",

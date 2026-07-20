@@ -155,14 +155,14 @@ describe("GitHub workflow contracts", () => {
     ]);
   });
 
-  it("verifies exact feature-branch checkpoints without requiring a pull-request event", () => {
+  it("keeps feature checkpoints dispatchable without duplicate feature-push runs", () => {
     const exactCandidate = "${{ github.event.pull_request.head.sha || github.sha }}";
     const checkoutNeedle = "uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0";
     for (const workflow of [
       workflows[".github/workflows/ci.yml"],
       workflows[".github/workflows/security.yml"],
     ]) {
-      expect(workflow).toContain('      - "feature/**"');
+      expect(workflow).not.toContain('      - "feature/**"');
       expect(workflow).toContain("  workflow_dispatch:");
       expect(workflow).not.toContain("pull_request_target:");
       expect(occurrences(workflow, `ref: ${exactCandidate}`)).toBe(

@@ -114,6 +114,51 @@
     font-variant-numeric: tabular-nums;
   }
 
+  .mrg-data-grid__virtual-viewport {
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-data-grid__virtual-viewport:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: calc(var(--mrg-component-focus-indicator-offset) * -1);
+  }
+
+  .mrg-data-grid__virtual-range {
+    position: sticky;
+    inset-inline-start: 0;
+    box-sizing: border-box;
+    inline-size: min(100%, 44rem);
+    margin: 0;
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-brand-violet);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mrg-data-grid[data-virtualized] tbody td {
+    block-size: var(--data-grid-virtual-row-height);
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mrg-data-grid[data-virtualized] [data-slot="data-grid-virtual-spacer"] td {
+    block-size: auto;
+    border-block: 0;
+  }
+
   .mrg-data-grid caption {
     padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
     text-align: start;
@@ -333,6 +378,10 @@
       border-color: CanvasText;
       color: CanvasText;
       background: Canvas;
+    }
+
+    .mrg-data-grid__virtual-viewport {
+      border-color: CanvasText;
     }
 
     .mrg-data-grid th,

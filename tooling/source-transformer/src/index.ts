@@ -217,6 +217,8 @@ const SOURCE_BLUEPRINTS: readonly SourceBlueprint[] = [
       "DataGridColumnWidths",
       "DataGridDetailRowsChangeDetail",
       "DataGridDetailRowsOptions",
+      "DataGridVirtualizationChangeDetail",
+      "DataGridVirtualizationOptions",
       "DataGridExpandedRowIds",
       "DataGridColumnVisibility",
       "DataGridColumnVisibilityAdapter",
