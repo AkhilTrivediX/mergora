@@ -73,6 +73,7 @@ test("basic DataGrid keeps table semantics and removes every D1-A enhancement", 
   await expect(page.locator('[data-slot="data-grid-query-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-selection-input"]')).toHaveCount(0);
   await expect(page.locator('[data-slot="data-grid-column-visibility"]')).toHaveCount(0);
+  await expect(page.locator('[data-slot="data-grid-column-sizing-control"]')).toHaveCount(0);
   await expect(page.locator("[data-story-controlled-form-data]")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Prepare safe CSV" })).toHaveCount(0);
   await expect(page.locator("[data-story-csv-preview]")).toHaveCount(0);
@@ -92,6 +93,7 @@ test("Storybook controls enable independent enhancements without creating illega
       "filteringEnabled:true",
       "columnVisibilityEnabled:true",
       "columnVisibilityPersistenceEnabled:true",
+      "columnSizingEnabled:true",
       "csvExportEnabled:true",
       "formSerializationEnabled:true",
       "operationMode:manual",
@@ -104,6 +106,7 @@ test("Storybook controls enable independent enhancements without creating illega
     ].join(";"),
   );
   await expect(page.getByRole("searchbox", { name: "Filter records" })).toBeVisible();
+  await expect(page.getByRole("slider", { name: "Adjust Record width" })).toHaveValue("256");
   await page.getByText("Visible fields", { exact: true }).click();
   const ownerVisibility = page.getByRole("checkbox", { name: "Owner" });
   await expect(ownerVisibility).not.toBeChecked();
@@ -220,6 +223,20 @@ test("controlled column visibility reports native checkbox changes without orpha
   );
 });
 
+test("controlled column sizing reports native range changes without interactive grid semantics", async ({
+  page,
+}) => {
+  await openStory(page, "controlled-column-sizing");
+  const recordWidth = page.getByRole("slider", { name: "Adjust Record width" });
+  await expect(recordWidth).toHaveValue("256");
+  await recordWidth.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(recordWidth).toHaveValue("272");
+  await expect(page.locator("[data-story-controlled-column-sizing]")).toHaveText("title:272px");
+  await expect(page.getByRole("grid")).toHaveCount(0);
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("column visibility adapter restores once and persists only committed checkbox changes", async ({
   page,
 }) => {
@@ -312,6 +329,10 @@ test("single selection participates in exact FormData and native reset", async (
   await expect(filter).toHaveValue("Review");
   await expect(ownerVisibility).toBeChecked();
   await expect(page.getByRole("radio", { name: "Select Icon exports" })).toBeChecked();
+  const recordWidth = page.getByRole("slider", { name: "Adjust Record width" });
+  await recordWidth.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(recordWidth).toHaveValue("272");
   await expect(page.locator("[data-story-form-events]")).toHaveText(eventsBeforeReset ?? "");
 
   await page.getByRole("button", { name: "Reset records form" }).click();
@@ -319,6 +340,7 @@ test("single selection participates in exact FormData and native reset", async (
   await expect(ownerVisibility).not.toBeChecked();
   await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
   await expect(page.getByRole("radio", { name: "Select Design tokens" })).toBeChecked();
+  await expect(recordWidth).toHaveValue("256");
   await page.getByRole("button", { name: "Inspect FormData" }).click();
   await expect(page.locator("[data-story-form-data]")).toHaveText(
     '[["libraryRecord","artifact-1"],["libraryQuery",""]]',
@@ -404,7 +426,7 @@ test("DataGrid reflows at 320px in RTL and promotes coarse-pointer controls", as
 
   const undersized = await page
     .locator(
-      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
+      '[data-slot="data-grid-column-header"] button, [data-slot="data-grid-column-sizing-input"], [data-slot="data-grid-filter-input"], [data-slot="data-grid-pagination"] button, [data-slot="data-grid-pagination"] select',
     )
     .evaluateAll((elements) =>
       elements

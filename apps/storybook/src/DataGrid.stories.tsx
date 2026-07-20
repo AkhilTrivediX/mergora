@@ -27,6 +27,7 @@ const columns: readonly DataGridColumn<LibraryRecord>[] = [
     header: "Record",
     accessor: (row) => row.title,
     sortable: true,
+    sizing: { default: 256, label: "Record", max: 416, min: 160, step: 16 },
     visibilityLabel: "Record",
   },
   {
@@ -34,6 +35,7 @@ const columns: readonly DataGridColumn<LibraryRecord>[] = [
     header: "State",
     accessor: (row) => row.state,
     sortable: true,
+    sizing: { default: 144, label: "State", max: 240, min: 112, step: 16 },
     visibilityLabel: "State",
   },
   {
@@ -41,6 +43,7 @@ const columns: readonly DataGridColumn<LibraryRecord>[] = [
     header: "Owner",
     accessor: (row) => row.owner,
     sortable: true,
+    sizing: { default: 176, label: "Owner", max: 320, min: 128, step: 16 },
     visibilityLabel: "Owner",
   },
 ];
@@ -62,6 +65,7 @@ const rows: readonly LibraryRecord[] = [
 
 interface LibraryGridStoryArgs {
   readonly caption: string;
+  readonly columnSizingEnabled: boolean;
   readonly columnVisibilityEnabled: boolean;
   readonly columnVisibilityPersistenceEnabled: boolean;
   readonly csvExportEnabled: boolean;
@@ -103,6 +107,7 @@ function selectionProps(
 
 function LibraryGrid({
   caption,
+  columnSizingEnabled,
   columnVisibilityEnabled,
   columnVisibilityPersistenceEnabled,
   csvExportEnabled,
@@ -143,6 +148,7 @@ function LibraryGrid({
   const grid = (
     <DataGrid<LibraryRecord>
       caption={caption}
+      columnSizing={columnSizingEnabled ? { defaultWidths: { owner: 160 } } : false}
       columnVisibility={
         columnVisibilityEnabled
           ? columnVisibilityPersistenceEnabled
@@ -274,6 +280,35 @@ function ControlledColumnVisibilityExample(): ReactElement {
         rows={rows}
       />
       <output aria-live="polite" data-story-controlled-column-visibility="">
+        {lastChange}
+      </output>
+    </div>
+  );
+}
+
+function ControlledColumnSizingExample(): ReactElement {
+  const [widths, setWidths] = useState<Record<string, number>>({
+    owner: 192,
+    state: 144,
+    title: 256,
+  });
+  const [lastChange, setLastChange] = useState("initial");
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <DataGrid<LibraryRecord>
+        caption="Controlled library record widths"
+        columnSizing={{
+          onWidthsChange: (next, detail) => {
+            setWidths(next);
+            setLastChange(`${detail.columnId}:${detail.width}px`);
+          },
+          widths,
+        }}
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={rows}
+      />
+      <output aria-live="polite" data-story-controlled-column-sizing="">
         {lastChange}
       </output>
     </div>
@@ -517,6 +552,7 @@ function FormSerializationExample(): ReactElement {
     <form onSubmit={inspect} style={{ display: "grid", gap: "0.75rem" }}>
       <DataGrid<LibraryRecord>
         caption="Library records"
+        columnSizing={{ defaultWidths: { title: 256 } }}
         columns={columns}
         columnVisibility={{ defaultVisibility: { owner: false }, label: "Visible fields" }}
         defaultSelectedRowId="artifact-1"
@@ -549,6 +585,7 @@ function FormSerializationExample(): ReactElement {
 const meta = {
   argTypes: {
     caption: { control: "text" },
+    columnSizingEnabled: { control: "boolean" },
     columnVisibilityEnabled: { control: "boolean" },
     columnVisibilityPersistenceEnabled: { control: "boolean" },
     csvExportEnabled: { control: "boolean" },
@@ -568,6 +605,7 @@ const meta = {
   },
   args: {
     caption: "Library records",
+    columnSizingEnabled: false,
     columnVisibilityEnabled: false,
     columnVisibilityPersistenceEnabled: false,
     csvExportEnabled: false,
@@ -596,6 +634,7 @@ export const BasicDefaults: Story = {
 
 export const RecommendedMergora: Story = {
   args: {
+    columnSizingEnabled: true,
     columnVisibilityEnabled: true,
     columnVisibilityPersistenceEnabled: true,
     csvExportEnabled: true,
@@ -615,6 +654,10 @@ export const ControlledSelection: Story = {
 
 export const ControlledColumnVisibility: Story = {
   render: () => <ControlledColumnVisibilityExample />,
+};
+
+export const ControlledColumnSizing: Story = {
+  render: () => <ControlledColumnSizingExample />,
 };
 
 export const ColumnVisibilityAdapterHydration: Story = {
@@ -678,6 +721,7 @@ export const NarrowAndRtl: Story = {
     <div dir="rtl" style={{ inlineSize: 320, maxInlineSize: "100%" }}>
       <LibraryGrid
         caption="Library records"
+        columnSizingEnabled
         columnVisibilityEnabled
         columnVisibilityPersistenceEnabled={false}
         csvExportEnabled={false}

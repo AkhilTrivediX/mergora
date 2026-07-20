@@ -32,6 +32,21 @@ const columns: readonly DataGridColumn<Row>[] = [
   { id: "score", header: "Score", accessor: (row) => row.score, sortable: true },
 ];
 
+const sizableColumns: readonly DataGridColumn<Row>[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row) => row.name,
+    sizing: { default: 200, max: 280, min: 120, step: 20 },
+  },
+  {
+    id: "score",
+    header: "Score",
+    accessor: (row) => row.score,
+    sizing: { default: 140, max: 220, min: 100, step: 20 },
+  },
+];
+
 const _invalidDisabledSelection = {
   selectedRowId: "a",
   selectionMode: "none",
@@ -313,6 +328,57 @@ describe("Data Grid Experimental canonical source", () => {
     expect(enhanced).not.toContain(">9<");
   });
 
+  it("keeps optional native column sizing bounded and absent when disabled", () => {
+    const basic = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={sizableColumns}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(basic).not.toContain("data-grid-column-sizing");
+    expect(basic).not.toContain("Adjust name width");
+
+    const enhanced = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columnSizing={{ defaultWidths: { name: 240 } }}
+        columns={sizableColumns}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(enhanced).toContain('data-slot="data-grid-column-sizing-control"');
+    expect(enhanced).toContain('aria-label="Adjust name width"');
+    expect(enhanced).toContain('min="120"');
+    expect(enhanced).toContain('max="280"');
+    expect(enhanced).toContain('value="240"');
+
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columnSizing={{ widths: { name: 121 } }}
+          columns={sizableColumns}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/must align to its 20px step/u);
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columnSizing={{ defaultWidths: { score: 240 } }}
+          columns={sizableColumns}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/from 100 to 220/u);
+  });
+
   it("serializes visibility in declared-column order and rejects malformed adapter input", () => {
     expect(serializeDataGridColumnVisibility(columns, { name: false, score: true })).toBe(
       '[["name",false],["score",true]]',
@@ -560,6 +626,11 @@ describe("Data Grid Experimental canonical source", () => {
         columnVisibility: { defaultVisibility: { score: false }, visibility: { name: true } },
       }),
     ).toThrow(/controlled column visibility cannot be combined/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        columnSizing: { defaultWidths: { score: 120 }, widths: { score: 120 } },
+      }),
+    ).toThrow(/controlled column sizing cannot be combined/u);
     expect(() =>
       renderToStaticMarkup(
         <DataGrid

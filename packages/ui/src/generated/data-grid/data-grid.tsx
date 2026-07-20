@@ -193,8 +193,49 @@ export interface DataGridColumn<TData extends object> {
   readonly alignment?: DataGridColumnAlignment;
   /** Applies a consumer-supplied column width to the native column definition. */
   readonly width?: string;
+  /** Enables a bounded native width control for this individual column. */
+  readonly sizing?: DataGridColumnSizeOptions;
   /** Supplies localized control text when this column appears in the optional visibility panel. */
   readonly visibilityLabel?: string;
+}
+
+export interface DataGridColumnSizeOptions {
+  /** Smallest permitted rendered width in CSS pixels. */
+  readonly min: number;
+  /** Largest permitted rendered width in CSS pixels. */
+  readonly max: number;
+  /** Initial uncontrolled width in CSS pixels before a map override. */
+  readonly default: number;
+  /** Native range increment in CSS pixels; defaults to 8. */
+  readonly step?: number;
+  /** Replaces the column header text in the native width-control label. */
+  readonly label?: string;
+}
+
+export type DataGridColumnWidths = Readonly<{
+  /** Stores a requested CSS-pixel width for each declared resizable column. */
+  [columnId: string]: number;
+}>;
+
+export interface DataGridColumnSizingChangeDetail {
+  /** Identifies the native range control that requested the next width. */
+  readonly columnId: string;
+  /** Identifies the native range control as the committed sizing-change cause. */
+  readonly reason: "native-range";
+  /** Reports the next validated CSS-pixel width. */
+  readonly width: number;
+}
+
+export interface DataGridColumnSizingOptions {
+  /** Controls declared resizable-column widths in CSS pixels. */
+  readonly widths?: DataGridColumnWidths;
+  /** Initializes uncontrolled declared resizable-column widths in CSS pixels. */
+  readonly defaultWidths?: DataGridColumnWidths;
+  /** Reports each native range request after validating the complete width map. */
+  readonly onWidthsChange?: (
+    widths: DataGridColumnWidths,
+    detail: DataGridColumnSizingChangeDetail,
+  ) => void;
 }
 
 export type DataGridColumnVisibility = Readonly<{
@@ -269,6 +310,8 @@ interface DataGridCommonProps<TData extends object> extends Omit<
   readonly className?: string;
   /** Enables optional controlled or uncontrolled native column-visibility controls. */
   readonly columnVisibility?: false | DataGridColumnVisibilityOptions;
+  /** Enables optional controlled or uncontrolled native column-width controls. */
+  readonly columnSizing?: false | DataGridColumnSizingOptions;
 }
 
 interface DataGridSelectionDisabledProps {
@@ -677,6 +720,62 @@ function resolveColumnVisibility<TData extends object>(
   return Object.fromEntries(columns.map((column) => [column.id, requested?.[column.id] ?? true]));
 }
 
+function sizingColumns<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+): readonly DataGridColumn<TData>[] {
+  return columns.filter((column) => column.sizing !== undefined);
+}
+
+function resolveColumnWidths<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnWidths | undefined,
+): DataGridColumnWidths {
+  return Object.fromEntries(
+    sizingColumns(columns).map((column) => [
+      column.id,
+      requested?.[column.id] ?? column.sizing!.default,
+    ]),
+  );
+}
+
+function sameColumnWidths(left: DataGridColumnWidths, right: DataGridColumnWidths): boolean {
+  const leftEntries = Object.entries(left);
+  return (
+    leftEntries.length === Object.keys(right).length &&
+    leftEntries.every(([columnId, width]) => right[columnId] === width)
+  );
+}
+
+function assertColumnWidths<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnWidths | undefined,
+  label: string,
+): void {
+  if (requested === undefined) return;
+  const sizingById = new Map(
+    sizingColumns(columns).map((column) => [column.id, column.sizing!] as const),
+  );
+  for (const [columnId, width] of Object.entries(requested)) {
+    const sizing = sizingById.get(columnId);
+    if (sizing === undefined) {
+      throw new Error(
+        `Mergora DataGrid ${label} contains non-resizable column ${JSON.stringify(columnId)}.`,
+      );
+    }
+    if (!Number.isFinite(width) || width < sizing.min || width > sizing.max) {
+      throw new RangeError(
+        `Mergora DataGrid ${label}.${columnId} must be a finite width from ${sizing.min} to ${sizing.max}.`,
+      );
+    }
+    const step = sizing.step ?? 8;
+    if (Math.abs((width - sizing.min) / step - Math.round((width - sizing.min) / step)) > 1e-8) {
+      throw new RangeError(
+        `Mergora DataGrid ${label}.${columnId} must align to its ${step}px step.`,
+      );
+    }
+  }
+}
+
 /** Serializes declared column visibility in declaration order for deterministic persistence adapters. */
 export function serializeDataGridColumnVisibility<TData extends object>(
   columns: readonly DataGridColumn<TData>[],
@@ -900,6 +999,35 @@ export function assertDataGridConfiguration(props: Readonly<Record<string, unkno
     }
   }
   if (
+    props.columnSizing !== undefined &&
+    props.columnSizing !== false &&
+    !isPlainObject(props.columnSizing)
+  ) {
+    throw new TypeError("Mergora DataGrid columnSizing must be false or an options object.");
+  }
+  if (isPlainObject(props.columnSizing)) {
+    const columnSizing = props.columnSizing;
+    if (columnSizing.widths !== undefined && !isPlainObject(columnSizing.widths)) {
+      throw new TypeError("Mergora DataGrid columnSizing.widths must be a plain object.");
+    }
+    if (columnSizing.defaultWidths !== undefined && !isPlainObject(columnSizing.defaultWidths)) {
+      throw new TypeError("Mergora DataGrid columnSizing.defaultWidths must be a plain object.");
+    }
+    if (hasDefinedOwn(columnSizing, "widths") && hasDefinedOwn(columnSizing, "defaultWidths")) {
+      throw new Error(
+        "Mergora DataGrid controlled column sizing cannot be combined with defaultWidths.",
+      );
+    }
+    if (
+      columnSizing.onWidthsChange !== undefined &&
+      typeof columnSizing.onWidthsChange !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnSizing.onWidthsChange must be a function when supplied.",
+      );
+    }
+  }
+  if (
     props.operationMode !== undefined &&
     props.operationMode !== "client" &&
     props.operationMode !== "manual"
@@ -1118,6 +1246,34 @@ function validateIdentityAndOperations<TData extends object>(
         `Mergora DataGrid column ${JSON.stringify(column.id)} visibilityLabel must be a non-empty string when supplied.`,
       );
     }
+    if (column.sizing !== undefined) {
+      const { default: defaultWidth, label, max, min, step = 8 } = column.sizing;
+      if (
+        !Number.isFinite(min) ||
+        !Number.isFinite(max) ||
+        !Number.isFinite(defaultWidth) ||
+        !Number.isFinite(step) ||
+        min <= 0 ||
+        max < min ||
+        defaultWidth < min ||
+        defaultWidth > max ||
+        step <= 0
+      ) {
+        throw new RangeError(
+          `Mergora DataGrid column ${JSON.stringify(column.id)} sizing requires positive finite min, max, default, and step values with default in range.`,
+        );
+      }
+      if (Math.abs((defaultWidth - min) / step - Math.round((defaultWidth - min) / step)) > 1e-8) {
+        throw new RangeError(
+          `Mergora DataGrid column ${JSON.stringify(column.id)} sizing.default must align to its ${step}px step.`,
+        );
+      }
+      if (label !== undefined && (typeof label !== "string" || label.trim().length === 0)) {
+        throw new Error(
+          `Mergora DataGrid column ${JSON.stringify(column.id)} sizing.label must be non-empty when supplied.`,
+        );
+      }
+    }
   }
   if (props.columnVisibility !== undefined && props.columnVisibility !== false) {
     assertColumnVisibility(
@@ -1129,6 +1285,17 @@ function validateIdentityAndOperations<TData extends object>(
       props.columns,
       props.columnVisibility.defaultVisibility,
       "columnVisibility.defaultVisibility",
+    );
+  }
+  if (props.columnSizing !== undefined && props.columnSizing !== false) {
+    if (sizingColumns(props.columns).length === 0) {
+      throw new Error("Mergora DataGrid columnSizing requires at least one column with sizing.");
+    }
+    assertColumnWidths(props.columns, props.columnSizing.widths, "columnSizing.widths");
+    assertColumnWidths(
+      props.columns,
+      props.columnSizing.defaultWidths,
+      "columnSizing.defaultWidths",
     );
   }
   const rowIds = props.rows.map((row) => props.getRowId(row));
@@ -1234,6 +1401,7 @@ function DataGridInner<TData extends object>(
     caption,
     regionLabel,
     columnVisibility = false,
+    columnSizing = false,
     selectionMode = "none",
     selectedRowId,
     defaultSelectedRowId = null,
@@ -1274,6 +1442,7 @@ function DataGridInner<TData extends object>(
   }
   const adapterReadRef = useRef(false);
   const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
+  const columnSizingOptions = columnSizing === false ? null : columnSizing;
   const columnVisibilityAdapterReadRef = useRef(false);
   const initialColumnVisibilityRef = useRef<DataGridColumnVisibility | null>(null);
   if (initialColumnVisibilityRef.current === null) {
@@ -1281,6 +1450,13 @@ function DataGridInner<TData extends object>(
       columns,
       columnVisibilityOptions?.defaultVisibility,
     );
+  }
+  const initialColumnWidthsRef = useRef<DataGridColumnWidths | null>(null);
+  if (initialColumnWidthsRef.current === null) {
+    initialColumnWidthsRef.current =
+      columnSizingOptions === null
+        ? {}
+        : resolveColumnWidths(columns, columnSizingOptions.defaultWidths);
   }
   const [uncontrolledSelection, setUncontrolledSelection] = useState<string | null>(
     selectionMode === "single" ? defaultSelectedRowId : null,
@@ -1293,6 +1469,9 @@ function DataGridInner<TData extends object>(
   );
   const [uncontrolledColumnVisibility, setUncontrolledColumnVisibility] =
     useState<DataGridColumnVisibility>(initialColumnVisibilityRef.current);
+  const [uncontrolledColumnWidths, setUncontrolledColumnWidths] = useState<DataGridColumnWidths>(
+    initialColumnWidthsRef.current,
+  );
 
   useEffect(() => {
     if (
@@ -1383,6 +1562,10 @@ function DataGridInner<TData extends object>(
     columns,
     columnVisibilityOptions?.visibility ?? uncontrolledColumnVisibility,
   );
+  const currentColumnWidths =
+    columnSizingOptions === null
+      ? {}
+      : resolveColumnWidths(columns, columnSizingOptions.widths ?? uncontrolledColumnWidths);
   const sourceQuery = controlledQuery ?? uncontrolledQuery;
   if (
     paginationMode !== null &&
@@ -1441,9 +1624,16 @@ function DataGridInner<TData extends object>(
             ? formatCellValue(context.getValue())
             : column.cell(context.getValue(), context.row.original),
         enableSorting: column.sortable ?? false,
-        meta: { alignment: column.alignment ?? "start", width: column.width },
+        meta: {
+          alignment: column.alignment ?? "start",
+          width:
+            columnSizingOptions !== null && column.sizing !== undefined
+              ? `${currentColumnWidths[column.id]}px`
+              : column.width,
+          sizing: column.sizing,
+        },
       })),
-    [columns],
+    [columnSizingOptions, columns, currentColumnWidths],
   );
 
   const commitQuery = (nextValue: DataGridQuery, reason: DataGridOperationReason): void => {
@@ -1599,6 +1789,9 @@ function DataGridInner<TData extends object>(
         if (columnVisibilityOptions !== null && columnVisibilityOptions.visibility === undefined) {
           setUncontrolledColumnVisibility(initialColumnVisibilityRef.current!);
         }
+        if (columnSizingOptions !== null && columnSizingOptions.widths === undefined) {
+          setUncontrolledColumnWidths(initialColumnWidthsRef.current!);
+        }
       }, 0);
     };
     form.addEventListener("reset", handleReset);
@@ -1609,6 +1802,7 @@ function DataGridInner<TData extends object>(
     defaultSelectedRowId,
     defaultSorting,
     columnVisibilityOptions?.visibility,
+    columnSizingOptions?.widths,
     selectedRowId,
     selectionMode,
     sorting,
@@ -1622,6 +1816,19 @@ function DataGridInner<TData extends object>(
 
   const setColumnVisible = (columnId: string, visible: boolean): void => {
     table.setColumnVisibility({ ...currentColumnVisibility, [columnId]: visible });
+  };
+
+  const setColumnWidth = (columnId: string, width: number): void => {
+    if (columnSizingOptions === null) return;
+    const next = { ...currentColumnWidths, [columnId]: width };
+    assertColumnWidths(columns, next, "columnSizing requested widths");
+    if (sameColumnWidths(currentColumnWidths, next)) return;
+    if (columnSizingOptions.widths === undefined) setUncontrolledColumnWidths(next);
+    columnSizingOptions.onWidthsChange?.(next, {
+      columnId,
+      reason: "native-range",
+      width,
+    });
   };
 
   return (
@@ -1688,6 +1895,18 @@ function DataGridInner<TData extends object>(
       ) : null}
       <table data-slot="data-grid-table" className="mrg-data-grid__table">
         <caption>{caption}</caption>
+        <colgroup>
+          {selectionMode === "single" ? <col /> : null}
+          {visibleColumns.map((column) => {
+            const meta = column.columnDef.meta as { width?: string } | undefined;
+            return (
+              <col
+                key={column.id}
+                style={meta?.width === undefined ? undefined : { inlineSize: meta.width }}
+              />
+            );
+          })}
+        </colgroup>
         <thead data-slot="data-grid-header">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} data-slot="data-grid-header-row">
@@ -1701,7 +1920,15 @@ function DataGridInner<TData extends object>(
               {headerGroup.headers.map((header) => {
                 const sorted = header.column.getIsSorted();
                 const meta = header.column.columnDef.meta as
-                  { alignment?: DataGridColumnAlignment; width?: string } | undefined;
+                  | {
+                      alignment?: DataGridColumnAlignment;
+                      sizing?: DataGridColumnSizeOptions;
+                      width?: string;
+                    }
+                  | undefined;
+                const sizingControlEnabled =
+                  columnSizingOptions !== null && meta?.sizing !== undefined;
+                const sizing = meta?.sizing;
                 return (
                   <th
                     key={header.id}
@@ -1735,6 +1962,33 @@ function DataGridInner<TData extends object>(
                     ) : (
                       flexRender(header.column.columnDef.header, header.getContext())
                     )}
+                    {sizingControlEnabled && sizing !== undefined ? (
+                      <label
+                        data-slot="data-grid-column-sizing-control"
+                        data-column-id={header.column.id}
+                      >
+                        <span className="mrg-data-grid__visually-hidden">
+                          {`Adjust ${sizing.label ?? header.column.id} width`}
+                        </span>
+                        <input
+                          aria-label={`Adjust ${sizing.label ?? header.column.id} width`}
+                          data-slot="data-grid-column-sizing-input"
+                          disabled={isLoading}
+                          max={sizing.max}
+                          min={sizing.min}
+                          step={sizing.step ?? 8}
+                          style={{
+                            minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                            minInlineSize: "var(--mrg-semantic-size-target-preferred)",
+                          }}
+                          type="range"
+                          value={currentColumnWidths[header.column.id]}
+                          onChange={(event) =>
+                            setColumnWidth(header.column.id, Number(event.currentTarget.value))
+                          }
+                        />
+                      </label>
+                    ) : null}
                   </th>
                 );
               })}

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState, type CSSProperties, type ReactElement, type ReactNode } from "react";
 
+import { Button } from "../../../registry/source/components/button/index.ts";
 import { Calendar } from "../../../registry/source/components/calendar/index.ts";
 import { DateField } from "../../../registry/source/components/date-field/index.ts";
 import {
@@ -113,6 +114,12 @@ const WALL_TIME_ADAPTER: DateTimeWallTimeAdapter = {
     return { instant: "2026-08-04T07:00:00Z", kind: "valid" };
   },
 };
+
+const CONTROLLED_TEMPORAL_DEFAULTS = {
+  date: "2026-08-04",
+  dateTime: "2026-08-04T09:00",
+  time: "09:00",
+} as const;
 
 function ProofFrame({
   children,
@@ -266,6 +273,68 @@ function DateTimePickerSpecimen({
           Selected shortcut: {selectedPreset}
         </output>
       ) : null}
+    </ProofFrame>
+  );
+}
+
+function ControlledTemporalFieldsSpecimen(): ReactElement {
+  const [date, setDate] = useState<string>(CONTROLLED_TEMPORAL_DEFAULTS.date);
+  const [time, setTime] = useState<string>(CONTROLLED_TEMPORAL_DEFAULTS.time);
+  const [dateTime, setDateTime] = useState<string>(CONTROLLED_TEMPORAL_DEFAULTS.dateTime);
+
+  return (
+    <ProofFrame itemId="controlled-temporal-fields" title="Controlled temporal fields">
+      <p style={{ margin: 0, maxInlineSize: "64ch" }}>
+        The parent owns each canonical native value. Optional context and wall-time resolution stay
+        disabled, so the fields remain concise native controls.
+      </p>
+      <form
+        aria-label="Controlled temporal field evidence"
+        style={{ display: "grid", gap: "var(--mrg-semantic-space-stack-md)" }}
+      >
+        <label style={labelStyle}>
+          Review date
+          <DateField
+            name="controlled-review-date"
+            onValueChange={setDate}
+            showDateContext={false}
+            value={date}
+          />
+        </label>
+        <label style={labelStyle}>
+          Start time
+          <TimeField
+            name="controlled-start-time"
+            onValueChange={setTime}
+            showTimeZoneContext={false}
+            value={time}
+          />
+        </label>
+        <label style={labelStyle}>
+          Planned start
+          <DateTimeField
+            name="controlled-planned-start"
+            onValueChange={setDateTime}
+            showTimeZoneContext={false}
+            value={dateTime}
+            wallTimeAdapter={false}
+          />
+        </label>
+        <Button
+          onClick={() => {
+            setDate(CONTROLLED_TEMPORAL_DEFAULTS.date);
+            setTime(CONTROLLED_TEMPORAL_DEFAULTS.time);
+            setDateTime(CONTROLLED_TEMPORAL_DEFAULTS.dateTime);
+          }}
+          type="button"
+          variant="secondary"
+        >
+          Restore controlled values
+        </Button>
+      </form>
+      <output data-slot="controlled-temporal-values" style={evidenceRailStyle}>
+        Date: {date}; time: {time}; date and time: {dateTime}
+      </output>
     </ProofFrame>
   );
 }
@@ -471,6 +540,11 @@ export const RecommendedDateField: Story = {
       </label>
     </ProofFrame>
   ),
+};
+
+export const ControlledTemporalFields: Story = {
+  name: "Fields · Controlled ownership",
+  render: () => <ControlledTemporalFieldsSpecimen />,
 };
 
 export const BasicDatePicker: Story = {

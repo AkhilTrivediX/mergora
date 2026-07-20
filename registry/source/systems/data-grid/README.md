@@ -75,6 +75,34 @@ Set `columnVisibility={false}` or omit it to remove the disclosure, checkboxes, 
 callbacks, and all related accessibility output. Give a column a localized `visibilityLabel` when
 its stable ID is not suitable for checkbox text.
 
+## Optional column sizing
+
+Column sizing is also off by default. A consumer explicitly gives eligible columns a bounded CSS-pixel
+contract, then enables native range controls with a controlled `widths` map or uncontrolled
+`defaultWidths` map:
+
+```tsx
+<DataGrid
+  {...props}
+  columns={[
+    {
+      id: "record",
+      header: "Record",
+      accessor: (row) => row.record,
+      sizing: { min: 160, max: 416, default: 256, step: 16, label: "Record" },
+    },
+  ]}
+  columnSizing={{ defaultWidths: { record: 272 } }}
+/>
+```
+
+Each enabled column receives a labelled native range control, so keyboard arrows and touch work
+without changing the semantic table into an ARIA grid. Width maps are bounded and step-aligned;
+unknown or unsized column IDs fail before rendering. Native form reset restores uncontrolled widths
+without a callback. Set `columnSizing={false}` or omit it to remove every range, width state,
+callback, reset behavior, and sizing-specific accessibility output; existing consumer CSS widths
+remain untouched.
+
 ## Mergora query operations
 
 Filtering, numbered pagination, deterministic persistence, a canonical hidden form value, and the
@@ -189,7 +217,7 @@ The serializer has no browser side effects. Consumers decide whether and how to 
 action, create a file, start a download, or send the output elsewhere. Omitting that composition
 means there is no export UI, behavior, event, or accessibility output.
 
-The component remains Experimental. Interactive ARIA grid mode, editing, virtualization, column
-resize/reorder/pinning/grouping, range and bulk selection, saved views, permissions, a narrow-screen
-item alternative, and complete Risk Class 3 manual evidence remain later promotion work. No
+The component remains Experimental. Interactive ARIA grid mode, drag resize, reorder/pinning/grouping,
+editing, virtualization, range and bulk selection, saved views, permissions, a narrow-screen item
+alternative, and complete Risk Class 3 manual evidence remain later promotion work. No
 package, catalog, or Passport surface should represent D1-A as Stable.

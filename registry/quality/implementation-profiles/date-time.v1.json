@@ -410,8 +410,16 @@
       },
       "interactionEvidence": {
         "status": "partial",
-        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership alongside the basic and recommended uncontrolled examples. The full manager/framework/engine matrix has not yet run.",
         "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
           {
             "kind": "repository-file",
             "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
@@ -1172,8 +1180,16 @@
       },
       "interactionEvidence": {
         "status": "partial",
-        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, deterministic UTC/New York/Berlin/Kolkata wall-time boundary hydration, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, deterministic UTC/New York/Berlin/Kolkata wall-time boundary hydration, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership with timezone context and wall-time resolution disabled. The full manager/framework/engine matrix has not yet run.",
         "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
           {
             "kind": "repository-file",
             "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
@@ -2179,8 +2195,16 @@
       },
       "interactionEvidence": {
         "status": "partial",
-        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership alongside the basic and recommended uncontrolled examples. The full manager/framework/engine matrix has not yet run.",
         "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
           {
             "kind": "repository-file",
             "location": "tests/components/date-time-systems/date-time-systems.test.tsx"

@@ -19,6 +19,22 @@
     },
     {
       "kind": "type",
+      "name": "DataGridColumnSizeOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnSizingChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnSizingOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnWidths"
+    },
+    {
+      "kind": "type",
       "name": "DataGridColumnVisibility"
     },
     {
@@ -206,6 +222,11 @@
       "type": "false | DataGridColumnVisibilityOptions"
     },
     {
+      "name": "columnSizing",
+      "required": false,
+      "type": "false | DataGridColumnSizingOptions"
+    },
+    {
       "name": "operationMode",
       "required": false,
       "type": "DataGridOperationMode"
@@ -273,6 +294,6 @@
   ],
   "compositionPolicy": {
     "semantics": "Preserve the native table, caption, scoped headers, labelled overflow region, and native form controls. Interactive Grid semantics are not part of this Experimental phase.",
-    "enhancement": "Native single-row selection, controlled or adapter-persisted column visibility, filtering, pagination, query persistence, query summary, async status and retry, form serialization, selection summary, and side-effect-free safe CSV serialization are explicit component-specific APIs. Disabling or omitting each capability removes its own UI, behavior, callbacks, adapter writes, and accessibility output while the plain semantic table remains usable."
+    "enhancement": "Native single-row selection, controlled or adapter-persisted column visibility, controlled or uncontrolled bounded native column sizing, filtering, pagination, query persistence, query summary, async status and retry, form serialization, selection summary, and side-effect-free safe CSV serialization are explicit component-specific APIs. Disabling or omitting each capability removes its own UI, behavior, callbacks, adapter writes, and accessibility output while the plain semantic table remains usable."
   }
 }

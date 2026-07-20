@@ -60,6 +60,18 @@
       "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
     },
     {
+      "name": "data-grid-column-sizing-control",
+      "semanticElement": "label",
+      "refTarget": "HTMLLabelElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-sizing-input",
+      "semanticElement": "input type=range",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
       "name": "data-grid-pagination",
       "semanticElement": "nav",
       "refTarget": "HTMLElement",

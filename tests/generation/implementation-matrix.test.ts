@@ -281,6 +281,7 @@ describe("catalog implementation matrix", () => {
     expect(profile).toBeDefined();
 
     const expectedControls = [
+      "columnSizingEnabled",
       "columnVisibilityEnabled",
       "columnVisibilityPersistenceEnabled",
       "csvExportEnabled",

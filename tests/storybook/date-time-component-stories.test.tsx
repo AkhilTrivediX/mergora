@@ -306,6 +306,29 @@ describe("date and time component-specific Storybook evidence", () => {
     expect(rendered["year-picker"]!.recommended).toContain('data-slot="year-picker-range"');
   });
 
+  it("keeps DateField, TimeField, and DateTimeField directly controllable without enabled enhancements", () => {
+    const rendered = renderStory("ControlledTemporalFields");
+    const source = readFileSync(resolve(workspaceRoot, storyPath), "utf8");
+
+    expect(rendered).toContain('data-story-item="controlled-temporal-fields"');
+    expect(rendered).toContain('name="controlled-review-date"');
+    expect(rendered).toContain('name="controlled-start-time"');
+    expect(rendered).toContain('name="controlled-planned-start"');
+    expect(rendered).toContain('data-slot="controlled-temporal-values"');
+    expect(rendered).toContain("Date: 2026-08-04; time: 09:00; date and time: 2026-08-04T09:00");
+    expect(rendered).not.toContain('data-slot="date-field-context"');
+    expect(rendered).not.toContain('data-slot="time-field-zone"');
+    expect(rendered).not.toContain('data-slot="date-time-field-zone"');
+    expect(rendered).not.toContain('data-slot="date-time-field-wall-time"');
+    expect(rendered).not.toContain('data-slot="date-time-field-resolved-value"');
+    expect(source).toContain("onValueChange={setDate}");
+    expect(source).toContain("onValueChange={setTime}");
+    expect(source).toContain("onValueChange={setDateTime}");
+    expect(source).toContain("showDateContext={false}");
+    expect(source).toContain("showTimeZoneContext={false}");
+    expect(source).toContain("wallTimeAdapter={false}");
+  });
+
   it("keeps multi-enhancement stories valid when one capability is disabled independently", () => {
     expect(renderStory("RecommendedCalendar", { availabilityExplanations: false })).not.toContain(
       "Calibration unavailable.",

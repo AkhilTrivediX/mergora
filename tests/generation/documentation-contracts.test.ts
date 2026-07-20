@@ -247,7 +247,7 @@ describe("documentation contract index", () => {
     expect(item.semanticInteractionContract).toMatchObject({
       status: "source-contract-unreleased",
       sourcePath: "registry/source/systems/data-grid/data-grid.contract.json",
-      contractVersion: "0.2.0",
+      contractVersion: "0.3.0",
       sourceStatus: "source-present-unreleased",
       recordedEvidence: [],
     });
