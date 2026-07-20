@@ -100,6 +100,17 @@ describe("GitHub workflow contracts", () => {
     }
   });
 
+  it("builds package declarations before clean-checkout typechecking", () => {
+    expect(packageScripts["typecheck:prerequisites"]).toBe("turbo run build --filter=mergora-ui");
+    expect(packageScripts.typecheck).toBe(
+      "corepack pnpm@11.14.0 run typecheck:prerequisites && tsc --noEmit -p tsconfig.json && turbo run typecheck",
+    );
+    expect(packageScripts.check).toContain("corepack pnpm@11.14.0 run typecheck");
+    expect(packageScripts.check).not.toContain(
+      "&& tsc --noEmit -p tsconfig.json && turbo run typecheck &&",
+    );
+  });
+
   it("fans CI out into serial, independently owned evidence lanes", () => {
     const ci = workflows[".github/workflows/ci.yml"];
     expect(ci).toContain("quality:\n    name: Repository quality");
