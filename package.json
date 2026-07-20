@@ -26,7 +26,7 @@
     "lint": "eslint .",
     "format": "prettier --write package.json pnpm-workspace.yaml turbo.json tsconfig.json tsconfig.base.json vitest.config.ts playwright.config.ts eslint.config.mjs .changeset/config.json \"*.md\" \".github/**/*.{yml,yaml,md}\" \"apps/**/*.{json,js,mjs,ts,tsx,css,html}\" \"content/**/*.{json,ts,tsx,md,mdx}\" \"docs/**/*.md\" \"packages/**/*.{json,js,mjs,ts,tsx,css,md}\" \"registry/**/*.{json,ts,tsx,md}\" \"tooling/**/*.{json,js,mjs,ts,tsx,md}\" \"scripts/**/*.{mjs,mts}\" \"tests/**/*.{json,js,mjs,ts,tsx,md}\"",
     "format:check": "prettier --check package.json pnpm-workspace.yaml turbo.json tsconfig.json tsconfig.base.json vitest.config.ts playwright.config.ts eslint.config.mjs .changeset/config.json \"*.md\" \".github/**/*.{yml,yaml,md}\" \"apps/**/*.{json,js,mjs,ts,tsx,css,html}\" \"content/**/*.{json,ts,tsx,md,mdx}\" \"docs/**/*.md\" \"packages/**/*.{json,js,mjs,ts,tsx,css,md}\" \"registry/**/*.{json,ts,tsx,md}\" \"tooling/**/*.{json,js,mjs,ts,tsx,md}\" \"scripts/**/*.{mjs,mts}\" \"tests/**/*.{json,js,mjs,ts,tsx,md}\"",
-    "typecheck:prerequisites": "turbo run build --filter=mergora-ui",
+    "typecheck:prerequisites": "turbo run build --filter=mergora-tokens --filter=mergora-ui",
     "typecheck": "corepack pnpm@11.14.0 run typecheck:prerequisites && tsc --noEmit -p tsconfig.json && turbo run typecheck",
     "test": "corepack pnpm@11.14.0 run test:parallel && corepack pnpm@11.14.0 run test:shared-output",
     "test:parallel": "vitest run --exclude tests/cli-browser-audit/official-browser-cli.test.ts",

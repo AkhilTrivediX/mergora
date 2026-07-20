@@ -100,8 +100,10 @@ describe("GitHub workflow contracts", () => {
     }
   });
 
-  it("builds package declarations before clean-checkout typechecking", () => {
-    expect(packageScripts["typecheck:prerequisites"]).toBe("turbo run build --filter=mergora-ui");
+  it("builds package outputs before clean-checkout typechecking and proof imports", () => {
+    expect(packageScripts["typecheck:prerequisites"]).toBe(
+      "turbo run build --filter=mergora-tokens --filter=mergora-ui",
+    );
     expect(packageScripts.typecheck).toBe(
       "corepack pnpm@11.14.0 run typecheck:prerequisites && tsc --noEmit -p tsconfig.json && turbo run typecheck",
     );
@@ -113,6 +115,7 @@ describe("GitHub workflow contracts", () => {
 
   it("fans CI out into serial, independently owned evidence lanes", () => {
     const ci = workflows[".github/workflows/ci.yml"];
+    const quality = job(ci, "quality");
     expect(ci).toContain("quality:\n    name: Repository quality");
     expect(ci).toContain("site-contracts:\n    name: Storybook, site export, and performance");
     expect(ci).toContain(
@@ -125,6 +128,7 @@ describe("GitHub workflow contracts", () => {
     expect(occurrences(ci, "run: pnpm test:performance")).toBe(1);
     expect(occurrences(ci, "run: pnpm test:consumer")).toBe(1);
     expect(ci).toContain("run: pnpm install --frozen-lockfile");
+    expect(quality).toContain("fetch-depth: 0");
     expect(ci).toContain("fetch-depth: 0");
     expect(ci).not.toContain("strategy:\n      matrix:");
   });
