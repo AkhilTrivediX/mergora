@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "kind": "mergora-catalog-visual-coverage",
+  "catalog": {
+    "implementationMatrix": "registry/generated/implementation-matrix.v1.json",
+    "storybookIndex": "apps/storybook/storybook-static/index.json"
+  },
+  "capture": {
+    "projects": ["chromium"],
+    "globals": "theme:light;contrast:standard;density:comfortable;direction:ltr;motion:reduced;viewportMode:responsive",
+    "modes": ["basic", "enhanced"],
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    }
+  },
+  "sharding": {
+    "environmentVariable": "MERGORA_CATALOG_VISUAL_SHARD",
+    "format": "index/total",
+    "selection": "sha256(itemId:mode) modulo total"
+  },
+  "baseline": {
+    "crossCommitBaseline": "tests/visual/baseline.v1.json",
+    "updates": "forbidden"
+  },
+  "evidence": {
+    "artifactKind": "mergora-catalog-visual-capture",
+    "baselinePolicy": "This manifest records real Storybook captures only. It does not create, update, or authorize a visual-regression baseline; immutable cross-commit comparison remains governed by tests/visual/baseline.v1.json."
+  }
+}
