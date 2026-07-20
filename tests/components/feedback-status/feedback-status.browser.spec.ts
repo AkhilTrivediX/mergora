@@ -393,30 +393,30 @@ test("owned banner and error controls expose real hover, active, and focus-visib
   expect(await dismiss.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
   await page.mouse.move(0, 0);
   await page.mouse.up();
-  await dismiss.focus();
-  await page.keyboard.press("Shift+Tab");
+  const restore = page.getByRole("button", { name: "Restore banner" });
+  await restore.focus();
+  await expect(restore).toBeFocused();
   await page.keyboard.press("Tab");
-  expect(await dismiss.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
-    "none",
-  );
+  await expect(dismiss).toBeFocused();
+  await expect(dismiss).toHaveCSS("outline-style", "solid");
 
   await openStory(page, "error-interactions");
+  const report = page.getByRole("button", { name: "Report blocking error" });
   const retry = page.getByRole("button", { name: "Try again" });
   await retry.hover();
   await expect(retry).toHaveCSS("text-decoration-line", "underline");
   await page.mouse.down();
   await expect(retry).toHaveCSS("text-decoration-style", "double");
   await page.mouse.up();
-  await retry.focus();
-  await page.keyboard.press("Shift+Tab");
+  await report.focus();
+  await expect(report).toBeFocused();
   await page.keyboard.press("Tab");
-  expect(await retry.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe(
-    "none",
-  );
+  await expect(retry).toBeFocused();
+  await expect(retry).toHaveCSS("outline-style", "solid");
   const summary = page.locator('[data-slot="error-state-details"] summary');
   await summary.hover();
   await expect(summary).toHaveCSS("text-decoration-line", "underline");
-  await page.getByRole("button", { name: "Report blocking error" }).click();
+  await report.click();
   const errorState = page.locator('[data-slot="error-state"]');
   const assertiveRegion = page.locator('[data-slot="sr-announcer-assertive"]');
   await expect(assertiveRegion).toHaveText("Registry request failed. Retry is available. Event 1.");

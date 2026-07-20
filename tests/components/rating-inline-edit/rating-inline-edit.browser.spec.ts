@@ -225,10 +225,16 @@ test("async failure retains the draft, blocks duplicate saves, recovers, and rej
   await summary.fill("fail this prepared save");
   const actions = summary.locator("xpath=following-sibling::*[@data-slot='inline-edit-actions']");
   const save = actions.getByRole("button", { name: "Save" });
-  await save.click();
-  const pendingSave = actions.getByRole("button", { name: "Saving changes" });
-  await expect(pendingSave).toHaveAttribute("aria-disabled", "true");
-  await pendingSave.click({ force: true });
+  const pendingState = await save.evaluate(async (button) => {
+    (button as HTMLButtonElement).click();
+    (button as HTMLButtonElement).click();
+    await new Promise<void>((resolveFrame) => requestAnimationFrame(() => resolveFrame()));
+    return {
+      ariaBusy: button.closest("[data-slot='inline-edit']")?.getAttribute("aria-busy"),
+      ariaDisabled: button.getAttribute("aria-disabled"),
+    };
+  });
+  expect(pendingState).toEqual({ ariaBusy: "true", ariaDisabled: "true" });
   await expect(page.getByTestId("save-attempts")).toHaveText("Save attempts: 1");
   await expect(page.getByRole("alert")).toHaveText(
     "The prepared save failed. Your draft is still available.",

@@ -6,6 +6,13 @@ import { gzipSync } from "node:zlib";
 
 import { chromium } from "@playwright/test";
 
+import {
+  evaluatePerformanceSamples,
+  maximumPerformanceSamples,
+  samplingPolicy,
+  sitePerformanceThresholds,
+} from "./site-performance-policy.mjs";
+
 const workspaceRoot = resolve(import.meta.dirname, "..");
 const outputRoot = resolve(workspaceRoot, "apps/web/out");
 const evidenceRoot = resolve(workspaceRoot, "artifacts/performance/lighthouse");
@@ -208,11 +215,6 @@ function metric(report, id) {
   return value;
 }
 
-function median(values) {
-  const ordered = [...values].sort((left, right) => left - right);
-  return ordered[Math.floor(ordered.length / 2)];
-}
-
 function measurement(report) {
   return {
     scores: {
@@ -226,55 +228,6 @@ function measurement(report) {
       lcpMs: metric(report, "largest-contentful-paint"),
       inpProxyBlockingMs: metric(report, "total-blocking-time"),
     },
-  };
-}
-
-function invariantFailures({ scores }) {
-  const failures = [];
-  if (scores.accessibility < 1) failures.push("Lighthouse accessibility is below 100");
-  if (scores.bestPractices < 0.95) {
-    failures.push(`Lighthouse bestPractices is below 95: ${String(scores.bestPractices * 100)}`);
-  }
-  if (scores.seo < 0.95) failures.push(`Lighthouse seo is below 95: ${String(scores.seo * 100)}`);
-  return failures;
-}
-
-function performanceFailures({ metrics, scores }) {
-  const failures = [];
-  if (scores.performance < 0.95) {
-    failures.push(`Lighthouse performance is below 95: ${String(scores.performance * 100)}`);
-  }
-  if (metrics.lcpMs > 2500) failures.push(`LCP ${String(metrics.lcpMs)}ms exceeds 2500ms`);
-  if (metrics.cls > 0.1) failures.push(`CLS ${String(metrics.cls)} exceeds 0.1`);
-  if (metrics.inpProxyBlockingMs > 200) {
-    failures.push(`TBT interaction proxy ${String(metrics.inpProxyBlockingMs)}ms exceeds 200ms`);
-  }
-  return failures;
-}
-
-function canRetryNearThreshold({ metrics, scores }) {
-  return (
-    scores.performance >= 0.9 &&
-    metrics.lcpMs <= 3000 &&
-    metrics.cls <= 0.15 &&
-    metrics.inpProxyBlockingMs <= 300
-  );
-}
-
-function medianMeasurement(samples) {
-  return {
-    scores: Object.fromEntries(
-      Object.keys(samples[0].scores).map((key) => [
-        key,
-        median(samples.map(({ scores }) => scores[key])),
-      ]),
-    ),
-    metrics: Object.fromEntries(
-      Object.keys(samples[0].metrics).map((key) => [
-        key,
-        median(samples.map(({ metrics }) => metrics[key])),
-      ]),
-    ),
   };
 }
 
@@ -297,36 +250,36 @@ try {
   for (const route of routes) {
     const url = `http://127.0.0.1:${String(address.port)}${basePath}${route.path}`;
     const samples = [];
-    for (let attempt = 1; attempt <= 3; attempt += 1) {
+    let result;
+    for (let attempt = 1; attempt <= maximumPerformanceSamples; attempt += 1) {
       const reportPath = join(
         evidenceRoot,
         `${route.id}${attempt === 1 ? "" : `-attempt-${String(attempt)}`}.json`,
       );
       await runLighthouse(url, reportPath);
       const sample = measurement(JSON.parse(await readFile(reportPath, "utf8")));
-      const invariant = invariantFailures(sample);
-      if (invariant.length > 0) fail(`${route.id} ${invariant.join("; ")}`);
       samples.push(sample);
 
-      const currentFailures = performanceFailures(sample);
-      if (attempt === 1 && currentFailures.length === 0) break;
-      if (attempt === 1 && !canRetryNearThreshold(sample)) {
-        fail(`${route.id} ${currentFailures.join("; ")}`);
+      const decision = evaluatePerformanceSamples(samples);
+      if (decision.kind === "fail-invariant") {
+        fail(`${route.id} ${decision.failures.join("; ")}`);
+      }
+      if (decision.kind === "fail-performance") {
+        fail(
+          `${route.id} adaptive median failed: ${decision.failures.join("; ")}; samples ${samples
+            .map(
+              ({ metrics, scores }) =>
+                `${String(scores.performance * 100)}/${String(metrics.inpProxyBlockingMs)}ms`,
+            )
+            .join(", ")}`,
+        );
+      }
+      if (decision.kind === "pass") {
+        result = decision.result;
+        break;
       }
     }
-
-    const result = samples.length === 1 ? samples[0] : medianMeasurement(samples);
-    const failures = performanceFailures(result);
-    if (failures.length > 0) {
-      fail(
-        `${route.id} adaptive median failed: ${failures.join("; ")}; samples ${samples
-          .map(
-            ({ metrics, scores }) =>
-              `${String(scores.performance * 100)}/${String(metrics.inpProxyBlockingMs)}ms`,
-          )
-          .join(", ")}`,
-      );
-    }
+    if (result === undefined) fail(`${route.id} sampling ended without a result`);
     const { metrics, scores } = result;
     lighthouse.push({ id: route.id, url, scores, metrics, samples });
     process.stdout.write(
@@ -344,13 +297,17 @@ await writeFile(
       schemaVersion: 1,
       kind: "mergora-site-performance-evidence",
       profile: "Lighthouse DevTools-throttled mobile with pinned Playwright Chromium",
-      samplingPolicy:
-        "One sample when it passes; a median of three only for a near-threshold performance miss. Accessibility, best-practice, SEO, and large performance regressions fail immediately.",
+      samplingPolicy,
       thresholds: {
-        lighthouse: { accessibility: 1, bestPractices: 0.95, performance: 0.95, seo: 0.95 },
-        lcpMs: 2500,
-        cls: 0.1,
-        inpProxyBlockingMs: 200,
+        lighthouse: {
+          accessibility: sitePerformanceThresholds.accessibility,
+          bestPractices: sitePerformanceThresholds.bestPractices,
+          performance: sitePerformanceThresholds.performance,
+          seo: sitePerformanceThresholds.seo,
+        },
+        lcpMs: sitePerformanceThresholds.lcpMs,
+        cls: sitePerformanceThresholds.cls,
+        inpProxyBlockingMs: sitePerformanceThresholds.inpProxyBlockingMs,
       },
       routeBudgets,
       lighthouse,
