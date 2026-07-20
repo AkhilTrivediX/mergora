@@ -1,4 +1,4 @@
-import { expect, test, type Locator, type Page } from "@playwright/test";
+import { expect, test, type APIRequestContext, type Locator, type Page } from "@playwright/test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -57,6 +57,24 @@ function collectRuntimeEvidence(page: Page): RuntimeEvidence {
     }
   });
   return evidence;
+}
+
+async function fetchQualityLabIndex(request: APIRequestContext) {
+  // The static server can briefly reset a keep-alive connection after a previous browser has
+  // finished. Retrying only that transient transport error keeps this contract meaningful while
+  // still surfacing missing files, non-200 responses, and repeated server failures.
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      return await request.get(`${siteBase}/quality-lab/index.json`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      const retryable = /socket hang up|ECONNRESET/i.test(message);
+      if (!retryable || attempt === 2) throw error;
+      await new Promise((resolveRetry) => setTimeout(resolveRetry, 125 * (attempt + 1)));
+    }
+  }
+
+  throw new Error("The Quality Lab index request exhausted its retry budget.");
 }
 
 async function waitForEmbeddedNetworkIdle(iframe: Locator): Promise<void> {
@@ -447,12 +465,12 @@ test("homepage production specimen filters, selects, and restores dialog focus @
   expect(await seriousOrCriticalViolations(page)).toEqual([]);
 });
 
-test("component docs resolve Basic and Recommended live specimens", async ({ page }) => {
+test("component docs resolve Basic and Recommended live specimens", async ({ page, request }) => {
   const evidence = collectRuntimeEvidence(page);
   const buttonContract = documentationContracts.items.find(({ id }) => id === "button");
   expect(buttonContract, "Button documentation contract should exist").toBeDefined();
   if (buttonContract === undefined) return;
-  const indexResponse = await page.request.get(`${siteBase}/quality-lab/index.json`);
+  const indexResponse = await fetchQualityLabIndex(request);
   expect(indexResponse.status()).toBe(200);
   const recommendedStoryId = resolveStorybookId(
     await indexResponse.json(),
@@ -593,7 +611,7 @@ test("State Lab resolves exact state pointers and keeps URL controls determinist
   const emptyState = buttonContract?.stateApplicability.states.find(({ id }) => id === "empty");
   expect(disabledState?.story).not.toBeNull();
   if (disabledState?.story === null || disabledState?.story === undefined) return;
-  const indexResponse = await request.get(`${siteBase}/quality-lab/index.json`);
+  const indexResponse = await fetchQualityLabIndex(request);
   expect(indexResponse.status()).toBe(200);
   const expectedStoryId = resolveStorybookId(await indexResponse.json(), disabledState.story);
   expect(expectedStoryId).not.toBeNull();
