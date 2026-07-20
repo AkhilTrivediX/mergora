@@ -161,7 +161,7 @@ async function routeBudgetEvidence() {
   return { sharedScripts: [...shared].sort(), measurements };
 }
 
-function runLighthouse(url, outputPath) {
+function runLighthouseOnce(url, outputPath) {
   return new Promise((resolveRun, rejectRun) => {
     const child = spawn(
       process.execPath,
@@ -201,6 +201,21 @@ function runLighthouse(url, outputPath) {
       } else rejectRun(new Error(`Lighthouse exited ${String(code)}: ${stderr.trim()}`));
     });
   });
+}
+
+async function runLighthouse(url, outputPath) {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    try {
+      await runLighthouseOnce(url, outputPath);
+      return;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (attempt === 2 || !/Unable to connect to Chrome/u.test(message)) throw error;
+      process.stderr.write(
+        "Lighthouse could not connect to Chrome; retrying the isolated launch once.\n",
+      );
+    }
+  }
 }
 
 function score(report, category) {
