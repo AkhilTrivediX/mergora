@@ -9,6 +9,8 @@ import {
   parseCatalogVisualShard,
   selectCatalogVisualShard,
   type CatalogVisualCoverageManifest,
+  type MatrixItem,
+  type StorybookEntry,
 } from "../visual/catalog-coverage-lib.mts";
 
 const root = resolve(import.meta.dirname, "../..");
@@ -19,7 +21,7 @@ function readJson(path: string): unknown {
 
 const manifest = readJson("tests/visual/catalog-coverage.v1.json") as CatalogVisualCoverageManifest;
 const matrix = readJson(manifest.catalog.implementationMatrix) as {
-  readonly items?: readonly unknown[];
+  readonly items?: readonly MatrixItem[];
 };
 
 test("@visual-catalog captures each catalog basic and enhanced Storybook specimen", async ({
@@ -39,7 +41,7 @@ test("@visual-catalog captures each catalog basic and enhanced Storybook specime
   const indexResponse = await page.request.get("/index.json");
   expect(indexResponse.ok(), "Built Storybook index must be available").toBe(true);
   const storybookIndex = (await indexResponse.json()) as {
-    readonly entries?: Readonly<Record<string, unknown>>;
+    readonly entries?: Readonly<Record<string, StorybookEntry>>;
   };
   const plan = buildCatalogVisualCoveragePlan({ manifest, matrix, storybookIndex });
   const shard = parseCatalogVisualShard(process.env.MERGORA_CATALOG_VISUAL_SHARD);

@@ -8,6 +8,8 @@ import {
   parseCatalogVisualShard,
   selectCatalogVisualShard,
   type CatalogVisualCoverageManifest,
+  type MatrixItem,
+  type StorybookEntry,
 } from "./catalog-coverage-lib.mts";
 
 const root = resolve(import.meta.dirname, "../..");
@@ -18,20 +20,13 @@ function readJson(path: string): unknown {
 
 const manifest = readJson("tests/visual/catalog-coverage.v1.json") as CatalogVisualCoverageManifest;
 const matrix = readJson(manifest.catalog.implementationMatrix) as {
-  readonly items?: readonly {
-    readonly id: string;
-    readonly implementationStatus: string;
-    readonly storybook?: Partial<
-      Record<
-        "basic" | "enhanced",
-        { readonly exportName: string; readonly modulePath: string; readonly status: string }
-      >
-    >;
-  }[];
+  readonly items?: readonly MatrixItem[];
 };
 
-function buildExpectedStorybookIndex() {
-  const entries: Record<string, unknown> = {};
+function buildExpectedStorybookIndex(): {
+  readonly entries: Readonly<Record<string, StorybookEntry>>;
+} {
+  const entries: Record<string, StorybookEntry> = {};
   for (const item of matrix.items ?? []) {
     if (item.implementationStatus !== "source-present-unreleased") continue;
     for (const mode of ["basic", "enhanced"] as const) {

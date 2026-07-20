@@ -30,19 +30,19 @@ export interface CatalogVisualCoverageManifest {
   };
 }
 
-interface MatrixStory {
+export interface MatrixStory {
   readonly exportName: string;
   readonly modulePath: string;
   readonly status: string;
 }
 
-interface MatrixItem {
+export interface MatrixItem {
   readonly id: string;
   readonly implementationStatus: string;
   readonly storybook?: Partial<Record<CatalogVisualMode, MatrixStory>>;
 }
 
-interface StorybookEntry {
+export interface StorybookEntry {
   readonly exportName?: string;
   readonly id?: string;
   readonly importPath?: string;
