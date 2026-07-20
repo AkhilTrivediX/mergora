@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "code-block",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, virtualization, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "code-block: div role=region; code-block-copy: button; code-block-scroll: pre; code-block-line: span",
+    "rolePolicy": "A named region contains native pre/code content. Highlighted lines add spoken text, weight, and an outline. Copy completion is announced only when copyable is enabled; disabling it removes the control, handler, callback path, and status node.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Reaches native controls and focusable overflow regions in DOM order."
+    }
+  ],
+  "nonColor": "Highlighted lines include spoken text, stronger weight, and an inset outline in addition to a background change.",
+  "responsive": "Logical properties, intrinsic minimums, wrapping, and component-owned overflow preserve content at 320 CSS pixels, 200% text, and 400% reflow; evidence remains unrecorded.",
+  "stableSelectors": {
+    "root": "[data-slot=code-block]",
+    "parts": [
+      "[data-slot=code-block-copy]",
+      "[data-slot=code-block-scroll]",
+      "[data-slot=code-block-line]"
+    ],
+    "attributes": [
+      "data-wrap",
+      "data-copyable",
+      "data-copy-status",
+      "data-focus",
+      "data-highlighted"
+    ]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
+    "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
+    "The component uses bounded native scrolling rather than virtualization and does not tokenize source; callers can render tokens, but every token scheme must retain non-color cues.",
+    "When copyable is false, do not depend on copy labels, onCopyComplete, or a copy status live region; none are rendered or invoked."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "copy",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-at-matrix",
+      "keyboard-only",
+      "touch-screen-reader",
+      "speech",
+      "switch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

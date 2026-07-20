@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "menubar",
+  "root": {
+    "element": "div role=menubar containing native button menuitems",
+    "ref": "HTMLDivElement",
+    "slot": "menubar",
+    "stableAttributes": ["data-slot", "dir"]
+  },
+  "parts": [
+    {
+      "slot": "menubar-rail",
+      "element": "div containing roving-tabindex menuitem buttons",
+      "stability": "documented"
+    },
+    {
+      "slot": "menubar-keyboard-guide",
+      "element": "p associated by aria-describedby",
+      "purpose": "Optionally provides persistent keyboard discovery.",
+      "stability": "documented"
+    },
+    {
+      "slot": "dropdown-menu-content",
+      "element": "div role=menu",
+      "stability": "documented"
+    }
+  ]
+}

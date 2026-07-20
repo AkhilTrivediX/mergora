@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "requiredProbes": [
+    "behavior",
+    "dependency-closure",
+    "exports",
+    "semantics",
+    "server-client-boundary",
+    "styles",
+    "types"
+  ],
+  "requiredProbesMustPass": true,
+  "passingProbeRequiresNormalizedDigest": true,
+  "notApplicableRequiresReason": true,
+  "missingRuntimeIsFailure": true
+}

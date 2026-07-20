@@ -1,0 +1,284 @@
+/* Generated from registry/source/components/dialog/dialog.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-dialog__overlay {
+  position: fixed;
+  z-index: calc(
+    var(
+        --mrg-component-layer-stack-base,
+        var(--mrg-component-dialog-layer, var(--mrg-semantic-layer-modal))
+      ) +
+      var(--mrg-layer-index, 0)
+  );
+  inset: 0;
+  display: grid;
+  box-sizing: border-box;
+  place-items: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding-block: max(
+    var(--mrg-semantic-space-stack-md),
+    env(safe-area-inset-top, 0px),
+    env(safe-area-inset-bottom, 0px)
+  );
+  padding-inline: max(
+    var(--mrg-semantic-space-stack-md),
+    env(safe-area-inset-left, 0px),
+    env(safe-area-inset-right, 0px)
+  );
+  background: var(--mrg-component-dialog-scrim, var(--mrg-semantic-color-overlay-scrim));
+  isolation: isolate;
+}
+
+.mrg-dialog__overlay[data-modal="false"] {
+  position: absolute;
+  display: block;
+  inset: auto;
+  max-block-size: min(var(--available-height, 80dvb), calc(100dvb - 1rem));
+  max-inline-size: min(
+    var(--mrg-semantic-size-content-prose),
+    calc(100dvi - var(--mrg-semantic-space-stack-md) - var(--mrg-semantic-space-stack-md))
+  );
+  overflow: visible;
+  padding: 0;
+  background: transparent;
+  isolation: auto;
+}
+
+.mrg-dialog__positioner {
+  box-sizing: border-box;
+  inline-size: min(
+    var(--mrg-semantic-size-content-prose),
+    calc(
+      var(--visual-viewport-width, 100dvi) - var(--mrg-semantic-space-stack-md) -
+        var(--mrg-semantic-space-stack-md)
+    )
+  );
+  margin-block: auto;
+}
+
+.mrg-dialog__overlay[data-modal="true"] > .mrg-dialog__positioner {
+  box-sizing: border-box;
+  max-inline-size: 100%;
+  margin-block: auto;
+}
+
+.mrg-dialog__keyboard-boundary {
+  inline-size: 100%;
+}
+
+.mrg-dialog__content {
+  box-sizing: border-box;
+  max-block-size: calc(
+    var(--visual-viewport-height, 100dvb) - var(--mrg-semantic-space-stack-md) -
+      var(--mrg-semantic-space-stack-md)
+  );
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-density-panel-padding);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-component-dialog-radius, var(--mrg-semantic-radius-overlay));
+  background: var(--mrg-component-dialog-background, var(--mrg-semantic-color-background-canvas));
+  box-shadow: var(--mrg-component-dialog-elevation, var(--mrg-semantic-elevation-modal));
+  color: var(--mrg-component-dialog-foreground, var(--mrg-semantic-color-foreground-primary));
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-body);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  scrollbar-gutter: stable;
+}
+
+.mrg-dialog__content[data-modal="false"] {
+  max-block-size: min(var(--available-height, 80dvb), calc(100dvb - 1rem));
+  box-shadow: var(--mrg-component-dialog-elevation, var(--mrg-semantic-elevation-overlay));
+}
+
+.mrg-dialog__content:focus-visible,
+.mrg-dialog__trigger[data-focus-visible],
+.mrg-dialog__close[data-focus-visible] {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--mrg-semantic-space-inline-md);
+  margin-block-end: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-dialog__footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--mrg-semantic-density-control-gap);
+  margin-block-start: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-dialog__title {
+  margin: 0;
+  color: inherit;
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-heading-small);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
+  text-wrap: balance;
+}
+
+.mrg-dialog__description {
+  max-inline-size: var(--mrg-semantic-size-content-prose);
+  margin-block: 0 var(--mrg-semantic-space-stack-md);
+  color: var(
+    --mrg-component-dialog-description-foreground,
+    var(--mrg-semantic-color-foreground-primary)
+  );
+  text-wrap: pretty;
+}
+
+.mrg-dialog__dismiss-hint,
+.mrg-alert-dialog__dismiss-hint,
+.mrg-sheet__dismiss-hint {
+  margin-block: var(--mrg-semantic-space-stack-md) 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  color: var(--mrg-semantic-color-status-neutral-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  text-wrap: pretty;
+}
+
+.mrg-dialog__trigger,
+.mrg-dialog__close {
+  display: inline-flex;
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  min-block-size: max(
+    var(--mrg-semantic-density-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+  border-radius: var(--mrg-semantic-radius-control);
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.mrg-dialog__trigger {
+  background: var(--mrg-semantic-color-action-background);
+  color: var(--mrg-semantic-color-action-foreground);
+}
+
+.mrg-dialog__trigger[data-hovered] {
+  background: var(--mrg-semantic-color-action-background-hover);
+}
+
+.mrg-dialog__trigger[data-pressed] {
+  background: var(--mrg-semantic-color-action-background-pressed);
+}
+
+.mrg-dialog__close {
+  border-color: var(--mrg-semantic-color-border-interactive);
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-dialog__close[data-hovered] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-dialog__trigger[data-disabled],
+.mrg-dialog__close[data-disabled] {
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-dialog__overlay[data-entering] {
+  animation: mrg-dialog-overlay-enter var(--mrg-semantic-motion-duration-overlay)
+    var(--mrg-semantic-motion-easing-enter) both;
+}
+
+.mrg-dialog__overlay[data-exiting] {
+  animation: mrg-dialog-overlay-exit var(--mrg-semantic-motion-duration-overlay)
+    var(--mrg-semantic-motion-easing-exit) both;
+}
+
+.mrg-dialog__positioner[data-entering] {
+  animation: mrg-dialog-content-enter var(--mrg-semantic-motion-duration-overlay)
+    var(--mrg-semantic-motion-easing-enter) both;
+}
+
+.mrg-dialog__positioner[data-exiting] {
+  animation: mrg-dialog-content-exit var(--mrg-semantic-motion-duration-overlay)
+    var(--mrg-semantic-motion-easing-exit) both;
+}
+
+@keyframes mrg-dialog-overlay-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mrg-dialog-overlay-exit {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes mrg-dialog-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(var(--mrg-semantic-space-inline-sm)) scale(0.98);
+  }
+}
+
+@keyframes mrg-dialog-content-exit {
+  to {
+    opacity: 0;
+    transform: translateY(var(--mrg-semantic-space-inline-xs)) scale(0.99);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-dialog__overlay[data-entering],
+  .mrg-dialog__overlay[data-exiting],
+  .mrg-dialog__positioner[data-entering] {
+    animation: none;
+  }
+
+  .mrg-dialog__positioner[data-exiting] {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-dialog__content {
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    box-shadow: none;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-dialog__content:focus-visible,
+  .mrg-dialog__trigger[data-focus-visible],
+  .mrg-dialog__close[data-focus-visible] {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-dialog__trigger,
+  .mrg-dialog__close {
+    forced-color-adjust: auto;
+  }
+}

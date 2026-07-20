@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button",
+  "entryExport": "Button",
+  "refTarget": "HTMLButtonElement",
+  "nativeProps": "React.ButtonHTMLAttributes<HTMLButtonElement>",
+  "defaultNativeType": "button",
+  "exports": [
+    { "kind": "component", "name": "Button" },
+    { "kind": "type", "name": "ButtonOwnProps" },
+    { "kind": "type", "name": "ButtonProps" },
+    { "kind": "type", "name": "ButtonSize" },
+    { "kind": "type", "name": "ButtonVariant" }
+  ],
+  "controlledState": [],
+  "props": [
+    {
+      "default": "primary",
+      "name": "variant",
+      "required": false,
+      "type": "primary | secondary | quiet | destructive"
+    },
+    {
+      "default": "medium",
+      "name": "size",
+      "required": false,
+      "type": "small | medium | large"
+    },
+    { "default": false, "name": "pending", "required": false, "type": "boolean" },
+    {
+      "default": "original visible label",
+      "name": "pendingLabel",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "eventPolicy": {
+    "disabled": "Native disabled behavior owns focusability and activation.",
+    "pending": "The button remains focusable; click activation is cancelled before the consumer onClick runs."
+  },
+  "compositionPolicy": {
+    "asChild": "not-supported",
+    "linkRendering": "Use the separate Link contract for navigation.",
+    "familySignature": "Precise Ink borders, Living Green action state, Violet focus, and an optional loading rail identify the Living Workbench family.",
+    "enhancement": "pending and pendingLabel add focus-retaining progress semantics; false removes the indicator, busy state, loading rail, and activation guard."
+  }
+}

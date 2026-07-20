@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "navbar",
+  "root": {
+    "element": "header",
+    "ref": "HTMLElement",
+    "slot": "navbar",
+    "stableAttributes": ["data-slot", "data-route-state"]
+  },
+  "parts": [
+    {
+      "slot": "navbar-skip-link",
+      "element": "optional anchor",
+      "purpose": "Moves keyboard focus to consumer page content.",
+      "stability": "documented"
+    },
+    {
+      "slot": "navbar-desktop",
+      "element": "nav",
+      "purpose": "Exposes real desktop destination links.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "navbar-mobile",
+      "element": "responsive nav",
+      "purpose": "Provides an Escape-dismissible disclosure with focus return.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "navbar-route-status",
+      "element": "optional output",
+      "purpose": "Presents consumer-owned route loading or recovery context.",
+      "stability": "documented"
+    }
+  ]
+}

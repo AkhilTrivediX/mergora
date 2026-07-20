@@ -1,0 +1,32 @@
+.mrg-heading {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-heading-small);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
+  margin-block: 0;
+  max-inline-size: 28ch;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.mrg-heading::selection {
+  background: var(--mrg-semantic-color-selection-background);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+.mrg-heading[data-size="md"] {
+  font-size: var(--mrg-semantic-font-size-heading-medium);
+}
+.mrg-heading[data-size="lg"] {
+  font-size: var(--mrg-semantic-font-size-heading-large);
+}
+.mrg-heading[data-size="display"] {
+  font-size: clamp(var(--mrg-semantic-font-size-heading-large), 8vw, 6rem);
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+}
+@media (forced-colors: active) {
+  .mrg-heading {
+    color: CanvasText;
+  }
+}

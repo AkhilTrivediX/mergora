@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline-edit",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify view/edit transitions, native input and textarea editing, visible actions, complete keyboard map, IME suppression, touch targets, and deterministic focus restoration in every supported browser engine.",
+    "Verify synchronous validation, rejected async saves, retry, pending double-submit protection, reset/unmount cancellation, controlled external-change protection, and retained drafts.",
+    "Verify saved-value form serialization, native reset, disabled omission, read-only success, and owning-form responsibility guidance.",
+    "Record LTR, RTL, narrow, zoom, text-spacing, coarse-pointer, reduced-motion, enhanced-contrast, and forced-colors review.",
+    "Complete current risk-class manual assistive-technology evidence and publish an approved immutable Quality Passport."
+  ]
+}

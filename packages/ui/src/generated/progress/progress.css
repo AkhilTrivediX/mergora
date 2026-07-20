@@ -1,0 +1,96 @@
+/* Generated from registry/source/components/progress/progress.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-progress {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-progress [data-slot="progress-heading"] {
+  align-items: baseline;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-md);
+  justify-content: space-between;
+}
+
+.mrg-progress:not([data-value-visible]) [data-slot="progress-heading"] {
+  justify-content: start;
+}
+
+.mrg-progress [data-slot="progress-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.mrg-progress [data-slot="progress-value"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.mrg-progress [data-slot="progress-track"] {
+  accent-color: var(--mrg-component-progress-indicator);
+  appearance: none;
+  background: var(--mrg-component-progress-track);
+  block-size: var(--mrg-semantic-space-stack-sm);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-component-progress-radius);
+  inline-size: 100%;
+  overflow: hidden;
+}
+
+.mrg-progress [data-slot="progress-track"]::-webkit-progress-bar {
+  background: var(--mrg-component-progress-track);
+}
+
+.mrg-progress [data-slot="progress-track"]::-webkit-progress-value {
+  background: var(--mrg-component-progress-indicator);
+}
+
+.mrg-progress [data-slot="progress-track"]::-moz-progress-bar {
+  background: var(--mrg-component-progress-indicator);
+}
+
+.mrg-progress[data-indeterminate] [data-slot="progress-track"] {
+  accent-color: var(--mrg-component-progress-indeterminate);
+  animation: mrg-progress-indeterminate var(--mrg-semantic-motion-duration-deliberate)
+    var(--mrg-semantic-motion-easing-standard) infinite alternate;
+  border-color: var(--mrg-semantic-color-accent-border);
+}
+
+@keyframes mrg-progress-indeterminate {
+  from {
+    opacity: var(--mrg-semantic-opacity-muted);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-progress[data-indeterminate] [data-slot="progress-track"] {
+    animation: none;
+    box-shadow: inset var(--mrg-semantic-border-width-strong) 0 0
+      var(--mrg-component-progress-indeterminate);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-progress [data-slot="progress-track"] {
+    accent-color: Highlight;
+    background: Canvas;
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-progress [data-slot="progress-track"]::-webkit-progress-bar {
+    background: Canvas;
+  }
+
+  .mrg-progress [data-slot="progress-track"]::-webkit-progress-value,
+  .mrg-progress [data-slot="progress-track"]::-moz-progress-bar {
+    background: Highlight;
+  }
+}

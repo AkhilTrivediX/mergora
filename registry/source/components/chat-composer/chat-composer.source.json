@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./chat-composer.css", "react"],
+  "entryPath": "registry/source/components/chat-composer/chat-composer.tsx",
+  "id": "chat-composer",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

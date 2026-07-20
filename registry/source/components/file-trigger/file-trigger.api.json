@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-trigger",
+  "entryExport": "FileTrigger",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "Native file-input attributes except owned type, accept, capture, multiple, className, and onChange",
+  "exports": [
+    { "kind": "component", "name": "FileTrigger" },
+    { "kind": "function", "name": "fileMatchesAcceptedType" },
+    { "kind": "function", "name": "normalizeAcceptedFileTypes" },
+    { "kind": "function", "name": "synchronizeFileInputFiles" },
+    { "kind": "type", "name": "FileCaptureMode" },
+    { "kind": "type", "name": "FileTriggerProps" }
+  ],
+  "controlledState": [],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "acceptedFileTypes", "required": false, "type": "readonly MIME/extension token[]" },
+    { "name": "allowsMultiple", "required": false, "default": false, "type": "boolean" },
+    { "name": "acceptDirectory", "required": false, "default": false, "type": "boolean" },
+    { "name": "capture", "required": false, "type": "user | environment" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "name", "required": false, "type": "non-empty string" },
+    { "name": "form", "required": false, "type": "string" },
+    { "name": "onSelect", "required": false, "type": "(files, native change event) => void" }
+  ],
+  "compositionPolicy": {
+    "nativeControl": "One real input type=file owns keyboard activation, browser selection, form association, accept, multiple, capture, and directory behavior.",
+    "label": "The visible action is the native input label; the transparent input covers the complete 44 CSS pixel target and receives focus directly.",
+    "selection": "The callback receives an immutable array snapshot while the browser-owned FileList and native form control remain intact.",
+    "internalSynchronization": "Sibling composites use one bounded internal helper to synchronize real Files into the native input; it validates file-input type, multiplicity, count, and assignment, clears before failure, and emits no synthetic event. The helper is intentionally not re-exported from the public item index."
+  }
+}

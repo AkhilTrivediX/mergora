@@ -1,0 +1,160 @@
+.mrg-inline-edit {
+  background: var(--mrg-semantic-color-background-surface);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-view"],
+.mrg-inline-edit [data-slot="inline-edit-editor"] {
+  align-items: start;
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-view"] {
+  grid-template-columns: minmax(7rem, 0.35fr) minmax(0, 1fr) auto;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  overflow-wrap: anywhere;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-value"] {
+  align-self: center;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-value"][data-empty="true"],
+.mrg-inline-edit [data-slot="inline-edit-readonly"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-readonly"] {
+  align-self: center;
+  font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-control"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  padding-block: var(--mrg-semantic-space-stack-sm);
+  padding-inline: var(--mrg-semantic-space-inline-md);
+}
+
+.mrg-inline-edit textarea[data-slot="inline-edit-control"] {
+  min-block-size: 7rem;
+  resize: block;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-control"]:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-description"],
+.mrg-inline-edit [data-slot="inline-edit-error"],
+.mrg-inline-edit [data-slot="inline-edit-status"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  grid-column: 1 / -1;
+  margin: 0;
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-inline-edit [data-slot="inline-edit-description"],
+.mrg-inline-edit [data-slot="inline-edit-status"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-error"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-inline-edit [data-slot="inline-edit-status"]:empty {
+  display: none;
+}
+
+.mrg-inline-edit[data-invalid="true"] [data-slot="inline-edit-control"] {
+  border-color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-inline-edit[data-pending="true"] [data-slot="inline-edit-control"] {
+  cursor: progress;
+}
+
+.mrg-inline-edit[data-disabled="true"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (pointer: coarse) {
+  .mrg-inline-edit [data-slot="inline-edit-control"],
+  .mrg-inline-edit [data-slot="button"] {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (max-width: 30rem) {
+  .mrg-inline-edit [data-slot="inline-edit-view"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mrg-inline-edit [data-slot="inline-edit-view"] [data-slot="button"] {
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-inline-edit *,
+  .mrg-inline-edit *::before,
+  .mrg-inline-edit *::after {
+    scroll-behavior: auto;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-inline-edit [data-slot="inline-edit-control"]:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-inline-edit {
+    background: Canvas;
+    border: var(--mrg-semantic-border-width-default) solid CanvasText;
+    color: CanvasText;
+  }
+
+  .mrg-inline-edit [data-slot="inline-edit-control"] {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-inline-edit[data-invalid="true"] [data-slot="inline-edit-control"] {
+    border-color: Mark;
+  }
+}

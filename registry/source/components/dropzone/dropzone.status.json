@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropzone",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify keyboard accessible drop mode plus picker, paste, mouse drag, touch fallback, nested-drag, disabled, busy, and latest-request behavior in every supported browser engine.",
+    "Verify bounded type, size, count, directory, unreadable, and unsupported-item rejection plus accepted-only native FormData synchronization without implicit upload.",
+    "Record LTR, RTL, 320 CSS pixel, zoom, text-spacing, reduced-motion, enhanced-contrast, forced-colors, and current risk-class manual assistive-technology evidence.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

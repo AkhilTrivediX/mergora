@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "badge",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "populated",
+    "success",
+    "warning",
+    "error",
+    "plain-baseline",
+    "recommended-mergora"
+  ],
+  "slots": [
+    {
+      "name": "badge",
+      "semanticElement": "noninteractive span",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "badge-status-label",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "badge-label",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "badge-accessibility", "version": "0.1.0" },
+  "passport": { "id": "badge-quality-passport", "version": "0.0.0" }
+}

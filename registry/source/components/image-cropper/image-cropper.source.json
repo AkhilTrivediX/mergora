@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./image-cropper.css", "react"],
+  "entryPath": "registry/source/components/image-cropper/image-cropper.tsx",
+  "id": "image-cropper",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

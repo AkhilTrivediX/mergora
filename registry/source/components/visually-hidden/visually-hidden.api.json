@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "visually-hidden",
+  "entryExport": "VisuallyHidden",
+  "refTarget": "HTMLElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    { "kind": "component", "name": "VisuallyHidden" },
+    { "kind": "type", "name": "VisuallyHiddenProps" }
+  ],
+  "props": [
+    { "default": "span", "name": "as", "required": false, "type": "span | div | a" },
+    { "default": false, "name": "revealOnFocus", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Content remains in the accessibility tree; the utility never adds a role or name.",
+    "focusReveal": "Use revealOnFocus only when the hidden child is natively focusable or contains a focus target.",
+    "advantage": "The optional reveal becomes a logical-start Mergora focus surface with literal Canvas, ink structure, and forced-colors mapping.",
+    "enhancementOptOut": "revealOnFocus=false removes the reveal attribute, visual surface, and focus-reveal behavior while retaining accessibility-tree content."
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "itemId": "card",
+  "entryExport": "Card",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Card"
+    },
+    {
+      "kind": "value",
+      "name": "CardAction"
+    },
+    {
+      "kind": "value",
+      "name": "CardContent"
+    },
+    {
+      "kind": "value",
+      "name": "CardDescription"
+    },
+    {
+      "kind": "type",
+      "name": "CardDescriptionProps"
+    },
+    {
+      "kind": "value",
+      "name": "CardFooter"
+    },
+    {
+      "kind": "value",
+      "name": "CardHeader"
+    },
+    {
+      "kind": "type",
+      "name": "CardProps"
+    },
+    {
+      "kind": "type",
+      "name": "CardSectionProps"
+    },
+    {
+      "kind": "value",
+      "name": "CardTitle"
+    },
+    {
+      "kind": "type",
+      "name": "CardTitleProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "statusRail",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Card; enhancement output is additive and independently removable.",
+    "enhancement": "An optional structural status rail adds contextual state without turning the whole surface into a control. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

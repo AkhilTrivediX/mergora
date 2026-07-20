@@ -1,0 +1,17 @@
+{
+  "declaredImports": [
+    "../color-field/index.js",
+    "../provider/index.js",
+    "./color-picker.css",
+    "react",
+    "react-aria-components/ColorArea",
+    "react-aria-components/ColorPicker",
+    "react-aria-components/ColorSlider",
+    "react-aria-components/ColorSwatchPicker",
+    "react-aria-components/I18nProvider"
+  ],
+  "entryPath": "registry/source/components/color-picker/color-picker.tsx",
+  "id": "color-picker",
+  "itemDependencies": ["color-field", "provider"],
+  "outputRole": "component"
+}

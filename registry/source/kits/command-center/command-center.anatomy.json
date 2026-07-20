@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-center",
+  "root": {
+    "element": "div with header, optional triggers, and public command palette",
+    "ref": "HTMLDivElement",
+    "slot": "command-center",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "command-center-heading",
+      "element": "header",
+      "purpose": "Names the surface and exposes the modal entry when selected.",
+      "stability": "documented"
+    },
+    {
+      "slot": "command-center-result-count",
+      "element": "optional polite output",
+      "purpose": "Announces adapter-ranked result totals only when enabled.",
+      "stability": "documented"
+    }
+  ]
+}

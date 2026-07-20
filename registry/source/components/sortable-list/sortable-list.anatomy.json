@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sortable-list",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "sortable-list",
+    "stableAttributes": ["data-slot", "data-grabbed"]
+  },
+  "parts": [
+    {
+      "slot": "sortable-list-item",
+      "element": "li",
+      "purpose": "Keeps ordered-list position semantics beside drag and non-drag controls.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "sortable-list-announcer",
+      "element": "optional polite status",
+      "purpose": "Reports pickup, movement, rejection, drop, cancellation, and undo.",
+      "stability": "documented"
+    }
+  ]
+}

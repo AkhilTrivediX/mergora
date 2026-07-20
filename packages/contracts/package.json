@@ -1,0 +1,47 @@
+{
+  "name": "mergora-contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Versioned declarative Mergora quality contracts and deterministic audit runtime",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/contracts"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas/executable-contract-v1.json": "./schemas/executable-contract-v1.schema.json",
+    "./schemas/audit-report-v1.json": "./schemas/audit-report-v1.schema.json"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js"
+      },
+      "./schemas/executable-contract-v1.json": "./schemas/executable-contract-v1.schema.json",
+      "./schemas/audit-report-v1.json": "./schemas/audit-report-v1.schema.json"
+    }
+  },
+  "files": [
+    "dist",
+    "schemas"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

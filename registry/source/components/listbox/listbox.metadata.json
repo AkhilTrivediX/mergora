@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "itemId": "listbox",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "single",
+    "multiple",
+    "disabled-items",
+    "read-only",
+    "required",
+    "invalid",
+    "empty",
+    "loading",
+    "error-retry",
+    "partial-pagination",
+    "virtualized-10k",
+    "controlled",
+    "uncontrolled",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "listbox",
+      "semanticElement": "div role=listbox",
+      "refTarget": "HTMLDivElement",
+      "states": [
+        "single",
+        "multiple",
+        "required",
+        "disabled",
+        "read-only",
+        "invalid",
+        "busy",
+        "virtualized"
+      ]
+    },
+    {
+      "name": "listbox-section",
+      "semanticElement": "section role=group",
+      "refTarget": "none",
+      "states": ["labelled"]
+    },
+    {
+      "name": "listbox-item",
+      "semanticElement": "div role=option",
+      "refTarget": "none",
+      "states": ["selected", "disabled", "focused", "focus-visible", "hovered", "pressed"]
+    },
+    {
+      "name": "listbox-load-more",
+      "semanticElement": "button",
+      "refTarget": "none",
+      "states": ["available", "loading"]
+    }
+  ],
+  "contract": { "id": "listbox-accessibility", "version": "0.1.0" },
+  "passport": { "id": "listbox-quality-passport", "version": "0.0.0" }
+}

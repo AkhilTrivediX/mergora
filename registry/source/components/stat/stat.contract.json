@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "stat",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, complete manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "Native-first Stat structure with labelled state and logical DOM order.",
+    "rolePolicy": "Owned roles and relationships remain present in the default mode; optional enhancement output is absent when disabled.",
+    "refTarget": "See exported TypeScript declaration."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through native interactive descendants in document order."
+    },
+    {
+      "key": "Arrow keys",
+      "behavior": "Where the component owns composite navigation, moves within the documented logical model."
+    }
+  ],
+  "nonColor": "Text, native state, structure, symbols, or explicit labels accompany every green or violet signal.",
+  "responsive": "Logical properties, intrinsic sizing, wrapping, and scoped overflow preserve use on narrow screens; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=stat]",
+    "parts": [],
+    "attributes": ["data-slot"]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, labels, relationships, logical order, and documented state when composing or styling.",
+    "Localize visible and spoken strings and retest long content, RTL, zoom, touch, forced colors, and assistive technology.",
+    "Do not claim Stable or complete conformance until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

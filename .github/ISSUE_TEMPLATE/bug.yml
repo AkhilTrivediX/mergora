@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a reproducible defect in a released or development Mergora surface.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not report vulnerabilities here. Use the private security route in SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: Exact version or commit
+      description: Do not write only latest.
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Installation mode
+      options:
+        - Source registry
+        - npm package
+        - Mixed
+        - Documentation site
+        - CLI or updater
+        - Repository development
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node, package manager, framework, browser, locale, and relevant configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Link a repository or list deterministic steps. Remove credentials and private source.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized diagnostics
+      description: Include concise logs or screenshots only after removing tokens, private paths, and personal data.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Submission checks
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: This report contains no credential or sensitive private data.
+          required: true

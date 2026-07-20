@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../button/button-state.js", "./toggle.css", "react"],
+  "entryPath": "registry/source/components/toggle/toggle.tsx",
+  "id": "toggle",
+  "itemDependencies": ["button"],
+  "outputRole": "component"
+}

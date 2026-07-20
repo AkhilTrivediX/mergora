@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sticky-region",
+  "entryExport": "StickyRegion",
+  "refTarget": "Root/Body=HTMLDivElement; Content=HTMLElement",
+  "exports": [
+    { "kind": "namespace", "name": "StickyRegion" },
+    { "kind": "component", "name": "StickyRegionRoot" },
+    { "kind": "component", "name": "StickyRegionContent" },
+    { "kind": "component", "name": "StickyRegionBody" },
+    { "kind": "type", "name": "StickyRegionBodyProps" },
+    { "kind": "type", "name": "StickyRegionContentProps" },
+    { "kind": "type", "name": "StickyRegionElement" },
+    { "kind": "type", "name": "StickyRegionOffset" },
+    { "kind": "type", "name": "StickyRegionPosition" },
+    { "kind": "type", "name": "StickyRegionRootProps" },
+    { "kind": "type", "name": "StickyRegionSize" }
+  ],
+  "rootProps": [
+    {
+      "default": "block-start",
+      "name": "position",
+      "required": false,
+      "type": "block-start | block-end"
+    },
+    { "default": "none", "name": "offset", "required": false, "type": "none | sm | md | lg" },
+    { "default": true, "name": "safeArea", "required": false, "type": "boolean" },
+    { "default": false, "name": "contained", "required": false, "type": "boolean" },
+    { "default": "md", "name": "size", "required": false, "type": "sm | md | lg | viewport" },
+    {
+      "default": 44,
+      "name": "estimatedSize",
+      "required": false,
+      "type": "non-negative CSS pixel number"
+    },
+    { "default": true, "name": "manageFocusOffset", "required": false, "type": "boolean" }
+  ],
+  "contentProps": [
+    { "default": "div", "name": "element", "required": false, "type": "div | header | footer" }
+  ],
+  "enhancementPolicy": "manageFocusOffset=true measures localized sticky content and reserves focus clearance; false removes ResizeObserver work, the measured CSS variable, scroll padding, and descendant scroll margins."
+}

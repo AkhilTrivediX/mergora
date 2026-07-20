@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tags-input",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "tags-input",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "parts": [
+    { "element": "input", "slot": "tags-input-entry" },
+    { "element": "ul", "slot": "tags-input-values" },
+    { "element": "output", "slot": "tags-input-duplicate-recovery" }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "accordion",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A single or multiple disclosure group with semantic headings, native triggers, controlled state, and optional roving focus keys.",
+  "semantics": [
+    "Every named trigger is a native button inside a caller-selected h1-h6 and controls one disclosure panel.",
+    "Single mode rejects more than one controlled/default expanded key; all key arrays and item values are non-empty and unique where statically knowable.",
+    "Enter and Space activate natively; ArrowUp, ArrowDown, Home, and End move focus among enabled triggers without changing expansion.",
+    "Disabled items and a disabled root remain non-operable without removing their understandable names and relationships."
+  ],
+  "preferences": {
+    "forcedColors": "System focus and native button state remain perceivable without color-only expansion cues.",
+    "reducedMotion": "Indicator rotation is removed while aria-expanded and panel visibility remain authoritative.",
+    "rtl": "Logical layout mirrors while vertical navigation keys keep their physical meaning."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Labels wrap and panels reflow without clipping content or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "fieldset",
+  "root": {
+    "element": "fieldset",
+    "ref": "HTMLFieldSetElement",
+    "slot": "fieldset",
+    "stableAttributes": [
+      "data-slot",
+      "data-layout",
+      "data-disabled",
+      "data-invalid",
+      "disabled",
+      "aria-describedby",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "fieldset-legend",
+      "element": "legend",
+      "purpose": "Native group name and first child.",
+      "stability": "documented"
+    },
+    {
+      "slot": "fieldset-description",
+      "element": "p",
+      "purpose": "Persistent group description.",
+      "stability": "documented"
+    },
+    {
+      "slot": "fieldset-content",
+      "element": "div",
+      "purpose": "Responsive visual layout without semantic replacement.",
+      "stability": "documented"
+    },
+    {
+      "slot": "fieldset-selection-summary",
+      "element": "p",
+      "purpose": "Optional persistent selection context referenced by the fieldset.",
+      "stability": "documented"
+    },
+    {
+      "slot": "fieldset-error",
+      "element": "p",
+      "purpose": "Persistent group error.",
+      "stability": "documented"
+    }
+  ]
+}

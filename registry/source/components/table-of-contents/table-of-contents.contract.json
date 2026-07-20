@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "table-of-contents",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, scroll-observation accuracy, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A visibly named nav contains an ordered hierarchy of safe real anchors and one aria-current=location.",
+    "extraction": "collectTableOfContentsItems is a consumer-run DOM adapter and never mutates headings.",
+    "refTarget": "HTMLElement nav"
+  },
+  "interaction": {
+    "keyboard": "Native links remain in document order with sticky-safe focus geometry.",
+    "observer": "Intersection observation updates uncontrolled state only; controlled state stays consumer-owned.",
+    "routing": "Consumers may cancel link events and own smooth scrolling or router behavior."
+  },
+  "enhancementIsolation": {
+    "observerFalse": "No IntersectionObserver, observation callbacks, or enhancement attribute exists.",
+    "summaryOmitted": "No formatter call, output, text, or accessibility contribution exists."
+  },
+  "preferences": {
+    "forcedColors": "Current and focus states map to system colors.",
+    "reducedMotion": "Core never forces smooth scrolling.",
+    "rtl": "Hierarchy indentation and current marker use logical direction."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "heading-extraction",
+      "current-location",
+      "observer-isolation",
+      "long-narrow-rtl",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device", "zoom"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Dynamic heading ownership, URL replacement, and scroll offset policy remain consumer responsibilities."
+  ]
+}

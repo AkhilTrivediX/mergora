@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "itemId": "bottom-navigation",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndResponsive"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Destinations are links or disabled non-links, not editable values."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Navigation does not validate form data."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Navigation is not a required form control."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Route loading belongs to surrounding feedback."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "At least one destination is required."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Navigation success belongs to route content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": { "status": "not-applicable", "reason": "Warnings belong to route content." }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "not-applicable", "reason": "Errors belong to route feedback." }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Destinations do not perform destructive actions."
+      }
+    }
+  ]
+}

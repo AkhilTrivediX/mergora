@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "lightbox",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, complete manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native thumbnail buttons launch the shared named modal Dialog; native images retain required alternative text.",
+    "rolePolicy": "The active item remains a labelled dialog with figure/caption structure; position and zoom outputs are added only when their enhancements are enabled.",
+    "refTarget": "See exported TypeScript declaration."
+  },
+  "keyboard": [
+    {
+      "key": "Arrow Left / Arrow Right",
+      "behavior": "Moves through images in logical direction, accounting for RTL."
+    },
+    {
+      "key": "Home / End",
+      "behavior": "Moves to the first or last image."
+    },
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through close, navigation, and optional zoom controls."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Closes the gallery and restores focus to the launching thumbnail."
+    }
+  ],
+  "nonColor": "Text, native state, structure, symbols, or explicit labels accompany every Green, Violet, or status signal.",
+  "responsive": "Logical properties, safe-area-aware containment, wrapping, and scoped overflow preserve operation at 320 CSS pixels, RTL, and 400% zoom; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=lightbox]",
+    "parts": [
+      "[data-slot=lightbox-thumbnail]",
+      "[data-slot=lightbox-stage]",
+      "[data-slot=lightbox-position-summary]",
+      "[data-slot=lightbox-zoom-controls]"
+    ],
+    "attributes": ["data-slot"]
+  },
+  "consumerResponsibilities": [
+    "Provide concise localized accessible names, descriptions, actions, alternatives, and status text.",
+    "Preserve native elements, relationships, logical order, and documented dismissal and focus-restoration behavior when composing or styling.",
+    "Retest long content, RTL, zoom, touch, forced colors, reduced motion, and assistive technology for consumer-specific content.",
+    "Do not claim Stable or complete conformance until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "semantic-structure",
+      "keyboard",
+      "pointer-touch",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "supported-browser",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

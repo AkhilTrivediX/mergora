@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "time-picker",
+  "entryExport": "TimePicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "TimePicker" },
+    { "kind": "type", "name": "TimePickerInterval" },
+    { "kind": "type", "name": "TimePickerProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "time",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "intervals",
+      "required": false,
+      "default": false,
+      "type": "false | readonly TimePickerInterval[]"
+    },
+    { "name": "onIntervalSelect", "required": false, "type": "(interval) => void" },
+    { "name": "showTimeZoneContext", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "native": "TimeField retains platform editing, validation, reset, and serialization.",
+    "intervals": "Available-time controls and their callback exist only when a non-empty intervals collection is supplied.",
+    "selection": "Pressed state follows the same controlled or uncontrolled canonical time string."
+  }
+}

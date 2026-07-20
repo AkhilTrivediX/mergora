@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "requiredLocales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "directions": ["ltr", "rtl"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "motions": ["no-preference", "reduce"],
+  "viewports": [
+    { "id": "mobile-compact", "width": 320, "height": 568 },
+    { "id": "mobile-tall", "width": 360, "height": 800 },
+    { "id": "mobile-wide", "width": 390, "height": 844 },
+    { "id": "tablet-portrait", "width": 768, "height": 1024 },
+    { "id": "tablet-landscape", "width": 1024, "height": 768 },
+    { "id": "desktop-short", "width": 1280, "height": 256 },
+    { "id": "desktop-compact", "width": 1280, "height": 800 },
+    { "id": "desktop-wide", "width": 1440, "height": 900 }
+  ],
+  "containerWidths": [240, 320, 480, 768],
+  "requiredZoomPercents": [100, 400],
+  "requiredTextScalePercents": [100, 200],
+  "textSpacingModes": ["normal", "wcag-override"]
+}

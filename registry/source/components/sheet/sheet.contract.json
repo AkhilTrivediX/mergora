@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "sheet",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A modal dialog surface placed on a logical inline or physical block edge with bounded size, safe-area padding, and contained scrolling.",
+  "semantics": [
+    "Sheet uses the same named dialog semantics, focus containment, dismissal, background isolation, and restoration as Dialog.",
+    "start and end follow provider direction independently from locale.",
+    "A sticky footer and internal scroll preserve the close path and focused controls.",
+    "Touch gestures are not required; trigger, Close, keyboard, speech, and switch paths remain complete."
+  ],
+  "messageKeys": [
+    {
+      "key": "sheet.close",
+      "fallback": "Close panel",
+      "context": "Visible default Sheet.Close text when children are omitted."
+    }
+  ],
+  "preferences": {
+    "forcedColors": "A system-color surface boundary remains visible.",
+    "reducedMotion": "Edge translation is removed.",
+    "rtl": "Inline start/end side and safe-area layout follow native direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Inline sheets fit the viewport; block sheets cap at 85dvb on narrow screens; content scrolls internally."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "browser-keyboard-focus",
+      "axe",
+      "safe-area-geometry",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

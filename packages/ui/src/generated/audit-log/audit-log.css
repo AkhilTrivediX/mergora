@@ -1,0 +1,149 @@
+/* Generated from registry/source/components/audit-log/audit-log.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-audit-log {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    min-inline-size: 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-audit-log [data-slot="audit-log-filters"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--mrg-semantic-space-inline-md);
+    padding-block: var(--mrg-semantic-space-inset-md);
+    border-block: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-audit-log [data-slot="audit-log-filters"] label {
+    display: grid;
+    flex: 1 1 12rem;
+    gap: var(--mrg-semantic-space-stack-xs);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-audit-log :is(input, select) {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    min-inline-size: 0;
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-audit-log [data-slot="audit-log-viewport"] {
+    position: relative;
+    min-block-size: calc(var(--mrg-semantic-density-row-height) * 3);
+    overflow: auto;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-audit-log [data-slot="audit-log-events"] {
+    position: relative;
+    display: grid;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-audit-log [data-slot="audit-log-events"] > li {
+    inline-size: 100%;
+    padding: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    overflow: hidden;
+  }
+
+  .mrg-audit-log dl {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--mrg-semantic-space-inline-md);
+    margin: 0;
+  }
+
+  .mrg-audit-log dl div {
+    min-inline-size: 0;
+  }
+  .mrg-audit-log dt {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+  .mrg-audit-log dd {
+    margin: 0;
+    font-weight: var(--mrg-semantic-font-weight-label);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-audit-log [data-slot="audit-log-export"] {
+    justify-self: start;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-action-foreground);
+    background: var(--mrg-semantic-color-action-background);
+    font: inherit;
+  }
+
+  .mrg-audit-log [data-slot="audit-log-empty"] {
+    padding: var(--mrg-semantic-space-stack-lg);
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center;
+  }
+
+  .mrg-audit-log :is(input, select, button, [data-slot="audit-log-viewport"]):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 42rem) {
+    .mrg-audit-log dl {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 24rem) {
+    .mrg-audit-log dl {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (pointer: coarse) {
+    .mrg-audit-log :is(input, select, button) {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-audit-log [data-slot="audit-log-viewport"] {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-audit-log,
+    .mrg-audit-log [data-slot="audit-log-viewport"],
+    .mrg-audit-log :is(input, select) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-audit-log button {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-audit-log :is(input, select, button, [data-slot="audit-log-viewport"]):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

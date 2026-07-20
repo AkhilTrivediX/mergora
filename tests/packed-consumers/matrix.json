@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "p1-packed-consumer-matrix",
+  "packageManager": "pnpm@11.14.0",
+  "basePath": "/mergora-p1",
+  "versions": {
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "next": "16.2.10",
+    "react": "19.2.7",
+    "react-aria-components": "1.19.0",
+    "react-dom": "19.2.7",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "8.1.5"
+  },
+  "consumers": [
+    {
+      "id": "next-package",
+      "framework": "next",
+      "mode": "package"
+    },
+    {
+      "id": "vite-package",
+      "framework": "vite",
+      "mode": "package"
+    },
+    {
+      "id": "next-source",
+      "framework": "next",
+      "mode": "source"
+    },
+    {
+      "id": "vite-source",
+      "framework": "vite",
+      "mode": "source"
+    }
+  ]
+}

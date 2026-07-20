@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pagination",
+  "root": {
+    "slot": "pagination",
+    "element": "nav",
+    "ref": "HTMLElement",
+    "stableAttributes": ["data-slot", "data-mode"]
+  },
+  "parts": [
+    { "slot": "pagination-list", "element": "ul", "stability": "documented" },
+    { "slot": "pagination-link", "element": "a", "stability": "documented" },
+    {
+      "slot": "pagination-current",
+      "element": "span aria-current=page",
+      "stability": "documented"
+    },
+    {
+      "slot": "pagination-disabled",
+      "element": "span aria-disabled=true",
+      "stability": "documented"
+    },
+    { "slot": "pagination-ellipsis", "element": "span", "stability": "documented" }
+  ]
+}

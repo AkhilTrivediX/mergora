@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "itemId": "number-field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "number-field",
+    "stableAttributes": [
+      "data-slot",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-required",
+      "data-has-stepper",
+      "data-has-scrub",
+      "data-has-status-rail",
+      "data-shows-canonical-preview"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "number-field-group",
+      "element": "div",
+      "purpose": "Groups the editable input and optional step or scrub controls.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-input",
+      "element": "input",
+      "purpose": "Locale-aware spinbutton editing surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-decrement",
+      "element": "button",
+      "purpose": "Optional localized decrement control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-increment",
+      "element": "button",
+      "purpose": "Optional localized increment control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-scrub",
+      "element": "button",
+      "purpose": "Optional pointer-drag and keyboard step control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-insights",
+      "element": "div",
+      "purpose": "Groups independently optional domain context and canonical-value evidence.",
+      "stability": "documented"
+    },
+    {
+      "slot": "number-field-status",
+      "element": "span",
+      "purpose": "Optionally describes formatted numeric bounds through aria-describedby.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "number-field-canonical-preview",
+      "element": "span containing data",
+      "purpose": "Optionally exposes the exact JavaScript and form value without live announcements.",
+      "stability": "documented"
+    },
+    {
+      "slot": "implicit-form-value",
+      "element": "input type=hidden",
+      "purpose": "Canonical, non-localized successful form value supplied by React Aria.",
+      "stability": "behavioral"
+    }
+  ]
+}

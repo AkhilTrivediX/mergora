@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "separator",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "horizontalSemantic": "Native hr with its implicit separator role and horizontal orientation.",
+    "verticalSemantic": "div with role=separator and aria-orientation=vertical.",
+    "decorative": "role=presentation and aria-hidden=true remove the visual line from the accessibility tree.",
+    "refTarget": "HTMLElement"
+  },
+  "layout": {
+    "horizontal": "One semantic border-width token in the block axis and fluid inline size.",
+    "vertical": "One semantic border-width token in the inline axis and stretch within the parent.",
+    "forcedColors": "CanvasText provides a visible system-color line.",
+    "spacing": "Optional logical margin uses semantic spacing tokens; none removes component-owned margin."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=separator]",
+    "attributes": ["data-orientation", "data-decorative"]
+  },
+  "consumerResponsibilities": [
+    "Choose semantic mode only when the separation conveys document or group structure.",
+    "Do not make Separator focusable or use it as an interactive splitter; use Resizable for that contract.",
+    "Ensure a vertical separator is placed in a parent that supplies meaningful block size."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "native-horizontal-semantics",
+      "vertical-aria",
+      "decorative-tree-exclusion",
+      "forced-colors",
+      "rtl",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["screen-reader-semantic-mode", "forced-colors-visibility", "zoom-400"],
+    "recordedEvidence": []
+  }
+}

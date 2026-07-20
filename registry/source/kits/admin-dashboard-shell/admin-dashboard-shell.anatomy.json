@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "admin-dashboard-shell",
+  "root": {
+    "element": "div with public header navigation, sidebar, and main landmarks",
+    "ref": "HTMLDivElement",
+    "slot": "admin-dashboard-shell",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "admin-dashboard-main",
+      "element": "main",
+      "purpose": "Contains breadcrumb, chart, data fallback, and dense activity table.",
+      "stability": "documented"
+    },
+    {
+      "slot": "admin-dashboard-role-context",
+      "element": "optional paragraph",
+      "purpose": "Explains that role-aware navigation is not backend authorization.",
+      "stability": "documented"
+    },
+    {
+      "slot": "admin-dashboard-notifications",
+      "element": "optional aside",
+      "purpose": "Presents adapter-owned notification state and explicit read actions.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "multi-select",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "multi-select",
+    "stableAttributes": ["data-slot", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "parts": [
+    { "element": "input", "slot": "multi-select-input" },
+    { "element": "ul", "slot": "multi-select-listbox" },
+    { "element": "output", "slot": "multi-select-selection-summary" }
+  ]
+}

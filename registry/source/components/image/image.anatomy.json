@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image",
+  "root": {
+    "element": "figure",
+    "ref": "HTMLElement",
+    "slot": "image",
+    "stableAttributes": ["data-slot", "data-state", "data-fit"]
+  },
+  "parts": [
+    {
+      "slot": "image-frame",
+      "element": "div",
+      "purpose": "Preserves aspect and a visible media boundary.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "image-media",
+      "element": "img",
+      "purpose": "Retains native loading and alternative-text behavior.",
+      "stability": "documented"
+    },
+    {
+      "slot": "image-fallback",
+      "element": "conditional div",
+      "purpose": "Provides visible recovery content after load failure or source-policy rejection.",
+      "stability": "documented"
+    },
+    {
+      "slot": "image-status",
+      "element": "optional figcaption",
+      "purpose": "Reports bounded load state only when enabled.",
+      "stability": "documented"
+    }
+  ]
+}

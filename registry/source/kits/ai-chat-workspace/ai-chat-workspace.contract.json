@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "ai-chat-workspace",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not a backend, security boundary, privacy program, legal review, model-safety system, complete accessibility solution, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "aside conversation navigation, main workspace, public message list and native composer form",
+    "rolePolicy": "Loading/offline/error states use persistent native status or alert semantics; streaming announcements remain opt-in.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through conversations, message actions, citations, tool disclosures, suggestions and composer controls in document order."
+    },
+    {
+      "key": "Ctrl/Meta+Enter",
+      "behavior": "Submits from the recommended composer without intercepting IME composition."
+    },
+    {
+      "key": "Native scrolling keys",
+      "behavior": "Remain available in the message viewport; user scrolling suspends optional following."
+    }
+  ],
+  "nonColor": "Conversation selection, delivery, offline, error, tool and citation states use text and native state in addition to restrained green/violet signals.",
+  "responsive": "The sidebar becomes a horizontally scrollable navigation strip and main content stays single-column at narrow widths; touch targets, RTL and reduced motion are explicit.",
+  "stableSelectors": {
+    "root": "[data-slot=ai-chat-workspace]",
+    "parts": [
+      "ai-chat-workspace-sidebar",
+      "ai-chat-workspace-main",
+      "ai-chat-workspace-offline",
+      "ai-chat-workspace-error"
+    ],
+    "attributes": ["aria-current"]
+  },
+  "adapterBoundary": "All model, network, storage, upload, tool execution, authentication, authorization, moderation, retention and telemetry behavior is supplied by the consumer adapter. The deterministic adapter is local fixture data only.",
+  "consumerResponsibilities": [
+    "Provide a secured, abort-aware adapter and keep provider credentials off the client.",
+    "Authorize conversations, messages, attachments, tools, retries, edits and branches at the backend.",
+    "Define privacy, retention, moderation, legal, safety and incident policies.",
+    "Run a complete product-level accessibility and assistive-technology review with localized real content."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "deterministic-adapter",
+      "conversation-navigation",
+      "streaming-stable-segments",
+      "attachments",
+      "citations",
+      "tool-states",
+      "retry-edit-branch",
+      "offline-error-empty",
+      "follow-announcement-off",
+      "narrow",
+      "rtl",
+      "reduced-motion",
+      "forced-colors",
+      "package-source-parity",
+      "install-update-remove"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "security-privacy-legal-review"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rich-text-editor",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "controlled",
+    "uncontrolled",
+    "adapter",
+    "disabled",
+    "read-only",
+    "invalid",
+    "error",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion",
+    "labs"
+  ],
+  "slots": [
+    {
+      "name": "rich-text-editor",
+      "semanticElement": "div adapter shell",
+      "refTarget": "HTMLDivElement",
+      "states": ["controlled", "uncontrolled", "disabled", "read-only", "invalid", "labs"]
+    },
+    {
+      "name": "rich-text-editor-adapter-boundary",
+      "semanticElement": "optional paragraph",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "rich-text-editor-surface",
+      "semanticElement": "adapter-owned editing surface container",
+      "refTarget": "none",
+      "states": ["adapter"]
+    },
+    {
+      "name": "rich-text-editor-serialization",
+      "semanticElement": "optional details",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "rich-text-editor-accessibility", "version": "0.1.0" },
+  "passport": { "id": "rich-text-editor-quality-passport", "version": "0.0.0" }
+}

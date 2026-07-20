@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "file-manager",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete accessibility, provider-security, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Header, complementary folder tree, main file list, preview, native rename/move forms, progress and recovery status.",
+    "rolePolicy": "TreeView and UploadProgress own their documented semantics; enhancement-only status output is absent when disabled.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through view, folder, file, preview and action controls in document order."
+    },
+    {
+      "key": "Tree arrow keys",
+      "behavior": "Navigate and expand folders according to the canonical TreeView contract, including RTL reversal."
+    },
+    { "key": "Enter / Space", "behavior": "Activates focused native buttons and tree selection." }
+  ],
+  "nonColor": "Names, text status, borders, native progress, headings and explicit conflict/recovery copy accompany color.",
+  "responsive": "The folder rail and preview collapse into logical block order; files remain usable at 320 CSS pixels and 400 percent zoom.",
+  "stableSelectors": {
+    "root": "[data-slot=file-manager]",
+    "parts": [
+      "[data-slot=file-manager-folders]",
+      "[data-slot=file-manager-content]",
+      "[data-slot=file-manager-preview]"
+    ],
+    "attributes": [
+      "data-slot",
+      "data-offline",
+      "data-view",
+      "data-status",
+      "aria-labelledby",
+      "aria-posinset",
+      "aria-setsize"
+    ]
+  },
+  "consumerResponsibilities": [
+    "Authorize every adapter operation server-side and revalidate type, size, path, conflict and permission state.",
+    "Supply upload, malware/security review, privacy, retention, storage, recovery expiry and legal policy.",
+    "Localize text and retest keyboard, touch, zoom, RTL, forced colors and supported assistive technologies.",
+    "Do not claim Stable until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "workflow-e2e",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text",
+      "security-privacy-review"
+    ],
+    "recordedEvidence": []
+  }
+}

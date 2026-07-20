@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "portal",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "basic-defaults",
+      "covers": ["fallback-disabled", "mounted-portal", "context-bridge"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["fallback-enabled", "target-context", "locale-direction-density"]
+    },
+    {
+      "id": "portal-and-client-boundary",
+      "covers": ["server-fallback", "custom-container", "inline-mode", "locale", "rtl", "density"]
+    },
+    { "id": "nested-layer-stack", "covers": ["portal-layer-composition", "nested-context"] }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["dark", "enhanced-contrast", "forced-colors", "touch-density"],
+    "requiresBrowserEvidence": ["ssr-hydration", "focus-order", "accessible-relationships", "rtl"]
+  }
+}

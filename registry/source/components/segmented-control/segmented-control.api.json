@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "segmented-control",
+  "entryExport": "SegmentedControl",
+  "refTarget": "HTMLFieldSetElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "SegmentedControl"
+    },
+    {
+      "kind": "component",
+      "name": "SegmentedControlItem"
+    },
+    {
+      "kind": "namespace",
+      "name": "SegmentedControlParts"
+    },
+    {
+      "kind": "type",
+      "name": "SegmentedControlProps"
+    },
+    {
+      "kind": "type",
+      "name": "SegmentedControlItemProps"
+    },
+    {
+      "kind": "function",
+      "name": "resolveSegmentedIndex"
+    }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "default": false, "name": "required", "required": false, "type": "boolean" },
+    {
+      "default": "not rendered",
+      "name": "renderSelectionSummary",
+      "required": false,
+      "type": "(value: string | undefined) => ReactNode"
+    }
+  ],
+  "nativePolicy": [
+    "The fieldset and legend provide native group naming.",
+    "Home, End, and arrows move and select while skipping disabled options.",
+    "The horizontal scroller preserves touch and keyboard access at narrow widths.",
+    "Uncontrolled native forms restore defaultValue on reset and required applies to each radio."
+  ],
+  "compositionPolicy": {
+    "familySignature": "Connected Ink segments use a Green selected rail and the shared Violet focus seam.",
+    "enhancement": "renderSelectionSummary adds a live workbench summary rail; omitting it removes the rail and live region."
+  }
+}

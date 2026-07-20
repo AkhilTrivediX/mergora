@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "drawer",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, complete manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "The shared Sheet and Dialog foundations provide a named modal dialog, overlay containment, and focus restoration.",
+    "rolePolicy": "Drawer content retains dialog semantics and requires the same title or explicit accessible-name policy as Dialog.",
+    "refTarget": "See exported TypeScript declaration."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Cycles through the modal drawer controls while background content remains unavailable."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Dismisses the topmost drawer and restores focus."
+    },
+    {
+      "key": "Enter / Space on swipe handle",
+      "behavior": "Closes the drawer through the same optional swipe-close channel."
+    }
+  ],
+  "nonColor": "Text, native state, structure, symbols, or explicit labels accompany every Green or Violet signal.",
+  "responsive": "Logical properties, safe-area-aware containment, wrapping, and scoped overflow preserve operation at 320 CSS pixels, RTL, and 400% zoom; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=drawer-content]",
+    "parts": [
+      "[data-slot=drawer-overlay]",
+      "[data-slot=drawer-content]",
+      "[data-slot=drawer-swipe-handle]"
+    ],
+    "attributes": ["data-slot", "data-side", "data-swipe-enabled"]
+  },
+  "consumerResponsibilities": [
+    "Provide concise localized accessible names, descriptions, actions, and status text.",
+    "Preserve native elements, relationships, logical order, and documented dismissal and focus-restoration behavior when composing or styling.",
+    "Retest long content, RTL, zoom, touch, forced colors, reduced motion, and assistive technology for consumer-specific content.",
+    "Do not claim Stable or complete conformance until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "semantic-structure",
+      "keyboard",
+      "pointer-touch",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "supported-browser",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

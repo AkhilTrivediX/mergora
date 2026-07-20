@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./search-field.css", "react"],
+  "entryPath": "registry/source/components/search-field/search-field.tsx",
+  "id": "search-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

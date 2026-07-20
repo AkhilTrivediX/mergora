@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "input",
+  "entryExport": "Input",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>",
+  "exports": [
+    { "kind": "component", "name": "Input" },
+    { "kind": "type", "name": "InputProps" }
+  ],
+  "props": [
+    { "name": "type", "required": false, "default": "text", "type": "native input type" },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "startAdornment", "required": false, "type": "ReactNode; decorative" },
+    { "name": "endAdornment", "required": false, "type": "ReactNode; decorative" },
+    { "name": "clearable", "required": false, "default": false, "type": "boolean" },
+    { "name": "clearLabel", "required": false, "default": "Clear value", "type": "string" },
+    { "name": "onClear", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "native": "All value, form, autocomplete, inputmode, validation, paste, and autofill behavior stays native.",
+    "field": "ID, description, error, required, and invalid state are inherited from Field unless explicitly supplied.",
+    "enhancement": "clearable adds a labelled, focus-retaining native value-clear action that participates in controlled or uncontrolled change handling and form reset; false emits no button or handler."
+  }
+}

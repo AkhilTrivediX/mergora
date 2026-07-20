@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-range-picker",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "empty",
+    "populated",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "date-range-picker",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["disabled", "read-only", "invalid", "required", "empty", "populated"]
+    },
+    {
+      "name": "date-range-picker-fields",
+      "semanticElement": "two labelled date inputs",
+      "refTarget": "none",
+      "states": ["default", "disabled"]
+    },
+    {
+      "name": "date-range-picker-presets",
+      "semanticElement": "optional button group",
+      "refTarget": "none",
+      "states": ["default", "disabled"]
+    },
+    {
+      "name": "date-range-picker-duration",
+      "semanticElement": "optional output",
+      "refTarget": "none",
+      "states": ["default", "disabled"]
+    },
+    {
+      "name": "date-range-picker-duration-error",
+      "semanticElement": "optional alert text",
+      "refTarget": "none",
+      "states": ["invalid"]
+    }
+  ],
+  "contract": {
+    "id": "date-range-picker-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "date-range-picker-quality-passport",
+    "version": "0.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "visually-hidden",
+  "root": {
+    "element": "span | div | a",
+    "ref": "HTMLElement",
+    "slot": "visually-hidden",
+    "stableAttributes": ["data-slot", "data-reveal-on-focus"]
+  },
+  "parts": []
+}

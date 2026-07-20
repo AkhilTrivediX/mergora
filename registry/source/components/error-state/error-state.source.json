@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../provider/index.js",
+    "../sr-announcer/index.js",
+    "./error-state.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/error-state/error-state.tsx",
+  "id": "error-state",
+  "itemDependencies": ["provider", "sr-announcer"],
+  "outputRole": "component"
+}

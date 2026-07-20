@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "emoji-picker",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Integrate and license a versioned localized Unicode/CLDR data source and implement a measured accessible large-collection windowing strategy.",
+    "Complete Risk Class 3 desktop/mobile AT, IME, speech, switch, touch, zoom, RTL, locale, and high-density evidence.",
+    "Generate and verify all distribution surfaces, packed consumers, update lifecycle, and package/source parity."
+  ]
+}

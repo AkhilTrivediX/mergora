@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "itemId": "bottom-navigation",
+  "entryExport": "BottomNavigation",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML nav attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "BottomNavigation" },
+    { "kind": "type", "name": "BottomNavigationItem" },
+    { "kind": "type", "name": "BottomNavigationLayout" },
+    { "kind": "type", "name": "BottomNavigationOverflowOptions" },
+    { "kind": "type", "name": "BottomNavigationProps" },
+    { "kind": "function", "name": "getBottomNavigationLayout" },
+    { "kind": "function", "name": "isSafeBottomNavigationHref" }
+  ],
+  "controlledState": [
+    {
+      "state": "current destination",
+      "controlled": "currentId",
+      "uncontrolled": "defaultCurrentId",
+      "callback": "onCurrentIdChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "bounded overflow recovery",
+      "api": "overflow",
+      "disabled": "false removes disclosure UI, nested links, attributes, and overflow handling"
+    }
+  ]
+}

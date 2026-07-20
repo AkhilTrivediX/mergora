@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./bottom-navigation.css", "react"],
+  "entryPath": "registry/source/components/bottom-navigation/bottom-navigation.tsx",
+  "id": "bottom-navigation",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

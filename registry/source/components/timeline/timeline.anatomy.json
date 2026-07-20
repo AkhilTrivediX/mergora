@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "timeline",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "timeline",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

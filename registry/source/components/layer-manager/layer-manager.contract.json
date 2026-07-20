@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "layer-manager",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "provider": "Context-only; nested providers always reuse the nearest stack and document listener.",
+    "application": "A neutral application boundary that becomes natively inert while an external modal layer is active.",
+    "layer": "A neutral wrapper or one consumer element; overlay roles, names, focus trap, and focus return remain the owning component's contract."
+  },
+  "stack": {
+    "order": "Registration order defines indices, the top layer, and the actual portal-root visual z-order when Layer composes asChild.",
+    "escape": "Only the top layer is considered; if dismissible it receives one escape detail, otherwise lower layers remain unchanged.",
+    "inert": "Every registered application root outside the top environment-managed modal is inert until the final such modal unregisters; external behavior owners may opt out without leaving the shared stack.",
+    "scroll": "For environment-managed modals, the manager records scroll coordinates and every touched body style, compensates the scrollbar, and restores exact prior values. Externally managed modals do not duplicate these effects.",
+    "cleanup": "Layer, root, key listener, inert state, and scroll lock all clean up under Strict Mode; unchanged native modal ownership is not torn down for unrelated non-modal stack changes.",
+    "environmentOptOut": "manageEnvironment=false omits inerting, body styles, scroll locking, and cleanup while preserving shared stack and Escape order; modal=false also omits modal membership."
+  },
+  "consumerResponsibilities": [
+    "Portal modal layers outside LayerManager.Application so the modal is never inside an inert ancestor.",
+    "Use a dedicated overlay primitive for role, accessible name, initial focus, trapping, dismissal policy, and focus restoration.",
+    "Register every non-modal application root that must become inert.",
+    "Do not use visual z-index values to imply a stack order different from registration order."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "nested-providers",
+      "stack-order",
+      "escape-order",
+      "non-dismissible-top",
+      "inert-restore",
+      "scroll-restore",
+      "environment-ownership-opt-out",
+      "strict-mode-cleanup",
+      "ssr",
+      "hydration",
+      "packed-consumer",
+      "package-source-parity",
+      "performance-scale"
+    ],
+    "manual": [
+      "complete-desktop-at",
+      "complete-mobile-at",
+      "speech",
+      "switch",
+      "keyboard-focus",
+      "rtl",
+      "forced-colors",
+      "zoom-400",
+      "touch-scroll"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,106 @@
+/* Generated from registry/source/components/native-select/native-select.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-native-select {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  grid-template-columns: minmax(0, 1fr) auto;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+}
+
+.mrg-native-select:focus-within {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-native-select[data-invalid="true"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-native-select[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-native-select-control {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline)
+    calc(var(--mrg-semantic-density-control-padding-inline) * 2.5);
+}
+
+.mrg-native-select[data-listbox="true"] .mrg-native-select-control {
+  min-block-size: 8rem;
+  padding-inline-end: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-native-select [data-slot="native-select-indicator"] {
+  grid-column: 2;
+  grid-row: 1;
+  padding-inline-end: var(--mrg-semantic-density-control-padding-inline);
+  pointer-events: none;
+}
+
+.mrg-native-select [data-slot="native-select-selection-context"] {
+  background: var(--mrg-semantic-color-status-info-background);
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-info-border);
+  color: var(--mrg-semantic-color-status-info-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  grid-column: 1 / -1;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-control-padding-inline);
+}
+
+@media (pointer: coarse) {
+  .mrg-native-select {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-native-select {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-native-select [data-slot="native-select-indicator"] {
+    color: ButtonText;
+  }
+
+  .mrg-native-select:focus-within {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-native-select [data-slot="native-select-selection-context"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

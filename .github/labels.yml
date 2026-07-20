@@ -1,0 +1,67 @@
+# Canonical repository label inventory. Colors are six-digit hex without '#'.
+- name: bug
+  color: d73a4a
+  description: Reproducible product or tooling defect
+- name: accessibility
+  color: 5319e7
+  description: Accessibility contract, evidence, or user barrier
+- name: proposal
+  color: a2eeef
+  description: Component, capability, API, or product proposal
+- name: documentation
+  color: 0075ca
+  description: Human or machine documentation
+- name: support
+  color: d4c5f9
+  description: Usage question or support triage
+- name: idea
+  color: c5def5
+  description: Early problem or product idea
+- name: dependencies
+  color: 0366d6
+  description: Dependency or lockfile update
+- name: github-actions
+  color: 2088ff
+  description: GitHub Actions workflow or pinned action update
+- name: registry
+  color: 0e8a16
+  description: Registry schema, payload, mirror, or trust boundary
+- name: cli
+  color: 0052cc
+  description: CLI, transaction, provenance, or Semantic Sync
+- name: site
+  color: fbca04
+  description: Documentation site, Studio, Lens, search, or Pages
+- name: components
+  color: 1d76db
+  description: Canonical component, system, or kit implementation
+- name: tokens
+  color: b60205
+  description: Design tokens, theme generation, fonts, or visual contract
+- name: schema
+  color: 006b75
+  description: Public schema, type, validator, or compatibility contract
+- name: tests
+  color: 0e8a16
+  description: Test harness, fixture, evidence, or regression coverage
+- name: packages
+  color: 7057ff
+  description: Package exports, metadata, build, or consumer behavior
+- name: security
+  color: b60205
+  description: Security or supply-chain work without embargoed details
+- name: release-candidate
+  color: 5319e7
+  description: Triggers protected release-candidate verification
+- name: visual-change
+  color: f9d0c4
+  description: Reviewed visual baseline or intentional presentation change
+- name: nightly
+  color: 000000
+  description: Deduplicated nightly quality failure
+- name: blocked
+  color: b60205
+  description: Blocked by a recorded requirement or external authority
+- name: good first issue
+  color: 7057ff
+  description: Bounded contribution with explicit acceptance criteria

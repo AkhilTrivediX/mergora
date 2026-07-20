@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "message-list",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "labelled scroll container and ordered list",
+    "rolePolicy": "Virtual rows retain list position and total metadata without fabricating chat log roles.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab",
+      "behavior": "Focuses the scroll viewport and optional resume control in document order."
+    },
+    {
+      "key": "Page Up / Page Down / Home / End",
+      "behavior": "Native scrolling remains available on the focused viewport."
+    }
+  ],
+  "nonColor": "A visible Jump to newest message action explains suspended following without relying on color.",
+  "responsive": "The scroll region uses intrinsic width, stable gutters and wrapping at narrow sizes.",
+  "stableSelectors": {
+    "root": "[data-slot=message-list]",
+    "parts": [
+      "message-list-viewport",
+      "message-list-items",
+      "message-list-follow",
+      "message-list-announcement"
+    ],
+    "attributes": ["data-following", "data-message-id"]
+  },
+  "streamingPolicy": "Following occurs only when enabled and the user remains at the output edge. Scrolling away suspends it. Announcements are independently opt-in and debounced.",
+  "consumerResponsibilities": [
+    "Use stable unique ids and preserve rendered message semantics.",
+    "Choose virtualization only after testing the content height assumption.",
+    "Localize empty, follow and announcement strings.",
+    "Own data fetching, persistence, privacy and model behavior."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "virtual-window",
+      "aria-position",
+      "follow-output",
+      "user-scroll-preservation",
+      "announcement-throttle",
+      "enhancement-off",
+      "rtl",
+      "reduced-motion",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-scroll", "screen-reader-virtual-list", "touch-scroll", "zoom", "rtl"],
+    "recordedEvidence": []
+  }
+}

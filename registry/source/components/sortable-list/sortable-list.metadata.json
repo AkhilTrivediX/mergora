@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sortable-list",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "controlled",
+    "uncontrolled",
+    "disabled",
+    "grabbed",
+    "cancelled",
+    "undo",
+    "virtualized",
+    "long-content",
+    "rtl",
+    "narrow",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "sortable-list",
+      "semanticElement": "div role=region containing ordered list",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "controlled", "uncontrolled", "disabled", "virtualized"]
+    },
+    {
+      "name": "sortable-list-item",
+      "semanticElement": "li",
+      "refTarget": "HTMLLIElement",
+      "states": ["default", "grabbed", "disabled"]
+    },
+    {
+      "name": "sortable-list-announcer",
+      "semanticElement": "optional status",
+      "refTarget": "none",
+      "states": ["grabbed", "cancelled", "undo"]
+    }
+  ],
+  "contract": { "id": "sortable-list-accessibility", "version": "0.1.0" },
+  "passport": { "id": "sortable-list-quality-passport", "version": "0.0.0" }
+}

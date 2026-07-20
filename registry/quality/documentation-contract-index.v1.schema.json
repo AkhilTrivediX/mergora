@@ -1,0 +1,420 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/schemas/documentation-contract-index-v1.schema.json",
+  "title": "Mergora documentation contract index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactKind",
+    "generated",
+    "authority",
+    "indexSchema",
+    "publicationStatus",
+    "inventory",
+    "items"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "artifactKind": { "const": "documentation-contract-index" },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "editPolicy"],
+      "properties": {
+        "by": { "const": "@mergora-internal/registry-builder" },
+        "editPolicy": { "const": "do-not-edit" }
+      }
+    },
+    "authority": { "const": "registry/generated/catalog.json" },
+    "indexSchema": {
+      "const": "registry/quality/documentation-contract-index.v1.schema.json"
+    },
+    "publicationStatus": { "const": "blocked-unreleased" },
+    "inventory": { "$ref": "#/$defs/inventory" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/item" }
+    }
+  },
+  "$defs": {
+    "count": { "type": "integer", "minimum": 0 },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "repositoryPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:apps|registry)/[A-Za-z0-9._/-]+$"
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "items",
+        "anatomy",
+        "semanticInteractionContracts",
+        "stateApplicability",
+        "recordedEvidence"
+      ],
+      "properties": {
+        "items": { "$ref": "#/$defs/count" },
+        "anatomy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["documented", "metadataSlotsOnly", "unavailable"],
+          "properties": {
+            "documented": { "$ref": "#/$defs/count" },
+            "metadataSlotsOnly": { "$ref": "#/$defs/count" },
+            "unavailable": { "$ref": "#/$defs/count" }
+          }
+        },
+        "semanticInteractionContracts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["sourceContractUnreleased", "draftUnavailable", "unavailable"],
+          "properties": {
+            "sourceContractUnreleased": { "$ref": "#/$defs/count" },
+            "draftUnavailable": { "$ref": "#/$defs/count" },
+            "unavailable": { "$ref": "#/$defs/count" }
+          }
+        },
+        "stateApplicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["available", "coverageOnlyUnavailable", "unavailable"],
+          "properties": {
+            "available": { "$ref": "#/$defs/count" },
+            "coverageOnlyUnavailable": { "$ref": "#/$defs/count" },
+            "unavailable": { "$ref": "#/$defs/count" }
+          }
+        },
+        "recordedEvidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["itemsWithRecords", "records"],
+          "properties": {
+            "itemsWithRecords": { "$ref": "#/$defs/count" },
+            "records": { "$ref": "#/$defs/count" }
+          }
+        }
+      }
+    },
+    "anatomy": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourceKind", "sourcePath", "document"],
+          "properties": {
+            "status": { "const": "documented" },
+            "sourceKind": { "const": "anatomy-contract" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "document": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourceKind", "sourcePath", "document"],
+          "properties": {
+            "status": { "const": "metadata-slots-only" },
+            "sourceKind": { "const": "component-metadata" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "document": { "type": "object" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourceKind", "sourcePath", "document", "reason"],
+          "properties": {
+            "status": { "const": "unavailable" },
+            "sourceKind": { "type": "null" },
+            "sourcePath": { "type": "null" },
+            "document": { "type": "null" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "semanticInteractionContract": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "sourcePath",
+            "contractVersion",
+            "sourceStatus",
+            "claim",
+            "semantics",
+            "document",
+            "recordedEvidence"
+          ],
+          "properties": {
+            "status": { "const": "source-contract-unreleased" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "contractVersion": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+            },
+            "sourceStatus": { "type": "string", "minLength": 1 },
+            "claim": { "type": "string", "minLength": 1 },
+            "semantics": {},
+            "document": { "type": "object" },
+            "recordedEvidence": { "type": "array" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "sourcePath",
+            "contractVersion",
+            "sourceStatus",
+            "claim",
+            "semantics",
+            "document",
+            "recordedEvidence",
+            "reason"
+          ],
+          "properties": {
+            "status": { "const": "draft-unavailable" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "contractVersion": { "type": "null" },
+            "sourceStatus": { "type": "string", "minLength": 1 },
+            "claim": { "type": "null" },
+            "semantics": { "type": "null" },
+            "document": { "type": "null" },
+            "recordedEvidence": { "const": [] },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "sourcePath",
+            "contractVersion",
+            "sourceStatus",
+            "claim",
+            "semantics",
+            "document",
+            "recordedEvidence",
+            "reason"
+          ],
+          "properties": {
+            "status": { "const": "unavailable" },
+            "sourcePath": { "type": "null" },
+            "contractVersion": { "type": "null" },
+            "sourceStatus": { "type": "null" },
+            "claim": { "type": "null" },
+            "semantics": { "type": "null" },
+            "document": { "type": "null" },
+            "recordedEvidence": { "const": [] },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "validatedStory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "modulePath", "exportName"],
+      "properties": {
+        "status": { "const": "validated-source-export" },
+        "modulePath": { "$ref": "#/$defs/repositoryPath" },
+        "exportName": {
+          "type": "string",
+          "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
+        }
+      }
+    },
+    "state": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "applicability", "rationale", "story"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "applicability": { "const": "not-applicable" },
+            "rationale": { "type": "string", "minLength": 1 },
+            "story": { "type": "null" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "applicability", "rationale", "story"],
+          "properties": {
+            "id": { "$ref": "#/$defs/id" },
+            "applicability": { "const": "applicable" },
+            "rationale": { "type": "null" },
+            "story": {
+              "oneOf": [
+                { "$ref": "#/$defs/validatedStory" },
+                { "$ref": "#/$defs/unavailableStory" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "stateApplicability": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourcePath", "reason", "states"],
+          "properties": {
+            "status": { "const": "available" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "reason": { "type": "null" },
+            "states": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/state" }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourcePath", "reason", "states"],
+          "properties": {
+            "status": { "const": "coverage-only-unavailable" },
+            "sourcePath": { "$ref": "#/$defs/repositoryPath" },
+            "reason": { "type": "string", "minLength": 1 },
+            "states": { "const": [] }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "sourcePath", "reason", "states"],
+          "properties": {
+            "status": { "const": "unavailable" },
+            "sourcePath": { "type": "null" },
+            "reason": { "type": "string", "minLength": 1 },
+            "states": { "const": [] }
+          }
+        }
+      ]
+    },
+    "unavailableStory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "modulePath", "exportName", "reason"],
+      "properties": {
+        "status": { "const": "unavailable" },
+        "modulePath": { "type": "null" },
+        "exportName": { "type": "null" },
+        "reason": { "type": "string", "minLength": 1 }
+      }
+    },
+    "recommendedStory": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "matrixStatus", "mode", "modulePath", "exportName"],
+          "properties": {
+            "status": { "const": "validated-source-export" },
+            "matrixStatus": { "const": "tested" },
+            "mode": {
+              "enum": ["basic-enhancements-disabled", "recommended-enhancements-enabled"]
+            },
+            "modulePath": { "$ref": "#/$defs/repositoryPath" },
+            "exportName": {
+              "type": "string",
+              "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "matrixStatus", "mode", "modulePath", "exportName", "reason"],
+          "properties": {
+            "status": { "const": "unavailable" },
+            "matrixStatus": {
+              "enum": ["audit-pending", "blocked", "declared", "missing"]
+            },
+            "mode": {
+              "enum": ["basic-enhancements-disabled", "recommended-enhancements-enabled"]
+            },
+            "modulePath": { "type": "null" },
+            "exportName": { "type": "null" },
+            "reason": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+    "passportSkeleton": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactPath",
+        "itemId",
+        "passportId",
+        "skeleton",
+        "publishable",
+        "overallState"
+      ],
+      "properties": {
+        "artifactPath": { "const": "registry/generated/passport-skeletons.json" },
+        "itemId": { "$ref": "#/$defs/id" },
+        "passportId": { "$ref": "#/$defs/id" },
+        "skeleton": { "const": true },
+        "publishable": { "const": false },
+        "overallState": { "const": "blocked" }
+      }
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "family",
+        "layer",
+        "kind",
+        "implementationStatus",
+        "anatomy",
+        "semanticInteractionContract",
+        "stateApplicability",
+        "storybook",
+        "passportSkeleton"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "displayName": { "type": "string", "minLength": 1 },
+        "family": { "$ref": "#/$defs/id" },
+        "layer": { "enum": ["foundation", "component", "system", "kit"] },
+        "kind": { "enum": ["catalog-item", "kit"] },
+        "implementationStatus": {
+          "enum": ["unimplemented", "source-present-unreleased"]
+        },
+        "anatomy": { "$ref": "#/$defs/anatomy" },
+        "semanticInteractionContract": {
+          "$ref": "#/$defs/semanticInteractionContract"
+        },
+        "stateApplicability": { "$ref": "#/$defs/stateApplicability" },
+        "storybook": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["basic", "recommended"],
+          "properties": {
+            "basic": { "$ref": "#/$defs/recommendedStory" },
+            "recommended": { "$ref": "#/$defs/recommendedStory" }
+          }
+        },
+        "passportSkeleton": { "$ref": "#/$defs/passportSkeleton" }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collaboration-presence",
+  "root": {
+    "element": "div containing labelled ul",
+    "ref": "HTMLUListElement",
+    "slot": "collaboration-presence",
+    "stableAttributes": ["data-slot", "data-presence-status"]
+  },
+  "parts": [
+    "collaboration-presence-list",
+    "collaboration-presence-avatar",
+    "collaboration-presence-label",
+    "collaboration-presence-summary"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./empty-state.css", "react"],
+  "entryPath": "registry/source/components/empty-state/empty-state.tsx",
+  "id": "empty-state",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropdown-menu",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "closed",
+    "open",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "dropdown-menu-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["closed", "open"]
+    },
+    {
+      "name": "dropdown-menu-content",
+      "semanticElement": "div role=menu",
+      "refTarget": "HTMLDivElement",
+      "states": ["closed", "open", "empty", "populated"]
+    },
+    {
+      "name": "dropdown-menu-item",
+      "semanticElement": "menuitem variant",
+      "refTarget": "HTMLElement",
+      "states": ["focused", "selected", "disabled", "destructive"]
+    },
+    {
+      "name": "dropdown-menu-selection-summary",
+      "semanticElement": "status",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": {
+    "id": "dropdown-menu-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "dropdown-menu-quality-passport",
+    "version": "0.0.0"
+  }
+}

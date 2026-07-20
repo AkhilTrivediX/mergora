@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "diff-viewer",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify source/package/registry/docs outputs and the public subpath export.",
+    "Record semantic structure, long content, 320 CSS pixel, 200% text, and 400% zoom browser evidence.",
+    "Complete current Risk Class 2 keyboard, screen-reader, speech, switch, touch, RTL, and forced-colors evidence at the blueprint-required depth.",
+    "Pass strict types, SSR/hydration where applicable, axe, ARIA review, and supported-browser interaction gates.",
+    "Pass packed Next.js and Vite consumers plus package/source parity without workspace links.",
+    "Add Semantic Sync clean-update, customized-update, conflict, rollback, and removal fixtures.",
+    "Verify every prepared state, localized string, unbroken value, empty case, and consumer styling escape hatch.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site.",
+    "Measure the documented large-content strategy and either prove bounded native scrolling or implement virtualization with intact semantics before Stable promotion."
+  ]
+}

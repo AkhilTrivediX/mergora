@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./visually-hidden.css", "react"],
+  "entryPath": "registry/source/components/visually-hidden/visually-hidden.tsx",
+  "id": "visually-hidden",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

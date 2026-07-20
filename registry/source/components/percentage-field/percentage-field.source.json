@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../number-field/number-field.js", "./percentage-field.css", "react"],
+  "entryPath": "registry/source/components/percentage-field/percentage-field.tsx",
+  "id": "percentage-field",
+  "itemDependencies": ["number-field"],
+  "outputRole": "component"
+}

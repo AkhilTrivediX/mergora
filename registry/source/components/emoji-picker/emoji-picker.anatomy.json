@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "emoji-picker",
+  "root": {
+    "element": "named div group",
+    "ref": "HTMLDivElement",
+    "slot": "emoji-picker",
+    "stableAttributes": ["data-slot", "data-disabled"]
+  },
+  "parts": [
+    {
+      "slot": "emoji-picker-controls",
+      "element": "optional native inputs/selects",
+      "purpose": "Provides localized search, category, and skin-tone controls outside the grid.",
+      "stability": "documented"
+    },
+    {
+      "slot": "emoji-picker-recent-context",
+      "element": "optional paragraph",
+      "purpose": "Explains consumer-owned recent ordering without hidden storage.",
+      "stability": "documented"
+    },
+    {
+      "slot": "emoji-picker-grid",
+      "element": "ARIA grid with rows and button gridcells",
+      "purpose": "Provides one labelled, spatially navigable emoji collection.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "emoji-picker-summary",
+      "element": "optional polite output",
+      "purpose": "Reports filtered result count without making the grid live.",
+      "stability": "documented"
+    }
+  ]
+}

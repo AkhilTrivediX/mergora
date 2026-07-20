@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./form.css", "react"],
+  "entryPath": "registry/source/components/form/form.tsx",
+  "id": "form",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

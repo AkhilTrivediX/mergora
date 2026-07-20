@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "itemId": "blockquote",
+  "entryExport": "Blockquote",
+  "refTarget": "HTMLElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Blockquote"
+    },
+    {
+      "kind": "type",
+      "name": "BlockquoteProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "children",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "attribution",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "sourceTitle",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "citeUrl",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "The quotation is a native blockquote inside a figure. Attribution and a semantic cite are grouped in figcaption; citeUrl is applied to both the quote metadata and source link.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

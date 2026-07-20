@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./calendar-heatmap.css", "react"],
+  "entryPath": "registry/source/components/calendar-heatmap/calendar-heatmap.tsx",
+  "id": "calendar-heatmap",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

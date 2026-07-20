@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "filter-builder",
+  "entryExport": "FilterBuilder",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "FilterBuilder" },
+    { "kind": "type", "name": "FilterBuilderChangeReason" },
+    { "kind": "type", "name": "FilterBuilderField" },
+    { "kind": "type", "name": "FilterBuilderFilter" },
+    { "kind": "type", "name": "FilterBuilderMessages" },
+    { "kind": "type", "name": "FilterBuilderOperator" },
+    { "kind": "type", "name": "FilterBuilderProps" },
+    { "kind": "type", "name": "FilterBuilderSavedFilter" },
+    { "kind": "type", "name": "FilterBuilderUrlAdapter" },
+    { "kind": "function", "name": "parseFilters" },
+    { "kind": "function", "name": "serializeFilters" }
+  ],
+  "controlledState": [
+    {
+      "state": "filters",
+      "controlled": "filters",
+      "uncontrolled": "defaultFilters",
+      "callback": "onFiltersChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "active filter summary",
+      "api": "showActiveSummary and renderFilterSummary",
+      "disabled": "false removes the output, renderer calls, live behavior, and accessibility output"
+    },
+    {
+      "name": "saved filters",
+      "api": "savedFilters",
+      "disabled": "false removes the selector, saved data, and apply event path"
+    },
+    {
+      "name": "URL state adapter",
+      "api": "urlAdapter",
+      "disabled": "false removes initial reads and all writes"
+    },
+    {
+      "name": "mobile drawer",
+      "api": "mobileDrawer",
+      "disabled": "false removes trigger, dialog, focus restoration, and drawer editor"
+    }
+  ]
+}

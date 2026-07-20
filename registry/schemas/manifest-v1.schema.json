@@ -1,0 +1,441 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json",
+  "title": "Mergora portable provenance manifest v1",
+  "$defs": {
+    "distributionPackageArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "tarballDigest"],
+      "properties": {
+        "name": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+        "version": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "tarballDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "distributionRelease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registryId",
+        "origin",
+        "trust",
+        "identityDigest",
+        "release",
+        "manifestUrl",
+        "manifestDigest",
+        "packages"
+      ],
+      "properties": {
+        "registryId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "origin": { "type": "string", "format": "uri", "maxLength": 2048 },
+        "trust": { "enum": ["official", "enrolled", "local-development"] },
+        "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "manifestUrl": { "type": "string", "format": "uri", "maxLength": 2048 },
+        "manifestDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "packages": {
+          "type": "object",
+          "propertyNames": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+          "additionalProperties": { "$ref": "#/$defs/distributionPackageArtifact" },
+          "maxProperties": 64
+        }
+      }
+    },
+    "dependencyOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "package", "range", "owners", "retention"],
+      "properties": {
+        "scope": { "enum": ["runtime", "development"] },
+        "package": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+        "range": { "$ref": "common-v1.schema.json#/$defs/semverRange" },
+        "owners": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+          "uniqueItems": true,
+          "maxItems": 4096
+        },
+        "retention": { "enum": ["remove-if-unowned", "retain-if-unowned"] }
+      }
+    },
+    "patchOwnership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "adapter",
+        "target",
+        "semanticKey",
+        "ownedValueDigest",
+        "owners",
+        "retention"
+      ],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "adapter": {
+          "enum": [
+            "css-import",
+            "css-source",
+            "css-token-block",
+            "package-dependency",
+            "tsconfig-path",
+            "tsconfig-include",
+            "framework-config"
+          ]
+        },
+        "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "semanticKey": { "type": "string", "minLength": 1, "maxLength": 512 },
+        "ownedValueDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "owners": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+          "uniqueItems": true,
+          "maxItems": 4096
+        },
+        "retention": { "enum": ["remove-if-unowned", "retain-if-unowned"] }
+      }
+    }
+  },
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "projectId",
+    "toolchain",
+    "items",
+    "sharedTargets",
+    "dependencyOwners"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json"
+    },
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "projectId": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "configDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "defaultMode": { "enum": ["source", "package", "hybrid"] },
+    "packageName": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+    "toolchain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cli", "schema", "transformer", "formatter"],
+      "properties": {
+        "cli": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "schema": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "transformer": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "formatter": {
+          "type": "string",
+          "pattern": "^(?:none|mergora@[0-9]+|[a-z0-9@/_-]+@[0-9A-Za-z.+-]+)$",
+          "maxLength": 160
+        }
+      }
+    },
+    "releases": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*@[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+        "maxLength": 320
+      },
+      "additionalProperties": { "$ref": "#/$defs/distributionRelease" },
+      "maxProperties": 256
+    },
+    "items": {
+      "type": "object",
+      "propertyNames": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "registry",
+          "itemId",
+          "kind",
+          "requested",
+          "resolved",
+          "payload",
+          "mode",
+          "direct",
+          "transformContextDigest",
+          "transformContext",
+          "files",
+          "registryDependencies",
+          "dependencies",
+          "structuredPatches",
+          "contractVersion",
+          "lastMigration"
+        ],
+        "properties": {
+          "registry": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "itemId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "kind": {
+            "enum": ["component", "hook", "utility", "system", "kit", "theme", "contract"]
+          },
+          "requested": { "$ref": "common-v1.schema.json#/$defs/semverRange" },
+          "resolved": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "releaseRef": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*@[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+            "maxLength": 320
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["url", "digest"],
+            "properties": {
+              "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+            }
+          },
+          "mode": { "enum": ["source", "package"] },
+          "direct": { "type": "boolean" },
+          "transformContextDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "transformContext": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["targets", "aliases", "styling"],
+            "properties": {
+              "targets": {
+                "type": "object",
+                "propertyNames": {
+                  "enum": ["components", "hooks", "lib", "systems", "kits", "styles", "tokens"]
+                },
+                "additionalProperties": {
+                  "$ref": "common-v1.schema.json#/$defs/projectRelativePath"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "propertyNames": {
+                  "enum": ["components", "hooks", "lib", "systems", "kits", "styles", "tokens"]
+                },
+                "additionalProperties": { "type": "string", "minLength": 1, "maxLength": 256 }
+              },
+              "styling": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["engine", "tokenPreset", "density", "direction"],
+                "properties": {
+                  "engine": { "const": "tailwind-v4" },
+                  "tokenPreset": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                  "density": { "enum": ["comfortable", "compact", "touch"] },
+                  "direction": { "enum": ["ltr", "rtl", "auto"] }
+                }
+              }
+            }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "logicalPath",
+                "target",
+                "role",
+                "base",
+                "installed",
+                "mediaType",
+                "executable"
+              ],
+              "properties": {
+                "logicalPath": { "$ref": "common-v1.schema.json#/$defs/logicalPath" },
+                "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+                "role": {
+                  "enum": [
+                    "component",
+                    "hook",
+                    "lib",
+                    "system",
+                    "kit",
+                    "style",
+                    "token",
+                    "contract",
+                    "example"
+                  ]
+                },
+                "base": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+                "installed": {
+                  "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+                },
+                "mediaType": { "type": "string", "minLength": 1, "maxLength": 120 },
+                "executable": { "const": false },
+                "tombstone": { "type": "boolean" }
+              }
+            },
+            "maxItems": 2048
+          },
+          "packageClaims": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+            "uniqueItems": true,
+            "maxItems": 64
+          },
+          "importSubpaths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*/[a-z0-9-]+(?:/[a-z0-9-]+)*$",
+              "maxLength": 512
+            },
+            "uniqueItems": true,
+            "maxItems": 128
+          },
+          "registryDependencies": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+            "uniqueItems": true,
+            "maxItems": 256
+          },
+          "dependencies": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["runtime", "development"],
+            "properties": {
+              "runtime": { "$ref": "common-v1.schema.json#/$defs/dependencyMap" },
+              "development": { "$ref": "common-v1.schema.json#/$defs/dependencyMap" }
+            }
+          },
+          "structuredPatches": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "adapter", "semanticKey", "ownedValueDigest"],
+              "properties": {
+                "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "adapter": {
+                  "enum": [
+                    "css-import",
+                    "css-source",
+                    "css-token-block",
+                    "package-dependency",
+                    "tsconfig-path",
+                    "tsconfig-include",
+                    "framework-config"
+                  ]
+                },
+                "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+                "semanticKey": { "type": "string", "minLength": 1, "maxLength": 512 },
+                "ownedValueDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+              }
+            },
+            "maxItems": 256
+          },
+          "contractVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "lastMigration": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/catalogId" }, { "type": "null" }]
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "mode": { "const": "source" } } },
+            "then": {
+              "properties": {
+                "packageClaims": { "maxItems": 0 },
+                "importSubpaths": { "maxItems": 0 }
+              }
+            },
+            "else": {
+              "properties": {
+                "files": {
+                  "items": {
+                    "properties": { "role": { "enum": ["contract", "example"] } }
+                  }
+                },
+                "packageClaims": { "minItems": 1 },
+                "importSubpaths": { "minItems": 1 }
+              }
+            }
+          }
+        ]
+      },
+      "maxProperties": 4096
+    },
+    "sharedTargets": {
+      "type": "object",
+      "propertyNames": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "uniqueItems": true
+      }
+    },
+    "dependencyOwners": {
+      "type": "object",
+      "propertyNames": { "pattern": "^(?:runtime|development):(?:@[a-z0-9._-]+/)?[a-z0-9._-]+$" },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+        "uniqueItems": true
+      }
+    },
+    "dependencyOwnership": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^(?:runtime|development):(?:@[a-z0-9._-]+/)?[a-z0-9._-]+$"
+      },
+      "additionalProperties": { "$ref": "#/$defs/dependencyOwnership" },
+      "maxProperties": 1024
+    },
+    "patchOwnership": {
+      "type": "object",
+      "propertyNames": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "additionalProperties": { "$ref": "#/$defs/patchOwnership" },
+      "maxProperties": 2048
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          { "required": ["configDigest"] },
+          { "required": ["defaultMode"] },
+          { "required": ["packageName"] },
+          { "required": ["releases"] },
+          { "required": ["dependencyOwnership"] },
+          { "required": ["patchOwnership"] }
+        ]
+      },
+      "then": {
+        "required": [
+          "configDigest",
+          "defaultMode",
+          "packageName",
+          "releases",
+          "dependencyOwnership",
+          "patchOwnership"
+        ],
+        "properties": {
+          "items": {
+            "additionalProperties": {
+              "required": ["releaseRef", "packageClaims", "importSubpaths"],
+              "properties": {
+                "structuredPatches": {
+                  "items": { "required": ["target"] }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "items": {
+            "additionalProperties": {
+              "properties": { "mode": { "const": "source" } },
+              "not": {
+                "anyOf": [
+                  { "required": ["releaseRef"] },
+                  { "required": ["packageClaims"] },
+                  { "required": ["importSubpaths"] }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

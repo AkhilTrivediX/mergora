@@ -1,0 +1,152 @@
+/* Generated from registry/source/components/bottom-navigation/bottom-navigation.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-bottom-navigation {
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  min-inline-size: 0;
+  padding-block-end: env(safe-area-inset-bottom, 0);
+}
+
+.mrg-bottom-navigation ul {
+  align-items: stretch;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+  inline-size: 100%;
+  justify-content: space-around;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mrg-bottom-navigation li {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+.mrg-bottom-navigation__link,
+.mrg-bottom-navigation__overflow > summary {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: 0;
+  border-block-start: var(--mrg-semantic-border-width-strong) solid transparent;
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font: inherit;
+  font-size: var(--mrg-semantic-font-size-label);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding: var(--mrg-semantic-space-inset-sm);
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-bottom-navigation__link:hover,
+.mrg-bottom-navigation__overflow > summary:hover {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-bottom-navigation__link[aria-current="page"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-block-start-color: var(--mrg-semantic-color-brand-action);
+  color: var(--mrg-semantic-color-selection-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-bottom-navigation__link:focus-visible,
+.mrg-bottom-navigation__overflow > summary:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-bottom-navigation__link[data-disabled] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-bottom-navigation__overflow {
+  block-size: 100%;
+  position: relative;
+}
+
+.mrg-bottom-navigation__overflow > summary {
+  block-size: 100%;
+  list-style: none;
+}
+
+.mrg-bottom-navigation__overflow > summary::-webkit-details-marker {
+  display: none;
+}
+
+.mrg-bottom-navigation__overflow > ul {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-overlay);
+  display: grid;
+  inline-size: min(
+    18rem,
+    calc(100vw - var(--mrg-semantic-space-page) - var(--mrg-semantic-space-page))
+  );
+  inset-block-end: calc(100% + var(--mrg-semantic-space-stack-sm));
+  inset-inline-end: 0;
+  padding: var(--mrg-semantic-space-inset-xs);
+  position: absolute;
+  z-index: var(--mrg-semantic-layer-dropdown);
+}
+
+.mrg-bottom-navigation__overflow > ul li {
+  min-inline-size: 0;
+}
+
+.mrg-bottom-navigation__link[data-overflow] {
+  align-items: flex-start;
+  border-block-start: 0;
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-bottom-navigation__link,
+  .mrg-bottom-navigation__overflow > summary {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-bottom-navigation,
+  .mrg-bottom-navigation__link,
+  .mrg-bottom-navigation__overflow > summary,
+  .mrg-bottom-navigation__overflow > ul {
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-bottom-navigation__link[aria-current="page"] {
+    background: Canvas;
+    border-block-start-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-bottom-navigation__link:focus-visible,
+  .mrg-bottom-navigation__overflow > summary:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

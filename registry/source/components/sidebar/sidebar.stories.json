@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sidebar",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndResponsive"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Sidebar destinations are not editable values."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Sidebar does not validate form data."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "not-applicable", "reason": "Sidebar is not a form control." }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to route feedback."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "At least one group and destination are required."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "success",
+      "applicability": { "status": "not-applicable", "reason": "Success belongs to route content." }
+    },
+    {
+      "id": "warning",
+      "applicability": { "status": "not-applicable", "reason": "Warnings belong to route content." }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Persistence failures remain consumer-owned."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Sidebar links are not destructive actions."
+      }
+    }
+  ]
+}

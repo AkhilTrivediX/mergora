@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "hover-card",
+  "entryExport": "HoverCard",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "HoverCard"
+    },
+    {
+      "kind": "type",
+      "name": "HoverCardOpenChangeDetails"
+    },
+    {
+      "kind": "type",
+      "name": "HoverCardOpenReason"
+    },
+    {
+      "kind": "type",
+      "name": "HoverCardProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "pinOnPress",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Hover Card; optional output is additive and independently removable.",
+    "enhancement": "pinOnPress false removes pinned state, pin status, close control, pin-specific events, and accessibility output while hover/focus preview behavior remains."
+  }
+}

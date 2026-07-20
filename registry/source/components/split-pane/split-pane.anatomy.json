@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "itemId": "split-pane",
+  "root": {
+    "element": "div containing an intrinsic layout wrapper",
+    "ref": "HTMLDivElement",
+    "slot": "split-pane-root",
+    "stableAttributes": [
+      "data-slot",
+      "data-orientation",
+      "data-panel-count",
+      "data-disabled",
+      "data-step-controls"
+    ]
+  },
+  "parts": [
+    {
+      "name": "Panel",
+      "element": "div or div role=region when regionLabel exists",
+      "slot": "split-pane-panel",
+      "ref": "HTMLDivElement",
+      "stableAttributes": ["data-slot", "data-index", "data-state"]
+    },
+    {
+      "name": "Handle",
+      "element": "div role=separator plus sibling native buttons",
+      "slot": "split-pane-handle/split-pane-separator",
+      "ref": "HTMLDivElement separator",
+      "stableAttributes": ["data-slot", "data-index", "data-orientation"]
+    }
+  ],
+  "internalParts": [
+    {
+      "name": "Layout",
+      "slot": "split-pane-layout",
+      "purpose": "Creates a queryable container child so narrow stacking responds to the root container instead of the viewport."
+    }
+  ]
+}

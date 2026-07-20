@@ -1,0 +1,167 @@
+/* Generated from registry/source/components/markdown-editor/markdown-editor.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-markdown-editor {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+}
+
+.mrg-markdown-editor__heading {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-markdown-editor__heading label {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-markdown-editor__heading span {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-markdown-editor__toolbar,
+.mrg-markdown-editor__tabs {
+  align-items: center;
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-markdown-editor__toolbar button,
+.mrg-markdown-editor__tabs button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-markdown-editor__tabs button[aria-selected="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+
+.mrg-markdown-editor :where(button, textarea):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-markdown-editor__workspace {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-markdown-editor[data-layout="split"] .mrg-markdown-editor__workspace {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mrg-markdown-editor__textarea,
+.mrg-markdown-editor__preview {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: 14rem;
+  min-inline-size: 0;
+  overflow: auto;
+  padding: var(--mrg-semantic-space-inset-md);
+  resize: block;
+}
+
+.mrg-markdown-editor__textarea {
+  font-family: var(--mrg-semantic-font-family-code);
+}
+
+.mrg-markdown-editor__preview {
+  background: var(--mrg-semantic-color-background-surface);
+  overflow-wrap: anywhere;
+}
+
+.mrg-markdown-editor__preview pre {
+  font-family: var(--mrg-semantic-font-family-code);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.mrg-markdown-editor__footer {
+  align-items: start;
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--mrg-semantic-font-size-label);
+  gap: var(--mrg-semantic-space-inline-md);
+  justify-content: space-between;
+}
+
+.mrg-markdown-editor__footer p {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-markdown-editor[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (max-width: 40rem) {
+  .mrg-markdown-editor[data-layout="split"] .mrg-markdown-editor__workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-markdown-editor *,
+  .mrg-markdown-editor *::before,
+  .mrg-markdown-editor *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-markdown-editor,
+  .mrg-markdown-editor__toolbar,
+  .mrg-markdown-editor__tabs,
+  .mrg-markdown-editor__toolbar button,
+  .mrg-markdown-editor__tabs button,
+  .mrg-markdown-editor__textarea,
+  .mrg-markdown-editor__preview,
+  .mrg-markdown-editor__footer p {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-markdown-editor__tabs button[aria-selected="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-markdown-editor :where(button, textarea):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

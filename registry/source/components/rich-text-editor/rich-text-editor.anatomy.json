@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rich-text-editor",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "rich-text-editor",
+    "stableAttributes": [
+      "data-slot",
+      "data-adapter",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "rich-text-editor-adapter-boundary",
+      "element": "optional paragraph",
+      "purpose": "Names exact adapter ownership without implying engine conformance.",
+      "stability": "documented"
+    },
+    {
+      "slot": "rich-text-editor-toolbar",
+      "element": "optional toolbar shell",
+      "purpose": "Hosts consumer engine controls while preserving a named boundary.",
+      "stability": "documented"
+    },
+    {
+      "slot": "rich-text-editor-surface",
+      "element": "adapter container",
+      "purpose": "Passes label, description, invalid, read-only, disabled, value, and change context to a maintained editor adapter.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "rich-text-editor-serialization",
+      "element": "optional details",
+      "purpose": "Exposes exact serialized state for debugging and migration evidence.",
+      "stability": "documented"
+    }
+  ]
+}

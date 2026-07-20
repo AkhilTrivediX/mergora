@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "field",
+    "stableAttributes": [
+      "data-slot",
+      "data-layout",
+      "data-required",
+      "data-invalid",
+      "data-contextual-action"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "field-label",
+      "element": "label",
+      "purpose": "Visible label associated to the control ID.",
+      "stability": "documented"
+    },
+    {
+      "slot": "field-contextual-action",
+      "element": "div",
+      "purpose": "Optional label-adjacent recovery or reset action.",
+      "stability": "documented"
+    },
+    {
+      "slot": "field-description",
+      "element": "p",
+      "purpose": "Persistent descriptive text.",
+      "stability": "documented"
+    },
+    {
+      "slot": "field-control",
+      "element": "div",
+      "purpose": "Hosts one primary Mergora control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "field-error",
+      "element": "p",
+      "purpose": "Persistent validation error referenced by the control.",
+      "stability": "documented"
+    }
+  ]
+}

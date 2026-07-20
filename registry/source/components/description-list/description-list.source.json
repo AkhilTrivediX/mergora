@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./description-list.css", "react"],
+  "entryPath": "registry/source/components/description-list/description-list.tsx",
+  "id": "description-list",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

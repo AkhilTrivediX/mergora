@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "masked-field",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "MaskedWorkbench"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "required", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The trusted mask adapter is synchronous and local; asynchronous acquisition belongs to the surrounding workflow."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "FormSerializationAndReset"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "MaskedWorkbench" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Entering, formatting, or clearing a masked value performs no destructive action."
+      }
+    }
+  ]
+}

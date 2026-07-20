@@ -1,0 +1,110 @@
+/* Generated from registry/source/components/table-of-contents/table-of-contents.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-table-of-contents {
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+  padding-block-start: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-table-of-contents > strong {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-table-of-contents__summary {
+  background: var(--mrg-semantic-color-background-surface);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: block;
+  font-size: var(--mrg-semantic-font-size-label);
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-table-of-contents ol {
+  border-inline-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mrg-table-of-contents li {
+  margin-inline-start: calc(var(--_mrg-toc-depth, 0) * var(--mrg-semantic-space-inline-md));
+  min-inline-size: 0;
+}
+
+.mrg-table-of-contents__link {
+  border-inline-start: var(--mrg-semantic-border-width-strong) solid transparent;
+  border-radius: var(--mrg-semantic-radius-compact);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: block;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  overflow-wrap: anywhere;
+  padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+  text-decoration: none;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-transition) var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-table-of-contents__link:hover {
+  background: var(--mrg-semantic-color-background-surface);
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-table-of-contents__link[aria-current="location"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-inline-start-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-table-of-contents__link[data-disabled] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-table-of-contents__link:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-table-of-contents__link {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-table-of-contents,
+  .mrg-table-of-contents__summary,
+  .mrg-table-of-contents__link {
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-table-of-contents__link[aria-current="location"] {
+    background: Canvas;
+    border-inline-start-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-table-of-contents__link:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "markdown-editor",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, Markdown sanitization, upload transport, package-parity, or recorded manual Risk Class 3 claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled native textarea remains the source editor and form control; optional tabs, toolbar, region, output, status, and alert use bounded semantics.",
+    "naming": "Visible label owns the textarea; toolbar and tab labels are visible; preview is labelled by its tab or field label.",
+    "roleOverride": "Toolbar and tabs are applied only when their complete managed keyboard behavior is rendered.",
+    "refTarget": "HTMLDivElement composite shell"
+  },
+  "interaction": {
+    "keyboard": "Textarea editing stays native; Ctrl/Meta+B and Ctrl/Meta+I run only with toolbar enabled and outside IME composition; toolbar arrows mirror in RTL; tabs remain explicit buttons.",
+    "pointer": "Toolbar and view selection are explicit buttons; source selection is preserved after formatting.",
+    "touch": "The split view stacks at narrow widths and native textarea selection/paste remains available.",
+    "speech": "Write, Preview, Bold, Italic, and Link are visible targets.",
+    "switchAccess": "The native textarea and optional explicit controls remain sequential scan stops."
+  },
+  "formBehavior": "Textarea name/form/required/disabled/readOnly behavior remains native. Controlled and uncontrolled source reset to defaultValue; pending paste adapters abort on reset and unmount.",
+  "preferences": {
+    "forcedColors": "Canvas, ButtonFace, Highlight, and structural borders preserve tabs, toolbar, editor, preview, error, and focus.",
+    "reducedMotion": "View changes do not require spatial animation and all descendant duration is removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Split preview becomes one column; editor and preview own bounded overflow."
+  },
+  "consumerResponsibilities": [
+    "Use a maintained Markdown parser and sanitizer for untrusted preview output and enforce safe URL and raw-HTML policy.",
+    "Own pasted-file authorization, validation, transport, cancellation, retention, and returned Markdown syntax.",
+    "Localize labels and preserve a visible persistent error when an adapter rejects."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-uncontrolled-reset",
+      "native-form-validation",
+      "toolbar-keyboard-rtl",
+      "ime-shortcut-suppression",
+      "paste-upload-abort-stale-unmount",
+      "preview-semantics",
+      "narrow-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "all-desktop-at-pairs",
+      "voiceover-ios-editing",
+      "talkback-chrome-editing",
+      "speech-and-switch",
+      "mobile-virtual-keyboard",
+      "zoom-reflow"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Preview output is consumer-owned and receives no Mergora sanitization claim.",
+    "File adapters do not upload by themselves; complete Risk Class 3 manual and distribution evidence remains unrecorded."
+  ]
+}

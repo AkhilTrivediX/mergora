@@ -1,0 +1,120 @@
+.mrg-copy-button {
+  align-items: center;
+  appearance: none;
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
+  box-sizing: border-box;
+  color: var(--mrg-component-control-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-component-control-gap);
+  justify-content: center;
+  max-inline-size: 100%;
+  min-block-size: max(
+    var(--mrg-component-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-component-control-padding-block);
+  padding-inline: var(--mrg-component-control-padding-inline);
+  position: relative;
+  transition: background-color var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-copy-button [data-slot="copy-button-icon"] {
+  flex: none;
+}
+
+.mrg-copy-button [data-slot="copy-button-status"] {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-copy-button:not(:disabled):not([data-status="copying"]):hover {
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-copy-button:not(:disabled):not([data-status="copying"]):active {
+  background: var(--mrg-component-control-background-pressed);
+}
+
+.mrg-copy-button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-copy-button:disabled {
+  background: var(--mrg-component-control-background-disabled);
+  border-color: var(--mrg-component-control-border-disabled);
+  color: var(--mrg-component-control-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-copy-button[data-status="copying"] {
+  border-color: var(--mrg-semantic-color-status-loading-border);
+  cursor: progress;
+}
+
+.mrg-copy-button[data-status="copied"]::after,
+.mrg-copy-button[data-status="error"]::after {
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inset-block-end: 0;
+  inset-inline: var(--mrg-semantic-space-inline-sm);
+  position: absolute;
+}
+
+.mrg-copy-button[data-status="copied"]::after {
+  background: var(--mrg-semantic-color-status-success-border);
+}
+
+.mrg-copy-button[data-status="error"]::after {
+  background: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-copy-button[data-status="copied"] [data-slot="copy-button-icon"] {
+  color: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-copy-button[data-status="error"] [data-slot="copy-button-icon"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-copy-button {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-copy-button {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-copy-button[data-status="copied"] [data-slot="copy-button-icon"],
+  .mrg-copy-button[data-status="error"] [data-slot="copy-button-icon"] {
+    color: Highlight;
+  }
+
+  .mrg-copy-button[data-status="copied"]::after,
+  .mrg-copy-button[data-status="error"]::after {
+    background: Highlight;
+  }
+
+  .mrg-copy-button:disabled {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

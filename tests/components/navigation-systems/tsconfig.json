@@ -1,0 +1,36 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true,
+    "types": ["vite/client"]
+  },
+  "include": [
+    "../../../registry/source/components/bottom-navigation/**/*.ts",
+    "../../../registry/source/components/bottom-navigation/**/*.tsx",
+    "../../../registry/source/components/navbar/**/*.ts",
+    "../../../registry/source/components/navbar/**/*.tsx",
+    "../../../registry/source/components/navigation-menu/**/*.ts",
+    "../../../registry/source/components/navigation-menu/**/*.tsx",
+    "../../../registry/source/components/sidebar/**/*.ts",
+    "../../../registry/source/components/sidebar/**/*.tsx",
+    "../../../registry/source/components/stepper/**/*.ts",
+    "../../../registry/source/components/stepper/**/*.tsx",
+    "../../../registry/source/components/table-of-contents/**/*.ts",
+    "../../../registry/source/components/table-of-contents/**/*.tsx",
+    "../../../registry/source/components/tour/**/*.ts",
+    "../../../registry/source/components/tour/**/*.tsx",
+    "../../../registry/source/components/tree-view/**/*.ts",
+    "../../../registry/source/components/tree-view/**/*.tsx",
+    "../../../apps/storybook/src/P5NavigationSystems.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

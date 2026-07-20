@@ -1,0 +1,155 @@
+.mrg-breadcrumb {
+  color: var(--mrg-component-control-foreground);
+  font-family: var(--mrg-semantic-font-family-prose);
+  container-type: inline-size;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+[data-slot="breadcrumb-list"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  list-style: none;
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+[data-slot="breadcrumb-list"][data-view="compact"] {
+  display: none;
+}
+
+[data-slot="breadcrumb-item"],
+[data-slot="breadcrumb-overflow"] {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--mrg-semantic-space-inline-sm);
+  min-inline-size: 0;
+}
+
+[data-slot="breadcrumb-link"],
+[data-slot="breadcrumb-current"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.2em;
+  transition: color var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+[data-slot="breadcrumb-link"]:hover {
+  color: var(--mrg-semantic-color-brand-action);
+}
+
+[data-slot="breadcrumb-current"] {
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--mrg-component-control-border-selected);
+  text-decoration-thickness: var(--mrg-semantic-border-width-strong);
+  text-underline-offset: var(--mrg-semantic-space-inline-xs);
+}
+
+[data-slot="breadcrumb-link"]:focus-visible,
+[data-slot="breadcrumb-overflow-trigger"]:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+[data-slot="breadcrumb-separator"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+[data-slot="breadcrumb-overflow"] details {
+  position: relative;
+}
+
+[data-slot="breadcrumb-overflow-trigger"] {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  border-radius: var(--mrg-component-control-radius);
+}
+
+[data-slot="breadcrumb-overflow-trigger"]::marker {
+  content: "";
+}
+
+[data-slot="breadcrumb-overflow-list"] {
+  background: var(--mrg-component-overlay-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+  border-radius: var(--mrg-component-overlay-radius);
+  box-shadow: var(--mrg-component-overlay-elevation);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  list-style: none;
+  margin: 0;
+  max-inline-size: min(22rem, calc(100cqi - 1rem));
+  min-inline-size: min(16rem, calc(100cqi - 1rem));
+  padding: var(--mrg-semantic-space-stack-md);
+  position: absolute;
+  z-index: 1;
+}
+
+[data-slot="breadcrumb-overflow"] details[open] > [data-slot="breadcrumb-overflow-list"] {
+  animation: mrg-breadcrumb-reveal var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-enter);
+}
+
+@keyframes mrg-breadcrumb-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-1 * var(--mrg-semantic-space-inline-xs)));
+  }
+}
+
+[data-slot="breadcrumb-overflow"] details:not([open]) > [data-slot="breadcrumb-overflow-list"] {
+  display: none;
+}
+
+[data-slot="breadcrumb-overflow-list"] [data-slot="breadcrumb-item"] {
+  align-items: start;
+}
+
+@container (inline-size < 36rem) {
+  .mrg-breadcrumb[data-collapsible] [data-view="full"] {
+    display: none;
+  }
+
+  .mrg-breadcrumb[data-collapsible] [data-view="compact"] {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="breadcrumb-link"] {
+    transition: none;
+  }
+
+  [data-slot="breadcrumb-overflow"] details[open] > [data-slot="breadcrumb-overflow-list"] {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  [data-slot="breadcrumb-link"]:focus-visible,
+  [data-slot="breadcrumb-overflow-trigger"]:focus-visible {
+    outline-color: Highlight;
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
+  }
+
+  [data-slot="breadcrumb-overflow-list"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}

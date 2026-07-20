@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "settings-workspace",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package, editable source, native registry, Shadcn, and dependency-closure outputs.",
+    "Pass clean-consumer lifecycle, custom-control dirty tracking, navigation interception, packed Next/Vite, destructive-operation, browser, visual, and accessibility gates.",
+    "Record current manual assistive-technology, touch, mobile keyboard, zoom, RTL, forced-colors, security, privacy, legal, and notification evidence."
+  ]
+}

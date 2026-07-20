@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-manager",
+  "root": {
+    "element": "div containing header, folder complementary region, main file workspace, preview and optional status rails",
+    "ref": "HTMLDivElement",
+    "slot": "file-manager",
+    "stableAttributes": ["data-slot", "data-offline"]
+  },
+  "parts": [
+    { "name": "header", "element": "header", "slot": "file-manager-header" },
+    { "name": "folders", "element": "aside", "slot": "file-manager-folders" },
+    { "name": "content", "element": "main", "slot": "file-manager-content" },
+    { "name": "preview", "element": "aside", "slot": "file-manager-preview" },
+    { "name": "uploads", "element": "section", "slot": "file-manager-uploads" },
+    { "name": "conflicts", "element": "section", "slot": "file-manager-conflicts" },
+    { "name": "storage", "element": "aside", "slot": "file-manager-storage" },
+    { "name": "recovery", "element": "aside", "slot": "file-manager-recovery" }
+  ]
+}

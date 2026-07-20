@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropzone",
+  "root": {
+    "element": "div",
+    "ref": "none",
+    "slot": "dropzone",
+    "stableAttributes": ["data-slot", "data-busy", "data-disabled"]
+  },
+  "parts": [
+    {
+      "slot": "dropzone-surface",
+      "element": "React Aria DropZone div",
+      "purpose": "Owns accessible drop-target focus, keyboard mode, pointer drag state, and copy operation.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "dropzone-label",
+      "element": "visible label text",
+      "purpose": "Names the complete drop target.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "file-trigger",
+      "element": "Mergora FileTrigger",
+      "purpose": "Provides the always-present native picker and mobile alternative.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "dropzone-status",
+      "element": "polite live status",
+      "purpose": "Reports bounded busy and accepted/rejected counts without beginning transport.",
+      "stability": "documented"
+    }
+  ]
+}

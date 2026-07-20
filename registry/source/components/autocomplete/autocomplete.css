@@ -1,0 +1,168 @@
+@layer mergora.components {
+  .mrg-autocomplete {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: 100%;
+    position: relative;
+  }
+  .mrg-autocomplete__label {
+    font-size: var(--mrg-semantic-font-size-body);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+  .mrg-autocomplete__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    max-inline-size: 70ch;
+  }
+  .mrg-autocomplete__input {
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
+    box-sizing: border-box;
+    color: inherit;
+    font: inherit;
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    padding-block: var(--mrg-semantic-space-inline-sm);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-autocomplete__input:focus-visible,
+  .mrg-autocomplete__async button:focus-visible,
+  .mrg-autocomplete__load-error button:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+  .mrg-autocomplete__listbox {
+    background: var(--mrg-component-overlay-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+    border-radius: var(--mrg-component-overlay-radius);
+    box-shadow: var(--mrg-component-overlay-elevation);
+    box-sizing: border-box;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    inset-block-start: calc(100% + var(--mrg-semantic-space-inline-xs));
+    inset-inline: 0;
+    list-style: none;
+    margin: 0;
+    max-block-size: min(20rem, 60vh);
+    overflow: auto;
+    padding: var(--mrg-semantic-space-inset-xs);
+    position: absolute;
+    z-index: var(--mrg-semantic-layer-modal);
+  }
+  .mrg-autocomplete__option {
+    border-radius: var(--mrg-component-control-radius);
+    cursor: default;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-autocomplete__option small {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-autocomplete__option[data-active] {
+    background: var(--mrg-component-control-background-selected);
+    color: var(--mrg-component-control-foreground-selected);
+    outline: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-control-border-selected);
+  }
+  .mrg-autocomplete__option[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+    cursor: not-allowed;
+  }
+  .mrg-autocomplete__empty {
+    color: var(--mrg-semantic-color-foreground-muted);
+    padding: var(--mrg-semantic-space-inset-md);
+  }
+  .mrg-autocomplete__async,
+  .mrg-autocomplete__load-error {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    justify-content: space-between;
+  }
+  .mrg-autocomplete__async button,
+  .mrg-autocomplete__load-error button {
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: inherit;
+    font: inherit;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-autocomplete__load-error {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-autocomplete__context {
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    padding-block-start: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-autocomplete__error {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-autocomplete[data-invalid] .mrg-autocomplete__input {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+  .mrg-autocomplete[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+  @container (max-width: 20rem) {
+    .mrg-autocomplete__listbox {
+      max-block-size: min(15rem, 50vh);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-autocomplete__listbox {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-autocomplete__input,
+    .mrg-autocomplete__async button,
+    .mrg-autocomplete__load-error button,
+    .mrg-autocomplete__listbox {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+    .mrg-autocomplete__option[data-active] {
+      background: Highlight;
+      color: HighlightText;
+      outline-color: Highlight;
+    }
+    .mrg-autocomplete__option[data-disabled] {
+      color: GrayText;
+    }
+    .mrg-autocomplete__input:focus-visible,
+    .mrg-autocomplete__async button:focus-visible,
+    .mrg-autocomplete__load-error button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-autocomplete__context,
+    .mrg-autocomplete__error,
+    .mrg-autocomplete__load-error {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+}

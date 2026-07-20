@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "sr-announcer",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "polite": "A visually hidden role=status region with aria-live=polite and aria-atomic=true.",
+    "assertive": "A separate visually hidden role=alert region reserved for urgent interruption-worthy messages.",
+    "scope": "Only concise summaries are announced; changing widgets are never wrapped wholesale."
+  },
+  "queue": {
+    "order": "FIFO independently within polite and assertive priorities.",
+    "dedupe": "Trimmed identical text or a stable semantic key is suppressed inside the window.",
+    "intentionalRepeat": "dedupe=false queues a repeated message with a new deterministic sequence ID.",
+    "localization": "Descriptor keys resolve through the nearest provider with an English fallback.",
+    "nesting": "A nested provider reuses the nearest announcer and does not add duplicate live regions.",
+    "providerOptOut": "Without an announcer provider the hook is inert, announce returns false, and no queue or live-region accessibility output exists. dedupe=false independently removes repeat suppression for one call."
+  },
+  "consumerResponsibilities": [
+    "Use assertive priority only for urgent errors requiring immediate attention.",
+    "Keep persistent instructions and recovery actions visible outside the live region.",
+    "Throttle high-frequency progress, streaming, and collaboration updates before announcing.",
+    "Provide complete localized messages that do not expose sensitive data."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "fifo",
+      "priority",
+      "dedupe",
+      "intentional-repeat",
+      "provider-opt-out",
+      "localization",
+      "ssr",
+      "cleanup",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-at-polite",
+      "desktop-at-assertive",
+      "mobile-at",
+      "interruption",
+      "announcement-noise",
+      "rtl"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "autocomplete",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled native text input owns a conditional listbox through the editable combobox pattern.",
+    "rolePolicy": "The baseline owns combobox/listbox/option and consumer-controlled busy/retry state; match context is absent when disabled.",
+    "refTarget": "HTMLInputElement"
+  },
+  "keyboard": [
+    {
+      "key": "ArrowDown / ArrowUp",
+      "behavior": "Moves the active suggestion without moving DOM focus."
+    },
+    {
+      "key": "Home / End",
+      "behavior": "Moves to the first or last enabled suggestion while open."
+    },
+    { "key": "Enter", "behavior": "Commits the active suggestion." },
+    { "key": "Escape", "behavior": "Closes suggestions without changing the value." }
+  ],
+  "nonColor": "Text, check state, structure, and explicit labels accompany color.",
+  "responsive": "Logical properties and bounded overlays support narrow and RTL layouts; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=autocomplete]",
+    "parts": ["[data-slot=autocomplete-match-context]"],
+    "attributes": ["data-slot", "data-disabled", "data-invalid"]
+  },
+  "consumerResponsibilities": [
+    "Provide localized visible labels and messages.",
+    "Keep option ids unique and retest assistive technology after composition.",
+    "Own remote transport, cancellation, cache, and pagination state; the component only renders supplied state and invokes supplied callbacks.",
+    "Do not claim Stable until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

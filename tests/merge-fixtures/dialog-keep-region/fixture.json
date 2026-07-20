@@ -1,0 +1,6 @@
+{
+  "id": "dialog-keep-region",
+  "mediaType": "text/typescript",
+  "expectedStatus": "semantic-merge",
+  "region": "project-dialog-policy"
+}

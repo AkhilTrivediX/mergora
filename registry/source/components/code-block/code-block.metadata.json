@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "itemId": "code-block",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "copy-idle",
+    "copy-success",
+    "copy-error",
+    "copy-disabled",
+    "highlighted-lines",
+    "wrapped",
+    "long-content",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "code-block",
+      "semanticElement": "div role=region",
+      "refTarget": "HTMLDivElement",
+      "states": ["wrap", "copyable"]
+    },
+    {
+      "name": "code-block-copy",
+      "semanticElement": "button",
+      "refTarget": "internal",
+      "states": ["copy-status"]
+    },
+    {
+      "name": "code-block-scroll",
+      "semanticElement": "pre",
+      "refTarget": "internal",
+      "states": ["focus"]
+    },
+    {
+      "name": "code-block-line",
+      "semanticElement": "span",
+      "refTarget": "internal",
+      "states": ["highlighted"]
+    }
+  ],
+  "contract": {
+    "id": "code-block-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "code-block-quality-passport",
+    "version": "0.0.0"
+  }
+}

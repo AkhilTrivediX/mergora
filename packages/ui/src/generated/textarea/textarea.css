@@ -1,0 +1,97 @@
+/* Generated from registry/source/components/textarea/textarea.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-textarea {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-textarea:focus-within {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-textarea[data-invalid="true"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-textarea[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-textarea-control {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: calc(var(--mrg-semantic-size-target-preferred) * 2);
+  min-inline-size: 0;
+  outline: 0;
+  padding: 0;
+  resize: block;
+}
+
+.mrg-textarea[data-autogrow="true"] .mrg-textarea-control {
+  resize: none;
+}
+
+.mrg-textarea-control::placeholder {
+  color: var(--mrg-semantic-color-foreground-muted);
+  opacity: 1;
+}
+
+.mrg-textarea [data-slot="textarea-count"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  color: var(--mrg-semantic-color-brand-violet);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  justify-self: end;
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  text-align: end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-textarea-control {
+    scroll-behavior: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-textarea {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-textarea[data-invalid="true"] {
+    border-style: double;
+  }
+
+  .mrg-textarea:focus-within {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-textarea [data-slot="textarea-count"] {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

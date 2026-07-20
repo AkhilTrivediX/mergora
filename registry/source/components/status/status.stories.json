@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "itemId": "status",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not own a distinct hover state in its semantic contract."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not own a distinct active state in its semantic contract."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "No focusable root is owned by this component."
+      }
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This feedback presentation is not a form control and has no disabled state."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Feedback presentation has no distinct read-only state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation belongs to the originating field or workflow rather than this feedback container."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Feedback presentation is not a required form value."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not own asynchronous loading semantics."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Empty content is invalid usage rather than a supported presentation state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component has no mixed or partial state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "FeedbackVariants"
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "FeedbackVariants"
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "FeedbackVariants"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Feedback presentation does not itself perform a destructive action."
+      }
+    }
+  ]
+}

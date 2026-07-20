@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "itemId": "table-of-contents",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndResponsive"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Heading links are not editable values."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid source data fails before rendering."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Table of contents is not a form control."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Heading extraction is consumer-owned and synchronous."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "not-applicable", "reason": "At least one heading is required." }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Reading location is not success state."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to document content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Extraction errors remain consumer-owned."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Heading navigation is not destructive."
+      }
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "ai-chat-workspace",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify source registry and coherent package output.",
+    "Prove install, update, conflict, rollback and ownership-aware removal in clean consumers.",
+    "Pass streaming, offline, error, long-content, narrow, RTL, forced-colors, packed-consumer, browser, visual and accessibility matrices.",
+    "Record current desktop/mobile assistive-technology, touch, mobile keyboard, security, privacy and legal review evidence.",
+    "Approve an immutable Quality Passport and public demo using only installation output."
+  ]
+}

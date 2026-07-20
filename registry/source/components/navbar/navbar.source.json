@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./navbar.css", "react"],
+  "entryPath": "registry/source/components/navbar/navbar.tsx",
+  "id": "navbar",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

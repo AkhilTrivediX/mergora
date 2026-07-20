@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pin-field",
+  "entryExport": "PinField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>, excluding type, value, defaultValue, maxLength, and native onChange",
+  "exports": [
+    { "kind": "component", "name": "PinField" },
+    { "kind": "type", "name": "PinFieldProps" },
+    { "kind": "type", "name": "PinFieldDisplayMode" },
+    { "kind": "type", "name": "PinFieldPastePolicy" },
+    { "kind": "type", "name": "PinFieldPurpose" }
+  ],
+  "props": [
+    {
+      "name": "purpose",
+      "required": true,
+      "type": "reusable-secret; deliberately prevents an implicit OTP interpretation"
+    },
+    { "name": "value", "required": false, "type": "string; controlled" },
+    { "name": "defaultValue", "required": false, "default": "", "type": "string; uncontrolled" },
+    { "name": "onChange", "required": false, "type": "(value: string) => void" },
+    { "name": "onComplete", "required": false, "type": "(value: string) => void" },
+    {
+      "name": "length",
+      "required": false,
+      "default": 4,
+      "type": "integer from 4 through 12"
+    },
+    {
+      "name": "displayMode",
+      "required": false,
+      "default": "secure",
+      "type": "secure | visible"
+    },
+    {
+      "name": "pastePolicy",
+      "required": false,
+      "default": "allow",
+      "type": "allow | block"
+    },
+    {
+      "name": "pasteBlockedMessage",
+      "required": false,
+      "default": "localized Pasting is disabled for this PIN field.",
+      "type": "string"
+    },
+    {
+      "name": "purposeLabel",
+      "required": false,
+      "default": "localized reusable-secret and not-one-time-code description",
+      "type": "string"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "inputClassName", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "One real password or text input owns focus, editing, selection, caret, composition, paste, password-manager discovery, validation, form submission, and reset.",
+    "purpose": "The required reusable-secret purpose is also asserted at runtime, and its programmatic description makes this contract explicitly distinct from OtpField and one-time-code autofill.",
+    "display": "Secure uses native type=password; visible uses native type=text. Display mode never changes the canonical numeric value.",
+    "paste": "Allow is the default and reads only the current paste event text to normalize a bounded insertion without logging, persistence, or transmission. Block is an explicit consumer policy that cancels paste and announces a localized message without reading clipboard data.",
+    "completion": "Completion is an optional notification for each newly complete value; an unchanged complete value is not announced twice and no authentication action is inferred.",
+    "segments": "Decorative character guides are aria-hidden and never become focus targets or independent fields.",
+    "field": "ID, label, description, error, required, and invalid relationships are inherited from Field unless explicitly supplied."
+  }
+}

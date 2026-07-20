@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "entryExport": "Form",
+  "refTarget": "HTMLFormElement",
+  "nativeProps": "React.FormHTMLAttributes<HTMLFormElement>",
+  "exports": [
+    { "kind": "component", "name": "Form" },
+    { "kind": "type", "name": "FormProps" },
+    { "kind": "type", "name": "FormSubmissionStatus" }
+  ],
+  "props": [
+    { "name": "layout", "required": false, "default": "stacked", "type": "stacked | compact" },
+    {
+      "name": "submissionStatus",
+      "required": false,
+      "type": "false | null | { state: submitting | success | error; message: ReactNode }"
+    }
+  ],
+  "compositionPolicy": {
+    "submission": "No submit interception; native URL actions and React server actions pass through.",
+    "adapters": "RHF and TanStack Form integrate through their native props and submit handlers without core dependencies.",
+    "enhancement": "A non-empty submissionStatus adds truthful busy state and a polite or assertive persistent rail. Omitting it, passing false or null, or supplying statically empty message content emits no status node, role, live region, data-submission-state, or derived aria-busy."
+  }
+}

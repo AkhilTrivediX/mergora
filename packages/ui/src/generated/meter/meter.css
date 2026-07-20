@@ -1,0 +1,66 @@
+/* Generated from registry/source/components/meter/meter.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-meter {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-meter [data-slot="meter-heading"] {
+  align-items: baseline;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-md);
+  justify-content: space-between;
+}
+
+.mrg-meter [data-slot="meter-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.mrg-meter [data-slot="meter-value"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.mrg-meter [data-slot="meter-thresholds"] {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--mrg-semantic-font-size-caption);
+  gap: var(--mrg-semantic-space-inline-md);
+  padding-block: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-meter [data-slot="meter-threshold"] {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.mrg-meter [data-slot="meter-threshold-label"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-meter [data-slot="meter-track"] {
+  accent-color: var(--mrg-semantic-color-status-success-foreground);
+  block-size: var(--mrg-semantic-space-stack-md);
+  border-radius: var(--mrg-component-progress-radius);
+  inline-size: 100%;
+}
+
+@media (forced-colors: active) {
+  .mrg-meter [data-slot="meter-thresholds"] {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .mrg-meter [data-slot="meter-track"] {
+    accent-color: Highlight;
+  }
+}

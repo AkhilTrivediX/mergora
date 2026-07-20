@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "itemId": "calendar",
+  "entryExport": "Calendar",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "Calendar" },
+    { "kind": "type", "name": "CalendarHighlightRange" },
+    { "kind": "type", "name": "CalendarProps" },
+    { "kind": "type", "name": "CalendarUnavailableDate" }
+  ],
+  "controlledState": [
+    {
+      "state": "date",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "value", "required": false, "type": "canonical YYYY-MM-DD string" },
+    {
+      "name": "unavailableDates",
+      "required": false,
+      "default": [],
+      "type": "readonly CalendarUnavailableDate[]"
+    },
+    {
+      "name": "showAvailabilityExplanations",
+      "required": false,
+      "default": false,
+      "type": "boolean"
+    },
+    {
+      "name": "highlightRange",
+      "required": false,
+      "default": false,
+      "type": "false | CalendarHighlightRange"
+    },
+    {
+      "name": "onDatePreviewChange",
+      "required": false,
+      "type": "(date: string | null) => void"
+    },
+    {
+      "name": "inputAriaDescribedBy",
+      "required": false,
+      "type": "native input aria-describedby idrefs"
+    },
+    { "name": "inputAriaInvalid", "required": false, "type": "boolean" },
+    { "name": "weekStartsOn", "required": false, "default": 0, "type": "0 | 1 | 2 | 3 | 4 | 5 | 6" }
+  ],
+  "compositionPolicy": {
+    "calendar": "A localized grid and native date entry share one canonical date-only value.",
+    "availability": "Unavailable dates remain non-selectable; explanation nodes and described-by output exist only when showAvailabilityExplanations is true.",
+    "form": "The labelled native date input owns validation, serialization, reset, mobile picker, and autofill behavior.",
+    "rangeHighlight": "Optional range attributes and preview events exist only when a range consumer enables them; standalone Calendar defaults remain unchanged."
+  }
+}

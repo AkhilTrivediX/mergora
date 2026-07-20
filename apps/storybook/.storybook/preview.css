@@ -1,0 +1,49 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#storybook-root {
+  min-inline-size: 0;
+  min-block-size: 100%;
+}
+
+html[data-viewport="mobile"] #storybook-root,
+html[data-viewport="narrow"] #storybook-root {
+  margin-inline: auto;
+  inline-size: 100%;
+}
+
+html[data-viewport="mobile"] #storybook-root {
+  max-inline-size: 390px;
+}
+
+html[data-viewport="narrow"] #storybook-root {
+  max-inline-size: 320px;
+}
+
+body {
+  margin: 0;
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-body);
+  line-height: var(--mrg-semantic-font-line-height-body);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+@media (forced-colors: active) {
+  body {
+    background: Canvas;
+    color: CanvasText;
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-center",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "idle",
+    "loading",
+    "ready",
+    "empty",
+    "error",
+    "recent",
+    "grouped-results",
+    "shortcut",
+    "mobile-entry",
+    "controlled",
+    "uncontrolled",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "command-center",
+      "semanticElement": "div containing public command palette",
+      "refTarget": "HTMLDivElement",
+      "states": ["idle", "loading", "ready", "empty", "error"]
+    },
+    {
+      "name": "command-center-heading",
+      "semanticElement": "header with optional trigger",
+      "refTarget": "none",
+      "states": ["embedded", "modal"]
+    },
+    {
+      "name": "command-center-result-count",
+      "semanticElement": "optional polite output",
+      "refTarget": "none",
+      "states": ["loading", "ready", "empty"]
+    }
+  ],
+  "contract": { "id": "command-center-accessibility", "version": "0.1.0" },
+  "passport": { "id": "command-center-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,23 @@
+# Copy Button canonical source
+
+Status: source present and unreleased. Local tests may exist, but no immutable release or manual assistive-technology evidence is attached. This directory makes no Stable or conformance claim.
+
+A native clipboard action with an explicit fallback and persistent success or rejection status.
+
+## Contract
+
+- Clipboard rejection is visible and announced instead of being silently treated as success.
+- Status remains present until the next attempt and focus stays on the native button.
+- The fallback removes its temporary textarea in a `finally` path after success, false returns, or thrown browser errors.
+
+Persistent Green success, Violet loading, and danger rejection rails reuse the Mergora status language without moving focus. `allowFallback` defaults to `true`; set it to `false` to remove the temporary-textarea recovery path while retaining explicit visible and announced failure feedback.
+
+The public ref resolves to `HTMLButtonElement`. Stable source styling starts at `data-slot="copy-button"`; documented child slots are recorded in `copy-button.anatomy.json`. User-facing labels and status messages resolve through the stable `copyButton.copy`, `copyButton.copying`, `copyButton.copied`, and `copyButton.error` provider message keys. Explicit label props take precedence.
+
+## Source records
+
+The exact five-key source manifest, schema-valid metadata, API, anatomy, required story-state policy, accessibility contract, and honest promotion delta live beside the implementation. Generation must derive package and registry outputs from these files; do not edit generated outputs by hand.
+
+## Promotion boundary
+
+Promotion still requires generated-output drift checks, immutable CI, independent packed consumers, package/source behavioral parity, Semantic Sync fixtures, reviewed visual evidence, and current manual keyboard, forced-colors, NVDA/Firefox, and VoiceOver/Safari records bound to the exact candidate digest.

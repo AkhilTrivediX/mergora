@@ -1,0 +1,48 @@
+/* Generated from registry/source/components/kbd/kbd.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-kbd {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-block-end-width: var(--mrg-semantic-border-width-strong);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: inline-block;
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-code);
+  line-height: var(--mrg-semantic-font-line-height-code);
+  min-inline-size: 1.8em;
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+  text-align: center;
+  white-space: nowrap;
+}
+.mrg-kbd-chord[data-platform]:not([data-platform="generic"]) .mrg-kbd {
+  border-block-end-color: var(--mrg-semantic-color-brand-violet);
+}
+.mrg-kbd-chord {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+}
+.mrg-kbd-chord-part {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+}
+.mrg-kbd-separator {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-family: var(--mrg-semantic-font-family-prose);
+}
+@media (forced-colors: active) {
+  .mrg-kbd {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+  .mrg-kbd-separator {
+    color: CanvasText;
+  }
+  .mrg-kbd-chord[data-platform]:not([data-platform="generic"]) .mrg-kbd {
+    border-block-end-color: ButtonBorder;
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "container",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "div",
+    "rolePolicy": "No role or landmark is added by the component.",
+    "refTarget": "HTMLDivElement"
+  },
+  "layout": {
+    "intrinsic": "Inline size is fluid and max-inline-size is selected from semantic container tokens.",
+    "safeArea": "Physical safe-area inset values are mapped to the correct logical edges in LTR and RTL; false removes the environment-inset calculation.",
+    "containerQueries": "queryContainer enables anonymous inline-size containment; false removes containment independently.",
+    "overflow": "The root uses min-inline-size zero and never clips descendants."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=container]",
+    "attributes": ["data-width", "data-gutter", "data-safe-area", "data-query-container"]
+  },
+  "consumerResponsibilities": [
+    "Place Container inside the correct document landmark instead of adding a role only for styling.",
+    "Keep focusable descendants visible when adding consumer overflow or sticky styles.",
+    "Revalidate safe-area and 400% reflow after overriding gutters or maximum widths."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "safe-area",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-reflow", "forced-colors", "mobile-safe-area"],
+    "recordedEvidence": []
+  }
+}

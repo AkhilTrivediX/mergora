@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "collapsible",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A standalone controlled or uncontrolled disclosure without inappropriate accordion semantics.",
+  "semantics": [
+    "The trigger is a native button whose aria-expanded and aria-controls relationship is owned by React Aria.",
+    "The content is one disclosure panel and the component does not synthesize a heading, tablist, accordion, or unrelated composite role.",
+    "Controlled and uncontrolled state share the same activation path; disabled prevents activation."
+  ],
+  "preferences": {
+    "forcedColors": "System focus and native disabled state remain visible without relying on color.",
+    "reducedMotion": "Indicator rotation is removed while aria-expanded and visibility remain authoritative.",
+    "rtl": "Logical layout mirrors without changing native disclosure keys."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Trigger text and content wrap and reflow without clipping focus."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

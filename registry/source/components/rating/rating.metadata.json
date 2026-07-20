@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rating",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "required",
+    "invalid",
+    "empty",
+    "controlled",
+    "uncontrolled",
+    "fractional-display",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "rating",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["disabled", "read-only", "required", "invalid", "empty"]
+    },
+    {
+      "name": "rating-fieldset",
+      "semanticElement": "fieldset",
+      "refTarget": "none",
+      "states": ["editable", "disabled", "required", "invalid"]
+    },
+    {
+      "name": "rating-input",
+      "semanticElement": "input type=radio",
+      "refTarget": "none",
+      "states": ["checked", "disabled", "required", "invalid", "focus-visible"]
+    },
+    {
+      "name": "rating-readonly",
+      "semanticElement": "labelled text",
+      "refTarget": "none",
+      "states": ["read-only", "fractional-display", "empty"]
+    },
+    {
+      "name": "rating-hidden-input",
+      "semanticElement": "input type=hidden",
+      "refTarget": "none",
+      "states": ["read-only", "disabled"]
+    }
+  ],
+  "contract": { "id": "rating-accessibility", "version": "0.1.0" },
+  "passport": { "id": "rating-quality-passport", "version": "0.0.0" }
+}

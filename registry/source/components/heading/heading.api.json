@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "heading",
+  "entryExport": "Heading",
+  "refTarget": "HTMLHeadingElement",
+  "nativeProps": "React.HTMLAttributes<HTMLHeadingElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Heading"
+    },
+    {
+      "kind": "type",
+      "name": "HeadingProps"
+    },
+    {
+      "kind": "type",
+      "name": "HeadingElement"
+    },
+    {
+      "kind": "type",
+      "name": "HeadingLevel"
+    },
+    {
+      "kind": "type",
+      "name": "HeadingSize"
+    }
+  ],
+  "props": [
+    {
+      "name": "level",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "as",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "size",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "The public type requires level or as, so placement cannot silently fall back to a generic element. Consumers remain responsible for a non-skipping document outline.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

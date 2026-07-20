@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "file-upload",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, adapter interoperability, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Mergora Dropzone supplies the real picker and accessible drop target; a labelled ordered list represents queue order.",
+    "naming": "A visible label names intake, the queue has a persistent heading, and every optional action includes the file name.",
+    "roleOverride": "Consumer children, change, and queue semantics overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement queue shell"
+  },
+  "interaction": {
+    "keyboard": "Picker, drop mode, and every enabled queue action are reachable in document order; Earlier and Later buttons provide a drag-independent reorder path.",
+    "pointer": "Picker, drop, and explicit action buttons remain available without gesture-only behavior.",
+    "touch": "The Dropzone native picker and preferred-size action targets remain available when desktop drop is unavailable.",
+    "speech": "Visible intake text and file-specific action names provide deterministic voice targets.",
+    "switchAccess": "Every mutation is a standard button or native picker path; no timed gesture is required."
+  },
+  "formBehavior": "Optional name, form, and required props synchronize controlled or uncontrolled queue Files into the one native Dropzone input through the bounded shared helper. Assignment failure clears and blocks the successful value; native reset clears queue and input without synthetic change. The component still performs no transport.",
+  "states": {
+    "attributes": ["data-disabled", "data-readonly", "data-status"],
+    "synchronization": "Controlled and uncontrolled queues share one immutable change protocol; consumer status values exclusively drive progress, retry, and cancel presentation."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=file-upload]",
+    "attributes": ["data-disabled", "data-readonly"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Strong structural rules, text, and lifecycle labels accompany color.",
+    "forcedColors": "Canvas, CanvasText, ButtonFace, ButtonText, GrayText, and Highlight preserve queue and focus structure.",
+    "reducedMotion": "Queue state and ordering remain understandable with all transition duration removed."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "File identity wraps and multi-column rows collapse to one column at narrow widths."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "queue labels",
+      "action labels",
+      "rejection recovery"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The component has no text-editing surface and Dropzone intercepts paste only when files exist.",
+    "serialization": "File objects remain local browser objects; queue callbacks expose immutable File references and bounded rejection metadata."
+  },
+  "consumerResponsibilities": [
+    "Validate file signatures, authorization, storage policy, and malware controls on the server before accepting content.",
+    "Own transport, persistence, cancellation, retry, resumability, credentials, and lifecycle state transitions.",
+    "Treat the visible form synchronization error as a blocked direct-form submission and preserve recovery.",
+    "Supply localized action/recovery messages and preview content that does not execute untrusted files.",
+    "Keep controlled item ids unique and reconcile successful server state with durable identifiers."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "controlled-uncontrolled-queue",
+      "picker-paste-drop-preflight",
+      "duplicate-and-order-policy",
+      "consumer-progress-retry-cancel-remove",
+      "form-reset",
+      "keyboard-touch-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-mobile-picker",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch",
+      "real-device-large-queue"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include packed-consumer, package/source parity, real adapter, or manual assistive-technology evidence.",
+    "Core FileUpload performs no network, storage, image decoding, malware inspection, virtualization, or vendor-specific multipart/resumable work.",
+    "Native queue serialization depends on standards-supported DataTransfer FileList assignment and fails closed when the browser cannot verify it."
+  ]
+}

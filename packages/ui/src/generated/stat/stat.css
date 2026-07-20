@@ -1,0 +1,64 @@
+/* Generated from registry/source/components/stat/stat.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-stat {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding-block: var(--mrg-semantic-space-inset-md);
+    border-block: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-strong);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    font-variant-numeric: tabular-nums;
+  }
+  .mrg-stat :is(dt, dd) {
+    margin: 0;
+  }
+  .mrg-stat__label {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-stat__value {
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    overflow-wrap: anywhere;
+  }
+  .mrg-stat__change {
+    inline-size: fit-content;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-stat[data-change="increase"] .mrg-stat__change {
+    border-color: var(--mrg-semantic-color-status-success-border);
+    color: var(--mrg-semantic-color-status-success-foreground);
+  }
+  .mrg-stat[data-change="decrease"] .mrg-stat__change {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+  }
+  .mrg-stat__context {
+    max-inline-size: 70ch;
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+  @media (forced-colors: active) {
+    .mrg-stat {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-stat__change {
+      border-color: CanvasText !important;
+      color: CanvasText !important;
+      background: Canvas;
+    }
+  }
+}

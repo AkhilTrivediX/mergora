@@ -1,0 +1,78 @@
+/* Generated from registry/source/components/range-calendar/range-calendar.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-range-calendar {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-range-calendar [data-slot="range-calendar-panes"] {
+  align-items: start;
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mrg-range-calendar section {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-range-calendar h3 {
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  margin: 0;
+}
+
+.mrg-range-calendar [data-slot="range-calendar-duration"] {
+  background: var(--mrg-semantic-color-status-success-background);
+  border-inline-start: var(--mrg-semantic-border-width-emphasis) solid
+    var(--mrg-semantic-color-status-success-border);
+  color: var(--mrg-semantic-color-status-success-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-range-calendar [data-slot="range-calendar-preview"] {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-brand-violet);
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-range-calendar [data-slot="range-calendar-span-error"] {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+@media (max-width: 52rem) {
+  .mrg-range-calendar [data-slot="range-calendar-panes"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-range-calendar [data-slot="range-calendar-duration"] {
+    background: Canvas;
+    border-color: Highlight;
+    color: CanvasText;
+  }
+
+  .mrg-range-calendar [data-slot="range-calendar-preview"],
+  .mrg-range-calendar [data-slot="range-calendar-span-error"] {
+    background: Canvas;
+    border-color: Highlight;
+    color: CanvasText;
+  }
+}

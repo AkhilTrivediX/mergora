@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./collapsible.css", "react", "react-aria-components/Disclosure"],
+  "entryPath": "registry/source/components/collapsible/collapsible.tsx",
+  "id": "collapsible",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

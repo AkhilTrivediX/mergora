@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scheduler-kit",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicSchedulerKit" },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSchedulerKit"
+    },
+    {
+      "id": "controlled",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledSchedulerKit"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "SchedulerStateMatrix" },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerStateMatrix"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "SchedulerStateMatrix" },
+    {
+      "id": "offline",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerStateMatrix"
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerStateMatrix"
+    },
+    {
+      "id": "conflict",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSchedulerKit"
+    },
+    { "id": "narrow", "applicability": { "status": "applicable" }, "story": "NarrowRtlScheduler" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlScheduler" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerPreferences"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "SchedulerPreferences"
+    }
+  ]
+}

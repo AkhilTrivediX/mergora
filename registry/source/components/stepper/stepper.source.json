@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./stepper.css", "react"],
+  "entryPath": "registry/source/components/stepper/stepper.tsx",
+  "id": "stepper",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

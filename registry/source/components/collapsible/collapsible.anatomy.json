@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collapsible",
+  "root": {
+    "slot": "collapsible",
+    "element": "div disclosure",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    { "slot": "collapsible-trigger", "element": "button", "stability": "documented" },
+    {
+      "slot": "collapsible-state",
+      "element": "span aria-hidden=true",
+      "purpose": "Optionally gives sighted users localized open or closed context while aria-expanded remains the semantic source.",
+      "stability": "documented"
+    },
+    { "slot": "collapsible-content", "element": "div region", "stability": "documented" }
+  ]
+}

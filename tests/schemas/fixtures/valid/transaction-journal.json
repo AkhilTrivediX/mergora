@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "transactionId": "20260718T120000.000Z-11111111111111111111111111111111",
+  "state": "planning",
+  "entries": [
+    {
+      "sequence": 0,
+      "recordedAt": "2026-07-18T12:00:00.000Z",
+      "state": "planning",
+      "checkpoint": "inspection-complete",
+      "recordDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    }
+  ]
+}

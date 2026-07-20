@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "search-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, search-result-quality, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native input type=search with native button actions and consumer-owned results",
+    "naming": "A persistent visible Field label, native label, aria-label, or aria-labelledby names the input; the clear action has a localized accessible name.",
+    "roleOverride": "Consumer role overrides are outside the supported contract; the containing form may use role=search when it is a search landmark.",
+    "refTarget": "HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "The browser owns editing, selection, undo, composition, validation, and Enter submission; clear and optional submit are native buttons.",
+    "pointer": "Clear never submits and restores focus; optional submit invokes the containing native form.",
+    "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target for clear and submit.",
+    "speech": "The visible label and localized clear and submit names remain available for voice targeting.",
+    "switchAccess": "The search input and actions are distinct real focus targets with no proxy interaction."
+  },
+  "formBehavior": "Native name, value, form, required, disabled, validation, Enter submission, explicit submit, and reset remain authoritative. Uncontrolled reset restores the current native default; controlled value remains consumer-owned.",
+  "states": {
+    "attributes": [
+      "data-disabled",
+      "data-empty",
+      "data-invalid",
+      "data-readonly",
+      "data-status",
+      "aria-busy",
+      "aria-controls",
+      "aria-describedby",
+      "aria-errormessage"
+    ],
+    "synchronization": "The clear action, controlled or uncontrolled query, busy state, status announcement, result association, Field relationships, and native form value use one explicit query contract."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=search-field]",
+    "attributes": ["data-disabled", "data-empty", "data-invalid", "data-readonly", "data-status"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "State is conveyed with text and programmatic relationships rather than color alone.",
+    "forcedColors": "Uses system colors, visible borders, and explicit focus indicators.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Localized action and status text wrap or remain operable without clipping the editable query."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "placeholder",
+      "clearLabel",
+      "submitLabel",
+      "status.message"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native composition remains authoritative; the clear action is unavailable during composition and no Enter or keyboard event is intercepted.",
+    "serialization": "Queries are consumer-owned text and are submitted without localization or transformation."
+  },
+  "consumerResponsibilities": [
+    "Provide a persistent visible label and place global or site search in an appropriately named search landmark.",
+    "Supply resultsId for rendered results and a localized explicit status for loading, result count, no-results, and failure states.",
+    "Keep result DOM, status state, and the query response generation synchronized so stale results are not announced as current.",
+    "Debounce or cancel network work outside the component without blocking native editing or IME composition.",
+    "Choose controlled ownership when clearing or resetting must coordinate with URL or remote state."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "field-association",
+      "clear-focus-and-non-submit",
+      "enter-and-explicit-submission",
+      "controlled-uncontrolled-reset",
+      "ime-composition",
+      "loading-empty-results-error-association",
+      "mobile-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "mobile-virtual-keyboard",
+      "keyboard-and-ime-editing",
+      "nvda-firefox",
+      "voiceover-safari",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The component associates and announces consumer-supplied search state but does not fetch, rank, render, virtualize, or validate results.",
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

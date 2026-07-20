@@ -1,0 +1,5 @@
+@layer mergora.components {
+  .mrg-currency-field .mrg-number-field-input {
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+}

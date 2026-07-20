@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/catalog-metadata-v1.schema.json",
+  "title": "Mergora catalog metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "displayName",
+    "description",
+    "layer",
+    "category",
+    "kind",
+    "trust",
+    "maturity",
+    "riskClass",
+    "tags",
+    "aliases",
+    "keywords",
+    "availability"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "displayName": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+    "description": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+    "layer": { "enum": ["foundation", "component", "system", "kit"] },
+    "category": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "kind": {
+      "enum": ["component", "hook", "utility", "system", "kit", "theme", "contract", "migration"]
+    },
+    "trust": { "$ref": "common-v1.schema.json#/$defs/trustTier" },
+    "maturity": { "$ref": "common-v1.schema.json#/$defs/maturity" },
+    "riskClass": { "$ref": "common-v1.schema.json#/$defs/riskClass" },
+    "tags": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "uniqueItems": true,
+      "maxItems": 64
+    },
+    "aliases": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "uniqueItems": true,
+      "maxItems": 32
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 80 },
+      "uniqueItems": true,
+      "maxItems": 128
+    },
+    "availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "package"],
+      "properties": {
+        "source": { "type": "boolean" },
+        "package": { "type": "boolean" }
+      }
+    },
+    "deprecated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replacement", "removalVersion"],
+      "properties": {
+        "replacement": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "removalVersion": { "$ref": "common-v1.schema.json#/$defs/semver" }
+      }
+    }
+  }
+}

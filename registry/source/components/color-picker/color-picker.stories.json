@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-picker",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicDefaults"
+    },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "ProductionWorkbench" },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPointerParity"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPointerParity"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "ProductionWorkbench"
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to an external palette or submission workflow; the local picker is deterministic."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "ColorPicker always owns one color; use ColorField when an empty value is meaningful."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Submission success belongs to a persistent workflow status."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Threshold guidance is persistent text and does not create a color-only warning state."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "ValidationAndRecovery"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Choosing a color does not itself perform a destructive action."
+      }
+    }
+  ]
+}

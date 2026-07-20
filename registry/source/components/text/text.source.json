@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./text.css", "react"],
+  "entryPath": "registry/source/components/text/text.tsx",
+  "id": "text",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

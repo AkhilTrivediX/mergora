@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-upload",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "empty",
+    "populated",
+    "loading",
+    "partial",
+    "success",
+    "warning",
+    "error",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "file-upload",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["disabled", "read-only", "empty", "populated"]
+    },
+    {
+      "name": "file-upload-queue",
+      "semanticElement": "labelled section and ordered list",
+      "refTarget": "none",
+      "states": ["empty", "populated", "loading", "partial", "success", "error"]
+    },
+    {
+      "name": "file-upload-rejections",
+      "semanticElement": "optional polite live section",
+      "refTarget": "none",
+      "states": ["empty", "warning", "error"]
+    }
+  ],
+  "contract": { "id": "file-upload-accessibility", "version": "0.1.0" },
+  "passport": { "id": "file-upload-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,46 @@
+name: Component or capability proposal
+description: Propose a user problem and maintainable public contract.
+title: "[Proposal]: "
+labels:
+  - proposal
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Explain the recurring job, not only the desired component name.
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: API or composition sketch
+    validations:
+      required: true
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility and interaction model
+      description: Cover semantics, keyboard/focus, announcements, pointer/touch alternatives, and likely risk class.
+    validations:
+      required: true
+  - type: textarea
+    id: adaptability
+    attributes:
+      label: Responsive, localization, RTL, and adverse states
+    validations:
+      required: true
+  - type: textarea
+    id: maintenance
+    attributes:
+      label: Maintenance and dependency cost
+      description: Note specialized engines/adapters, compatibility surface, and evidence burden.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I checked the approved v1 and post-v1 catalog before proposing a new surface.
+          required: true

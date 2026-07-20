@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "itemId": "select",
+  "entryExport": "Select",
+  "refTarget": "HTMLDivElement stable wrapper for enhanced and native presentations",
+  "nativeProps": "Curated field, form, popup, and collection props; enhanced behavior remains owned by React Aria and native behavior by the browser",
+  "exports": [
+    { "kind": "component", "name": "Select" },
+    { "kind": "type", "name": "SelectComponent" },
+    { "kind": "type", "name": "SelectPlacement" },
+    { "kind": "type", "name": "SelectPresentation" },
+    { "kind": "type", "name": "SelectProps" }
+  ],
+  "controlledState": ["value", "open"],
+  "props": [
+    {
+      "name": "entries",
+      "required": true,
+      "type": "readonly CollectionEntry<T>[] from the shared model"
+    },
+    { "name": "label", "required": true, "type": "ReactNode persistent visible label" },
+    { "name": "value", "required": false, "type": "CollectionKey | null" },
+    { "name": "defaultValue", "required": false, "type": "CollectionKey | null" },
+    { "name": "onValueChange", "required": false, "type": "(value: CollectionKey | null) => void" },
+    { "name": "open", "required": false, "type": "boolean enhanced presentation only" },
+    { "name": "defaultOpen", "required": false, "type": "boolean enhanced presentation only" },
+    {
+      "name": "onOpenChange",
+      "required": false,
+      "type": "(open: boolean) => void enhanced presentation only"
+    },
+    {
+      "name": "presentation",
+      "required": false,
+      "default": "enhanced",
+      "type": "enhanced | native"
+    },
+    { "name": "name", "required": false, "type": "non-empty form field name" },
+    { "name": "form", "required": false, "type": "external form id" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "invalid", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "asyncState",
+      "required": false,
+      "type": "validated loading/error/retry/pagination state"
+    },
+    {
+      "name": "virtualization",
+      "required": false,
+      "type": "enhanced measured ListLayout estimates"
+    },
+    {
+      "name": "formatSelectionSummary",
+      "required": false,
+      "default": "locale-driven bounded formatter",
+      "type": "false | bounded locale-driven accessibility summary formatter"
+    },
+    {
+      "name": "placement",
+      "required": false,
+      "default": "bottom start",
+      "type": "logical top/bottom placement"
+    }
+  ],
+  "compositionPolicy": {
+    "selection": "Select is deliberately single-selection. Multiple selection belongs to Listbox and the separate multi-select component, avoiding enhanced/native parity splits.",
+    "enhanced": "React Aria owns the non-editable trigger, hidden native form control, popup, listbox keyboard model, focus restoration, and validation state.",
+    "native": "presentation=native renders the canonical NativeSelect and text-only option/optgroup model. It is explicit, never user-agent switched, and is recommended when simple platform/mobile picker behavior is preferable.",
+    "collection": "Enhanced and native presentations validate and serialize the same stable keys and localized textValue records.",
+    "virtualization": "Enhanced presentation may window large collections through the same measured ListLayout contract; native presentation rejects virtualization because the platform owns option rendering.",
+    "enhancementDisabling": "Omitting virtualization renders the ordinary enhanced collection. formatSelectionSummary=false removes summary calculation, formatter calls, hidden markup, ids, and accessibility-description output."
+  }
+}

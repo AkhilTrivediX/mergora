@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "virtual-list",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "virtual-list",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

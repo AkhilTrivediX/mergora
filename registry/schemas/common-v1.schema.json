@@ -1,0 +1,243 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/common-v1.schema.json",
+  "title": "Mergora v1 common schema definitions",
+  "$defs": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "semverRange": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^(?!.*(?:git|https?|file|workspace|link|portal|patch|github):)[0-9A-Za-z*<>=~^|. +\\-]+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "catalogId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "qualifiedItemId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*:[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "maxLength": 257
+    },
+    "projectRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*//)(?!.*[\\u0000-\\u001F\\u007F])(?!.*:)(?!.*[. ](?:/|$)).+$",
+      "x-mergora-normalization": "NFKC",
+      "x-mergora-portable-path": true
+    },
+    "logicalPath": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/projectRelativePath"
+        },
+        {
+          "pattern": "^(?:ui|hooks|lib|systems|kits|themes|contracts|examples|tokens)/"
+        }
+      ]
+    },
+    "httpsUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://",
+      "maxLength": 2048
+    },
+    "immutableUrl": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/httpsUrl"
+        },
+        {
+          "pattern": "^[^?#]+$"
+        }
+      ]
+    },
+    "registryOrigin": {
+      "type": "string",
+      "format": "uri",
+      "anyOf": [
+        {
+          "pattern": "^https://[^/?#]+(?:/[^?#]*)?$"
+        },
+        {
+          "pattern": "^http://(?:127\\.0\\.0\\.1|localhost)(?::[0-9]{1,5})?(?:/[^?#]*)?$"
+        }
+      ]
+    },
+    "environmentVariableName": {
+      "type": "string",
+      "pattern": "^[A-Z_][A-Z0-9_]*$",
+      "maxLength": 128
+    },
+    "spdxLicense": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9-.+]*(?: WITH [A-Za-z0-9][A-Za-z0-9-.+]*)?$",
+      "maxLength": 128
+    },
+    "packageName": {
+      "type": "string",
+      "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$",
+      "maxLength": 214
+    },
+    "dependencyMap": {
+      "type": "object",
+      "propertyNames": {
+        "$ref": "#/$defs/packageName"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/semverRange"
+      },
+      "maxProperties": 256
+    },
+    "maturity": {
+      "enum": ["experimental", "beta", "stable", "deprecated"]
+    },
+    "trustTier": {
+      "enum": ["core", "labs", "community"]
+    },
+    "registryTrust": {
+      "enum": ["official", "enrolled", "local-development"]
+    },
+    "riskClass": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 3
+    },
+    "measurementEvidenceState": {
+      "enum": ["pass", "fail", "warning", "manual-check", "not-measurable"]
+    },
+    "passportEvidenceState": {
+      "enum": [
+        "pass",
+        "pass-with-limitation",
+        "fail",
+        "not-tested",
+        "not-applicable",
+        "expired",
+        "blocked-upstream"
+      ]
+    },
+    "contractEvidenceState": {
+      "enum": ["pass", "fail", "blocked-upstream", "not-applicable"]
+    },
+    "releaseGateState": {
+      "enum": ["pass", "fail", "blocked", "not-applicable"]
+    },
+    "aggregateEvidenceState": {
+      "enum": [
+        "satisfied",
+        "conditional",
+        "failed",
+        "unknown",
+        "stale",
+        "blocked",
+        "not-applicable"
+      ]
+    },
+    "evidenceContext": {
+      "enum": ["measurement", "passport", "contract", "release-gate"]
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cli",
+        "node",
+        "react",
+        "typescript",
+        "tailwind",
+        "frameworks",
+        "packageManagers",
+        "browserCapabilities"
+      ],
+      "properties": {
+        "cli": {
+          "$ref": "#/$defs/semverRange"
+        },
+        "node": {
+          "$ref": "#/$defs/semverRange"
+        },
+        "react": {
+          "$ref": "#/$defs/semverRange"
+        },
+        "typescript": {
+          "$ref": "#/$defs/semverRange"
+        },
+        "tailwind": {
+          "$ref": "#/$defs/semverRange"
+        },
+        "frameworks": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/semverRange"
+          },
+          "maxProperties": 32
+        },
+        "packageManagers": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/semverRange"
+          },
+          "maxProperties": 8
+        },
+        "browserCapabilities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "uniqueItems": true,
+          "maxItems": 64
+        }
+      }
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "artifact", "digest"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/catalogId"
+        },
+        "artifact": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/immutableUrl"
+            },
+            {
+              "$ref": "#/$defs/projectRelativePath"
+            }
+          ]
+        },
+        "digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "byteCount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1073741824
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    }
+  }
+}

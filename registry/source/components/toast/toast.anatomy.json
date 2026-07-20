@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toast",
+  "root": {
+    "element": "section notification region",
+    "ref": "HTMLElement",
+    "slot": "toast-region",
+    "stableAttributes": ["data-slot", "data-paused"]
+  },
+  "parts": [
+    {
+      "slot": "toast-list",
+      "element": "ol",
+      "stability": "documented"
+    },
+    {
+      "slot": "toast-message",
+      "element": "li containing role=status or role=alert",
+      "stability": "documented"
+    },
+    {
+      "slot": "toast-queue-summary",
+      "element": "output aria-live=polite",
+      "purpose": "Optionally reports waiting notifications outside the visible window.",
+      "stability": "documented"
+    },
+    {
+      "slot": "toast-pause-control",
+      "element": "button",
+      "purpose": "Optionally exposes an explicit equivalent to automatic hover/focus timer pause.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "stack",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "Consumer-selected div, section, ul, or ol",
+    "selectionPolicy": "Only the closed native element union is accepted.",
+    "refTarget": "HTMLElement"
+  },
+  "layout": {
+    "intrinsic": "A one-dimensional flex column uses semantic stack gaps and zero minimum inline sizes; separated optionally adds tokenized rules without extra DOM.",
+    "logicalDirection": "List indentation uses padding-inline-start and follows document direction.",
+    "overflow": "Content is not clipped; descendants may grow in block size when text expands."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=stack]",
+    "attributes": ["data-element", "data-gap", "data-align", "data-list-style"]
+  },
+  "consumerResponsibilities": [
+    "Use section only when the surrounding document supplies an appropriate heading.",
+    "Render li children for ul and ol roots and do not remove list semantics with role overrides.",
+    "Revalidate focus visibility and reading order after adding consumer positioning or overflow."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "native-list-semantics",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-reflow", "screen-reader-list", "forced-colors"],
+    "recordedEvidence": []
+  }
+}

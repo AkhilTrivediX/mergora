@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "table-of-contents",
+  "root": {
+    "element": "nav",
+    "ref": "HTMLElement",
+    "slot": "table-of-contents",
+    "stableAttributes": ["data-slot", "data-enhanced-observer"]
+  },
+  "parts": [
+    {
+      "slot": "table-of-contents-label",
+      "element": "strong",
+      "purpose": "Keeps the navigation landmark visibly named.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "table-of-contents-summary",
+      "element": "optional output",
+      "purpose": "Shows localized current-section and reading-position context.",
+      "stability": "documented"
+    },
+    {
+      "slot": "table-of-contents-link",
+      "element": "anchor or disabled span",
+      "purpose": "Preserves keyboard navigation and one current location.",
+      "stability": "behavioral"
+    }
+  ]
+}

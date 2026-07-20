@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "accordion",
+  "entryExport": "Accordion",
+  "refTarget": "Root=HTMLDivElement; Item=HTMLDivElement; Header=HTMLHeadingElement; Trigger=HTMLButtonElement; Panel=HTMLDivElement",
+  "exports": [
+    { "kind": "namespace", "name": "Accordion" },
+    { "kind": "component", "name": "AccordionRoot" },
+    { "kind": "component", "name": "AccordionItem" },
+    { "kind": "component", "name": "AccordionHeader" },
+    { "kind": "component", "name": "AccordionTrigger" },
+    { "kind": "component", "name": "AccordionPanel" },
+    { "kind": "type", "name": "AccordionRootProps" },
+    { "kind": "type", "name": "AccordionItemProps" },
+    { "kind": "type", "name": "AccordionHeaderProps" },
+    { "kind": "type", "name": "AccordionTriggerProps" },
+    { "kind": "type", "name": "AccordionPanelProps" }
+  ],
+  "props": [
+    {
+      "name": "renderExpansionSummary",
+      "required": false,
+      "type": "(expandedValues: readonly string[]) => ReactNode; null, false, or empty content suppresses output"
+    }
+  ],
+  "controlledState": ["value"],
+  "nativePolicy": [
+    "Each trigger is a native button owned by a semantic heading at the caller-selected level.",
+    "Single and multiple expansion preserve React Aria disclosure relationships and disabled behavior.",
+    "ArrowDown, ArrowUp, Home, and End move focus without changing expansion; Enter and Space retain native activation.",
+    "renderExpansionSummary optionally adds a polite status rail derived from the current controlled or uncontrolled value; omitting it removes the formatter path, and null, false, or empty returned content removes the UI and live region."
+  ]
+}

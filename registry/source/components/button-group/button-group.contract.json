@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "button-group",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "A semantic visual action group whose opt-in toolbar mode implements one-tab-stop roving focus.",
+  "semantics": [
+    "Group mode preserves each child action as a native tab stop.",
+    "Toolbar mode assigns exactly one recognized enabled action as a tab stop during SSR and every render, then implements Home, End, orientation arrows, disabled skipping, and RTL spatial arrows.",
+    "Router and custom action components may opt in through markButtonGroupAction when they forward toolbar props to exactly one native action root.",
+    "Non-interactive separators remain unmanaged; unsupported custom or nested-action children are inert so they cannot add uncontrolled toolbar tab stops.",
+    "No button or link semantics are rewritten by the group.",
+    "keyboardHint exists only in toolbar mode, becomes visible descriptive text, and is absent when omitted."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, state, and focus.",
+    "reducedMotion": "Feedback remains understandable when transitions and rotation are removed.",
+    "rtl": "Logical properties and the documented spatial keyboard model follow direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Wrap, reflow, or expose native scrolling without clipping controls or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "itemId": "data-grid",
+  "entryExport": "DataGrid",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "DataGridProps owns the labelled semantic-table region and forwards supported HTML div attributes except conflicting controlled names.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "DataGrid"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumn"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnAlignment"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnSizeOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnSizingChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnSizingOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnWidths"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridDetailRowsChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridDetailRowsOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridExpandedRowIds"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnVisibility"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnVisibilityAdapter"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnVisibilityChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridColumnVisibilityOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvColumn"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvDelimiter"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvFormulaProtection"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvNewline"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCsvValue"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCursorPaginationOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridCursorPaginationState"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridFilteringOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridMessages"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridOperationMode"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridOperationReason"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridOperationStatus"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridPagePaginationOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridPagePaginationState"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridPaginationOptions"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridPaginationState"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridProps"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridQuery"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridQueryAdapter"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridQueryChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridQuerySummaryContext"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSelectionChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSelectionMode"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSelectionProps"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSortDirection"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSorting"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSortingChangeDetail"
+    },
+    {
+      "kind": "type",
+      "name": "DataGridSortingProps"
+    },
+    {
+      "kind": "value",
+      "name": "createDataGridCsv"
+    },
+    {
+      "kind": "value",
+      "name": "normalizeDataGridQuery"
+    },
+    {
+      "kind": "value",
+      "name": "parseDataGridColumnVisibility"
+    },
+    {
+      "kind": "value",
+      "name": "parseDataGridQuery"
+    },
+    {
+      "kind": "value",
+      "name": "serializeDataGridColumnVisibility"
+    },
+    {
+      "kind": "value",
+      "name": "serializeDataGridQuery"
+    }
+  ],
+  "props": [
+    {
+      "name": "rows",
+      "required": true,
+      "type": "readonly T[]"
+    },
+    {
+      "name": "columns",
+      "required": true,
+      "type": "readonly DataGridColumn<T>[]"
+    },
+    {
+      "name": "caption",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "name": "getRowId",
+      "required": true,
+      "type": "(row: T) => string"
+    },
+    {
+      "name": "selectionMode",
+      "required": false,
+      "type": "DataGridSelectionMode"
+    },
+    {
+      "name": "columnVisibility",
+      "required": false,
+      "type": "false | DataGridColumnVisibilityOptions"
+    },
+    {
+      "name": "columnSizing",
+      "required": false,
+      "type": "false | DataGridColumnSizingOptions"
+    },
+    {
+      "name": "detailRows",
+      "required": false,
+      "type": "false | DataGridDetailRowsOptions<T>"
+    },
+    {
+      "name": "operationMode",
+      "required": false,
+      "type": "DataGridOperationMode"
+    },
+    {
+      "name": "filtering",
+      "required": false,
+      "type": "boolean | DataGridFilteringOptions<T>"
+    },
+    {
+      "name": "pagination",
+      "required": false,
+      "type": "false | true | DataGridPaginationOptions"
+    },
+    {
+      "name": "query",
+      "required": false,
+      "type": "DataGridQuery"
+    },
+    {
+      "name": "defaultQuery",
+      "required": false,
+      "type": "Partial<DataGridQuery>"
+    },
+    {
+      "name": "onQueryChange",
+      "required": false,
+      "type": "(query: DataGridQuery, detail: DataGridQueryChangeDetail) => void"
+    },
+    {
+      "name": "queryAdapter",
+      "required": false,
+      "type": "false | DataGridQueryAdapter"
+    },
+    {
+      "name": "renderQuerySummary",
+      "required": false,
+      "type": "false | ((context: DataGridQuerySummaryContext) => ReactNode)"
+    },
+    {
+      "name": "operationStatus",
+      "required": false,
+      "type": "false | DataGridOperationStatus"
+    },
+    {
+      "name": "queryName",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "name": "selectionName",
+      "required": false,
+      "type": "string"
+    },
+    {
+      "name": "messages",
+      "required": false,
+      "type": "Partial<DataGridMessages>"
+    },
+    {
+      "name": "renderSelectionSummary",
+      "required": false,
+      "type": "(selectedRow: T | null) => ReactNode"
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native table, caption, scoped headers, labelled overflow region, and native form controls. Interactive Grid semantics are not part of this Experimental phase.",
+    "enhancement": "Native single-row selection, controlled or adapter-persisted column visibility, controlled or uncontrolled bounded native column sizing, controlled or uncontrolled semantic detail rows, filtering, pagination, query persistence, query summary, async status and retry, form serialization, selection summary, and side-effect-free safe CSV serialization are explicit component-specific APIs. Disabling or omitting each capability removes its own UI, behavior, callbacks, adapter writes, and accessibility output while the plain semantic table remains usable."
+  }
+}

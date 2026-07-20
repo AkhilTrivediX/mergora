@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "itemId": "popover",
+  "canonicalStoryFile": "apps/storybook/src/P2Overlays.stories.tsx",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "PopoverCollision" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "PopoverCollision" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "PopoverCollision" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "PopoverCollision"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "PopoverCollision" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Popover is a non-modal container; read-only belongs to content controls."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation belongs to fields or workflows placed inside the popover."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required is a form-control state rather than an anchored-overlay state."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading feedback belongs to popover content while naming and dismissal stay available."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An unnamed empty popover without a visible close path is invalid usage."
+      }
+    },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "PopoverCollision" },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Popover has no partial-selection state of its own."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success belongs to content or workflow feedback rather than overlay geometry."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require explicit semantic content and are not encoded by Popover."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the affected content or action rather than the popover container."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Destructive confirmation uses AlertDialog and must not rely on a dismissible non-modal popover."
+      }
+    }
+  ]
+}

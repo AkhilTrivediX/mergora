@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "itemId": "mention-field",
+  "entryExport": "MentionField",
+  "refTarget": "HTMLTextAreaElement",
+  "nativeProps": "TextareaHTMLAttributes<HTMLTextAreaElement>",
+  "exports": [
+    { "kind": "value", "name": "MentionField" },
+    { "kind": "type", "name": "MentionOption" },
+    { "kind": "type", "name": "MentionQuery" },
+    { "kind": "type", "name": "MentionTrigger" },
+    { "kind": "type", "name": "MentionFieldProps" }
+  ],
+  "props": [
+    { "name": "showMentionSummary", "required": false, "type": "boolean" },
+    { "name": "triggers", "required": false, "type": "readonly MentionTrigger[]" },
+    {
+      "name": "onQueryChange",
+      "required": false,
+      "type": "(query: MentionQuery | null) => void"
+    },
+    { "name": "loading", "required": false, "type": "boolean" },
+    { "name": "loadingMessage", "required": false, "type": "string" },
+    { "name": "loadError", "required": false, "type": "string" },
+    { "name": "onRetry", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the labelled textarea, conditional combobox/listbox relationship, native name/form/reset/validation behavior, caret position, configured trigger/entity context, and IME composition.",
+    "enhancement": "showMentionSummary is additive; false removes summary UI, live output, behavior, events, and accessibility relationship. Trigger configuration and async query state are independent and never initiate transport."
+  }
+}

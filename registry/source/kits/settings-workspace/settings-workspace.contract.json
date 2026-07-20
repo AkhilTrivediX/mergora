@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "settings-workspace",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not an account backend, authorization boundary, notification service, security console, destructive-operation service, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native form and navigation composed with canonical Button, Field, and Input controls.",
+    "rolePolicy": "Save failures are alerts, successful saves are statuses, and instance-scoped unsaved-change alertdialogs or destructive reviews exist only when enabled; closing an unsaved prompt restores focus to its navigation trigger.",
+    "refTarget": "HTMLFormElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through section navigation, rendered controls, save/reset, and optional review controls in document order."
+    },
+    { "key": "Enter", "behavior": "Submits the current valid native section form." },
+    {
+      "key": "Native reset",
+      "behavior": "Restores rendered native fields and clears component-owned dirty, status, prompt, and review state when mutable; read-only mode disables and cancels reset without callbacks or mutation."
+    }
+  ],
+  "nonColor": "Current section, dirty, saved, failed, pending, and destructive states include text, native state, headings, and confirmation requirements.",
+  "responsive": "Section navigation becomes a labelled horizontal strip on narrow screens while content remains a single intrinsic column with logical RTL geometry.",
+  "stableSelectors": {
+    "root": "[data-slot=settings-workspace]",
+    "parts": [
+      "settings-navigation",
+      "settings-unsaved-prompt",
+      "settings-section-content",
+      "settings-destructive-review"
+    ],
+    "attributes": ["data-dirty", "aria-current", "aria-busy"]
+  },
+  "consumerResponsibilities": [
+    "Render labelled public controls and authorize, validate, persist, audit, and recover every settings and account operation on secured services.",
+    "Keep dirty state accurate when custom controls change and provide explicit migration when stored setting semantics change.",
+    "Localize all content and complete security, privacy, legal, notification, destructive-operation, browser, device, and assistive-technology review."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "required-sections",
+      "controlled-uncontrolled",
+      "native-form",
+      "reset",
+      "read-only-reset",
+      "instance-safe-aria",
+      "focus-restoration",
+      "async-abort",
+      "unsaved-protection-disabled-path",
+      "destructive-confirmation-disabled-path",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "security-privacy-legal-review"
+    ],
+    "recordedEvidence": []
+  }
+}

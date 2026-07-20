@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./command-palette.css", "react"],
+  "entryPath": "registry/source/components/command-palette/command-palette.tsx",
+  "id": "command-palette",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

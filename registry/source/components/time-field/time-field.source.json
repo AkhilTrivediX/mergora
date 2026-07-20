@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../date-field/date-time-utils.js", "./time-field.css", "react"],
+  "entryPath": "registry/source/components/time-field/time-field.tsx",
+  "id": "time-field",
+  "itemDependencies": ["date-field"],
+  "outputRole": "system"
+}

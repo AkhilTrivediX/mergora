@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "streaming-text",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "selectable text spans with stable consumer ids",
+    "rolePolicy": "No live region is present by default; opt-in announcements are polite and atomic.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Platform text-selection keys",
+      "behavior": "Native text selection and copy remain available while streaming."
+    }
+  ],
+  "nonColor": "Text and data-status expose state without cursor color.",
+  "responsive": "Text wraps anywhere while remaining selectable; no animation owns layout.",
+  "stableSelectors": {
+    "root": "[data-slot=streaming-text]",
+    "parts": ["streaming-text-segment", "streaming-text-announcement", "streaming-text-cursor"],
+    "attributes": ["data-status", "data-segment-id"]
+  },
+  "streamingPolicy": "New segments append without replacing stable prior nodes. The announcement channel is debounced and opt-in, and reduced motion removes cursor animation.",
+  "consumerResponsibilities": [
+    "Use persistent unique segment ids.",
+    "Throttle model output before it reaches expensive rich renderers.",
+    "Sanitize any renderer outside this plain-text component.",
+    "Do not expose private chain-of-thought or sensitive model/provider data."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "stable-segment-dom",
+      "announcement-throttle",
+      "enhancement-off",
+      "selectable-content",
+      "reduced-motion",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": [
+      "screen-reader-announcement-rate",
+      "keyboard-selection",
+      "touch-selection",
+      "zoom",
+      "rtl"
+    ],
+    "recordedEvidence": []
+  }
+}

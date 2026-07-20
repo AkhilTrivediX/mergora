@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "itemId": "diff-viewer",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "unified",
+    "split",
+    "added",
+    "removed",
+    "changed",
+    "empty",
+    "controlled",
+    "keyboard",
+    "summary-disabled",
+    "copy-disabled",
+    "navigation-disabled",
+    "long-content",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "diff-viewer",
+      "semanticElement": "div role=region",
+      "refTarget": "HTMLDivElement",
+      "states": ["mode", "wrap", "copyable", "line-navigation", "summary"]
+    },
+    {
+      "name": "diff-copy",
+      "semanticElement": "button",
+      "refTarget": "internal",
+      "states": ["copy-status"]
+    },
+    {
+      "name": "diff-line",
+      "semanticElement": "tr",
+      "refTarget": "internal",
+      "states": ["kind", "active"]
+    },
+    {
+      "name": "diff-marker",
+      "semanticElement": "th",
+      "refTarget": "internal",
+      "states": ["kind"]
+    }
+  ],
+  "contract": {
+    "id": "diff-viewer-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "diff-viewer-quality-passport",
+    "version": "0.0.0"
+  }
+}

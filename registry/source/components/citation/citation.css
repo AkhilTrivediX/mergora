@@ -1,0 +1,64 @@
+@layer mergora.components {
+  .mrg-citation {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--mrg-semantic-space-inline-xs);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-citation > a,
+  .mrg-citation > span:first-child {
+    padding-inline: var(--mrg-semantic-space-inset-xs);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    text-decoration-thickness: var(--mrg-semantic-border-width-default);
+    text-underline-offset: 0.15em;
+  }
+
+  .mrg-citation[data-safe-url="false"] > span:first-child {
+    border-color: var(--mrg-semantic-color-status-warning-border);
+    color: var(--mrg-semantic-color-status-warning-foreground);
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-citation [data-slot="citation-source-detail"] {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    padding-block: var(--mrg-semantic-space-inset-xs);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-citation a:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (forced-colors: active) {
+    .mrg-citation > a,
+    .mrg-citation > span:first-child,
+    .mrg-citation[data-safe-url="false"] > span:first-child,
+    .mrg-citation [data-slot="citation-source-detail"] {
+      border-color: LinkText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-citation a:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

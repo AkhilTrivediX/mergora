@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-trigger",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify native keyboard activation, form association, reset, disabled omission, same-file reselection policy, and callback FileList snapshots in every supported browser engine.",
+    "Verify accept, multiple, directory, capture, mobile fallback, 44 CSS pixel targets, RTL, zoom, forced colors, and narrow reflow.",
+    "Record current risk-class manual assistive-technology and real-device picker sessions.",
+    "Publish an approved immutable Quality Passport."
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "calendar-heatmap",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "calendar-heatmap",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

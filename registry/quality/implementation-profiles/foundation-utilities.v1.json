@@ -1,0 +1,1698 @@
+{
+  "schemaVersion": 1,
+  "category": "foundation-utilities",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "client-only",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn catalog has no standalone hydration-neutral ClientOnly primitive; consumers commonly write a mounted-state fragment themselves.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "ClientOnly requires structurally valid server and first-hydration fallback content, adds no wrapper, and offers a Strict-Mode-safe one-shot client-ready handshake.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/client-only/client-only.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          }
+        ],
+        "enhancementIds": ["client-ready-hook"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The nonvisual fragment intentionally adds no chrome; its fallback and ready states are shown inside the shared literal-white, ink-structured foundation workbench.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P2FoundationUtilities.stories.tsx"
+          }
+        ],
+        "patternIds": ["literal-white-surface", "workbench-structure"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "client-ready-hook",
+          "status": "evidence-backed",
+          "summary": "A consumer can request one post-mount readiness callback without adding markup or announcement behavior.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/client-only/client-only.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["clientReadyNotification"],
+          "api": {
+            "kind": "prop",
+            "names": ["onClientReady"],
+            "enableWhen": "onClientReady is supplied."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No readiness counter or component-owned DOM is rendered.",
+            "behavior": "Fallback replacement still occurs after mount, but no readiness integration runs.",
+            "events": "No client-ready callback is emitted.",
+            "accessibility": "No role, live region, focus movement, or accessibility-tree node is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicClientOnly",
+          "enhancementControls": ["clientReadyNotification"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedClientOnly",
+          "enhancementControls": ["clientReadyNotification"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated SSR structure and browser axe checks pass; no-JavaScript, focus replacement, screen-reader, and layout-shift review remain unrecorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Browser evidence verifies mounted replacement and a single readiness callback; packed and lifecycle matrices remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-at-incomplete",
+          "summary": "No-JavaScript, focus-order, layout-stability, and screen-reader fallback evidence is not yet recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/client-only/client-only.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/client-only/client-only.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "direction",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Shadcn documents RTL installation and a DirectionProvider, with install-time logical-style transforms; the baseline does not document a native/context boundary with optional bidi isolation and physical-side resolution.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/rtl"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora changes React direction context and native dir atomically, carries context through portals, resolves logical sides deterministically, and can isolate a bidi subtree explicitly.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/direction/direction.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          }
+        ],
+        "enhancementIds": ["bidi-isolation"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Direction remains semantically and visually neutral while the shared workbench uses logical ink rails and literal Canvas tokens in both reading directions.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P2FoundationUtilities.stories.tsx"
+          }
+        ],
+        "patternIds": ["ink-structure", "workbench-structure"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "bidi-isolation",
+          "status": "evidence-backed",
+          "summary": "The boundary can isolate its bidi ordering from surrounding content without changing native or React semantics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/direction/direction.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/direction/direction.css"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["directionIsolation"],
+          "api": {
+            "kind": "prop",
+            "names": ["Direction.Boundary.isolate"],
+            "enableWhen": "isolate is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No visual surface or isolation marker is rendered.",
+            "behavior": "unicode-bidi isolation is absent; native dir and React context remain synchronized.",
+            "events": "No event is registered or emitted in either mode.",
+            "accessibility": "No role, name, focus order, or accessibility-tree output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicDirection",
+          "enhancementControls": ["directionIsolation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedDirection",
+          "enhancementControls": ["directionIsolation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native dir/context, mixed-direction bdi content, RTL portal context, and axe are automated; manual RTL reading order, keyboard, screen-reader, and zoom evidence remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Nested context and isolation opt-out are tested, but the full RTL keyboard and browser matrix is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-at-incomplete",
+          "summary": "RTL reading order, keyboard, mixed-direction screen-reader, and 400 percent zoom evidence remains unrecorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/direction/direction.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/direction/direction.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "focus-ring",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn controls such as Button include component-local focus-visible styling, but the catalog does not expose a standalone semantic-preserving focus treatment with selectable contrast geometry.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "FocusRing supplies one coherent Deep Violet and Canvas two-cue indicator across arbitrary native children, with strong geometry and an explicit forced-colors mapping.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/focus-ring/focus-ring.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["strong-focus-contrast"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A Deep Violet outer line separated by a Canvas seam stays distinct from green selected/pressed states, becomes wider in strong mode, and maps to system Highlight.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/focus-ring/focus-ring.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ],
+        "patternIds": ["distinctive-focus", "literal-white-surface"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-focus-ring"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "strong-focus-contrast",
+          "status": "evidence-backed",
+          "summary": "Consumers can increase both seam and outline geometry for unpredictable adjacent surfaces.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/focus-ring/focus-ring.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["strongFocus"],
+          "api": {
+            "kind": "prop",
+            "names": ["contrast"],
+            "enableWhen": "contrast equals strong."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The wider strong geometry is absent and standard focus geometry remains.",
+            "behavior": "Focus-visible still receives the immediate shared indicator without strong-mode sizing.",
+            "events": "No event or motion is added by either contrast mode.",
+            "accessibility": "No role or accessible output changes; forced-colors continues to use system Highlight."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicFocusRing",
+          "enhancementControls": ["strongFocus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedFocusRing",
+          "enhancementControls": ["strongFocus"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Keyboard focus, standard/strong computed geometry, narrow layout, forced colors, and axe are automated; manual focus area/contrast and 400 percent zoom review remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Chromium keyboard modality and both geometry modes are tested; the required cross-browser modality matrix remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-focus-evidence-incomplete",
+          "summary": "Measured indicator area, adjacent-color contrast, zoom, and assistive-technology review is not recorded across all official themes.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/focus-ring/focus-ring.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/focus-ring/focus-ring.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "layer-manager",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn Dialog provides inert modal behavior within that component, but it does not document a shared cross-overlay registration, Escape-order, and environment-ownership manager.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "LayerManager unifies visual and Escape order across overlay types while allowing exactly one named engine to own inerting and scroll prevention.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/layer-manager/layer-manager.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          }
+        ],
+        "enhancementIds": ["environment-ownership"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The manager adds no panel chrome and maps registration order to the shared semantic modal layer, preserving the workbench's structural order rather than arbitrary z-index experiments.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/layer-manager/layer-manager.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-layer-modal"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "environment-ownership",
+          "status": "evidence-backed",
+          "summary": "A registered layer can opt into native modal environment ownership or remain stack-only when another behavior engine owns those effects.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/layer-manager/layer-manager.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["layerEnvironment"],
+          "api": {
+            "kind": "prop",
+            "names": ["Layer.modal", "Layer.manageEnvironment"],
+            "enableWhen": "modal and manageEnvironment are true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No manager-owned modal surface is added in either mode.",
+            "behavior": "Application inerting, body mutation, and scroll locking are absent while ordinary stack order remains.",
+            "events": "Environment effects and their cleanup do not run; Escape routing remains only for registered dismissible layers.",
+            "accessibility": "No inert accessibility-tree suppression, role, label, focus movement, or live region is added by the manager."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicLayerManager",
+          "enhancementControls": ["layerEnvironment"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedLayerManager",
+          "enhancementControls": ["layerEnvironment"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated inert opt-in/opt-out, top-only Escape, restoration, and axe checks pass; complete Risk Class 3 desktop/mobile AT, speech, switch, and focus integration remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Deterministic model and Chromium stack tests cover mutable registration and blocked Escape; scroll restoration, Strict Mode, touch scroll, and scale campaigns remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "risk-three-manual-matrix-incomplete",
+          "summary": "Desktop/mobile AT, speech, switch, focus restoration integration, RTL, zoom, forced-colors, and touch-scroll evidence is incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/layer-manager/layer-manager.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/layer-manager/layer-manager.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "portal",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn overlay components portal internally, but the public catalog does not provide a standalone portal that bridges locale, native direction, density, deterministic fallback, and inline opt-out.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Portal repeats native locale, direction, and density at the target and preserves deterministic server/first-hydration output instead of relying on React context alone.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/portal/portal.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          }
+        ],
+        "enhancementIds": ["hydration-fallback"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The display-contents bridge adds no decorative wrapper; portaled content retains the shared literal-white workbench context and logical ink structure.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P2FoundationUtilities.stories.tsx"
+          }
+        ],
+        "patternIds": ["literal-white-surface", "workbench-structure"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "hydration-fallback",
+          "status": "evidence-backed",
+          "summary": "Consumers can provide accurate server and first-hydration portal content independently of the mounted portal.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/portal/portal.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/p2-context-rendering.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["portalFallback"],
+          "api": {
+            "kind": "prop",
+            "names": ["fallback"],
+            "enableWhen": "fallback is a non-null React node."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No temporary server or first-hydration portal content is rendered.",
+            "behavior": "The mounted portal still targets the explicit, provider, or body container.",
+            "events": "No fallback event or target interaction occurs before mount.",
+            "accessibility": "No temporary status, role, focus target, or accessibility-tree node is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicPortal",
+          "enhancementControls": ["portalFallback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedPortal",
+          "enhancementControls": ["portalFallback"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "SSR fallback opt-out, inherited native context, list validity, and browser axe are tested; cross-root relationships, focus order, mobile AT, and zoom remain manual blockers.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Mounted custom-target behavior and inline SSR mode are tested; nested portals and complete browser focus-order evidence remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-at-incomplete",
+          "summary": "Desktop/mobile AT relationships, cross-root focus order, RTL, and zoom evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/portal/portal.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/portal/portal.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "presence",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn overlays commonly rely on their underlying primitive and CSS animation lifecycle; no standalone deadline-aware Presence utility is documented in the component catalog.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/dialog"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Presence keeps server content visible, ignores premature multi-property end events, guarantees a deadline, cancels interrupted exits, and follows provider motion policy.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/presence/presence.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          }
+        ],
+        "enhancementIds": ["initial-enter-lifecycle"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Only lifecycle-clarifying opacity motion is applied, using shared overlay timing and the semantic reduced-duration fallback.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/presence/presence.css"
+          }
+        ],
+        "patternIds": ["purposeful-motion"],
+        "tokenReferences": [
+          "--mrg-semantic-motion-duration-overlay",
+          "--mrg-semantic-motion-duration-reduced"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "initial-enter-lifecycle",
+          "status": "evidence-backed",
+          "summary": "Consumers can opt visible server content into a first-client entering lifecycle without changing the default no-JavaScript visibility contract.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/presence/presence.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["presenceInitialEnter"],
+          "api": {
+            "kind": "prop",
+            "names": ["initialEnter"],
+            "enableWhen": "initialEnter is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Present content starts fully visible instead of displaying an entering state.",
+            "behavior": "The initial entering lifecycle and initial motion are absent; later exit/interruption behavior remains.",
+            "events": "No initial transition or animation completion is awaited or emitted.",
+            "accessibility": "Content is immediately present with unchanged semantics and no announcement or focus movement."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicPresence",
+          "enhancementControls": ["presenceInitialEnter"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedPresence",
+          "enhancementControls": ["presenceInitialEnter"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Server visibility, absent output, reduced-motion removal, and axe are automated; focused-content removal and desktop/mobile AT evidence remain manual.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "State transitions, deadlines, interrupted exit, and reduced motion are automated; Strict Mode, no-JavaScript, and complete browser lifecycle campaigns remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-focus-at-incomplete",
+          "summary": "Focused-content removal, desktop/mobile AT, no-JavaScript, and manual reduced-motion evidence is incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/presence/presence.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/presence/presence.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "provider",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn documents configuration and framework/provider compositions separately; the component catalog does not expose one provider for deterministic locale, direction, time zone, density, motion, messages, and portal targeting.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "MergoraProvider synchronizes native locale/direction with deterministic translation, density, reduced-motion, time-zone, and portal policies and scopes every override to a subtree.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/provider/provider.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/provider/provider.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["wrapper-free-composition"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Provider maps comfortable, compact, and 48px touch targets plus normal/reduced motion to shared semantic variables without one-off component styling.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/provider/provider.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ],
+        "patternIds": ["touch-target-treatment", "purposeful-motion"],
+        "tokenReferences": [
+          "--mrg-semantic-density-control-height",
+          "--mrg-semantic-motion-duration-reduced"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "wrapper-free-composition",
+          "status": "evidence-backed",
+          "summary": "The provider can merge its native and Mergora context attributes into one concrete child when a wrapper would break layout.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/provider/provider.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/p2-context-rendering.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["providerAsChild"],
+          "api": {
+            "kind": "prop",
+            "names": ["asChild"],
+            "enableWhen": "asChild is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "A neutral provider div remains instead of wrapper-free child composition.",
+            "behavior": "Attribute merging into the child is absent; all context values and subtree token policies remain.",
+            "events": "No event handlers are inferred or emitted in either mode.",
+            "accessibility": "No role, name, focus behavior, or live-region output is inferred; native lang and dir remain on the provider div."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicProvider",
+          "enhancementControls": ["providerAsChild"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedProvider",
+          "enhancementControls": ["providerAsChild"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Nested locale/direction, native attributes, portal context, density, reduced motion, and axe are automated; screen-reader locale, RTL, forced-colors, and official-locale review remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Nested inheritance, message merge, wrapper-free rendering, density, and motion variables are tested; full hydration and portal browser matrices remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-at-locale-incomplete",
+          "summary": "Screen-reader locale, RTL, forced-colors, reduced-motion, and official-locale manual evidence remains incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/provider/provider.contract.json"
+            }
+          ]
+        },
+        {
+          "code": "semantic-sync-evidence-pending",
+          "summary": "Semantic Sync lifecycle evidence remains pending.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/provider/provider.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/provider/provider.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "slot",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn Button documents asChild polymorphism, ordinarily backed by Slot-style cloning, but does not publish Mergora's full child-authoritative merge and cancellation contract as a component API.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Slot deterministically preserves child semantics and names while composing refs, context attributes, classes, styles, and child-first cancellable events.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/slot/slot.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          }
+        ],
+        "enhancementIds": ["slot-event-orchestration"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Slot introduces no wrapper or one-off style; the composed native child receives the shared workbench control and focus treatment.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P2FoundationUtilities.stories.tsx"
+          }
+        ],
+        "patternIds": ["workbench-structure", "distinctive-focus"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-focus-ring"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "slot-event-orchestration",
+          "status": "evidence-backed",
+          "summary": "Consumers can add a Slot-owned event layer that runs after the child's handler and respects child preventDefault cancellation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/slot/slot.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["slotHandler"],
+          "api": {
+            "kind": "composition",
+            "names": ["Slot on* event handlers"],
+            "enableWhen": "A Slot-owned event handler is supplied."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No orchestration status UI is rendered by the story and Slot itself never adds UI.",
+            "behavior": "Only the child's native behavior and handler run.",
+            "events": "No Slot-owned listener or callback is composed or emitted.",
+            "accessibility": "The child's role, name, focus behavior, and accessibility tree remain unchanged."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicSlot",
+          "enhancementControls": ["slotHandler"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedSlot",
+          "enhancementControls": ["slotHandler"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "SSR semantics/name precedence, invalid children, native button keyboard behavior, and axe are automated; desktop screen-reader name and manual keyboard replacement review remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Optional event orchestration and child-native activation are browser-tested; complete ref, nested event cancellation, and packed composition campaigns remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-semantics-at-incomplete",
+          "summary": "Manual keyboard-native-semantics and desktop screen-reader accessible-name review remains.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/slot/slot.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/slot/slot.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sr-announcer",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "The ordinary Shadcn component catalog has visible toast/status compositions but no standalone localized, paced, dual-priority screen-reader announcement queue.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "ScreenReaderAnnouncer separates polite and assertive FIFO queues, paces delivery, deduplicates by semantic key, localizes descriptors, and reuses the nearest provider.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sr-announcer/sr-announcer.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          }
+        ],
+        "enhancementIds": ["intentional-announcement-repeats"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The live regions remain visually absent and avoid decorative status UI; persistent actions stay in the literal-white, ink-structured foundation workbench.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P2FoundationUtilities.stories.tsx"
+          }
+        ],
+        "patternIds": ["literal-white-surface", "workbench-structure"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "intentional-announcement-repeats",
+          "status": "evidence-backed",
+          "summary": "A consumer can bypass repeat suppression for one genuinely new user-relevant occurrence without changing queue priority or live-region roles.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sr-announcer/sr-announcer.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announcementRepeats"],
+          "api": {
+            "kind": "prop",
+            "names": ["AnnouncementOptions.dedupe"],
+            "enableWhen": "dedupe is false for an announce call."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The intentional-repeat action is absent from the basic story; the component never adds visible UI.",
+            "behavior": "Repeated semantic keys inside the dedupe window are suppressed.",
+            "events": "No duplicate announcement record is queued or delivered.",
+            "accessibility": "No repeated live-region text or additional accessibility announcement is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicSrAnnouncer",
+          "enhancementControls": ["announcementRepeats"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedSrAnnouncer",
+          "enhancementControls": ["announcementRepeats"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Live-region anatomy, provider opt-out, queue IDs, dedupe/repeat behavior, clear, and axe are automated; real desktop/mobile AT timing and interruption/noise evidence remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "FIFO, priority, dedupe, intentional repeat, clear, and nested-provider reuse are automated; assistive-technology timing and high-volume campaigns remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-models.test.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-live-region-at-incomplete",
+          "summary": "Desktop/mobile AT polite/assertive timing, interruption, announcement-noise, and RTL evidence remains unrecorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sr-announcer/sr-announcer.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sr-announcer/sr-announcer.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "visually-hidden",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn examples use visually hidden text and icon-button names as local composition details, but the catalog does not document a polymorphic reveal-on-focus utility with logical placement and forced-colors treatment.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/button"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "VisuallyHidden keeps content nameable with valid element-specific props and can become a logical-start, literal Canvas skip-link surface with forced-colors-safe focus.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/visually-hidden/visually-hidden.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/visually-hidden/visually-hidden.css"
+          }
+        ],
+        "enhancementIds": ["focus-reveal"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The revealed surface uses literal Canvas, an ink border, restrained shared corners, logical-start placement, and the Deep Violet/system Highlight focus treatment.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/visually-hidden/visually-hidden.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "distinctive-focus",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-focus-ring"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "focus-reveal",
+          "status": "evidence-backed",
+          "summary": "Focusable hidden content can opt into a readable, logical-start Mergora surface only for keyboard focus-visible.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/visually-hidden/visually-hidden.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["revealSkipLink"],
+          "api": {
+            "kind": "prop",
+            "names": ["revealOnFocus"],
+            "enableWhen": "revealOnFocus is true on a natively focusable element."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The fixed Canvas skip-link surface and ink border are absent.",
+            "behavior": "Focus does not reveal the hidden geometry; the basic story avoids a focusable permanently hidden link.",
+            "events": "No event listener, callback, or motion is added.",
+            "accessibility": "The content remains in the accessibility tree, but no extra focusable skip-link node or focus-reveal announcement is created by the story."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "BasicVisuallyHidden",
+          "enhancementControls": ["revealSkipLink"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2FoundationUtilities.stories.tsx",
+          "exportName": "RecommendedVisuallyHidden",
+          "enhancementControls": ["revealSkipLink"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/foundation-utilities-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Type-safe elements, accessibility-tree content, focus reveal, narrow layout, forced colors, RTL logical placement, and axe are automated; manual desktop screen-reader, text spacing, and 400 percent zoom remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/p2-context-rendering.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Keyboard reveal and opt-out are Chromium-tested; complete browser, zoom, and text-spacing interaction review remains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/context-infrastructure/context-infrastructure.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-at-zoom-incomplete",
+          "summary": "Desktop screen-reader, 400 percent zoom, text-spacing, and manual forced-colors evidence remains unrecorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/visually-hidden/visually-hidden.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/visually-hidden/visually-hidden.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

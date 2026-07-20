@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toggle",
+  "root": {
+    "slot": "toggle",
+    "element": "button aria-pressed",
+    "ref": "HTMLButtonElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "toggle-label",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "toggle-pending-indicator",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
+}

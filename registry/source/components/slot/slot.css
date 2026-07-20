@@ -1,0 +1,5 @@
+@layer mergora.components {
+  [data-slot="slot"] {
+    box-sizing: border-box;
+  }
+}

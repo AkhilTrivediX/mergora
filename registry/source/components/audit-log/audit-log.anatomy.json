@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "audit-log",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "audit-log",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    "audit-log-filters",
+    "audit-log-viewport",
+    "audit-log-events",
+    "audit-log-empty",
+    "audit-log-export"
+  ]
+}

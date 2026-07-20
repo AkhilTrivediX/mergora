@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "itemId": "crud-data-workspace",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "loading",
+    "empty",
+    "ready",
+    "offline",
+    "error",
+    "search",
+    "filter",
+    "saved-views",
+    "bulk-actions",
+    "create",
+    "edit",
+    "permission",
+    "optimistic",
+    "pessimistic",
+    "rollback",
+    "cancel",
+    "delete",
+    "undo",
+    "controlled",
+    "uncontrolled",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "crud-data-workspace",
+      "semanticElement": "div containing query tools, public data table, dialog, and recovery alerts",
+      "refTarget": "HTMLDivElement",
+      "states": ["loading", "empty", "ready", "offline", "error"]
+    },
+    {
+      "name": "crud-data-workspace-tools",
+      "semanticElement": "labelled filter and optional saved-view controls",
+      "refTarget": "none",
+      "states": ["filtered", "saved-view"]
+    },
+    {
+      "name": "crud-data-workspace-bulk-actions",
+      "semanticElement": "optional selection action toolbar",
+      "refTarget": "none",
+      "states": ["empty-selection", "selection"]
+    },
+    {
+      "name": "crud-data-workspace-mutation-timeline",
+      "semanticElement": "optional polite output",
+      "refTarget": "none",
+      "states": ["success", "cancelled"]
+    }
+  ],
+  "contract": { "id": "crud-data-workspace-accessibility", "version": "0.1.0" },
+  "passport": { "id": "crud-data-workspace-quality-passport", "version": "0.0.0" }
+}

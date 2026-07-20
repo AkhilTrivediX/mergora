@@ -1,0 +1,46 @@
+/* Generated from registry/source/components/description-list/description-list.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-description-list {
+  --mrg-description-list-gap: var(--mrg-semantic-space-stack-md);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-description-list-gap) var(--mrg-semantic-space-stack-lg);
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  max-inline-size: var(--mrg-semantic-container-content);
+  min-inline-size: 0;
+}
+.mrg-description-list[data-density="compact"] {
+  --mrg-description-list-gap: var(--mrg-semantic-space-stack-xs);
+}
+.mrg-description-list[data-layout="responsive"] {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+}
+.mrg-description-list[data-layout="columns"] {
+  grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr);
+}
+.mrg-description-term {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
+}
+.mrg-description-details {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  margin: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
+}
+@media (forced-colors: active) {
+  .mrg-description-list {
+    color: CanvasText;
+  }
+  .mrg-description-term,
+  .mrg-description-details {
+    border-color: CanvasText;
+  }
+}

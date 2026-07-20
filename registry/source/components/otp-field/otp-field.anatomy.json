@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "otp-field",
+  "root": {
+    "element": "input",
+    "ref": "HTMLInputElement",
+    "slot": "otp-field-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "type",
+      "autocomplete",
+      "inputmode",
+      "pattern",
+      "maxlength",
+      "required",
+      "disabled",
+      "readonly",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "otp-field",
+      "element": "span",
+      "purpose": "One logical one-time-code field with explicit completion and validity state.",
+      "stability": "documented"
+    },
+    {
+      "slot": "otp-field-control",
+      "element": "span",
+      "purpose": "Visual boundary around the single native input and non-interactive grouping guides.",
+      "stability": "documented"
+    },
+    {
+      "slot": "otp-field-grouping",
+      "element": "span aria-hidden=true",
+      "purpose": "Decorative grouped presentation that introduces no additional semantics or tab stops.",
+      "stability": "documented"
+    },
+    {
+      "slot": "otp-field-group",
+      "element": "span",
+      "purpose": "One visual group from the declared grouping pattern.",
+      "stability": "documented"
+    },
+    {
+      "slot": "otp-field-cell",
+      "element": "span",
+      "purpose": "One decorative character guide; never an editable control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "otp-field-grouping-label",
+      "element": "span",
+      "purpose": "Localized programmatic description of total length and grouping.",
+      "stability": "documented"
+    }
+  ]
+}

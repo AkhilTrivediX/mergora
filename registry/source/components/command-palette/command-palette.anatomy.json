@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "command-palette",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "command-palette",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    { "element": "input", "slot": "command-palette-search" },
+    { "element": "ul", "slot": "command-palette-listbox" },
+    { "element": "aside", "slot": "command-palette-execution-preview" }
+  ]
+}

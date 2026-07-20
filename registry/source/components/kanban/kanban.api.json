@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kanban",
+  "entryExport": "Kanban",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "Kanban" },
+    { "kind": "type", "name": "KanbanCard" },
+    { "kind": "type", "name": "KanbanChangeReason" },
+    { "kind": "type", "name": "KanbanColumn" },
+    { "kind": "type", "name": "KanbanMessages" },
+    { "kind": "type", "name": "KanbanMove" },
+    { "kind": "type", "name": "KanbanMovePermission" },
+    { "kind": "type", "name": "KanbanProps" },
+    { "kind": "type", "name": "KanbanServerAdapter" },
+    { "kind": "type", "name": "KanbanVirtualWindow" },
+    { "kind": "type", "name": "KanbanVirtualization" },
+    { "kind": "function", "name": "moveKanbanCard" }
+  ],
+  "controlledState": [
+    {
+      "state": "columns and card order",
+      "controlled": "columns",
+      "uncontrolled": "defaultColumns",
+      "callback": "onColumnsChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "WIP status",
+      "api": "showWipStatus",
+      "disabled": "false removes WIP counts, limit signal, and status accessibility output while limits still reject unsafe moves"
+    },
+    {
+      "name": "mobile list alternative",
+      "api": "mobileListAlternative",
+      "disabled": "false removes the view controls, list state, pressed semantics, and presentation events"
+    },
+    {
+      "name": "move announcements",
+      "api": "announceMoves",
+      "disabled": "false removes the live region and every announcement update"
+    },
+    {
+      "name": "undo",
+      "api": "undoable",
+      "disabled": "false removes snapshots, Undo UI, undo callback events, and announcement output"
+    },
+    {
+      "name": "server persistence",
+      "api": "serverAdapter",
+      "disabled": "false removes pending state, persistence calls, retry UI, rollback, and server errors"
+    },
+    {
+      "name": "bounded virtualization",
+      "api": "virtualization",
+      "disabled": "false renders every card and removes spacers, range controls, and window events"
+    }
+  ]
+}

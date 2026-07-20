@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tour",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndResponsive"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A suppressed tour should not render rather than appear disabled."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tour guidance is not an editable value."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid step data fails before rendering."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tours must never be required to access the application."
+      }
+    },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "empty",
+      "applicability": { "status": "not-applicable", "reason": "At least one step is required." }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Tour controls do not perform destructive actions."
+      }
+    }
+  ]
+}

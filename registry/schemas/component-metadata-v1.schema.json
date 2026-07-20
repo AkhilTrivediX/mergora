@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/component-metadata-v1.schema.json",
+  "title": "Mergora component metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "itemId",
+    "riskClass",
+    "serverBoundary",
+    "directions",
+    "locales",
+    "inputModalities",
+    "themes",
+    "densities",
+    "stateGroups",
+    "slots",
+    "contract",
+    "passport"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "itemId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "riskClass": { "$ref": "common-v1.schema.json#/$defs/riskClass" },
+    "serverBoundary": { "enum": ["server-compatible", "client-island", "client-only"] },
+    "directions": {
+      "type": "array",
+      "items": { "enum": ["ltr", "rtl"] },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 2
+    },
+    "locales": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$" },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 64
+    },
+    "inputModalities": {
+      "type": "array",
+      "items": { "enum": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"] },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "themes": {
+      "type": "array",
+      "items": { "enum": ["light", "dark", "enhanced-contrast", "forced-colors"] },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "densities": {
+      "type": "array",
+      "items": { "enum": ["comfortable", "compact", "touch"] },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "stateGroups": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 128
+    },
+    "slots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "semanticElement", "refTarget"],
+        "properties": {
+          "name": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "semanticElement": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "refTarget": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "states": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 80 },
+            "uniqueItems": true
+          }
+        }
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "version": { "$ref": "common-v1.schema.json#/$defs/semver" }
+      }
+    },
+    "passport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "version": { "$ref": "common-v1.schema.json#/$defs/semver" }
+      }
+    }
+  }
+}

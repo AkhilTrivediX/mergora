@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "percentage-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "NumberField with Intl percent formatting and one canonical hidden form control",
+    "naming": "A persistent visible Field label identifies the percentage and its domain context.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement root; inputRef reaches the editable HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "Locale-aware percentage editing and numeric step commands inherit the NumberField contract.",
+    "pointer": "Stepper and optional scrub controls inherit the NumberField boundary and cancellation behavior.",
+    "touch": "Coarse-pointer controls preserve at least a 44 CSS pixel preferred target.",
+    "speech": "The visible percentage label and localized control names remain available for voice targeting.",
+    "switchAccess": "Every value-changing affordance is a real focusable input or button."
+  },
+  "formBehavior": "The hidden successful value is the canonical fraction without a percent sign or localized separators; reset restores the uncontrolled default.",
+  "states": {
+    "attributes": [
+      "data-value-scale",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-required",
+      "data-has-status-rail",
+      "data-shows-canonical-preview"
+    ],
+    "synchronization": "Visible localized percentage text, fractional numeric state, optional localized bound context, optional non-live fractional preview, validation, step controls, and hidden form serialization share one NumberField engine. Disabled enhancements add no DOM, events, or accessibility output."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=percentage-field]",
+    "attributes": ["data-value-scale", "data-disabled", "data-invalid", "data-readonly"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Percentage text scrolls within the input while labels and messages wrap without clipping."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "incrementLabel",
+      "decrementLabel",
+      "scrubLabel",
+      "status rail messages",
+      "canonical fractional preview label"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The editable input retains NumberField composition handling and does not commit partial IME text.",
+    "serialization": "Intl localizes and multiplies the visible percentage; the JavaScript and form value remain the canonical fraction."
+  },
+  "consumerResponsibilities": [
+    "Treat values, defaults, bounds, and steps as fractions rather than whole-number percentages.",
+    "Choose explicit bounds for signed change, over-100-percent, or variance domains.",
+    "Describe what the percentage measures when the visible label is not self-evident.",
+    "Do not infer the canonical fraction from the localized visible string.",
+    "Use the canonical preview to explain scale, not to convert application contracts between fractions, whole percentages, or basis points."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "locale-percent-parsing-formatting",
+      "fractional-serialization",
+      "canonical-fraction-preview-and-disabled-absence",
+      "localized-status-rail-description",
+      "precision-and-boundaries",
+      "ime-and-caret",
+      "form-submission-reset",
+      "mobile-narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-ime-editing",
+      "mobile-virtual-keyboard",
+      "nvda-firefox",
+      "voiceover-safari",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The component does not convert between basis points, whole-number percentages, and fractional backend conventions.",
+    "Source-present-unreleased records do not include immutable generated artifacts, package parity, or current manual assistive-technology sessions."
+  ]
+}

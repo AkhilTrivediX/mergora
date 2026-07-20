@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "itemId": "data-grid",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "empty",
+    "loading",
+    "error",
+    "form-reset",
+    "manual-operations",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "data-grid-region",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["enhancement-disabled", "enhancement-enabled", "loading", "error"]
+    },
+    {
+      "name": "data-grid-filter",
+      "semanticElement": "label",
+      "refTarget": "HTMLLabelElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-filter-input",
+      "semanticElement": "input",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-column-visibility",
+      "semanticElement": "details",
+      "refTarget": "HTMLDetailsElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-visibility-trigger",
+      "semanticElement": "summary",
+      "refTarget": "HTMLElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-visibility-options",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-sizing-control",
+      "semanticElement": "label",
+      "refTarget": "HTMLLabelElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-sizing-input",
+      "semanticElement": "input type=range",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-heading",
+      "semanticElement": "th",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-detail-action-cell",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-row",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-detail-content",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-pagination",
+      "semanticElement": "nav",
+      "refTarget": "HTMLElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-page-status",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-cursor-status",
+      "semanticElement": "span",
+      "refTarget": "HTMLSpanElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-query-summary",
+      "semanticElement": "output",
+      "refTarget": "HTMLOutputElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-operation-status",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["loading", "error"]
+    },
+    {
+      "name": "data-grid-query-input",
+      "semanticElement": "input",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled", "form-reset"]
+    },
+    {
+      "name": "data-grid-table",
+      "semanticElement": "table",
+      "refTarget": "HTMLTableElement",
+      "states": ["default", "empty", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-header",
+      "semanticElement": "thead",
+      "refTarget": "HTMLTableSectionElement",
+      "states": ["default"]
+    },
+    {
+      "name": "data-grid-header-row",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["default"]
+    },
+    {
+      "name": "data-grid-column-header",
+      "semanticElement": "th",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["default", "enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-sort",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["default", "enhancement-enabled", "loading"]
+    },
+    {
+      "name": "data-grid-body",
+      "semanticElement": "tbody",
+      "refTarget": "HTMLTableSectionElement",
+      "states": ["default", "empty"]
+    },
+    {
+      "name": "data-grid-empty-row",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["empty"]
+    },
+    {
+      "name": "data-grid-row",
+      "semanticElement": "tr",
+      "refTarget": "HTMLTableRowElement",
+      "states": ["default", "enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-cell",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["default"]
+    },
+    {
+      "name": "data-grid-selection-cell",
+      "semanticElement": "td",
+      "refTarget": "HTMLTableCellElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-selection-summary",
+      "semanticElement": "output",
+      "refTarget": "HTMLOutputElement",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "data-grid-selection-input",
+      "semanticElement": "input",
+      "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled", "form-reset"]
+    }
+  ],
+  "contract": {
+    "id": "data-grid-accessibility",
+    "version": "0.2.0"
+  },
+  "passport": {
+    "id": "data-grid-quality-passport",
+    "version": "0.0.0"
+  }
+}

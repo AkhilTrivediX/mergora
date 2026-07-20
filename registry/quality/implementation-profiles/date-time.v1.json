@@ -1,0 +1,2766 @@
+{
+  "schemaVersion": 1,
+  "category": "date-time",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "calendar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Calendar provides a styled calendar selection surface; consumer-specific unavailable-date reason association and native alternate form entry remain composition work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/calendar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines an RTL-aware localized keyboard grid with a real native date input, optional per-date recovery explanations, and a bounded range-highlight/preview composition seam.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar/calendar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["availability-explanations", "range-highlight-seam"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar/calendar.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "availability-explanations",
+          "status": "evidence-backed",
+          "summary": "Consumer-supplied reasons are associated with unavailable date buttons only when requested.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar/calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["availabilityExplanations"],
+          "api": {
+            "kind": "prop",
+            "names": ["showAvailabilityExplanations"],
+            "enableWhen": "Set showAvailabilityExplanations to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "range-highlight-seam",
+          "status": "evidence-backed",
+          "summary": "Range systems can opt into semantic start/end/within attributes and pointer or keyboard preview callbacks without changing Calendar's value model.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar/calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/range-calendar/range-calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["rangePreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["highlightRange", "onDatePreviewChange"],
+            "enableWhen": "Supply highlightRange and, when interactive preview is needed, onDatePreviewChange."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No range start, end, or within attributes are rendered.",
+            "behavior": "Calendar retains its standalone selected-date model with no range-preview state.",
+            "events": "No preview pointer, blur, or callback behavior is attached.",
+            "accessibility": "No preview output or relationship is added to the standalone calendar."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicCalendar",
+          "enhancementControls": ["availabilityExplanations", "rangePreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedCalendar",
+          "enhancementControls": ["availabilityExplanations", "rangePreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar/calendar.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar/calendar.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/calendar/calendar.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-field",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Input can be configured as type=date, but localized full-date context and controlled reset coordination remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps the native date form model and can add an associated localized full-date reading without replacing platform editing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-field/date-field.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["date-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-field/date-field.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "date-context",
+          "status": "evidence-backed",
+          "summary": "A localized or consumer-rendered canonical-date reading is associated through aria-describedby.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-field/date-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dateContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showDateContext", "dateContext"],
+            "enableWhen": "Set showDateContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicDateField",
+          "enhancementControls": ["dateContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedDateField",
+          "enhancementControls": ["dateContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-field/date-field.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership alongside the basic and recommended uncontrolled examples. The full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-field/date-field.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-field/date-field.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Ordinary Shadcn Date Picker composes a trigger, popover, and calendar; optional consumer-owned preset shortcuts and their clean off-path remain composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/date-picker"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native typed/mobile date behavior and adds opt-in presets that share the same controlled or uncontrolled canonical value.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-picker/date-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["date-presets"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-picker/date-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "date-presets",
+          "status": "evidence-backed",
+          "summary": "A non-empty preset collection renders native shortcut buttons and an optional reasoned selection callback.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-picker/date-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["datePresets"],
+          "api": {
+            "kind": "prop",
+            "names": ["presets", "onPresetSelect"],
+            "enableWhen": "Set presets to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicDatePicker",
+          "enhancementControls": ["datePresets"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedDatePicker",
+          "enhancementControls": ["datePresets"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-picker/date-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-picker/date-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-picker/date-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-range-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn composes range selection from Calendar and popover primitives; native dual-field serialization, presets, and duration context remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/date-picker"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora coordinates two native date controls with ordered bounds plus independently optional presets, inclusive duration context, and recoverable minimum/maximum duration enforcement.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-range-picker/date-range-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["range-presets", "duration-summary", "duration-bounds"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-range-picker/date-range-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "range-presets",
+          "status": "evidence-backed",
+          "summary": "Consumer-owned ranges can be selected through optional native buttons.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-range-picker/date-range-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["datePresets"],
+          "api": {
+            "kind": "prop",
+            "names": ["presets", "onPresetSelect"],
+            "enableWhen": "Set presets to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "duration-summary",
+          "status": "evidence-backed",
+          "summary": "A complete ordered range can expose an inclusive calendar-day summary.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-range-picker/date-range-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["durationSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showDurationSummary", "durationSummary"],
+            "enableWhen": "Set showDurationSummary to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "duration-bounds",
+          "status": "evidence-backed",
+          "summary": "Optional inclusive minimum and maximum durations derive native end bounds, custom validity, recoverable error text, and a typed issue callback.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-range-picker/date-range-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["durationBounds"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "minimumDurationDays",
+              "maximumDurationDays",
+              "getDurationError",
+              "onDurationIssueChange"
+            ],
+            "enableWhen": "Set either minimumDurationDays or maximumDurationDays."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No duration error node or invalid-state surface is rendered.",
+            "behavior": "Only the baseline ordered native range applies; no duration-bound calculation or custom validity is added.",
+            "events": "onDurationIssueChange does not fire when both duration bounds are omitted.",
+            "accessibility": "No duration-error alert, invalid state, or described-by relationship is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicDateRangePicker",
+          "enhancementControls": ["datePresets", "durationSummary", "durationBounds"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedDateRangePicker",
+          "enhancementControls": ["datePresets", "durationSummary", "durationBounds"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-range-picker/date-range-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-range-picker/date-range-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-range-picker/date-range-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-time-field",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Input can use datetime-local, but explicit unzoned semantics and independently associated timezone interpretation remain consumer documentation.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves the native unzoned local wall-time value while optionally making timezone interpretation explicit and resolving repeated or nonexistent wall times through a consumer-supplied adapter and explicit ambiguity policy; deterministic UTC, New York, Berlin, and Kolkata boundary fixtures prove the seam without claiming time-zone database ownership.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-field/date-time-field.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["timezone-context", "wall-time-adapter"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-field/date-time-field.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "timezone-context",
+          "status": "evidence-backed",
+          "summary": "An IANA zone label or consumer-rendered interpretation is associated without converting the value.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-field/date-time-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["timeZoneContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTimeZoneContext", "timeZone", "timeZoneContext"],
+            "enableWhen": "Set showTimeZoneContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "wall-time-adapter",
+          "status": "evidence-backed",
+          "summary": "A synchronous consumer adapter classifies valid, repeated, and nonexistent local times; reject is the safe default while earlier/later selection, recoverable native validity, optional resolved-instant form data, and deterministic server/client boundary hydration remain explicit. The adapter remains consumer-owned; Mergora does not bundle a time-zone database.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-field/date-time-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["wallTimeResolution"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "wallTimeAdapter",
+              "timeZone",
+              "ambiguityPolicy",
+              "resolvedName",
+              "getWallTimeMessage",
+              "onWallTimeResolutionChange"
+            ],
+            "enableWhen": "Supply wallTimeAdapter and an explicit timeZone."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No wall-time status or resolved hidden input is rendered.",
+            "behavior": "The adapter is not called; the native datetime-local value remains unzoned and no custom validity is added.",
+            "events": "onWallTimeResolutionChange does not fire.",
+            "accessibility": "No wall-time live output, invalid state, alert relationship, or hidden form control is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicDateTimeField",
+          "enhancementControls": ["timeZoneContext", "wallTimeResolution"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedDateTimeField",
+          "enhancementControls": ["timeZoneContext", "wallTimeResolution"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, wall-time recovery, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-field/date-time-field.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, deterministic UTC/New York/Berlin/Kolkata wall-time boundary hydration, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership with timezone context and wall-time resolution disabled. The full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-field/date-time-field.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-field/date-time-field.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "date-time-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn does not publish one canonical date-time picker; date, time, timezone, and preset composition remain consumer work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/date-picker"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps native local date-time editing and offers separate opt-in presets, timezone clarity, and explicit repeated/nonexistent wall-time resolution through a consumer adapter.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-picker/date-time-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["datetime-presets", "timezone-context", "wall-time-adapter"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-picker/date-time-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "datetime-presets",
+          "status": "evidence-backed",
+          "summary": "Optional shortcuts select canonical local date-time strings.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-picker/date-time-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["dateTimePresets"],
+          "api": {
+            "kind": "prop",
+            "names": ["presets", "onPresetSelect"],
+            "enableWhen": "Set presets to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "timezone-context",
+          "status": "evidence-backed",
+          "summary": "Optional context identifies interpretation without silent conversion.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-picker/date-time-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["timeZoneContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTimeZoneContext", "timeZone"],
+            "enableWhen": "Set showTimeZoneContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "wall-time-adapter",
+          "status": "evidence-backed",
+          "summary": "The picker forwards a synchronous consumer adapter, explicit zone and ambiguity policy, recoverable native validity, status callback, and optional resolved-instant form value.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-picker/date-time-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["wallTimeResolution"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "wallTimeAdapter",
+              "timeZone",
+              "ambiguityPolicy",
+              "resolvedName",
+              "getWallTimeMessage",
+              "onWallTimeResolutionChange"
+            ],
+            "enableWhen": "Supply wallTimeAdapter and an explicit timeZone."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No wall-time status or resolved hidden input is rendered.",
+            "behavior": "The adapter is not called; the native datetime-local value remains unzoned and no custom validity is added.",
+            "events": "onWallTimeResolutionChange does not fire.",
+            "accessibility": "No wall-time live output, invalid state, alert relationship, or hidden form control is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicDateTimePicker",
+          "enhancementControls": ["dateTimePresets", "timeZoneContext", "wallTimeResolution"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedDateTimePicker",
+          "enhancementControls": ["dateTimePresets", "timeZoneContext", "wallTimeResolution"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-picker/date-time-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/date-time-picker/date-time-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/date-time-picker/date-time-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "month-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Input can use type=month; quarter orientation remains consumer formatting and association.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora retains native month/year navigation and optionally derives accessible quarter context from the canonical month.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/month-picker/month-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["quarter-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/month-picker/month-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "quarter-context",
+          "status": "evidence-backed",
+          "summary": "A derived or consumer-rendered quarter reading is associated only for complete values.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/month-picker/month-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["quarterContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showQuarterContext", "quarterContext"],
+            "enableWhen": "Set showQuarterContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicMonthPicker",
+          "enhancementControls": ["quarterContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedMonthPicker",
+          "enhancementControls": ["quarterContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/month-picker/month-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/month-picker/month-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/month-picker/month-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "range-calendar",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Calendar can select ranges; explicit dual-grid native entry, blocked-date explanations, and independently gated duration context remain composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/calendar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora coordinates labelled start/end calendars with native form entry, responsive reflow, complete unavailable-span rejection, availability explanations, inclusive duration context, and optional in-grid preview.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/range-calendar/range-calendar.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["availability-explanations", "duration-summary", "range-preview"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/range-calendar/range-calendar.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "availability-explanations",
+          "status": "evidence-backed",
+          "summary": "Blocked reasons are passed into both grids only when enabled.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/range-calendar/range-calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["availabilityExplanations"],
+          "api": {
+            "kind": "prop",
+            "names": ["showAvailabilityExplanations"],
+            "enableWhen": "Set showAvailabilityExplanations to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "duration-summary",
+          "status": "evidence-backed",
+          "summary": "A complete ordered range can expose an inclusive calendar-day summary.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/range-calendar/range-calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["durationSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showDurationSummary", "durationSummary"],
+            "enableWhen": "Set showDurationSummary to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "range-preview",
+          "status": "evidence-backed",
+          "summary": "Pointer or keyboard focus can preview the candidate span directly in both grids and announce its inclusive duration without committing the range.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/range-calendar/range-calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/calendar/calendar.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["rangePreview"],
+          "api": {
+            "kind": "prop",
+            "names": ["showRangePreview", "rangePreviewSummary"],
+            "enableWhen": "Set showRangePreview to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No range highlight attributes or preview output are rendered.",
+            "behavior": "No preview state or duration calculation runs; committed range selection remains unchanged.",
+            "events": "No preview pointer, focus, or blur callbacks are attached to calendar days.",
+            "accessibility": "No preview live output, described relationship, or additional focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicRangeCalendar",
+          "enhancementControls": ["availabilityExplanations", "durationSummary", "rangePreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedRangeCalendar",
+          "enhancementControls": ["availabilityExplanations", "durationSummary", "rangePreview"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/range-calendar/range-calendar.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/range-calendar/range-calendar.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/range-calendar/range-calendar.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "time-field",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Input can use type=time; explicit timezone interpretation and its accessibility relationship remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native locale time editing and can add timezone clarity without changing the zone-free submitted value.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-field/time-field.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["timezone-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-field/time-field.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "timezone-context",
+          "status": "evidence-backed",
+          "summary": "Optional descriptive zone context is associated with the native time input.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/time-field/time-field.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["timeZoneContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTimeZoneContext", "timeZone", "timeZoneContext"],
+            "enableWhen": "Set showTimeZoneContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicTimeField",
+          "enhancementControls": ["timeZoneContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedTimeField",
+          "enhancementControls": ["timeZoneContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-field/time-field.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; a direct Storybook specimen also proves controlled ownership alongside the basic and recommended uncontrolled examples. The full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/storybook/date-time-component-stories.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/time-field/time-field.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-field/time-field.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "time-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn does not publish one canonical Time Picker; native time input, available intervals, and timezone context remain consumer composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps native time editing while independently adding consumer-owned available intervals and timezone clarity.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-picker/time-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["available-intervals", "timezone-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-picker/time-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "available-intervals",
+          "status": "evidence-backed",
+          "summary": "Optional pressed buttons expose a bounded set of available canonical times.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/time-picker/time-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["timeIntervals"],
+          "api": {
+            "kind": "prop",
+            "names": ["intervals", "onIntervalSelect"],
+            "enableWhen": "Set intervals to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "timezone-context",
+          "status": "evidence-backed",
+          "summary": "Optional context names interpretation without changing form data.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/time-picker/time-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["timeZoneContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showTimeZoneContext", "timeZone"],
+            "enableWhen": "Set showTimeZoneContext to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicTimePicker",
+          "enhancementControls": ["timeIntervals", "timeZoneContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedTimePicker",
+          "enhancementControls": ["timeIntervals", "timeZoneContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-picker/time-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/time-picker/time-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/time-picker/time-picker.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "year-picker",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn Select can be populated with years; bounded-domain validation and optional range/count context remain consumer policy.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/select"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides a bounded native year collection with explicit safety limits, controlled reset, optional accessible range orientation, and a consumer-controlled native window for very large domains.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/year-picker/year-picker.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "enhancementIds": ["range-summary", "year-window"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas surfaces, precise Ink boundaries, strong temporal hierarchy, restrained Green/Violet signals, the shared contrast-backed focus seam, logical layout, and control radii keep this system recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/year-picker/year-picker.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-font-weight-heading",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "range-summary",
+          "status": "evidence-backed",
+          "summary": "Optional context reports the available count and year bounds.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/year-picker/year-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["yearRangeSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["showRangeSummary", "rangeSummary"],
+            "enableWhen": "Set showRangeSummary to its enabled value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No enhancement-specific node or visual surface is rendered.",
+            "behavior": "The native/basic temporal selection and form path remains authoritative with no enhancement calculation or state.",
+            "events": "No enhancement-specific callback can fire because its trigger is absent.",
+            "accessibility": "No enhancement-specific group, description, relationship, live output, or focus target is exposed."
+          }
+        },
+        {
+          "id": "year-window",
+          "status": "evidence-backed",
+          "summary": "A controlled visible range bounds the native option collection while earlier/later buttons request the next window and the selected form value remains present outside the window.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/year-picker/year-picker.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeSystems.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["yearWindowing"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "visibleRange",
+              "onVisibleRangeChange",
+              "previousWindowLabel",
+              "nextWindowLabel",
+              "windowGroupLabel"
+            ],
+            "enableWhen": "Supply a visibleRange inside minYear and maxYear."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No window navigation buttons or current-window label are rendered.",
+            "behavior": "The original bounded native option collection is rendered and domains above 5,001 options are rejected.",
+            "events": "onVisibleRangeChange cannot fire because no window buttons exist.",
+            "accessibility": "No window navigation group, buttons, or live range label is exposed."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "BasicYearPicker",
+          "enhancementControls": ["yearRangeSummary", "yearWindowing"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx",
+          "exportName": "RecommendedYearPicker",
+          "enhancementControls": ["yearRangeSummary", "yearWindowing"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P4DateTimeComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/date-time-component-stories.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/year-picker/year-picker.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/date-time-systems/date-time-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Current desktop/mobile screen-reader, speech, switch, and applicable real-device evidence is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/year-picker/year-picker.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/year-picker/year-picker.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

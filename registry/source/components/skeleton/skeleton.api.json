@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "skeleton",
+  "entryExport": "Skeleton",
+  "refTarget": "HTMLSpanElement",
+  "exports": [
+    { "kind": "component", "name": "Skeleton" },
+    { "kind": "function", "name": "resolveSkeletonSize" },
+    { "kind": "type", "name": "SkeletonProps" },
+    { "kind": "type", "name": "SkeletonShape" }
+  ],
+  "controlledState": [],
+  "nativePolicy": [
+    "Skeleton is always aria-hidden and rejects role, live-region, label, and child-content overrides at typed and runtime boundaries.",
+    "Explicit logical block/inline dimensions preserve the future content footprint without exposing fake content.",
+    "Pulse motion is selectable with animated, disappears under reduced motion, and forced colors preserves a boundary; animated=false removes the animation hook and behavior."
+  ]
+}

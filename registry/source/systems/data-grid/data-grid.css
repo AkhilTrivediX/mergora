@@ -1,0 +1,377 @@
+@layer mergora.components {
+  .mrg-data-grid {
+    max-inline-size: 100%;
+    overflow: auto;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-data-grid-line);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-component-data-grid-foreground);
+    background: var(--mrg-component-data-grid-background);
+    font-family: var(--mrg-semantic-font-family-prose);
+    font-size: var(--mrg-semantic-font-size-body);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-data-grid:focus-visible,
+  .mrg-data-grid__sort:focus-visible,
+  .mrg-data-grid__column-visibility summary:focus-visible,
+  .mrg-data-grid :is(input, select, button):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+
+  .mrg-data-grid__filter {
+    position: sticky;
+    inset-inline-start: 0;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: min(24rem, 100%);
+    box-sizing: border-box;
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid__filter input,
+  .mrg-data-grid__pagination button,
+  .mrg-data-grid__pagination select,
+  .mrg-data-grid__operation-status button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-data-grid__column-visibility {
+    position: sticky;
+    inset-inline-start: 0;
+    inline-size: min(100%, 26rem);
+    box-sizing: border-box;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+    background: var(--mrg-semantic-color-background-surface);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid__column-visibility summary {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    cursor: pointer;
+  }
+
+  .mrg-data-grid__column-visibility-options {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0 var(--mrg-semantic-space-inline-md) var(--mrg-semantic-space-stack-sm);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+  }
+
+  .mrg-data-grid__column-visibility-option {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+  }
+
+  .mrg-data-grid__column-visibility-option input {
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    accent-color: var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-data-grid__filter input,
+  .mrg-data-grid__pagination select {
+    padding-inline: var(--mrg-semantic-space-inline-md);
+  }
+
+  .mrg-data-grid__pagination button,
+  .mrg-data-grid__operation-status button {
+    padding-inline: var(--mrg-semantic-space-inline-md);
+    cursor: pointer;
+  }
+
+  .mrg-data-grid :is(input, select, button):disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-data-grid__table {
+    inline-size: 100%;
+    min-inline-size: 38rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mrg-data-grid caption {
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    text-align: start;
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+
+  .mrg-data-grid th,
+  .mrg-data-grid td {
+    block-size: var(--mrg-component-data-grid-row-height);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    text-align: start;
+    vertical-align: middle;
+  }
+
+  .mrg-data-grid th {
+    color: var(--mrg-semantic-color-foreground-muted);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid [data-align="center"] {
+    text-align: center;
+  }
+
+  .mrg-data-grid [data-align="end"] {
+    text-align: end;
+  }
+
+  .mrg-data-grid__sort {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: 0;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    text-align: inherit;
+    cursor: pointer;
+  }
+
+  .mrg-data-grid__sort-indicator {
+    min-inline-size: 1em;
+    color: var(--mrg-semantic-color-brand-violet);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+
+  .mrg-data-grid__sort[data-sorted] {
+    color: var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-data-grid tr[data-selected] td {
+    color: var(--mrg-component-data-grid-selection-foreground);
+    background: var(--mrg-component-data-grid-selection-background);
+    transition: background-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+  }
+
+  .mrg-data-grid__selection-heading,
+  .mrg-data-grid__selection-cell {
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    padding-inline: var(--mrg-semantic-space-inline-sm);
+    text-align: center;
+  }
+
+  .mrg-data-grid__selection-cell input {
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    accent-color: var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-data-grid__selection-control {
+    display: inline-grid;
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    block-size: var(--mrg-semantic-size-target-preferred);
+    place-items: center;
+    cursor: pointer;
+  }
+
+  .mrg-data-grid__pagination {
+    position: sticky;
+    inset-inline-start: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    inline-size: min-content;
+    min-inline-size: min(100%, 32rem);
+    box-sizing: border-box;
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-data-grid-line);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+
+  .mrg-data-grid__page-size {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    margin-inline-start: auto;
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid__operation-status {
+    position: sticky;
+    inset-inline-start: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    box-sizing: border-box;
+    inline-size: min(100%, 44rem);
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-loading-border);
+    color: var(--mrg-semantic-color-status-loading-foreground);
+    background: var(--mrg-semantic-color-status-loading-background);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-data-grid__operation-status[data-state="error"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-data-grid__selection-summary {
+    position: sticky;
+    inset-inline: 0;
+    display: block;
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-success-border);
+    background: var(--mrg-semantic-color-status-success-background);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    text-wrap: pretty;
+  }
+
+  .mrg-data-grid__query-summary {
+    position: sticky;
+    inset-inline-start: 0;
+    display: block;
+    box-sizing: border-box;
+    inline-size: min(100%, 44rem);
+    padding: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-brand-violet);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    text-wrap: pretty;
+  }
+
+  .mrg-data-grid__empty {
+    padding-block: var(--mrg-semantic-space-stack-lg);
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center;
+  }
+
+  .mrg-data-grid__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-data-grid tr[data-selected] td {
+      transition: none;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-data-grid__sort,
+    .mrg-data-grid__filter input,
+    .mrg-data-grid__pagination button,
+    .mrg-data-grid__pagination select,
+    .mrg-data-grid__operation-status button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+
+    .mrg-data-grid__column-visibility summary,
+    .mrg-data-grid__column-visibility-option {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .mrg-data-grid__pagination {
+      inline-size: 100%;
+      min-inline-size: 100%;
+    }
+
+    .mrg-data-grid__page-size {
+      flex-basis: 100%;
+      margin-inline-start: 0;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-data-grid {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-data-grid th,
+    .mrg-data-grid td {
+      border-color: CanvasText;
+    }
+
+    .mrg-data-grid tr[data-selected] td {
+      color: HighlightText;
+      background: Highlight;
+    }
+
+    .mrg-data-grid__filter input,
+    .mrg-data-grid__pagination,
+    .mrg-data-grid__pagination button,
+    .mrg-data-grid__pagination select,
+    .mrg-data-grid__operation-status,
+    .mrg-data-grid__operation-status[data-state="error"],
+    .mrg-data-grid__operation-status button,
+    .mrg-data-grid__selection-summary,
+    .mrg-data-grid__query-summary {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .mrg-data-grid__column-visibility,
+    .mrg-data-grid__column-visibility-options {
+      border-color: CanvasText;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .mrg-data-grid:focus-visible,
+    .mrg-data-grid__sort:focus-visible,
+    .mrg-data-grid__column-visibility summary:focus-visible,
+    .mrg-data-grid :is(input, select, button):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

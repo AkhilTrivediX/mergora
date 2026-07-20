@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pin-field",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "empty",
+    "partial",
+    "complete",
+    "secure",
+    "visible",
+    "paste-allowed",
+    "paste-blocked",
+    "composition",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "controlled",
+    "uncontrolled",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "pin-field",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": [
+        "empty",
+        "partial",
+        "complete",
+        "secure",
+        "visible",
+        "disabled",
+        "read-only",
+        "invalid"
+      ]
+    },
+    {
+      "name": "pin-field-input",
+      "semanticElement": "input type=password or type=text",
+      "refTarget": "HTMLInputElement",
+      "states": ["required", "invalid", "disabled", "read-only", "composition"]
+    },
+    {
+      "name": "pin-field-segments",
+      "semanticElement": "span aria-hidden=true",
+      "refTarget": "none",
+      "states": ["present"]
+    },
+    {
+      "name": "pin-field-purpose",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["present"]
+    },
+    {
+      "name": "pin-field-paste-status",
+      "semanticElement": "span role=status",
+      "refTarget": "none",
+      "states": ["empty", "blocked"]
+    }
+  ],
+  "contract": { "id": "pin-field-accessibility", "version": "0.1.0" },
+  "passport": { "id": "pin-field-quality-passport", "version": "0.0.0" }
+}

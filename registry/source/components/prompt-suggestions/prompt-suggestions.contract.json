@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "prompt-suggestions",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native action buttons by default; labelled listbox with options only for selection mode",
+    "rolePolicy": "Interaction semantics change together with keyboard and selection behavior.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    { "key": "Tab / Shift+Tab", "behavior": "Visits each default action button." },
+    { "key": "Arrow Up / Arrow Down", "behavior": "Moves roving focus only in selection mode." },
+    {
+      "key": "Home / End",
+      "behavior": "Moves to first or last enabled option only in selection mode."
+    },
+    { "key": "Enter / Space", "behavior": "Activates or selects the focused suggestion." }
+  ],
+  "nonColor": "aria-selected, focus position and visible text accompany selected styling.",
+  "responsive": "Actions wrap on wide surfaces and stack to full width on narrow surfaces.",
+  "stableSelectors": {
+    "root": "[data-slot=prompt-suggestions]",
+    "parts": ["prompt-suggestion"],
+    "attributes": ["data-selection-mode", "aria-selected"]
+  },
+  "consumerResponsibilities": [
+    "Choose action semantics unless persistent selection is genuinely intended.",
+    "Provide localized textValue, labels and descriptions.",
+    "Own prompt submission, model calls and persistence.",
+    "Avoid suggestions that imply unsafe or irreversible execution without confirmation."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "button-baseline",
+      "listbox-selection",
+      "roving-focus",
+      "disabled-skip",
+      "controlled-uncontrolled",
+      "enhancement-off",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch", "zoom"],
+    "recordedEvidence": []
+  }
+}

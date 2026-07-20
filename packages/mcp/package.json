@@ -1,0 +1,40 @@
+{
+  "name": "mergora-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Deterministic read-only and plan-only MCP core for Mergora projects",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/mcp"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "mergora": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

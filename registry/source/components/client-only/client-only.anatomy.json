@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "client-only",
+  "root": {
+    "element": "no DOM (React Fragment)",
+    "ref": "none",
+    "slot": "client-only",
+    "stableAttributes": []
+  },
+  "parts": []
+}

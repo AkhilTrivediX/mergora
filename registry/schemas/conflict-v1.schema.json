@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/conflict-v1.schema.json",
+  "title": "Mergora Semantic Sync conflict metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "target",
+    "owner",
+    "mediaType",
+    "base",
+    "local",
+    "remote",
+    "proposed",
+    "semanticUnits",
+    "hints",
+    "localSummary",
+    "upstreamSummary",
+    "safeChoices",
+    "livePreconditionDigest"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+    "owner": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+    "mediaType": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "base": { "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }] },
+    "local": { "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }] },
+    "remote": { "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }] },
+    "proposed": {
+      "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+    },
+    "semanticUnits": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 512 },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 1024
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["line", "column"],
+        "properties": {
+          "line": { "type": "integer", "minimum": 1 },
+          "column": { "type": "integer", "minimum": 1 }
+        }
+      },
+      "maxItems": 1024
+    },
+    "localSummary": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+    "upstreamSummary": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+    "safeChoices": {
+      "type": "array",
+      "items": { "enum": ["take-local", "take-upstream", "manual"] },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 3
+    },
+    "livePreconditionDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+  }
+}

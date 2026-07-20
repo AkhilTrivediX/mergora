@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "checkbox",
+  "root": {
+    "element": "input type checkbox",
+    "ref": "HTMLInputElement",
+    "slot": "checkbox-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "value",
+      "checked",
+      "required",
+      "disabled",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "checkbox",
+      "element": "span",
+      "purpose": "Visual layout and state styling.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-label-root",
+      "element": "label",
+      "purpose": "Names only the native checkbox without its description.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-indicator",
+      "element": "span aria-hidden",
+      "purpose": "Checked or indeterminate visual cue.",
+      "stability": "documented"
+    },
+    {
+      "slot": "checkbox-description",
+      "element": "span",
+      "purpose": "Description referenced by aria-describedby outside the label.",
+      "stability": "documented"
+    }
+  ]
+}

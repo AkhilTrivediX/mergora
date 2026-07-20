@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "portal",
+  "riskClass": 2,
+  "serverBoundary": "client-only",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "base",
+    "responsive-reflow",
+    "locale-direction",
+    "user-preferences",
+    "long-content",
+    "overlay-focus"
+  ],
+  "slots": [
+    {
+      "name": "portal-context",
+      "semanticElement": "display-contents div",
+      "refTarget": "HTMLDivElement",
+      "states": ["server-fallback", "inline", "portaled"]
+    }
+  ],
+  "contract": { "id": "portal-accessibility", "version": "0.1.0" },
+  "passport": { "id": "portal-quality-passport", "version": "0.0.0" }
+}

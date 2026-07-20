@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "itemId": "layer-manager",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "LayerManager is neutral infrastructure and does not own pointer-hover presentation."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Active presentation belongs to the registered overlay consumer."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "LayerManager does not create focusable controls or own their focus indicators."
+      }
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A layer may be inactive or non-dismissible, but the manager has no disabled widget state."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "LayerManager has no editable value model."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation semantics belong to the overlay consumer."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required is a form-control state outside layer coordination."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading feedback belongs to the registered overlay content."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An empty stack is absence of the component behavior rather than a rendered story state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The stack is ordered and has no partial-selection state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "LayerManager does not announce workflow outcomes."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning semantics belong to visible overlay content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Consumer recovery UI owns errors; the manager only coordinates stack state."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Destructive intent belongs to an explicit AlertDialog action rather than layer infrastructure."
+      }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "reasoning",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native details and summary",
+    "rolePolicy": "Streaming content is not a live region by default; completion is announced only when explicitly enabled.",
+    "refTarget": "HTMLDetailsElement"
+  },
+  "keyboard": [
+    { "key": "Tab", "behavior": "Focuses the native summary." },
+    { "key": "Enter / Space", "behavior": "Toggles the native disclosure." }
+  ],
+  "nonColor": "The visible status text, native open state and optional numeric progress accompany color.",
+  "responsive": "Summary and content wrap; reduced motion removes transitions and no layout depends on animation.",
+  "stableSelectors": {
+    "root": "[data-slot=reasoning]",
+    "parts": [
+      "reasoning-summary",
+      "reasoning-progress",
+      "reasoning-content",
+      "reasoning-announcement"
+    ],
+    "attributes": ["data-status", "open"]
+  },
+  "privacy": "Consumers should provide concise, user-approved process summaries rather than private chain-of-thought or hidden system/model traces.",
+  "consumerResponsibilities": [
+    "Do not expose private chain-of-thought, credentials, system prompts or hidden model traces.",
+    "Localize summary, status, progress and completion text.",
+    "Use announcements sparingly after manual screen-reader review."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "native-disclosure",
+      "controlled-uncontrolled",
+      "progress-bounds",
+      "announcement-off",
+      "completion-transition",
+      "reduced-motion",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader-verbosity", "speech", "switch", "touch", "zoom"],
+    "recordedEvidence": []
+  }
+}

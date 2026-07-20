@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "aspect-ratio",
+  "entryExport": "AspectRatio",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "AspectRatio" },
+    { "kind": "function", "name": "resolveAspectRatio" },
+    { "kind": "type", "name": "AspectRatioFit" },
+    { "kind": "type", "name": "AspectRatioProps" },
+    { "kind": "type", "name": "AspectRatioPreset" },
+    { "kind": "type", "name": "AspectRatioValue" }
+  ],
+  "props": [
+    { "default": "none", "name": "fit", "required": false, "type": "none | contain | cover" },
+    {
+      "default": "video",
+      "name": "ratio",
+      "required": false,
+      "type": "square | video | portrait | wide | readonly [width, height]"
+    }
+  ],
+  "compositionPolicy": {
+    "validation": "Custom tuple members must be finite and above zero; invalid values throw before rendering.",
+    "semantics": "The wrapper adds no role and does not replace alt text, captions, labels, or iframe titles required by its content.",
+    "overflow": "Content is never clipped by the component; intrinsic content may increase block size.",
+    "enhancement": "fit=contain or cover sizes direct image, video, canvas, and SVG children to the validated ratio; fit=none removes the fitting selector and background signal."
+  }
+}

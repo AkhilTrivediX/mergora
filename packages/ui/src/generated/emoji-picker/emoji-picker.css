@@ -1,0 +1,163 @@
+/* Generated from registry/source/components/emoji-picker/emoji-picker.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-emoji-picker {
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-border-strong);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  max-inline-size: 34rem;
+  min-inline-size: 0;
+  padding-block: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-emoji-picker__controls {
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-sm);
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+}
+
+.mrg-emoji-picker__controls label {
+  display: grid;
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-emoji-picker__controls :where(input, select) {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  padding-inline: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-emoji-picker__recent,
+.mrg-emoji-picker__summary {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  margin: 0;
+}
+
+.mrg-emoji-picker__recent {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-brand-violet);
+  padding-block-start: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-emoji-picker__grid {
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-xs);
+  min-inline-size: 0;
+  overflow: auto;
+}
+
+.mrg-emoji-picker__grid [role="row"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-xs);
+  grid-auto-columns: minmax(var(--mrg-semantic-size-target-preferred), 1fr);
+  grid-auto-flow: column;
+}
+
+.mrg-emoji-picker__grid [role="gridcell"] {
+  align-items: center;
+  aspect-ratio: 1;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-subtle);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-emoji-picker__grid [role="gridcell"][aria-selected="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+}
+
+.mrg-emoji-picker__grid [role="gridcell"][data-recent="true"] {
+  border-block-end-color: var(--mrg-semantic-color-brand-violet);
+}
+
+.mrg-emoji-picker :where(input, select, button):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-emoji-picker__empty {
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  padding: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-emoji-picker__empty p {
+  margin-block-start: 0;
+}
+
+.mrg-emoji-picker__empty button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-emoji-picker[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (max-width: 24rem) {
+  .mrg-emoji-picker__controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-emoji-picker *,
+  .mrg-emoji-picker *::before,
+  .mrg-emoji-picker *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-emoji-picker,
+  .mrg-emoji-picker__controls :where(input, select),
+  .mrg-emoji-picker__grid [role="gridcell"],
+  .mrg-emoji-picker__empty,
+  .mrg-emoji-picker__empty button {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-emoji-picker__grid [role="gridcell"][aria-selected="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-emoji-picker :where(input, select, button):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

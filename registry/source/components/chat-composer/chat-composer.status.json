@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "chat-composer",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify all distribution surfaces.",
+    "Pass native form, reset, IME, offline, attachment, packed-consumer, browser, visual, and accessibility gates.",
+    "Record mobile keyboard, screen-reader, speech, switch, touch, RTL and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

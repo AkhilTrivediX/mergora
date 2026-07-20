@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-upload",
+  "entryExport": "FileUpload",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the queue shell except owned children, defaultValue, and change handling",
+  "exports": [
+    { "kind": "component", "name": "FileUpload" },
+    { "kind": "function", "name": "getFileUploadFingerprint" },
+    { "kind": "type", "name": "FileUploadChangeDetail" },
+    { "kind": "type", "name": "FileUploadChangeReason" },
+    { "kind": "type", "name": "FileUploadDuplicatePolicy" },
+    { "kind": "type", "name": "FileUploadItem" },
+    { "kind": "type", "name": "FileUploadMessages" },
+    { "kind": "type", "name": "FileUploadProps" },
+    { "kind": "type", "name": "FileUploadRejectedFile" },
+    { "kind": "type", "name": "FileUploadRejectionReason" },
+    { "kind": "type", "name": "FileUploadSelectionResult" }
+  ],
+  "controlledState": [
+    {
+      "state": "queue",
+      "controlled": "items",
+      "uncontrolled": "defaultItems",
+      "callback": "onItemsChange"
+    }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "items", "required": false, "type": "readonly FileUploadItem[]" },
+    {
+      "name": "defaultItems",
+      "required": false,
+      "default": [],
+      "type": "readonly FileUploadItem[]"
+    },
+    { "name": "onItemsChange", "required": false, "type": "(items, detail) => void" },
+    {
+      "name": "onSelection",
+      "required": false,
+      "type": "(accepted/rejected immutable result) => void"
+    },
+    { "name": "name", "required": false, "type": "native form field name" },
+    { "name": "form", "required": false, "type": "native form owner id" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "onReset", "required": false, "type": "() => void after queue and native reset" },
+    { "name": "acceptedFileTypes", "required": false, "type": "readonly MIME/extension token[]" },
+    { "name": "validateFileSize", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "maxSizeBytes",
+      "required": false,
+      "default": 104857600,
+      "type": "positive safe integer"
+    },
+    { "name": "duplicatePolicy", "required": false, "default": "allow", "type": "allow | reject" },
+    { "name": "renderPreview", "required": false, "type": "(item) => ReactNode" },
+    { "name": "reorderable", "required": false, "default": false, "type": "boolean" },
+    { "name": "showProgress", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRejectionRecovery", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRetryActions", "required": false, "default": false, "type": "boolean" },
+    { "name": "showCancelActions", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRemoveActions", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "intake": "Mergora Dropzone owns picker, paste, and drop parity plus bounded type, size, and count preflight.",
+    "queue": "Selection appends immutable queued items; controlled and uncontrolled owners receive the same reasoned change detail.",
+    "transport": "Status, progress, retry, and cancellation are consumer data and callbacks; FileUpload never performs storage or network work.",
+    "form": "When name, form, or required participates, controlled and uncontrolled queue Files synchronize into the one native Dropzone input through the bounded shared helper; reset clears the queue and successful control without synthetic events.",
+    "enhancements": "Duplicate rejection, preview rendering, reordering, progress, recovery, retry, cancel, and remove surfaces are independently gated."
+  }
+}

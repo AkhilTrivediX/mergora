@@ -1,0 +1,102 @@
+/* Generated from registry/source/components/message-list/message-list.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-message-list {
+    position: relative;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    min-inline-size: 0;
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-message-list__viewport {
+    min-block-size: calc(var(--mrg-semantic-density-row-height) * 3);
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-message-list__viewport:focus-visible,
+  .mrg-message-list [data-slot="message-list-follow"]:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-message-list [data-slot="message-list-items"] {
+    position: relative;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-message-list [data-slot="message-list-items"] > li {
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  .mrg-message-list [data-slot="message-list-empty"] {
+    margin: 0;
+    padding-block: var(--mrg-semantic-space-stack-lg);
+    color: var(--mrg-semantic-color-foreground-muted);
+    text-align: center;
+  }
+
+  .mrg-message-list [data-slot="message-list-follow"] {
+    justify-self: center;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-action-foreground);
+    background: var(--mrg-semantic-color-action-background);
+    font: inherit;
+  }
+
+  .mrg-message-list [data-slot="message-list-announcement"] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  @media (pointer: coarse) {
+    .mrg-message-list [data-slot="message-list-follow"] {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-message-list__viewport {
+      scroll-behavior: auto;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-message-list,
+    .mrg-message-list__viewport {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-message-list [data-slot="message-list-follow"] {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-message-list__viewport:focus-visible,
+    .mrg-message-list [data-slot="message-list-follow"]:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

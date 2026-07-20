@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "./input.css", "react"],
+  "entryPath": "registry/source/components/input/input.tsx",
+  "id": "input",
+  "itemDependencies": ["field"],
+  "outputRole": "component"
+}

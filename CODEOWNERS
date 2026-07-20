@@ -1,0 +1,25 @@
+# The project currently has one maintainer. Repeated entries identify the review
+# lens; they do not imply an independent reviewer exists.
+* @AkhilTrivediX
+
+# Public API, component semantics, and canonical source
+/registry/ @AkhilTrivediX
+/packages/ @AkhilTrivediX
+
+# Accessibility contracts, evidence, and public wording
+/docs/quality/ @AkhilTrivediX
+/content/ @AkhilTrivediX
+
+# CLI, updater, paths, transactions, registry trust
+/tooling/ @AkhilTrivediX
+
+# Tokens, design, site, and visual baselines
+/apps/ @AkhilTrivediX
+/DESIGN.md @AkhilTrivediX
+
+# Governance, security, workflows, packages, and releases
+/.github/ @AkhilTrivediX
+/SECURITY.md @AkhilTrivediX
+/GOVERNANCE.md @AkhilTrivediX
+/CODEOWNERS @AkhilTrivediX
+/docs/runbooks/ @AkhilTrivediX

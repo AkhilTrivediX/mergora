@@ -1,0 +1,64 @@
+.mrg-checkbox-group {
+  border: 0;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.mrg-checkbox-group [data-slot="checkbox-group-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding: 0;
+}
+
+.mrg-checkbox-group [data-slot="checkbox-group-description"],
+.mrg-checkbox-group [data-slot="checkbox-group-error"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  margin-block: var(--mrg-semantic-space-stack-xs) 0;
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-checkbox-group [data-slot="checkbox-group-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-checkbox-group [data-slot="checkbox-group-error"] {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-status-danger-border);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-checkbox-group [data-slot="checkbox-group-items"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mrg-semantic-space-stack-sm);
+  margin-block-start: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+}
+
+.mrg-checkbox-group[data-layout="inline"] [data-slot="checkbox-group-items"] {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.mrg-checkbox-group[data-layout="columns"] [data-slot="checkbox-group-items"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+@media (max-width: 30rem) {
+  .mrg-checkbox-group[data-layout="inline"] [data-slot="checkbox-group-items"] {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-checkbox-group [data-slot="checkbox-group-error"] {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

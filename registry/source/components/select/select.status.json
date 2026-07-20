@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "select",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers, package/source parity, and Semantic Sync update/conflict/rollback fixtures.",
+    "Verify enhanced and native submission, reset, external form, required validation, disabled omission, and stable-key parity in every supported browser engine.",
+    "Verify enhanced open/dismiss/focus return, section/disabled/typeahead behavior, async recovery, pagination, and large virtualized collections.",
+    "Record 320px, zoom, text-spacing, German expansion, Arabic RTL, forced-colors, reduced-motion, touch, native mobile picker, speech, switch, and desktop/mobile screen-reader sessions.",
+    "Publish an approved immutable Risk Class 3 Quality Passport."
+  ]
+}

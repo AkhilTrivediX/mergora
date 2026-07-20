@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete exhaustive parser, 8-bit conversion, alpha, canonical serialization, and invalid recovery fixtures.",
+    "Verify controlled and uncontrolled ownership, native form submission, required validity, disabled omission, and reset.",
+    "Record IME, paste, editor command, mobile virtual-keyboard, narrow, zoom, RTL, and long-locale behavior.",
+    "Verify forced-colors fallback, final computed-color contrast, non-color preview text, and theme overrides.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current Risk Class 2 manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "audit-log",
+  "entryExport": "AuditLog",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "AuditLog" },
+    { "kind": "type", "name": "AuditLogEvent" },
+    { "kind": "type", "name": "AuditLogExportDetail" },
+    { "kind": "type", "name": "AuditLogExportOptions" },
+    { "kind": "type", "name": "AuditLogFilterOptions" },
+    { "kind": "type", "name": "AuditLogProps" },
+    { "kind": "type", "name": "AuditLogVirtualization" },
+    { "kind": "value", "name": "createAuditLogCsv" },
+    { "kind": "value", "name": "safeAuditCsvCell" }
+  ],
+  "props": [
+    {
+      "name": "filtering",
+      "required": false,
+      "default": false,
+      "type": "false | AuditLogFilterOptions"
+    },
+    {
+      "name": "exportCsv",
+      "required": false,
+      "default": false,
+      "type": "false | AuditLogExportOptions"
+    },
+    {
+      "name": "virtualization",
+      "required": false,
+      "default": false,
+      "type": "false | AuditLogVirtualization"
+    }
+  ],
+  "compositionPolicy": {
+    "immutability": "Events have no edit/delete API.",
+    "export": "CSV is spreadsheet-injection resistant and delivered to a consumer-owned callback; filtering and virtualization are independent."
+  }
+}

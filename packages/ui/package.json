@@ -1,0 +1,1567 @@
+{
+  "name": "mergora-ui",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Generated Mergora React components from the canonical source registry",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/ui"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./accordion": {
+      "types": "./dist/generated/accordion/accordion.d.ts",
+      "import": "./dist/generated/accordion/accordion.js"
+    },
+    "./accordion.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/accordion/accordion.css",
+      "default": "./dist/generated/accordion/accordion.css"
+    },
+    "./action-menu": {
+      "types": "./dist/generated/action-menu/action-menu.d.ts",
+      "import": "./dist/generated/action-menu/action-menu.js"
+    },
+    "./action-menu.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/action-menu/action-menu.css",
+      "default": "./dist/generated/action-menu/action-menu.css"
+    },
+    "./activity-feed": {
+      "types": "./dist/generated/activity-feed/activity-feed.d.ts",
+      "import": "./dist/generated/activity-feed/activity-feed.js"
+    },
+    "./activity-feed.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/activity-feed/activity-feed.css",
+      "default": "./dist/generated/activity-feed/activity-feed.css"
+    },
+    "./alert": {
+      "types": "./dist/generated/alert/alert.d.ts",
+      "import": "./dist/generated/alert/alert.js"
+    },
+    "./alert.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/alert/alert.css",
+      "default": "./dist/generated/alert/alert.css"
+    },
+    "./alert-dialog": {
+      "types": "./dist/generated/alert-dialog/index.d.ts",
+      "import": "./dist/generated/alert-dialog/index.js"
+    },
+    "./alert-dialog.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/alert-dialog/alert-dialog.css",
+      "default": "./dist/generated/alert-dialog/alert-dialog.css"
+    },
+    "./aspect-ratio": {
+      "types": "./dist/generated/aspect-ratio/aspect-ratio.d.ts",
+      "import": "./dist/generated/aspect-ratio/aspect-ratio.js"
+    },
+    "./aspect-ratio.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/aspect-ratio/aspect-ratio.css",
+      "default": "./dist/generated/aspect-ratio/aspect-ratio.css"
+    },
+    "./attachment": {
+      "types": "./dist/generated/attachment/attachment.d.ts",
+      "import": "./dist/generated/attachment/attachment.js"
+    },
+    "./attachment.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/attachment/attachment.css",
+      "default": "./dist/generated/attachment/attachment.css"
+    },
+    "./audit-log": {
+      "types": "./dist/generated/audit-log/audit-log.d.ts",
+      "import": "./dist/generated/audit-log/audit-log.js"
+    },
+    "./audit-log.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/audit-log/audit-log.css",
+      "default": "./dist/generated/audit-log/audit-log.css"
+    },
+    "./autocomplete": {
+      "types": "./dist/generated/autocomplete/autocomplete.d.ts",
+      "import": "./dist/generated/autocomplete/autocomplete.js"
+    },
+    "./autocomplete.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/autocomplete/autocomplete.css",
+      "default": "./dist/generated/autocomplete/autocomplete.css"
+    },
+    "./avatar": {
+      "types": "./dist/generated/avatar/avatar.d.ts",
+      "import": "./dist/generated/avatar/avatar.js"
+    },
+    "./avatar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/avatar/avatar.css",
+      "default": "./dist/generated/avatar/avatar.css"
+    },
+    "./avatar-upload": {
+      "types": "./dist/generated/avatar-upload/avatar-upload.d.ts",
+      "import": "./dist/generated/avatar-upload/avatar-upload.js"
+    },
+    "./avatar-upload.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/avatar-upload/avatar-upload.css",
+      "default": "./dist/generated/avatar-upload/avatar-upload.css"
+    },
+    "./badge": {
+      "types": "./dist/generated/badge/badge.d.ts",
+      "import": "./dist/generated/badge/badge.js"
+    },
+    "./badge.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/badge/badge.css",
+      "default": "./dist/generated/badge/badge.css"
+    },
+    "./banner": {
+      "types": "./dist/generated/banner/banner.d.ts",
+      "import": "./dist/generated/banner/banner.js"
+    },
+    "./banner.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/banner/banner.css",
+      "default": "./dist/generated/banner/banner.css"
+    },
+    "./blockquote": {
+      "types": "./dist/generated/blockquote/blockquote.d.ts",
+      "import": "./dist/generated/blockquote/blockquote.js"
+    },
+    "./blockquote.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/blockquote/blockquote.css",
+      "default": "./dist/generated/blockquote/blockquote.css"
+    },
+    "./bottom-navigation": {
+      "types": "./dist/generated/bottom-navigation/bottom-navigation.d.ts",
+      "import": "./dist/generated/bottom-navigation/bottom-navigation.js"
+    },
+    "./bottom-navigation.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/bottom-navigation/bottom-navigation.css",
+      "default": "./dist/generated/bottom-navigation/bottom-navigation.css"
+    },
+    "./breadcrumb": {
+      "types": "./dist/generated/breadcrumb/breadcrumb.d.ts",
+      "import": "./dist/generated/breadcrumb/breadcrumb.js"
+    },
+    "./breadcrumb.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/breadcrumb/breadcrumb.css",
+      "default": "./dist/generated/breadcrumb/breadcrumb.css"
+    },
+    "./button": {
+      "types": "./dist/generated/button/button.d.ts",
+      "import": "./dist/generated/button/button.js"
+    },
+    "./button.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/button/button.css",
+      "default": "./dist/generated/button/button.css"
+    },
+    "./button-group": {
+      "types": "./dist/generated/button-group/button-group.d.ts",
+      "import": "./dist/generated/button-group/button-group.js"
+    },
+    "./button-group.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/button-group/button-group.css",
+      "default": "./dist/generated/button-group/button-group.css"
+    },
+    "./calendar": {
+      "types": "./dist/generated/calendar/calendar.d.ts",
+      "import": "./dist/generated/calendar/calendar.js"
+    },
+    "./calendar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/calendar/calendar.css",
+      "default": "./dist/generated/calendar/calendar.css"
+    },
+    "./calendar-heatmap": {
+      "types": "./dist/generated/calendar-heatmap/calendar-heatmap.d.ts",
+      "import": "./dist/generated/calendar-heatmap/calendar-heatmap.js"
+    },
+    "./calendar-heatmap.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/calendar-heatmap/calendar-heatmap.css",
+      "default": "./dist/generated/calendar-heatmap/calendar-heatmap.css"
+    },
+    "./callout": {
+      "types": "./dist/generated/callout/callout.d.ts",
+      "import": "./dist/generated/callout/callout.js"
+    },
+    "./callout.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/callout/callout.css",
+      "default": "./dist/generated/callout/callout.css"
+    },
+    "./card": {
+      "types": "./dist/generated/card/card.d.ts",
+      "import": "./dist/generated/card/card.js"
+    },
+    "./card.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/card/card.css",
+      "default": "./dist/generated/card/card.css"
+    },
+    "./carousel": {
+      "types": "./dist/generated/carousel/carousel.d.ts",
+      "import": "./dist/generated/carousel/carousel.js"
+    },
+    "./carousel.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/carousel/carousel.css",
+      "default": "./dist/generated/carousel/carousel.css"
+    },
+    "./center": {
+      "types": "./dist/generated/center/center.d.ts",
+      "import": "./dist/generated/center/center.js"
+    },
+    "./center.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/center/center.css",
+      "default": "./dist/generated/center/center.css"
+    },
+    "./chart": {
+      "types": "./dist/generated/chart/chart.d.ts",
+      "import": "./dist/generated/chart/chart.js"
+    },
+    "./chart.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/chart/chart.css",
+      "default": "./dist/generated/chart/chart.css"
+    },
+    "./chat-composer": {
+      "types": "./dist/generated/chat-composer/chat-composer.d.ts",
+      "import": "./dist/generated/chat-composer/chat-composer.js"
+    },
+    "./chat-composer.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/chat-composer/chat-composer.css",
+      "default": "./dist/generated/chat-composer/chat-composer.css"
+    },
+    "./checkbox": {
+      "types": "./dist/generated/checkbox/checkbox.d.ts",
+      "import": "./dist/generated/checkbox/checkbox.js"
+    },
+    "./checkbox.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/checkbox/checkbox.css",
+      "default": "./dist/generated/checkbox/checkbox.css"
+    },
+    "./checkbox-group": {
+      "types": "./dist/generated/checkbox-group/checkbox-group.d.ts",
+      "import": "./dist/generated/checkbox-group/checkbox-group.js"
+    },
+    "./checkbox-group.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/checkbox-group/checkbox-group.css",
+      "default": "./dist/generated/checkbox-group/checkbox-group.css"
+    },
+    "./citation": {
+      "types": "./dist/generated/citation/citation.d.ts",
+      "import": "./dist/generated/citation/citation.js"
+    },
+    "./citation.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/citation/citation.css",
+      "default": "./dist/generated/citation/citation.css"
+    },
+    "./client-only": {
+      "types": "./dist/generated/client-only/client-only.d.ts",
+      "import": "./dist/generated/client-only/client-only.js"
+    },
+    "./client-only.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/client-only/client-only.css",
+      "default": "./dist/generated/client-only/client-only.css"
+    },
+    "./cluster": {
+      "types": "./dist/generated/cluster/cluster.d.ts",
+      "import": "./dist/generated/cluster/cluster.js"
+    },
+    "./cluster.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/cluster/cluster.css",
+      "default": "./dist/generated/cluster/cluster.css"
+    },
+    "./code": {
+      "types": "./dist/generated/code/code.d.ts",
+      "import": "./dist/generated/code/code.js"
+    },
+    "./code.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/code/code.css",
+      "default": "./dist/generated/code/code.css"
+    },
+    "./code-block": {
+      "types": "./dist/generated/code-block/code-block.d.ts",
+      "import": "./dist/generated/code-block/code-block.js"
+    },
+    "./code-block.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/code-block/code-block.css",
+      "default": "./dist/generated/code-block/code-block.css"
+    },
+    "./collaboration-presence": {
+      "types": "./dist/generated/collaboration-presence/collaboration-presence.d.ts",
+      "import": "./dist/generated/collaboration-presence/collaboration-presence.js"
+    },
+    "./collaboration-presence.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/collaboration-presence/collaboration-presence.css",
+      "default": "./dist/generated/collaboration-presence/collaboration-presence.css"
+    },
+    "./collapsible": {
+      "types": "./dist/generated/collapsible/collapsible.d.ts",
+      "import": "./dist/generated/collapsible/collapsible.js"
+    },
+    "./collapsible.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/collapsible/collapsible.css",
+      "default": "./dist/generated/collapsible/collapsible.css"
+    },
+    "./color-field": {
+      "types": "./dist/generated/color-field/color-field.d.ts",
+      "import": "./dist/generated/color-field/color-field.js"
+    },
+    "./color-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/color-field/color-field.css",
+      "default": "./dist/generated/color-field/color-field.css"
+    },
+    "./color-picker": {
+      "types": "./dist/generated/color-picker/color-picker.d.ts",
+      "import": "./dist/generated/color-picker/color-picker.js"
+    },
+    "./color-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/color-picker/color-picker.css",
+      "default": "./dist/generated/color-picker/color-picker.css"
+    },
+    "./combobox": {
+      "types": "./dist/generated/combobox/index.d.ts",
+      "import": "./dist/generated/combobox/index.js"
+    },
+    "./combobox.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/combobox/combobox.css",
+      "default": "./dist/generated/combobox/combobox.css"
+    },
+    "./command-palette": {
+      "types": "./dist/generated/command-palette/command-palette.d.ts",
+      "import": "./dist/generated/command-palette/command-palette.js"
+    },
+    "./command-palette.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/command-palette/command-palette.css",
+      "default": "./dist/generated/command-palette/command-palette.css"
+    },
+    "./comment-thread": {
+      "types": "./dist/generated/comment-thread/comment-thread.d.ts",
+      "import": "./dist/generated/comment-thread/comment-thread.js"
+    },
+    "./comment-thread.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/comment-thread/comment-thread.css",
+      "default": "./dist/generated/comment-thread/comment-thread.css"
+    },
+    "./container": {
+      "types": "./dist/generated/container/container.d.ts",
+      "import": "./dist/generated/container/container.js"
+    },
+    "./container.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/container/container.css",
+      "default": "./dist/generated/container/container.css"
+    },
+    "./context-menu": {
+      "types": "./dist/generated/context-menu/context-menu.d.ts",
+      "import": "./dist/generated/context-menu/context-menu.js"
+    },
+    "./context-menu.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/context-menu/context-menu.css",
+      "default": "./dist/generated/context-menu/context-menu.css"
+    },
+    "./copy-button": {
+      "types": "./dist/generated/copy-button/copy-button.d.ts",
+      "import": "./dist/generated/copy-button/copy-button.js"
+    },
+    "./copy-button.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/copy-button/copy-button.css",
+      "default": "./dist/generated/copy-button/copy-button.css"
+    },
+    "./creatable-select": {
+      "types": "./dist/generated/creatable-select/creatable-select.d.ts",
+      "import": "./dist/generated/creatable-select/creatable-select.js"
+    },
+    "./creatable-select.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/creatable-select/creatable-select.css",
+      "default": "./dist/generated/creatable-select/creatable-select.css"
+    },
+    "./currency-field": {
+      "types": "./dist/generated/currency-field/currency-field.d.ts",
+      "import": "./dist/generated/currency-field/currency-field.js"
+    },
+    "./currency-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/currency-field/currency-field.css",
+      "default": "./dist/generated/currency-field/currency-field.css"
+    },
+    "./data-grid": {
+      "types": "./dist/generated/data-grid/index.d.ts",
+      "import": "./dist/generated/data-grid/index.js"
+    },
+    "./data-grid.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/data-grid/data-grid.css",
+      "default": "./dist/generated/data-grid/data-grid.css"
+    },
+    "./data-table": {
+      "types": "./dist/generated/data-table/data-table.d.ts",
+      "import": "./dist/generated/data-table/data-table.js"
+    },
+    "./data-table.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/data-table/data-table.css",
+      "default": "./dist/generated/data-table/data-table.css"
+    },
+    "./date-field": {
+      "types": "./dist/generated/date-field/date-field.d.ts",
+      "import": "./dist/generated/date-field/date-field.js"
+    },
+    "./date-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/date-field/date-field.css",
+      "default": "./dist/generated/date-field/date-field.css"
+    },
+    "./date-picker": {
+      "types": "./dist/generated/date-picker/date-picker.d.ts",
+      "import": "./dist/generated/date-picker/date-picker.js"
+    },
+    "./date-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/date-picker/date-picker.css",
+      "default": "./dist/generated/date-picker/date-picker.css"
+    },
+    "./date-range-picker": {
+      "types": "./dist/generated/date-range-picker/date-range-picker.d.ts",
+      "import": "./dist/generated/date-range-picker/date-range-picker.js"
+    },
+    "./date-range-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/date-range-picker/date-range-picker.css",
+      "default": "./dist/generated/date-range-picker/date-range-picker.css"
+    },
+    "./date-time-field": {
+      "types": "./dist/generated/date-time-field/date-time-field.d.ts",
+      "import": "./dist/generated/date-time-field/date-time-field.js"
+    },
+    "./date-time-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/date-time-field/date-time-field.css",
+      "default": "./dist/generated/date-time-field/date-time-field.css"
+    },
+    "./date-time-picker": {
+      "types": "./dist/generated/date-time-picker/date-time-picker.d.ts",
+      "import": "./dist/generated/date-time-picker/date-time-picker.js"
+    },
+    "./date-time-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/date-time-picker/date-time-picker.css",
+      "default": "./dist/generated/date-time-picker/date-time-picker.css"
+    },
+    "./description-list": {
+      "types": "./dist/generated/description-list/description-list.d.ts",
+      "import": "./dist/generated/description-list/description-list.js"
+    },
+    "./description-list.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/description-list/description-list.css",
+      "default": "./dist/generated/description-list/description-list.css"
+    },
+    "./dialog": {
+      "types": "./dist/generated/dialog/index.d.ts",
+      "import": "./dist/generated/dialog/index.js"
+    },
+    "./dialog.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/dialog/dialog.css",
+      "default": "./dist/generated/dialog/dialog.css"
+    },
+    "./diff-viewer": {
+      "types": "./dist/generated/diff-viewer/diff-viewer.d.ts",
+      "import": "./dist/generated/diff-viewer/diff-viewer.js"
+    },
+    "./diff-viewer.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/diff-viewer/diff-viewer.css",
+      "default": "./dist/generated/diff-viewer/diff-viewer.css"
+    },
+    "./direction": {
+      "types": "./dist/generated/direction/direction.d.ts",
+      "import": "./dist/generated/direction/direction.js"
+    },
+    "./direction.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/direction/direction.css",
+      "default": "./dist/generated/direction/direction.css"
+    },
+    "./drawer": {
+      "types": "./dist/generated/drawer/drawer.d.ts",
+      "import": "./dist/generated/drawer/drawer.js"
+    },
+    "./drawer.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/drawer/drawer.css",
+      "default": "./dist/generated/drawer/drawer.css"
+    },
+    "./dropdown-menu": {
+      "types": "./dist/generated/dropdown-menu/dropdown-menu.d.ts",
+      "import": "./dist/generated/dropdown-menu/dropdown-menu.js"
+    },
+    "./dropdown-menu.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/dropdown-menu/dropdown-menu.css",
+      "default": "./dist/generated/dropdown-menu/dropdown-menu.css"
+    },
+    "./dropzone": {
+      "types": "./dist/generated/dropzone/dropzone.d.ts",
+      "import": "./dist/generated/dropzone/dropzone.js"
+    },
+    "./dropzone.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/dropzone/dropzone.css",
+      "default": "./dist/generated/dropzone/dropzone.css"
+    },
+    "./emoji-picker": {
+      "types": "./dist/generated/emoji-picker/emoji-picker.d.ts",
+      "import": "./dist/generated/emoji-picker/emoji-picker.js"
+    },
+    "./emoji-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/emoji-picker/emoji-picker.css",
+      "default": "./dist/generated/emoji-picker/emoji-picker.css"
+    },
+    "./empty-state": {
+      "types": "./dist/generated/empty-state/empty-state.d.ts",
+      "import": "./dist/generated/empty-state/empty-state.js"
+    },
+    "./empty-state.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/empty-state/empty-state.css",
+      "default": "./dist/generated/empty-state/empty-state.css"
+    },
+    "./error-state": {
+      "types": "./dist/generated/error-state/error-state.d.ts",
+      "import": "./dist/generated/error-state/error-state.js"
+    },
+    "./error-state.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/error-state/error-state.css",
+      "default": "./dist/generated/error-state/error-state.css"
+    },
+    "./field": {
+      "types": "./dist/generated/field/field.d.ts",
+      "import": "./dist/generated/field/field.js"
+    },
+    "./field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/field/field.css",
+      "default": "./dist/generated/field/field.css"
+    },
+    "./fieldset": {
+      "types": "./dist/generated/fieldset/fieldset.d.ts",
+      "import": "./dist/generated/fieldset/fieldset.js"
+    },
+    "./fieldset.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/fieldset/fieldset.css",
+      "default": "./dist/generated/fieldset/fieldset.css"
+    },
+    "./file-trigger": {
+      "types": "./dist/generated/file-trigger/file-trigger.d.ts",
+      "import": "./dist/generated/file-trigger/file-trigger.js"
+    },
+    "./file-trigger.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/file-trigger/file-trigger.css",
+      "default": "./dist/generated/file-trigger/file-trigger.css"
+    },
+    "./file-upload": {
+      "types": "./dist/generated/file-upload/file-upload.d.ts",
+      "import": "./dist/generated/file-upload/file-upload.js"
+    },
+    "./file-upload.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/file-upload/file-upload.css",
+      "default": "./dist/generated/file-upload/file-upload.css"
+    },
+    "./filter-builder": {
+      "types": "./dist/generated/filter-builder/filter-builder.d.ts",
+      "import": "./dist/generated/filter-builder/filter-builder.js"
+    },
+    "./filter-builder.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/filter-builder/filter-builder.css",
+      "default": "./dist/generated/filter-builder/filter-builder.css"
+    },
+    "./focus-ring": {
+      "types": "./dist/generated/focus-ring/focus-ring.d.ts",
+      "import": "./dist/generated/focus-ring/focus-ring.js"
+    },
+    "./focus-ring.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/focus-ring/focus-ring.css",
+      "default": "./dist/generated/focus-ring/focus-ring.css"
+    },
+    "./form": {
+      "types": "./dist/generated/form/form.d.ts",
+      "import": "./dist/generated/form/form.js"
+    },
+    "./form.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/form/form.css",
+      "default": "./dist/generated/form/form.css"
+    },
+    "./grid": {
+      "types": "./dist/generated/grid/grid.d.ts",
+      "import": "./dist/generated/grid/grid.js"
+    },
+    "./grid.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/grid/grid.css",
+      "default": "./dist/generated/grid/grid.css"
+    },
+    "./heading": {
+      "types": "./dist/generated/heading/heading.d.ts",
+      "import": "./dist/generated/heading/heading.js"
+    },
+    "./heading.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/heading/heading.css",
+      "default": "./dist/generated/heading/heading.css"
+    },
+    "./hover-card": {
+      "types": "./dist/generated/hover-card/hover-card.d.ts",
+      "import": "./dist/generated/hover-card/hover-card.js"
+    },
+    "./hover-card.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/hover-card/hover-card.css",
+      "default": "./dist/generated/hover-card/hover-card.css"
+    },
+    "./icon-button": {
+      "types": "./dist/generated/icon-button/icon-button.d.ts",
+      "import": "./dist/generated/icon-button/icon-button.js"
+    },
+    "./icon-button.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/icon-button/icon-button.css",
+      "default": "./dist/generated/icon-button/icon-button.css"
+    },
+    "./image": {
+      "types": "./dist/generated/image/image.d.ts",
+      "import": "./dist/generated/image/image.js"
+    },
+    "./image.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/image/image.css",
+      "default": "./dist/generated/image/image.css"
+    },
+    "./image-cropper": {
+      "types": "./dist/generated/image-cropper/image-cropper.d.ts",
+      "import": "./dist/generated/image-cropper/image-cropper.js"
+    },
+    "./image-cropper.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/image-cropper/image-cropper.css",
+      "default": "./dist/generated/image-cropper/image-cropper.css"
+    },
+    "./inline": {
+      "types": "./dist/generated/inline/inline.d.ts",
+      "import": "./dist/generated/inline/inline.js"
+    },
+    "./inline.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/inline/inline.css",
+      "default": "./dist/generated/inline/inline.css"
+    },
+    "./inline-edit": {
+      "types": "./dist/generated/inline-edit/inline-edit.d.ts",
+      "import": "./dist/generated/inline-edit/inline-edit.js"
+    },
+    "./inline-edit.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/inline-edit/inline-edit.css",
+      "default": "./dist/generated/inline-edit/inline-edit.css"
+    },
+    "./input": {
+      "types": "./dist/generated/input/input.d.ts",
+      "import": "./dist/generated/input/input.js"
+    },
+    "./input.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/input/input.css",
+      "default": "./dist/generated/input/input.css"
+    },
+    "./item": {
+      "types": "./dist/generated/item/item.d.ts",
+      "import": "./dist/generated/item/item.js"
+    },
+    "./item.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/item/item.css",
+      "default": "./dist/generated/item/item.css"
+    },
+    "./json-viewer": {
+      "types": "./dist/generated/json-viewer/json-viewer.d.ts",
+      "import": "./dist/generated/json-viewer/json-viewer.js"
+    },
+    "./json-viewer.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/json-viewer/json-viewer.css",
+      "default": "./dist/generated/json-viewer/json-viewer.css"
+    },
+    "./kanban": {
+      "types": "./dist/generated/kanban/kanban.d.ts",
+      "import": "./dist/generated/kanban/kanban.js"
+    },
+    "./kanban.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/kanban/kanban.css",
+      "default": "./dist/generated/kanban/kanban.css"
+    },
+    "./kbd": {
+      "types": "./dist/generated/kbd/kbd.d.ts",
+      "import": "./dist/generated/kbd/kbd.js"
+    },
+    "./kbd.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/kbd/kbd.css",
+      "default": "./dist/generated/kbd/kbd.css"
+    },
+    "./layer-manager": {
+      "types": "./dist/generated/layer-manager/layer-manager.d.ts",
+      "import": "./dist/generated/layer-manager/layer-manager.js"
+    },
+    "./layer-manager.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/layer-manager/layer-manager.css",
+      "default": "./dist/generated/layer-manager/layer-manager.css"
+    },
+    "./lightbox": {
+      "types": "./dist/generated/lightbox/lightbox.d.ts",
+      "import": "./dist/generated/lightbox/lightbox.js"
+    },
+    "./lightbox.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/lightbox/lightbox.css",
+      "default": "./dist/generated/lightbox/lightbox.css"
+    },
+    "./link": {
+      "types": "./dist/generated/link/link.d.ts",
+      "import": "./dist/generated/link/link.js"
+    },
+    "./link.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/link/link.css",
+      "default": "./dist/generated/link/link.css"
+    },
+    "./listbox": {
+      "types": "./dist/generated/listbox/listbox.d.ts",
+      "import": "./dist/generated/listbox/listbox.js"
+    },
+    "./listbox.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/listbox/listbox.css",
+      "default": "./dist/generated/listbox/listbox.css"
+    },
+    "./markdown": {
+      "types": "./dist/generated/markdown/markdown.d.ts",
+      "import": "./dist/generated/markdown/markdown.js"
+    },
+    "./markdown.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/markdown/markdown.css",
+      "default": "./dist/generated/markdown/markdown.css"
+    },
+    "./markdown-editor": {
+      "types": "./dist/generated/markdown-editor/markdown-editor.d.ts",
+      "import": "./dist/generated/markdown-editor/markdown-editor.js"
+    },
+    "./markdown-editor.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/markdown-editor/markdown-editor.css",
+      "default": "./dist/generated/markdown-editor/markdown-editor.css"
+    },
+    "./masked-field": {
+      "types": "./dist/generated/masked-field/masked-field.d.ts",
+      "import": "./dist/generated/masked-field/masked-field.js"
+    },
+    "./masked-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/masked-field/masked-field.css",
+      "default": "./dist/generated/masked-field/masked-field.css"
+    },
+    "./media-player": {
+      "types": "./dist/generated/media-player/media-player.d.ts",
+      "import": "./dist/generated/media-player/media-player.js"
+    },
+    "./media-player.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/media-player/media-player.css",
+      "default": "./dist/generated/media-player/media-player.css"
+    },
+    "./mention-field": {
+      "types": "./dist/generated/mention-field/mention-field.d.ts",
+      "import": "./dist/generated/mention-field/mention-field.js"
+    },
+    "./mention-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/mention-field/mention-field.css",
+      "default": "./dist/generated/mention-field/mention-field.css"
+    },
+    "./menubar": {
+      "types": "./dist/generated/menubar/menubar.d.ts",
+      "import": "./dist/generated/menubar/menubar.js"
+    },
+    "./menubar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/menubar/menubar.css",
+      "default": "./dist/generated/menubar/menubar.css"
+    },
+    "./message": {
+      "types": "./dist/generated/message/message.d.ts",
+      "import": "./dist/generated/message/message.js"
+    },
+    "./message.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/message/message.css",
+      "default": "./dist/generated/message/message.css"
+    },
+    "./message-list": {
+      "types": "./dist/generated/message-list/message-list.d.ts",
+      "import": "./dist/generated/message-list/message-list.js"
+    },
+    "./message-list.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/message-list/message-list.css",
+      "default": "./dist/generated/message-list/message-list.css"
+    },
+    "./meter": {
+      "types": "./dist/generated/meter/meter.d.ts",
+      "import": "./dist/generated/meter/meter.js"
+    },
+    "./meter.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/meter/meter.css",
+      "default": "./dist/generated/meter/meter.css"
+    },
+    "./month-picker": {
+      "types": "./dist/generated/month-picker/month-picker.d.ts",
+      "import": "./dist/generated/month-picker/month-picker.js"
+    },
+    "./month-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/month-picker/month-picker.css",
+      "default": "./dist/generated/month-picker/month-picker.css"
+    },
+    "./multi-select": {
+      "types": "./dist/generated/multi-select/multi-select.d.ts",
+      "import": "./dist/generated/multi-select/multi-select.js"
+    },
+    "./multi-select.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/multi-select/multi-select.css",
+      "default": "./dist/generated/multi-select/multi-select.css"
+    },
+    "./native-select": {
+      "types": "./dist/generated/native-select/native-select.d.ts",
+      "import": "./dist/generated/native-select/native-select.js"
+    },
+    "./native-select.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/native-select/native-select.css",
+      "default": "./dist/generated/native-select/native-select.css"
+    },
+    "./navbar": {
+      "types": "./dist/generated/navbar/navbar.d.ts",
+      "import": "./dist/generated/navbar/navbar.js"
+    },
+    "./navbar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/navbar/navbar.css",
+      "default": "./dist/generated/navbar/navbar.css"
+    },
+    "./navigation-menu": {
+      "types": "./dist/generated/navigation-menu/navigation-menu.d.ts",
+      "import": "./dist/generated/navigation-menu/navigation-menu.js"
+    },
+    "./navigation-menu.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/navigation-menu/navigation-menu.css",
+      "default": "./dist/generated/navigation-menu/navigation-menu.css"
+    },
+    "./notification-center": {
+      "types": "./dist/generated/notification-center/notification-center.d.ts",
+      "import": "./dist/generated/notification-center/notification-center.js"
+    },
+    "./notification-center.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/notification-center/notification-center.css",
+      "default": "./dist/generated/notification-center/notification-center.css"
+    },
+    "./number-field": {
+      "types": "./dist/generated/number-field/number-field.d.ts",
+      "import": "./dist/generated/number-field/number-field.js"
+    },
+    "./number-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/number-field/number-field.css",
+      "default": "./dist/generated/number-field/number-field.css"
+    },
+    "./otp-field": {
+      "types": "./dist/generated/otp-field/otp-field.d.ts",
+      "import": "./dist/generated/otp-field/otp-field.js"
+    },
+    "./otp-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/otp-field/otp-field.css",
+      "default": "./dist/generated/otp-field/otp-field.css"
+    },
+    "./pagination": {
+      "types": "./dist/generated/pagination/pagination.d.ts",
+      "import": "./dist/generated/pagination/pagination.js"
+    },
+    "./pagination.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/pagination/pagination.css",
+      "default": "./dist/generated/pagination/pagination.css"
+    },
+    "./password-field": {
+      "types": "./dist/generated/password-field/password-field.d.ts",
+      "import": "./dist/generated/password-field/password-field.js"
+    },
+    "./password-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/password-field/password-field.css",
+      "default": "./dist/generated/password-field/password-field.css"
+    },
+    "./percentage-field": {
+      "types": "./dist/generated/percentage-field/percentage-field.d.ts",
+      "import": "./dist/generated/percentage-field/percentage-field.js"
+    },
+    "./percentage-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/percentage-field/percentage-field.css",
+      "default": "./dist/generated/percentage-field/percentage-field.css"
+    },
+    "./phone-field": {
+      "types": "./dist/generated/phone-field/phone-field.d.ts",
+      "import": "./dist/generated/phone-field/phone-field.js"
+    },
+    "./phone-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/phone-field/phone-field.css",
+      "default": "./dist/generated/phone-field/phone-field.css"
+    },
+    "./pin-field": {
+      "types": "./dist/generated/pin-field/pin-field.d.ts",
+      "import": "./dist/generated/pin-field/pin-field.js"
+    },
+    "./pin-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/pin-field/pin-field.css",
+      "default": "./dist/generated/pin-field/pin-field.css"
+    },
+    "./popover": {
+      "types": "./dist/generated/popover/index.d.ts",
+      "import": "./dist/generated/popover/index.js"
+    },
+    "./popover.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/popover/popover.css",
+      "default": "./dist/generated/popover/popover.css"
+    },
+    "./portal": {
+      "types": "./dist/generated/portal/portal.d.ts",
+      "import": "./dist/generated/portal/portal.js"
+    },
+    "./portal.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/portal/portal.css",
+      "default": "./dist/generated/portal/portal.css"
+    },
+    "./presence": {
+      "types": "./dist/generated/presence/presence.d.ts",
+      "import": "./dist/generated/presence/presence.js"
+    },
+    "./presence.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/presence/presence.css",
+      "default": "./dist/generated/presence/presence.css"
+    },
+    "./progress": {
+      "types": "./dist/generated/progress/progress.d.ts",
+      "import": "./dist/generated/progress/progress.js"
+    },
+    "./progress.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/progress/progress.css",
+      "default": "./dist/generated/progress/progress.css"
+    },
+    "./prompt-suggestions": {
+      "types": "./dist/generated/prompt-suggestions/prompt-suggestions.d.ts",
+      "import": "./dist/generated/prompt-suggestions/prompt-suggestions.js"
+    },
+    "./prompt-suggestions.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/prompt-suggestions/prompt-suggestions.css",
+      "default": "./dist/generated/prompt-suggestions/prompt-suggestions.css"
+    },
+    "./prose": {
+      "types": "./dist/generated/prose/prose.d.ts",
+      "import": "./dist/generated/prose/prose.js"
+    },
+    "./prose.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/prose/prose.css",
+      "default": "./dist/generated/prose/prose.css"
+    },
+    "./provider": {
+      "types": "./dist/generated/provider/provider.d.ts",
+      "import": "./dist/generated/provider/provider.js"
+    },
+    "./provider.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/provider/provider.css",
+      "default": "./dist/generated/provider/provider.css"
+    },
+    "./query-builder": {
+      "types": "./dist/generated/query-builder/query-builder.d.ts",
+      "import": "./dist/generated/query-builder/query-builder.js"
+    },
+    "./query-builder.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/query-builder/query-builder.css",
+      "default": "./dist/generated/query-builder/query-builder.css"
+    },
+    "./radio-group": {
+      "types": "./dist/generated/radio-group/radio-group.d.ts",
+      "import": "./dist/generated/radio-group/radio-group.js"
+    },
+    "./radio-group.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/radio-group/radio-group.css",
+      "default": "./dist/generated/radio-group/radio-group.css"
+    },
+    "./range-calendar": {
+      "types": "./dist/generated/range-calendar/range-calendar.d.ts",
+      "import": "./dist/generated/range-calendar/range-calendar.js"
+    },
+    "./range-calendar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/range-calendar/range-calendar.css",
+      "default": "./dist/generated/range-calendar/range-calendar.css"
+    },
+    "./range-slider": {
+      "types": "./dist/generated/range-slider/range-slider.d.ts",
+      "import": "./dist/generated/range-slider/range-slider.js"
+    },
+    "./range-slider.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/range-slider/range-slider.css",
+      "default": "./dist/generated/range-slider/range-slider.css"
+    },
+    "./rating": {
+      "types": "./dist/generated/rating/rating.d.ts",
+      "import": "./dist/generated/rating/rating.js"
+    },
+    "./rating.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/rating/rating.css",
+      "default": "./dist/generated/rating/rating.css"
+    },
+    "./reasoning": {
+      "types": "./dist/generated/reasoning/reasoning.d.ts",
+      "import": "./dist/generated/reasoning/reasoning.js"
+    },
+    "./reasoning.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/reasoning/reasoning.css",
+      "default": "./dist/generated/reasoning/reasoning.css"
+    },
+    "./resizable": {
+      "types": "./dist/generated/resizable/resizable.d.ts",
+      "import": "./dist/generated/resizable/resizable.js"
+    },
+    "./resizable.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/resizable/resizable.css",
+      "default": "./dist/generated/resizable/resizable.css"
+    },
+    "./rich-text-editor": {
+      "types": "./dist/generated/rich-text-editor/rich-text-editor.d.ts",
+      "import": "./dist/generated/rich-text-editor/rich-text-editor.js"
+    },
+    "./rich-text-editor.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/rich-text-editor/rich-text-editor.css",
+      "default": "./dist/generated/rich-text-editor/rich-text-editor.css"
+    },
+    "./scroll-area": {
+      "types": "./dist/generated/scroll-area/scroll-area.d.ts",
+      "import": "./dist/generated/scroll-area/scroll-area.js"
+    },
+    "./scroll-area.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/scroll-area/scroll-area.css",
+      "default": "./dist/generated/scroll-area/scroll-area.css"
+    },
+    "./search-field": {
+      "types": "./dist/generated/search-field/search-field.d.ts",
+      "import": "./dist/generated/search-field/search-field.js"
+    },
+    "./search-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/search-field/search-field.css",
+      "default": "./dist/generated/search-field/search-field.css"
+    },
+    "./segmented-control": {
+      "types": "./dist/generated/segmented-control/segmented-control.d.ts",
+      "import": "./dist/generated/segmented-control/segmented-control.js"
+    },
+    "./segmented-control.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/segmented-control/segmented-control.css",
+      "default": "./dist/generated/segmented-control/segmented-control.css"
+    },
+    "./select": {
+      "types": "./dist/generated/select/select.d.ts",
+      "import": "./dist/generated/select/select.js"
+    },
+    "./select.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/select/select.css",
+      "default": "./dist/generated/select/select.css"
+    },
+    "./separator": {
+      "types": "./dist/generated/separator/separator.d.ts",
+      "import": "./dist/generated/separator/separator.js"
+    },
+    "./separator.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/separator/separator.css",
+      "default": "./dist/generated/separator/separator.css"
+    },
+    "./sheet": {
+      "types": "./dist/generated/sheet/index.d.ts",
+      "import": "./dist/generated/sheet/index.js"
+    },
+    "./sheet.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/sheet/sheet.css",
+      "default": "./dist/generated/sheet/sheet.css"
+    },
+    "./sidebar": {
+      "types": "./dist/generated/sidebar/sidebar.d.ts",
+      "import": "./dist/generated/sidebar/sidebar.js"
+    },
+    "./sidebar.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/sidebar/sidebar.css",
+      "default": "./dist/generated/sidebar/sidebar.css"
+    },
+    "./signature-pad": {
+      "types": "./dist/generated/signature-pad/signature-pad.d.ts",
+      "import": "./dist/generated/signature-pad/signature-pad.js"
+    },
+    "./signature-pad.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/signature-pad/signature-pad.css",
+      "default": "./dist/generated/signature-pad/signature-pad.css"
+    },
+    "./skeleton": {
+      "types": "./dist/generated/skeleton/skeleton.d.ts",
+      "import": "./dist/generated/skeleton/skeleton.js"
+    },
+    "./skeleton.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/skeleton/skeleton.css",
+      "default": "./dist/generated/skeleton/skeleton.css"
+    },
+    "./slider": {
+      "types": "./dist/generated/slider/slider.d.ts",
+      "import": "./dist/generated/slider/slider.js"
+    },
+    "./slider.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/slider/slider.css",
+      "default": "./dist/generated/slider/slider.css"
+    },
+    "./slot": {
+      "types": "./dist/generated/slot/slot.d.ts",
+      "import": "./dist/generated/slot/slot.js"
+    },
+    "./slot.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/slot/slot.css",
+      "default": "./dist/generated/slot/slot.css"
+    },
+    "./sortable-list": {
+      "types": "./dist/generated/sortable-list/sortable-list.d.ts",
+      "import": "./dist/generated/sortable-list/sortable-list.js"
+    },
+    "./sortable-list.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/sortable-list/sortable-list.css",
+      "default": "./dist/generated/sortable-list/sortable-list.css"
+    },
+    "./spinner": {
+      "types": "./dist/generated/spinner/spinner.d.ts",
+      "import": "./dist/generated/spinner/spinner.js"
+    },
+    "./spinner.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/spinner/spinner.css",
+      "default": "./dist/generated/spinner/spinner.css"
+    },
+    "./split-pane": {
+      "types": "./dist/generated/split-pane/split-pane.d.ts",
+      "import": "./dist/generated/split-pane/split-pane.js"
+    },
+    "./split-pane.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/split-pane/split-pane.css",
+      "default": "./dist/generated/split-pane/split-pane.css"
+    },
+    "./sr-announcer": {
+      "types": "./dist/generated/sr-announcer/sr-announcer.d.ts",
+      "import": "./dist/generated/sr-announcer/sr-announcer.js"
+    },
+    "./sr-announcer.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/sr-announcer/sr-announcer.css",
+      "default": "./dist/generated/sr-announcer/sr-announcer.css"
+    },
+    "./stack": {
+      "types": "./dist/generated/stack/stack.d.ts",
+      "import": "./dist/generated/stack/stack.js"
+    },
+    "./stack.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/stack/stack.css",
+      "default": "./dist/generated/stack/stack.css"
+    },
+    "./stat": {
+      "types": "./dist/generated/stat/stat.d.ts",
+      "import": "./dist/generated/stat/stat.js"
+    },
+    "./stat.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/stat/stat.css",
+      "default": "./dist/generated/stat/stat.css"
+    },
+    "./status": {
+      "types": "./dist/generated/status/status.d.ts",
+      "import": "./dist/generated/status/status.js"
+    },
+    "./status.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/status/status.css",
+      "default": "./dist/generated/status/status.css"
+    },
+    "./stepper": {
+      "types": "./dist/generated/stepper/stepper.d.ts",
+      "import": "./dist/generated/stepper/stepper.js"
+    },
+    "./stepper.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/stepper/stepper.css",
+      "default": "./dist/generated/stepper/stepper.css"
+    },
+    "./sticky-region": {
+      "types": "./dist/generated/sticky-region/sticky-region.d.ts",
+      "import": "./dist/generated/sticky-region/sticky-region.js"
+    },
+    "./sticky-region.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/sticky-region/sticky-region.css",
+      "default": "./dist/generated/sticky-region/sticky-region.css"
+    },
+    "./streaming-text": {
+      "types": "./dist/generated/streaming-text/streaming-text.d.ts",
+      "import": "./dist/generated/streaming-text/streaming-text.js"
+    },
+    "./streaming-text.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/streaming-text/streaming-text.css",
+      "default": "./dist/generated/streaming-text/streaming-text.css"
+    },
+    "./switch": {
+      "types": "./dist/generated/switch/switch.d.ts",
+      "import": "./dist/generated/switch/switch.js"
+    },
+    "./switch.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/switch/switch.css",
+      "default": "./dist/generated/switch/switch.css"
+    },
+    "./table": {
+      "types": "./dist/generated/table/table.d.ts",
+      "import": "./dist/generated/table/table.js"
+    },
+    "./table.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/table/table.css",
+      "default": "./dist/generated/table/table.css"
+    },
+    "./table-of-contents": {
+      "types": "./dist/generated/table-of-contents/table-of-contents.d.ts",
+      "import": "./dist/generated/table-of-contents/table-of-contents.js"
+    },
+    "./table-of-contents.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/table-of-contents/table-of-contents.css",
+      "default": "./dist/generated/table-of-contents/table-of-contents.css"
+    },
+    "./tabs": {
+      "types": "./dist/generated/tabs/tabs.d.ts",
+      "import": "./dist/generated/tabs/tabs.js"
+    },
+    "./tabs.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tabs/tabs.css",
+      "default": "./dist/generated/tabs/tabs.css"
+    },
+    "./tags-input": {
+      "types": "./dist/generated/tags-input/tags-input.d.ts",
+      "import": "./dist/generated/tags-input/tags-input.js"
+    },
+    "./tags-input.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tags-input/tags-input.css",
+      "default": "./dist/generated/tags-input/tags-input.css"
+    },
+    "./text": {
+      "types": "./dist/generated/text/text.d.ts",
+      "import": "./dist/generated/text/text.js"
+    },
+    "./text.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/text/text.css",
+      "default": "./dist/generated/text/text.css"
+    },
+    "./textarea": {
+      "types": "./dist/generated/textarea/textarea.d.ts",
+      "import": "./dist/generated/textarea/textarea.js"
+    },
+    "./textarea.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/textarea/textarea.css",
+      "default": "./dist/generated/textarea/textarea.css"
+    },
+    "./time-field": {
+      "types": "./dist/generated/time-field/time-field.d.ts",
+      "import": "./dist/generated/time-field/time-field.js"
+    },
+    "./time-field.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/time-field/time-field.css",
+      "default": "./dist/generated/time-field/time-field.css"
+    },
+    "./time-picker": {
+      "types": "./dist/generated/time-picker/time-picker.d.ts",
+      "import": "./dist/generated/time-picker/time-picker.js"
+    },
+    "./time-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/time-picker/time-picker.css",
+      "default": "./dist/generated/time-picker/time-picker.css"
+    },
+    "./timeline": {
+      "types": "./dist/generated/timeline/timeline.d.ts",
+      "import": "./dist/generated/timeline/timeline.js"
+    },
+    "./timeline.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/timeline/timeline.css",
+      "default": "./dist/generated/timeline/timeline.css"
+    },
+    "./toast": {
+      "types": "./dist/generated/toast/toast.d.ts",
+      "import": "./dist/generated/toast/toast.js"
+    },
+    "./toast.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/toast/toast.css",
+      "default": "./dist/generated/toast/toast.css"
+    },
+    "./toggle": {
+      "types": "./dist/generated/toggle/toggle.d.ts",
+      "import": "./dist/generated/toggle/toggle.js"
+    },
+    "./toggle.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/toggle/toggle.css",
+      "default": "./dist/generated/toggle/toggle.css"
+    },
+    "./toggle-group": {
+      "types": "./dist/generated/toggle-group/toggle-group.d.ts",
+      "import": "./dist/generated/toggle-group/toggle-group.js"
+    },
+    "./toggle-group.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/toggle-group/toggle-group.css",
+      "default": "./dist/generated/toggle-group/toggle-group.css"
+    },
+    "./tool-call": {
+      "types": "./dist/generated/tool-call/tool-call.d.ts",
+      "import": "./dist/generated/tool-call/tool-call.js"
+    },
+    "./tool-call.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tool-call/tool-call.css",
+      "default": "./dist/generated/tool-call/tool-call.css"
+    },
+    "./tooltip": {
+      "types": "./dist/generated/tooltip/index.d.ts",
+      "import": "./dist/generated/tooltip/index.js"
+    },
+    "./tooltip.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tooltip/tooltip.css",
+      "default": "./dist/generated/tooltip/tooltip.css"
+    },
+    "./tour": {
+      "types": "./dist/generated/tour/tour.d.ts",
+      "import": "./dist/generated/tour/tour.js"
+    },
+    "./tour.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tour/tour.css",
+      "default": "./dist/generated/tour/tour.css"
+    },
+    "./transfer-list": {
+      "types": "./dist/generated/transfer-list/transfer-list.d.ts",
+      "import": "./dist/generated/transfer-list/transfer-list.js"
+    },
+    "./transfer-list.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/transfer-list/transfer-list.css",
+      "default": "./dist/generated/transfer-list/transfer-list.css"
+    },
+    "./tree-grid": {
+      "types": "./dist/generated/tree-grid/tree-grid.d.ts",
+      "import": "./dist/generated/tree-grid/tree-grid.js"
+    },
+    "./tree-grid.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tree-grid/tree-grid.css",
+      "default": "./dist/generated/tree-grid/tree-grid.css"
+    },
+    "./tree-view": {
+      "types": "./dist/generated/tree-view/tree-view.d.ts",
+      "import": "./dist/generated/tree-view/tree-view.js"
+    },
+    "./tree-view.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/tree-view/tree-view.css",
+      "default": "./dist/generated/tree-view/tree-view.css"
+    },
+    "./upload-progress": {
+      "types": "./dist/generated/upload-progress/upload-progress.d.ts",
+      "import": "./dist/generated/upload-progress/upload-progress.js"
+    },
+    "./upload-progress.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/upload-progress/upload-progress.css",
+      "default": "./dist/generated/upload-progress/upload-progress.css"
+    },
+    "./validation-summary": {
+      "types": "./dist/generated/validation-summary/validation-summary.d.ts",
+      "import": "./dist/generated/validation-summary/validation-summary.js"
+    },
+    "./validation-summary.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/validation-summary/validation-summary.css",
+      "default": "./dist/generated/validation-summary/validation-summary.css"
+    },
+    "./virtual-list": {
+      "types": "./dist/generated/virtual-list/virtual-list.d.ts",
+      "import": "./dist/generated/virtual-list/virtual-list.js"
+    },
+    "./virtual-list.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/virtual-list/virtual-list.css",
+      "default": "./dist/generated/virtual-list/virtual-list.css"
+    },
+    "./visually-hidden": {
+      "types": "./dist/generated/visually-hidden/visually-hidden.d.ts",
+      "import": "./dist/generated/visually-hidden/visually-hidden.js"
+    },
+    "./visually-hidden.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/visually-hidden/visually-hidden.css",
+      "default": "./dist/generated/visually-hidden/visually-hidden.css"
+    },
+    "./year-picker": {
+      "types": "./dist/generated/year-picker/year-picker.d.ts",
+      "import": "./dist/generated/year-picker/year-picker.js"
+    },
+    "./year-picker.css": {
+      "types": "./dist/style.d.ts",
+      "style": "./dist/generated/year-picker/year-picker.css",
+      "default": "./dist/generated/year-picker/year-picker.css"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc -p tsconfig.json && node ../../tooling/package-builder/src/copy-assets.ts .",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^18.3.0 || ^19.0.0",
+    "react-dom": "^18.3.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "catalog:",
+    "react-aria-components": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "typescript": "catalog:"
+  },
+  "mergora": {
+    "generatedBy": "@mergora-internal/package-builder",
+    "editPolicy": "do-not-edit",
+    "canonicalSource": "registry/source",
+    "distributionStatus": "unreleased",
+    "publishedMaturity": null
+  }
+}

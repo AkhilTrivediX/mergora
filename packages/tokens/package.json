@@ -1,0 +1,50 @@
+{
+  "name": "mergora-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Mergora DTCG 2025.10 tokens and generated CSS, Tailwind, TypeScript, and design-tool artifacts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkhilTrivediX/mergora.git",
+    "directory": "packages/tokens"
+  },
+  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./tokens.css": "./dist/tokens.css",
+    "./tailwind.css": "./dist/tailwind.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./canonical.dtcg.json": "./dist/canonical.dtcg.json",
+    "./mergora.resolver.json": "./dist/mergora.resolver.json",
+    "./design-tool-interchange.dtcg.json": "./dist/design-tool-interchange.dtcg.json",
+    "./docs.json": "./dist/docs.json",
+    "./schema.json": "./dist/schema.json",
+    "./resolved/*.dtcg.json": "./dist/resolved/*.dtcg.json",
+    "./primitives.tokens.json": "./dist/primitives.tokens.json",
+    "./semantics.tokens.json": "./dist/semantics.tokens.json",
+    "./themes/*.tokens.json": "./dist/themes/*.tokens.json",
+    "./density/*.tokens.json": "./dist/density/*.tokens.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node ../../tooling/token-compiler/src/cli.mjs --check && node scripts/build.mjs",
+    "check": "node ../../tooling/token-compiler/src/cli.mjs --check",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "generate": "node ../../tooling/token-compiler/src/cli.mjs --write",
+    "typecheck": "node ../../tooling/token-compiler/src/cli.mjs --check && tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-slider",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete multi-thumb keyboard, track press, pointer drag, touch cancellation, collision, and boundary fixtures in every supported engine.",
+    "Verify distinct accessible names, native form names, reset, disabled omission, read-only success, and external form association.",
+    "Record horizontal, vertical, RTL, narrow, zoom, forced-colors, and overlapping-thumb geometry.",
+    "Complete localized currency, percent, unit, and non-Latin value-text fixtures.",
+    "Verify intelligent marks, value bubbles, collision announcements, and complete disabled-enhancement absence across generated consumers.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

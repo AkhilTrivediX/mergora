@@ -1,0 +1,136 @@
+/* Generated from registry/source/components/rich-text-editor/rich-text-editor.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-rich-text-editor {
+  background: var(--mrg-semantic-color-background-canvas);
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-md);
+  min-inline-size: 0;
+}
+
+.mrg-rich-text-editor__heading {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-rich-text-editor__heading strong {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-rich-text-editor__heading span {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-rich-text-editor__adapter {
+  background: var(--mrg-semantic-color-status-info-background);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-info-border);
+  color: var(--mrg-semantic-color-status-info-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  margin: 0;
+  padding-block: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-rich-text-editor__adapter code {
+  font-family: var(--mrg-semantic-font-family-code);
+}
+
+.mrg-rich-text-editor__toolbar {
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-strong);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-rich-text-editor__surface {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-container);
+  min-block-size: 14rem;
+  min-inline-size: 0;
+  overflow: auto;
+  padding: var(--mrg-semantic-space-inset-md);
+}
+
+.mrg-rich-text-editor__surface :where(input, textarea, [contenteditable="true"]):focus-visible,
+.mrg-rich-text-editor :where(button, summary):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-rich-text-editor__serialization {
+  background: var(--mrg-semantic-color-background-surface);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-brand-violet);
+  border-radius: var(--mrg-semantic-radius-control);
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-rich-text-editor__serialization summary {
+  cursor: pointer;
+  font-weight: var(--mrg-semantic-font-weight-heading);
+}
+
+.mrg-rich-text-editor__serialization pre {
+  font-family: var(--mrg-semantic-font-family-code);
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.mrg-rich-text-editor__error {
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  margin: 0;
+  padding: var(--mrg-semantic-space-inset-sm);
+}
+
+.mrg-rich-text-editor__status {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-brand-living);
+  color: var(--mrg-semantic-color-foreground-secondary);
+  font-size: var(--mrg-semantic-font-size-label);
+  padding-block-start: var(--mrg-semantic-space-inset-xs);
+}
+
+.mrg-rich-text-editor[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-rich-text-editor *,
+  .mrg-rich-text-editor *::before,
+  .mrg-rich-text-editor *::after {
+    animation-duration: 0s;
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-rich-text-editor,
+  .mrg-rich-text-editor__adapter,
+  .mrg-rich-text-editor__toolbar,
+  .mrg-rich-text-editor__surface,
+  .mrg-rich-text-editor__serialization,
+  .mrg-rich-text-editor__error,
+  .mrg-rich-text-editor__status {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-rich-text-editor__surface :where(input, textarea, [contenteditable="true"]):focus-visible,
+  .mrg-rich-text-editor :where(button, summary):focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

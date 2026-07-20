@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "cluster",
+  "entryExport": "Cluster",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "Cluster" },
+    { "kind": "type", "name": "ClusterProps" },
+    { "kind": "type", "name": "ClusterGap" },
+    { "kind": "type", "name": "ClusterAlign" },
+    { "kind": "type", "name": "ClusterJustify" },
+    { "kind": "type", "name": "ClusterOrphan" }
+  ],
+  "props": [
+    { "default": "sm", "name": "gap", "required": false, "type": "none | xs | sm | md | lg" },
+    {
+      "default": "center",
+      "name": "align",
+      "required": false,
+      "type": "start | center | end | baseline | stretch"
+    },
+    {
+      "default": "start",
+      "name": "justify",
+      "required": false,
+      "type": "start | center | end | between"
+    },
+    { "default": "start", "name": "orphan", "required": false, "type": "start | fill" }
+  ],
+  "compositionPolicy": {
+    "orphanStart": "The default leaves a final wrapped item on the logical leading edge.",
+    "orphanFill": "The final child may grow; consumers must opt in only when that child can stretch safely.",
+    "enhancement": "orphan=fill gives a wrapped final action meaningful remaining width; orphan=start removes that growth behavior."
+  }
+}

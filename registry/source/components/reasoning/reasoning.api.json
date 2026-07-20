@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "reasoning",
+  "entryExport": "Reasoning",
+  "refTarget": "HTMLDetailsElement",
+  "nativeProps": "HTML details attributes except owned children, open and toggle",
+  "exports": [
+    { "kind": "value", "name": "Reasoning" },
+    { "kind": "type", "name": "ReasoningProgress" },
+    { "kind": "type", "name": "ReasoningProps" },
+    { "kind": "type", "name": "ReasoningStatus" }
+  ],
+  "controlledState": [
+    {
+      "state": "open",
+      "controlled": "open",
+      "uncontrolled": "defaultOpen",
+      "callback": "onOpenChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "progress",
+      "required": false,
+      "default": false,
+      "type": "false | ReasoningProgress"
+    },
+    { "name": "announceCompletion", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "disclosure": "Native details/summary controls disclosure without automatic verbosity.",
+    "enhancements": "Progress and completion announcement are separately opt-in and absent when false."
+  }
+}

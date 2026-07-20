@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../direction/index.js", "./toggle-group.css", "react"],
+  "entryPath": "registry/source/components/toggle-group/toggle-group.tsx",
+  "id": "toggle-group",
+  "itemDependencies": ["direction"],
+  "outputRole": "component"
+}

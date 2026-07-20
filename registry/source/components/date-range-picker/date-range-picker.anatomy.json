@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-range-picker",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "date-range-picker",
+    "stableAttributes": ["data-slot", "data-duration", "data-duration-invalid", "data-presets"]
+  },
+  "parts": [
+    {
+      "slot": "date-range-picker-fields",
+      "element": "two labelled date inputs",
+      "purpose": "start and end native form controls",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-range-picker-presets",
+      "element": "optional button group",
+      "purpose": "consumer-owned range selections",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-range-picker-duration",
+      "element": "optional output",
+      "purpose": "inclusive calendar-day summary",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-range-picker-duration-error",
+      "element": "optional alert text",
+      "purpose": "recoverable inclusive duration-bound validation",
+      "stability": "documented"
+    }
+  ]
+}

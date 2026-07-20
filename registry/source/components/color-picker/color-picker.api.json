@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-picker",
+  "entryExport": "ColorPicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement> with value, defaultValue, onChange, and children reserved",
+  "exports": [
+    { "kind": "component", "name": "ColorPicker" },
+    { "kind": "type", "name": "ColorPickerMessages" },
+    { "kind": "type", "name": "ColorPickerProps" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "value", "required": false, "type": "SrgbColorValue" },
+    { "name": "defaultValue", "required": false, "type": "SrgbColorValue" },
+    { "name": "onChange", "required": false, "type": "(value: SrgbColorValue) => void" },
+    {
+      "name": "alphaPolicy",
+      "required": false,
+      "default": "allow",
+      "type": "allow | opaque"
+    },
+    {
+      "name": "swatches",
+      "required": false,
+      "type": "readonly distinct SrgbColorValue[]"
+    },
+    {
+      "name": "getSwatchLabel",
+      "required": false,
+      "type": "(color: SrgbColorValue, index: number) => string"
+    },
+    { "name": "format", "required": false, "default": "hex", "type": "hex | rgb | hsl" },
+    { "name": "name", "required": false, "type": "canonical ColorField form name" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "showContrast", "required": false, "default": true, "type": "boolean" },
+    { "name": "showPreview", "required": false, "default": true, "type": "boolean" },
+    { "name": "messages", "required": false, "type": "localized ColorPickerMessages overrides" },
+    { "name": "fieldMessages", "required": false, "type": "localized ColorFieldMessages overrides" }
+  ],
+  "compositionPolicy": {
+    "value": "The 2D area, named HSB channel sliders, optional alpha slider, swatches, ColorField editor, preview, contrast output, and form value share one immutable RGBA8 sRGB value.",
+    "keyboard": "Saturation, brightness, hue, and alpha each have a named native range input. The 2D interaction is an enhancement and never the sole route to a value.",
+    "field": "The embedded ColorField is the primary label-associated editor and canonical form owner. showPreview and showContrast independently remove their output when false.",
+    "forcedColors": "Authored gradients and swatch fills are suppressed; system borders, focus, selection check, channel text, canonical text, and native range semantics remain."
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "masked-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, adapter-safety, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "native input type=text and hidden raw or formatted form input",
+    "naming": "A persistent visible Field label, native label, aria-label, or aria-labelledby names the visible editable input; localized description and error relationships remain attached.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "The browser owns editing, selection, undo, clipboard, composition, and validation. The component intercepts no browser, screen-reader, editor, or platform key.",
+    "pointer": "Native input selection and pointer cancellation remain authoritative; the trusted adapter maps caret offsets after formatting.",
+    "touch": "The native input preserves a 44 CSS pixel target and consumer-selected mobile inputMode appropriate to the masked data.",
+    "speech": "The persistent visible label remains available for voice targeting and mask instructions belong in localized visible description text.",
+    "switchAccess": "The real input is the only interactive stop produced by the component."
+  },
+  "formBehavior": "The visible formatted input owns native required and custom adapter validity but intentionally has no form name. An optional hidden same-form control serializes either raw or formatted value according to the explicit serialization prop. Disabled fields are omitted. Uncontrolled reset restores the default; controlled values remain consumer-owned.",
+  "states": {
+    "attributes": [
+      "data-adapter",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-serialization",
+      "data-status"
+    ],
+    "synchronization": "Visible formatted text, raw value, chosen serialized value, adapter status, custom validity, Field relationships, and controlled or uncontrolled ownership update together; composition is not transformed mid-sequence."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=masked-field]",
+    "attributes": [
+      "data-adapter",
+      "data-disabled",
+      "data-invalid",
+      "data-readonly",
+      "data-serialization",
+      "data-status"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Validation includes programmatic state and text rather than color alone.",
+    "forcedColors": "Uses system colors, a visible double invalid border, and an explicit focus indicator.",
+    "reducedMotion": "No value, validation, caret, or layout behavior depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The input and localized validation text use intrinsic width, wrapping, logical spacing, and no fixed text height."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "invalidMessage",
+      "mask-instructions"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Composition text remains exact and unformatted until compositionend; no key, beforeinput, or paste event is canceled.",
+    "serialization": "The public value reports both raw and formatted text. Form serialization is an explicit raw or formatted choice and never silently changes by locale."
+  },
+  "consumerResponsibilities": [
+    "Import a deterministic mask adapter from trusted reviewed application code and keep its work bounded by maxInputLength.",
+    "Do not deserialize, compile, eval, dynamically import, or execute mask expressions, regular-expression strings, registry metadata, URL state, or user input.",
+    "Choose and document whether the server expects raw or formatted serialization; validate it again on the server.",
+    "Provide a persistent visible label and localized format instructions that do not rely on placeholder text alone.",
+    "Select inputMode, autocomplete, and adapter character policy appropriate to the actual field purpose and locale."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "field-association",
+      "adapter-result-and-boundary-validation",
+      "raw-and-formatted-form-serialization",
+      "controlled-uncontrolled-reset",
+      "ime-deferral-and-caret-mapping",
+      "bounded-paste-and-invalid-recovery",
+      "narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "insertion-deletion-replacement-caret-editing",
+      "paste-and-mobile-keyboard",
+      "japanese-ime-composition",
+      "keyboard-switch-and-speech",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Mergora deliberately supplies an adapter boundary rather than a universal declarative mask language; consumers must review and test the trusted adapter for their data and locale.",
+    "A synchronous JavaScript adapter can still be defective; bounded input and output prevent unbounded data size but cannot preempt blocking code inside trusted application modules.",
+    "Source-present-unreleased records do not include immutable generated artifacts, production adapter evidence, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

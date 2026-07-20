@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "itemId": "aspect-ratio",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio owns no hover interaction."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio owns no activation state."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "FocusPreservation"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio is not a disableable control."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio does not own editable state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid ratios throw instead of rendering a state."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio is not a form control."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading semantics belong to composed content."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "EmptyRoots" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio has no partial data model."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "not-applicable", "reason": "AspectRatio has no action intent." }
+    },
+    { "id": "custom-ratio", "applicability": { "status": "applicable" }, "story": "AspectRatios" },
+    { "id": "fallback", "applicability": { "status": "applicable" }, "story": "AspectRatios" },
+    { "id": "long-content", "applicability": { "status": "applicable" }, "story": "NarrowReflow" },
+    { "id": "narrow-320", "applicability": { "status": "applicable" }, "story": "NarrowReflow" },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "AspectRatio defines no animation or transition."
+      }
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "RightToLeft" },
+    { "id": "zoom-400", "applicability": { "status": "applicable" }, "story": "NarrowReflow" }
+  ]
+}

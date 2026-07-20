@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/passport-v1.schema.json",
+  "title": "Mergora Quality Passport v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "passportId",
+    "item",
+    "release",
+    "evidenceDigest",
+    "generatedAt",
+    "manualReview",
+    "overall",
+    "claimScope",
+    "links",
+    "sections",
+    "limitations"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "passportId": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "maturity",
+        "trust",
+        "riskClass",
+        "version",
+        "uiVersion",
+        "sourceCommit",
+        "sourceDigest"
+      ],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "maturity": { "$ref": "common-v1.schema.json#/$defs/maturity" },
+        "trust": { "$ref": "common-v1.schema.json#/$defs/trustTier" },
+        "riskClass": { "$ref": "common-v1.schema.json#/$defs/riskClass" },
+        "version": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "uiVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "sourceCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "sourceDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "evidenceDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "manualReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lastReviewed", "nextReviewState"],
+      "properties": {
+        "lastReviewed": {
+          "oneOf": [{ "type": "string", "format": "date" }, { "type": "null" }]
+        },
+        "nextReviewState": { "enum": ["current", "review-due", "expired", "not-yet-verified"] }
+      }
+    },
+    "overall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "aggregateState", "explanation"],
+      "properties": {
+        "state": { "$ref": "common-v1.schema.json#/$defs/releaseGateState" },
+        "aggregateState": { "$ref": "common-v1.schema.json#/$defs/aggregateEvidenceState" },
+        "explanation": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+      }
+    },
+    "claimScope": {
+      "const": "Evidence applies only to the identified item, source digest, contract, environments, states, and release; it is not certification of a consuming application."
+    },
+    "links": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["json", "contract", "workflow", "source", "issues"],
+      "properties": {
+        "json": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+        "contract": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+        "workflow": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+        "source": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+        "issues": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+      }
+    },
+    "sections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract",
+        "automation",
+        "manualAssistiveTechnology",
+        "keyboardFocus",
+        "responsiveInput",
+        "localeDirection",
+        "visualModes",
+        "compatibility",
+        "footprintDependencies",
+        "semanticSync",
+        "knownLimitations"
+      ],
+      "properties": {
+        "contract": { "$ref": "#/$defs/evidenceRows" },
+        "automation": { "$ref": "#/$defs/evidenceRows" },
+        "manualAssistiveTechnology": { "$ref": "#/$defs/evidenceRows" },
+        "keyboardFocus": { "$ref": "#/$defs/evidenceRows" },
+        "responsiveInput": { "$ref": "#/$defs/evidenceRows" },
+        "localeDirection": { "$ref": "#/$defs/evidenceRows" },
+        "visualModes": { "$ref": "#/$defs/evidenceRows" },
+        "compatibility": { "$ref": "#/$defs/evidenceRows" },
+        "footprintDependencies": { "$ref": "#/$defs/evidenceRows" },
+        "semanticSync": { "$ref": "#/$defs/evidenceRows" },
+        "knownLimitations": { "$ref": "#/$defs/evidenceRows" }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "severity",
+          "environment",
+          "impact",
+          "workaround",
+          "issue",
+          "reviewState"
+        ],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "severity": { "enum": ["A2", "A3"] },
+          "environment": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "impact": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "workaround": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }, { "type": "null" }]
+          },
+          "issue": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+          "reviewState": { "enum": ["open", "upstream", "resolved", "expired"] }
+        }
+      },
+      "maxItems": 256
+    }
+  },
+  "$defs": {
+    "evidenceRows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "aggregateState", "summary", "references"],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "state": { "$ref": "common-v1.schema.json#/$defs/passportEvidenceState" },
+          "aggregateState": { "$ref": "common-v1.schema.json#/$defs/aggregateEvidenceState" },
+          "summary": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "references": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+            "maxItems": 256
+          }
+        }
+      },
+      "minItems": 1,
+      "maxItems": 1024
+    }
+  }
+}

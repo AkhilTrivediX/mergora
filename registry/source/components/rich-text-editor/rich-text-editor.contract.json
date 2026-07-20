@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "rich-text-editor",
+  "contractStatus": "labs-source-present-unreleased",
+  "claim": "This Labs adapter shell is not Stable and makes no editing, screen-reader, mobile, serialization, sanitization, package-parity, or manual assistive-technology conformance claim for an adapter engine.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Mergora provides labelled shell, error, form serialization, optional toolbar boundary, details, and status; all editing semantics come from the required adapter.",
+    "naming": "Label and description ids are supplied to the adapter; exact adapter id/version can be visibly exposed.",
+    "roleOverride": "Mergora adds no contenteditable role, document model, fake toolbar behavior, or editor engine.",
+    "refTarget": "HTMLDivElement adapter shell"
+  },
+  "interaction": {
+    "keyboard": "Adapter owns complete editing, selection, history, toolbar, shortcut, and focus behavior.",
+    "pointer": "Adapter owns selection and object manipulation; shell adds no gesture.",
+    "touch": "Adapter owns virtual-keyboard, mobile selection, and touch affordances.",
+    "speech": "Visible shell label and adapter controls must form speech targets.",
+    "switchAccess": "Adapter must document scan order and non-gesture alternatives before promotion."
+  },
+  "formBehavior": "Optional name serializes the exact adapter value in a hidden input and reset restores defaultValue; the adapter owns document schema and migration.",
+  "preferences": {
+    "forcedColors": "Shell, boundaries, status, serialization, errors, and focus mappings are preserved; adapter content requires independent proof.",
+    "reducedMotion": "Shell motion is removed; adapter motion requires independent review."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": false,
+    "supports200PercentText": false,
+    "logicalProperties": true,
+    "overflowPolicy": "Shell is bounded; adapter reflow and virtual-keyboard behavior remain unproven Labs obligations."
+  },
+  "consumerResponsibilities": [
+    "Integrate a maintained, licensed, pinned editor engine and publish its exact document schema, serialization, migrations, security policy, and dependency health.",
+    "Sanitize untrusted import/export and URL/media output under the application threat model.",
+    "Complete editor-specific desktop/mobile AT, screen-reader reading/editing modes, IME, voice, switch, touch, zoom, and data-loss testing."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "adapter-id-version",
+      "controlled-uncontrolled-reset",
+      "semantic-context-forwarding",
+      "enhancement-isolation",
+      "serialization-validation",
+      "package-source-parity"
+    ],
+    "manual": ["complete-risk-3-editor-matrix-not-recorded"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "This source is only a Labs integration shell; it intentionally contains no editor engine.",
+    "No adapter has earned the complete editing, screen-reader, mobile, serialization, security, lifecycle, or manual contract required for promotion."
+  ]
+}

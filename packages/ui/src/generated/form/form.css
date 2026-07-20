@@ -1,0 +1,41 @@
+/* Generated from registry/source/components/form/form.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-form {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-lg);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-form[data-layout="compact"] {
+  gap: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-form [data-slot="form-submission-status"] {
+  border-block-start: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-status-success-border);
+  color: var(--mrg-semantic-color-status-success-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  margin: 0;
+  padding-block-start: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-form [data-slot="form-submission-status"][data-status="submitting"] {
+  border-color: var(--mrg-semantic-color-status-loading-border);
+  color: var(--mrg-semantic-color-status-loading-foreground);
+}
+
+.mrg-form [data-slot="form-submission-status"][data-status="error"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+@media (forced-colors: active) {
+  .mrg-form [data-slot="form-submission-status"] {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tool-call",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicToolCall" },
+    {
+      "id": "details",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedToolCall"
+    },
+    { "id": "running", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "cancelled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "sensitive-hidden",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedToolCall"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

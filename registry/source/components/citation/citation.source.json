@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./citation.css", "react"],
+  "entryPath": "registry/source/components/citation/citation.tsx",
+  "id": "citation",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

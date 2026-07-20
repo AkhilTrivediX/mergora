@@ -1,0 +1,92 @@
+@layer mergora.components {
+  .mrg-collaboration-presence {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-collaboration-presence [data-slot="collaboration-presence-list"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-collaboration-presence li {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-control);
+    background: var(--mrg-semantic-color-background-canvas);
+  }
+
+  .mrg-collaboration-presence [data-slot="collaboration-presence-avatar"] {
+    display: grid;
+    place-items: center;
+    inline-size: var(--mrg-semantic-size-target-minimum);
+    block-size: var(--mrg-semantic-size-target-minimum);
+    flex: 0 0 auto;
+    border: var(--mrg-semantic-border-width-emphasis) solid var(--mrg-semantic-color-brand-action);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-surface);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+
+  .mrg-collaboration-presence
+    li[data-presence-status="busy"]
+    [data-slot="collaboration-presence-avatar"],
+  .mrg-collaboration-presence
+    li[data-presence-status="stale"]
+    [data-slot="collaboration-presence-avatar"] {
+    border-color: var(--mrg-semantic-color-brand-violet);
+  }
+
+  .mrg-collaboration-presence
+    li[data-presence-status="offline"]
+    [data-slot="collaboration-presence-avatar"] {
+    border-style: dashed;
+    border-color: var(--mrg-semantic-color-border-strong);
+  }
+
+  .mrg-collaboration-presence li > span:last-child {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  .mrg-collaboration-presence [data-slot="collaboration-presence-label"],
+  .mrg-collaboration-presence [data-slot="collaboration-presence-summary"] {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-collaboration-presence [data-slot="collaboration-presence-summary"] {
+    padding-block: var(--mrg-semantic-space-inset-xs);
+    border-block: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-accent-border);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+  }
+
+  @media (max-width: 32rem) {
+    .mrg-collaboration-presence [data-slot="collaboration-presence-list"] {
+      display: grid;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-collaboration-presence li,
+    .mrg-collaboration-presence [data-slot="collaboration-presence-avatar"],
+    .mrg-collaboration-presence [data-slot="collaboration-presence-summary"] {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+  }
+}

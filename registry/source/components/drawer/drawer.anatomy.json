@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "drawer",
+  "root": {
+    "element": "compound sheet-backed dialog",
+    "ref": "See exported compound-part declarations.",
+    "slot": "drawer-content",
+    "stableAttributes": ["data-slot", "data-side", "data-swipe-enabled"]
+  },
+  "parts": [
+    {
+      "slot": "drawer-overlay",
+      "element": "div modal overlay",
+      "stability": "documented"
+    },
+    {
+      "slot": "drawer-content",
+      "element": "section role=dialog",
+      "stability": "documented"
+    },
+    {
+      "slot": "drawer-swipe-handle",
+      "element": "button",
+      "purpose": "Optionally provides touch swipe dismissal and a keyboard-operable equivalent.",
+      "stability": "documented"
+    }
+  ]
+}

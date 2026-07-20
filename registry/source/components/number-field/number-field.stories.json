@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "number-field",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "PlainBaseline"
+    },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "ProductionWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "ScrubAndKeyboard" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "ScrubAndKeyboard"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "ProductionWorkbench"
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading belongs to the surrounding calculation or submission workflow."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "LocaleMatrix" },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "LocaleMatrix" },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success feedback belongs to a persistent workflow status."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning feedback belongs to a persistent workflow status."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Editing a number does not itself perform a destructive action."
+      }
+    }
+  ]
+}

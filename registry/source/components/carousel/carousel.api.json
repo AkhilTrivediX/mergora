@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "carousel",
+  "entryExport": "Carousel",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Carousel"
+    },
+    {
+      "kind": "type",
+      "name": "CarouselAutoplay"
+    },
+    {
+      "kind": "type",
+      "name": "CarouselProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "autoplay",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "announceSlide",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Carousel; enhancement output is additive and independently removable.",
+    "enhancement": "Autoplay is explicit, pausable, and reduced-motion aware; slide announcements are a separate opt-in live channel. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

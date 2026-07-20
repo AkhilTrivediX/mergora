@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "notification-center",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package/source/native/Shadcn output and packed consumers.",
+    "Pass large-data virtualization, queued-live-update/read-position, lifecycle and supported-browser/visual gates.",
+    "Complete Risk Class 3 manual assistive-technology, touch, zoom, RTL and forced-colors evidence.",
+    "Dogfood generated public output and approve a Quality Passport before any Stable claim."
+  ]
+}

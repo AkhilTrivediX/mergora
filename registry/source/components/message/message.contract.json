@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "message",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "article with optional header, metadata and action footer",
+    "rolePolicy": "The message role is text context, never a fabricated ARIA role.",
+    "refTarget": "HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through consumer-supplied links and actions in document order."
+    }
+  ],
+  "nonColor": "Role and delivery state are available as stable attributes and optional visible text; color is never the sole cue.",
+  "responsive": "Long selectable content wraps and the user message alignment collapses without page overflow.",
+  "stableSelectors": {
+    "root": "[data-slot=message]",
+    "parts": ["message-content", "message-actions", "message-role-context"],
+    "attributes": ["data-message-role", "data-delivery-state"]
+  },
+  "security": "The component never parses Markdown or uses dangerouslySetInnerHTML. Consumers must sanitize any renderer that does.",
+  "consumerResponsibilities": [
+    "Provide localized author, role, time and action labels.",
+    "Sanitize untrusted rich-content adapters before passing React nodes.",
+    "Do not claim Stable until current automated and manual evidence exists."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "semantic-article",
+      "long-content",
+      "enhancement-off",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch", "zoom"],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pin-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify controlled and uncontrolled validation, submission, external form ownership, and native reset.",
+    "Record current password-manager discovery with reviewed autocomplete values for representative reusable-PIN workflows.",
+    "Verify secure and visible modes, allow and block paste policies, IME composition, caret editing, keyboard, switch, speech, and touch behavior.",
+    "Record narrow, 400 percent zoom, 200 percent text, RTL, long localized-label, and virtual-keyboard geometry.",
+    "Complete forced-colors and enhanced-contrast review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

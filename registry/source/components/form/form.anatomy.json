@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "root": {
+    "element": "form",
+    "ref": "HTMLFormElement",
+    "slot": "form",
+    "stableAttributes": ["data-slot", "data-layout", "data-submission-state", "aria-busy"]
+  },
+  "parts": [
+    {
+      "slot": "form-submission-status",
+      "element": "output",
+      "purpose": "Optional persistent submitting, success, or error feedback.",
+      "stability": "documented"
+    }
+  ]
+}

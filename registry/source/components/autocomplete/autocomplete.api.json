@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "autocomplete",
+  "entryExport": "Autocomplete",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "InputHTMLAttributes<HTMLInputElement>",
+  "exports": [
+    { "kind": "value", "name": "Autocomplete" },
+    { "kind": "type", "name": "AutocompleteOption" },
+    { "kind": "type", "name": "AutocompleteProps" }
+  ],
+  "props": [
+    { "name": "showMatchContext", "required": false, "type": "boolean" },
+    { "name": "loading", "required": false, "type": "boolean" },
+    { "name": "loadingMessage", "required": false, "type": "string" },
+    { "name": "loadError", "required": false, "type": "string" },
+    { "name": "onRetry", "required": false, "type": "() => void" },
+    { "name": "hasMore", "required": false, "type": "boolean" },
+    { "name": "onLoadMore", "required": false, "type": "() => void" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the labelled editable combobox, owned listbox relationship, option state, and native input form behavior.",
+    "enhancement": "showMatchContext is additive and independently removable; false removes its UI, behavior, accessibility output, and description relationship. Remote loading, retry, and pagination are separate consumer-controlled states and never start transport."
+  }
+}

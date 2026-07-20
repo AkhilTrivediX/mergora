@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "attachment",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Record manual desktop/mobile assistive-technology tasks for actions, lifecycle, and unsafe-file recovery.",
+    "Generate and verify package, editable source, native registry, Shadcn, docs, and packed-consumer outputs.",
+    "Exercise consumer-controlled preview, download, removal confirmation, transport, cancellation, and recovery adapters without claiming file safety."
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./prose.css", "react"],
+  "entryPath": "registry/source/components/prose/prose.tsx",
+  "id": "prose",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -1,0 +1,74 @@
+.mrg-fieldset {
+  border: 0;
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  margin: 0;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.mrg-fieldset [data-slot="fieldset-legend"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding: 0;
+}
+
+.mrg-fieldset [data-slot="fieldset-description"],
+.mrg-fieldset [data-slot="fieldset-selection-summary"],
+.mrg-fieldset [data-slot="fieldset-error"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  margin-block: var(--mrg-semantic-space-stack-xs) 0;
+  max-inline-size: 70ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-fieldset [data-slot="fieldset-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-fieldset [data-slot="fieldset-selection-summary"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  color: var(--mrg-semantic-color-status-success-foreground);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding-block-start: var(--mrg-semantic-space-stack-xs);
+}
+
+.mrg-fieldset [data-slot="fieldset-error"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-fieldset [data-slot="fieldset-content"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mrg-semantic-space-stack-sm);
+  margin-block-start: var(--mrg-semantic-space-stack-sm);
+  min-inline-size: 0;
+}
+
+.mrg-fieldset[data-layout="inline"] [data-slot="fieldset-content"] {
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.mrg-fieldset[data-layout="columns"] [data-slot="fieldset-content"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.mrg-fieldset:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (max-width: 30rem) {
+  .mrg-fieldset[data-layout="inline"] [data-slot="fieldset-content"] {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-fieldset [data-slot="fieldset-error"] {
+    color: CanvasText;
+  }
+}

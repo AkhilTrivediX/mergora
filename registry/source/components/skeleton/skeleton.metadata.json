@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "skeleton",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["loading", "plain-baseline", "recommended-mergora"],
+  "slots": [
+    {
+      "name": "skeleton",
+      "semanticElement": "span aria-hidden",
+      "refTarget": "HTMLSpanElement",
+      "states": ["animated", "static"]
+    }
+  ],
+  "contract": { "id": "skeleton-accessibility", "version": "0.1.0" },
+  "passport": { "id": "skeleton-quality-passport", "version": "0.0.0" }
+}

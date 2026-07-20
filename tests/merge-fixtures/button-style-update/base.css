@@ -1,0 +1,6 @@
+.mrg-button {
+  min-block-size: var(--mrg-semantic-size-control-md);
+  border-radius: var(--mrg-semantic-radius-md);
+  background: var(--mrg-semantic-color-action-primary);
+  color: var(--mrg-semantic-color-text-on-action);
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../slot/index.js", "./focus-ring.css", "react"],
+  "entryPath": "registry/source/components/focus-ring/focus-ring.tsx",
+  "id": "focus-ring",
+  "itemDependencies": ["slot"],
+  "outputRole": "component"
+}

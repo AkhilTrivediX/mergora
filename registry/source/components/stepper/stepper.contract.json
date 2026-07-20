@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "stepper",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, workflow-validation, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A named process nav contains an ordered list and one aria-current=step; optional progress uses the native element.",
+    "states": "Complete, upcoming, current, error, disabled, and reachability remain visible and programmatic.",
+    "refTarget": "HTMLElement nav"
+  },
+  "interaction": {
+    "keyboard": "Reachable steps use native buttons; static and blocked steps remain non-interactive spans.",
+    "linear": "Linear mode permits prior steps and at most the next step; nonlinear mode permits all enabled steps.",
+    "touch": "Step controls meet preferred target size and labels reflow vertically."
+  },
+  "enhancementIsolation": {
+    "progressFalse": "No progress element, label, value, or semantics exists.",
+    "summaryOmitted": "No formatter call or output exists.",
+    "announcementFalse": "No live region, status role, or announcement text exists."
+  },
+  "preferences": {
+    "forcedColors": "Markers, connectors, current state, and focus use system colors.",
+    "reducedMotion": "Meaning never depends on motion.",
+    "rtl": "Process layout uses logical placement."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "linear-nonlinear",
+      "current-step",
+      "enhancement-isolation",
+      "narrow-rtl",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Validation and route authorization remain consumer responsibilities."
+  ]
+}

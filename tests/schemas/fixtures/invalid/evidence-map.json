@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "wrong-rollup",
+  "context": "measurement",
+  "state": "pass",
+  "aggregateState": "failed",
+  "summary": "Deliberately invalid aggregate mapping.",
+  "references": []
+}

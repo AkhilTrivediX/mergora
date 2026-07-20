@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sortable-list",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicSortableList" },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSortableList"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSortableList"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPreferences"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Static ordered content should use a native list rather than a read-only reorder system."
+      }
+    },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Reordering is not a required form value."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Persistence and asynchronous loading remain consumer boundaries."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSortableList"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ControlledAndForm" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedSortableList"
+    }
+  ]
+}

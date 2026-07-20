@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "text",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["sizes", "weights", "tones", "truncated", "long-content", "rtl"],
+  "slots": [
+    {
+      "name": "text",
+      "semanticElement": "span | p | div | small | strong | em",
+      "refTarget": "HTMLElement",
+      "states": ["size", "tone", "weight", "truncate"]
+    }
+  ],
+  "contract": {
+    "id": "text-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "text-quality-passport",
+    "version": "0.0.0"
+  }
+}

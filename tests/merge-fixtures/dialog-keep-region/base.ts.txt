@@ -1,0 +1,5 @@
+export function DialogPolicy() {
+  // mergora:keep-start project-dialog-policy
+  return { closeOnEscape: true };
+  // mergora:keep-end project-dialog-policy
+}

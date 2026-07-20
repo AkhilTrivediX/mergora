@@ -1,0 +1,215 @@
+/* Generated from registry/source/components/button/button.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-button {
+  --mrg-button-background: var(--mrg-semantic-color-action-background);
+  --mrg-button-background-hover: var(--mrg-semantic-color-action-background-hover);
+  --mrg-button-background-pressed: var(--mrg-semantic-color-action-background-pressed);
+  --mrg-button-border: var(--mrg-semantic-color-action-border);
+  --mrg-button-foreground: var(--mrg-semantic-color-action-foreground);
+  --mrg-button-min-block-size: max(
+    var(--mrg-component-control-height),
+    var(--mrg-semantic-size-target-minimum)
+  );
+  --mrg-button-padding-block: var(--mrg-component-control-padding-block);
+  --mrg-button-padding-inline: var(--mrg-component-control-padding-inline);
+  align-items: center;
+  appearance: none;
+  background: var(--mrg-button-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-button-border);
+  border-radius: var(--mrg-component-control-radius);
+  box-sizing: border-box;
+  color: var(--mrg-button-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--mrg-semantic-font-family-prose);
+  font-size: var(--mrg-semantic-font-size-body);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  gap: var(--mrg-component-control-gap);
+  inline-size: fit-content;
+  justify-content: center;
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-body);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-button-min-block-size);
+  min-inline-size: var(--mrg-semantic-size-target-minimum);
+  padding-block: var(--mrg-button-padding-block);
+  padding-inline: var(--mrg-button-padding-inline);
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-transition) var(--mrg-semantic-motion-easing-standard);
+  user-select: none;
+  vertical-align: middle;
+}
+
+.mrg-button[data-variant="secondary"] {
+  --mrg-button-background: var(--mrg-component-control-background);
+  --mrg-button-background-hover: var(--mrg-component-control-background-hover);
+  --mrg-button-background-pressed: var(--mrg-component-control-background-pressed);
+  --mrg-button-border: var(--mrg-component-control-border);
+  --mrg-button-foreground: var(--mrg-component-control-foreground);
+}
+
+.mrg-button[data-variant="quiet"] {
+  --mrg-button-background: transparent;
+  --mrg-button-background-hover: var(--mrg-component-control-background-hover);
+  --mrg-button-background-pressed: var(--mrg-component-control-background-pressed);
+  --mrg-button-border: transparent;
+  --mrg-button-foreground: var(--mrg-semantic-color-brand-action);
+}
+
+.mrg-button[data-variant="destructive"] {
+  --mrg-button-background: var(--mrg-semantic-color-status-danger-background);
+  --mrg-button-background-hover: color-mix(
+    in oklch,
+    var(--mrg-semantic-color-status-danger-background),
+    var(--mrg-semantic-color-status-danger-foreground) 8%
+  );
+  --mrg-button-background-pressed: color-mix(
+    in oklch,
+    var(--mrg-semantic-color-status-danger-background),
+    var(--mrg-semantic-color-status-danger-foreground) 14%
+  );
+  --mrg-button-border: var(--mrg-semantic-color-status-danger-border);
+  --mrg-button-foreground: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-button[data-size="small"] {
+  font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-button[data-size="medium"] {
+  --mrg-button-min-block-size: max(
+    var(--mrg-semantic-density-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
+  --mrg-button-padding-inline: var(--mrg-semantic-space-inline-lg);
+}
+
+.mrg-button[data-size="large"] {
+  --mrg-button-min-block-size: calc(
+    var(--mrg-semantic-size-target-preferred) + var(--mrg-semantic-space-inline-xs)
+  );
+  --mrg-button-padding-block: var(--mrg-semantic-space-inline-sm);
+  --mrg-button-padding-inline: calc(
+    var(--mrg-semantic-space-inline-lg) + var(--mrg-semantic-space-inline-xs)
+  );
+  font-size: var(--mrg-semantic-font-size-body-large);
+}
+
+.mrg-button:not(:disabled):not([data-pending="true"]):hover {
+  background: var(--mrg-button-background-hover);
+}
+
+.mrg-button:not(:disabled):not([data-pending="true"]):active {
+  background: var(--mrg-button-background-pressed);
+}
+
+.mrg-button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-button:disabled {
+  --mrg-button-background: var(--mrg-component-control-background-disabled);
+  --mrg-button-border: var(--mrg-component-control-border-disabled);
+  --mrg-button-foreground: var(--mrg-component-control-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-button[data-pending="true"] {
+  border-color: var(--mrg-semantic-color-status-loading-border);
+  cursor: progress;
+}
+
+.mrg-button[data-pending="true"]::after {
+  background: var(--mrg-semantic-color-status-loading-border);
+  block-size: var(--mrg-semantic-border-width-strong);
+  content: "";
+  inset-block-end: 0;
+  inset-inline: var(--mrg-semantic-space-inline-sm);
+  position: absolute;
+}
+
+.mrg-button [data-slot="button-label"] {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--mrg-component-control-gap);
+  justify-content: center;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-button [data-slot="button-pending-indicator"] {
+  animation: mrg-button-pending
+    calc(
+      var(--mrg-semantic-motion-duration-deliberate) +
+        var(--mrg-semantic-motion-duration-transition)
+    )
+    linear infinite;
+  aspect-ratio: 1;
+  border: var(--mrg-semantic-border-width-strong) solid currentColor;
+  border-block-start-color: transparent;
+  border-radius: var(--mrg-semantic-radius-pill);
+  flex: none;
+  inline-size: var(--mrg-semantic-size-icon-sm);
+}
+
+@keyframes mrg-button-pending {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@media (any-pointer: coarse) {
+  .mrg-button {
+    min-block-size: max(
+      var(--mrg-button-min-block-size),
+      var(--mrg-semantic-size-target-preferred)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-button {
+    transition: none;
+  }
+
+  .mrg-button [data-slot="button-pending-indicator"] {
+    animation: none;
+    border-block-start-color: currentColor;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-button {
+    --mrg-button-background: ButtonFace;
+    --mrg-button-background-hover: Highlight;
+    --mrg-button-background-pressed: Highlight;
+    --mrg-button-border: ButtonBorder;
+    --mrg-button-foreground: ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-button:not(:disabled):not([data-pending="true"]):hover,
+  .mrg-button:not(:disabled):not([data-pending="true"]):active {
+    color: HighlightText;
+  }
+
+  .mrg-button:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
+    outline-color: Highlight;
+  }
+
+  .mrg-button:disabled {
+    --mrg-button-border: GrayText;
+    --mrg-button-foreground: GrayText;
+  }
+}

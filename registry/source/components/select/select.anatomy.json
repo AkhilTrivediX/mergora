@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "select",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "select",
+    "stableAttributes": ["data-slot", "data-presentation", "data-disabled", "data-invalid"]
+  },
+  "parts": [
+    {
+      "slot": "select-label",
+      "element": "label",
+      "purpose": "Provides one persistent visible name for the enhanced trigger or native select.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "select-trigger",
+      "element": "button",
+      "purpose": "Opens the enhanced non-editable single-selection popup and displays the selected text.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "select-popover",
+      "element": "non-modal popover",
+      "purpose": "Positions the enhanced listbox without clipping and restores focus to the trigger on dismissal.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "select-listbox",
+      "element": "div role=listbox",
+      "purpose": "Hosts one single-selection instance of the shared collection model.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "select-item",
+      "element": "div role=option",
+      "purpose": "Exposes stable key, localized textValue, disabled state, typeahead, focus, and selection.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "native-select",
+      "element": "select",
+      "purpose": "Provides the explicit platform-picker path for simple and mobile-first choices.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "select-load-more",
+      "element": "button",
+      "purpose": "Provides explicit remote pagination in enhanced or native presentation.",
+      "stability": "behavioral"
+    }
+  ]
+}

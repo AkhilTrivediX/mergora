@@ -1,0 +1,178 @@
+{
+  "$description": "Enhanced-contrast overrides layered after the light theme. Subtle dividers become explicit and interactive states gain stronger separation.",
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "accent": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.violet.800}"
+        },
+        "backgroundSubtle": {
+          "$value": "{primitive.color.violet.50}"
+        },
+        "border": {
+          "$value": "{primitive.color.violet.800}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "foregroundOnSubtle": {
+          "$value": "{primitive.color.violet.800}"
+        }
+      },
+      "action": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.green.800}"
+        },
+        "backgroundHover": {
+          "$value": "{primitive.color.green.900}"
+        },
+        "backgroundPressed": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.2, 0.08, 150]
+          }
+        },
+        "border": {
+          "$value": "{primitive.color.green.900}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.neutral.0}"
+        }
+      },
+      "background": {
+        "$type": "color",
+        "canvas": {
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "inverse": {
+          "$value": "{primitive.color.neutral.900}"
+        },
+        "surface": {
+          "$value": "{primitive.color.neutral.25}"
+        },
+        "surfaceRaised": {
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "surfaceSunken": {
+          "$value": "{primitive.color.neutral.100}"
+        }
+      },
+      "border": {
+        "$type": "color",
+        "default": {
+          "$value": "{primitive.color.neutral.500}"
+        },
+        "disabled": {
+          "$value": "{primitive.color.neutral.500}"
+        },
+        "interactive": {
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "strong": {
+          "$value": "{primitive.color.neutral.600}"
+        }
+      },
+      "brand": {
+        "$type": "color",
+        "action": {
+          "$value": "{primitive.color.green.800}"
+        },
+        "living": {
+          "$value": "{primitive.color.green.600}"
+        },
+        "violet": {
+          "$value": "{primitive.color.violet.800}"
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$value": "{primitive.color.violet.800}"
+        },
+        "ringOnAction": {
+          "$value": "{primitive.color.neutral.0}"
+        }
+      },
+      "foreground": {
+        "$type": "color",
+        "disabled": {
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "inverse": {
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "muted": {
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "primary": {
+          "$value": "{primitive.color.neutral.900}"
+        }
+      },
+      "selection": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.green.100}"
+        },
+        "border": {
+          "$value": "{primitive.color.green.800}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.green.900}"
+        }
+      },
+      "status": {
+        "danger": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.red.50}"
+          },
+          "border": {
+            "$value": "{primitive.color.red.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.red.900}"
+          }
+        },
+        "info": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.blue.50}"
+          },
+          "border": {
+            "$value": "{primitive.color.blue.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.blue.900}"
+          }
+        },
+        "success": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.green.50}"
+          },
+          "border": {
+            "$value": "{primitive.color.green.800}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.green.900}"
+          }
+        },
+        "warning": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.amber.50}"
+          },
+          "border": {
+            "$value": "{primitive.color.amber.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.amber.900}"
+          }
+        }
+      }
+    }
+  }
+}

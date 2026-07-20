@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-grid",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicTreeGrid" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "RecommendedTreeGrid" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "RecommendedTreeGrid" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPreferences"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required row selection belongs to the containing workflow."
+      }
+    },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedTreeGrid"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ControlledAndForm" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The canonical source does not delete rows."
+      }
+    }
+  ]
+}

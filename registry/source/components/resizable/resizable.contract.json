@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "resizable",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "Two native panel divs surround one focusable ARIA separator; native button siblings provide non-drag step and collapse operations.",
+    "name": "Resizable.Handle requires aria-label or aria-labelledby by type and applies it to the separator.",
+    "value": "aria-valuemin, aria-valuemax, aria-valuenow, localized aria-valuetext, aria-orientation, and aria-controls update with the visible size.",
+    "focusModel": "The separator and each available native button are ordinary tab stops; no roving focus or focus trap is introduced.",
+    "refTargets": "Root, Primary, and Secondary refs target their divs; Handle ref targets the focusable separator div."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves among separator and visible step/collapse controls in DOM order."
+    },
+    {
+      "key": "Arrow Left/Right",
+      "behavior": "For horizontal layouts, moves the separator spatially by step; physical direction reverses in RTL."
+    },
+    {
+      "key": "Arrow Up/Down",
+      "behavior": "For vertical layouts, decreases/increases the primary block size by step."
+    },
+    { "key": "Home / End", "behavior": "Moves to the documented expanded min/max size." },
+    { "key": "Page Up / Page Down", "behavior": "Increases/decreases by two steps." },
+    {
+      "key": "Enter",
+      "behavior": "Collapses or restores the primary panel only when Root is collapsible."
+    }
+  ],
+  "pointerTouch": "The separator supports pointer capture and cancellation. Adjacent minimum 44 CSS-pixel native buttons provide decrement, increment, and optional collapse/restore operations without dragging.",
+  "state": {
+    "controlled": "value owns visible state; onValueChange reports each proposal and onValueCommit reports discrete or completed pointer changes.",
+    "uncontrolled": "defaultValue initializes internal state; the same callbacks remain observable.",
+    "collapse": "Collapsed primary content uses the native hidden state so it cannot retain focus or remain exposed offscreen; restore returns to the last expanded value.",
+    "stepControls": "showStepControls=false omits the complete button group, button events, labels, and accessibility nodes while preserving separator input."
+  },
+  "responsive": "Panels have zero intrinsic minimums and wrap content; no fixed text-bearing height is introduced. Consumers must choose a sequential alternative when both panels cannot remain useful at 320 CSS pixels.",
+  "stableSelectors": {
+    "root": "[data-slot=resizable-root]",
+    "parts": [
+      "[data-slot=resizable-primary]",
+      "[data-slot=resizable-handle]",
+      "[data-slot=resizable-separator]",
+      "[data-slot=resizable-secondary]"
+    ],
+    "attributes": ["data-orientation", "data-state", "data-collapsible", "data-disabled"]
+  },
+  "consumerResponsibilities": [
+    "Provide a localized separator name describing the panels whose boundary moves.",
+    "Keep controlled values synchronized and do not override aria value, orientation, controls, role, or tabIndex attributes.",
+    "Provide an application-specific sequential presentation when two side-by-side panels are not usable at narrow widths; use SplitPane when the built-in stack mode is required.",
+    "Localize messages and value formatting and revalidate focus, target size, contrast, zoom, and RTL after CSS overrides."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "controlled-uncontrolled",
+      "keyboard-map",
+      "pointer-capture-cancel",
+      "touch-controls",
+      "collapse-restore",
+      "localized-value",
+      "rtl",
+      "axe",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "screen-reader-separator-value",
+      "keyboard-only",
+      "touch-no-drag",
+      "speech",
+      "switch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

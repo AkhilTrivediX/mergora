@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/release-protocol-plan-v1.schema.json",
+  "title": "Mergora blocked release-protocol generation plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "artifactKind",
+    "generated",
+    "protocolVersion",
+    "publicationStatus",
+    "publishable",
+    "schemaContracts",
+    "inventory",
+    "endpointTemplates",
+    "emittedReleaseArtifacts",
+    "blockers"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "artifactKind": { "const": "release-protocol-plan" },
+    "generated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "editPolicy"],
+      "properties": {
+        "by": { "const": "@mergora-internal/registry-builder" },
+        "editPolicy": { "const": "do-not-edit" }
+      }
+    },
+    "protocolVersion": { "const": "mergora-v1" },
+    "publicationStatus": { "const": "blocked-unreleased" },
+    "publishable": { "const": false },
+    "schemaContracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalog", "item", "releaseManifest", "latestAlias"],
+      "properties": {
+        "catalog": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+        "item": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+        "releaseManifest": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+        "latestAlias": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["catalogDefinitions", "sourceItems", "itemsWithoutSource", "sourceItemIds"],
+      "properties": {
+        "catalogDefinitions": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "sourceItems": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "itemsWithoutSource": { "type": "integer", "minimum": 0, "maximum": 4096 },
+        "sourceItemIds": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "uniqueItems": true,
+          "maxItems": 4096
+        }
+      }
+    },
+    "endpointTemplates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "catalog",
+        "searchIndex",
+        "schema",
+        "releaseManifest",
+        "item",
+        "latestAlias",
+        "passport",
+        "contract",
+        "mirrorManifest",
+        "releaseBundle",
+        "sbom",
+        "checksums"
+      ],
+      "properties": {
+        "catalog": { "const": "r/v1/catalog.json" },
+        "searchIndex": { "const": "r/v1/search-index.json" },
+        "schema": { "const": "r/v1/schemas/<schema-name>-v1.schema.json" },
+        "releaseManifest": { "const": "r/v1/releases/<ui-version>/manifest.json" },
+        "item": { "const": "r/v1/releases/<ui-version>/items/<item-id>.json" },
+        "latestAlias": { "const": "r/v1/items/<item-id>/latest.json" },
+        "passport": { "const": "r/v1/passports/<ui-version>/<item-id>.json" },
+        "contract": { "const": "r/v1/contracts/<contract-version>/<item-id>.json" },
+        "mirrorManifest": {
+          "const": "r/v1/releases/<ui-version>/mirror-manifest.json"
+        },
+        "releaseBundle": {
+          "const": "r/v1/releases/<ui-version>/release-bundle.json"
+        },
+        "sbom": { "const": "r/v1/releases/<ui-version>/sbom.json" },
+        "checksums": { "const": "r/v1/releases/<ui-version>/SHA256SUMS" }
+      }
+    },
+    "emittedReleaseArtifacts": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "release-identity-missing",
+          "release-version-missing",
+          "release-commit-missing",
+          "release-artifacts-missing",
+          "quality-evidence-missing",
+          "manual-assistive-technology-evidence-missing",
+          "packed-consumer-evidence-missing",
+          "catalog-implementation-incomplete",
+          "public-origin-not-deployed"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

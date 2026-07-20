@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "citation",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify every distribution surface.",
+    "Pass URL-security, keyboard, packed-consumer, browser, visual, and accessibility gates.",
+    "Record screen-reader, speech, switch, touch, RTL, zoom and forced-colors evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

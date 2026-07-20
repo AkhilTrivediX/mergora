@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "query-builder",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, complete localization, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Nested fieldset and legend groups own labelled native selects, inputs, and buttons in logical DOM order.",
+    "validation": "Invalid conditions expose aria-invalid and a persistent linked visual error list; consumer validation may extend built-in schema checks.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through native editors and explicit reorder controls in document order."
+    },
+    {
+      "key": "Enter / Space",
+      "behavior": "Activates the focused native add, remove, or reorder button."
+    },
+    { "key": "Arrow keys", "behavior": "Operate native selects without custom interception." }
+  ],
+  "enhancementIsolation": {
+    "summaryFalse": "No summary output, renderer invocation, extra live behavior, or accessibility output exists.",
+    "readOnly": "Mutation controls and callbacks are absent while the nested summary remains readable.",
+    "nameOmitted": "No hidden form value is emitted."
+  },
+  "serialization": "serializeQuery emits a deterministic bounded JSON tree and parseQuery rejects malformed or excessively deep input.",
+  "preferences": {
+    "forcedColors": "Groups, errors, controls, state, and focus map to system colors.",
+    "reducedMotion": "No meaning depends on motion and all authored transitions become immediate.",
+    "rtl": "Logical spacing and native controls follow inherited direction."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "nested-state",
+      "validation",
+      "serialization",
+      "form-reset",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch-device",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased evidence does not yet include generated parity, packed consumers, performance-scale proof, or manual assistive-technology sessions.",
+    "Consumers own domain schemas, authorization, durable persistence, and localized summary grammar."
+  ]
+}

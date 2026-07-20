@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "bottom-navigation",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A named nav contains lists of safe real anchors; disabled destinations are non-link spans and one current destination uses aria-current=page.",
+    "refTarget": "HTMLElement nav"
+  },
+  "interaction": {
+    "keyboard": "Native links and the optional native details summary remain in document order.",
+    "touch": "Every primary destination meets the preferred target and safe-area inset remains visible.",
+    "routing": "onNavigate is cancellable and framework navigation remains consumer-owned."
+  },
+  "enhancementIsolation": {
+    "overflowFalse": "No details, nested overflow list, overflow labels, attributes, or overflow handler path exists."
+  },
+  "preferences": {
+    "forcedColors": "Canvas, CanvasText, and Highlight preserve focus and current state.",
+    "reducedMotion": "State transitions are removed.",
+    "rtl": "All placement uses logical edges."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "current-page",
+      "safe-links",
+      "overflow-isolation",
+      "narrow-rtl-forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch-device"],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, or manual assistive-technology evidence.",
+    "Consumers own destination priority and must not hide functionality that has no other mobile path."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "media-player",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Run real caption, subtitle, transcript, audio-description, chapter, load failure, seek, volume, and announcement fixtures across the supported browser/platform matrix.",
+    "Complete Risk Class 3 desktop/mobile AT, speech, switch, touch, zoom, RTL, and reduced-motion manual evidence.",
+    "Generate and verify package/source/native/Shadcn outputs, media lifecycle cleanup, packed consumers, and parity."
+  ]
+}

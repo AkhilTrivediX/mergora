@@ -1,0 +1,37 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/attachment/**/*.ts",
+    "../../../registry/source/components/attachment/**/*.tsx",
+    "../../../registry/source/components/emoji-picker/**/*.ts",
+    "../../../registry/source/components/emoji-picker/**/*.tsx",
+    "../../../registry/source/components/image/**/*.ts",
+    "../../../registry/source/components/image/**/*.tsx",
+    "../../../registry/source/components/image-cropper/**/*.ts",
+    "../../../registry/source/components/image-cropper/**/*.tsx",
+    "../../../registry/source/components/markdown/**/*.ts",
+    "../../../registry/source/components/markdown/**/*.tsx",
+    "../../../registry/source/components/markdown-editor/**/*.ts",
+    "../../../registry/source/components/markdown-editor/**/*.tsx",
+    "../../../registry/source/components/media-player/**/*.ts",
+    "../../../registry/source/components/media-player/**/*.tsx",
+    "../../../registry/source/components/rich-text-editor/**/*.ts",
+    "../../../registry/source/components/rich-text-editor/**/*.tsx",
+    "../../../registry/source/components/signature-pad/**/*.ts",
+    "../../../registry/source/components/signature-pad/**/*.tsx",
+    "../../../apps/storybook/src/P5MediaEditing.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

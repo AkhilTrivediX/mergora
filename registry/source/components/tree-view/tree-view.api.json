@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-view",
+  "entryExport": "TreeView",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "function", "name": "flattenTreeItems" },
+    { "kind": "component", "name": "TreeView" },
+    { "kind": "type", "name": "TreeViewDirection" },
+    { "kind": "type", "name": "TreeViewFlatItem" },
+    { "kind": "type", "name": "TreeViewItem" },
+    { "kind": "type", "name": "TreeViewLoadError" },
+    { "kind": "type", "name": "TreeViewMoveActions" },
+    { "kind": "type", "name": "TreeViewMoveDirection" },
+    { "kind": "type", "name": "TreeViewProps" },
+    { "kind": "type", "name": "TreeViewSelectionMode" },
+    { "kind": "type", "name": "TreeViewVirtualWindow" }
+  ],
+  "controlledState": [
+    {
+      "state": "active item",
+      "controlled": "activeId",
+      "uncontrolled": "defaultActiveId",
+      "callback": "onActiveIdChange"
+    },
+    {
+      "state": "expanded items",
+      "controlled": "expandedIds",
+      "uncontrolled": "defaultExpandedIds",
+      "callback": "onExpandedIdsChange"
+    },
+    {
+      "state": "selected items",
+      "controlled": "selectedIds",
+      "uncontrolled": "defaultSelectedIds",
+      "callback": "onSelectedIdsChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "explicit non-drag move actions",
+      "api": "moveActions",
+      "disabled": "false removes the named group, buttons, callback, and movement event path"
+    },
+    {
+      "name": "lazy, rename, actions, and virtual window",
+      "api": "onLoadChildren, onRename, renderActions, virtualWindow, onVirtualWindowChange",
+      "disabled": "each omission removes its callback, stateful output, keyboard branch, or virtual spacers"
+    }
+  ]
+}

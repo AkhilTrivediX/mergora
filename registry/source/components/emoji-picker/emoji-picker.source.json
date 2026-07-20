@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./emoji-picker.css", "react"],
+  "entryPath": "registry/source/components/emoji-picker/emoji-picker.tsx",
+  "id": "emoji-picker",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

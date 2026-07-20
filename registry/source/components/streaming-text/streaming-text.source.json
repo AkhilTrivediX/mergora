@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./streaming-text.css", "react"],
+  "entryPath": "registry/source/components/streaming-text/streaming-text.tsx",
+  "id": "streaming-text",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "stepper",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and compare all distribution surfaces and packed consumers.",
+    "Pass linear/nonlinear, validation, responsive label, progress, and cross-browser gates.",
+    "Record current manual keyboard, screen-reader, speech, switch, and touch evidence."
+  ]
+}

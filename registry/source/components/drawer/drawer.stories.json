@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "itemId": "drawer",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This state is not owned by this component contract or is provided by consumer-composed content."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    },
+    {
+      "id": "long-content",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    },
+    {
+      "id": "rtl",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowRtl"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "attachment",
+  "riskClass": 2,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "ready",
+    "uploading",
+    "processing",
+    "uploaded",
+    "error",
+    "disabled",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "attachment",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["ready", "uploading", "processing", "uploaded", "error"]
+    },
+    {
+      "name": "attachment-preview",
+      "semanticElement": "optional div",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "attachment-status",
+      "semanticElement": "optional polite/assertive status with progress",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "attachment-safety",
+      "semanticElement": "optional paragraph",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "attachment-accessibility", "version": "0.1.0" },
+  "passport": { "id": "attachment-quality-passport", "version": "0.0.0" }
+}

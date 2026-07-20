@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./status.css", "react"],
+  "entryPath": "registry/source/components/status/status.tsx",
+  "id": "status",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

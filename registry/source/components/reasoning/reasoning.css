@@ -1,0 +1,81 @@
+@layer mergora.components {
+  .mrg-reasoning {
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow: clip;
+  }
+
+  .mrg-reasoning [data-slot="reasoning-summary"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-md);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-surface);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    cursor: pointer;
+  }
+
+  .mrg-reasoning [data-slot="reasoning-summary"] span:last-child {
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-reasoning [data-slot="reasoning-summary"]:focus-visible {
+    box-shadow: inset 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+  }
+
+  .mrg-reasoning [data-slot="reasoning-progress"] {
+    margin: 0;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-accent-border);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+
+  .mrg-reasoning [data-slot="reasoning-content"] {
+    padding: var(--mrg-semantic-density-panel-padding);
+    line-height: var(--mrg-semantic-font-line-height-body);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-reasoning [data-slot="reasoning-announcement"] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-reasoning * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-reasoning,
+    .mrg-reasoning [data-slot="reasoning-summary"],
+    .mrg-reasoning [data-slot="reasoning-progress"] {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-reasoning [data-slot="reasoning-summary"]:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

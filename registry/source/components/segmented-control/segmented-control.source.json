@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../direction/index.js", "./segmented-control.css", "react"],
+  "entryPath": "registry/source/components/segmented-control/segmented-control.tsx",
+  "id": "segmented-control",
+  "itemDependencies": ["direction"],
+  "outputRole": "component"
+}

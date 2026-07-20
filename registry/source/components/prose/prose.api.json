@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "prose",
+  "entryExport": "Prose",
+  "refTarget": "HTMLElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Prose"
+    },
+    {
+      "kind": "type",
+      "name": "ProseProps"
+    },
+    {
+      "kind": "type",
+      "name": "ProseElement"
+    },
+    {
+      "kind": "type",
+      "name": "ProseMeasure"
+    },
+    {
+      "kind": "type",
+      "name": "ProseSize"
+    }
+  ],
+  "props": [
+    {
+      "name": "as",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "measure",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "size",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Prose adds no roles and does not parse or inject HTML. It styles native descendants while data-prose-unstyled provides a local widget escape hatch.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

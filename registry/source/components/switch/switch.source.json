@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./switch.css", "react"],
+  "entryPath": "registry/source/components/switch/switch.tsx",
+  "id": "switch",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

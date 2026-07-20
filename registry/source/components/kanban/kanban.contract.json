@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "kanban",
+  "contractStatus": "source-present-unreleased-beta-candidate",
+  "claim": "Kanban is a source-present Beta candidate only. It is not Stable and has no physical mobile assistive-technology, package-parity, release, or complete conformance claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Named column sections contain ordered card lists with native handles, move buttons, and destination selects.",
+    "drag": "Native pointer drag is additive; every move has explicit buttons and destination controls, and keyboard pickup can be cancelled.",
+    "maturity": "A visible Beta label and data-maturity=beta remain present in every mode.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through view, retry, undo, card handles, move buttons, and destination controls in document order."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Picks up the focused handle; a second activation drops the card."
+    },
+    { "key": "Arrow Up / Arrow Down", "behavior": "Moves a picked card within its column." },
+    {
+      "key": "Arrow Right / Arrow Left",
+      "behavior": "Moves a picked card across spatial columns and mirrors under RTL."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Cancels keyboard movement and restores the original complete board state."
+    }
+  ],
+  "enhancementIsolation": {
+    "wipStatusFalse": "No capacity text or status signal exists; WIP rejection remains a policy safety check.",
+    "mobileListFalse": "No view group, pressed state, list state, or presentation event exists.",
+    "announcementsFalse": "No live region or announcement state update exists.",
+    "undoFalse": "No snapshots, Undo control, undo callback reason, or undo announcement exists.",
+    "serverFalse": "No promise, pending state, persistence call, retry UI, rollback, or server error exists.",
+    "virtualFalse": "Every card renders; no spacers, range controls, or window callbacks exist."
+  },
+  "preferences": {
+    "forcedColors": "Columns, cards, grabbed state, errors, controls, Beta label, and focus map to system colors.",
+    "reducedMotion": "Focus recovery uses behavior auto and card state transitions become immediate.",
+    "rtl": "Logical layout and cross-column keyboard direction mirror while within-column order remains stable."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "pointer-drag",
+      "keyboard-cancel",
+      "non-drag-actions",
+      "wip-policy",
+      "mobile-list",
+      "server-rollback-retry",
+      "virtual-window",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "physical-ios-voiceover",
+      "physical-android-talkback",
+      "touch-device",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Kanban cannot progress beyond Beta until physical iOS VoiceOver and Android TalkBack task sessions pass.",
+    "Source-present-unreleased evidence does not yet include generated parity, packed consumers, scale performance, or complete manual assistive-technology sessions.",
+    "Consumers own durable server conflict resolution, authorization, collaborative locking, and business-specific WIP policy."
+  ]
+}

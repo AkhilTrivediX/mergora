@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "drawer",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "closed",
+    "open",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "drawer-overlay",
+      "semanticElement": "div modal overlay",
+      "refTarget": "HTMLDivElement",
+      "states": ["closed", "open"]
+    },
+    {
+      "name": "drawer-content",
+      "semanticElement": "section role=dialog",
+      "refTarget": "HTMLElement",
+      "states": ["closed", "open", "enhancement-disabled", "enhancement-enabled"]
+    },
+    {
+      "name": "drawer-swipe-handle",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": {
+    "id": "drawer-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "drawer-quality-passport",
+    "version": "0.0.0"
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "$description": "Forced-colors fallback values and CSS system-color intent. The compiler emits system colors inside forced-colors media queries while retaining valid DTCG color fallbacks.",
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "accent": {
+        "$type": "color",
+        "background": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.violet.800}"
+        },
+        "backgroundSubtle": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.violet.50}"
+        },
+        "border": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.violet.800}"
+        },
+        "foreground": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "HighlightText"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "foregroundOnSubtle": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.violet.800}"
+        }
+      },
+      "action": {
+        "$type": "color",
+        "background": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "ButtonFace"
+            }
+          },
+          "$value": "{primitive.color.green.800}"
+        },
+        "backgroundHover": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.green.900}"
+        },
+        "backgroundPressed": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.green.900}"
+        },
+        "border": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "ButtonBorder"
+            }
+          },
+          "$value": "{primitive.color.green.900}"
+        },
+        "foreground": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "ButtonText"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        }
+      },
+      "background": {
+        "$type": "color",
+        "canvas": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "inverse": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.neutral.900}"
+        },
+        "surface": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "surfaceRaised": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "surfaceSunken": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        }
+      },
+      "border": {
+        "$type": "color",
+        "default": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "disabled": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "GrayText"
+            }
+          },
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "interactive": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "ButtonBorder"
+            }
+          },
+          "$value": "{primitive.color.neutral.800}"
+        },
+        "strong": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.neutral.800}"
+        }
+      },
+      "brand": {
+        "$type": "color",
+        "action": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "LinkText"
+            }
+          },
+          "$value": "{primitive.color.green.800}"
+        },
+        "living": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "LinkText"
+            }
+          },
+          "$value": "{primitive.color.green.800}"
+        },
+        "violet": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "LinkText"
+            }
+          },
+          "$value": "{primitive.color.violet.800}"
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.violet.800}"
+        },
+        "ringOnAction": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "HighlightText"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        }
+      },
+      "foreground": {
+        "$type": "color",
+        "disabled": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "GrayText"
+            }
+          },
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "inverse": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Canvas"
+            }
+          },
+          "$value": "{primitive.color.neutral.0}"
+        },
+        "muted": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.neutral.700}"
+        },
+        "primary": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "CanvasText"
+            }
+          },
+          "$value": "{primitive.color.neutral.900}"
+        }
+      },
+      "selection": {
+        "$type": "color",
+        "background": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.green.100}"
+        },
+        "border": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "Highlight"
+            }
+          },
+          "$value": "{primitive.color.green.800}"
+        },
+        "foreground": {
+          "$extensions": {
+            "org.mergora.forcedColors": {
+              "cssSystemColor": "HighlightText"
+            }
+          },
+          "$value": "{primitive.color.green.900}"
+        }
+      },
+      "status": {
+        "danger": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.neutral.0}"
+          },
+          "border": {
+            "$value": "{primitive.color.red.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.red.900}"
+          }
+        },
+        "info": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.neutral.0}"
+          },
+          "border": {
+            "$value": "{primitive.color.blue.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.blue.900}"
+          }
+        },
+        "success": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.neutral.0}"
+          },
+          "border": {
+            "$value": "{primitive.color.green.800}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.green.900}"
+          }
+        },
+        "warning": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.neutral.0}"
+          },
+          "border": {
+            "$value": "{primitive.color.amber.700}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.amber.900}"
+          }
+        }
+      }
+    }
+  }
+}

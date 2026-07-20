@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sortable-list",
+  "entryExport": "SortableList",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change handling",
+  "exports": [
+    { "kind": "component", "name": "SortableList" },
+    { "kind": "type", "name": "SortableListChangeReason" },
+    { "kind": "type", "name": "SortableListMessages" },
+    { "kind": "type", "name": "SortableListMoveDetail" },
+    { "kind": "type", "name": "SortableListProps" },
+    { "kind": "type", "name": "SortableListVirtualWindow" },
+    { "kind": "function", "name": "moveSortableItem" }
+  ],
+  "controlledState": [
+    {
+      "state": "item order",
+      "controlled": "items",
+      "uncontrolled": "defaultItems",
+      "callback": "onItemsChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "destination controls",
+      "api": "showDestinationControls",
+      "disabled": "false removes destination labels, selects, and destination-change events while move buttons and keyboard movement remain"
+    },
+    {
+      "name": "move announcements",
+      "api": "announceMoves",
+      "disabled": "false removes the live region and every announcement update"
+    },
+    {
+      "name": "undo",
+      "api": "undoable",
+      "disabled": "false removes snapshots, Undo UI, callback events, and announcement output"
+    },
+    {
+      "name": "bounded virtual window",
+      "api": "virtualWindow and onVirtualWindowChange",
+      "disabled": "false renders every item and removes spacers and window events"
+    }
+  ]
+}

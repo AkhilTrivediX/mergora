@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/vendor-manifest-v1.schema.json",
+  "title": "Mergora offline vendor bundle manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "format",
+    "registry",
+    "release",
+    "selection",
+    "releaseManifest",
+    "items",
+    "schemas",
+    "contracts",
+    "passports",
+    "npmCoverage",
+    "npmTarballs",
+    "dependencyGraphDigest",
+    "sha256SumsDigest"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "format": { "const": "mergora-vendor-v1" },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "origin", "identityDigest"],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "origin": { "$ref": "common-v1.schema.json#/$defs/registryOrigin" },
+        "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "requested"],
+      "properties": {
+        "mode": { "enum": ["all", "items"] },
+        "requested": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 4096
+        }
+      }
+    },
+    "releaseManifest": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "schemas": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 128
+    },
+    "contracts": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+      "uniqueItems": true,
+      "maxItems": 4096
+    },
+    "passports": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/evidenceReference" },
+      "uniqueItems": true,
+      "maxItems": 4096
+    },
+    "npmCoverage": { "enum": ["not-requested", "complete"] },
+    "npmTarballs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["package", "version", "url", "bytes", "digest", "integrity", "license"],
+        "properties": {
+          "package": { "$ref": "common-v1.schema.json#/$defs/packageName" },
+          "version": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+          "bytes": { "$ref": "common-v1.schema.json#/$defs/byteCount" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "integrity": { "type": "string", "pattern": "^sha512-[A-Za-z0-9+/]+={0,2}$" },
+          "license": { "$ref": "common-v1.schema.json#/$defs/spdxLicense" }
+        }
+      },
+      "maxItems": 1024
+    },
+    "npmRegistryOrigins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "origin", "identityDigest", "trust"],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "origin": { "$ref": "common-v1.schema.json#/$defs/registryOrigin" },
+          "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "trust": { "const": "enrolled" }
+        }
+      },
+      "uniqueItems": true,
+      "maxItems": 32
+    },
+    "dependencyGraphDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "sha256SumsDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/schemas/**/*.ts",
+    "../../../registry/source/components/button/**/*.ts",
+    "../../../registry/source/components/button/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/field/**/*.ts",
+    "../../../registry/source/components/field/**/*.tsx",
+    "../../../registry/source/components/inline-edit/**/*.ts",
+    "../../../registry/source/components/inline-edit/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/rating/**/*.ts",
+    "../../../registry/source/components/rating/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../apps/storybook/src/P4RatingInlineEdit.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

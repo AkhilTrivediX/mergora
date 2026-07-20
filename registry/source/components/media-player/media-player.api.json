@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "media-player",
+  "entryExport": "MediaPlayer",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div shell attributes plus bounded native mediaProps",
+  "exports": [
+    { "kind": "component", "name": "MediaPlayer" },
+    { "kind": "type", "name": "MediaChapter" },
+    { "kind": "type", "name": "MediaPlayerProps" },
+    { "kind": "type", "name": "MediaTrack" },
+    { "kind": "function", "name": "defaultMediaSourcePolicy" },
+    { "kind": "function", "name": "formatMediaTime" }
+  ],
+  "props": [
+    { "name": "kind", "required": true, "type": "audio | video" },
+    { "name": "src", "required": true, "type": "string" },
+    { "name": "label", "required": true, "type": "non-empty string" },
+    {
+      "name": "tracks",
+      "required": false,
+      "type": "caption/subtitle/description/chapter/metadata tracks"
+    },
+    { "name": "showTranscript", "required": false, "default": false, "type": "boolean" },
+    { "name": "showChapterNavigation", "required": false, "default": false, "type": "boolean" },
+    { "name": "showTimeAnnouncements", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "validateSource",
+      "required": false,
+      "type": "consumer predicate applied to media, poster, and track sources"
+    }
+  ],
+  "compositionPolicy": {
+    "native": "Native audio/video controls are always used and autoplay is intentionally excluded from mediaProps.",
+    "enhancements": "Transcript, chapter navigation, and throttled time announcements are independently gated and absent from the accessibility tree when disabled."
+  }
+}

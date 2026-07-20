@@ -1,0 +1,232 @@
+@layer mergora.components {
+  .mrg-billing-subscription-kit {
+    display: grid;
+    gap: 0;
+    max-inline-size: 72rem;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow: clip;
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-header"],
+  .mrg-billing-subscription-kit > section,
+  .mrg-billing-subscription-kit [data-slot="billing-error"] {
+    padding: var(--mrg-semantic-density-panel-padding);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-header"] {
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-billing-subscription-kit > section + section {
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-billing-subscription-kit h1,
+  .mrg-billing-subscription-kit h2,
+  .mrg-billing-subscription-kit h3,
+  .mrg-billing-subscription-kit p {
+    margin-block-start: 0;
+  }
+
+  .mrg-billing-subscription-kit h1 {
+    margin-block-end: var(--mrg-semantic-space-stack-xs);
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-section-heading"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-md);
+    margin-block-end: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-section-heading"] :is(h2, p) {
+    margin-block-end: 0;
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-section-heading"] p,
+  .mrg-billing-subscription-kit [data-slot="billing-header"] p {
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-billing-subscription-kit fieldset {
+    display: grid;
+    gap: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .mrg-billing-subscription-kit legend {
+    margin-block-end: var(--mrg-semantic-space-stack-sm);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-billing-subscription-kit fieldset > label {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding-block: var(--mrg-semantic-space-inset-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-billing-subscription-kit fieldset > label[data-selected] {
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-plan-copy"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--mrg-semantic-space-stack-xs) var(--mrg-semantic-space-inline-md);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-plan-copy"] :is(small, ul) {
+    grid-column: 1 / -1;
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-plan-copy"] small {
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-change-preview"],
+  .mrg-billing-subscription-kit [data-slot="billing-cancellation-review"],
+  .mrg-billing-subscription-kit [data-slot="billing-error"] {
+    display: block;
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-change-preview"] {
+    margin-block-start: var(--mrg-semantic-space-stack-md);
+    border-color: var(--mrg-semantic-color-selection-border);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    margin-block-start: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-billing-subscription-kit [data-slot="billing-table-scroll"] {
+    overflow-x: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-billing-subscription-kit table {
+    inline-size: 100%;
+    min-inline-size: 38rem;
+    border-collapse: collapse;
+  }
+
+  .mrg-billing-subscription-kit :is(th, td) {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    text-align: start;
+  }
+
+  .mrg-billing-subscription-kit thead th {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-billing-subscription-kit td[data-status] {
+    text-transform: capitalize;
+  }
+
+  .mrg-billing-subscription-kit td[data-status="paid"] {
+    color: var(--mrg-semantic-color-status-success-foreground);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-billing-subscription-kit td[data-status="failed"],
+  .mrg-billing-subscription-kit [data-slot="billing-error"] {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+  }
+
+  .mrg-billing-subscription-kit button:focus-visible,
+  .mrg-billing-subscription-kit :is(input, [tabindex="0"]):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 40rem) {
+    .mrg-billing-subscription-kit [data-slot="billing-plan-copy"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-billing-subscription-kit [data-slot="billing-plan-copy"] :is(small, ul) {
+      grid-column: 1;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-billing-subscription-kit button,
+    .mrg-billing-subscription-kit input {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-billing-subscription-kit * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-billing-subscription-kit,
+    .mrg-billing-subscription-kit [data-slot="billing-header"],
+    .mrg-billing-subscription-kit > section,
+    .mrg-billing-subscription-kit fieldset > label,
+    .mrg-billing-subscription-kit :is(th, td),
+    .mrg-billing-subscription-kit
+      :is(
+        [data-slot="billing-change-preview"],
+        [data-slot="billing-cancellation-review"],
+        [data-slot="billing-error"]
+      ) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-billing-subscription-kit fieldset > label[data-selected] {
+      border-color: Highlight;
+      color: CanvasText;
+      background: Canvas;
+      outline: var(--mrg-semantic-border-width-strong) solid Highlight;
+      outline-offset: calc(-1 * var(--mrg-semantic-border-width-strong));
+    }
+
+    .mrg-billing-subscription-kit fieldset > label[data-selected] :is(strong, span, small, li) {
+      color: CanvasText;
+    }
+
+    .mrg-billing-subscription-kit button:focus-visible,
+    .mrg-billing-subscription-kit :is(input, [tabindex="0"]):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

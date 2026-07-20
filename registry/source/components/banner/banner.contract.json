@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "banner",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A Canvas-and-Ink page/site banner with intrinsic reflow and independently optional dismissal persistence.",
+  "semantics": [
+    "The named aside owns its accessible name and remains non-live; unsafe role, naming, visibility, and live-region overrides are rejected while page/site scope stays metadata.",
+    "Controlled dismissal only proposes changes. Uncontrolled dismissal alone accepts a default and injected persistence, and persistence writes occur only after committed internal transitions.",
+    "A synchronous persistence read resolves in a pre-paint layout effect while pending markup is visually suppressed; failures fall back to the supplied default and are reported without escaping the component.",
+    "A 44 CSS-pixel native dismiss button, visible severity text, non-sticky layout, and container-relative reflow avoid focus obstruction, viewport assumptions, and color-only meaning.",
+    "Omitting persistence removes adapter reads, writes, pending state, and persistence errors; dismissible=false independently removes the button, event path, and accessible name."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, text, state, and focus without color-only meaning.",
+    "reducedMotion": "No semantic information depends on motion; the one-pixel active press offset is removed when reduced motion is requested.",
+    "rtl": "Logical properties mirror layout and bdi isolates localized numeric values where applicable."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "An intrinsic container query reflows at narrow embedded widths; text wraps, actions move to their own row, and content remains readable without document clipping or hidden recovery paths."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr-hydration",
+      "schema",
+      "browser-announcement-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

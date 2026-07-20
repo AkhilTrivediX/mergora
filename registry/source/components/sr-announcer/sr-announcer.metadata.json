@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sr-announcer",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "base",
+    "responsive-reflow",
+    "locale-direction",
+    "user-preferences",
+    "long-content",
+    "async",
+    "empty-error"
+  ],
+  "slots": [
+    {
+      "name": "sr-announcer-polite",
+      "semanticElement": "role=status live region",
+      "refTarget": "none",
+      "states": ["idle", "announcing", "deduplicated"]
+    },
+    {
+      "name": "sr-announcer-assertive",
+      "semanticElement": "role=alert live region",
+      "refTarget": "none",
+      "states": ["idle", "announcing", "deduplicated"]
+    }
+  ],
+  "contract": { "id": "sr-announcer-accessibility", "version": "0.1.0" },
+  "passport": { "id": "sr-announcer-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toast",
+  "entryExport": "Toast",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "createToastQueue"
+    },
+    {
+      "kind": "type",
+      "name": "QueuedToastMessage"
+    },
+    {
+      "kind": "value",
+      "name": "Toast"
+    },
+    {
+      "kind": "type",
+      "name": "ToastAction"
+    },
+    {
+      "kind": "type",
+      "name": "ToastAddOptions"
+    },
+    {
+      "kind": "type",
+      "name": "ToastMessage"
+    },
+    {
+      "kind": "type",
+      "name": "ToastPriority"
+    },
+    {
+      "kind": "value",
+      "name": "ToastQueue"
+    },
+    {
+      "kind": "type",
+      "name": "ToastQueueOptions"
+    },
+    {
+      "kind": "value",
+      "name": "ToastRegion"
+    },
+    {
+      "kind": "type",
+      "name": "ToastRegionProps"
+    },
+    {
+      "kind": "type",
+      "name": "ToastTone"
+    }
+  ],
+  "props": [
+    {
+      "name": "showQueueSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "pauseControls",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Toast; optional output is additive and independently removable.",
+    "enhancement": "showQueueSummary and pauseControls are independent. False removes the corresponding UI, control behavior, events, and live-region output while automatic focus/hover timer pause and core queue behavior remain."
+  }
+}

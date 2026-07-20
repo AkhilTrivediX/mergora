@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "time-field",
+  "entryExport": "TimeField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React input attributes except owned type, value, defaultValue, and change fields",
+  "exports": [
+    { "kind": "component", "name": "TimeField" },
+    { "kind": "type", "name": "TimeFieldProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "time",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "showTimeZoneContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "timeZone", "required": false, "type": "IANA time-zone label" },
+    { "name": "timeZoneContext", "required": false, "type": "ReactNode | (timeZone) => ReactNode" }
+  ],
+  "compositionPolicy": {
+    "native": "The native time input owns locale 12/24-hour presentation, optional seconds through step, validation, reset, and serialization.",
+    "zone": "Optional zone context is descriptive and absent without its enabling prop."
+  }
+}

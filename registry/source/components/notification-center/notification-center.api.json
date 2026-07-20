@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "itemId": "notification-center",
+  "entryExport": "NotificationCenter",
+  "refTarget": "HTMLElement",
+  "nativeProps": "HTML section attributes except owned children and change/value props",
+  "exports": [
+    { "kind": "value", "name": "NotificationCenter" },
+    { "kind": "type", "name": "NotificationCenterFilter" },
+    { "kind": "type", "name": "NotificationCenterGrouping" },
+    { "kind": "type", "name": "NotificationCenterItem" },
+    { "kind": "type", "name": "NotificationCenterProps" },
+    { "kind": "type", "name": "NotificationCenterVirtualWindow" },
+    { "kind": "value", "name": "groupNotifications" }
+  ],
+  "props": [
+    { "name": "notifications", "required": true, "type": "readonly NotificationCenterItem[]" },
+    { "name": "liveUpdatePolicy", "required": false, "default": false, "type": "false | 'queue'" },
+    {
+      "name": "groupBy",
+      "required": false,
+      "default": false,
+      "type": "false | 'category' | 'date'"
+    },
+    { "name": "bulkActions", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "virtualWindow",
+      "required": false,
+      "default": false,
+      "type": "false | NotificationCenterVirtualWindow"
+    },
+    { "name": "announceReadChanges", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve section/list/article structure, explicit read controls and native filter/bulk controls.",
+    "enhancements": "Live queue, grouping, bulk selection, virtualization and announcements remain independently selectable.",
+    "ownership": "Consumers own transport, persistence, routing, retention, permissions and push-notification policy."
+  }
+}

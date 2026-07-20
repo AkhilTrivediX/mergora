@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "action-menu",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A React Aria anchored menu with shared-layer registration, typeahead, focus return, and an optional explicit destructive confirmation step.",
+  "semantics": [
+    "React Aria owns portal positioning, collision, collection typeahead, dismissal, and focus return; Mergora LayerManager records the active layer without adding a second Escape handler.",
+    "The nearest MergoraProvider locale is passed to React Aria I18nProvider for locale-correct collection matching and typeahead.",
+    "Direction remains independent from locale: public start/end maps to physical left/right placement before crossing the React Aria portal.",
+    "Consumer item ids are validated as non-empty and unique collection keys; description IDREFs use generated index-based DOM ids rather than raw keys.",
+    "Destructive actions require a second activation with explicit confirmation text by default; confirmDestructiveActions=false removes that enhancement completely."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, state, and focus.",
+    "reducedMotion": "Feedback remains understandable when transitions and rotation are removed.",
+    "rtl": "Logical properties and the documented spatial keyboard model follow direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Wrap, reflow, or expose native scrolling without clipping controls or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

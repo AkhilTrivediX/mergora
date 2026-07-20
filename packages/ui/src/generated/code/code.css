@@ -1,0 +1,33 @@
+/* Generated from registry/source/components/code/code.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-code {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+  border-radius: var(--mrg-semantic-radius-status);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-code);
+  line-height: var(--mrg-semantic-font-line-height-code);
+  padding-block: var(--mrg-semantic-space-inline-xs);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+  user-select: text;
+}
+.mrg-code[data-bidi-isolated="true"] {
+  unicode-bidi: isolate;
+}
+.mrg-code[data-wrap="true"] {
+  overflow-wrap: anywhere;
+  white-space: break-spaces;
+}
+.mrg-code[data-wrap="false"] {
+  display: inline-block;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+@media (forced-colors: active) {
+  .mrg-code {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

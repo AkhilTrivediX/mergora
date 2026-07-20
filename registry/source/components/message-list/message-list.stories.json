@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message-list",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicMessageList" },
+    {
+      "id": "virtualized",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMessageList"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "user-scrolled",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMessageList"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    }
+  ]
+}

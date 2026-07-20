@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "itemId": "checkbox",
+  "entryExport": "Checkbox",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement> with type and children reserved",
+  "exports": [
+    { "kind": "component", "name": "Checkbox" },
+    { "kind": "type", "name": "CheckboxProps" }
+  ],
+  "props": [
+    { "name": "children", "required": false, "type": "ReactNode visible label" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "indeterminate", "required": false, "type": "boolean controlled mixed state" },
+    { "name": "defaultIndeterminate", "required": false, "default": false, "type": "boolean" },
+    { "name": "onCheckedChange", "required": false, "type": "(checked: boolean) => void" },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" }
+  ],
+  "compositionPolicy": {
+    "submission": "One native checkbox owns checked-value submission and unchecked omission.",
+    "mixed": "Indeterminate is not a third submitted value and returns to its default on uncontrolled reset."
+  }
+}

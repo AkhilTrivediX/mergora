@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "itemId": "rating",
+  "entryExport": "Rating",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the stable root; native fieldset and radio behavior remain owned by Rating",
+  "exports": [
+    { "kind": "component", "name": "Rating" },
+    { "kind": "function", "name": "assertRatingMaximum" },
+    { "kind": "function", "name": "assertRatingValue" },
+    { "kind": "function", "name": "ratingFillForPosition" },
+    { "kind": "function", "name": "resolveRatingKeyboardIndex" },
+    { "kind": "type", "name": "RatingLabelContext" },
+    { "kind": "type", "name": "RatingProps" },
+    { "kind": "type", "name": "RatingValue" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "name", "required": true, "type": "non-empty string" },
+    { "name": "value", "required": false, "type": "number | null" },
+    { "name": "defaultValue", "required": false, "default": null, "type": "number | null" },
+    { "name": "onValueChange", "required": false, "type": "(value: number | null) => void" },
+    { "name": "maximum", "required": false, "default": 5, "type": "integer 1..10" },
+    { "name": "allowClear", "required": false, "default": false, "type": "boolean" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "invalid", "required": false, "default": false, "type": "boolean" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "error", "required": false, "type": "ReactNode" },
+    { "name": "form", "required": false, "type": "string" },
+    {
+      "name": "formatOptionLabel",
+      "required": false,
+      "type": "(context: RatingLabelContext) => non-empty string up to 256 Unicode code points"
+    },
+    {
+      "name": "formatValueLabel",
+      "required": false,
+      "type": "(context: RatingLabelContext) => non-empty string up to 256 Unicode code points"
+    },
+    { "name": "clearLabel", "required": false, "type": "localized string" },
+    { "name": "readOnlyLabel", "required": false, "type": "localized string" },
+    { "name": "requiredLabel", "required": false, "type": "localized string" }
+  ],
+  "compositionPolicy": {
+    "editable": "Every selectable value is one native radio in a labelled fieldset; no visual-only star receives an interactive role.",
+    "clear": "allowClear adds an explicit empty-value radio and is rejected with required so browser constraint semantics remain truthful.",
+    "readOnly": "Read-only values are exact labelled text with decorative stars and an optional successful hidden form control, never disabled or fabricated radios.",
+    "fractional": "Fractional values are accepted only by the non-interactive read-only display."
+  }
+}

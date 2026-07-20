@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "callout",
+  "root": {
+    "slot": "callout",
+    "element": "plain div or opt-in named complementary aside",
+    "ref": "HTMLElement",
+    "stableAttributes": ["data-slot", "data-variant", "data-landmark"]
+  },
+  "parts": [
+    { "slot": "callout-icon", "element": "span aria-hidden", "stability": "documented" },
+    { "slot": "callout-variant-label", "element": "span", "stability": "documented" },
+    { "slot": "callout-title", "element": "h1-h6", "stability": "documented" },
+    { "slot": "callout-body", "element": "div", "stability": "documented" }
+  ]
+}

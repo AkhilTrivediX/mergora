@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./color-field.css", "react"],
+  "entryPath": "registry/source/components/color-field/color-field.tsx",
+  "id": "color-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

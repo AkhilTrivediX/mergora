@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-range-picker",
+  "entryExport": "DateRangePicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "DateRangePicker" },
+    { "kind": "type", "name": "DateRangeDurationIssue" },
+    { "kind": "type", "name": "DateRangeDurationIssueReason" },
+    { "kind": "type", "name": "DateRangePickerProps" },
+    { "kind": "type", "name": "DateRangePreset" },
+    { "kind": "type", "name": "DateRangeValue" }
+  ],
+  "controlledState": [
+    {
+      "state": "range",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "presets",
+      "required": false,
+      "default": false,
+      "type": "false | readonly DateRangePreset[]"
+    },
+    { "name": "showDurationSummary", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "durationSummary",
+      "required": false,
+      "type": "ReactNode | (days, value) => ReactNode"
+    },
+    {
+      "name": "minimumDurationDays",
+      "required": false,
+      "type": "positive safe integer using inclusive calendar days"
+    },
+    {
+      "name": "maximumDurationDays",
+      "required": false,
+      "type": "positive safe integer using inclusive calendar days"
+    },
+    {
+      "name": "getDurationError",
+      "required": false,
+      "type": "(issue: DateRangeDurationIssue) => string"
+    },
+    {
+      "name": "onDurationIssueChange",
+      "required": false,
+      "type": "(issue: DateRangeDurationIssue | null) => void"
+    }
+  ],
+  "compositionPolicy": {
+    "range": "Two named native date controls retain bounds, required validation, reset, and canonical repeated form data.",
+    "presets": "Presets are an independent opt-in surface and event source.",
+    "duration": "Duration is calculated and rendered only when showDurationSummary is true and the range is complete and ordered.",
+    "durationBounds": "Optional inclusive minimum and maximum duration constraints derive native end bounds, custom validity, recoverable error text, and an issue callback; with both omitted those outputs and events are absent."
+  }
+}

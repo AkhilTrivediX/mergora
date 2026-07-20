@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "month-picker",
+  "root": {
+    "element": "input type=month",
+    "ref": "HTMLInputElement",
+    "slot": "month-picker",
+    "stableAttributes": ["data-slot", "name", "form", "required", "disabled", "readOnly"]
+  },
+  "parts": [
+    {
+      "slot": "month-picker",
+      "element": "input type=month",
+      "purpose": "native month editing and form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "month-picker-quarter",
+      "element": "optional described text",
+      "purpose": "derived quarter context",
+      "stability": "documented"
+    }
+  ]
+}

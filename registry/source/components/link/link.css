@@ -1,0 +1,91 @@
+.mrg-link {
+  align-items: baseline;
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-brand-action);
+  display: inline-flex;
+  font: inherit;
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--mrg-semantic-border-width-default);
+  text-underline-offset: var(--mrg-semantic-space-inline-xs);
+  transition:
+    color var(--mrg-semantic-motion-duration-feedback) var(--mrg-semantic-motion-easing-standard),
+    text-decoration-thickness var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-link:hover {
+  text-decoration-thickness: var(--mrg-semantic-border-width-strong);
+}
+
+.mrg-link:active {
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-link:focus-visible {
+  border-radius: var(--mrg-component-focus-indicator-radius);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-link[data-current="true"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration-style: double;
+}
+
+.mrg-link[data-standalone="true"] {
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-block: var(--mrg-semantic-space-inline-sm);
+  padding-inline: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-link [data-slot="link-label"] {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-link [data-slot="link-external-indicator"],
+.mrg-link [data-slot="link-download-indicator"] {
+  flex: none;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  text-decoration: none;
+}
+
+.mrg-link [data-slot="link-external-context"] {
+  background: var(--mrg-semantic-color-status-loading-background);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-status-loading-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding-inline: var(--mrg-semantic-space-inline-xs);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-link {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-link,
+  .mrg-link[data-current="true"] {
+    color: LinkText;
+  }
+
+  .mrg-link:visited {
+    color: VisitedText;
+  }
+
+  .mrg-link [data-slot="link-external-context"] {
+    background: Canvas;
+    color: CanvasText;
+  }
+}

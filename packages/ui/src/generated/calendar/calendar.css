@@ -1,0 +1,188 @@
+/* Generated from registry/source/components/calendar/calendar.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-calendar {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-surface);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  inline-size: min(100%, 24rem);
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-density-panel-padding);
+}
+
+.mrg-calendar [data-slot="calendar-header"] {
+  align-items: center;
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-sm);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.mrg-calendar [data-slot="calendar-heading"] {
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  text-align: center;
+}
+
+.mrg-calendar [data-slot="calendar-previous"],
+.mrg-calendar [data-slot="calendar-next"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: inherit;
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: var(--mrg-semantic-size-target-minimum);
+}
+
+.mrg-calendar [data-slot="calendar-weekdays"],
+.mrg-calendar [data-slot="calendar-week"] {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.mrg-calendar [data-slot="calendar-weekdays"] span {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  padding-block: var(--mrg-semantic-space-inset-xs);
+  text-align: center;
+}
+
+.mrg-calendar [role="gridcell"] {
+  display: grid;
+}
+
+.mrg-calendar [data-slot="calendar-day"] {
+  aspect-ratio: 1;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid transparent;
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: inherit;
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: 0;
+}
+
+.mrg-calendar [data-slot="calendar-day"]:not([data-current-month="true"]) {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-calendar [data-slot="calendar-day"][data-selected="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+  color: var(--mrg-semantic-color-selection-foreground);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-calendar [data-slot="calendar-day"][data-range-within="true"] {
+  background: var(--mrg-semantic-color-status-success-background);
+  border-block-color: var(--mrg-semantic-color-selection-border);
+}
+
+.mrg-calendar [data-slot="calendar-day"][data-range-start="true"],
+.mrg-calendar [data-slot="calendar-day"][data-range-end="true"] {
+  border-color: var(--mrg-semantic-color-brand-violet);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-calendar [data-slot="calendar-day"][data-selected="true"] {
+  background: var(--mrg-semantic-color-selection-background);
+}
+
+.mrg-calendar [data-slot="calendar-day"][aria-current="date"] {
+  border-block-end-color: var(--mrg-semantic-color-brand-living);
+}
+
+.mrg-calendar [data-slot="calendar-day"][data-unavailable="true"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  text-decoration: line-through;
+}
+
+.mrg-calendar button:focus-visible,
+.mrg-calendar-input:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-calendar [data-slot="calendar-input-label"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+}
+
+.mrg-calendar-input {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  padding: var(--mrg-semantic-density-control-padding-block)
+    var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-calendar-visually-hidden {
+  block-size: 1px;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .mrg-calendar [data-slot="calendar-day"],
+  .mrg-calendar [data-slot="calendar-previous"],
+  .mrg-calendar [data-slot="calendar-next"],
+  .mrg-calendar-input {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+  .mrg-calendar [data-slot="calendar-previous"],
+  .mrg-calendar [data-slot="calendar-next"] {
+    min-inline-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-calendar,
+  .mrg-calendar-input,
+  .mrg-calendar [data-slot="calendar-day"],
+  .mrg-calendar [data-slot="calendar-previous"],
+  .mrg-calendar [data-slot="calendar-next"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .mrg-calendar [data-slot="calendar-day"][data-selected="true"] {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-calendar [data-slot="calendar-day"][data-range-within="true"] {
+    border-color: Highlight;
+  }
+
+  .mrg-calendar button:focus-visible,
+  .mrg-calendar-input:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-calendar * {
+    scroll-behavior: auto;
+  }
+}

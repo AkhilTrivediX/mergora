@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-picker",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "populated",
+    "swatch-selected",
+    "alpha",
+    "narrow",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "color-picker",
+      "semanticElement": "div role=group",
+      "refTarget": "HTMLDivElement",
+      "states": ["disabled", "read-only", "alpha-policy"]
+    },
+    {
+      "name": "color-picker-label",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["present"]
+    },
+    {
+      "name": "color-picker-area",
+      "semanticElement": "div role=group with two native range inputs",
+      "refTarget": "none",
+      "states": ["disabled", "dragging", "focus-within"]
+    },
+    {
+      "name": "color-picker-area-thumb",
+      "semanticElement": "div with hidden native range inputs",
+      "refTarget": "none",
+      "states": ["disabled", "dragging", "focus-visible"]
+    },
+    {
+      "name": "color-picker-channel",
+      "semanticElement": "div with named native range input",
+      "refTarget": "none",
+      "states": ["disabled", "orientation", "channel"]
+    },
+    {
+      "name": "color-picker-channel-output",
+      "semanticElement": "output",
+      "refTarget": "none",
+      "states": ["populated"]
+    },
+    {
+      "name": "color-picker-swatch-item",
+      "semanticElement": "option",
+      "refTarget": "none",
+      "states": ["disabled", "focus-visible", "hovered", "selected"]
+    },
+    {
+      "name": "color-picker-swatch",
+      "semanticElement": "div",
+      "refTarget": "none",
+      "states": ["color"]
+    }
+  ],
+  "contract": { "id": "color-picker-accessibility", "version": "0.1.0" },
+  "passport": { "id": "color-picker-quality-passport", "version": "0.0.0" }
+}

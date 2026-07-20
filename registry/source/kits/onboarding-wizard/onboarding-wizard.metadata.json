@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "onboarding-wizard",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "controlled",
+    "uncontrolled",
+    "optional-step",
+    "invalid",
+    "loading",
+    "saved",
+    "completion",
+    "error",
+    "retry",
+    "disabled",
+    "read-only",
+    "reset",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "onboarding-wizard",
+      "semanticElement": "native form",
+      "refTarget": "HTMLFormElement",
+      "states": ["default", "controlled", "uncontrolled", "disabled", "read-only"]
+    },
+    {
+      "name": "onboarding-persistence",
+      "semanticElement": "optional aside",
+      "refTarget": "none",
+      "states": ["loading", "saved", "error", "retry"]
+    },
+    {
+      "name": "onboarding-errors",
+      "semanticElement": "alert summary",
+      "refTarget": "none",
+      "states": ["invalid"]
+    }
+  ],
+  "contract": { "id": "onboarding-wizard-accessibility", "version": "0.1.0" },
+  "passport": { "id": "onboarding-wizard-quality-passport", "version": "0.0.0" }
+}

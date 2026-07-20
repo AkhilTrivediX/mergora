@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "table",
+  "entryExport": "Table",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Table"
+    },
+    {
+      "kind": "type",
+      "name": "TableColumn"
+    },
+    {
+      "kind": "type",
+      "name": "TableComponent"
+    },
+    {
+      "kind": "type",
+      "name": "TableProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "responsiveLabels",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Table; enhancement output is additive and independently removable.",
+    "enhancement": "Optional narrow-screen row labels preserve native table semantics while making each stacked value understandable. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

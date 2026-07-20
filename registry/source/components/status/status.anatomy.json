@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "status",
+  "root": {
+    "slot": "status",
+    "element": "static span or opt-in atomic status/alert",
+    "ref": "HTMLSpanElement",
+    "stableAttributes": ["data-slot", "data-variant", "data-live"]
+  },
+  "parts": [
+    { "slot": "status-symbol", "element": "span aria-hidden", "stability": "documented" },
+    { "slot": "status-variant-label", "element": "span", "stability": "documented" },
+    { "slot": "status-label", "element": "span", "stability": "documented" }
+  ]
+}

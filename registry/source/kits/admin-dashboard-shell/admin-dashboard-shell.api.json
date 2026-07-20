@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "admin-dashboard-shell",
+  "entryExport": "AdminDashboardShell",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and change behavior",
+  "exports": [
+    { "kind": "value", "name": "AdminDashboardShell" },
+    { "kind": "value", "name": "AdminDashboardShellPage" },
+    { "kind": "type", "name": "AdminDashboardShellProps" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "AdminDashboardShellAdapter" },
+    { "name": "role", "required": false, "default": "owner", "type": "AdminDashboardRole" },
+    {
+      "name": "permissionFilteredNavigation",
+      "required": false,
+      "default": false,
+      "type": "boolean"
+    },
+    { "name": "showRoleContext", "required": false, "default": false, "type": "boolean" },
+    { "name": "showNotifications", "required": false, "default": false, "type": "boolean" },
+    { "name": "interactiveChart", "required": false, "default": false, "type": "boolean" },
+    { "name": "showChartDataTable", "required": false, "default": false, "type": "boolean" },
+    { "name": "showActivityQueryTools", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Navbar, Sidebar, Breadcrumb, Chart, DataTable, Alert, Badge, Button, EmptyState, and Skeleton source items.",
+    "adapter": "The consumer owns routes, authorization, analytics, notifications, persistence, network, audit, privacy, and every side effect.",
+    "enhancements": "Role-aware navigation, role context, notifications, chart interaction, visible chart data, and activity query tools are independent opt-ins."
+  }
+}

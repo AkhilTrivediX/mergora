@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slider",
+  "entryExport": "Slider",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React Aria Slider props with Mergora Field and provider integration",
+  "exports": [
+    { "kind": "component", "name": "Slider" },
+    { "kind": "component", "name": "SliderBase" },
+    { "kind": "function", "name": "assertSliderValues" },
+    { "kind": "function", "name": "deriveIntelligentSliderMarks" },
+    { "kind": "function", "name": "normalizeSliderMarks" },
+    { "kind": "function", "name": "resolveSliderDomain" },
+    { "kind": "function", "name": "sliderValueIsAligned" },
+    { "kind": "function", "name": "sliderValueToPercent" },
+    { "kind": "type", "name": "SliderBaseProps" },
+    { "kind": "type", "name": "SliderDomain" },
+    { "kind": "type", "name": "SliderIntelligentMarksOptions" },
+    { "kind": "type", "name": "SliderIntelligentMarkStrategy" },
+    { "kind": "type", "name": "SliderMark" },
+    { "kind": "type", "name": "SliderOrientation" },
+    { "kind": "type", "name": "SliderProps" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "value", "required": false, "type": "number" },
+    { "name": "defaultValue", "required": false, "type": "number" },
+    { "name": "onChange", "required": false, "type": "(value: number) => void" },
+    { "name": "onChangeEnd", "required": false, "type": "(value: number) => void" },
+    { "name": "minValue", "required": false, "default": 0, "type": "number" },
+    { "name": "maxValue", "required": false, "default": 100, "type": "number" },
+    { "name": "step", "required": false, "default": 1, "type": "positive number" },
+    {
+      "name": "orientation",
+      "required": false,
+      "default": "horizontal",
+      "type": "horizontal | vertical"
+    },
+    { "name": "marks", "required": false, "type": "readonly SliderMark[]" },
+    {
+      "name": "intelligentMarks",
+      "required": false,
+      "default": false,
+      "type": "false | SliderIntelligentMarksOptions"
+    },
+    { "name": "formatOptions", "required": false, "type": "Intl.NumberFormatOptions" },
+    { "name": "name", "required": false, "type": "string" },
+    { "name": "form", "required": false, "type": "string" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnlyMessage", "required": false, "type": "localized string" },
+    { "name": "invalid", "required": false, "default": false, "type": "boolean" },
+    { "name": "thumbLabel", "required": false, "type": "string" },
+    { "name": "showOutput", "required": false, "default": true, "type": "boolean" },
+    { "name": "showValueBubbles", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "field": "Field supplies the integrated group label, description, error relationship, invalid state, and first input ID.",
+    "values": "Values and marks must be finite, within the domain, and reachable by whole steps.",
+    "readOnly": "Read-only sliders remain focusable and successful in forms but capture value-changing pointer and keyboard input; a localized description backs up aria-readonly where native accessibility mappings omit it.",
+    "enhancements": "intelligentMarks derives a bounded localized measurement scale and cannot coexist with manual marks; showValueBubbles adds only aria-hidden visual context. Both are off by default and leave no DOM or accessibility output when disabled."
+  }
+}

@@ -1,0 +1,158 @@
+/* Generated from registry/source/components/segmented-control/segmented-control.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-segmented-control {
+  border: 0;
+  box-sizing: border-box;
+  margin: 0;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: 0;
+}
+
+.mrg-segmented-control > [data-slot="segmented-control-label"] {
+  block-size: 1px;
+  inline-size: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.mrg-segmented-control [data-slot="segmented-control-scroll"] {
+  box-sizing: border-box;
+  display: flex;
+  max-inline-size: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: var(--mrg-semantic-space-inline-xs);
+  scrollbar-gutter: stable;
+}
+
+.mrg-segmented-control-item {
+  align-items: center;
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  box-sizing: border-box;
+  color: var(--mrg-component-control-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  flex: none;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  justify-content: center;
+  min-block-size: max(
+    var(--mrg-component-control-height),
+    var(--mrg-semantic-size-target-preferred)
+  );
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  overflow-wrap: anywhere;
+  padding-block: var(--mrg-component-control-padding-block);
+  padding-inline: var(--mrg-component-control-padding-inline);
+  position: relative;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-segmented-control-item:first-of-type {
+  border-end-start-radius: var(--mrg-component-control-radius);
+  border-start-start-radius: var(--mrg-component-control-radius);
+}
+
+.mrg-segmented-control-item:last-of-type {
+  border-end-end-radius: var(--mrg-component-control-radius);
+  border-start-end-radius: var(--mrg-component-control-radius);
+}
+
+.mrg-segmented-control-item:not(:first-of-type) {
+  margin-inline-start: calc(-1 * var(--mrg-semantic-border-width-default));
+}
+
+.mrg-segmented-control-item[data-state="checked"] {
+  background: var(--mrg-component-control-background-selected);
+  border-color: var(--mrg-component-control-border-selected);
+  box-shadow: inset 0 calc(-1 * var(--mrg-semantic-border-width-strong)) 0
+    var(--mrg-component-control-border-selected);
+  color: var(--mrg-component-control-foreground-selected);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  z-index: 1;
+}
+
+.mrg-segmented-control-item:not([data-disabled="true"]):hover {
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-segmented-control-item[data-state="checked"]:not([data-disabled="true"]):hover {
+  background: var(--mrg-component-control-background-selected);
+}
+
+.mrg-segmented-control-item [data-slot="segmented-control-input"] {
+  block-size: 1px;
+  inline-size: 1px;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.mrg-segmented-control-item:has(input:focus-visible) {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+  z-index: 2;
+}
+
+.mrg-segmented-control-item[data-disabled="true"] {
+  background: var(--mrg-component-control-background-disabled);
+  border-color: var(--mrg-component-control-border-disabled);
+  color: var(--mrg-component-control-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-segmented-control [data-slot="segmented-control-summary"] {
+  border-block-start: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  color: var(--mrg-semantic-color-status-loading-foreground);
+  display: block;
+  font-size: var(--mrg-semantic-font-size-label);
+  margin-block-start: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 60ch;
+  overflow-wrap: anywhere;
+  padding-block-start: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-segmented-control-item {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-segmented-control-item {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-segmented-control-item[data-state="checked"] {
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+    box-shadow: inset 0 calc(-1 * var(--mrg-semantic-border-width-strong)) 0 HighlightText;
+  }
+
+  .mrg-segmented-control-item[data-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-segmented-control [data-slot="segmented-control-summary"] {
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

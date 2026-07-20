@@ -1,0 +1,6 @@
+/* Generated from registry/source/components/percentage-field/percentage-field.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-percentage-field .mrg-number-field-input {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}

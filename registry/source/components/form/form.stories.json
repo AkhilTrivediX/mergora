@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "canonicalStoryFile": "apps/storybook/src/P2FormControls.stories.tsx",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This item owns no separate hover-only semantic state."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This item owns no separate application activation state."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "CompositionWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This item does not itself expose a disabled state; composed native controls own it."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Read-only behavior belongs to an applicable native descendant control."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "AsyncValidation"
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The native required state does not apply to this item."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "EmptyComposition"
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "CompositionWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This item has no partial value state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning feedback belongs to persistent workflow status, not this control."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This item performs no destructive action."
+      }
+    }
+  ]
+}

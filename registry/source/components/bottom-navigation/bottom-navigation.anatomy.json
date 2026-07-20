@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "bottom-navigation",
+  "root": {
+    "element": "nav",
+    "ref": "HTMLElement",
+    "slot": "bottom-navigation",
+    "stableAttributes": ["data-slot", "data-enhanced-overflow"]
+  },
+  "parts": [
+    {
+      "slot": "bottom-navigation-list",
+      "element": "ul",
+      "purpose": "Keeps primary destinations in one named ordered collection.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "bottom-navigation-overflow",
+      "element": "optional details",
+      "purpose": "Recovers lower-priority destinations without hiding the current destination.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./aspect-ratio.css", "react"],
+  "entryPath": "registry/source/components/aspect-ratio/aspect-ratio.tsx",
+  "id": "aspect-ratio",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

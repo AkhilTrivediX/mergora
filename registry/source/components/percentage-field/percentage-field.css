@@ -1,0 +1,5 @@
+@layer mergora.components {
+  .mrg-percentage-field .mrg-number-field-input {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}

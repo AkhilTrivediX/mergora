@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "select",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, performance, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Enhanced presentation uses React Aria's APG select button/listbox pattern and hidden native form control. Native presentation renders one real select with option/optgroup descendants.",
+    "naming": "A required persistent visible label names the enhanced trigger or native select. Description, error, invalid, required, expanded, busy, and selected states remain synchronized.",
+    "roleOverride": "Consumer role overrides, editable trigger content, interactive option descendants, and automatic user-agent presentation switching are outside the supported contract.",
+    "refTarget": "Stable HTMLDivElement wrapper; behavior-engine focus targets remain internal."
+  },
+  "interaction": {
+    "keyboard": "Enhanced: Enter, Space, Arrow Up, or Arrow Down opens; arrows move option focus; Home/End move to boundaries; printable characters use locale-aware typeahead; Enter/Space commit; Escape dismisses without change and returns focus. Native: the browser and platform picker own the complete key model.",
+    "pointer": "Enhanced trigger and options commit on React Aria press completion; outside interaction dismisses. Native pointer cancellation remains browser-owned.",
+    "touch": "Both paths preserve preferred 44 CSS pixel targets. Native is the documented simple/mobile-first platform-picker path; enhanced remains a responsive non-modal popover.",
+    "speech": "The visible field label, selected text, option textValue, and explicit recovery actions remain available as voice targets.",
+    "switchAccess": "One trigger plus popup options, or one native select, avoids duplicate proxy focus targets."
+  },
+  "formBehavior": "Enhanced presentation uses React Aria's hidden native select for single-value name/form submission, native validation, disabled omission, autofill, and reset. Hidden-native changes pass through the same public controlled change boundary as pointer and keyboard input, so disabled keys cannot commit without depending on React Aria private DOM markers. Native presentation uses the visible select itself. Both serialize String(key), and key collisions after serialization are rejected. Controlled state remains parent-owned; uncontrolled reset is browser/React Aria owned.",
+  "states": {
+    "attributes": [
+      "data-presentation",
+      "data-open",
+      "data-disabled",
+      "data-invalid",
+      "data-required",
+      "aria-expanded",
+      "aria-controls",
+      "aria-haspopup",
+      "aria-selected",
+      "aria-disabled",
+      "aria-busy"
+    ],
+    "synchronization": "Trigger text, option selection, callback key, hidden/visible native form value, invalid state, and reset derive from one single-selection key."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=select]",
+    "attributes": ["data-presentation", "data-disabled", "data-invalid"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Selected enhanced options combine aria-selected, a check, weight, and boundary geometry; native uses platform state.",
+    "forcedColors": "Enhanced uses Canvas, CanvasText, Highlight, and system-color focus geometry; native remains forced-color-adjust:auto.",
+    "reducedMotion": "Opening, dismissal, selection, and scroll state do not depend on animation; reduced motion uses immediate scrolling."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The trigger and long values wrap, the enhanced popover constrains to available logical space and flips, and native presentation delegates mobile picker layout to the platform."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "errorMessage",
+      "placeholder",
+      "item.textValue",
+      "section.textValue",
+      "collection.empty",
+      "collection.loading",
+      "collection.loadingMore",
+      "collection.loadMore",
+      "collection.retry"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Select is non-editable and does not handle composition; printable typeahead remains locale-aware and does not install document-level character shortcuts.",
+    "serialization": "Visible labels and summaries are localized while submitted keys remain canonical consumer-owned machine data."
+  },
+  "consumerResponsibilities": [
+    "Use Select only for single selection; use multi-select or an appropriate Listbox for multiple values.",
+    "Choose native presentation explicitly for simple text-only choices or when platform/mobile picker behavior is preferred; never switch presentations after hydration from user-agent detection.",
+    "Use enhanced presentation when rich descriptions, controlled popup state, virtualization, or custom rendered options are required.",
+    "Keep stable selected entries materialized and provide localized textValue for every item and section.",
+    "Use abortable, stale-safe async adapters and persistent workflow errors.",
+    "Do not treat automated axe and browser evidence as manual assistive-technology evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-single-selection-types",
+      "stable-key-and-form-serialization-parity",
+      "enhanced-keyboard-typeahead-dismiss-focus-return",
+      "native-platform-semantics-submission-reset",
+      "controlled-uncontrolled-open-and-value",
+      "section-disabled-empty-required-invalid",
+      "async-delay-failure-retry-cancel-stale-order-pagination",
+      "virtualized-large-collection-dom-window-focus-position",
+      "german-arabic-rtl-touch-narrow-forced-colors-reduced-motion",
+      "axe-representative-states",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-only-enhanced-and-native",
+      "mobile-native-picker",
+      "mobile-enhanced-touch-screen-reader",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari",
+      "voice-control-and-switch",
+      "virtualization-and-async-recovery"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, performance baselines, or current manual assistive-technology sessions.",
+    "Select is intentionally single-selection; multiple value UX is reserved for the dedicated multi-select component.",
+    "Native presentation intentionally supports text-only options and rejects item descriptions and virtualization rather than silently losing enhanced content."
+  ]
+}

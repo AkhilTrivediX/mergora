@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "direction",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, documentation, and subpath outputs.",
+    "Record nested LTR/RTL boundaries, optional bidi isolation, mixed-direction content, and portal propagation in a Quality Passport.",
+    "Pass SSR/hydration, packed consumers, package/source parity, and Semantic Sync fixtures.",
+    "Complete required RTL keyboard, screen-reader, zoom, and forced-colors manual evidence.",
+    "Publish an approved Quality Passport and dogfood the generated output."
+  ]
+}

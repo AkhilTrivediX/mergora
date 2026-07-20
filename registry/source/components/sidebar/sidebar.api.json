@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sidebar",
+  "entryExport": "Sidebar",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "function", "name": "isSafeSidebarHref" },
+    { "kind": "component", "name": "Sidebar" },
+    { "kind": "type", "name": "SidebarGroup" },
+    { "kind": "type", "name": "SidebarItem" },
+    { "kind": "type", "name": "SidebarPersistenceAdapter" },
+    { "kind": "type", "name": "SidebarProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "desktop collapse",
+      "controlled": "collapsed",
+      "uncontrolled": "defaultCollapsed",
+      "callback": "onCollapsedChange"
+    },
+    {
+      "state": "mobile disclosure",
+      "controlled": "mobileOpen",
+      "uncontrolled": "defaultMobileOpen",
+      "callback": "onMobileOpenChange"
+    }
+  ],
+  "enhancements": [
+    {
+      "name": "consumer persistence",
+      "api": "persistenceAdapter, onPersistenceError",
+      "disabled": "adapter omission performs no read, write, error callback, storage event, UI, or accessibility output"
+    }
+  ]
+}

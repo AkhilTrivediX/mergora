@@ -1,0 +1,13 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "react", "react-dom", "vite/client"]
+  },
+  "include": [
+    "../../../apps/storybook/src/Dialog.stories.tsx",
+    "../../../registry/source/components/dialog/**/*.ts",
+    "../../../registry/source/components/dialog/**/*.tsx"
+  ]
+}

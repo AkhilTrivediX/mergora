@@ -1,0 +1,91 @@
+/* Generated from registry/source/components/pagination/pagination.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-pagination {
+  color: var(--mrg-component-control-foreground);
+  font-family: var(--mrg-semantic-font-family-prose);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+[data-slot="pagination-list"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-xs);
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+[data-slot="pagination-link"],
+[data-slot="pagination-current"],
+[data-slot="pagination-disabled"],
+[data-slot="pagination-ellipsis"] {
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-sm);
+  border-radius: var(--mrg-component-control-radius);
+}
+
+[data-slot="pagination-link"] {
+  color: var(--mrg-semantic-color-foreground-primary);
+  text-underline-offset: 0.2em;
+  transition:
+    background-color var(--mrg-semantic-motion-duration-transition)
+      var(--mrg-semantic-motion-easing-standard),
+    color var(--mrg-semantic-motion-duration-transition) var(--mrg-semantic-motion-easing-standard);
+}
+
+[data-slot="pagination-link"]:hover {
+  background: var(--mrg-component-control-background-hover);
+  color: var(--mrg-semantic-color-brand-action);
+}
+
+[data-slot="pagination-current"] {
+  background: var(--mrg-component-control-background-selected);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-component-control-border-selected);
+  color: var(--mrg-component-control-foreground-selected);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+[data-slot="pagination-disabled"] {
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+[data-slot="pagination-link"]:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="pagination-link"] {
+    transition: none;
+  }
+}
+
+.mrg-pagination__sr-only {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  [data-slot="pagination-current"] {
+    border-color: Highlight;
+  }
+
+  [data-slot="pagination-link"]:focus-visible {
+    outline-color: Highlight;
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width) Canvas;
+  }
+}

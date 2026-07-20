@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "visually-hidden",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "span or div with unchanged child semantics.",
+    "accessibilityTree": "Content remains present and nameable; hidden, aria-hidden, display:none, and visibility:hidden are never applied.",
+    "focus": "revealOnFocus restores normal geometry only for focus-visible and supplies a forced-colors-safe indicator. With revealOnFocus=false the reveal attribute, surface, and behavior are absent while accessibility-tree content remains."
+  },
+  "layout": {
+    "hiddenGeometry": "One CSS pixel with clipping and no layout contribution.",
+    "reveal": "A fixed logical-start surface prevents ancestor clipping and remains readable at text zoom.",
+    "direction": "Logical inset and padding properties support LTR and RTL."
+  },
+  "consumerResponsibilities": [
+    "Do not duplicate visible information unnecessarily for screen-reader users.",
+    "Use revealOnFocus only for content that can actually receive or contain focus.",
+    "Supply meaningful localized text and preserve a logical skip-link destination."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "accessibility-tree",
+      "focus-reveal",
+      "focus-reveal-opt-out",
+      "rtl",
+      "forced-colors-css",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-focus",
+      "desktop-screen-reader",
+      "forced-colors",
+      "zoom-400",
+      "text-spacing"
+    ],
+    "recordedEvidence": []
+  }
+}

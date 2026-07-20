@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "itemId": "pin-field",
+  "root": {
+    "element": "input",
+    "ref": "HTMLInputElement",
+    "slot": "pin-field-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "type",
+      "autocomplete",
+      "inputmode",
+      "pattern",
+      "maxlength",
+      "required",
+      "disabled",
+      "readonly",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "pin-field",
+      "element": "span",
+      "purpose": "Explicit reusable-secret PIN field with display and paste policy state.",
+      "stability": "documented"
+    },
+    {
+      "slot": "pin-field-control",
+      "element": "span",
+      "purpose": "Visual boundary around the single native input and non-interactive segment guides.",
+      "stability": "documented"
+    },
+    {
+      "slot": "pin-field-segments",
+      "element": "span aria-hidden=true",
+      "purpose": "Decorative segmented presentation that introduces no additional semantics or tab stops.",
+      "stability": "documented"
+    },
+    {
+      "slot": "pin-field-segment",
+      "element": "span",
+      "purpose": "One decorative digit guide; never an editable control.",
+      "stability": "documented"
+    },
+    {
+      "slot": "pin-field-purpose",
+      "element": "span",
+      "purpose": "Localized programmatic description of the reusable-secret purpose and digit length.",
+      "stability": "documented"
+    },
+    {
+      "slot": "pin-field-paste-status",
+      "element": "span role=status",
+      "purpose": "Polite localized announcement when an explicit block paste policy cancels paste.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+/* Generated from registry/source/components/otp-field/otp-field.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-otp-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-otp-field [data-slot="otp-field-control"] {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  display: grid;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.mrg-otp-field [data-slot="otp-field-control"]:focus-within {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-otp-field[data-invalid="true"] [data-slot="otp-field-control"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-otp-field[data-readonly="true"] [data-slot="otp-field-control"] {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-otp-field[data-disabled="true"] [data-slot="otp-field-control"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-otp-field-input {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  direction: ltr;
+  font-family: var(--mrg-semantic-font-family-machine);
+  font-size: var(--mrg-semantic-font-size-body-large);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--mrg-semantic-font-weight-code);
+  inline-size: 100%;
+  letter-spacing: 0.32em;
+  line-height: var(--mrg-semantic-font-line-height-code);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm) var(--mrg-semantic-space-inline-md);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  position: relative;
+  text-align: center;
+  unicode-bidi: plaintext;
+  z-index: 1;
+}
+
+.mrg-otp-field-input:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-otp-field [data-slot="otp-field-grouping"] {
+  align-items: end;
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-md);
+  inset-block-end: var(--mrg-semantic-space-inline-xs);
+  inset-inline: var(--mrg-semantic-density-control-padding-inline);
+  justify-content: center;
+  pointer-events: none;
+  position: absolute;
+}
+
+.mrg-otp-field [data-slot="otp-field-group"] {
+  display: flex;
+  gap: var(--mrg-semantic-space-inline-xs);
+}
+
+.mrg-otp-field [data-slot="otp-field-cell"] {
+  border-block-end: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-subtle);
+  inline-size: 1em;
+}
+
+.mrg-otp-field [data-slot="otp-field-grouping-label"] {
+  block-size: 1px;
+  clip-path: inset(50%);
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+@media (pointer: coarse) {
+  .mrg-otp-field [data-slot="otp-field-control"],
+  .mrg-otp-field-input {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-otp-field [data-slot="otp-field-control"]:focus-within {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-otp-field [data-slot="otp-field-control"] {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-otp-field[data-disabled="true"] [data-slot="otp-field-control"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-otp-field[data-invalid="true"] [data-slot="otp-field-control"] {
+    border-style: double;
+  }
+
+  .mrg-otp-field [data-slot="otp-field-cell"] {
+    border-color: FieldText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-otp-field,
+  .mrg-otp-field * {
+    scroll-behavior: auto;
+  }
+}

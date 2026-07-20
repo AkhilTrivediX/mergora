@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.4.0",
+  "itemId": "data-grid",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This Experimental source contract covers the semantic-table tracer, optional controlled or adapter-persisted native column visibility, independently optional bounded native column sizing and semantic detail rows, query-operation layers, and the side-effect-free safe CSV serializer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled overflow region contains a native table with a caption, scoped column headers, native buttons for sorting, pagination, and optional detail disclosure, native inputs for filtering, selection, and optional bounded column sizing, and native hidden inputs for optional form serialization.",
+    "rolePolicy": "Semantic Table mode remains the default. Optional native column-visibility disclosure and its independently optional persistence adapter, bounded column-sizing ranges, semantic detail rows, filter, pagination, summary, status, retry, selection, and form outputs are absent when their corresponding APIs are disabled; this phase does not expose an ARIA grid role.",
+    "refTarget": "The public ref targets the labelled HTMLDivElement region."
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through the filter, sortable headers, native selection controls, retry action, and pagination controls in document order."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Activates the focused native sort, retry, pagination, or detail-disclosure button; Space changes the focused native selection control."
+    },
+    {
+      "key": "Arrow keys",
+      "behavior": "Use native radio-group navigation when single-row selection is enabled and adjust a focused enabled native column-sizing range by its declared step. No cell-navigation model is claimed in Semantic Table mode."
+    },
+    {
+      "key": "Tab after refresh",
+      "behavior": "Focus remains on an enabled operation control when it survives the refresh and otherwise returns to the labelled grid region."
+    }
+  ],
+  "nonColor": "Text, native state, border geometry, aria-sort, selected controls, and explicit status copy accompany every green or violet signal.",
+  "responsive": "The labelled region remains keyboard-scrollable at narrow widths, controls wrap in logical order, semantic detail rows provide an optional contextual expansion path, coarse-pointer targets reach 44px, and RTL uses logical properties. A priority-column or item-view alternative remains a completion delta.",
+  "stableSelectors": {
+    "root": "[data-slot=data-grid-region]",
+    "parts": [
+      "[data-slot=data-grid-filter]",
+      "[data-slot=data-grid-filter-input]",
+      "[data-slot=data-grid-column-visibility]",
+      "[data-slot=data-grid-column-visibility-trigger]",
+      "[data-slot=data-grid-column-visibility-options]",
+      "[data-slot=data-grid-column-sizing-control]",
+      "[data-slot=data-grid-column-sizing-input]",
+      "[data-slot=data-grid-detail-heading]",
+      "[data-slot=data-grid-detail-action-cell]",
+      "[data-slot=data-grid-detail-trigger]",
+      "[data-slot=data-grid-detail-row]",
+      "[data-slot=data-grid-detail-content]",
+      "[data-slot=data-grid-pagination]",
+      "[data-slot=data-grid-page-status]",
+      "[data-slot=data-grid-cursor-status]",
+      "[data-slot=data-grid-query-summary]",
+      "[data-slot=data-grid-operation-status]",
+      "[data-slot=data-grid-query-input]",
+      "[data-slot=data-grid-table]",
+      "[data-slot=data-grid-header]",
+      "[data-slot=data-grid-header-row]",
+      "[data-slot=data-grid-column-header]",
+      "[data-slot=data-grid-sort]",
+      "[data-slot=data-grid-body]",
+      "[data-slot=data-grid-empty-row]",
+      "[data-slot=data-grid-row]",
+      "[data-slot=data-grid-selection-cell]",
+      "[data-slot=data-grid-selection-summary]",
+      "[data-slot=data-grid-selection-input]",
+      "[data-slot=data-grid-cell]"
+    ],
+    "attributes": ["data-slot", "data-operation", "data-maturity", "data-selected", "data-state"]
+  },
+  "consumerResponsibilities": [
+    "Provide stable unique row IDs, localized captions, region labels, operation messages, and task-specific row-selection labels.",
+    "In manual mode, apply remote filtering, sorting, and pagination outside the component and return rows and cursor boundaries that match the controlled query.",
+    "Keep query adapters deterministic and side-effect safe; transport, routing, persistence, authorization, and retry effects remain consumer-owned.",
+    "Supply the exact row model and explicit typed columns for CSV serialization; downloads, storage, network behavior, and any decision to disable default spreadsheet-formula protection remain consumer-owned.",
+    "Supply localized column visibility labels where stable IDs are not suitable for user-facing checkbox text; controlled visibility maps must retain at least one known column, and persistence adapters must remain consumer-owned and deterministic.",
+    "Declare positive finite min, max, default, and optional step values for every column sizing contract; controlled or default width maps may name only declared sizing columns and must stay within those bounds.",
+    "Provide localized detail labels and consumer-owned detail content; controlled or default expanded-row lists may name only unique current source row IDs.",
+    "Preserve native table structure and retest long content, 320px reflow, 400% zoom, RTL, touch, forced colors, reduced motion, and supported assistive technology.",
+    "Do not claim Stable or complete Data Grid conformance until the recorded completion delta and Risk Class 3 manual matrix are closed."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-table",
+      "controlled-uncontrolled-query",
+      "client-operation-order",
+      "manual-operation-isolation",
+      "form-serialization-reset",
+      "column-visibility-adapter",
+      "column-sizing-control-reset",
+      "detail-row-controlled-uncontrolled-reset",
+      "formula-injection-safe-csv",
+      "keyboard",
+      "focus-restoration",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text",
+      "large-data-focus-continuity"
+    ],
+    "recordedEvidence": []
+  }
+}

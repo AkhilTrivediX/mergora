@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tooltip",
+  "namespace": ["Root", "Trigger", "DisabledTrigger", "Content", "Arrow"],
+  "required": ["Root", "Trigger-or-DisabledTrigger", "Content"],
+  "relationships": [
+    "Root groups open/close delays across React Aria tooltip triggers.",
+    "Trigger receives aria-describedby only for the active Content lifecycle.",
+    "Content is supplemental and noninteractive; Arrow is decorative.",
+    "DisabledTrigger suppresses action but remains a named keyboard focus target.",
+    "Content optionally appends keyboard shortcut context to the tooltip description."
+  ],
+  "behaviorOwnership": {
+    "mergora": [
+      "compound API",
+      "logical placement",
+      "disabled adapter",
+      "touch policy",
+      "noninteractive diagnostic",
+      "optional shortcut context",
+      "slots"
+    ],
+    "reactAria": ["hover/focus", "delay group", "describedby", "portal", "collision", "dismissal"],
+    "layerManager": ["shared nesting record"]
+  }
+}

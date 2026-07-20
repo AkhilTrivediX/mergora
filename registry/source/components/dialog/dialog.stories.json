@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dialog",
+  "canonicalStoryFile": "apps/storybook/src/P2Overlays.stories.tsx",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "DialogModalPolicy" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "DialogModalPolicy" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "DialogModalPolicy" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "DialogModalPolicy"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "DialogModalPolicy" },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Dialog interaction is either available or disabled; the overlay has no read-only value model."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation belongs to fields or workflows rendered inside the named dialog."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required is a form-control state rather than a dialog-container state."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading feedback belongs to dialog content and must not replace the persistent close path."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An unnamed dialog without content and an explicit close path is invalid usage."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "DialogModalPolicy"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Dialog has no partial-selection or partial-data state of its own."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success is workflow feedback rendered inside or after a dialog, not a container state."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require explicit content semantics and are not encoded by the dialog container."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the affected field or workflow and are not inferred by Dialog."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Irreversible confirmation uses AlertDialog with explicit dismissal and least-destructive focus."
+      }
+    }
+  ]
+}

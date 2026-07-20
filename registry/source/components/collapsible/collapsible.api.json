@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collapsible",
+  "entryExport": "Collapsible",
+  "refTarget": "Root=HTMLDivElement; Trigger=HTMLButtonElement; Content=HTMLDivElement",
+  "exports": [
+    { "kind": "namespace", "name": "Collapsible" },
+    { "kind": "component", "name": "CollapsibleRoot" },
+    { "kind": "component", "name": "CollapsibleTrigger" },
+    { "kind": "component", "name": "CollapsibleContent" },
+    { "kind": "type", "name": "CollapsibleRootProps" },
+    { "kind": "type", "name": "CollapsibleTriggerProps" },
+    { "kind": "type", "name": "CollapsibleContentProps" }
+  ],
+  "props": [
+    {
+      "name": "stateText",
+      "required": false,
+      "type": "{ closed: ReactNode; open: ReactNode } on Trigger; null, false, or empty active content suppresses output"
+    }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "The trigger remains a native button with aria-expanded and aria-controls supplied by React Aria.",
+    "Content uses disclosure semantics without adding an inappropriate accordion, heading, or tab structure.",
+    "Disabled state prevents native activation while preserving an understandable control.",
+    "Trigger stateText optionally renders visible localized state context; omitting it or resolving the active value to null, false, or empty content removes that copy and its presentation output while aria-expanded remains authoritative."
+  ]
+}

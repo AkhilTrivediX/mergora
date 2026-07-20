@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "itemId": "blockquote",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a hover state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a active state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a focus-visible state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a disabled state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a read-only state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a invalid state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a required state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a loading state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "TypographyWorkbench"
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a partial state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a success state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a warning state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a error state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote does not own a destructive state; that state belongs to composed application content."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "TypographyWorkbench"
+    },
+    {
+      "id": "long-content",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndLongContent"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndLongContent"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Blockquote defines no animation or transition."
+      }
+    },
+    {
+      "id": "rtl",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "RightToLeft"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "NarrowAndLongContent"
+    }
+  ]
+}

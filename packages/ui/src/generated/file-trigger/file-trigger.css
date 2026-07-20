@@ -1,0 +1,90 @@
+/* Generated from registry/source/components/file-trigger/file-trigger.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-file-trigger {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: inline-grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-file-trigger [data-slot="file-trigger-label"] {
+  background: var(--mrg-semantic-color-action-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-background);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-action-foreground);
+  cursor: pointer;
+  display: inline-grid;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-block: var(--mrg-semantic-space-stack-sm);
+  padding-inline: var(--mrg-semantic-space-inline-md);
+  place-items: center;
+  position: relative;
+}
+
+.mrg-file-trigger [data-slot="file-trigger-control"] {
+  block-size: 100%;
+  cursor: inherit;
+  inline-size: 100%;
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+}
+
+.mrg-file-trigger
+  [data-slot="file-trigger-label"]:has([data-slot="file-trigger-control"]:focus-visible) {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-file-trigger [data-slot="file-trigger-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  max-inline-size: 60ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-file-trigger[data-disabled="true"] [data-slot="file-trigger-label"] {
+  background: var(--mrg-semantic-color-background-disabled);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+@media (pointer: coarse) {
+  .mrg-file-trigger [data-slot="file-trigger-label"] {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-file-trigger *,
+  .mrg-file-trigger *::before,
+  .mrg-file-trigger *::after {
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-file-trigger [data-slot="file-trigger-label"] {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-file-trigger[data-disabled="true"] [data-slot="file-trigger-label"] {
+    color: GrayText;
+  }
+
+  .mrg-file-trigger
+    [data-slot="file-trigger-label"]:has([data-slot="file-trigger-control"]:focus-visible) {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

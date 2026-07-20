@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "stepper",
+  "root": {
+    "element": "nav",
+    "ref": "HTMLElement",
+    "slot": "stepper",
+    "stableAttributes": ["data-slot", "data-mode"]
+  },
+  "parts": [
+    {
+      "slot": "stepper-progress",
+      "element": "optional progress",
+      "purpose": "Exposes native process position independently from step-change announcements.",
+      "stability": "documented"
+    },
+    {
+      "slot": "stepper-list",
+      "element": "ol",
+      "purpose": "Preserves process order, status, and one current step.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "stepper-announcement",
+      "element": "optional polite status",
+      "purpose": "Announces consumer-selected step changes only when requested.",
+      "stability": "documented"
+    }
+  ]
+}

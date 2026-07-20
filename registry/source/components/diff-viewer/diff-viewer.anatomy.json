@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "diff-viewer",
+  "root": {
+    "element": "div role=region",
+    "ref": "HTMLDivElement",
+    "slot": "diff-viewer",
+    "stableAttributes": [
+      "data-slot",
+      "data-mode",
+      "data-wrap",
+      "data-copyable",
+      "data-line-navigation",
+      "data-show-summary"
+    ]
+  },
+  "parts": [
+    {
+      "element": "button",
+      "slot": "diff-copy",
+      "stableAttributes": ["data-slot", "data-copy-status"]
+    },
+    {
+      "element": "tr",
+      "slot": "diff-line",
+      "stableAttributes": ["data-slot", "data-kind", "data-active"]
+    },
+    {
+      "element": "th",
+      "slot": "diff-marker",
+      "stableAttributes": ["data-slot", "data-kind"]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "itemId": "description-list",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["stacked", "columns", "responsive", "compact", "long-content", "rtl"],
+  "slots": [
+    {
+      "name": "description-list",
+      "semanticElement": "dl",
+      "refTarget": "HTMLDListElement",
+      "states": ["layout", "density"]
+    },
+    {
+      "name": "description-term",
+      "semanticElement": "dt",
+      "refTarget": "HTMLElement",
+      "states": []
+    },
+    {
+      "name": "description-details",
+      "semanticElement": "dd",
+      "refTarget": "HTMLElement",
+      "states": []
+    }
+  ],
+  "contract": {
+    "id": "description-list-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "description-list-quality-passport",
+    "version": "0.0.0"
+  }
+}

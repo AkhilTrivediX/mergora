@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "onboarding-wizard",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not a backend workflow, authorization boundary, analytics system, complete onboarding product, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native form composed with canonical Stepper and Button; domain controls are supplied by the consumer renderer.",
+    "rolePolicy": "Validation and completion failures are persistent alerts; draft status and step announcements are emitted only when their enhancements are enabled.",
+    "refTarget": "HTMLFormElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through current-step fields, persistence controls, and navigation actions in document order."
+    },
+    { "key": "Enter", "behavior": "Submits the current step through native form semantics." },
+    {
+      "key": "Native reset",
+      "behavior": "Restores the initial draft and first step when mutable unless reset is cancelled by the consumer; read-only mode always disables and cancels reset without draft or step callbacks."
+    }
+  ],
+  "nonColor": "Current, complete, optional, invalid, pending, saved, and failed states use text, native state, headings, and structure in addition to color.",
+  "responsive": "Progress moves above the current step on narrow screens; logical properties preserve RTL and zoom without hiding actions.",
+  "stableSelectors": {
+    "root": "[data-slot=onboarding-wizard]",
+    "parts": [
+      "onboarding-step-content",
+      "onboarding-errors",
+      "onboarding-persistence",
+      "onboarding-completion-error"
+    ],
+    "attributes": ["aria-busy", "aria-current", "data-state"]
+  },
+  "consumerResponsibilities": [
+    "Render labelled public controls, provide server-side validation, authorize persistence and completion, and avoid collecting unnecessary data.",
+    "Version and migrate persisted drafts, encrypt sensitive values, enforce retention, and recover from stale or incompatible snapshots.",
+    "Localize steps, validation, optionality, and announcements and complete mobile keyboard, screen-reader, speech, switch, touch, zoom, privacy, and legal review."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "controlled-uncontrolled",
+      "native-form",
+      "reset",
+      "read-only-reset",
+      "step-validation",
+      "optional-step",
+      "persistence-disabled-path",
+      "load-save-clear-retry",
+      "completion-retry",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "zoom",
+      "privacy-legal-review"
+    ],
+    "recordedEvidence": []
+  }
+}

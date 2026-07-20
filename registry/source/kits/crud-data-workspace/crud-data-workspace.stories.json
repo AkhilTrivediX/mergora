@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "itemId": "crud-data-workspace",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicCrudDataWorkspace"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCrudDataWorkspace"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "offline",
+      "applicability": { "status": "applicable" },
+      "story": "OfflineWorkflowKits"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "WorkflowKitStateMatrix"
+    },
+    {
+      "id": "form",
+      "applicability": { "status": "applicable" },
+      "story": "CrudDataFormAndRecovery"
+    },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlWorkflowKits" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlWorkflowKits"
+    }
+  ]
+}

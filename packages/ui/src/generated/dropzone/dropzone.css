@@ -1,0 +1,97 @@
+/* Generated from registry/source/components/dropzone/dropzone.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-dropzone {
+  color: var(--mrg-semantic-color-foreground-primary);
+  font-family: var(--mrg-semantic-font-family-prose);
+  min-inline-size: 0;
+}
+
+.mrg-dropzone-surface {
+  align-content: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: calc(var(--mrg-semantic-border-width-default) * 2) dashed
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-container);
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-sm);
+  justify-items: start;
+  min-block-size: 12rem;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-inset-lg);
+}
+
+.mrg-dropzone-surface[data-drop-target] {
+  border-style: solid;
+  border-width: calc(var(--mrg-semantic-border-width-default) * 3);
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-dropzone-surface[data-focus-visible] {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-dropzone [data-slot="dropzone-label"] {
+  font-size: var(--mrg-semantic-font-size-heading-sm);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  overflow-wrap: anywhere;
+}
+
+.mrg-dropzone [data-slot="dropzone-description"],
+.mrg-dropzone [data-slot="dropzone-status"] {
+  font-size: var(--mrg-semantic-font-size-label);
+  max-inline-size: 65ch;
+  overflow-wrap: anywhere;
+}
+
+.mrg-dropzone [data-slot="dropzone-description"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+}
+
+.mrg-dropzone[data-disabled="true"] .mrg-dropzone-surface {
+  background: var(--mrg-semantic-color-background-disabled);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+@media (max-width: 30rem) {
+  .mrg-dropzone-surface {
+    min-block-size: 10rem;
+    padding: var(--mrg-semantic-space-inset-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-dropzone *,
+  .mrg-dropzone *::before,
+  .mrg-dropzone *::after {
+    transition-duration: 0s;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-dropzone-surface {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-dropzone-surface[data-drop-target],
+  .mrg-dropzone-surface[data-focus-visible] {
+    border-color: Highlight;
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-dropzone[data-disabled="true"] .mrg-dropzone-surface {
+    border-color: GrayText;
+    color: GrayText;
+  }
+}

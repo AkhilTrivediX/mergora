@@ -1,0 +1,88 @@
+.mrg-scroll-area {
+  --mrg-scroll-area-max-block-size: 24rem;
+  --mrg-scroll-area-padding: var(--mrg-semantic-space-inline-sm);
+  box-sizing: border-box;
+  background: var(--mrg-semantic-color-background-canvas);
+  border-block: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-default);
+  max-block-size: var(--mrg-scroll-area-max-block-size);
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  overscroll-behavior: auto;
+  scrollbar-color: var(--mrg-semantic-color-brand-living)
+    var(--mrg-semantic-color-background-surface-sunken);
+  scrollbar-gutter: stable;
+  scrollbar-width: auto;
+  scroll-padding-block: var(--mrg-scroll-area-padding);
+  scroll-padding-inline: var(--mrg-scroll-area-padding);
+}
+
+.mrg-scroll-area[data-size="sm"] {
+  --mrg-scroll-area-max-block-size: 12rem;
+}
+
+.mrg-scroll-area[data-size="lg"] {
+  --mrg-scroll-area-max-block-size: 36rem;
+}
+
+.mrg-scroll-area[data-size="viewport"] {
+  --mrg-scroll-area-max-block-size: calc(
+    100dvb - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) -
+      (2 * var(--mrg-semantic-space-page))
+  );
+}
+
+.mrg-scroll-area[data-scroll-padding="none"] {
+  --mrg-scroll-area-padding: 0px;
+}
+
+.mrg-scroll-area[data-scroll-padding="md"] {
+  --mrg-scroll-area-padding: var(--mrg-semantic-space-inline-md);
+}
+
+.mrg-scroll-area[data-contain-overscroll="true"] {
+  overscroll-behavior: contain;
+}
+
+.mrg-scroll-area[data-orientation="horizontal"] {
+  max-block-size: none;
+  white-space: nowrap;
+}
+
+.mrg-scroll-area:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-offset)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-scroll-area::-webkit-scrollbar {
+  block-size: var(--mrg-semantic-size-target-minimum);
+  inline-size: var(--mrg-semantic-size-target-minimum);
+}
+
+.mrg-scroll-area::-webkit-scrollbar-track {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--mrg-semantic-color-brand-living);
+  background-clip: content-box;
+  border: var(--mrg-semantic-border-width-strong) solid transparent;
+  border-radius: var(--mrg-semantic-radius-pill);
+}
+
+@media (forced-colors: active) {
+  .mrg-scroll-area {
+    border-block-color: CanvasText;
+    scrollbar-color: auto;
+  }
+
+  .mrg-scroll-area:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

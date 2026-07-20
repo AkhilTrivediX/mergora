@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "icon-button",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "summary": "A named, touch-comfortable native button for icon actions with tooltip and pending integration.",
+  "semantics": [
+    "The required label is the accessible name and the tooltip never substitutes for it.",
+    "Pending remains focusable, exposes busy semantics, and blocks activation.",
+    "Every size is at least 44 by 44 CSS pixels."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, state, and focus.",
+    "reducedMotion": "Feedback remains understandable when transitions and rotation are removed.",
+    "rtl": "Logical properties and the documented spatial keyboard model follow direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Wrap, reflow, or expose native scrolling without clipping controls or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

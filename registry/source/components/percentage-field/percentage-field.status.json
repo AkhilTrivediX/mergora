@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "percentage-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete percentage sign, grouping, decimal, sign, spacing, and non-Latin digit locale fixtures.",
+    "Verify the fractional value contract across controlled state, submission, reset, and adapters.",
+    "Verify default and extended bounds, step, precision, negative, and over-100-percent cases.",
+    "Complete IME, caret, keyboard, stepper, wheel safeguard, and scrub fixtures.",
+    "Verify status rail, canonical fractional preview, and complete disabled-enhancement absence across generated consumers.",
+    "Record mobile, narrow, zoom, RTL, forced-colors, touch, and long-label geometry.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

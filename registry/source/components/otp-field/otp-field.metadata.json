@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "otp-field",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "empty",
+    "partial",
+    "complete",
+    "composition",
+    "paste",
+    "autofill",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "controlled",
+    "uncontrolled",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "otp-field",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["empty", "partial", "complete", "disabled", "read-only", "invalid"]
+    },
+    {
+      "name": "otp-field-input",
+      "semanticElement": "input type=text",
+      "refTarget": "HTMLInputElement",
+      "states": ["required", "invalid", "disabled", "read-only", "composition", "autofill"]
+    },
+    {
+      "name": "otp-field-grouping",
+      "semanticElement": "span aria-hidden=true",
+      "refTarget": "none",
+      "states": ["present"]
+    },
+    {
+      "name": "otp-field-grouping-label",
+      "semanticElement": "span",
+      "refTarget": "none",
+      "states": ["present"]
+    }
+  ],
+  "contract": { "id": "otp-field-accessibility", "version": "0.1.0" },
+  "passport": { "id": "otp-field-quality-passport", "version": "0.0.0" }
+}

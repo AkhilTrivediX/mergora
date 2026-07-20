@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/catalog-v1.schema.json",
+  "title": "Mergora native registry index v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "protocolVersion",
+    "registry",
+    "releases",
+    "items",
+    "dependencyGraphDigest"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "protocolVersion": { "const": "mergora-v1" },
+    "registry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "origin", "trust", "identityDigest"],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "origin": { "$ref": "common-v1.schema.json#/$defs/registryOrigin" },
+        "trust": { "$ref": "common-v1.schema.json#/$defs/registryTrust" },
+        "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "releases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currentStable", "supportedHistorical"],
+      "properties": {
+        "currentStable": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "currentPrerelease": {
+          "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/semver" }, { "type": "null" }]
+        },
+        "supportedHistorical": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "uniqueItems": true,
+          "maxItems": 64
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "aliases",
+          "displayName",
+          "description",
+          "kind",
+          "category",
+          "tags",
+          "maturity",
+          "latestStableVersion",
+          "lastChangedVersion",
+          "compatibility",
+          "license",
+          "provenance",
+          "links",
+          "registryDependencies",
+          "quality"
+        ],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "aliases": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+            "uniqueItems": true,
+            "maxItems": 32
+          },
+          "displayName": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "description": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "kind": {
+            "enum": ["component", "hook", "utility", "system", "kit", "theme", "contract"]
+          },
+          "category": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "tags": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+            "uniqueItems": true,
+            "maxItems": 64
+          },
+          "keywords": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1, "maxLength": 80 },
+            "uniqueItems": true,
+            "maxItems": 128
+          },
+          "maturity": { "$ref": "common-v1.schema.json#/$defs/maturity" },
+          "latestStableVersion": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/semver" }, { "type": "null" }]
+          },
+          "lastChangedVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "deprecation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["replacement", "migration"],
+            "properties": {
+              "replacement": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+              "migration": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+            }
+          },
+          "compatibility": { "$ref": "common-v1.schema.json#/$defs/compatibility" },
+          "license": { "$ref": "common-v1.schema.json#/$defs/spdxLicense" },
+          "provenance": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+          "links": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["payload", "passport", "contract", "docs", "source"],
+            "properties": {
+              "payload": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              "passport": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              "contract": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              "docs": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+              "source": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" }
+            }
+          },
+          "registryDependencies": {
+            "type": "array",
+            "items": { "$ref": "common-v1.schema.json#/$defs/qualifiedItemId" },
+            "uniqueItems": true,
+            "maxItems": 256
+          },
+          "quality": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["tier", "manualAssistiveTechnologyEvidence"],
+            "properties": {
+              "tier": { "enum": ["complete", "partial", "not-supplied"] },
+              "manualAssistiveTechnologyEvidence": { "type": "boolean" }
+            }
+          }
+        }
+      },
+      "maxItems": 4096
+    },
+    "dependencyGraphDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+  }
+}

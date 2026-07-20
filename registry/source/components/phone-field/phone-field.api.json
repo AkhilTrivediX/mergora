@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "itemId": "phone-field",
+  "entryExport": "PhoneField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>, excluding type, value, defaultValue, name, and native onChange",
+  "exports": [
+    { "kind": "component", "name": "PhoneField" },
+    { "kind": "function", "name": "applyPhoneFormatAdapter" },
+    { "kind": "type", "name": "PhoneFieldProps" },
+    { "kind": "type", "name": "PhoneFieldValue" },
+    { "kind": "type", "name": "PhoneFormatAdapter" },
+    { "kind": "type", "name": "PhoneAdapterContext" },
+    { "kind": "type", "name": "PhoneAdapterPhase" },
+    { "kind": "type", "name": "PhoneAdapterResult" },
+    { "kind": "type", "name": "PhoneAdapterStatus" },
+    { "kind": "type", "name": "PhoneCountry" },
+    { "kind": "type", "name": "PhoneFieldStatus" },
+    { "kind": "type", "name": "PhoneTextSelection" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "PhoneFormatAdapter" },
+    { "name": "country", "required": true, "type": "PhoneCountry with explicit localized label" },
+    { "name": "value", "required": false, "type": "string; controlled visible value" },
+    {
+      "name": "defaultValue",
+      "required": false,
+      "default": "",
+      "type": "string; uncontrolled visible value"
+    },
+    { "name": "onValueChange", "required": false, "type": "(value: PhoneFieldValue) => void" },
+    { "name": "name", "required": false, "type": "string; hidden canonical E.164 form name" },
+    { "name": "extension", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "extensionLabel",
+      "required": false,
+      "type": "required localized string when extension is true"
+    },
+    { "name": "extensionValue", "required": false, "type": "string; controlled" },
+    {
+      "name": "defaultExtensionValue",
+      "required": false,
+      "default": "",
+      "type": "string; uncontrolled"
+    },
+    { "name": "onExtensionChange", "required": false, "type": "(extension: string) => void" },
+    { "name": "extensionName", "required": false, "type": "string" },
+    { "name": "maxInputLength", "required": false, "default": 64, "type": "integer 1 through 256" },
+    {
+      "name": "invalidMessage",
+      "required": false,
+      "default": "localized validation recovery text",
+      "type": "string"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "inputClassName", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "One real type=tel input owns editing, selection, undo, paste, autocomplete, validation, and focus; no browser or editor key is intercepted.",
+    "adapter": "A required trusted synchronous adapter owns country-aware parsing, display formatting, exact validity, canonical E.164 output, and caret mapping. The component loads no numbering database or remote adapter.",
+    "country": "Country context requires localized text containing letters or numbers plus an isolated calling code; flag-only labels fail at runtime.",
+    "forms": "Visible formatted phone text has no form name. An optional hidden control serializes only valid canonical E.164 output, while an optional separately labelled extension input serializes independently.",
+    "field": "ID, label, description, error, required, and invalid relationships are inherited from Field unless explicitly supplied."
+  }
+}

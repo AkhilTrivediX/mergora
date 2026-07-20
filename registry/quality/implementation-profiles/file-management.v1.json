@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "category": "file-management",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "file-manager",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn supplies primitives such as Button and Progress but no maintained file-manager workflow with storage, conflict, upload and recovery ownership.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines keyboard folder navigation and file inspection with explicit conflict decisions, consumer-owned recovery receipts, storage context, bounded virtualization and opt-in operation announcements.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/file-manager/file-manager.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          }
+        ],
+        "enhancementIds": [
+          "recovery-actions",
+          "conflict-guidance",
+          "storage-context",
+          "operation-announcements",
+          "file-windowing"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal white split workbench, ink dividers, green selection, violet file marks, strong type and shared two-layer focus keep the dense workflow recognizably Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/file-manager/file-manager.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "green-state-signal",
+          "violet-context-signal",
+          "workbench-structure",
+          "restrained-corners",
+          "status-rail",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-accent-background-subtle",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "recovery-actions",
+          "status": "evidence-backed",
+          "summary": "A destructive move returns a consumer-owned recovery receipt and exposes one explicit undo path.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager-state.ts"
+            }
+          ],
+          "storybookControlNames": ["enableRecoveryActions"],
+          "api": {
+            "kind": "prop",
+            "names": ["enableRecoveryActions", "moveToRecovery", "restore"],
+            "enableWhen": "Set enableRecoveryActions to true and provide the required adapter methods."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Recovery and undo controls are absent.",
+            "behavior": "No destructive adapter method or recovery receipt state is reachable from the UI.",
+            "events": "No recovery or restore adapter call is emitted.",
+            "accessibility": "No recovery status region or destructive action is exposed."
+          }
+        },
+        {
+          "id": "conflict-guidance",
+          "status": "evidence-backed",
+          "summary": "Local and remote version context is compared before a consumer-owned resolution.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager.tsx"
+            }
+          ],
+          "storybookControlNames": ["showConflictGuidance"],
+          "api": {
+            "kind": "prop",
+            "names": ["showConflictGuidance", "resolveConflict"],
+            "enableWhen": "Set showConflictGuidance to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Conflict comparison and resolution controls are absent.",
+            "behavior": "No conflict-resolution branch is reachable.",
+            "events": "No resolveConflict call is emitted.",
+            "accessibility": "No conflict heading, description or actions enter the accessibility tree."
+          }
+        },
+        {
+          "id": "storage-context",
+          "status": "evidence-backed",
+          "summary": "An optional native meter explains used and total storage without provider coupling.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager.tsx"
+            }
+          ],
+          "storybookControlNames": ["showStorageContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showStorageContext", "storage"],
+            "enableWhen": "Set showStorageContext to true and return storage data."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Storage meter and copy are absent.",
+            "behavior": "Storage data is not formatted or rendered.",
+            "events": "No enhancement callback exists.",
+            "accessibility": "No meter or storage description is exposed."
+          }
+        },
+        {
+          "id": "operation-announcements",
+          "status": "evidence-backed",
+          "summary": "Mutation transitions can be announced without forcing live output on basic usage.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager.tsx"
+            }
+          ],
+          "storybookControlNames": ["announceOperations"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceOperations"],
+            "enableWhen": "Set announceOperations to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No hidden output is rendered.",
+            "behavior": "Operation state does not update announcement text.",
+            "events": "No announcement event is emitted.",
+            "accessibility": "The live region and upload-progress announcements are absent."
+          }
+        },
+        {
+          "id": "file-windowing",
+          "status": "evidence-backed",
+          "summary": "Consumers may bound the rendered file slice for large folders.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager.tsx"
+            }
+          ],
+          "storybookControlNames": ["virtualized"],
+          "api": {
+            "kind": "prop",
+            "names": ["virtualWindow"],
+            "enableWhen": "Pass a bounded virtualWindow object."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Every filtered file is rendered.",
+            "behavior": "No slicing or window validation runs.",
+            "events": "No window event exists.",
+            "accessibility": "The complete file sequence remains in the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6FileManager.stories.tsx",
+          "exportName": "BasicFileManager",
+          "enhancementControls": [
+            "enableRecoveryActions",
+            "showConflictGuidance",
+            "showStorageContext",
+            "announceOperations",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6FileManager.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6FileManager.stories.tsx",
+          "exportName": "RecommendedFileManager",
+          "enhancementControls": [
+            "enableRecoveryActions",
+            "showConflictGuidance",
+            "showStorageContext",
+            "announceOperations",
+            "virtualized"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6FileManager.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source semantics and automated-focused evidence exist; the complete Risk Class 3 manual assistive-technology matrix is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/file-manager/file-manager.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Folder keyboard behavior, native forms, recovery isolation, narrow/RTL, forced colors and reduced motion have focused fixtures; full workflow and large-data gates remain.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/operations-surfaces/operations-surfaces.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Required manual screen-reader, speech, switch, touch, zoom and security/privacy evidence is incomplete.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/file-manager/file-manager.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/file-manager/file-manager.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

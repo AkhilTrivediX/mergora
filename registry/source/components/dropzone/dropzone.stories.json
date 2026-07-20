@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropzone",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A drop target is enabled or disabled; read-only is not a meaningful selection state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required form validation belongs to FileTrigger or FileUpload."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "success",
+      "applicability": { "status": "applicable" },
+      "story": "PickerPasteAndDropParity"
+    },
+    {
+      "id": "warning",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "StateMatrix"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Selecting local files is not itself an irreversible action."
+      }
+    }
+  ]
+}

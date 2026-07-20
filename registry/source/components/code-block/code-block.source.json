@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./code-block.css", "react"],
+  "entryPath": "registry/source/components/code-block/code-block.tsx",
+  "id": "code-block",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

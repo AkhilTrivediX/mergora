@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./masked-field.css", "react"],
+  "entryPath": "registry/source/components/masked-field/masked-field.tsx",
+  "id": "masked-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

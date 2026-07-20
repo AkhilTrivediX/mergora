@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-grid",
+  "root": {
+    "element": "div role=region containing role=treegrid",
+    "ref": "HTMLDivElement",
+    "slot": "tree-grid",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "tree-grid-row",
+      "element": "div role=row",
+      "purpose": "Carries hierarchy, position, expansion, selection, disabled, busy, and row-index state.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "tree-grid-cell",
+      "element": "div role=gridcell",
+      "purpose": "Owns the one-tab-stop two-dimensional APG navigation and optional editor.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "tree-grid-summary",
+      "element": "optional output",
+      "purpose": "Reports visible hierarchy and selection context outside the scrolling surface.",
+      "stability": "documented"
+    },
+    {
+      "slot": "tree-grid-announcer",
+      "element": "optional polite status",
+      "purpose": "Reports user-triggered expansion, selection, and saved edits.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "basic-defaults",
+      "covers": ["standard-contrast", "strong-enhancement-disabled", "focus-visible"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["strong-contrast", "canvas-seam", "forced-colors", "reduced-motion"]
+    },
+    {
+      "id": "focus-and-hidden-content",
+      "covers": ["focus-visible", "standard-contrast", "strong-contrast", "forced-colors"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["dark", "enhanced-contrast", "forced-colors"],
+    "requiresBrowserEvidence": [
+      "keyboard-modality",
+      "indicator-area",
+      "contrast",
+      "400-percent-zoom"
+    ]
+  }
+}

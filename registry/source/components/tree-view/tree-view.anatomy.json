@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-view",
+  "root": {
+    "element": "div role=tree",
+    "ref": "HTMLDivElement",
+    "slot": "tree-view",
+    "stableAttributes": ["data-slot", "data-virtualized", "data-total-items"]
+  },
+  "parts": [
+    {
+      "slot": "tree-view-item",
+      "element": "div role=treeitem",
+      "purpose": "Carries APG level, position, expansion, selection, disabled, busy, and roving-focus state.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "tree-view-load-status",
+      "element": "optional status",
+      "purpose": "Announces consumer-owned lazy loading only while active.",
+      "stability": "documented"
+    },
+    {
+      "slot": "tree-view-move-actions",
+      "element": "optional named button group",
+      "purpose": "Provides explicit non-drag structural movement.",
+      "stability": "documented"
+    },
+    {
+      "slot": "tree-view-virtual-spacer-start",
+      "element": "optional aria-hidden div",
+      "purpose": "Preserves consumer-controlled virtual window geometry without fabricated treeitems.",
+      "stability": "documented"
+    }
+  ]
+}

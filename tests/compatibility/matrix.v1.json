@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "compatibility-execution-matrix",
+  "verificationStatus": "scheduled",
+  "evidencePolicy": "A lane is supported only after its GitHub Actions job passes for the exact commit and versions. This tracked matrix is scheduling metadata, not pass evidence.",
+  "artifacts": ["mergora", "mergora-contracts", "mergora-registry", "mergora-schema", "mergora-ui"],
+  "policy": {
+    "node": {
+      "minimum": "22.14.0",
+      "primary": "24.12.0"
+    },
+    "react": {
+      "minimum": "18.3.1",
+      "primary": "19.2.7"
+    },
+    "typescript": {
+      "lowerBoundProbe": "5.9.3",
+      "primary": "6.0.3",
+      "latestEvaluatedUnsupported": "7.0.2",
+      "latestEvaluationReason": "The pinned Next.js and Storybook pipelines have not passed with TypeScript 7.0.2; it is not a supported lane."
+    },
+    "frameworks": {
+      "next": {
+        "primary": "16.2.10"
+      },
+      "vite": {
+        "previousProbe": "7.3.6",
+        "primary": "8.1.5"
+      }
+    },
+    "packageManagers": {
+      "npmSupportedMajorCurrent": "11.17.0",
+      "npmLatestIncompatibleWithPinnedNode": "12.0.1",
+      "pnpmPinned": "11.14.0",
+      "pnpmCurrent": "11.15.0",
+      "yarn": "4.17.1",
+      "bun": "1.3.14"
+    }
+  },
+  "frameworkProfiles": [
+    {
+      "id": "next-r18-ts59",
+      "framework": "next",
+      "frameworkVersion": "16.2.10",
+      "reactVersion": "18.3.1",
+      "reactTypesVersion": "18.3.27",
+      "reactDomTypesVersion": "18.3.7",
+      "typescriptVersion": "5.9.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "next-r18-ts60",
+      "framework": "next",
+      "frameworkVersion": "16.2.10",
+      "reactVersion": "18.3.1",
+      "reactTypesVersion": "18.3.27",
+      "reactDomTypesVersion": "18.3.7",
+      "typescriptVersion": "6.0.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "next-r19-ts59",
+      "framework": "next",
+      "frameworkVersion": "16.2.10",
+      "reactVersion": "19.2.7",
+      "reactTypesVersion": "19.2.17",
+      "reactDomTypesVersion": "19.2.3",
+      "typescriptVersion": "5.9.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "next-r19-ts60",
+      "framework": "next",
+      "frameworkVersion": "16.2.10",
+      "reactVersion": "19.2.7",
+      "reactTypesVersion": "19.2.17",
+      "reactDomTypesVersion": "19.2.3",
+      "typescriptVersion": "6.0.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "vite-r18-ts59",
+      "framework": "vite",
+      "frameworkVersion": "8.1.5",
+      "reactVersion": "18.3.1",
+      "reactTypesVersion": "18.3.27",
+      "reactDomTypesVersion": "18.3.7",
+      "typescriptVersion": "5.9.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "vite-r18-ts60",
+      "framework": "vite",
+      "frameworkVersion": "8.1.5",
+      "reactVersion": "18.3.1",
+      "reactTypesVersion": "18.3.27",
+      "reactDomTypesVersion": "18.3.7",
+      "typescriptVersion": "6.0.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "vite-r19-ts59",
+      "framework": "vite",
+      "frameworkVersion": "8.1.5",
+      "reactVersion": "19.2.7",
+      "reactTypesVersion": "19.2.17",
+      "reactDomTypesVersion": "19.2.3",
+      "typescriptVersion": "5.9.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "vite-r19-ts60",
+      "framework": "vite",
+      "frameworkVersion": "8.1.5",
+      "reactVersion": "19.2.7",
+      "reactTypesVersion": "19.2.17",
+      "reactDomTypesVersion": "19.2.3",
+      "typescriptVersion": "6.0.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "vite7-r19-ts60",
+      "framework": "vite",
+      "frameworkVersion": "7.3.6",
+      "reactVersion": "19.2.7",
+      "reactTypesVersion": "19.2.17",
+      "reactDomTypesVersion": "19.2.3",
+      "typescriptVersion": "6.0.3",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    }
+  ],
+  "managerProfiles": [
+    {
+      "id": "manager-npm",
+      "manager": "npm",
+      "managerVersion": "11.17.0"
+    },
+    {
+      "id": "manager-pnpm-pinned",
+      "manager": "pnpm",
+      "managerVersion": "11.14.0"
+    },
+    {
+      "id": "manager-pnpm-current",
+      "manager": "pnpm",
+      "managerVersion": "11.15.0"
+    },
+    {
+      "id": "manager-yarn",
+      "manager": "yarn",
+      "managerVersion": "4.17.1"
+    },
+    {
+      "id": "manager-bun",
+      "manager": "bun",
+      "managerVersion": "1.3.14"
+    }
+  ],
+  "nodeOsProfile": {
+    "id": "node-os-smoke",
+    "framework": "vite",
+    "frameworkVersion": "8.1.5",
+    "reactVersion": "19.2.7",
+    "reactTypesVersion": "19.2.17",
+    "reactDomTypesVersion": "19.2.3",
+    "typescriptVersion": "6.0.3",
+    "manager": "npm",
+    "managerVersion": "host-bundled",
+    "nodes": ["22.14.0", "24.12.0"],
+    "operatingSystems": ["linux", "win32", "darwin"]
+  },
+  "limitations": [
+    "The TypeScript 5.9.3 lane is a lower-bound probe until the public support policy adopts it.",
+    "TypeScript 7.0.2 and npm 12.0.1 are recorded as unsupported under the pinned framework and Node policy, not silently treated as passing lanes.",
+    "Scheduled CI jobs remain not tested until an exact-commit workflow run succeeds; this file never records a pass result.",
+    "Real browser and assistive-technology compatibility are separate evidence gates."
+  ]
+}

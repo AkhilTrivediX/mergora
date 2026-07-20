@@ -1,0 +1,203 @@
+@layer mergora.components {
+  .mrg-sortable-list {
+    container-type: inline-size;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-sortable-list__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-sortable-list__heading > strong {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+
+  .mrg-sortable-list__instructions {
+    max-inline-size: var(--mrg-semantic-size-content-default);
+    margin: 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+
+  .mrg-sortable-list ol {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mrg-sortable-list ol > li:not(.mrg-sortable-list__spacer) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: var(--mrg-semantic-space-inline-sm);
+    align-items: center;
+    min-block-size: var(--mrg-semantic-density-row-height);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-control);
+    background: var(--mrg-semantic-color-background-canvas);
+    transition:
+      background-color var(--mrg-semantic-motion-duration-feedback)
+        var(--mrg-semantic-motion-easing-standard),
+      border-color var(--mrg-semantic-motion-duration-feedback)
+        var(--mrg-semantic-motion-easing-standard);
+  }
+
+  .mrg-sortable-list ol > li[data-grabbed] {
+    border-color: var(--mrg-semantic-color-brand-violet);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-sortable-list :is(button, select) {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-sortable-list button {
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    cursor: pointer;
+  }
+
+  .mrg-sortable-list select {
+    padding-inline: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-sortable-list button:disabled,
+  .mrg-sortable-list select:disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-sortable-list :is(button, select):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-sortable-list__handle {
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    padding: 0 !important;
+    color: var(--mrg-semantic-color-brand-violet) !important;
+    cursor: grab !important;
+  }
+
+  .mrg-sortable-list__handle[aria-pressed="true"] {
+    color: var(--mrg-semantic-color-selection-foreground) !important;
+    background: var(--mrg-semantic-color-selection-background) !important;
+    cursor: grabbing !important;
+  }
+
+  .mrg-sortable-list__content {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-sortable-list__position {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mrg-sortable-list__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-sortable-list__actions label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-sortable-list__load-window {
+    justify-self: start;
+  }
+
+  .mrg-sortable-list__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @container (max-width: 34rem) {
+    .mrg-sortable-list ol > li:not(.mrg-sortable-list__spacer) {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .mrg-sortable-list__position,
+    .mrg-sortable-list__actions {
+      grid-column: 2;
+      justify-content: start;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .mrg-sortable-list ol > li:not(.mrg-sortable-list__spacer) {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .mrg-sortable-list__position,
+    .mrg-sortable-list__actions {
+      grid-column: 2;
+      justify-content: start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-sortable-list *,
+    .mrg-sortable-list *::before,
+    .mrg-sortable-list *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0s !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-sortable-list ol > li:not(.mrg-sortable-list__spacer),
+    .mrg-sortable-list :is(button, select) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-sortable-list ol > li[data-grabbed] {
+      color: HighlightText;
+      background: Highlight;
+    }
+
+    .mrg-sortable-list__handle {
+      color: LinkText !important;
+    }
+
+    .mrg-sortable-list :is(button, select):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "itemId": "otp-field",
+  "entryExport": "OtpField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>, excluding type, value, defaultValue, maxLength, and native onChange",
+  "exports": [
+    { "kind": "component", "name": "OtpField" },
+    { "kind": "type", "name": "OtpFieldProps" },
+    { "kind": "type", "name": "OtpFieldCharacterSet" }
+  ],
+  "props": [
+    { "name": "value", "required": false, "type": "string; controlled" },
+    { "name": "defaultValue", "required": false, "default": "", "type": "string; uncontrolled" },
+    { "name": "onChange", "required": false, "type": "(value: string) => void" },
+    { "name": "onComplete", "required": false, "type": "(value: string) => void" },
+    {
+      "name": "groups",
+      "required": false,
+      "default": "[3, 3]",
+      "type": "readonly number[]; every group is 1 through 12 and the total is 4 through 12"
+    },
+    {
+      "name": "characterSet",
+      "required": false,
+      "default": "numeric",
+      "type": "numeric | alphanumeric"
+    },
+    {
+      "name": "groupingLabel",
+      "required": false,
+      "default": "localized length and grouping description",
+      "type": "string"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "inputClassName", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "One real text input owns focus, editing, selection, caret, composition, one-time-code autofill, validation, form submission, and reset. Paste event text is read only to normalize a complete bounded insertion and is never persisted or transmitted.",
+    "segments": "Decorative grouping guides are aria-hidden and never become focus targets or independent fields.",
+    "normalization": "NFKC-normalized ASCII digits, or ASCII letters and digits when explicitly selected, are bounded to the declared group total.",
+    "completion": "Completion is an optional notification for each newly complete value; an unchanged complete value is not announced twice. The component never submits, advances focus, verifies, or treats entry as a cognitive-function test.",
+    "field": "ID, label, description, error, required, and invalid relationships are inherited from Field unless explicitly supplied."
+  }
+}

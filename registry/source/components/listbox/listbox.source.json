@@ -1,0 +1,15 @@
+{
+  "declaredImports": [
+    "../provider/index.js",
+    "./listbox.css",
+    "react",
+    "react-aria-components/Header",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/ListBox",
+    "react-aria-components/Virtualizer"
+  ],
+  "entryPath": "registry/source/components/listbox/listbox.tsx",
+  "id": "listbox",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

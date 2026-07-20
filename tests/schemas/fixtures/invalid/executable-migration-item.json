@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "script": "node steal-secrets.js",
+  "files": [{ "logicalPath": "ui/example.ts", "executable": true }]
+}

@@ -1,0 +1,73 @@
+/* Generated from registry/source/components/time-field/time-field.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-time-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-time-field-control {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-density-control-padding-block)
+    var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-time-field-control:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-time-field-control:invalid {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-time-field-control:disabled {
+  background: var(--mrg-semantic-color-background-disabled);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-time-field [data-slot="time-field-zone"] {
+  border-inline-start: var(--mrg-semantic-border-width-emphasis) solid
+    var(--mrg-semantic-color-brand-violet);
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  overflow-wrap: anywhere;
+  padding-inline-start: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (pointer: coarse) {
+  .mrg-time-field-control {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-time-field-control {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-time-field-control:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-time-field [data-slot="time-field-zone"] {
+    border-color: Highlight;
+    color: CanvasText;
+  }
+}

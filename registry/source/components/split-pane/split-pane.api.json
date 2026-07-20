@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "itemId": "split-pane",
+  "entryExport": "SplitPane",
+  "refTarget": "Root/Panel=HTMLDivElement; Handle=focusable separator HTMLDivElement",
+  "exports": [
+    { "kind": "namespace", "name": "SplitPane" },
+    { "kind": "component", "name": "SplitPaneRoot" },
+    { "kind": "component", "name": "SplitPanePanel" },
+    { "kind": "component", "name": "SplitPaneHandle" },
+    { "kind": "function", "name": "normalizeSplitPaneSizes" },
+    { "kind": "type", "name": "SplitPaneChangeDetails" },
+    { "kind": "type", "name": "SplitPaneChangeReason" },
+    { "kind": "type", "name": "SplitPaneHandleProps" },
+    { "kind": "type", "name": "SplitPaneMessages" },
+    { "kind": "type", "name": "SplitPaneOrientation" },
+    { "kind": "type", "name": "SplitPanePanelProps" },
+    { "kind": "type", "name": "SplitPanePersistence" },
+    { "kind": "type", "name": "SplitPanePersistenceAdapter" },
+    { "kind": "type", "name": "SplitPaneRootProps" },
+    { "kind": "type", "name": "SplitPaneStackAt" }
+  ],
+  "rootProps": [
+    {
+      "default": "[50, 50] uncontrolled",
+      "name": "value/defaultValue/onValueChange",
+      "required": false,
+      "type": "readonly percentage array and callback"
+    },
+    { "default": "none", "name": "onValueCommit", "required": false, "type": "commit callback" },
+    {
+      "default": "10 per panel / 100 per panel",
+      "name": "minSizes/maxSizes",
+      "required": false,
+      "type": "readonly number arrays"
+    },
+    {
+      "default": "none",
+      "name": "collapsiblePanels",
+      "required": false,
+      "type": "readonly panel-index array"
+    },
+    {
+      "default": "horizontal",
+      "name": "orientation",
+      "required": false,
+      "type": "horizontal | vertical"
+    },
+    { "default": "narrow", "name": "stackAt", "required": false, "type": "never | narrow" },
+    {
+      "default": "none",
+      "name": "persistence",
+      "required": false,
+      "type": "synchronous read/write adapter and key"
+    },
+    {
+      "default": "provider locale and stable-key defaults",
+      "name": "locale/messages/formatValue",
+      "required": false,
+      "type": "localization overrides"
+    },
+    { "default": true, "name": "showStepControls", "required": false, "type": "boolean" }
+  ],
+  "partProps": {
+    "Panel": "index is required; regionLabel opts into a named region without creating landmarks by default.",
+    "Handle": "index and an accessible name are required; collapseTarget enables Enter and a touch collapse/restore button only for a declared collapsible panel.",
+    "enhancement": "showStepControls=false removes every button group, button event, label, and touch-control accessibility node while preserving separator keyboard/pointer operation; persistence and narrow stacking remain independently optional."
+  }
+}

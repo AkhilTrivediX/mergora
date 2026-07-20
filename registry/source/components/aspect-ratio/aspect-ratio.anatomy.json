@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "aspect-ratio",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "aspect-ratio",
+    "stableAttributes": [
+      "data-slot",
+      "data-ratio",
+      "data-fit",
+      "style.--mrg-aspect-ratio",
+      "style.--mrg-aspect-ratio-fallback"
+    ]
+  },
+  "parts": []
+}

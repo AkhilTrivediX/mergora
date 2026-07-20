@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "markdown",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Test maintained parser/sanitizer adapters against dangerous raw HTML, URL, SVG, table, code, and streaming fixtures without transferring the safety claim to Mergora.",
+    "Record screen-reader streaming, long prose, narrow overflow, zoom, RTL, speech, and switch evidence.",
+    "Generate and verify package/source/native/Shadcn/docs outputs and packed consumers."
+  ]
+}

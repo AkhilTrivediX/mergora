@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "billing-subscription-kit",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package, editable source, native registry, Shadcn, and dependency-closure outputs.",
+    "Pass clean-consumer lifecycle, packed Next/Vite, large-invoice, async-failure, browser, visual, and accessibility gates.",
+    "Record current manual assistive-technology, touch, zoom, RTL, forced-colors, financial, security, privacy, legal, and PCI-scope evidence."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-picker",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "date-picker",
+    "stableAttributes": ["data-slot", "data-presets"]
+  },
+  "parts": [
+    {
+      "slot": "date-field",
+      "element": "Mergora DateField",
+      "purpose": "native date editing and mobile picker",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-picker-presets",
+      "element": "optional button group",
+      "purpose": "consumer-owned quick selections",
+      "stability": "documented"
+    }
+  ]
+}

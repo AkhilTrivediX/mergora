@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "itemId": "emoji-picker",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "controlled",
+    "uncontrolled",
+    "search",
+    "category",
+    "recent",
+    "skin-tone",
+    "selected",
+    "empty",
+    "disabled",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "emoji-picker",
+      "semanticElement": "named group",
+      "refTarget": "HTMLDivElement",
+      "states": ["controlled", "uncontrolled", "disabled", "empty"]
+    },
+    {
+      "name": "emoji-picker-controls",
+      "semanticElement": "optional labelled native controls",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "emoji-picker-grid",
+      "semanticElement": "ARIA grid with rows and cells",
+      "refTarget": "none",
+      "states": ["selected"]
+    },
+    {
+      "name": "emoji-picker-summary",
+      "semanticElement": "optional polite output",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "emoji-picker-accessibility", "version": "0.1.0" },
+  "passport": { "id": "emoji-picker-quality-passport", "version": "0.0.0" }
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-calendar",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "range-calendar",
+    "stableAttributes": ["data-slot", "data-duration", "data-range-invalid", "data-range-preview"]
+  },
+  "parts": [
+    {
+      "slot": "range-calendar-panes",
+      "element": "two labelled calendar sections",
+      "purpose": "start and end selection",
+      "stability": "documented"
+    },
+    {
+      "slot": "calendar",
+      "element": "Mergora Calendar",
+      "purpose": "localized keyboard grid and native alternate input",
+      "stability": "documented"
+    },
+    {
+      "slot": "range-calendar-duration",
+      "element": "optional output",
+      "purpose": "inclusive calendar-day summary",
+      "stability": "documented"
+    },
+    {
+      "slot": "range-calendar-preview",
+      "element": "optional live output",
+      "purpose": "candidate inclusive duration during keyboard or pointer preview",
+      "stability": "documented"
+    },
+    {
+      "slot": "range-calendar-span-error",
+      "element": "alert text",
+      "purpose": "unavailable-span rejection and recovery guidance",
+      "stability": "documented"
+    }
+  ]
+}

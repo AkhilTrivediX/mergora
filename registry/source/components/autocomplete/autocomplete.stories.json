@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "itemId": "autocomplete",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicAutocomplete" },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAutocomplete"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAutocomplete"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndScreenReader"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "ControlledAndForms"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncRemoteStates"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "EmptyAndError" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAutocomplete"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Autocomplete has no partial progress state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success messaging belongs to the containing workflow."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warning messaging belongs to the containing workflow."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "EmptyAndError" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Autocomplete does not own destructive actions."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "long-content",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "rtl",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlAndPreferences"
+    }
+  ]
+}

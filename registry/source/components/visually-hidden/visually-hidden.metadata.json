@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "itemId": "visually-hidden",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "base",
+    "responsive-reflow",
+    "locale-direction",
+    "user-preferences",
+    "long-content",
+    "interaction"
+  ],
+  "slots": [
+    {
+      "name": "visually-hidden",
+      "semanticElement": "span, div, or anchor",
+      "refTarget": "HTMLElement",
+      "states": ["hidden", "focus-revealed"]
+    }
+  ],
+  "contract": { "id": "visually-hidden-accessibility", "version": "0.1.0" },
+  "passport": { "id": "visually-hidden-quality-passport", "version": "0.0.0" }
+}

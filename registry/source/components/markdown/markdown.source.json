@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./markdown.css", "react"],
+  "entryPath": "registry/source/components/markdown/markdown.tsx",
+  "id": "markdown",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

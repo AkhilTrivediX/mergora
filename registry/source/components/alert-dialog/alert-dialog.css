@@ -1,0 +1,78 @@
+.mrg-alert-dialog__content {
+  inline-size: min(32rem, 100%);
+}
+
+.mrg-alert-dialog__keyboard-boundary {
+  display: flex;
+  flex-direction: column;
+}
+
+.mrg-alert-dialog__description {
+  color: var(--mrg-semantic-color-foreground-primary);
+}
+
+.mrg-alert-dialog__close[data-intent="destructive"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+  background: var(--mrg-semantic-color-status-danger-background);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-alert-dialog__close[data-intent="destructive"][data-hovered] {
+  box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-alert-dialog__acknowledgement {
+  order: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--mrg-semantic-space-inline-sm);
+  margin-block-start: var(--mrg-semantic-space-stack-md);
+  padding: var(--mrg-semantic-space-inset-sm);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-status-warning-border);
+  border-radius: var(--mrg-semantic-radius-status);
+  background: var(--mrg-semantic-color-status-warning-background);
+  color: var(--mrg-semantic-color-status-warning-foreground);
+  font-size: var(--mrg-semantic-font-size-label);
+  font-weight: var(--mrg-semantic-font-weight-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  cursor: pointer;
+}
+
+.mrg-alert-dialog__acknowledgement input {
+  inline-size: var(--mrg-semantic-size-icon-sm);
+  block-size: var(--mrg-semantic-size-icon-sm);
+  margin: 0;
+  accent-color: var(--mrg-semantic-color-brand-action);
+}
+
+.mrg-alert-dialog__acknowledgement input:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-alert-dialog__footer {
+  order: 2;
+}
+
+@media (forced-colors: active) {
+  .mrg-alert-dialog__acknowledgement {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-alert-dialog__acknowledgement input:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-alert-dialog__close[data-intent="destructive"]::before {
+    content: "! ";
+  }
+}

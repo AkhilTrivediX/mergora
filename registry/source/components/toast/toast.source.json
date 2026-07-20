@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./toast.css", "react"],
+  "entryPath": "registry/source/components/toast/toast.tsx",
+  "id": "toast",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

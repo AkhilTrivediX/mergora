@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "color-field",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "color-field",
+    "stableAttributes": [
+      "data-slot",
+      "data-alpha-policy",
+      "data-disabled",
+      "data-empty",
+      "data-format",
+      "data-invalid",
+      "data-pending",
+      "data-readonly",
+      "data-required"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "color-field-input",
+      "element": "input type=text",
+      "purpose": "IME-safe CSS color editor associated with the visible Field label.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field-form-value",
+      "element": "input type=hidden",
+      "purpose": "Optional canonical successful form value; disabled controls are omitted.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field-swatch",
+      "element": "span",
+      "purpose": "Decorative visual sample; text alongside it carries the value.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field-preview",
+      "element": "output",
+      "purpose": "Text equivalent for the selected canonical color or empty state.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field-contrast",
+      "element": "output",
+      "purpose": "Text ratio, configured threshold outcome, and verification caveat.",
+      "stability": "documented"
+    },
+    {
+      "slot": "color-field-error",
+      "element": "p",
+      "purpose": "Persistent local parse, range, alpha-policy, or required error.",
+      "stability": "documented"
+    }
+  ]
+}

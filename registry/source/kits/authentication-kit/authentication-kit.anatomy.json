@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "authentication-kit",
+  "root": {
+    "element": "div with header, optional navigation, and main form",
+    "ref": "HTMLDivElement",
+    "slot": "authentication-kit",
+    "stableAttributes": ["data-slot", "data-flow"]
+  },
+  "parts": [
+    {
+      "slot": "authentication-flow-navigation",
+      "element": "optional labelled navigation",
+      "purpose": "Makes consumer-enabled access and recovery flows discoverable.",
+      "stability": "documented"
+    },
+    {
+      "slot": "authentication-rate-limit-recovery",
+      "element": "optional polite output",
+      "purpose": "Explains exactly when another attempt becomes available.",
+      "stability": "documented"
+    },
+    {
+      "slot": "authentication-security-context",
+      "element": "optional aside",
+      "purpose": "Keeps the consumer-owned security boundary visible.",
+      "stability": "documented"
+    }
+  ]
+}

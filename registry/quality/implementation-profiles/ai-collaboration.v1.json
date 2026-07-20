@@ -1,0 +1,2197 @@
+{
+  "schemaVersion": 1,
+  "category": "ai-collaboration",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "message",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary provider-neutral message primitive with a documented role, delivery, long-content, and enhancement-off contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "A semantic article can add an explicit text-backed role and delivery rail without changing provider-neutral content or actions.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message/message.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["role-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal Canvas, Ink structure, Green and Violet role signals, strong type, bounded corners, logical layout and two-layer focus identify the Mergora family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message/message.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "role-context",
+          "status": "evidence-backed",
+          "summary": "showRoleContext independently adds localized role and delivery text.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/message/message.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showRoleContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["showRoleContext", "roleLabels"],
+            "enableWhen": "showRoleContext is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No role rail is rendered.",
+            "behavior": "The native article and content remain unchanged.",
+            "events": "No enhancement event or renderer runs.",
+            "accessibility": "No enhancement text or relationship enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicMessage",
+          "enhancementControls": ["showRoleContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedMessage",
+          "enhancementControls": ["showRoleContext"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Focused source and automated evidence covers article semantics, unsafe-content boundaries, enhancement removal, narrow layout, RTL and forced colors; the full manual matrix is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message/message.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Lifecycle, browser, visual, current manual accessibility, public dogfooding and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/message/message.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message/message.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "message-list",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary message list that owns virtualization, user-respecting follow-output, scroll recovery, and throttled announcements.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Optional fixed-row virtualization, follow-output, resume control, and debounced announcements remain independently selectable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message-list/message-list.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["output-policy"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal-white measured viewport, Ink rule, compact action Green, Violet focus, restrained corners and preference fallbacks use the shared Mergora workbench language.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message-list/message-list.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-action-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-size-target-minimum",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "output-policy",
+          "status": "evidence-backed",
+          "summary": "Virtualization, follow-output, resume UI and new-message announcements are four explicit off-by-default controls.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/message-list/message-list.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["virtualize", "followOutput", "announceMessages"],
+          "api": {
+            "kind": "prop",
+            "names": ["virtualization", "followOutput", "showFollowControl", "announceNewMessages"],
+            "enableWhen": "Each prop is set independently to a non-false value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No virtual window, resume button, or live region is rendered.",
+            "behavior": "All messages remain in a normal ordered list and user scrolling is native.",
+            "events": "No scroll-policy callback, timer, or announcement formatter runs.",
+            "accessibility": "No virtual position metadata or live-region output enters the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicMessageList",
+          "enhancementControls": ["virtualize", "followOutput", "announceMessages"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedMessageList",
+          "enhancementControls": ["virtualize", "followOutput", "announceMessages"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Source and focused browser tests cover ordered-list semantics, virtual position metadata, exact enhancement removal, an emulated touch follow-control path, reduced-motion behavior, and axe; manual virtualized screen-reader review is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message-list/message-list.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Browser evidence covers basic/recommended isolation, virtual windows, user-scroll pause, a coarse-pointer tap to resume follow-output, and reduced-motion behavior; the full large-data, cross-browser, and real-device matrix is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Large-data performance, browsers, manual assistive technology, lifecycle and Passport evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/message-list/message-list.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Risk Class 3 release and evidence gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/message-list/message-list.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chat-composer",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "An ordinary Shadcn composition combines Textarea and Button but does not provide this integrated native form, IME, attachment, offline, stop, and reset contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/textarea"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Native serialization and reset remain baseline while IME-safe shortcuts, attachments, removal, and a character budget are independently optional.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chat-composer/chat-composer.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["composer-intelligence"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Strong field labels, literal-white inputs, Ink rules, stable status surfaces, Action Green, Violet focus and restrained radii extend shared field patterns.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chat-composer/chat-composer.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "status-rail",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-action-background",
+          "--mrg-semantic-color-status-danger-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "composer-intelligence",
+          "status": "evidence-backed",
+          "summary": "Submit shortcut, attachment surface, removal callback, and budget output are independent component-specific props.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/chat-composer/chat-composer.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["submitShortcut", "showAttachments", "showCharacterBudget"],
+          "api": {
+            "kind": "prop",
+            "names": ["submitShortcut", "attachments", "onAttachmentRemove", "showCharacterBudget"],
+            "enableWhen": "Each prop is explicitly enabled independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No shortcut hint, attachment list/removal action, or budget output is rendered.",
+            "behavior": "Enter remains multiline and the native form remains usable.",
+            "events": "No shortcut interception or attachment callback runs.",
+            "accessibility": "No enhancement controls, descriptions, or outputs enter the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicChatComposer",
+          "enhancementControls": ["submitShortcut", "showAttachments", "showCharacterBudget"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedChatComposer",
+          "enhancementControls": ["submitShortcut", "showAttachments", "showCharacterBudget"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Focused tests cover visible label, native form data, IME, enhancement removal, offline/error and semantic CSS; mobile keyboard and manual AT evidence remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chat-composer/chat-composer.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Unit and browser stories cover core shortcuts and optional surfaces; complete reset, autofill, touch, browser and error-recovery matrices remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Form lifecycle, browsers, mobile input, manual AT and Passport gates remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/chat-composer/chat-composer.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Risk Class 3 release, lifecycle and manual evidence is incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/chat-composer/chat-composer.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "prompt-suggestions",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary prompt-suggestion primitive that atomically aligns action/listbox semantics, roving keyboard behavior, localization, and controlled state.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The default stays native action buttons while selectionMode atomically adds controlled selection, listbox semantics and roving keyboard focus.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prompt-suggestions/prompt-suggestions.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["semantic-selection"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "White action surfaces, Ink borders, Green/Violet selection treatment, strong labels, two-layer focus, touch targets and restrained corners repeat Mergora patterns.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prompt-suggestions/prompt-suggestions.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "selected-pressed-identity",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-selection-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "semantic-selection",
+          "status": "evidence-backed",
+          "summary": "Selection mode and descriptions are independent; selection mode owns all listbox roles, state and arrow behavior as one coherent opt-in.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/prompt-suggestions/prompt-suggestions.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["selectionMode", "showDescriptions"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "selectionMode",
+              "selectedKey",
+              "defaultSelectedKey",
+              "onSelectionChange",
+              "showDescriptions"
+            ],
+            "enableWhen": "selectionMode or showDescriptions is explicitly true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No description text or selected treatment is rendered.",
+            "behavior": "Native action buttons retain normal Tab behavior; arrows are not intercepted.",
+            "events": "No selection callback or state update runs.",
+            "accessibility": "No listbox, option, aria-selected, description, or roving-tabindex output enters the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicPromptSuggestions",
+          "enhancementControls": ["selectionMode", "showDescriptions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedPromptSuggestions",
+          "enhancementControls": ["selectionMode", "showDescriptions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Focused browser and unit evidence covers listbox roles, selected state, arrow focus and enhancement removal; manual AT and localization matrices remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prompt-suggestions/prompt-suggestions.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Full browser/localization coverage, manual AT, lifecycle and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/prompt-suggestions/prompt-suggestions.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Distribution and complete interaction/accessibility evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/prompt-suggestions/prompt-suggestions.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "citation",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "An ordinary Shadcn link/badge composition does not own stable reference numbering, fail-closed URLs, source detail, or external-link safety.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/badge"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Stable numbered references fail unsafe URLs closed and can independently expose a readable source detail note.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/citation/citation.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["source-detail"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Compact Violet provenance context, Ink rule, literal-white mapping, explicit warning state, distinctive focus and restrained corners belong to Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/citation/citation.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "violet-context-signal",
+          "distinctive-focus",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-accent-background-subtle",
+          "--mrg-semantic-color-status-warning-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-compact"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "source-detail",
+          "status": "evidence-backed",
+          "summary": "showSourceDetail adds a named source note independently of safe link activation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/citation/citation.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showSourceDetail"],
+          "api": {
+            "kind": "prop",
+            "names": ["showSourceDetail", "sourceName", "excerpt"],
+            "enableWhen": "showSourceDetail is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No source detail note is rendered.",
+            "behavior": "Safe citation link and numbering remain unchanged.",
+            "events": "No enhancement event or renderer runs.",
+            "accessibility": "No note or detail text enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicCitation",
+          "enhancementControls": ["showSourceDetail"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedCitation",
+          "enhancementControls": ["showSourceDetail"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Automated evidence covers link naming, unsafe no-link behavior, external rel, detail removal and forced colors; manual AT evidence remains open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/citation/citation.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Security review, supported browsers, manual AT and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/citation/citation.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Distribution, security and complete manual evidence gates remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/citation/citation.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reasoning",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "An ordinary Shadcn Collapsible does not establish a provider-neutral process-summary privacy boundary, streaming state, bounded progress, or opt-in completion announcement.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/collapsible"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "A native controlled/uncontrolled disclosure stays quiet by default while numeric progress and completion announcement remain separate opt-ins.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/reasoning/reasoning.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/reasoning/reasoning.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["quiet-progress"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A measured Ink disclosure, white Canvas, Green structural line, Violet context text, strong summary, bounded corners and preference fallbacks express Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/reasoning/reasoning.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-accent-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-motion-duration-reduced",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "quiet-progress",
+          "status": "evidence-backed",
+          "summary": "Progress display and completion announcement are independent, while the baseline disclosure has no automatic verbosity.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/reasoning/reasoning.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showProgress", "announceCompletion"],
+          "api": {
+            "kind": "prop",
+            "names": ["progress", "announceCompletion", "completionAnnouncement"],
+            "enableWhen": "progress is an object or announceCompletion is true, independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No progress rail or completion channel is rendered.",
+            "behavior": "Native details/summary disclosure remains usable.",
+            "events": "No completion transition is tracked or announced.",
+            "accessibility": "No progress text or live region enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicReasoning",
+          "enhancementControls": ["showProgress", "announceCompletion"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedReasoning",
+          "enhancementControls": ["showProgress", "announceCompletion"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native disclosure, exact basic/recommended isolation, a coarse-pointer tap path, direct reduced-motion checks, progress validation, axe, and privacy guidance are covered; current screen-reader verbosity and manual evidence remains incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/reasoning/reasoning.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Controlled/uncontrolled source paths, native disclosure toggles by keyboard and emulated touch, exact enhancement isolation, and direct reduced-motion behavior have browser evidence; completion-transition, cross-browser, real-device, and cancellation matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Privacy review, browsers, manual AT, lifecycle and Passport gates remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/reasoning/reasoning.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Distribution and complete privacy/accessibility evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/reasoning/reasoning.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tool-call",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary lifecycle primitive for safe tool input/output disclosure, exact redaction, sensitive reveal, cancellation, and retry boundaries.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Provider-neutral status and consumer-owned cancel/retry combine with escaped, redacted, default-hidden sensitive details and controlled reveal.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tool-call/tool-call.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["safe-tool-details"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Ink structure, literal white, text-backed Green/Violet status, readable code surface, distinctive focus, touch targets and restrained corners keep tool state in the family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tool-call/tool-call.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "status-rail",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-code-background",
+          "--mrg-semantic-color-status-danger-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "safe-tool-details",
+          "status": "evidence-backed",
+          "summary": "Details, sensitive reveal, exact redaction and duration are independently selected; no tool execution is bundled.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tool-call/tool-call.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showDetails", "allowSensitiveReveal", "showDuration"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "showDetails",
+              "allowSensitiveReveal",
+              "sensitiveRevealed",
+              "onSensitiveRevealedChange",
+              "showDuration"
+            ],
+            "enableWhen": "Each property is explicitly selected independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No details disclosure, reveal action, or duration is rendered.",
+            "behavior": "Status and consumer-owned lifecycle actions remain usable without exposing values.",
+            "events": "No redaction, reveal callback or duration renderer runs.",
+            "accessibility": "No input/output, reveal control, or duration enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicToolCall",
+          "enhancementControls": ["showDetails", "allowSensitiveReveal", "showDuration"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedToolCall",
+          "enhancementControls": ["showDetails", "allowSensitiveReveal", "showDuration"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Focused tests cover escaped/redacted/default-hidden output, enhancement removal and semantic status; full manual AT and security evidence is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tool-call/tool-call.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Lifecycle controls and stories exist, but full cancellation/retry, controlled reveal, cross-browser, touch and offline matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Security review, browsers, manual AT, lifecycle and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/tool-call/tool-call.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Distribution, security and complete accessibility evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/tool-call/tool-call.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "streaming-text",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary stable-segment streaming text primitive with selectable prior DOM, throttled announcements and reduced-motion cursor behavior.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Stable keyed segments preserve prior selectable DOM while announcement and cursor channels remain independent and off by default.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/streaming-text/streaming-text.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["streaming-channels"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Plain selectable Ink text uses a restrained Violet state cursor and shared reduced-motion and forced-color mappings without decorative casing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/streaming-text/streaming-text.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "strong-type-hierarchy",
+          "violet-context-signal",
+          "purposeful-motion",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-font-family-prose",
+          "--mrg-semantic-font-line-height-body",
+          "--mrg-semantic-motion-duration-deliberate",
+          "--mrg-semantic-motion-duration-reduced"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "streaming-channels",
+          "status": "evidence-backed",
+          "summary": "Debounced polite announcements and the visual cursor are independently opt-in and share no forced state.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/streaming-text/streaming-text.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announceUpdates", "showCursor"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceUpdates", "announcementDelay", "getAnnouncement", "showCursor"],
+            "enableWhen": "announceUpdates or showCursor is independently true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No cursor or announcement node is rendered.",
+            "behavior": "Stable selectable text segments remain unchanged.",
+            "events": "No timer or announcement formatter runs.",
+            "accessibility": "No live region enters the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicStreamingText",
+          "enhancementControls": ["announceUpdates", "showCursor"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedStreamingText",
+          "enhancementControls": ["announceUpdates", "showCursor"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Stable ids, announcement removal, selectable text and preference CSS have focused evidence; announcement-rate and manual AT review remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/streaming-text/streaming-text.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "DOM stability, announcement-rate, browsers, manual AT and Passport evidence remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/streaming-text/streaming-text.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Risk Class 3 distribution and complete streaming/accessibility evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/streaming-text/streaming-text.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "comment-thread",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no ordinary comment thread with resolve/reopen ownership, draft control, optimistic failure recovery, and optional mention integration.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Consumer-owned mutations gain optional honest pending/error/retry/discard recovery and separately optional mention suggestions.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/comment-thread/comment-thread.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["comment-recovery"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal-white threaded workbench, Ink separators, Green resolution rail, Violet focus, strong author/time hierarchy, touch targets and bounded corners repeat the family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/comment-thread/comment-thread.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "status-rail",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-status-danger-border",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "comment-recovery",
+          "status": "evidence-backed",
+          "summary": "Optimistic recovery and mention suggestions are independent and remain consumer-owned.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/comment-thread/comment-thread.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["optimisticReplies", "showMentions"],
+          "api": {
+            "kind": "prop",
+            "names": ["optimisticReplies", "mentionSuggestions"],
+            "enableWhen": "optimisticReplies is true or mentionSuggestions is a supplied collection, independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No optimistic rows, retry/discard actions, or mention choices are rendered.",
+            "behavior": "Reply and resolve callbacks remain consumer-owned without local mutation simulation.",
+            "events": "No optimistic state transition, retry, discard, or mention selection runs.",
+            "accessibility": "No pending/error recovery or mention controls enter the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicCommentThread",
+          "enhancementControls": ["optimisticReplies", "showMentions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedCommentThread",
+          "enhancementControls": ["optimisticReplies", "showMentions"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Ordered comments, named forms, visible recovery, enhancement removal and semantic CSS have focused evidence; full manual AT remains missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/comment-thread/comment-thread.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Mutation lifecycle, browsers, security, manual AT and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/comment-thread/comment-thread.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Risk Class 3 distribution, security and complete recovery/accessibility evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/comment-thread/comment-thread.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "collaboration-presence",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "An ordinary Shadcn Avatar composition does not own text-backed available/away/busy/stale/offline semantics or deterministic stale derivation.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/avatar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Every state is visible text, with independently optional explicit-clock stale derivation and an aggregate activity summary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collaboration-presence/collaboration-presence.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["stale-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal-white compact rows, Ink structure, Green and Violet avatar outlines, strong name/status hierarchy, non-color offline style and restrained corners repeat Mergora patterns.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collaboration-presence/collaboration-presence.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-brand-violet",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-radius-control"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "stale-context",
+          "status": "evidence-backed",
+          "summary": "Stale derivation and summary are independent, deterministic and off by default.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/collaboration-presence/collaboration-presence.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["stalePolicy", "showSummary"],
+          "api": {
+            "kind": "prop",
+            "names": ["stalePolicy", "showSummary"],
+            "enableWhen": "stalePolicy is supplied or showSummary is true, independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No summary is rendered and supplied status text is unchanged.",
+            "behavior": "No time calculation or aggregate work runs.",
+            "events": "No enhancement event exists.",
+            "accessibility": "No derived stale label or aggregate output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicCollaborationPresence",
+          "enhancementControls": ["stalePolicy", "showSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedCollaborationPresence",
+          "enhancementControls": ["stalePolicy", "showSummary"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Non-color labels, deterministic stale policy, enhancement removal, narrow layout, RTL and forced colors have source/unit evidence; full manual AT remains missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collaboration-presence/collaboration-presence.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused Storybook browser evidence verifies this item's enhancement isolation and primary semantic or interaction path; the family suite also checks runtime failures, axe, narrow RTL structure, forced colors, reduced motion, and touch where applicable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Real-time/privacy integration review, browsers, manual AT and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/collaboration-presence/collaboration-presence.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Distribution and complete real-time/accessibility/privacy evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/collaboration-presence/collaboration-presence.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "audit-log",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "An ordinary Shadcn Table composition does not own immutable audit semantics, large-data windowing, filtering, export scope, or spreadsheet-injection defense.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/table"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Actor/action/object/time semantics combine with independently optional filtering, fixed-row virtualization, and consumer-owned spreadsheet-safe CSV export.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/audit-log/audit-log.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["audit-analysis"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A measured literal-white event workbench, Ink borders, Green filter rail, Violet focus, strong definition hierarchy, touch targets and bounded corners identify Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/audit-log/audit-log.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-action-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "audit-analysis",
+          "status": "evidence-backed",
+          "summary": "Filtering, virtualization and CSV export are independent and export uses an explicit consumer callback.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/audit-log/audit-log.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["filtering", "virtualize", "exportCsv"],
+          "api": {
+            "kind": "prop",
+            "names": ["filtering", "virtualization", "exportCsv"],
+            "enableWhen": "Each prop is set independently to a non-false value."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No filter form, virtual viewport focus stop, or export action is rendered.",
+            "behavior": "All immutable events render as a normal ordered list.",
+            "events": "No filter state, scroll window, CSV work, or export callback runs.",
+            "accessibility": "No filter controls, virtual position metadata, count output, or export action enters the tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "BasicAuditLog",
+          "enhancementControls": ["filtering", "virtualize", "exportCsv"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P5AiCollaboration.stories.tsx",
+          "exportName": "RecommendedAuditLog",
+          "enhancementControls": ["filtering", "virtualize", "exportCsv"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Semantic definition lists, enhancement removal, CSV defense, virtual metadata, responsive CSS and preferences have focused evidence; full Risk Class 3 manual AT is missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/audit-log/audit-log.contract.json"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Filtering/export/virtualization source paths and stories exist; large-data performance, cross-browser, touch, cancellation and security/privacy matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "apps/storybook/src/P5AiCollaboration.stories.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/ai-collaboration/ai-collaboration.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "family-evidence-incomplete",
+          "summary": "Large-data, security/privacy, browsers, manual AT, lifecycle and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/audit-log/audit-log.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Risk Class 3 distribution, performance, security and complete accessibility evidence remain incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/audit-log/audit-log.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

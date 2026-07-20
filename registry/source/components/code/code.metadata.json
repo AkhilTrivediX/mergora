@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "code",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["wrapped", "unwrapped", "bidi-isolated", "long-content", "rtl"],
+  "slots": [
+    {
+      "name": "code",
+      "semanticElement": "code",
+      "refTarget": "HTMLElement",
+      "states": ["wrap", "bidi-isolated"]
+    }
+  ],
+  "contract": {
+    "id": "code-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "code-quality-passport",
+    "version": "0.0.0"
+  }
+}

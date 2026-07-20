@@ -1,0 +1,276 @@
+@layer mergora.components {
+  .mrg-kanban {
+    container-type: inline-size;
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-kanban__heading,
+  .mrg-kanban__heading > span,
+  .mrg-kanban__heading-actions,
+  .mrg-kanban__heading-actions [role="group"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-kanban__heading {
+    justify-content: space-between;
+  }
+
+  .mrg-kanban__heading > span > strong {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+
+  .mrg-kanban__beta {
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-brand-violet);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-brand-violet);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-kanban__instructions {
+    max-inline-size: var(--mrg-semantic-size-content-default);
+    margin: 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+
+  .mrg-kanban__columns {
+    display: grid;
+    grid-auto-columns: minmax(min(20rem, 88vi), 1fr);
+    grid-auto-flow: column;
+    gap: var(--mrg-semantic-space-inline-md);
+    max-inline-size: 100%;
+    overflow-x: auto;
+    scroll-snap-type: inline proximity;
+    scrollbar-gutter: stable;
+  }
+
+  .mrg-kanban[data-view="list"] .mrg-kanban__columns {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+
+  .mrg-kanban__column {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-sm);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    background: var(--mrg-semantic-color-background-canvas);
+    scroll-snap-align: start;
+  }
+
+  .mrg-kanban__column > header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding-block-end: var(--mrg-semantic-space-stack-xs);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-kanban__column h3 {
+    margin: 0;
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+  }
+
+  .mrg-kanban__column header span {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-kanban__column header span[data-at-limit] {
+    color: var(--mrg-semantic-color-status-warning-foreground);
+  }
+
+  .mrg-kanban__column ol {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mrg-kanban__column ol > li:not([aria-hidden]) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-control);
+    background: var(--mrg-semantic-color-background-canvas);
+    transition:
+      background-color var(--mrg-semantic-motion-duration-feedback)
+        var(--mrg-semantic-motion-easing-standard),
+      border-color var(--mrg-semantic-motion-duration-feedback)
+        var(--mrg-semantic-motion-easing-standard);
+  }
+
+  .mrg-kanban__column ol > li[data-grabbed] {
+    border-color: var(--mrg-semantic-color-brand-violet);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-kanban :is(button, select) {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-kanban button {
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    cursor: pointer;
+  }
+
+  .mrg-kanban select {
+    max-inline-size: 100%;
+    padding-inline: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-kanban button:disabled,
+  .mrg-kanban select:disabled {
+    border-color: var(--mrg-semantic-color-border-disabled);
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    cursor: not-allowed;
+  }
+
+  .mrg-kanban :is(button, select):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-kanban__handle {
+    inline-size: var(--mrg-semantic-size-target-preferred);
+    padding: 0 !important;
+    color: var(--mrg-semantic-color-brand-violet) !important;
+    cursor: grab !important;
+  }
+
+  .mrg-kanban__handle[aria-pressed="true"] {
+    color: var(--mrg-semantic-color-selection-foreground) !important;
+    background: var(--mrg-semantic-color-selection-background) !important;
+    cursor: grabbing !important;
+  }
+
+  .mrg-kanban__card-content {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-kanban__card-content > strong {
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-kanban__card-content > p {
+    margin: var(--mrg-semantic-space-stack-xs) 0 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+  }
+
+  .mrg-kanban__card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    grid-column: 2;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-kanban__card-actions label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-kanban__error {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-danger-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-kanban__visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @container (max-width: 34rem) {
+    .mrg-kanban[data-view="board"] .mrg-kanban__columns {
+      grid-auto-columns: minmax(min(18rem, 86vi), 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-kanban *,
+    .mrg-kanban *::before,
+    .mrg-kanban *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0s !important;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-kanban__beta,
+    .mrg-kanban__column,
+    .mrg-kanban__column ol > li:not([aria-hidden]),
+    .mrg-kanban :is(button, select),
+    .mrg-kanban__error {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-kanban__column > header {
+      border-color: LinkText;
+    }
+
+    .mrg-kanban__column ol > li[data-grabbed] {
+      color: HighlightText;
+      background: Highlight;
+    }
+
+    .mrg-kanban__handle {
+      color: LinkText !important;
+    }
+
+    .mrg-kanban :is(button, select):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

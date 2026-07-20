@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./badge.css", "react"],
+  "entryPath": "registry/source/components/badge/badge.tsx",
+  "id": "badge",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

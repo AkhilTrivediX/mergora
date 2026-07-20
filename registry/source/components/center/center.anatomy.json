@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "center",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "center",
+    "stableAttributes": ["data-slot", "data-axis", "data-maximum", "data-text"]
+  },
+  "parts": []
+}

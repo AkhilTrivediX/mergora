@@ -1,0 +1,19 @@
+# Listbox canonical source
+
+Status: source present and unreleased. No Stable, performance, package-parity, conformance, or manual assistive-technology claim is made.
+
+`Listbox` is the first consumer of the shared P4 collection model. Flat items and sections use one global stable-key space. Keys must be safe integers or bounded canonical strings, and they must remain unique after form serialization, so `1` and `"1"` cannot silently become the same submitted value. Every item carries a localized plain `textValue`; rich labels never replace typeahead or native-accessibility text.
+
+React Aria owns the APG listbox semantics, direct option focus, locale-aware typeahead, disabled-item traversal, single/multiple selection, and virtualizer focus persistence. The optional measured `ListLayout` creates a bounded scroll window for large collections. It keeps the focused option rendered and exposes virtual position/set-size metadata. A bounded, referenced selected-text summary keeps selected names represented when selected rows are outside the DOM window. The prepared 10k story is performance evidence input, not a published benchmark claim.
+
+Mergora gives the collection a literal Canvas surface, precise Ink rows, a Green selected edge/check cue, and the shared Violet focus seam. Its useful collection advantage is independently configurable: pass `virtualization` to window large collections, and keep the bounded selected-text context with the default formatter or a localized callback. With `virtualization` omitted, every option follows the ordinary collection path. With `formatSelectionSummary={false}`, summary computation, formatter calls, hidden markup, ids, and `aria-describedby` output are all absent.
+
+The default accessibility summary is locale-driven and language-neutral: `Intl.ListFormat` joins localized `textValue` records and `Intl.NumberFormat` formats a bounded `… (+N)` omission marker. It never concatenates English prose into German, Arabic, or another locale. Products that need a spoken sentence supply a fully localized `formatSelectionSummary`; the callback owns the complete message rather than fragments.
+
+`useCollectionLoader` is the shared remote-data seam. Initial/retry work aborts older requests, monotonically ordered request IDs ignore stale completions even when an adapter ignores its signal, appended pages pass the same global key validation, and errors remain persistent with explicit Retry. Pagination always has an ordinary Load more button; it is not scroll-sentinel-only.
+
+Dynamic pages and filters cannot silently erase a selection. `Listbox` retains a bounded copy of only the currently selected item records plus the initial reset defaults. If a later `entries` page omits one of those selected records, the record remains materialized, selected, summarized, and submitted until the user or controlled owner explicitly chooses another value. A selected key that was never observed still fails closed. Retained records rejoin the same identity and form-serialization collision checks before rendering.
+
+When `name` is present, single selection submits one canonical key and multiple selection submits repeated same-name values. Uncontrolled reset restores its initial default after the reset event unless the event is prevented; controlled state remains parent-owned. `required` is exposed through `aria-required`, but the owning form must validate it and associate a persistent error because a custom listbox cannot honestly acquire browser constraint validation through hidden inputs.
+
+Promotion requires generated and packed consumers, package/source parity, Semantic Sync fixtures, a pinned 10k performance trace, async cancellation/retry/offline evidence, full browser keyboard/focus/form coverage, narrow/zoom/text-spacing/RTL/forced-colors/touch review, and current Risk Class 3 desktop/mobile assistive-technology, speech, and switch sessions.

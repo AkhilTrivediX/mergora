@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "form",
+  "riskClass": 1,
+  "serverBoundary": "server-compatible",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "native-submit",
+    "server-action",
+    "reset",
+    "invalid",
+    "compact",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "form",
+      "semanticElement": "form",
+      "refTarget": "HTMLFormElement",
+      "states": ["layout", "submitting", "invalid"]
+    }
+  ],
+  "contract": { "id": "form-accessibility", "version": "0.1.0" },
+  "passport": { "id": "form-quality-passport", "version": "0.0.0" }
+}

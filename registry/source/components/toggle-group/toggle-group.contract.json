@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "toggle-group",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A controlled or uncontrolled single/multiple pressed-button collection with roving focus.",
+  "semantics": [
+    "Exactly one enabled item is the tab stop during SSR and every render; Home, End, orientation arrows, RTL spatial arrows, wrapping, and disabled skipping move it.",
+    "Arrow movement never changes selection; native activation does.",
+    "Single selection cannot become empty unless allowEmpty is explicit.",
+    "renderSelectionSummary is an optional live output and no summary UI or accessibility node exists when it is omitted."
+  ],
+  "preferences": {
+    "forcedColors": "System colors preserve boundaries, state, and focus.",
+    "reducedMotion": "Feedback remains understandable when transitions and rotation are removed.",
+    "rtl": "Logical properties and the documented spatial keyboard model follow direction."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Wrap, reflow, or expose native scrolling without clipping controls or focus indicators."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

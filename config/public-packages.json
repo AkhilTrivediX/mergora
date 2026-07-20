@@ -1,32 +1,48 @@
 {
   "schemaVersion": 1,
   "product": "Mergora",
-  "selectionStatus": "provisional",
+  "selectionStatus": "verified",
+  "selectionTier": "approved-unscoped",
   "selectedAt": "2026-07-18",
-  "selectionReason": "Preferred names returned npm E404 during the public availability check, but npm authentication is unavailable so scope control and publish authority cannot yet be verified.",
-  "blockerId": "EXT-NPM-AUTH-001",
+  "selectionReason": "Authenticated read-only checks did not establish organization control of @mergora or control of the @akhiltrivedix scope. Every exact name in the approved unscoped tier returned npm registry E404, so the fixed selection algorithm chose that tier.",
+  "resolvedBlockerId": "EXT-NPM-AUTH-001",
   "repository": "https://github.com/AkhilTrivediX/mergora",
   "cli": {
     "package": "mergora",
     "bin": "mergora"
   },
   "public": {
-    "ui": "@mergora/ui",
-    "tokens": "@mergora/tokens",
-    "schema": "@mergora/schema",
-    "registry": "@mergora/registry",
-    "contracts": "@mergora/contracts",
-    "mcp": "@mergora/mcp"
+    "ui": "mergora-ui",
+    "tokens": "mergora-tokens",
+    "schema": "mergora-schema",
+    "registry": "mergora-registry",
+    "contracts": "mergora-contracts",
+    "mcp": "mergora-mcp"
   },
-  "fallbackOrder": [
-    "@akhiltrivedix/mergora-*",
-    "mergora-*"
-  ],
+  "fallbackOrder": ["@akhiltrivedix/mergora-*", "mergora-*"],
   "availabilityEvidence": {
     "checkedAt": "2026-07-18",
     "registry": "https://registry.npmjs.org/",
-    "preferredPackageLookups": "all-e404",
-    "fallbackPackageLookups": "all-e404",
-    "authenticatedOwner": null
+    "authentication": "authenticated-read-only-checks-completed",
+    "authenticatedOwner": "redacted",
+    "credentialMaterialRecorded": false,
+    "preferredScopeControl": "not-established",
+    "preferredScopeEvidence": "Package-level write access to the existing @mergora/gora package was observed, but npm organization and team control were unavailable. Package-level access does not establish control of the @mergora organization scope.",
+    "publisherScopeControl": "not-established",
+    "publisherScopeEvidence": "The @akhiltrivedix scope lookup returned npm E404; authenticated control was not established.",
+    "selectedPackageLookups": {
+      "mergora": "e404",
+      "mergora-ui": "e404",
+      "mergora-tokens": "e404",
+      "mergora-schema": "e404",
+      "mergora-registry": "e404",
+      "mergora-contracts": "e404",
+      "mergora-mcp": "e404"
+    },
+    "cliFallbackLookup": {
+      "mergora-cli": "e404"
+    },
+    "similarityReview": "The existing @mergora/gora package is a time-bound similarity observation. This evidence does not claim trademark, legal, or confusion clearance.",
+    "legalClearanceClaimed": false
   }
 }

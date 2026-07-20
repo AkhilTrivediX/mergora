@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "signature-pad",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "signature-pad",
+    "stableAttributes": ["data-slot", "data-mode", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "signature-pad-canvas",
+      "element": "focusable canvas group",
+      "purpose": "Collects normalized pointer strokes and keyboard points without making pixels the only stored value.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "signature-pad-keyboard-controls",
+      "element": "optional named button group",
+      "purpose": "Exposes cursor movement and mark insertion to sequential access.",
+      "stability": "documented"
+    },
+    {
+      "slot": "signature-pad-text-file",
+      "element": "optional native inputs",
+      "purpose": "Provides typed and file alternatives independent of canvas drawing.",
+      "stability": "documented"
+    },
+    {
+      "slot": "signature-pad-legal-caveat",
+      "element": "optional paragraph",
+      "purpose": "Keeps legal validity outside a misleading component guarantee.",
+      "stability": "documented"
+    }
+  ]
+}

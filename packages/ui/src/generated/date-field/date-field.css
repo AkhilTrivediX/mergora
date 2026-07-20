@@ -1,0 +1,74 @@
+/* Generated from registry/source/components/date-field/date-field.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-date-field {
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-xs);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-date-field-control {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: inherit;
+  font: inherit;
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-density-control-padding-block)
+    var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-date-field-control:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+.mrg-date-field-control:invalid {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-date-field-control:disabled {
+  background: var(--mrg-semantic-color-background-disabled);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-date-field [data-slot="date-field-context"] {
+  border-inline-start: var(--mrg-semantic-border-width-emphasis) solid
+    var(--mrg-semantic-color-brand-living);
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+  line-height: var(--mrg-semantic-font-line-height-body);
+  overflow-wrap: anywhere;
+  padding-inline-start: var(--mrg-semantic-space-inline-sm);
+}
+
+@media (pointer: coarse) {
+  .mrg-date-field-control {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-date-field-control {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-date-field-control:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-date-field [data-slot="date-field-context"] {
+    border-color: Highlight;
+    color: CanvasText;
+  }
+}

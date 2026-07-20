@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "itemId": "masked-field",
+  "entryExport": "MaskedField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React.InputHTMLAttributes<HTMLInputElement>, excluding type, value, defaultValue, name, and native onChange",
+  "exports": [
+    { "kind": "component", "name": "MaskedField" },
+    { "kind": "function", "name": "applyDeterministicMaskAdapter" },
+    { "kind": "type", "name": "MaskedFieldProps" },
+    { "kind": "type", "name": "MaskedFieldValue" },
+    { "kind": "type", "name": "DeterministicMaskAdapter" },
+    { "kind": "type", "name": "MaskAdapterContext" },
+    { "kind": "type", "name": "MaskAdapterPhase" },
+    { "kind": "type", "name": "MaskAdapterResult" },
+    { "kind": "type", "name": "MaskAdapterStatus" },
+    { "kind": "type", "name": "MaskedFieldStatus" },
+    { "kind": "type", "name": "MaskTextSelection" },
+    { "kind": "type", "name": "MaskSerialization" }
+  ],
+  "props": [
+    { "name": "adapter", "required": true, "type": "DeterministicMaskAdapter" },
+    { "name": "value", "required": false, "type": "string; controlled visible input" },
+    {
+      "name": "defaultValue",
+      "required": false,
+      "default": "",
+      "type": "string; uncontrolled visible input"
+    },
+    { "name": "onValueChange", "required": false, "type": "(value: MaskedFieldValue) => void" },
+    { "name": "name", "required": false, "type": "string; hidden serialized form name" },
+    { "name": "serialization", "required": false, "default": "raw", "type": "raw or formatted" },
+    {
+      "name": "maxInputLength",
+      "required": false,
+      "default": 256,
+      "type": "integer 1 through 4096"
+    },
+    {
+      "name": "invalidMessage",
+      "required": false,
+      "default": "localized validation recovery text",
+      "type": "string"
+    },
+    { "name": "invalid", "required": false, "type": "boolean" },
+    { "name": "rootClassName", "required": false, "type": "string" },
+    { "name": "rootStyle", "required": false, "type": "React.CSSProperties" },
+    { "name": "inputClassName", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "One real text input owns editing, selection, undo, clipboard, autocomplete, validation, focus, and mobile input behavior; no browser or editor key is intercepted.",
+    "adapter": "A required trusted synchronous adapter owns deterministic raw extraction, display formatting, validity, and caret mapping. Serialized masks, regular-expression strings, eval, runtime compilation, and remote executable definitions are unsupported.",
+    "forms": "The visible formatted input has no form name. An optional hidden same-form input serializes the explicitly selected raw or formatted value.",
+    "recovery": "Invalid adapter results must preserve the exact visible input, so an error cannot silently delete user text and recovery remains editable.",
+    "field": "ID, label, description, error, required, and invalid relationships are inherited from Field unless explicitly supplied."
+  }
+}

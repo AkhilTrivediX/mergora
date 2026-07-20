@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./meter.css", "react"],
+  "entryPath": "registry/source/components/meter/meter.tsx",
+  "id": "meter",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

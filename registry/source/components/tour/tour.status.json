@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tour",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and compare all distribution surfaces and packed consumers.",
+    "Pass anchor lifecycle, route adapter, non-blocking focus, skip/recovery, reduced-motion, and cross-browser gates.",
+    "Record current risk-class manual keyboard, screen-reader, speech, switch, touch, and mobile evidence."
+  ]
+}

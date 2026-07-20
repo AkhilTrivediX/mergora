@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scroll-area",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora enhancement-off/on stories, selective controls, and focusable-region output.",
+    "Generate and verify source/package/registry/docs outputs and the public subpath export.",
+    "Record native scrollbar, keyboard, touch, trackpad, and high-contrast behavior in supported browsers.",
+    "Verify labelled focusable-region announcements with the current manual screen-reader matrix.",
+    "Record 320 CSS pixel, 400% zoom, 200% text, safe-area, and two-axis overflow geometry.",
+    "Pass packed Next.js and Vite consumers plus package/source behavior parity.",
+    "Add Semantic Sync clean-update, customized-update, conflict, rollback, and removal fixtures.",
+    "Complete RTL, forced-colors, speech, switch, and touch manual review.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

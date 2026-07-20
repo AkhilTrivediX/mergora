@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./scroll-area.css", "react"],
+  "entryPath": "registry/source/components/scroll-area/scroll-area.tsx",
+  "id": "scroll-area",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-field",
+  "entryExport": "DateField",
+  "refTarget": "HTMLInputElement",
+  "nativeProps": "React input attributes except owned type, value, defaultValue, and change fields",
+  "exports": [
+    { "kind": "component", "name": "DateField" },
+    { "kind": "type", "name": "DateFieldProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "date",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "value", "required": false, "type": "native canonical date string" },
+    { "name": "showDateContext", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "dateContext",
+      "required": false,
+      "type": "ReactNode | (canonicalValue) => ReactNode"
+    }
+  ],
+  "compositionPolicy": {
+    "native": "The browser owns locale editing, validation, mobile picker, autofill, and form serialization.",
+    "context": "Optional localized date context is associated through aria-describedby and is absent when disabled or empty.",
+    "reset": "Uncontrolled values restore the initial default; controlled owners receive one default-value request after an uncancelled reset."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./sticky-region.css", "react"],
+  "entryPath": "registry/source/components/sticky-region/sticky-region.tsx",
+  "id": "sticky-region",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

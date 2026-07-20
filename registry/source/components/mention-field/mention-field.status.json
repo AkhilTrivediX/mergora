@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "mention-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Record Basic/Recommended, empty, disabled, read-only, invalid, controlled, form/reset, caret, narrow, RTL, forced-colors, reduced-motion, keyboard, touch, and screen-reader evidence.",
+    "Generate and verify package, source, native registry, Shadcn, docs, and subpath parity.",
+    "Complete supported-browser, visual, accessibility, lifecycle, frozen-install, packed-consumer, and manual gates.",
+    "Publish an approved Quality Passport and public dogfood evidence."
+  ]
+}

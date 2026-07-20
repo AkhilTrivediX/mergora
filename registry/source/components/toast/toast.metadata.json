@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "toast",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "closed",
+    "open",
+    "empty",
+    "populated",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "toast-region",
+      "semanticElement": "section",
+      "refTarget": "HTMLElement",
+      "states": ["empty", "populated", "paused"]
+    },
+    {
+      "name": "toast-message",
+      "semanticElement": "li with status or alert",
+      "refTarget": "HTMLLIElement",
+      "states": ["polite", "urgent"]
+    },
+    {
+      "name": "toast-queue-summary",
+      "semanticElement": "output",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "toast-pause-control",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["enhancement-enabled", "paused"]
+    }
+  ],
+  "contract": {
+    "id": "toast-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "toast-quality-passport",
+    "version": "0.0.0"
+  }
+}

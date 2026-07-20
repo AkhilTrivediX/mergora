@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./popover.js"],
+  "entryPath": "registry/source/components/popover/index.ts",
+  "id": "popover",
+  "itemDependencies": ["layer-manager", "provider"],
+  "outputRole": "component"
+}

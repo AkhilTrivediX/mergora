@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package/source/native/Shadcn outputs.",
+    "Pass packed consumers and supported browser/a11y/visual matrices.",
+    "Record current keyboard, screen-reader, touch, RTL, zoom, reduced-motion, and forced-colors manual evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

@@ -1,0 +1,50 @@
+.mrg-date-time-picker {
+  display: grid;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-space-stack-sm);
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.mrg-date-time-picker [data-slot="date-time-picker-presets"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-date-time-picker [data-slot="date-time-picker-presets"] button {
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid
+    var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-foreground-primary);
+  font: inherit;
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-date-time-picker [data-slot="date-time-picker-presets"] button:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+    var(--mrg-semantic-color-focus-contrast-background);
+  outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+  outline-offset: var(--mrg-semantic-focus-offset);
+}
+
+@media (pointer: coarse) {
+  .mrg-date-time-picker [data-slot="date-time-picker-presets"] button {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-date-time-picker [data-slot="date-time-picker-presets"] button {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+  }
+
+  .mrg-date-time-picker [data-slot="date-time-picker-presets"] button:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

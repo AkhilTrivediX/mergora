@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "menubar",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, complete manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled role=menubar owns native button elements exposed as top-level menuitems and React Aria child menus.",
+    "rolePolicy": "Exactly one enabled top-level menuitem is tabbable; child menus retain standard menu and selection semantics.",
+    "refTarget": "See exported TypeScript declaration."
+  },
+  "keyboard": [
+    {
+      "key": "Arrow Left / Arrow Right",
+      "behavior": "Moves between enabled top-level menus in logical direction."
+    },
+    {
+      "key": "Home / End / printable characters",
+      "behavior": "Moves to an edge menu or matching label."
+    },
+    {
+      "key": "Arrow Down / Enter / Space",
+      "behavior": "Opens the focused menu."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Closes the active menu and restores focus to its top-level item."
+    }
+  ],
+  "nonColor": "Text, native state, structure, symbols, or explicit labels accompany every Green, Violet, or status signal.",
+  "responsive": "Logical properties, safe-area-aware containment, wrapping, and scoped overflow preserve operation at 320 CSS pixels, RTL, and 400% zoom; manual evidence remains incomplete.",
+  "stableSelectors": {
+    "root": "[data-slot=menubar]",
+    "parts": [
+      "[data-slot=menubar-rail]",
+      "[data-slot=menubar-keyboard-guide]",
+      "[data-slot=dropdown-menu-content]"
+    ],
+    "attributes": ["data-slot", "dir"]
+  },
+  "consumerResponsibilities": [
+    "Provide concise localized accessible names, descriptions, actions, alternatives, and status text.",
+    "Preserve native elements, relationships, logical order, and documented dismissal and focus-restoration behavior when composing or styling.",
+    "Retest long content, RTL, zoom, touch, forced colors, reduced motion, and assistive technology for consumer-specific content.",
+    "Do not claim Stable or complete conformance until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "semantic-structure",
+      "keyboard",
+      "pointer-touch",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "supported-browser",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

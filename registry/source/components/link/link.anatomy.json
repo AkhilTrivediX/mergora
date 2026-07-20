@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "link",
+  "root": {
+    "slot": "link",
+    "element": "a",
+    "ref": "HTMLAnchorElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "link-label",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "link-external-indicator",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "link-external-context",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "link-download-indicator",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
+}

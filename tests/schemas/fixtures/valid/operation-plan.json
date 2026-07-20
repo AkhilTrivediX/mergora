@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "command": "add",
+  "cliVersion": "1.0.0",
+  "projectRoot": ".",
+  "configDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "manifestPreconditionDigest": null,
+  "planDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "registries": [],
+  "items": [],
+  "fileOperations": [],
+  "dependencyChanges": [],
+  "structuredPatches": [],
+  "migrations": [],
+  "contractChanges": [],
+  "warnings": [],
+  "consentRequirements": [],
+  "conflicts": [],
+  "estimatedBytes": { "download": 0, "write": 0 },
+  "validationSuite": ["schema", "path", "collision"],
+  "rollbackAvailable": true
+}

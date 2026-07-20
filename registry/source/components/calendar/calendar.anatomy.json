@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "calendar",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "calendar",
+    "stableAttributes": ["data-slot", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "calendar-grid",
+      "element": "localized grid",
+      "purpose": "keyboard date navigation and selection",
+      "stability": "documented"
+    },
+    {
+      "slot": "calendar-input",
+      "element": "input type=date",
+      "purpose": "native editing, validation, serialization, and reset",
+      "stability": "documented"
+    },
+    {
+      "slot": "calendar-day",
+      "element": "button in gridcell",
+      "purpose": "date selection, current, selected, unavailable, and optional range-highlight state",
+      "stability": "documented"
+    },
+    {
+      "slot": "calendar-availability-reason",
+      "element": "optional visually hidden text",
+      "purpose": "consumer-supplied blocked-date explanation",
+      "stability": "documented"
+    }
+  ]
+}

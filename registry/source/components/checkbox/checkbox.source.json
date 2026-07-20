@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "./checkbox.css", "react"],
+  "entryPath": "registry/source/components/checkbox/checkbox.tsx",
+  "id": "checkbox",
+  "itemDependencies": ["field"],
+  "outputRole": "component"
+}

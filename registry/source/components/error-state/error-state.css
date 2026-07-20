@@ -1,0 +1,159 @@
+.mrg-error-state {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-panel);
+  box-shadow: inset 0 var(--mrg-semantic-border-width-strong) 0
+    var(--mrg-semantic-color-status-danger-border);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--mrg-semantic-space-stack-md);
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-space-section) var(--mrg-semantic-space-page);
+  text-align: center;
+}
+
+.mrg-error-state [data-slot="error-state-icon"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-status-danger-background);
+  border: var(--mrg-semantic-border-width-strong) solid
+    var(--mrg-semantic-color-status-danger-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  display: inline-flex;
+  font-weight: var(--mrg-semantic-font-weight-strong);
+  inline-size: var(--mrg-semantic-size-target-preferred);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-error-state [data-slot="error-state-label"] {
+  color: var(--mrg-semantic-color-status-danger-foreground);
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-error-state [data-slot="error-state-title"] {
+  font-size: var(--mrg-semantic-font-size-heading-medium);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.mrg-error-state
+  :is([data-slot="error-state-description"], [data-slot="error-state-technical-content"]) {
+  max-inline-size: var(--mrg-semantic-size-content-prose);
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.mrg-error-state [data-slot="error-state-actions"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  justify-content: center;
+}
+
+.mrg-error-state [data-slot="error-state-retry"] {
+  background: var(--mrg-semantic-color-action-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+  border-radius: var(--mrg-semantic-radius-control);
+  color: var(--mrg-semantic-color-action-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-weight: var(--mrg-semantic-font-weight-label);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding-inline: var(--mrg-semantic-space-inline-lg);
+  transition:
+    background var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    transform var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-error-state
+  :is([data-slot="error-state-retry"], [data-slot="error-state-details"] summary):hover {
+  text-decoration-line: underline;
+  text-decoration-thickness: max(1px, 0.08em);
+  text-underline-offset: 0.16em;
+}
+
+.mrg-error-state [data-slot="error-state-retry"]:hover {
+  background: var(--mrg-semantic-color-action-background-hover);
+}
+
+.mrg-error-state [data-slot="error-state-retry"]:active {
+  background: var(--mrg-semantic-color-action-background-pressed);
+  text-decoration-style: double;
+  transform: translateY(var(--mrg-semantic-border-width-default));
+}
+
+.mrg-error-state [data-slot="error-state-details"] summary:active {
+  text-decoration-line: underline;
+  text-decoration-style: double;
+}
+
+.mrg-error-state
+  :is([data-slot="error-state-retry"], [data-slot="error-state-details"] summary):focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-error-state [data-slot="error-state-details"] {
+  max-inline-size: 100%;
+  text-align: start;
+}
+
+.mrg-error-state [data-slot="error-state-details"] summary {
+  cursor: pointer;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding-block: var(--mrg-semantic-space-stack-sm);
+}
+
+@media (width < 24rem) {
+  .mrg-error-state {
+    padding-inline: var(--mrg-semantic-space-inline-lg);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-error-state {
+    border-color: CanvasText;
+    box-shadow: inset 0 var(--mrg-semantic-border-width-strong) 0 CanvasText;
+  }
+
+  .mrg-error-state [data-slot="error-state-icon"],
+  .mrg-error-state [data-slot="error-state-retry"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+
+  .mrg-error-state
+    :is([data-slot="error-state-retry"], [data-slot="error-state-details"] summary):focus-visible {
+    box-shadow: none;
+    outline: 3px solid Highlight;
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-error-state [data-slot="error-state-retry"] {
+    transition-duration: var(--mrg-semantic-motion-duration-reduced);
+  }
+
+  .mrg-error-state [data-slot="error-state-retry"]:active {
+    transform: none;
+  }
+}

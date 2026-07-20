@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sr-announcer",
+  "entryExport": "ScreenReaderAnnouncer",
+  "refTarget": "none",
+  "nativeProps": "none",
+  "exports": [
+    { "kind": "namespace", "name": "ScreenReaderAnnouncer" },
+    { "kind": "component", "name": "AnnouncerProvider" },
+    { "kind": "function", "name": "createAnnouncementQueue" },
+    { "kind": "hook", "name": "useAnnouncer" },
+    { "kind": "type", "name": "AnnouncementMessage" },
+    { "kind": "type", "name": "AnnouncementOptions" },
+    { "kind": "type", "name": "AnnouncementPriority" },
+    { "kind": "type", "name": "AnnouncementQueue" },
+    { "kind": "type", "name": "AnnouncementRecord" },
+    { "kind": "type", "name": "AnnouncerApi" },
+    { "kind": "type", "name": "AnnouncerProviderProps" }
+  ],
+  "props": [
+    { "default": 1000, "name": "dedupeWindowMs", "required": false, "type": "number" },
+    { "default": 500, "name": "politeIntervalMs", "required": false, "type": "number" },
+    { "default": 100, "name": "assertiveIntervalMs", "required": false, "type": "number" }
+  ],
+  "compositionPolicy": {
+    "polite": "Non-urgent summaries use role=status and a paced FIFO queue.",
+    "assertive": "Only urgent interruption-worthy messages use role=alert.",
+    "dedupe": "Stable keys deduplicate within the configured window; dedupe=false permits intentional repeats.",
+    "localization": "Message descriptors resolve through the nearest MergoraProvider.",
+    "advantage": "Independent paced priority queues, semantic-key deduplication, localization, and nested-provider reuse prevent duplicate live-region noise.",
+    "enhancementOptOut": "Without Provider, announce returns false and no queue or live-region accessibility output exists; dedupe=false removes only repeat suppression for that call."
+  }
+}

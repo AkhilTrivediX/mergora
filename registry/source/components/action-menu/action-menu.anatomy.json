@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "action-menu",
+  "root": {
+    "slot": "action-menu",
+    "element": "span",
+    "ref": "HTMLButtonElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "action-menu-trigger",
+      "element": "button",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-trigger-label",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-trigger-indicator",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-popover",
+      "element": "div",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-content",
+      "element": "div role=menu",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-item",
+      "element": "div role=menuitem",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-item-label",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "action-menu-item-description",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "$description": "Touch density preserves at least 48px primary control and row dimensions.",
+  "semantic": {
+    "density": {
+      "controlHeight": { "$type": "dimension", "$value": "{primitive.size.12}" },
+      "controlPaddingInline": { "$type": "dimension", "$value": "{primitive.space.4}" },
+      "controlPaddingBlock": { "$type": "dimension", "$value": "{primitive.space.3}" },
+      "controlGap": { "$type": "dimension", "$value": "{primitive.space.3}" },
+      "rowHeight": { "$type": "dimension", "$value": "{primitive.size.12}" },
+      "panelPadding": { "$type": "dimension", "$value": "{primitive.space.5}" }
+    }
+  }
+}

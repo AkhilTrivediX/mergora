@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "comment-thread",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, security-completeness, or distribution parity claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "named region, ordered comment articles and native reply form",
+    "rolePolicy": "Submission errors are alerts; pending optimistic comments use aria-busy and visible status.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through resolve, comment actions, reply, mention, retry and discard controls."
+    },
+    {
+      "key": "Enter / Space",
+      "behavior": "Activates focused buttons; textarea Enter remains multiline."
+    }
+  ],
+  "nonColor": "Open, resolved, pending, failed and recovery states are visible text and native state, not color alone.",
+  "responsive": "Comments and long localized text wrap; actions wrap and coarse-pointer controls use preferred targets.",
+  "stableSelectors": {
+    "root": "[data-slot=comment-thread]",
+    "parts": [
+      "comment-thread-header",
+      "comment-thread-comments",
+      "comment-thread-reply",
+      "comment-thread-mentions"
+    ],
+    "attributes": ["data-resolved", "data-optimistic-state"]
+  },
+  "mutationPolicy": "The consumer owns persistence and authorization. Optimistic mode keeps failed text locally with explicit Retry and Discard and does not invent server success.",
+  "consumerResponsibilities": [
+    "Authorize resolve, reopen, reply, edit and delete operations at the server.",
+    "Sanitize any rich comment renderer and mention metadata.",
+    "Replace deterministic local optimistic ids with server identities.",
+    "Localize timestamps, actions, errors and mention labels."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "controlled-resolved-draft",
+      "optimistic-success-error-retry-discard",
+      "mentions-off",
+      "timestamps",
+      "long-content",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader", "speech", "switch", "touch", "mobile-keyboard", "zoom"],
+    "recordedEvidence": []
+  }
+}

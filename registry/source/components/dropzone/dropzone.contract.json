@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "dropzone",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, cross-application drag/drop, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "React Aria DropZone supplies accessible drop-target semantics and contains a real native FileTrigger alternative.",
+    "naming": "A non-empty visible label names the drop target; visible description and live status are connected as descriptions.",
+    "roleOverride": "Consumer role, name, drop, paste, and children overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement React Aria drop surface"
+  },
+  "interaction": {
+    "keyboard": "Tab reaches the drop target and native choose-files control; React Aria accessible drop mode and platform file picker remain available.",
+    "pointer": "Files may be dropped or selected through the visible native control; drop-target state appears only for a valid active drag.",
+    "touch": "The choose-files path is always present because mobile browsers may not expose desktop drag/drop.",
+    "speech": "Visible dropzone and choose-files labels provide distinct voice targets.",
+    "switchAccess": "The native file control is reachable independently of drag/drop mode."
+  },
+  "formBehavior": "Optional name, form, and required props participate through the one native FileTrigger. Picker, paste, and drop synchronize only accepted Files into its FileList without synthetic input/change events; failure clears the input and reports formDataSynchronized=false. Native reset restores idle status and invokes onReset without fabricating change.",
+  "states": {
+    "attributes": ["data-busy", "data-disabled", "data-drop-target", "data-focus-visible"],
+    "synchronization": "Disabled/busy affordances, latest-request ownership, accepted/rejected result, visible status, and polite announcement derive from one bounded classifier."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=dropzone]",
+    "attributes": ["data-busy", "data-disabled"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "A dashed-to-solid boundary and outline communicate target state beyond color.",
+    "forcedColors": "Uses Canvas, CanvasText, Highlight, and GrayText with forced-color adjustment enabled.",
+    "reducedMotion": "Drop, busy, accepted, and rejected states do not depend on motion."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels, descriptions, status, and native trigger wrap within the surface at narrow widths."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "description",
+      "dropzone.busy",
+      "dropzone.idle",
+      "dropzone.selected",
+      "dropzone.selectAction"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Paste handling consumes only clipboard files and does not interfere with ordinary text when no FileList is present.",
+    "serialization": "File objects remain local browser objects; rejection summaries expose only name, type, size, and a bounded reason."
+  },
+  "consumerResponsibilities": [
+    "Explain accepted type, count, size, privacy, and transport policy in persistent visible copy.",
+    "Validate file signatures and server policy again before preview or upload; browser MIME and extension values are not trust boundaries.",
+    "Treat formDataSynchronized=false as a blocked direct-form submission and keep visible recovery available.",
+    "Treat accepted files as a selection result, never consent to upload.",
+    "Render detailed per-file rejection recovery in the owning FileUpload queue when more than a summary is needed."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "react-aria-drop-semantics",
+      "picker-paste-drop-parity",
+      "type-size-count-directory-rejection",
+      "latest-request-concurrency",
+      "keyboard-touch-narrow-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-accessible-drop-mode",
+      "mobile-picker-fallback",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include packed-consumer, cross-application drag/drop, package/source parity, or manual assistive-technology evidence.",
+    "Directories and non-file drag items are rejected rather than recursively enumerated; directory upload is a separate explicit product mode."
+  ]
+}

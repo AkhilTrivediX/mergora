@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "copy-button",
+  "root": {
+    "slot": "copy-button",
+    "element": "button",
+    "ref": "HTMLButtonElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "copy-button-icon",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "copy-button-status",
+      "element": "span aria-live=polite",
+      "stability": "documented"
+    }
+  ]
+}

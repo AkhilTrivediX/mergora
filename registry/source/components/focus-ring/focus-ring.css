@@ -1,0 +1,31 @@
+@layer mergora.components {
+  [data-focus-ring="true"] {
+    --mrg-focus-ring-color: var(--mrg-component-focus-indicator-color);
+    --mrg-focus-ring-contrast-color: var(--mrg-component-focus-indicator-contrast-background);
+    --mrg-focus-ring-gap: var(--mrg-semantic-border-width-default);
+    --mrg-focus-ring-offset: var(--mrg-component-focus-indicator-offset);
+    --mrg-focus-ring-width: var(--mrg-component-focus-indicator-width);
+  }
+
+  [data-focus-ring="true"]:focus-visible {
+    outline: var(--mrg-focus-ring-width) solid var(--mrg-focus-ring-color);
+    outline-offset: var(--mrg-focus-ring-offset);
+    box-shadow: 0 0 0 var(--mrg-focus-ring-gap) var(--mrg-focus-ring-contrast-color);
+  }
+
+  [data-focus-ring="true"][data-focus-ring-contrast="strong"] {
+    --mrg-focus-ring-gap: var(--mrg-semantic-border-width-strong);
+    --mrg-focus-ring-offset: var(--mrg-semantic-border-width-emphasis);
+    --mrg-focus-ring-width: var(--mrg-component-focus-indicator-width-strong);
+  }
+
+  @media (forced-colors: active) {
+    [data-focus-ring="true"]:focus-visible,
+    [data-focus-ring="true"][data-focus-ring-contrast="strong"]:focus-visible {
+      box-shadow: none;
+      outline: 3px solid Highlight;
+      outline-offset: 3px;
+      forced-color-adjust: auto;
+    }
+  }
+}

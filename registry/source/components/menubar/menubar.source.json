@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../direction/index.js",
+    "../dropdown-menu/index.js",
+    "./menubar.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/menubar/menubar.tsx",
+  "id": "menubar",
+  "itemDependencies": ["direction", "dropdown-menu"],
+  "outputRole": "component"
+}

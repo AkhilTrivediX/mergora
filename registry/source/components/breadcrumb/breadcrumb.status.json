@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "breadcrumb",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify all source, package, registry, documentation, and public subpath outputs.",
+    "Bind automated type, unit, SSR, schema, browser, axe, keyboard, RTL, forced-colors, zoom, and narrow-width results to the candidate digest.",
+    "Complete required manual keyboard, touch, speech, switch, forced-colors, NVDA/Firefox, and VoiceOver/Safari sessions.",
+    "Pass packed Next.js and Vite package/source consumers, Semantic Sync fixtures, visual review, and Quality Passport approval."
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "authentication-kit",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify package, editable source, native registry, Shadcn, and dependency-closure outputs.",
+    "Pass clean-consumer install/update/remove, packed Next/Vite, lifecycle, browser, password-manager, passkey-device, and security gates.",
+    "Record current desktop/mobile assistive-technology, touch, keyboard, zoom, forced-colors, localization, threat-model, privacy, and legal evidence."
+  ]
+}

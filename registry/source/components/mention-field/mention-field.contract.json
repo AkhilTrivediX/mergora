@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "mention-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, package-parity, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A labelled native textarea conditionally exposes an owned listbox at a configured trigger and entity query.",
+    "rolePolicy": "Textarea, combobox, listbox, option, invalid, required, disabled, and read-only state remain baseline; mention summary is absent when disabled.",
+    "refTarget": "HTMLTextAreaElement"
+  },
+  "keyboard": [
+    {
+      "key": "ArrowDown / ArrowUp / Home / End",
+      "behavior": "Moves among enabled mentions while a query is open."
+    },
+    { "key": "Enter", "behavior": "Inserts the active mention and restores caret focus." },
+    { "key": "Escape", "behavior": "Closes suggestions and preserves native text." }
+  ],
+  "nonColor": "Mention tokens, labels, descriptions, and state text accompany color.",
+  "responsive": "Logical properties, native textarea reflow, and bounded suggestions support narrow and RTL layouts.",
+  "stableSelectors": {
+    "root": "[data-slot=mention-field]",
+    "parts": ["[data-slot=mention-field-summary]"],
+    "attributes": ["data-slot", "data-disabled", "data-invalid"]
+  },
+  "consumerResponsibilities": [
+    "Own server-side mention identity resolution and authorization.",
+    "Own async suggestion transport; use onQueryChange context and preserve Abort/cancellation policy outside this field.",
+    "Configure unambiguous trigger symbols and map option entity types deliberately.",
+    "Localize messages and retest bidirectional mention syntax.",
+    "Do not claim Stable until all promotion evidence is current."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "form-reset",
+      "serialization",
+      "caret",
+      "ime-composition",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

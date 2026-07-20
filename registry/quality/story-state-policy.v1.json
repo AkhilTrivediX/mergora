@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "requiredStates": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "loading",
+    "empty",
+    "populated",
+    "partial",
+    "success",
+    "warning",
+    "error",
+    "destructive"
+  ],
+  "notApplicableRequiresReason": true,
+  "extensionStateOrder": "lexical"
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "date-range-picker",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "two labelled input type=date controls",
+    "naming": "A persistent visible label or explicit accessible name identifies every native editor, grid, or collection.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLDivElement"
+  },
+  "interaction": {
+    "keyboard": "Native editor behavior remains authoritative; calendar grids add documented arrows, Home, End, Page Up, and Page Down without intercepting unrelated keys.",
+    "pointer": "Every selection path uses native inputs or buttons and preserves cancellation.",
+    "touch": "Controls retain preferred coarse-pointer targets and native mobile pickers where available.",
+    "speech": "Visible labels and explicit button names remain available for voice targeting.",
+    "switchAccess": "No gesture-only or duplicate proxy action is required."
+  },
+  "formBehavior": "Start and end inputs retain independent names, ordered bounds, validation, disabled omission, and reset; optional inclusive duration bounds constrain the end input and add recoverable custom validity without replacing native serialization.",
+  "states": {
+    "attributes": ["data-slot", "data-duration", "data-duration-invalid", "data-presets"],
+    "synchronization": "Start, end, ordered and optional duration bounds, controlled ownership, presets, duration output, issue callback, recovery text, and native form values share one range."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=date-range-picker]",
+    "attributes": ["data-slot", "data-duration", "data-duration-invalid", "data-presets"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Strong Ink structure and text state cues accompany color.",
+    "forcedColors": "System colors preserve boundaries, selected states, and focus indicators.",
+    "reducedMotion": "No essential information or operation depends on motion."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels, context, summaries, and localized strings wrap; range layouts collapse without page-level horizontal overflow."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "labels",
+      "descriptions",
+      "preset or interval labels",
+      "availability reasons",
+      "context summaries"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native temporal editors retain browser composition and platform editing behavior.",
+    "serialization": "Successful values use native canonical ASCII date/time/month/year strings; localized text is never submitted in their place."
+  },
+  "consumerResponsibilities": [
+    "Provide persistent visible labels and localize every consumer string.",
+    "Validate temporal bounds and canonical values again at the server or trusted boundary.",
+    "Choose timezone and DST disambiguation policy explicitly whenever a local value becomes an instant.",
+    "Do not treat source-present-unreleased code as published, Stable, or manually assistive-technology verified."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "controlled-uncontrolled-range",
+      "ordered-bounds-and-reset",
+      "minimum-maximum-duration-enforcement",
+      "duration-recovery-and-off-path",
+      "presets-duration-off-paths",
+      "narrow-touch-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-and-touch",
+      "mobile-platform-picker",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch",
+      "rtl-and-forced-colors"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Generated package, editable source, native registry, Shadcn, and packed-consumer parity have not yet been recorded for this source checkpoint.",
+    "Current manual desktop/mobile screen-reader, speech, switch, and real-device records are missing."
+  ]
+}

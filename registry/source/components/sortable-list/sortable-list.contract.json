@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "sortable-list",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, large-data performance, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A named ordered list preserves item order while native buttons expose pointer, touch, speech, switch, and keyboard alternatives.",
+    "drag": "Native pointer drag is additive; every move remains available through visible Move Up/Down controls and optional destination controls.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through each native handle, move action, and optional destination control."
+    },
+    {
+      "key": "Space / Enter",
+      "behavior": "Picks up the focused handle; a second activation drops at the current position."
+    },
+    {
+      "key": "Arrow Up / Arrow Down",
+      "behavior": "Moves a picked item one logical position and preserves visible focus."
+    },
+    {
+      "key": "Escape",
+      "behavior": "Cancels keyboard movement and restores the complete original order."
+    }
+  ],
+  "enhancementIsolation": {
+    "destinationFalse": "No destination select, label, option, or destination callback reason exists.",
+    "announcementsFalse": "No live region or announcement state update exists.",
+    "undoFalse": "No snapshots, Undo control, undo callback reason, or undo announcement exists.",
+    "virtualFalse": "Every item renders; no spacers, range button, or window callback exists."
+  },
+  "preferences": {
+    "forcedColors": "Rows, grabbed state, buttons, selects, and focus use system colors.",
+    "reducedMotion": "Movement scrolls with behavior auto and state transitions become immediate.",
+    "rtl": "Logical layout mirrors while ordered vertical movement remains stable."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "pointer-drag",
+      "keyboard-cancel",
+      "move-buttons",
+      "destination",
+      "undo",
+      "virtual-window",
+      "form-reset",
+      "axe",
+      "narrow-320",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch-device",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased evidence does not yet include generated parity, packed consumers, large-data performance, or manual assistive-technology sessions.",
+    "Consumers own persistence, authorization, cross-list movement, and server conflict recovery."
+  ]
+}

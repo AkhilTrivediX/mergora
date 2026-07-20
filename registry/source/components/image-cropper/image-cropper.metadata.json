@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image-cropper",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "controlled",
+    "uncontrolled",
+    "disabled",
+    "read-only",
+    "pointer",
+    "keyboard",
+    "numeric",
+    "preview",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "image-cropper",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["controlled", "uncontrolled", "disabled", "read-only"]
+    },
+    {
+      "name": "image-cropper-area",
+      "semanticElement": "focusable group",
+      "refTarget": "none",
+      "states": ["pointer", "keyboard"]
+    },
+    {
+      "name": "image-cropper-numeric",
+      "semanticElement": "optional fieldset",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    },
+    {
+      "name": "image-cropper-preview",
+      "semanticElement": "optional figure",
+      "refTarget": "none",
+      "states": ["enhancement-enabled"]
+    }
+  ],
+  "contract": { "id": "image-cropper-accessibility", "version": "0.1.0" },
+  "passport": { "id": "image-cropper-quality-passport", "version": "0.0.0" }
+}

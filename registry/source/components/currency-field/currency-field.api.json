@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "itemId": "currency-field",
+  "entryExport": "CurrencyField",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "NumberFieldProps with an explicit currency value contract",
+  "exports": [
+    { "kind": "component", "name": "CurrencyField" },
+    { "kind": "function", "name": "currencyFractionDigits" },
+    { "kind": "function", "name": "normalizeCurrencyCode" },
+    { "kind": "type", "name": "CurrencyFieldFormatOptions" },
+    { "kind": "type", "name": "CurrencyFieldProps" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    { "name": "currency", "required": true, "type": "three-letter currency code" },
+    { "name": "value", "required": false, "type": "canonical major-unit number" },
+    { "name": "defaultValue", "required": false, "type": "canonical major-unit number" },
+    { "name": "allowNegative", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "currencyDisplay",
+      "required": false,
+      "default": "code",
+      "type": "Intl.NumberFormat currencyDisplay"
+    },
+    {
+      "name": "currencySign",
+      "required": false,
+      "default": "standard",
+      "type": "standard or accounting"
+    },
+    { "name": "precision", "required": false, "type": "currency minor-unit precision by default" },
+    { "name": "formatOptions", "required": false, "type": "non-currency Intl.NumberFormatOptions" },
+    { "name": "showCanonicalPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "statusRail", "required": false, "default": false, "type": "false | auto" }
+  ],
+  "compositionPolicy": {
+    "currency": "The required normalized currency code is independent from the numeric value and is exposed as data-currency.",
+    "value": "Values and hidden form data use canonical major units; the symbol, code, grouping, sign, and decimal text are display concerns.",
+    "negative": "Negative values require allowNegative; accounting presentation remains a formatting choice rather than a different value model.",
+    "enhancements": "showCanonicalPreview exposes the exact major-unit value beside its currency code, while statusRail=auto exposes localized bounds; both are independent and absent when disabled."
+  }
+}

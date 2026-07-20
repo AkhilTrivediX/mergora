@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "itemId": "data-table",
+  "entryExport": "DataTable",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "DataTable"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableColumn"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableOperationReason"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableProps"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableQuery"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableQueryAdapter"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableSort"
+    },
+    {
+      "kind": "type",
+      "name": "DataTableSortDirection"
+    },
+    {
+      "kind": "value",
+      "name": "normalizeDataTableQuery"
+    },
+    {
+      "kind": "value",
+      "name": "parseDataTableQuery"
+    },
+    {
+      "kind": "value",
+      "name": "serializeDataTableQuery"
+    }
+  ],
+  "props": [
+    {
+      "name": "queryAdapter",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "showQuerySummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "searchable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "selectable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "paginated",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Data Table; enhancement output is additive and independently removable.",
+    "enhancement": "Consumer-owned query adapters bridge URL or server state without coupling the component to routing or transport, alongside independently optional query controls and summary. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

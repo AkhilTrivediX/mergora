@@ -1,0 +1,101 @@
+/* Generated from registry/source/components/virtual-list/virtual-list.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-virtual-list {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    max-inline-size: 100%;
+    color: var(--mrg-semantic-color-foreground-primary);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-virtual-list__viewport {
+    position: relative;
+    max-inline-size: 100%;
+    overflow: auto;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    scrollbar-gutter: stable;
+  }
+  .mrg-virtual-list__spacer {
+    position: relative;
+    min-inline-size: 0;
+  }
+  .mrg-virtual-list__item {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    display: flex;
+    align-items: center;
+    padding-inline: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    overflow: hidden;
+    cursor: default;
+  }
+  .mrg-virtual-list__item[data-active] {
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+    box-shadow: inset var(--mrg-semantic-border-width-emphasis) 0 0
+      var(--mrg-semantic-color-brand-violet);
+  }
+  .mrg-virtual-list__item:focus-visible,
+  .mrg-virtual-list__viewport:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: calc(var(--mrg-semantic-focus-offset) * -1);
+  }
+  .mrg-virtual-list__loading {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    color: var(--mrg-semantic-color-status-loading-foreground);
+    background: var(--mrg-semantic-color-status-loading-background);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-virtual-list__summary {
+    display: block;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-md);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    background: var(--mrg-semantic-color-status-info-background);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-virtual-list__viewport {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-virtual-list__viewport {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-virtual-list__item {
+      border-color: CanvasText;
+    }
+    .mrg-virtual-list__item[data-active] {
+      color: HighlightText;
+      background: Highlight;
+      box-shadow: inset var(--mrg-semantic-border-width-emphasis) 0 0 HighlightText;
+    }
+    .mrg-virtual-list__item:focus-visible,
+    .mrg-virtual-list__viewport:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-virtual-list__loading,
+    .mrg-virtual-list__summary {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+  }
+}

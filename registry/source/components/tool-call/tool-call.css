@@ -1,0 +1,119 @@
+@layer mergora.components {
+  .mrg-tool-call {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    padding: var(--mrg-semantic-space-inset-md);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-tool-call[data-status="running"] {
+    border-color: var(--mrg-semantic-color-status-loading-border);
+  }
+  .mrg-tool-call[data-status="success"] {
+    border-color: var(--mrg-semantic-color-status-success-border);
+  }
+  .mrg-tool-call[data-status="error"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-tool-call [data-slot="tool-call-header"] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding-block-end: var(--mrg-semantic-space-inset-xs);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-tool-call [data-slot="tool-call-header"] span,
+  .mrg-tool-call [data-slot="tool-call-duration"] {
+    margin: 0;
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-tool-call [data-slot="tool-call-details"] {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-compact);
+  }
+
+  .mrg-tool-call [data-slot="tool-call-details"] summary {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    cursor: pointer;
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-tool-call pre {
+    max-block-size: 16rem;
+    padding: var(--mrg-semantic-space-inset-sm);
+    overflow: auto;
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-code-foreground);
+    background: var(--mrg-semantic-color-code-background);
+    font-family: var(--mrg-semantic-font-family-code);
+    font-size: var(--mrg-semantic-font-size-code);
+    white-space: pre-wrap;
+  }
+
+  .mrg-tool-call [data-slot="tool-call-error"] {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-danger-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-tool-call button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-tool-call :is(button, summary):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (pointer: coarse) {
+    .mrg-tool-call button,
+    .mrg-tool-call [data-slot="tool-call-details"] summary {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-tool-call,
+    .mrg-tool-call [data-slot="tool-call-details"],
+    .mrg-tool-call [data-slot="tool-call-error"],
+    .mrg-tool-call pre {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-tool-call button {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-tool-call :is(button, summary):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

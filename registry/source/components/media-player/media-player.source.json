@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./media-player.css", "react"],
+  "entryPath": "registry/source/components/media-player/media-player.tsx",
+  "id": "media-player",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

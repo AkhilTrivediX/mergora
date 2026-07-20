@@ -1,0 +1,40 @@
+/* Generated Tailwind CSS v4 theme mapping. Do not edit. */
+@import "./tokens.css";
+
+@theme inline {
+  --breakpoint-lg: var(--mrg-semantic-breakpoint-lg);
+  --breakpoint-md: var(--mrg-semantic-breakpoint-md);
+  --breakpoint-sm: var(--mrg-semantic-breakpoint-sm);
+  --breakpoint-xl: var(--mrg-semantic-breakpoint-xl);
+  --color-action: var(--mrg-semantic-color-action-background);
+  --color-canvas: var(--mrg-semantic-color-background-canvas);
+  --color-danger: var(--mrg-semantic-color-status-danger-foreground);
+  --color-focus: var(--mrg-semantic-color-focus-ring);
+  --color-info: var(--mrg-semantic-color-status-info-foreground);
+  --color-ink: var(--mrg-semantic-color-foreground-primary);
+  --color-line: var(--mrg-semantic-color-border-default);
+  --color-line-strong: var(--mrg-semantic-color-border-strong);
+  --color-line-subtle: var(--mrg-semantic-color-border-subtle);
+  --color-living: var(--mrg-semantic-color-brand-living);
+  --color-loading: var(--mrg-semantic-color-status-loading-foreground);
+  --color-muted-ink: var(--mrg-semantic-color-foreground-muted);
+  --color-selection: var(--mrg-semantic-color-selection-background);
+  --color-success: var(--mrg-semantic-color-status-success-foreground);
+  --color-surface: var(--mrg-semantic-color-background-surface);
+  --color-surface-disabled: var(--mrg-semantic-color-background-disabled);
+  --color-surface-raised: var(--mrg-semantic-color-background-surface-raised);
+  --color-surface-sunken: var(--mrg-semantic-color-background-surface-sunken);
+  --color-violet: var(--mrg-semantic-color-brand-violet);
+  --color-warning: var(--mrg-semantic-color-status-warning-foreground);
+  --font-mono: var(--mrg-semantic-font-family-machine);
+  --font-sans: var(--mrg-semantic-font-family-prose);
+  --radius-compact: var(--mrg-semantic-radius-compact);
+  --radius-container: var(--mrg-semantic-radius-container);
+  --radius-control: var(--mrg-semantic-radius-control);
+  --radius-overlay: var(--mrg-semantic-radius-overlay);
+  --radius-panel: var(--mrg-semantic-radius-panel);
+  --radius-surface: var(--mrg-semantic-radius-surface);
+  --shadow-modal: var(--mrg-semantic-elevation-modal);
+  --shadow-overlay: var(--mrg-semantic-elevation-overlay);
+  --shadow-raised: var(--mrg-semantic-elevation-raised);
+}

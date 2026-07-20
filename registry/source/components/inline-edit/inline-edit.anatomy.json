@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline-edit",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "inline-edit",
+    "stableAttributes": [
+      "data-slot",
+      "data-control",
+      "data-editing",
+      "data-pending",
+      "data-disabled",
+      "data-readonly",
+      "data-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "inline-edit-view",
+      "element": "div",
+      "purpose": "Presents the saved value and explicit edit transition.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "inline-edit-control",
+      "element": "input or textarea",
+      "purpose": "Provides native draft editing, composition, selection, and required semantics.",
+      "stability": "documented"
+    },
+    {
+      "slot": "inline-edit-actions",
+      "element": "div containing native buttons",
+      "purpose": "Keeps Save and Cancel visible and reachable for every input modality.",
+      "stability": "documented"
+    },
+    {
+      "slot": "inline-edit-error",
+      "element": "p",
+      "purpose": "Retains associated validation or async failure text beside the draft.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "inline-edit-status",
+      "element": "polite status span",
+      "purpose": "Announces pending, success, cancellation, and reset summaries without wrapping the widget in a live region.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "inline-edit-hidden-input",
+      "element": "input type=hidden",
+      "purpose": "Serializes only the saved value and supplies form ownership for reset.",
+      "stability": "behavioral"
+    }
+  ]
+}

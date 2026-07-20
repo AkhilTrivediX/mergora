@@ -1,0 +1,48 @@
+/* Generated from registry/source/components/visually-hidden/visually-hidden.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-visually-hidden {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    padding: 0;
+  }
+
+  .mrg-visually-hidden[data-reveal-on-focus="true"]:focus-visible {
+    position: fixed;
+    z-index: var(--mrg-semantic-layer-tooltip);
+    inset-block-start: var(--mrg-semantic-space-stack-sm);
+    inset-inline-start: var(--mrg-semantic-space-inline-sm);
+    inline-size: auto;
+    block-size: auto;
+    margin: 0;
+    overflow: visible;
+    clip-path: none;
+    white-space: normal;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-control);
+    padding: var(--mrg-semantic-space-stack-sm) var(--mrg-semantic-space-inline-md);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+
+  @media (forced-colors: active) {
+    .mrg-visually-hidden[data-reveal-on-focus="true"]:focus-visible {
+      color: CanvasText;
+      background: Canvas;
+      border-color: CanvasText;
+      box-shadow: none;
+      outline-color: Highlight;
+      forced-color-adjust: auto;
+    }
+  }
+}

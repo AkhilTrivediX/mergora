@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "filter-builder",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicFilterBuilder" },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFilterBuilder"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFilterBuilder"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPreferences"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required filter policy belongs to the containing workflow."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Saved and URL adapters are synchronous consumer-owned boundaries."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "BasicFilterBuilder" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFilterBuilder"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ControlledAndForm" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedFilterBuilder"
+    }
+  ]
+}

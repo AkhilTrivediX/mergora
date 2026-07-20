@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "transfer-list",
+  "entryExport": "TransferList",
+  "refTarget": "HTMLFieldSetElement",
+  "nativeProps": "HTMLAttributes<HTMLFieldSetElement>",
+  "exports": [
+    { "kind": "value", "name": "TransferList" },
+    { "kind": "type", "name": "TransferListItem" },
+    { "kind": "type", "name": "TransferListProps" }
+  ],
+  "props": [
+    { "name": "showTransferSummary", "required": false, "type": "boolean" },
+    { "name": "filterable", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve fieldset/legend grouping, native multi-select controls, explicit move names, repeated form values, reset, required validation, disabled, and read-only behavior.",
+    "enhancement": "showTransferSummary is independently removable; false removes status UI, live output, status computation, events, and accessibility relationship. filterable is independent; false removes both filter inputs and their state while native lists and move controls remain."
+  }
+}

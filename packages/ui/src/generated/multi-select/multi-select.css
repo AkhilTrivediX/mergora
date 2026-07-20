@@ -1,0 +1,201 @@
+/* Generated from registry/source/components/multi-select/multi-select.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-multi-select {
+    color: var(--mrg-semantic-color-foreground-primary);
+    container-type: inline-size;
+    display: grid;
+    font-family: var(--mrg-semantic-font-family-prose);
+    gap: var(--mrg-semantic-space-stack-xs);
+    inline-size: 100%;
+    position: relative;
+  }
+  .mrg-multi-select > label {
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+  .mrg-multi-select__description {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    max-inline-size: 70ch;
+  }
+  .mrg-multi-select > input {
+    background: var(--mrg-component-control-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+    border-radius: var(--mrg-component-control-radius);
+    color: inherit;
+    font: inherit;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    min-inline-size: 0;
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-multi-select > input:focus-visible,
+  .mrg-multi-select button:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+      var(--mrg-component-focus-indicator-contrast-background);
+    outline: var(--mrg-component-focus-indicator-width) solid
+      var(--mrg-component-focus-indicator-color);
+    outline-offset: var(--mrg-component-focus-indicator-offset);
+  }
+  .mrg-multi-select__tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .mrg-multi-select__tokens li {
+    align-items: center;
+    background: var(--mrg-semantic-color-selection-background);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-selection-foreground);
+    display: inline-flex;
+    gap: var(--mrg-semantic-space-inline-xs);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline-start: var(--mrg-semantic-space-inset-sm);
+  }
+  .mrg-multi-select__tokens .mrg-multi-select__overflow {
+    background: var(--mrg-semantic-color-background-surface);
+    border-color: var(--mrg-semantic-color-brand-violet);
+    color: var(--mrg-semantic-color-foreground-primary);
+    padding-inline: var(--mrg-semantic-space-inset-sm);
+  }
+  .mrg-multi-select__tokens button {
+    align-items: center;
+    align-self: stretch;
+    background: transparent;
+    border: 0;
+    border-inline-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    color: inherit;
+    display: inline-flex;
+    font: inherit;
+    justify-content: center;
+    min-inline-size: var(--mrg-semantic-size-target-minimum);
+  }
+  .mrg-multi-select__listbox {
+    background: var(--mrg-component-overlay-background);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-overlay-border);
+    border-radius: var(--mrg-component-overlay-radius);
+    box-shadow: var(--mrg-component-overlay-elevation);
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    inset-block-start: calc(100% + var(--mrg-semantic-space-inline-xs));
+    inset-inline: 0;
+    list-style: none;
+    margin: 0;
+    max-block-size: min(20rem, 60vh);
+    overflow: auto;
+    padding: var(--mrg-semantic-space-inset-xs);
+    position: absolute;
+    z-index: var(--mrg-semantic-layer-modal);
+  }
+  .mrg-multi-select__listbox li[role="option"] {
+    align-items: center;
+    border-radius: var(--mrg-component-control-radius);
+    cursor: default;
+    display: grid;
+    gap: var(--mrg-semantic-space-inline-sm);
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-multi-select__listbox li small {
+    color: var(--mrg-semantic-color-foreground-muted);
+    grid-column: 1 / -1;
+  }
+  .mrg-multi-select__listbox li[data-active],
+  .mrg-multi-select__listbox li[aria-selected="true"] {
+    background: var(--mrg-component-control-background-selected);
+    color: var(--mrg-component-control-foreground-selected);
+    outline: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-component-control-border-selected);
+  }
+  .mrg-multi-select__listbox li[data-disabled] {
+    color: var(--mrg-semantic-color-foreground-disabled);
+  }
+  .mrg-multi-select__empty {
+    color: var(--mrg-semantic-color-foreground-muted);
+    padding: var(--mrg-semantic-space-inset-md);
+  }
+  .mrg-multi-select__async,
+  .mrg-multi-select__load-error {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+    justify-content: space-between;
+  }
+  .mrg-multi-select__async button,
+  .mrg-multi-select__load-error button {
+    background: var(--mrg-semantic-color-background-canvas);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: inherit;
+    font: inherit;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+  }
+  .mrg-multi-select__load-error {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-multi-select__summary {
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+    padding-block-start: var(--mrg-semantic-space-inset-xs);
+  }
+  .mrg-multi-select__error {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-multi-select[data-invalid] > input {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+  @container (max-width: 20rem) {
+    .mrg-multi-select__listbox {
+      max-block-size: min(15rem, 50vh);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-multi-select__listbox {
+      scroll-behavior: auto;
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-multi-select > input,
+    .mrg-multi-select__async button,
+    .mrg-multi-select__load-error button,
+    .mrg-multi-select__listbox,
+    .mrg-multi-select__tokens li {
+      background: Canvas;
+      border-color: CanvasText;
+      color: CanvasText;
+      forced-color-adjust: auto;
+    }
+    .mrg-multi-select__listbox li[data-active],
+    .mrg-multi-select__listbox li[aria-selected="true"] {
+      background: Highlight;
+      color: HighlightText;
+      outline-color: Highlight;
+    }
+    .mrg-multi-select__listbox li[data-disabled] {
+      color: GrayText;
+    }
+    .mrg-multi-select > input:focus-visible,
+    .mrg-multi-select button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+    .mrg-multi-select__summary,
+    .mrg-multi-select__error,
+    .mrg-multi-select__load-error {
+      border-color: CanvasText;
+      color: CanvasText;
+    }
+  }
+}

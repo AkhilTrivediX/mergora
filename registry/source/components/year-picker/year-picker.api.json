@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "year-picker",
+  "entryExport": "YearPicker",
+  "refTarget": "HTMLSelectElement",
+  "nativeProps": "React select attributes except owned value, defaultValue, and change fields",
+  "exports": [
+    { "kind": "component", "name": "YearPicker" },
+    { "kind": "type", "name": "YearPickerProps" },
+    { "kind": "type", "name": "YearPickerVisibleRange" },
+    { "kind": "type", "name": "YearPickerWindowDirection" }
+  ],
+  "controlledState": [
+    {
+      "state": "year",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "onChange", "required": false, "type": "native select change handler" },
+    { "name": "minYear", "required": false, "type": "safe integer" },
+    {
+      "name": "maxYear",
+      "required": false,
+      "type": "safe integer"
+    },
+    { "name": "showRangeSummary", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "visibleRange",
+      "required": false,
+      "default": false,
+      "type": "false | YearPickerVisibleRange with at most 5,001 rendered years"
+    },
+    {
+      "name": "onVisibleRangeChange",
+      "required": false,
+      "type": "(range: YearPickerVisibleRange, direction: YearPickerWindowDirection) => void"
+    },
+    { "name": "previousWindowLabel", "required": false, "type": "string" },
+    { "name": "nextWindowLabel", "required": false, "type": "string" },
+    { "name": "windowGroupLabel", "required": false, "type": "string" }
+  ],
+  "compositionPolicy": {
+    "native": "A bounded native select owns keyboard operation, form serialization, validation, and mobile presentation.",
+    "range": "Range count and bounds are associated only when showRangeSummary is true.",
+    "scale": "The default native collection rejects more than 5,001 options; visibleRange enables a consumer-controlled bounded native window for much larger safe-integer domains while retaining the selected form value."
+  }
+}

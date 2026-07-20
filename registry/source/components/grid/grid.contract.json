@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "grid",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "Consumer-selected div, section, ul, or ol",
+    "rolePolicy": "CSS grid never implies ARIA grid; native document or list semantics remain authoritative.",
+    "refTarget": "HTMLElement"
+  },
+  "layout": {
+    "intrinsic": "Auto mode uses auto-fit and a minmax bound that cannot exceed the available inline size.",
+    "fixedColumns": "Explicit column counts use minmax(0, 1fr) and do not create a horizontal minimum.",
+    "equalRows": "equalRows opts into one-fr implicit rows; false removes that override without changing column behavior.",
+    "overflow": "Direct items have zero minimum inline size and anywhere wrapping; content is not clipped."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=grid]",
+    "attributes": [
+      "data-element",
+      "data-columns",
+      "data-minimum",
+      "data-gap",
+      "data-align",
+      "data-list-style"
+    ]
+  },
+  "consumerResponsibilities": [
+    "Do not add role=grid unless implementing the complete interactive grid keyboard and focus contract.",
+    "Render li children for ul and ol roots and keep visual order aligned with DOM order.",
+    "Give intrinsically unbreakable embedded content an accessible local overflow strategy."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "auto-fit",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "native-list-semantics",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-reading-order", "screen-reader-list", "touch-reflow", "forced-colors"],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,56 @@
+name: Release candidate verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - labeled
+      - synchronize
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-verify-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'release-candidate')
+    name: Verify exact release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .node-version
+      - name: Enable pinned pnpm
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@11.14.0 --activate
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install pinned browser engines
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Verify release candidate
+        env:
+          MERGORA_VISUAL_POLICY_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          MERGORA_VISUAL_PR_LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: pnpm release:verify
+      - name: Upload immutable candidate evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-candidate-${{ github.event.pull_request.head.sha || github.sha }}
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 90
+
+# This workflow has no npm identity and cannot publish.

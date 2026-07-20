@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sheet",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify derived surfaces and package/source parity.",
+    "Bind every side/size, mobile safe-area, scrolling, focus, RTL, viewport, preference, and packed-consumer gate to the candidate digest.",
+    "Complete Risk Class 2 manual sessions and Semantic Sync fixtures.",
+    "Publish an approved Passport and dogfood the generated source."
+  ]
+}

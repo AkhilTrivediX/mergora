@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "text",
+  "root": {
+    "element": "span | p | div | small | strong | em",
+    "ref": "HTMLElement",
+    "slot": "text",
+    "stableAttributes": ["data-slot", "data-size", "data-tone", "data-weight", "data-truncate"]
+  },
+  "parts": []
+}

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button",
+  "sourceStatus": "p1-canonical-input",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "promotionTarget": "stable-after-required-evidence",
+  "requiredEvidence": [
+    "api-types",
+    "unit-behavior",
+    "ssr-markup",
+    "browser-activation",
+    "keyboard-focus",
+    "axe",
+    "aria-snapshot",
+    "responsive-geometry",
+    "visual-modes",
+    "packed-consumer",
+    "package-source-parity",
+    "manual-keyboard",
+    "manual-nvda-firefox",
+    "manual-voiceover-safari"
+  ],
+  "recordedEvidence": []
+}

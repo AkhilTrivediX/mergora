@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "search-field",
+  "root": {
+    "element": "input",
+    "ref": "HTMLInputElement",
+    "slot": "search-field-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "type=search",
+      "required",
+      "disabled",
+      "readonly",
+      "aria-controls",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "search-field",
+      "element": "span",
+      "purpose": "Search-control and query-status layout with busy and result state.",
+      "stability": "documented"
+    },
+    {
+      "slot": "search-field-control",
+      "element": "span",
+      "purpose": "Visual input, clear, and optional submit grouping.",
+      "stability": "documented"
+    },
+    {
+      "slot": "search-field-clear",
+      "element": "button type=button",
+      "purpose": "Localized clear action that restores focus and never submits the form.",
+      "stability": "documented"
+    },
+    {
+      "slot": "search-field-submit",
+      "element": "button type=submit",
+      "purpose": "Optional explicit native form submission action.",
+      "stability": "documented"
+    },
+    {
+      "slot": "search-field-status",
+      "element": "span role=status or role=alert",
+      "purpose": "Localized loading, result-count, no-results, or error association.",
+      "stability": "documented"
+    }
+  ]
+}

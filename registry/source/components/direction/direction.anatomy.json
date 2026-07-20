@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "direction",
+  "root": {
+    "element": "div for Boundary; no DOM for Provider",
+    "ref": "HTMLDivElement for Boundary",
+    "slot": "direction-boundary",
+    "stableAttributes": ["data-slot", "data-direction", "data-bidi-isolate", "dir"]
+  },
+  "parts": []
+}

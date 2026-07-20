@@ -1,0 +1,13 @@
+# Checkbox Group canonical source
+
+Status: source present and unreleased. No Stable, package-parity, conformance, or manual assistive-technology claim is made.
+
+Mergora's strong label hierarchy, precise option rhythm, Green selection, Violet focus seam, and bounded danger rail keep the group visually related to the field family. `minSelected` and `maxSelected` are independent optional constraints; omitting both removes generated constraint behavior, messages, and invalid relationships.
+
+The group is one native fieldset/legend with one real checkbox per option. Checked items serialize as repeated same-name `FormData` entries. `required` means at least one selection—not every checkbox—and min/max constraints are applied through custom validity on the first enabled native control. Controlled and uncontrolled selection plus native reset are explicit.
+
+Names and item values must be non-blank, and direct item values must be unique. Development builds diagnose empty group/item labels, a group with no direct items, and controlled or default selections that have no direct item. A `form` association on the group is propagated to every item so controls outside the form still submit and reset correctly. Only enabled direct items that would be successful controls count toward selection constraints: disabled or unknown selected values cannot make a required group valid. Constraint enforcement is suspended when the group itself is disabled or every item is disabled; generated visible error state, `aria-invalid`, native `checkValidity()`, and `FormData` then agree that no selectable anchor exists.
+
+Built-in messages resolve through `checkboxGroup.minimum` and `checkboxGroup.maximum` MergoraProvider keys with locale-aware numbers and plurals. Explicit `constraintMessage` and `nativeValidationMessage` values win; the native message is applied only while a selection constraint is actually invalid. ReactNode error content is never coerced to a string. Invalid maximum selection is permitted and then reported rather than silently rejecting a user action. Minimums and maximums must be finite non-negative integers and the effective minimum cannot exceed the maximum. Custom validity is cleared from an old anchor whenever enabled items migrate or unmount. Exact group `aria-invalid` tokens propagate to items, and each item references the persistent error through both its description and error-message relationships.
+
+Promotion requires constraint, invalid focus, repeated-value submission, reset, responsive/RTL/forced-colors, generated consumers, parity, Semantic Sync, and current manual evidence.

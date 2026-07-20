@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "presence",
+  "canonicalStoryFile": "apps/storybook/src/ContextInfrastructure.stories.tsx",
+  "stories": [
+    {
+      "id": "basic-defaults",
+      "covers": ["initial-enter-disabled", "server-visible", "interruptible-exit"]
+    },
+    {
+      "id": "recommended-mergora",
+      "covers": ["initial-enter-enabled", "provider-reduced-motion", "deadline-aware-exit"]
+    },
+    {
+      "id": "presence-lifecycle",
+      "covers": ["entered", "exiting", "exit-interruption", "timeout-fallback", "reduced-motion"]
+    }
+  ],
+  "environmentCoverage": {
+    "implementedByCss": ["reduced-motion"],
+    "requiresBrowserEvidence": ["no-javascript", "hydration", "strict-mode", "focus-removal"]
+  }
+}

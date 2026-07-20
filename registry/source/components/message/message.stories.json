@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "message",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicMessage" },
+    {
+      "id": "streaming",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMessage"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "long-content",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "carousel",
+  "root": {
+    "element": "See accessibility contract.",
+    "ref": "See API contract.",
+    "slot": "carousel",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

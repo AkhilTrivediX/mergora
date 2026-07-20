@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "itemId": "search-field",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "SearchWorkbench" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "SearchWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "SearchWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "BasicDefaults"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "required", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "ResultStateMatrix" },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "ResultStateMatrix" },
+    { "id": "populated", "applicability": { "status": "applicable" }, "story": "SearchWorkbench" },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "SearchWorkbench" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ResultStateMatrix" },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Search state has no generic warning meaning; consumers should model a domain-specific status outside this item."
+      }
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "ResultStateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Clearing a query is reversible and the component performs no destructive result action."
+      }
+    }
+  ]
+}

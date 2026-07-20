@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./card.css", "react"],
+  "entryPath": "registry/source/components/card/card.tsx",
+  "id": "card",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

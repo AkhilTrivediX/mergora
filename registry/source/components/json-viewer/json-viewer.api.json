@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "itemId": "json-viewer",
+  "entryExport": "JsonViewer",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "JsonViewer"
+    },
+    {
+      "kind": "value",
+      "name": "buildJsonTree"
+    },
+    {
+      "kind": "value",
+      "name": "serializeJsonValue"
+    },
+    {
+      "kind": "type",
+      "name": "JsonViewerProps"
+    },
+    {
+      "kind": "type",
+      "name": "JsonTreeNode"
+    },
+    {
+      "kind": "type",
+      "name": "JsonValue"
+    },
+    {
+      "kind": "type",
+      "name": "JsonValueType"
+    },
+    {
+      "kind": "type",
+      "name": "JsonObject"
+    },
+    {
+      "kind": "type",
+      "name": "JsonPrimitive"
+    }
+  ],
+  "props": [
+    {
+      "name": "value",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "label",
+      "required": true,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "activePath",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "defaultActivePath",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "expandedPaths",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "defaultExpandedDepth",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "onActivePathChange",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "onExpandedPathsChange",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyPathLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyValueLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyable",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "showActivePath",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copiedPathLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copiedValueLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "copyErrorLabel",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "The flat DOM tree supplies aria-level, posinset, setsize, expanded, and selected state. Roving focus follows APG tree arrows, Home/End, Enter/Space, and sibling expansion. Copy controls and visible active-path context are independent and disappear completely when disabled.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "time-field",
+  "root": {
+    "element": "input type=time",
+    "ref": "HTMLInputElement",
+    "slot": "time-field",
+    "stableAttributes": ["data-slot", "name", "form", "required", "disabled", "readOnly"]
+  },
+  "parts": [
+    {
+      "slot": "time-field",
+      "element": "input type=time",
+      "purpose": "native time editing and successful form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "time-field-zone",
+      "element": "optional described text",
+      "purpose": "explicit timezone context",
+      "stability": "documented"
+    }
+  ]
+}

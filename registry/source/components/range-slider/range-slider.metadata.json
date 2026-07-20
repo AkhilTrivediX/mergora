@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "itemId": "range-slider",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "dragging",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "invalid",
+    "controlled",
+    "uncontrolled",
+    "collision",
+    "collision-announcement",
+    "intelligent-marks",
+    "value-bubbles",
+    "horizontal",
+    "vertical",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "range-slider",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["disabled", "read-only", "invalid", "collision"]
+    },
+    {
+      "name": "slider-output",
+      "semanticElement": "output",
+      "refTarget": "none",
+      "states": ["formatted"]
+    },
+    {
+      "name": "slider-readonly-status",
+      "semanticElement": "visually hidden span",
+      "refTarget": "none",
+      "states": ["read-only"]
+    },
+    {
+      "name": "slider-track",
+      "semanticElement": "div",
+      "refTarget": "none",
+      "states": ["horizontal", "vertical", "hover", "dragging"]
+    },
+    {
+      "name": "slider-fill",
+      "semanticElement": "div",
+      "refTarget": "none",
+      "states": ["selected-range", "disabled", "invalid"]
+    },
+    {
+      "name": "slider-thumb",
+      "semanticElement": "one input type=range with slider role per value",
+      "refTarget": "none",
+      "states": ["focus-visible", "dragging", "disabled", "read-only", "invalid", "collision"]
+    },
+    {
+      "name": "slider-marks",
+      "semanticElement": "visual tick labels",
+      "refTarget": "none",
+      "states": ["horizontal", "vertical", "narrow"]
+    },
+    {
+      "name": "slider-value-bubble",
+      "semanticElement": "aria-hidden visual value",
+      "refTarget": "none",
+      "states": ["formatted", "horizontal", "vertical", "collision"]
+    },
+    {
+      "name": "range-slider-collision-status",
+      "semanticElement": "polite status",
+      "refTarget": "none",
+      "states": ["collision"]
+    }
+  ],
+  "contract": { "id": "range-slider-accessibility", "version": "0.1.0" },
+  "passport": { "id": "range-slider-quality-passport", "version": "0.0.0" }
+}

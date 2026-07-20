@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "year-picker",
+  "root": {
+    "element": "select",
+    "ref": "HTMLSelectElement",
+    "slot": "year-picker",
+    "stableAttributes": ["data-slot", "name", "form", "required", "disabled"]
+  },
+  "parts": [
+    {
+      "slot": "year-picker",
+      "element": "native select",
+      "purpose": "bounded year selection and form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "year-picker-range",
+      "element": "optional described text",
+      "purpose": "available count and bounds",
+      "stability": "documented"
+    },
+    {
+      "slot": "year-picker-window",
+      "element": "optional labelled button group",
+      "purpose": "consumer-controlled earlier and later native option windows",
+      "stability": "documented"
+    },
+    {
+      "slot": "year-picker-window-label",
+      "element": "polite status text",
+      "purpose": "current rendered year bounds",
+      "stability": "documented"
+    }
+  ]
+}

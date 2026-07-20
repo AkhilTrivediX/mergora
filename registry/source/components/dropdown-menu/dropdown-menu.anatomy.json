@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dropdown-menu",
+  "root": {
+    "element": "native button trigger with portalled React Aria menu",
+    "ref": "HTMLButtonElement",
+    "slot": "dropdown-menu",
+    "stableAttributes": ["data-slot", "data-selection-mode"]
+  },
+  "parts": [
+    {
+      "slot": "dropdown-menu-trigger",
+      "element": "button",
+      "stability": "documented"
+    },
+    {
+      "slot": "dropdown-menu-content",
+      "element": "div role=menu",
+      "stability": "documented"
+    },
+    {
+      "slot": "dropdown-menu-item",
+      "element": "div role=menuitem, menuitemcheckbox, or menuitemradio",
+      "stability": "documented"
+    },
+    {
+      "slot": "dropdown-menu-selection-summary",
+      "element": "div role=status aria-live=polite",
+      "purpose": "Optionally summarizes the selected set without changing menu semantics.",
+      "stability": "documented"
+    }
+  ]
+}

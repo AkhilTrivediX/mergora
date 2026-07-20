@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "avatar",
+  "riskClass": 1,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "enhancement-disabled",
+    "enhancement-enabled",
+    "empty",
+    "narrow",
+    "rtl",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "avatar",
+      "semanticElement": "See accessibility contract.",
+      "refTarget": "See API contract.",
+      "states": ["enhancement-disabled", "enhancement-enabled"]
+    }
+  ],
+  "contract": {
+    "id": "avatar-accessibility",
+    "version": "0.1.0"
+  },
+  "passport": {
+    "id": "avatar-quality-passport",
+    "version": "0.0.0"
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/transaction-v1.schema.json",
+  "title": "Mergora recoverable transaction record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "transactionId",
+    "state",
+    "plan",
+    "preconditions",
+    "registryPayloads",
+    "staged",
+    "backups",
+    "conflicts",
+    "consents",
+    "resolutions",
+    "validations",
+    "command",
+    "packageManager"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "transactionId": {
+      "type": "string",
+      "pattern": "^[0-9]{8}T[0-9]{6}(?:\\.[0-9]{3})?Z-[0-9a-f]{32}$"
+    },
+    "state": {
+      "enum": [
+        "planning",
+        "awaiting-consent",
+        "staged",
+        "validated",
+        "committing",
+        "post-validating",
+        "committed",
+        "rolled-back",
+        "conflicted",
+        "abandoned"
+      ]
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "digest"],
+      "properties": {
+        "path": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+      }
+    },
+    "preconditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["config", "manifest", "liveTargets"],
+      "properties": {
+        "config": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "manifest": {
+          "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+        },
+        "liveTargets": {
+          "type": "object",
+          "propertyNames": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "additionalProperties": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+          },
+          "maxProperties": 8192
+        }
+      }
+    },
+    "registryPayloads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["registry", "release", "url", "digest"],
+        "properties": {
+          "registry": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "release": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "url": { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        }
+      },
+      "maxItems": 4096
+    },
+    "staged": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "stagePath", "digest", "operation"],
+        "properties": {
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "stagePath": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "digest": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+          },
+          "operation": { "enum": ["write", "delete"] }
+        }
+      },
+      "maxItems": 8192
+    },
+    "backups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "backupPath", "digest"],
+        "properties": {
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "backupPath": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "digest": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/sha256" }, { "type": "null" }]
+          }
+        }
+      },
+      "maxItems": 8192
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "conflict-v1.schema.json" },
+      "maxItems": 8192
+    },
+    "consents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "accepted", "flag", "planDigest"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9:._-]{0,255}$",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "accepted": { "const": true },
+          "flag": {
+            "type": "string",
+            "pattern": "^--[a-z0-9]+(?:-[a-z0-9]+)*(?:(?:=| )[A-Za-z0-9][A-Za-z0-9:._/-]*)?$",
+            "maxLength": 1024
+          },
+          "planDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        }
+      }
+    },
+    "resolutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target", "choice", "resultDigest"],
+        "properties": {
+          "target": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "choice": { "enum": ["take-local", "take-upstream", "manual", "reset"] },
+          "resultDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        }
+      }
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "state", "summary"],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "state": { "$ref": "common-v1.schema.json#/$defs/releaseGateState" },
+          "summary": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+        }
+      }
+    },
+    "command": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "redactedArguments"],
+      "properties": {
+        "name": { "type": "string", "pattern": "^[a-z]+(?:-[a-z]+)*$" },
+        "redactedArguments": {
+          "type": "array",
+          "items": { "type": "string", "maxLength": 1024 },
+          "maxItems": 256
+        }
+      }
+    },
+    "packageManager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "invoked", "exitCode"],
+      "properties": {
+        "name": { "enum": ["npm", "pnpm", "yarn", "bun", "none"] },
+        "invoked": { "type": "boolean" },
+        "exitCode": {
+          "oneOf": [{ "type": "integer", "minimum": 0, "maximum": 255 }, { "type": "null" }]
+        }
+      }
+    }
+  }
+}

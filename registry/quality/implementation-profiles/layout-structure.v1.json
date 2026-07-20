@@ -1,0 +1,2375 @@
+{
+  "schemaVersion": 1,
+  "category": "layout-structure",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "aspect-ratio",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Aspect Ratio accepts a numeric ratio and leaves media fitting to consumer classes.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/aspect-ratio"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds validated named or tuple ratios and independently optional direct-media fitting without replacing child semantics.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/aspect-ratio/aspect-ratio.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/aspect-ratio/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["media-fit"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Optional fitted media uses a quiet workbench surface while the wrapper stays structurally neutral.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/aspect-ratio/aspect-ratio.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "packages/tokens/src/generated/tokens.css"
+          }
+        ],
+        "patternIds": ["literal-white-surface", "workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-color-background-surface-sunken"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "media-fit",
+          "status": "evidence-backed",
+          "summary": "Contain or cover fitting applies only to direct image, video, canvas, and SVG children.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/aspect-ratio/aspect-ratio.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["fitMedia"],
+          "api": {
+            "kind": "prop",
+            "names": ["fit"],
+            "enableWhen": "fit is contain or cover."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No fitted-media surface signal is rendered.",
+            "behavior": "Direct children retain their intrinsic sizing behavior.",
+            "events": "No events are installed in either mode.",
+            "accessibility": "No role, name, description, or hidden accessibility output is added."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicAspectRatio",
+          "enhancementControls": ["fitMedia"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedAspectRatio",
+          "enhancementControls": ["fitMedia"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Static semantics and composed Storybook axe checks pass; current manual screen-reader and zoom records remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Preset geometry, narrow reflow, RTL, and forced-colors composition are covered in Chromium; the required cross-browser and manual matrix is incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual assistive-technology and zoom evidence is not recorded.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Required browser and device coverage remains incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/aspect-ratio/aspect-ratio.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "center",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued intrinsic Center primitive; consumers normally compose flex utilities and arbitrary maximum widths.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines logical-axis centering with selectable semantic reading bounds that remain safe on narrow screens.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/center/center.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/center/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["semantic-maximum"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Semantic content and prose rails align with the shared measured workbench geometry without adding a card surface.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/center/center.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-container-prose", "--mrg-semantic-container-content"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "semantic-maximum",
+          "status": "evidence-backed",
+          "summary": "A prose or content maximum bounds direct children while preserving the available narrow width.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/center/center.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["semanticMaximum"],
+          "api": {
+            "kind": "prop",
+            "names": ["maximum"],
+            "enableWhen": "maximum is prose or content."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No component-owned maximum-width presentation is applied.",
+            "behavior": "Children are bounded only by the available inline size.",
+            "events": "Center never installs events.",
+            "accessibility": "Center remains a neutral div with no additional accessibility output."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicCenter",
+          "enhancementControls": ["semanticMaximum"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedCenter",
+          "enhancementControls": ["semanticMaximum"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Neutral server semantics and composed axe coverage pass; manual screen-reader, text-zoom, and switch evidence remains unrecorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Narrow reflow, RTL composition, focus preservation, and long content are covered in Chromium only.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser and device interaction evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/center/center.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cluster",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued wrapping Cluster primitive; consumers normally assemble flex-wrap and gap utilities.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides logical wrapping alignment plus a deliberate final-orphan fill mode for action rows.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/cluster/cluster.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/cluster/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["fill-orphan"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Logical spacing and aligned action rails follow the measured Living Workbench structure.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/cluster/cluster.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-space-inline-sm"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "fill-orphan",
+          "status": "evidence-backed",
+          "summary": "The final wrapped child may use the remaining row only when explicitly selected.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/cluster/cluster.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["fillOrphan"],
+          "api": {
+            "kind": "prop",
+            "names": ["orphan"],
+            "enableWhen": "orphan equals fill."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No child is visually expanded by Cluster.",
+            "behavior": "The final child stays at its intrinsic width on the logical leading edge.",
+            "events": "Cluster installs no events.",
+            "accessibility": "DOM, reading, and focus order remain unchanged in both modes."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicCluster",
+          "enhancementControls": ["fillOrphan"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedCluster",
+          "enhancementControls": ["fillOrphan"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Neutral markup and composed axe coverage pass; manual screen-reader, speech, and switch review remains pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Wrapping, narrow reflow, focus order, RTL, and orphan behavior have focused Chromium evidence only.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser and device evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/cluster/cluster.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "container",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued safe-area and query-aware Container primitive; projects generally compose max-width and padding utilities.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines semantic width and gutter rails with independently optional safe-area mapping and anonymous inline-size containment.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/container/container.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/container/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["safe-area-gutters", "query-containment"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Semantic content rails and logical gutters provide the shared measured workbench geometry.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/container/container.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-container-content", "--mrg-semantic-space-inline-lg"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "safe-area-gutters",
+          "status": "evidence-backed",
+          "summary": "Logical gutters take the larger of the semantic spacing token and the matching physical safe-area inset.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/container/container.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/container/container.css"
+            }
+          ],
+          "storybookControlNames": ["safeArea"],
+          "api": {
+            "kind": "prop",
+            "names": ["safeArea"],
+            "enableWhen": "safeArea is true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No safe-area-specific gutter adjustment is visible.",
+            "behavior": "Padding uses only the selected semantic gutter.",
+            "events": "No events are installed.",
+            "accessibility": "No accessibility-tree output changes."
+          }
+        },
+        {
+          "id": "query-containment",
+          "status": "evidence-backed",
+          "summary": "The root can become an anonymous inline-size query container without reserving a global name.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/container/container.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["queryContainer"],
+          "api": {
+            "kind": "prop",
+            "names": ["queryContainer"],
+            "enableWhen": "queryContainer is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No query-containment presentation is added.",
+            "behavior": "The root does not establish an inline-size query context.",
+            "events": "No events are installed.",
+            "accessibility": "No roles or accessibility nodes are added in either mode."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicContainer",
+          "enhancementControls": ["safeArea", "queryContainer"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedContainer",
+          "enhancementControls": ["safeArea", "queryContainer"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Neutral markup and composed axe coverage pass; safe-area device and manual zoom evidence is incomplete.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Narrow reflow, RTL logical gutters, focus containment, and query-container behavior have focused Chromium coverage.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual and device safe-area evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser interaction evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/container/container.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "grid",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued intrinsic Grid primitive; consumers normally author responsive utility breakpoints and list semantics separately.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora provides breakpoint-free auto-fit semantic minimums, native list roots, and optional equal intrinsic rows.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/grid/grid.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/grid/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["equal-rows"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Measured semantic gaps and intrinsic tracks align evidence regions without card-grid decoration.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/grid/grid.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-space-stack-md"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "equal-rows",
+          "status": "evidence-backed",
+          "summary": "Implicit row tracks can be equalized when comparable evidence needs aligned vertical rhythm.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/grid/grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["equalRows"],
+          "api": {
+            "kind": "prop",
+            "names": ["equalRows"],
+            "enableWhen": "equalRows is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Rows use their ordinary content-sized tracks.",
+            "behavior": "No grid-auto-rows override is applied.",
+            "events": "Grid installs no events.",
+            "accessibility": "Native root and child semantics are identical in both modes."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicGrid",
+          "enhancementControls": ["equalRows"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedGrid",
+          "enhancementControls": ["equalRows"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native list semantics and composed axe coverage pass; manual screen-reader list and zoom sessions remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Auto-fit collapse at wide and 320-pixel widths, DOM order, RTL, and overflow are covered in Chromium.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/grid/grid.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "inline",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued Inline primitive; consumers normally compose flex, alignment, wrapping, and gap utilities.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora supplies logical alignment and a resilient adaptive-wrap default that remains explicitly disableable.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/inline/inline.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/inline/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["adaptive-wrap"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Logical token gaps and aligned inline rails reinforce the measured workbench rhythm.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/inline/inline.css"
+          }
+        ],
+        "patternIds": ["workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-space-inline-sm"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "adaptive-wrap",
+          "status": "evidence-backed",
+          "summary": "Localized actions and metadata wrap safely by default while one-line compositions may opt out.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/inline/inline.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["adaptiveWrap"],
+          "api": {
+            "kind": "prop",
+            "names": ["wrap"],
+            "enableWhen": "wrap is true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Children remain on one logical line.",
+            "behavior": "Flex wrapping is removed without adding clipping or a synthetic scrollport.",
+            "events": "Inline installs no events.",
+            "accessibility": "No roles, names, or hidden output change."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicInline",
+          "enhancementControls": ["adaptiveWrap"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedInline",
+          "enhancementControls": ["adaptiveWrap"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Neutral semantics and composed axe coverage pass; manual screen-reader and text reflow sessions remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Long localized content, narrow reflow, logical order, focus visibility, and RTL have Chromium coverage.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/inline/inline.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "resizable",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Resizable wraps react-resizable-panels for mouse, touch, and keyboard panel resizing.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/resizable"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora owns a dependency-light controlled or uncontrolled value model with localized separator values, RTL spatial input, collapse, and optional explicit touch controls.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/resizable/resizable.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/resizable/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["explicit-step-controls"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal workbench surfaces, ink controls, green grips, violet two-layer focus, restrained corners, and reduced-motion-safe state feedback form the family signature.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/resizable/resizable.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "packages/tokens/src/generated/tokens.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "distinctive-focus",
+          "green-state-signal",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment",
+          "workbench-structure"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "explicit-step-controls",
+          "status": "evidence-backed",
+          "summary": "Adjacent decrement, collapse or restore, and increment controls offer non-drag 44-pixel targets.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/resizable/resizable.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showStepControls"],
+          "api": {
+            "kind": "prop",
+            "names": ["showStepControls"],
+            "enableWhen": "showStepControls is true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The complete adjacent button group is absent.",
+            "behavior": "Pointer and keyboard separator resizing remain available; no step-button path exists.",
+            "events": "No decrement, increment, collapse-button, or restore-button handlers are created.",
+            "accessibility": "The group, button names, buttons, and their focus stops are absent."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicResizable",
+          "enhancementControls": ["showStepControls"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedResizable",
+          "enhancementControls": ["showStepControls"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Named separator values, keyboard paths, disabled output, axe, focus, and forced-colors checks pass; manual AT sessions remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Keyboard, pointer capture, collapse and restore, touch controls, RTL arrows, controlled state, and forced colors have Chromium evidence; other engines and devices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Required manual screen-reader, speech, switch, and touch sessions are incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Firefox, WebKit, and real-device interaction evidence remains incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/resizable/resizable.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "scroll-area",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Scroll Area augments native scrolling with cross-browser custom scrollbar composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/scroll-area"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora retains one browser-native scrollport and independently adds named keyboard-region semantics or scroll-chain containment only when requested.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/scroll-area/scroll-area.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/scroll-area/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          }
+        ],
+        "enhancementIds": ["focusable-region", "overscroll-containment"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal canvas, crisp block-edge structure, green native scrollbar signal, and violet two-layer focus identify the workbench scrollport.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/scroll-area/scroll-area.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "green-state-signal",
+          "distinctive-focus",
+          "workbench-structure"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-focus-ring"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "focusable-region",
+          "status": "evidence-backed",
+          "summary": "An independently meaningful overflow region may become a named keyboard stop.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/scroll-area/scroll-area.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["focusableScroll"],
+          "api": {
+            "kind": "prop",
+            "names": ["focusable", "aria-label", "aria-labelledby"],
+            "enableWhen": "focusable is true and one accessible name prop is supplied."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No additional focus indicator or keyboard stop is present on the root.",
+            "behavior": "The root remains a native scrollport reached through its focusable descendants.",
+            "events": "No custom keyboard or scroll events are installed.",
+            "accessibility": "role, accessible name, and tabIndex are all omitted."
+          }
+        },
+        {
+          "id": "overscroll-containment",
+          "status": "evidence-backed",
+          "summary": "Scroll chaining can be contained independently from focusability and naming.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/scroll-area/scroll-area.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/scroll-area/scroll-area.css"
+            }
+          ],
+          "storybookControlNames": ["containOverscroll"],
+          "api": {
+            "kind": "prop",
+            "names": ["containOverscroll"],
+            "enableWhen": "containOverscroll is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No containment-specific UI is rendered.",
+            "behavior": "Native scroll chaining remains automatic.",
+            "events": "No custom scroll events are installed.",
+            "accessibility": "Accessibility output is unchanged."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicScrollArea",
+          "enhancementControls": ["focusableScroll", "containOverscroll"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedScrollArea",
+          "enhancementControls": ["focusableScroll", "containOverscroll"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Type-enforced naming, inert disabled output, axe, keyboard scroll, and forced-colors evidence pass in Chromium; manual Safari and screen-reader review remains open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Block and inline native overflow, keyboard scrolling, narrow composition, and RTL have focused Chromium evidence only.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual screen-reader, Safari keyboard, touch, and zoom evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser native scrolling evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/scroll-area/scroll-area.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "separator",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn Separator provides decorative or semantic horizontal and vertical separation.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/separator"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora preserves native horizontal semantics, explicit vertical ARIA semantics, forced-colors visibility, and optional logical spacing without wrappers.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/separator/separator.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/separator/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["logical-spacing"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Crisp semantic-token lines provide ink-like workbench structure with a system-color forced-colors mapping.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/separator/separator.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ],
+        "patternIds": ["ink-structure", "workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-color-border-default", "--mrg-semantic-space-stack-md"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "logical-spacing",
+          "status": "evidence-backed",
+          "summary": "Tokenized breathing room follows logical block or inline direction without adding a wrapper.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/separator/separator.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["separatorSpacing"],
+          "api": {
+            "kind": "prop",
+            "names": ["spacing"],
+            "enableWhen": "spacing is sm, md, or lg."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No component-owned margin surrounds the separator.",
+            "behavior": "The native separator geometry and semantics remain unchanged.",
+            "events": "Separator installs no events.",
+            "accessibility": "Decorative or semantic accessibility output is unaffected by spacing."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicSeparator",
+          "enhancementControls": ["separatorSpacing"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedSeparator",
+          "enhancementControls": ["separatorSpacing"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native and ARIA separator modes, decorative removal, axe, and forced-colors visibility pass; manual accessibility-tree sessions remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Horizontal, vertical, narrow, RTL, and forced-colors geometry are covered in Chromium; broader engine evidence is pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility-tree evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser visual evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/separator/separator.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "split-pane",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "Shadcn presents multi-panel resizing through its Resizable panel-group composition rather than a separate persistent Split Pane contract.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/radix/resizable"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora adds bounded multi-panel normalization, controlled or uncontrolled sizes, optional collapse, consumer-owned persistence, nested panes, RTL input, and container-driven sequential mode.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/split-pane/split-pane.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/split-pane/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["explicit-step-controls", "responsive-sequential-mode"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Flush workbench regions, literal surfaces, green grips, violet two-layer focus, restrained corners, and reduced-motion-safe feedback create a coherent family identity.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/split-pane/split-pane.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "distinctive-focus",
+          "green-state-signal",
+          "purposeful-motion",
+          "restrained-corners",
+          "touch-target-treatment",
+          "workbench-structure"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-brand-living",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-motion-duration-transition",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "explicit-step-controls",
+          "status": "evidence-backed",
+          "summary": "Every boundary may expose adjacent decrement, collapse or restore, and increment controls.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/split-pane/split-pane.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showStepControls"],
+          "api": {
+            "kind": "prop",
+            "names": ["showStepControls"],
+            "enableWhen": "showStepControls is true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Every adjacent resize-control group is absent.",
+            "behavior": "Named separator keyboard and pointer resizing remain available.",
+            "events": "No button adjustment or button collapse handlers are created.",
+            "accessibility": "All control groups, button names, buttons, and button focus stops are absent."
+          }
+        },
+        {
+          "id": "responsive-sequential-mode",
+          "status": "evidence-backed",
+          "summary": "At a narrow container size, panels return to full-width DOM order and hidden handles cannot strand content.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/split-pane/split-pane.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/split-pane/split-pane.css"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["responsiveStack"],
+          "api": {
+            "kind": "prop",
+            "names": ["stackAt"],
+            "enableWhen": "stackAt equals narrow."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "Panels retain the selected split orientation at narrow container widths.",
+            "behavior": "No container-query sequential layout is applied.",
+            "events": "No additional events exist in either mode.",
+            "accessibility": "Panel and separator semantics remain unchanged; no responsive hiding rule is applied."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicSplitPane",
+          "enhancementControls": ["showStepControls", "responsiveStack"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedSplitPane",
+          "enhancementControls": ["showStepControls", "responsiveStack"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Named separators, regions, collapsed exposure, keyboard controls, axe, and forced-colors focus pass in Chromium; Risk Class 2 manual AT sessions remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Controlled nested panes, keyboard, pointer, collapse and restore, persistence, narrow stacking, RTL, and forced colors have Chromium evidence; other engines and devices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Risk Class 2 manual accessibility sessions are incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Firefox, WebKit, and real-device evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/split-pane/split-pane.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stack",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn has no catalogued semantic Stack primitive; consumers normally combine flex-column and gap utilities with separate list markup.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora combines semantic structural roots, native list preservation, token rhythm, and optional DOM-free structural separators.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stack/stack.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stack/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          }
+        ],
+        "enhancementIds": ["structural-separators"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Measured vertical rhythm and optional crisp ink rules create workbench structure without card wrappers.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stack/stack.css"
+          }
+        ],
+        "patternIds": ["ink-structure", "workbench-structure"],
+        "tokenReferences": ["--mrg-semantic-space-stack-md", "--mrg-semantic-color-border-default"]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "structural-separators",
+          "status": "evidence-backed",
+          "summary": "Direct children can receive tokenized block-start rules without injected DOM or semantics.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/stack/stack.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["separatedStack"],
+          "api": {
+            "kind": "prop",
+            "names": ["separated"],
+            "enableWhen": "separated is true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No component-owned rules or separator padding appear between children.",
+            "behavior": "Only the selected Stack gap controls vertical rhythm.",
+            "events": "Stack installs no events.",
+            "accessibility": "No separator nodes, roles, or hidden text are emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicStack",
+          "enhancementControls": ["separatedStack"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedStack",
+          "enhancementControls": ["separatedStack"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native list and neutral-root semantics, forced-colors rules, and composed axe coverage pass; manual list and zoom sessions remain pending.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Narrow reflow, semantic lists, focus order, RTL, and forced-colors composition have Chromium evidence.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/layout-foundations/layout-foundations.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual accessibility evidence is incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/stack/stack.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sticky-region",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Shadcn has no catalogued Sticky Region primitive; a common composition uses sticky positioning without measured focus-not-obscured clearance.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora measures localized sticky content and coordinates scroll padding and descendant scroll margins so keyboard focus remains unobscured.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sticky-region/sticky-region.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sticky-region/README.md"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["measured-focus-clearance"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "Literal sticky canvas, crisp ink boundary, shared sticky layer, and measured focus rails belong to the Living Workbench family.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sticky-region/sticky-region.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ],
+        "patternIds": ["literal-white-surface", "ink-structure", "workbench-structure"],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-default",
+          "--mrg-semantic-layer-sticky",
+          "--mrg-semantic-focus-offset"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "measured-focus-clearance",
+          "status": "evidence-backed",
+          "summary": "ResizeObserver-backed content measurement reserves the correct logical focus clearance as text, zoom, or locale changes.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sticky-region/sticky-region.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/sticky-region/sticky-region.css"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+            }
+          ],
+          "storybookControlNames": ["manageFocusOffset"],
+          "api": {
+            "kind": "prop",
+            "names": ["manageFocusOffset", "estimatedSize"],
+            "enableWhen": "manageFocusOffset is true."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "No focus-clearance-specific visual output appears.",
+            "behavior": "No content node is retained for measurement, no ResizeObserver is installed, and no measured custom property, scroll padding, or descendant scroll margin is applied.",
+            "events": "No measurement observer callback is created.",
+            "accessibility": "No accessibility nodes are added in either mode; disabled mode removes only focus-scroll assistance."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "BasicStickyRegion",
+          "enhancementControls": ["manageFocusOffset"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx",
+          "exportName": "RecommendedStickyRegion",
+          "enhancementControls": ["manageFocusOffset"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P2LayoutStructureComponentProof.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/layout-structure-component-proof.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Landmark opt-in, deterministic SSR size, focus geometry, axe, and hidden-offset removal pass; manual screen-reader and zoom sessions remain missing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Contained scroll, final-focus visibility, measurement, and disabled enhancement output have Chromium evidence; block-end, nested transforms, other engines, and devices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/advanced-layout/advanced-layout.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-accessibility-evidence-incomplete",
+          "summary": "Manual screen-reader, zoom, and focus-not-obscured sessions are incomplete.",
+          "references": []
+        },
+        {
+          "code": "cross-browser-interaction-evidence-incomplete",
+          "summary": "Cross-browser and nested-layout evidence is incomplete.",
+          "references": []
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/sticky-region/sticky-region.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

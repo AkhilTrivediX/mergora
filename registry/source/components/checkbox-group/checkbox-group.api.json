@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "checkbox-group",
+  "entryExport": "CheckboxGroup",
+  "refTarget": "HTMLFieldSetElement",
+  "nativeProps": "React.FieldsetHTMLAttributes<HTMLFieldSetElement> with children, value, and onChange reserved",
+  "exports": [
+    { "kind": "component", "name": "CheckboxGroup" },
+    { "kind": "component", "name": "CheckboxGroupItem" },
+    { "kind": "constant", "name": "CheckboxGroupParts" },
+    { "kind": "function", "name": "getCheckboxGroupConstraint" },
+    { "kind": "type", "name": "CheckboxGroupItemProps" },
+    { "kind": "type", "name": "CheckboxGroupLayout" },
+    { "kind": "type", "name": "CheckboxGroupProps" }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "name", "required": true, "type": "string" },
+    { "name": "value", "required": false, "type": "readonly string[]" },
+    { "name": "defaultValue", "required": false, "default": [], "type": "readonly string[]" },
+    {
+      "name": "required",
+      "required": false,
+      "default": false,
+      "type": "boolean; at least one selection"
+    },
+    { "name": "minSelected", "required": false, "default": 0, "type": "number" },
+    { "name": "maxSelected", "required": false, "type": "number" },
+    { "name": "nativeValidationMessage", "required": false, "type": "string" },
+    {
+      "name": "layout",
+      "required": false,
+      "default": "stacked",
+      "type": "stacked | inline | columns"
+    }
+  ],
+  "compositionPolicy": {
+    "items": "CheckboxGroupItem requires a CheckboxGroup ancestor, non-blank unique direct-item values, and renders one real checkbox.",
+    "validation": "Minimum and maximum constraints count only enabled direct successful items, use provider-backed messages and custom validity on the first enabled native item, and suspend for disabled-only groups.",
+    "form": "The group form attribute propagates to every item for external submission and reset."
+  }
+}

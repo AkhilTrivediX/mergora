@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "provider",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A div by default or one consumer element through asChild.",
+    "attributes": "The boundary writes native lang and dir plus stable density and reduced-motion data attributes.",
+    "rolePolicy": "No role, name, landmark, or focus behavior is inferred."
+  },
+  "context": {
+    "defaults": {
+      "locale": "en-US",
+      "direction": "ltr",
+      "timeZone": "UTC",
+      "density": "comfortable",
+      "reducedMotion": "system"
+    },
+    "nesting": "Unspecified values inherit; messages shallow-merge by stable key; explicit values override only the subtree, including density and reduced-motion CSS variables.",
+    "portal": "The configured container is inherited and Portal writes locale/direction/density onto its DOM boundary.",
+    "asChildOptOut": "asChild=false renders the neutral provider div; element merging is absent and no role, name, event, or focus behavior is inferred."
+  },
+  "ssrHydration": {
+    "moduleScopeGlobals": false,
+    "determinism": "Defaults never read host locale, time zone, media queries, document, or window during render.",
+    "clientBoundary": "Context behavior is a client island that remains server-renderable."
+  },
+  "consumerResponsibilities": [
+    "Use locale and time-zone values that match server data serialization and the first client render.",
+    "Provide complete official-locale messages before claiming localized production support.",
+    "Keep document-level lang and dir synchronized when the provider does not own the document element.",
+    "Verify custom classes and asChild elements do not remove semantics or focus visibility."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "nested-overrides",
+      "message-merge",
+      "density-motion-variable-scope",
+      "as-child-opt-out",
+      "ssr",
+      "hydration",
+      "portal-context",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard-composition",
+      "screen-reader-locale",
+      "rtl",
+      "forced-colors",
+      "reduced-motion"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "itemId": "time-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, editable source, native registry, Shadcn, documentation, and updater outputs.",
+    "Pass package/source parity, frozen packed consumers, deterministic generation, and full browser matrices.",
+    "Verify controlled and uncontrolled ownership, bounds, native validation, serialization, disabled omission, and reset.",
+    "Record keyboard, touch, mobile, narrow, zoom, RTL, reduced-motion, enhanced-contrast, and forced-colors evidence.",
+    "Publish current Risk Class manual assistive-technology evidence and an approved immutable Quality Passport."
+  ]
+}

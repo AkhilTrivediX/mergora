@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./prompt-suggestions.css", "react"],
+  "entryPath": "registry/source/components/prompt-suggestions/prompt-suggestions.tsx",
+  "id": "prompt-suggestions",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

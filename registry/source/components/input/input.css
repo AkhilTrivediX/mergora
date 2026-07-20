@@ -1,0 +1,132 @@
+.mrg-input {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: flex;
+  font-family: var(--mrg-semantic-font-family-prose);
+  gap: var(--mrg-semantic-density-control-gap);
+  inline-size: 100%;
+  min-block-size: var(--mrg-semantic-density-control-height);
+  min-inline-size: 0;
+  padding-inline: var(--mrg-semantic-density-control-padding-inline);
+}
+
+.mrg-input:focus-within {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-input[data-invalid="true"] {
+  border-color: var(--mrg-semantic-color-status-danger-border);
+}
+
+.mrg-input[data-disabled="true"] {
+  background: var(--mrg-semantic-color-background-surface);
+  border-color: var(--mrg-semantic-color-border-disabled);
+  color: var(--mrg-semantic-color-foreground-disabled);
+}
+
+.mrg-input-control {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+  color: inherit;
+  flex: 1 1 auto;
+  font: inherit;
+  inline-size: 100%;
+  line-height: var(--mrg-semantic-font-line-height-body);
+  min-block-size: var(--mrg-semantic-size-target-minimum);
+  min-inline-size: 0;
+  outline: 0;
+  padding-block: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-input-control::placeholder {
+  color: var(--mrg-semantic-color-foreground-muted);
+  opacity: 1;
+}
+
+.mrg-input-control:disabled {
+  cursor: not-allowed;
+}
+
+.mrg-input [data-slot$="adornment"] {
+  align-items: center;
+  color: var(--mrg-semantic-color-foreground-muted);
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.mrg-input-clear {
+  align-self: stretch;
+  background: transparent;
+  border: 0;
+  border-radius: calc(
+    var(--mrg-semantic-radius-control) - var(--mrg-semantic-border-width-default)
+  );
+  color: var(--mrg-semantic-color-action-background);
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 1.25em;
+  inline-size: var(--mrg-semantic-size-target-preferred);
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+}
+
+.mrg-input-clear:hover:not(:disabled) {
+  background: var(--mrg-semantic-color-background-surface);
+}
+
+.mrg-input-clear:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: calc(var(--mrg-component-focus-indicator-width) * -1);
+}
+
+.mrg-input-clear:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-input[data-empty="true"] .mrg-input-clear {
+  visibility: hidden;
+}
+
+@media (pointer: coarse) {
+  .mrg-input,
+  .mrg-input-control,
+  .mrg-input-clear {
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-input {
+    background: Field;
+    border-color: FieldText;
+    color: FieldText;
+  }
+
+  .mrg-input[data-disabled="true"] {
+    border-color: GrayText;
+    color: GrayText;
+  }
+
+  .mrg-input[data-invalid="true"] {
+    border-style: double;
+  }
+
+  .mrg-input:focus-within,
+  .mrg-input-clear:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+}

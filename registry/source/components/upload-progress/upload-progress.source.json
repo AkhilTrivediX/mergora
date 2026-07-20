@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../progress/index.js",
+    "../provider/index.js",
+    "./upload-progress.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/upload-progress/upload-progress.tsx",
+  "id": "upload-progress",
+  "itemDependencies": ["progress", "provider"],
+  "outputRole": "component"
+}

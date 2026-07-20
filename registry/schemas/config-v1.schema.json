@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json",
+  "title": "mergora.json v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "project",
+    "distribution",
+    "targets",
+    "aliases",
+    "styling",
+    "registries",
+    "policy",
+    "formatting"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json"
+    },
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "language", "sourceRoot", "packageJson", "tsconfig"],
+      "properties": {
+        "framework": { "enum": ["next-app", "next-pages", "vite-react", "react"] },
+        "language": { "const": "typescript" },
+        "sourceRoot": {
+          "oneOf": [
+            {
+              "const": ".",
+              "description": "Exact sentinel for source files stored at the package root."
+            },
+            { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
+          ]
+        },
+        "packageJson": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "tsconfig": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
+      }
+    },
+    "distribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["defaultMode", "packageName"],
+      "properties": {
+        "defaultMode": { "enum": ["source", "package", "hybrid"] },
+        "packageName": { "$ref": "common-v1.schema.json#/$defs/packageName" }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components", "hooks", "lib", "systems", "kits", "styles", "tokens"],
+      "properties": {
+        "components": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "hooks": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "lib": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "systems": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "kits": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "styles": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "tokens": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
+      }
+    },
+    "aliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components", "hooks", "lib", "systems", "kits", "styles", "tokens"],
+      "properties": {
+        "components": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "hooks": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "lib": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "systems": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "kits": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "styles": { "type": "string", "minLength": 1, "maxLength": 256 },
+        "tokens": { "type": "string", "minLength": 1, "maxLength": 256 }
+      }
+    },
+    "styling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine",
+        "globalCss",
+        "tokenPreset",
+        "colorMode",
+        "density",
+        "direction",
+        "packageCssStrategy"
+      ],
+      "properties": {
+        "engine": { "const": "tailwind-v4" },
+        "globalCss": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+        "tokenPreset": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "colorMode": { "enum": ["system", "light", "dark"] },
+        "density": { "enum": ["comfortable", "compact", "touch"] },
+        "direction": { "enum": ["ltr", "rtl", "auto"] },
+        "packageCssStrategy": { "enum": ["source-directive", "precompiled"] }
+      }
+    },
+    "registries": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 32,
+      "propertyNames": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["protocol", "origin", "trust"],
+        "properties": {
+          "protocol": { "enum": ["mergora-v1", "shadcn-v1"] },
+          "origin": { "$ref": "common-v1.schema.json#/$defs/registryOrigin" },
+          "trust": { "$ref": "common-v1.schema.json#/$defs/registryTrust" },
+          "authEnvironmentVariable": {
+            "$ref": "common-v1.schema.json#/$defs/environmentVariableName"
+          },
+          "identityDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "origin": { "pattern": "^http:" } }, "required": ["origin"] },
+            "then": { "properties": { "trust": { "const": "local-development" } } }
+          }
+        ]
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowExternalRegistries",
+        "allowPrereleases",
+        "dependencyProtocols",
+        "requireLicenses",
+        "retainSuccessfulTransactions",
+        "maxRegistryItemBytes",
+        "maxOperationBytes"
+      ],
+      "properties": {
+        "allowExternalRegistries": { "type": "boolean" },
+        "allowPrereleases": { "type": "boolean" },
+        "dependencyProtocols": {
+          "type": "array",
+          "items": { "const": "registry-semver" },
+          "uniqueItems": true,
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "requireLicenses": { "type": "boolean" },
+        "retainSuccessfulTransactions": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "maxRegistryItemBytes": { "type": "integer", "minimum": 1, "maximum": 52428800 },
+        "maxOperationBytes": { "type": "integer", "minimum": 1, "maximum": 1073741824 }
+      }
+    },
+    "formatting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["strategy", "fallback", "lineEndings"],
+      "properties": {
+        "strategy": { "enum": ["project", "mergora", "none"] },
+        "fallback": { "enum": ["mergora", "none"] },
+        "lineEndings": { "enum": ["preserve-existing", "lf"] }
+      }
+    }
+  }
+}

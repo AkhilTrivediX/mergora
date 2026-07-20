@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "number-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete locale parsing, grouping, decimal, sign, and non-Latin digit browser fixtures.",
+    "Complete IME composition and caret-preservation fixtures across supported engines.",
+    "Verify keyboard, stepper, wheel safeguard, scrub drag, cancellation, and boundary behavior.",
+    "Verify canonical form submission, reset, disabled omission, and framework adapters.",
+    "Verify scrub, status rail, canonical preview, and complete disabled-enhancement absence across generated consumers.",
+    "Record mobile virtual-keyboard, narrow, zoom, RTL, forced-colors, and touch geometry.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

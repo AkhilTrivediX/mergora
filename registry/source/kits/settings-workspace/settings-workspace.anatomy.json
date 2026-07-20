@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "settings-workspace",
+  "root": {
+    "element": "form with section navigation and current settings content",
+    "ref": "HTMLFormElement",
+    "slot": "settings-workspace",
+    "stableAttributes": ["data-slot", "data-dirty", "aria-busy"]
+  },
+  "parts": [
+    {
+      "slot": "settings-navigation",
+      "element": "labelled navigation",
+      "purpose": "Moves among required profile, preferences, notifications, and security sections.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "settings-unsaved-prompt",
+      "element": "optional alertdialog",
+      "purpose": "Intercepts section changes only when protection and dirty state are both enabled.",
+      "stability": "documented"
+    },
+    {
+      "slot": "settings-section-content",
+      "element": "consumer-rendered form content",
+      "purpose": "Keeps domain controls and values consumer-owned.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "settings-destructive-review",
+      "element": "optional typed-confirmation region",
+      "purpose": "Makes destructive account requests deliberate and reversible until confirmation.",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "media-player",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "media-player",
+    "stableAttributes": ["data-slot", "data-kind", "data-source"]
+  },
+  "parts": [
+    {
+      "slot": "media-player-media",
+      "element": "native audio or video",
+      "purpose": "Provides platform playback, volume, seeking, and track controls without a custom control clone.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "media-player-chapters",
+      "element": "optional nav and ordered list",
+      "purpose": "Provides visible direct chapter destinations with elapsed labels.",
+      "stability": "documented"
+    },
+    {
+      "slot": "media-player-transcript",
+      "element": "optional details",
+      "purpose": "Keeps a readable transcript adjacent and programmatically related to media.",
+      "stability": "documented"
+    },
+    {
+      "slot": "media-player-announcement",
+      "element": "optional hidden output",
+      "purpose": "Throttles elapsed-time context without making all playback updates live.",
+      "stability": "documented"
+    }
+  ]
+}

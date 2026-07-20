@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "separator",
+  "root": {
+    "element": "hr | div",
+    "ref": "HTMLElement",
+    "slot": "separator",
+    "stableAttributes": [
+      "data-slot",
+      "data-orientation",
+      "data-decorative",
+      "data-spacing",
+      "role",
+      "aria-hidden",
+      "aria-orientation"
+    ]
+  },
+  "parts": []
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "search-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify controlled and uncontrolled submission, external form ownership, native reset, and clear focus behavior.",
+    "Verify IME composition, Enter submission, and query clearing on desktop and mobile keyboards.",
+    "Verify loading, result count, no-results, error, stale-response, and result-region associations.",
+    "Record narrow, zoom, long localized-label, RTL, forced-colors, keyboard, speech, switch, and touch review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

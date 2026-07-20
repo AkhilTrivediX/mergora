@@ -1,0 +1,193 @@
+@layer mergora.components {
+  .mrg-authentication-kit {
+    display: grid;
+    grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+    max-inline-size: 62rem;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+    overflow: clip;
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-header"] {
+    grid-column: 1 / -1;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-authentication-kit h1,
+  .mrg-authentication-kit h2,
+  .mrg-authentication-kit p {
+    margin-block: 0;
+  }
+
+  .mrg-authentication-kit h1 {
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-header"] p {
+    margin-block-start: var(--mrg-semantic-space-stack-xs);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-flow-navigation"] {
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-flow-navigation"] ul {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-flow-navigation"] button {
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid transparent;
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: transparent;
+    font: inherit;
+    text-align: start;
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-flow-navigation"] button[aria-current="page"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-main"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-lg);
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+  }
+
+  .mrg-authentication-kit form {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    max-inline-size: 34rem;
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-authentication-kit
+    :is(
+      [data-slot="authentication-result"],
+      [data-slot="authentication-rate-limit-recovery"],
+      [data-slot="authentication-security-context"]
+    ) {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-compact);
+    background: var(--mrg-semantic-color-background-surface);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-result"][role="alert"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-authentication-kit [data-slot="authentication-rate-limit-recovery"] {
+    display: block;
+    border-color: var(--mrg-semantic-color-status-warning-border);
+    color: var(--mrg-semantic-color-status-warning-foreground);
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-authentication-kit button:focus-visible,
+  .mrg-authentication-kit :is(input, select, textarea):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 48rem) {
+    .mrg-authentication-kit {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-authentication-kit [data-slot="authentication-flow-navigation"] {
+      border-inline-end: 0;
+      border-block-end: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-default);
+    }
+
+    .mrg-authentication-kit [data-slot="authentication-flow-navigation"] ul {
+      display: flex;
+      overflow-x: auto;
+      scrollbar-gutter: stable;
+    }
+
+    .mrg-authentication-kit [data-slot="authentication-flow-navigation"] li {
+      flex: 0 0 min(12rem, 72vw);
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-authentication-kit button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-authentication-kit * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-authentication-kit,
+    .mrg-authentication-kit [data-slot="authentication-flow-navigation"],
+    .mrg-authentication-kit [data-slot="authentication-header"],
+    .mrg-authentication-kit
+      :is(
+        [data-slot="authentication-result"],
+        [data-slot="authentication-rate-limit-recovery"],
+        [data-slot="authentication-security-context"]
+      ) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-authentication-kit
+      [data-slot="authentication-flow-navigation"]
+      button[aria-current="page"] {
+      border-color: Highlight;
+      color: CanvasText;
+      background: Canvas;
+      outline: var(--mrg-semantic-border-width-strong) solid Highlight;
+      outline-offset: calc(-1 * var(--mrg-semantic-border-width-strong));
+    }
+
+    .mrg-authentication-kit button:focus-visible,
+    .mrg-authentication-kit :is(input, select, textarea):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

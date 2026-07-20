@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tags-input",
+  "entryExport": "TagsInput",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "value", "name": "TagsInput" },
+    { "kind": "type", "name": "TagsInputProps" }
+  ],
+  "props": [
+    { "name": "recoverDuplicates", "required": false, "type": "boolean" },
+    { "name": "onDuplicateTag", "required": false, "type": "(tag: string) => void" },
+    { "name": "delimiters", "required": false, "type": "readonly string[]" },
+    { "name": "validateTag", "required": false, "type": "(tag: string) => string | null" },
+    { "name": "reorderable", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the visible label, native text entry, named remove actions, repeated hidden form values, reset, required validation, disabled, and read-only behavior.",
+    "enhancement": "recoverDuplicates is independently removable; false removes live UI, focus movement, callback execution, behavior, and accessibility relationship. Paste delimiters, validation, and reorder controls are separate opt-ins; reorderable=false removes every reorder control and reorder event."
+  }
+}

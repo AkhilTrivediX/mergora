@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "dialog",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["closed", "open", "entering", "exiting", "modal", "non-modal", "long-content"],
+  "slots": [
+    {
+      "name": "dialog-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state"]
+    },
+    {
+      "name": "dialog-overlay",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["data-state", "data-modal", "data-dismiss-policy"]
+    },
+    {
+      "name": "dialog-content",
+      "semanticElement": "section role=dialog",
+      "refTarget": "HTMLElement",
+      "states": ["data-state", "data-modal", "data-dismiss-policy"]
+    },
+    {
+      "name": "dialog-title",
+      "semanticElement": "heading",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "dialog-description",
+      "semanticElement": "p",
+      "refTarget": "HTMLParagraphElement",
+      "states": []
+    },
+    {
+      "name": "dialog-close",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state"]
+    }
+  ],
+  "contract": { "id": "dialog-accessibility", "version": "0.2.0" },
+  "passport": { "id": "dialog-quality-passport", "version": "0.0.0" }
+}

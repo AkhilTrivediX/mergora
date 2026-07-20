@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "textarea",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify native maxlength, count, submission, and reset behavior.",
+    "Record Japanese IME, paste, undo, dictation, and autogrow cap behavior.",
+    "Record mobile keyboard, narrow, zoom, and long-content geometry.",
+    "Complete RTL, forced-colors, keyboard, speech, switch, and touch review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual evidence and an approved Quality Passport."
+  ]
+}

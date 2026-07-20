@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "split-pane",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "controlled",
+    "uncontrolled",
+    "multiple-panels",
+    "nested",
+    "persistent",
+    "collapsed",
+    "responsive-stack",
+    "keyboard",
+    "pointer",
+    "separator-only",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "split-pane-root",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["orientation", "panel-count", "disabled", "step-controls"]
+    },
+    {
+      "name": "split-pane-layout",
+      "semanticElement": "div",
+      "refTarget": "internal wrapper",
+      "states": ["orientation", "stack-at"]
+    },
+    {
+      "name": "split-pane-panel",
+      "semanticElement": "div or labelled region",
+      "refTarget": "HTMLDivElement",
+      "states": ["index", "expanded", "collapsed"]
+    },
+    {
+      "name": "split-pane-handle",
+      "semanticElement": "div",
+      "refTarget": "internal wrapper",
+      "states": ["orientation"]
+    },
+    {
+      "name": "split-pane-separator",
+      "semanticElement": "div role=separator",
+      "refTarget": "HTMLDivElement",
+      "states": ["index", "value", "orientation", "disabled"]
+    }
+  ],
+  "contract": { "id": "split-pane-accessibility", "version": "0.1.0" },
+  "passport": { "id": "split-pane-quality-passport", "version": "0.0.0" }
+}

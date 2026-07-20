@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "error-state",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora controls, including complete disabled-output evidence, against the generated implementation matrix.",
+    "Generate and verify source, package, registry, documentation, and public subpath outputs.",
+    "Bind strict type, unit, SSR, hydration, schema, browser, axe, shared-announcement transition/dedupe, and preference results to the candidate digest.",
+    "Complete required manual keyboard, touch, speech, switch, forced-colors, NVDA/Firefox, and VoiceOver/Safari sessions.",
+    "Pass packed Next.js and Vite package/source consumers plus package/source behavioral parity.",
+    "Add Semantic Sync clean, customized, conflict, rollback, removal, and dependency fixtures.",
+    "Review long localization, RTL, 200 percent text, 400 percent zoom, 320 CSS pixels, dark, enhanced contrast, and reduced motion.",
+    "Publish an approved Quality Passport and dogfood the generated artifact on the public site."
+  ]
+}

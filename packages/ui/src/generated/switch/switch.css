@@ -1,0 +1,122 @@
+/* Generated from registry/source/components/switch/switch.css by @mergora-internal/source-transformer. Do not edit. */
+[data-slot="switch-root"] {
+  display: inline-flex;
+  max-inline-size: 100%;
+}
+
+.mrg-switch {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: var(--mrg-semantic-color-foreground-primary);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  gap: var(--mrg-semantic-space-inline-sm);
+  max-inline-size: 100%;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  padding: 0;
+  text-align: start;
+}
+
+.mrg-switch [data-slot="switch-track"] {
+  align-items: center;
+  background: var(--mrg-semantic-color-background-surface-sunken);
+  border: var(--mrg-semantic-border-width-strong) solid var(--mrg-semantic-color-border-interactive);
+  border-radius: var(--mrg-semantic-radius-control);
+  display: flex;
+  flex: 0 0 auto;
+  inline-size: 2.75rem;
+  min-block-size: 1.5rem;
+  padding: 0.125rem;
+}
+
+.mrg-switch [data-slot="switch-thumb"] {
+  background: var(--mrg-semantic-color-foreground-primary);
+  border-radius: var(--mrg-semantic-radius-pill);
+  block-size: 1rem;
+  inline-size: 1rem;
+  transform: translateX(0);
+  transition: transform var(--mrg-semantic-motion-duration-transition)
+    var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-switch[data-state="on"] [data-slot="switch-track"] {
+  background: var(--mrg-semantic-color-selection-background);
+  border-color: var(--mrg-semantic-color-selection-border);
+}
+
+.mrg-switch[data-state="on"] [data-slot="switch-thumb"] {
+  background: var(--mrg-semantic-color-selection-foreground);
+  transform: translateX(1.25rem);
+}
+
+[dir="rtl"] .mrg-switch[data-state="on"] [data-slot="switch-thumb"],
+.mrg-switch[dir="rtl"][data-state="on"] [data-slot="switch-thumb"] {
+  transform: translateX(-1.25rem);
+}
+
+.mrg-switch [data-slot="switch-content"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-switch [data-slot="switch-label"] {
+  font-weight: var(--mrg-semantic-font-weight-label);
+}
+
+.mrg-switch [data-slot="switch-state-label"] {
+  color: var(--mrg-semantic-color-foreground-muted);
+  font-size: var(--mrg-semantic-font-size-label);
+}
+
+.mrg-switch:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-switch:disabled {
+  color: var(--mrg-semantic-color-foreground-disabled);
+  cursor: not-allowed;
+}
+
+.mrg-switch:disabled [data-slot="switch-track"] {
+  border-color: var(--mrg-semantic-color-border-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-switch [data-slot="switch-thumb"] {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-switch:focus-visible {
+    box-shadow: none;
+    outline-color: Highlight;
+  }
+
+  .mrg-switch [data-slot="switch-track"] {
+    background: ButtonFace;
+    border-color: ButtonText;
+  }
+
+  .mrg-switch [data-slot="switch-thumb"] {
+    background: ButtonText;
+  }
+
+  .mrg-switch[data-state="on"] [data-slot="switch-track"] {
+    background: Highlight;
+    border-color: Highlight;
+  }
+
+  .mrg-switch[data-state="on"] [data-slot="switch-thumb"] {
+    background: HighlightText;
+  }
+}

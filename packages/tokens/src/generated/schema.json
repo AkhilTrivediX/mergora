@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "group": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/token"
+          },
+          {
+            "$ref": "#/$defs/group"
+          }
+        ]
+      },
+      "properties": {
+        "$description": {
+          "type": "string"
+        },
+        "$extensions": {
+          "type": "object"
+        },
+        "$type": {
+          "$ref": "#/$defs/tokenType"
+        }
+      },
+      "type": "object"
+    },
+    "token": {
+      "additionalProperties": false,
+      "properties": {
+        "$description": {
+          "type": "string"
+        },
+        "$extensions": {
+          "type": "object"
+        },
+        "$type": {
+          "$ref": "#/$defs/tokenType"
+        },
+        "$value": {}
+      },
+      "required": ["$value"],
+      "type": "object"
+    },
+    "tokenType": {
+      "enum": [
+        "border",
+        "color",
+        "cubicBezier",
+        "dimension",
+        "duration",
+        "fontFamily",
+        "fontWeight",
+        "number",
+        "shadow",
+        "typography"
+      ],
+      "type": "string"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": {
+    "anyOf": [
+      {
+        "$ref": "#/$defs/token"
+      },
+      {
+        "$ref": "#/$defs/group"
+      }
+    ]
+  },
+  "description": "Structural schema for the Mergora-supported DTCG 2025.10 token types. Compiler validation applies stricter value and reference rules.",
+  "properties": {
+    "$description": {
+      "type": "string"
+    },
+    "$extensions": {
+      "type": "object"
+    },
+    "$schema": {
+      "const": "https://www.designtokens.org/schemas/2025.10/format.json"
+    }
+  },
+  "title": "Mergora DTCG token document",
+  "type": "object"
+}

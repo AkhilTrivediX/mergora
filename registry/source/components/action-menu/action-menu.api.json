@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "action-menu",
+  "entryExport": "ActionMenu",
+  "refTarget": "HTMLButtonElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "ActionMenu"
+    },
+    {
+      "kind": "type",
+      "name": "ActionMenuProps"
+    },
+    {
+      "kind": "type",
+      "name": "ActionMenuItem"
+    },
+    {
+      "kind": "type",
+      "name": "ActionMenuDefaultItem"
+    },
+    {
+      "kind": "type",
+      "name": "ActionMenuDestructiveItem"
+    },
+    {
+      "kind": "type",
+      "name": "ActionMenuPlacement"
+    },
+    {
+      "kind": "function",
+      "name": "resolveMenuIndex"
+    }
+  ],
+  "controlledState": ["open"],
+  "props": [
+    {
+      "default": true,
+      "name": "confirmDestructiveActions",
+      "required": false,
+      "type": "boolean"
+    }
+  ],
+  "nativePolicy": [
+    "React Aria owns the menu collection, portal anchoring and collision, typeahead, dismissal, Escape, and focus return.",
+    "The shared LayerManager records the active menu as non-dismissible and does not install a competing Escape handler.",
+    "The nearest MergoraProvider locale supplies React Aria collation and typeahead; public start/end placement maps to physical edges from the independently resolved Direction.",
+    "Item ids are non-empty unique collection keys; generated index-based description ids remain valid IDREF tokens even when consumer keys contain spaces.",
+    "Destructive actions require a second activation with explicit confirmation text when confirmDestructiveActions is enabled."
+  ],
+  "compositionPolicy": {
+    "familySignature": "Literal Canvas controls, ink borders, a two-layer Violet focus seam, and a structured overlay belong to the Living Workbench family.",
+    "enhancement": "confirmDestructiveActions adds the safer second activation; false removes the confirmation label, state, and extra activation."
+  }
+}

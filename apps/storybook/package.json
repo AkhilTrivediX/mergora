@@ -1,0 +1,28 @@
+{
+  "name": "@mergora/storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "storybook build",
+    "clean": "node -e \"require('node:fs').rmSync('storybook-static',{recursive:true,force:true})\"",
+    "dev": "storybook dev --port 6006",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "mergora-tokens": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@storybook/addon-a11y": "catalog:",
+    "@storybook/addon-vitest": "catalog:",
+    "@storybook/react-vite": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "storybook": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}

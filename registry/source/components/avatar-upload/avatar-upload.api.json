@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "itemId": "avatar-upload",
+  "entryExport": "AvatarUpload",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes on the composite shell except owned children, defaultValue, and change handling",
+  "exports": [
+    { "kind": "component", "name": "AvatarUpload" },
+    { "kind": "type", "name": "AvatarUploadChangeDetail" },
+    { "kind": "type", "name": "AvatarUploadChangeReason" },
+    { "kind": "type", "name": "AvatarUploadMessages" },
+    { "kind": "type", "name": "AvatarUploadProps" },
+    { "kind": "type", "name": "AvatarUploadRejection" },
+    { "kind": "type", "name": "AvatarUploadRejectionReason" }
+  ],
+  "controlledState": [
+    {
+      "state": "selected image",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    { "name": "label", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "value", "required": false, "type": "File | null" },
+    { "name": "defaultValue", "required": false, "default": null, "type": "File | null" },
+    { "name": "onValueChange", "required": false, "type": "(file, reasoned detail) => void" },
+    { "name": "name", "required": false, "type": "native form field name" },
+    { "name": "form", "required": false, "type": "native form owner id" },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "acceptedFileTypes",
+      "required": false,
+      "default": ["image/*"],
+      "type": "readonly MIME/extension token[]"
+    },
+    { "name": "validateFileSize", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "maxSizeBytes",
+      "required": false,
+      "default": 10485760,
+      "type": "positive safe integer"
+    },
+    { "name": "showPreview", "required": false, "default": false, "type": "boolean" },
+    { "name": "previewAlt", "required": false, "type": "non-empty string" },
+    {
+      "name": "previewTransform",
+      "required": false,
+      "type": "(file, AbortSignal) => Blob | Promise<Blob>"
+    },
+    { "name": "showImageMetadata", "required": false, "default": false, "type": "boolean" },
+    { "name": "showEditAction", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRemoveAction", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRejectionRecovery", "required": false, "default": false, "type": "boolean" },
+    { "name": "showUploadProgress", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRetryAction", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "nativeInput": "Mergora FileTrigger remains the one real file input for picker security, native validation, FormData, disabled omission, and reset.",
+    "preview": "When enabled, the component creates exactly one owned object URL from the selected file or consumer crop-transform Blob, aborts stale transforms, and revokes the URL on replacement, disablement, or unmount.",
+    "lifecycle": "Progress status and retry are consumer data and callbacks; AvatarUpload never uploads or removes server content.",
+    "enhancements": "Preview, transform, metadata, edit, removal, rejection recovery, progress, and retry output are independently gated."
+  }
+}

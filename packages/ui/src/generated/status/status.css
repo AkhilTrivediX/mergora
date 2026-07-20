@@ -1,0 +1,68 @@
+/* Generated from registry/source/components/status/status.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-status {
+  --mrg-status-background: var(--mrg-semantic-color-status-neutral-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-neutral-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-neutral-foreground);
+  align-items: baseline;
+  color: var(--mrg-semantic-color-foreground-primary);
+  display: inline-flex;
+  flex-wrap: wrap;
+  font-size: var(--mrg-semantic-font-size-label);
+  gap: var(--mrg-semantic-space-inline-xs);
+  max-inline-size: 100%;
+}
+
+.mrg-status[data-variant="info"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-info-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-info-foreground);
+}
+
+.mrg-status[data-variant="success"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-success-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-status[data-variant="warning"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-warning-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-warning-foreground);
+}
+
+.mrg-status[data-variant="error"] {
+  --mrg-status-background: var(--mrg-semantic-color-status-danger-background);
+  --mrg-status-border: var(--mrg-semantic-color-status-danger-border);
+  --mrg-status-color: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-status [data-slot="status-symbol"] {
+  align-items: center;
+  background: var(--mrg-status-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-status-border);
+  border-radius: var(--mrg-semantic-radius-compact);
+  color: var(--mrg-status-color);
+  display: inline-flex;
+  flex: none;
+  font-size: var(--mrg-semantic-font-size-caption);
+  inline-size: 1.25em;
+  justify-content: center;
+  min-block-size: 1.25em;
+}
+
+.mrg-status [data-slot="status-variant-label"] {
+  color: var(--mrg-status-color);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-status [data-slot="status-label"] {
+  overflow-wrap: anywhere;
+}
+
+@media (forced-colors: active) {
+  .mrg-status [data-slot="status-symbol"] {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+  }
+}

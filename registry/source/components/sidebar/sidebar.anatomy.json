@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "sidebar",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "sidebar",
+    "stableAttributes": ["data-slot", "data-collapsed", "data-enhanced-persistence"]
+  },
+  "parts": [
+    {
+      "slot": "sidebar-desktop",
+      "element": "aside",
+      "purpose": "Provides collapsible grouped desktop navigation.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "sidebar-mobile",
+      "element": "responsive aside",
+      "purpose": "Provides explicit close, Escape dismissal, and focus return on narrow screens.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "sidebar-item-label",
+      "element": "span",
+      "purpose": "Keeps every icon destination named while the desktop rail is collapsed.",
+      "stability": "documented"
+    }
+  ]
+}

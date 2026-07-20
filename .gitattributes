@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+tests/**/crlf/** text eol=crlf
+*.gif binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.woff binary
+*.woff2 binary

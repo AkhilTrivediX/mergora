@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./json-viewer.css", "react"],
+  "entryPath": "registry/source/components/json-viewer/json-viewer.tsx",
+  "id": "json-viewer",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

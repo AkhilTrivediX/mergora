@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "authentication-kit",
+  "entryExport": "AuthenticationKit",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children and submit behavior",
+  "exports": [
+    { "kind": "value", "name": "AuthenticationKit" },
+    { "kind": "value", "name": "AuthenticationPage" },
+    { "kind": "type", "name": "AuthenticationFlow" },
+    { "kind": "type", "name": "AuthenticationKitProps" },
+    { "kind": "type", "name": "AuthenticationRequest" },
+    { "kind": "type", "name": "AuthenticationResult" }
+  ],
+  "props": [
+    { "name": "flow", "required": false, "type": "AuthenticationFlow" },
+    { "name": "defaultFlow", "required": false, "type": "AuthenticationFlow" },
+    { "name": "onSubmit", "required": false, "type": "consumer-owned async adapter" },
+    { "name": "showFlowNavigation", "required": false, "default": false, "type": "boolean" },
+    { "name": "showRateLimitRecovery", "required": false, "default": false, "type": "boolean" },
+    { "name": "showSecurityContext", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "publicComponents": "Composes canonical Button, Field, Input, PasswordField, and OtpField source items.",
+    "adapter": "The consumer owns identity, credential, passkey, session, authorization, recovery, audit, and network behavior.",
+    "enhancements": "Flow navigation, rate-limit recovery output, and security context remain independent opt-ins."
+  }
+}

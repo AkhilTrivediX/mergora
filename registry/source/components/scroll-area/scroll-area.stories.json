@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "itemId": "scroll-area",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "ScrollArea does not own a hover-only state; native scrollbar hover remains browser behavior."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "ScrollArea does not expose an application activation state."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "A native overflow region is not disableable; consumers disable its child actions independently."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Scrolling is navigation through content, not an editable value."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation semantics belong to content inside the scrollport."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "not-applicable", "reason": "ScrollArea is not a form control." }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Busy semantics belong to the region whose content is loading."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "AdvancedLayoutWorkbench"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "ScrollArea has no partial data model."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Status semantics belong to composed content."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Scrolling performs no destructive action."
+      }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "horizontal",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "narrow-320",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "ScrollArea defines no animation, smooth scrolling, or transition."
+      }
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "RightToLeft" },
+    {
+      "id": "safe-area",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "touch",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    },
+    {
+      "id": "zoom-400",
+      "applicability": { "status": "applicable" },
+      "story": "NativeScrollAffordance"
+    }
+  ]
+}

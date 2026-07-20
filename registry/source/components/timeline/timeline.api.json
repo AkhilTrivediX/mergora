@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "timeline",
+  "entryExport": "Timeline",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Timeline"
+    },
+    {
+      "kind": "type",
+      "name": "TimelineEvent"
+    },
+    {
+      "kind": "type",
+      "name": "TimelineProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showDurations",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "formatDuration",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Timeline; enhancement output is additive and independently removable.",
+    "enhancement": "Optional intervals explain temporal distance between ordered events and skip all formatter work when disabled. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

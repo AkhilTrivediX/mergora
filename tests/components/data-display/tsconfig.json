@@ -1,0 +1,43 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/activity-feed/**/*.ts",
+    "../../../registry/source/components/activity-feed/**/*.tsx",
+    "../../../registry/source/components/avatar/**/*.ts",
+    "../../../registry/source/components/avatar/**/*.tsx",
+    "../../../registry/source/components/calendar-heatmap/**/*.ts",
+    "../../../registry/source/components/calendar-heatmap/**/*.tsx",
+    "../../../registry/source/components/card/**/*.ts",
+    "../../../registry/source/components/card/**/*.tsx",
+    "../../../registry/source/components/carousel/**/*.ts",
+    "../../../registry/source/components/carousel/**/*.tsx",
+    "../../../registry/source/components/chart/**/*.ts",
+    "../../../registry/source/components/chart/**/*.tsx",
+    "../../../registry/source/components/data-table/**/*.ts",
+    "../../../registry/source/components/data-table/**/*.tsx",
+    "../../../registry/source/components/item/**/*.ts",
+    "../../../registry/source/components/item/**/*.tsx",
+    "../../../registry/source/components/stat/**/*.ts",
+    "../../../registry/source/components/stat/**/*.tsx",
+    "../../../registry/source/components/table/**/*.ts",
+    "../../../registry/source/components/table/**/*.tsx",
+    "../../../registry/source/components/timeline/**/*.ts",
+    "../../../registry/source/components/timeline/**/*.tsx",
+    "../../../registry/source/components/virtual-list/**/*.ts",
+    "../../../registry/source/components/virtual-list/**/*.tsx",
+    "../../../apps/storybook/src/P5DataDisplay.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

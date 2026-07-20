@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "currency-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Complete currency code, symbol, grouping, decimal, sign, and non-Latin digit locale fixtures.",
+    "Verify major-unit value and form contracts across zero-, two-, and three-decimal currencies.",
+    "Verify negative, accounting, explicit minimum, precision, and rounding-boundary behavior.",
+    "Complete IME, caret, keyboard, stepper, wheel safeguard, scrub, submission, and reset fixtures.",
+    "Verify status rail, canonical major-unit preview, and complete disabled-enhancement absence across generated consumers.",
+    "Record mobile, narrow, zoom, RTL, forced-colors, touch, and long-currency-text geometry.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

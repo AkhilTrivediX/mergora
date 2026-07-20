@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "itemId": "error-state",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "error",
+    "polite-announcement",
+    "assertive-announcement",
+    "plain-baseline",
+    "recommended-mergora"
+  ],
+  "slots": [
+    {
+      "name": "error-state",
+      "semanticElement": "named section; never live",
+      "refTarget": "HTMLElement",
+      "states": ["static", "polite-announcement", "assertive-announcement"]
+    },
+    {
+      "name": "error-state-title",
+      "semanticElement": "h1-h6",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "error-state-actions",
+      "semanticElement": "div outside live roots",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    },
+    {
+      "name": "error-state-retry",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": []
+    },
+    {
+      "name": "error-state-details",
+      "semanticElement": "details",
+      "refTarget": "HTMLDetailsElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "error-state-accessibility", "version": "0.1.0" },
+  "passport": { "id": "error-state-quality-passport", "version": "0.0.0" }
+}

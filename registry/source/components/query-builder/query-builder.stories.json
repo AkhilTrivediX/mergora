@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "query-builder",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicQueryBuilder" },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedQueryBuilder"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedQueryBuilder"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "KeyboardAndPreferences"
+    },
+    { "id": "disabled", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "read-only", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Required query policy belongs to the containing form workflow."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The canonical source owns no asynchronous schema transport."
+      }
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "BasicQueryBuilder" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedQueryBuilder"
+    },
+    { "id": "partial", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "success", "applicability": { "status": "applicable" }, "story": "ControlledAndForm" },
+    { "id": "warning", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "destructive",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedQueryBuilder"
+    }
+  ]
+}

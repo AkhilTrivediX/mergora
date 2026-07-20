@@ -1,0 +1,1183 @@
+{
+  "schemaVersion": 1,
+  "category": "files-uploads",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "file-trigger",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn input supports type=file with field composition, while the consumer owns trigger treatment and bounded acceptance guidance.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps one real file input over the complete visible action so focus, picker security, form submission, disabled omission, and reset remain browser-owned, with optional normalized acceptance guidance.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-trigger/file-trigger.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["accepted-type-guidance"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The trigger uses the shared ink action boundary, restrained control radius, strong label weight, preferred touch target, and violet focus treatment with forced-color mappings.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-trigger/file-trigger.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-action-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-control",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "accepted-type-guidance",
+          "status": "evidence-backed",
+          "summary": "A bounded list of MIME or extension tokens is normalized, checked for duplicates, sorted, and applied to the native picker without replacing server-side validation.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-trigger/file-trigger.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["acceptedTypeGuidance"],
+          "api": {
+            "kind": "prop",
+            "names": ["acceptedFileTypes"],
+            "enableWhen": "Supply one through 32 valid MIME or extension tokens in acceptedFileTypes."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No component-generated type guidance is shown and the native input has no accept attribute.",
+            "behavior": "The browser picker remains unrestricted by file type and the component performs no type filtering.",
+            "events": "onSelect receives the native FileList snapshot without any type-specific event or rejection branch.",
+            "accessibility": "No type-related accessible description, state, or hidden announcement is emitted."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "BasicFileTrigger",
+          "enhancementControls": ["acceptedTypeGuidance"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "RecommendedFileTrigger",
+          "enhancementControls": ["acceptedTypeGuidance"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native naming, keyboard picker activation, form/reset behavior, touch targets, axe, RTL, forced colors, and reduced motion are automated; required manual assistive-technology and device picker records remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-trigger/file-trigger.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "The focused browser suite verifies native keyboard activation, file chooser results, form serialization and reset, disabled omission, coarse-pointer activation, RTL, narrow layout, forced colors, and reduced motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Manual screen-reader, speech, switch, and mobile picker evidence required by the source contract is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-trigger/file-trigger.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-trigger/file-trigger.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "dropzone",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn supplies a file input rather than a drop, paste, and picker classifier with explicit rejection recovery.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/input"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora routes picker, paste, and asynchronous drop materialization through one bounded latest-request classifier with explicit accepted and rejected results; type and size preflight remain independently optional.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropzone/dropzone.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["accepted-type-preflight", "size-preflight"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A literal canvas surface, precise ink boundary, strong label hierarchy, and shared focus geometry become a solid active boundary during drop targeting without decorative motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropzone/dropzone.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "restrained-corners",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-interactive",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-container"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "accepted-type-preflight",
+          "status": "evidence-backed",
+          "summary": "Optional normalized type guidance is shared by the native picker and the paste/drop classifier so every intake path reports the same file-type rejection.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropzone/dropzone.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["acceptedTypeGuidance"],
+          "api": {
+            "kind": "prop",
+            "names": ["acceptedFileTypes"],
+            "enableWhen": "Supply acceptedFileTypes to add native picker guidance and classifier type checks."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "The picker has no accept attribute and the component adds no type-specific guidance.",
+            "behavior": "Files of every type remain eligible for count and optional size classification.",
+            "events": "onFiles never receives a file-type rejection created by the disabled branch.",
+            "accessibility": "The status region cannot announce a file-type rejection from this component."
+          }
+        },
+        {
+          "id": "size-preflight",
+          "status": "evidence-backed",
+          "summary": "Optional bounded client-side size preflight rejects oversized files consistently before consumer-owned upload transport begins.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropzone/dropzone.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["preflightSizeValidation"],
+          "api": {
+            "kind": "prop",
+            "names": ["validateFileSize", "maxSizeBytes"],
+            "enableWhen": "Keep validateFileSize true and optionally set maxSizeBytes."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The component renders no size-specific rejection or generated size guidance.",
+            "behavior": "maxSizeBytes is ignored and oversized files continue through the remaining classifier branches.",
+            "events": "onFiles never receives a file-too-large rejection created by the disabled branch.",
+            "accessibility": "The live status cannot announce a size rejection from this component."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "BasicDropzone",
+          "enhancementControls": ["acceptedTypeGuidance", "preflightSizeValidation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "RecommendedDropzone",
+          "enhancementControls": ["acceptedTypeGuidance", "preflightSizeValidation"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Label and description wiring, polite status, picker/paste/drop recovery, axe, narrow RTL, forced colors, reduced motion, and touch are automated; manual assistive-technology and real-device drop/paste records remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropzone/dropzone.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "The focused browser suite verifies identical picker, paste, and drop classification, asynchronous latest-request ownership, adverse item recovery, bounds, disabled state, touch targets, RTL, and preferences.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Manual screen-reader, speech, switch, paste, drop, and real-device evidence required by the source contract is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/dropzone/dropzone.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/dropzone/dropzone.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "upload-progress",
+      "ordinaryShadcnBaseline": {
+        "comparison": "direct-component",
+        "summary": "The ordinary Shadcn progress component renders a progress indicator, while upload lifecycle, byte context, and announcement cadence remain consumer composition work.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/progress"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora models consumer-owned upload lifecycle states with optional locale-aware byte context and bucketed announcements that avoid flooding assistive technology.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/upload-progress/upload-progress.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["byte-context", "bucketed-announcements"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A stable label, progress track, strong lifecycle state line, and restrained green success or ink-danger signal form a compact workbench status rail without layout-jumping decoration.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/upload-progress/upload-progress.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "status-rail",
+          "workbench-structure",
+          "purposeful-motion"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-status-success-foreground",
+          "--mrg-semantic-font-weight-label",
+          "--mrg-semantic-space-stack-xs"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "byte-context",
+          "status": "evidence-backed",
+          "summary": "Paired uploaded and total byte counts add deterministic locale-aware IEC context to visible and programmatic progress values.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/upload-progress/upload-progress.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["showByteContext"],
+          "api": {
+            "kind": "prop",
+            "names": ["uploadedBytes", "totalBytes"],
+            "enableWhen": "Supply valid uploadedBytes and totalBytes together."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No byte totals are rendered in the progress value text.",
+            "behavior": "Progress formatting uses percentage or lifecycle status only.",
+            "events": "No byte-specific event, callback, or validation path is added.",
+            "accessibility": "aria-valuetext and optional announcements contain no byte totals."
+          }
+        },
+        {
+          "id": "bucketed-announcements",
+          "status": "evidence-backed",
+          "summary": "A polite atomic live region announces lifecycle changes and bounded percentage buckets instead of every rapid progress update.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/upload-progress/upload-progress.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["announceProgress"],
+          "api": {
+            "kind": "prop",
+            "names": ["announceProgress", "announcementStep"],
+            "enableWhen": "Keep announceProgress true and optionally set announcementStep from one through 100."
+          },
+          "defaultEnabled": true,
+          "disabledBehavior": {
+            "ui": "The visually hidden announcement node is not rendered.",
+            "behavior": "Progress and lifecycle rendering continue without announcement-state updates affecting output.",
+            "events": "No announcement-specific event or callback is emitted.",
+            "accessibility": "No aria-live or aria-atomic output is present."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "BasicUploadProgress",
+          "enhancementControls": ["showByteContext", "announceProgress"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "RecommendedUploadProgress",
+          "enhancementControls": ["showByteContext", "announceProgress"],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Labelled determinate and indeterminate progress, value text, announcement throttling, lifecycle changes, axe, RTL, forced colors, and reduced motion are automated; manual screen-reader timing evidence remains absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/upload-progress/upload-progress.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "The focused browser suite verifies determinate and indeterminate lifecycle transitions, locale-aware bytes, bounded announcement buckets, disabled announcement output, narrow RTL, forced colors, and reduced motion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "manual-assistive-technology-records-missing",
+          "summary": "Manual screen-reader announcement timing and speech output evidence required by the source contract is not recorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/upload-progress/upload-progress.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/upload-progress/upload-progress.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "file-upload",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn supplies a native file input and progress primitive, while queue validation, duplicate policy, ordered lifecycle, retry, cancellation, and recovery remain application composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/input"
+          },
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/progress"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora composes one bounded picker/paste/drop classifier with a controlled-or-uncontrolled ordered queue, optional duplicate/rejection recovery, and consumer-owned progress, retry, cancel, and removal lifecycle.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-upload/file-upload.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": [
+          "preflight-and-duplicate-recovery",
+          "consumer-lifecycle",
+          "accessible-queue-reordering"
+        ]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The queue uses a literal canvas, strong ink rules, compact file hierarchy, restrained status signals, and the shared violet focus seam instead of nested cards or decorative upload chrome.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-upload/file-upload.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "status-rail",
+          "touch-target-treatment"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-size-target-preferred"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "preflight-and-duplicate-recovery",
+          "status": "evidence-backed",
+          "summary": "Type, size, duplicate, and visible rejection recovery are separately enabled around the shared intake classifier.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-upload/file-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "acceptedTypeGuidance",
+            "preflightSizeValidation",
+            "fileDuplicateDetection",
+            "fileRejectionRecovery"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "acceptedFileTypes",
+              "validateFileSize",
+              "duplicatePolicy",
+              "showRejectionRecovery"
+            ],
+            "enableWhen": "Enable only the preflight and recovery branches the product needs."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No generated type/size/duplicate recovery list or live region is rendered.",
+            "behavior": "Disabled classifiers and duplicate-key resolution are skipped; remaining count bounds still protect the queue.",
+            "events": "No rejection produced solely by a disabled classifier and no recovery-specific event is emitted.",
+            "accessibility": "No disabled recovery heading, list, aria-live region, or type/size/duplicate announcement exists."
+          }
+        },
+        {
+          "id": "consumer-lifecycle",
+          "status": "evidence-backed",
+          "summary": "Consumer status renders optional progress and enables separately gated retry, cancel, remove, and preview surfaces without starting transport.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-upload/file-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "filePreviews",
+            "fileUploadProgress",
+            "fileRetryActions",
+            "fileCancelActions",
+            "fileRemoveActions"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "renderPreview",
+              "showProgress",
+              "showRetryActions",
+              "showCancelActions",
+              "showRemoveActions"
+            ],
+            "enableWhen": "Enable each lifecycle surface independently and supply only its consumer callback or renderer."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No preview, progress, retry, cancel, or remove control is rendered for its disabled branch.",
+            "behavior": "Status data remains inert queue data and disabled renderers are never invoked.",
+            "events": "Disabled retry, cancel, and remove callbacks cannot fire.",
+            "accessibility": "No disabled progressbar, announcement, or action name appears in the accessibility tree."
+          }
+        },
+        {
+          "id": "accessible-queue-reordering",
+          "status": "evidence-backed",
+          "summary": "Optional Earlier and Later buttons expose the same immutable reorder protocol to keyboard, touch, speech, and switch input without requiring drag.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-upload/file-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["fileReordering"],
+          "api": {
+            "kind": "prop",
+            "names": ["reorderable"],
+            "enableWhen": "Set reorderable to true."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Earlier and Later controls are absent.",
+            "behavior": "Queue order changes only through controlled items or later selection.",
+            "events": "No reorder change detail is emitted by the component.",
+            "accessibility": "No reorder action names or disabled boundary controls appear."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "BasicFileUpload",
+          "enhancementControls": [
+            "acceptedTypeGuidance",
+            "preflightSizeValidation",
+            "fileDuplicateDetection",
+            "fileRejectionRecovery",
+            "filePreviews",
+            "fileUploadProgress",
+            "fileRetryActions",
+            "fileCancelActions",
+            "fileRemoveActions",
+            "fileReordering"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "RecommendedFileUpload",
+          "enhancementControls": [
+            "acceptedTypeGuidance",
+            "preflightSizeValidation",
+            "fileDuplicateDetection",
+            "fileRejectionRecovery",
+            "filePreviews",
+            "fileUploadProgress",
+            "fileRetryActions",
+            "fileCancelActions",
+            "fileRemoveActions",
+            "fileReordering"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Labelled ordered queue, file-specific actions, keyboard reorder, native intake, axe, narrow RTL, forced colors, reduced motion, and reset are automated; risk-class manual assistive-technology and real-device queue records remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-upload/file-upload.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused tests cover controlled/uncontrolled selection, type/size/duplicate rejection, recovery, ordered actions, consumer progress/retry/cancel/remove, form reset, touch targets, narrow RTL, and preferences.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "adapter-and-manual-evidence-missing",
+          "summary": "Adapter fixtures and risk-class manual assistive-technology evidence remain unrecorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-upload/file-upload.status.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/file-upload/file-upload.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/file-upload/file-upload.status.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "avatar-upload",
+      "ordinaryShadcnBaseline": {
+        "comparison": "common-composition",
+        "summary": "Ordinary Shadcn supplies file input, avatar, button, and progress primitives, while preview memory, crop hooks, native form synchronization, replacement/removal, and server lifecycle remain application composition.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/input"
+          },
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components/base/avatar"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "Mergora keeps one native image input synchronized with controlled or default File state while optionally owning a revocable preview URL, metadata, crop/edit hook, recovery, and consumer server lifecycle.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar-upload/avatar-upload.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["safe-image-preview", "avatar-actions", "consumer-server-lifecycle"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "A precise bounded image well, literal canvas intake, strong label hierarchy, ink rules, compact metadata rail, and shared focus seam make avatar replacement recognizable without decorative framing.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar-upload/avatar-upload.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.test.tsx"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "strong-type-hierarchy",
+          "distinctive-focus",
+          "restrained-corners",
+          "status-rail"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-border-strong",
+          "--mrg-semantic-radius-container",
+          "--mrg-semantic-color-focus-ring"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "safe-image-preview",
+          "status": "evidence-backed",
+          "summary": "Optional preview and file metadata use one abortable consumer transform and a component-owned object URL that is revoked after replacement, disablement, or unmount.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar-upload/avatar-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["avatarPreview", "avatarImageMetadata"],
+          "api": {
+            "kind": "prop",
+            "names": ["showPreview", "previewTransform", "showImageMetadata"],
+            "enableWhen": "Enable preview and metadata independently; previewTransform runs only with showPreview."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No image, preview loading/error status, or metadata description list is rendered.",
+            "behavior": "No transform, object URL creation, revocation bookkeeping, or metadata formatting runs.",
+            "events": "No preview-specific callback or event is emitted.",
+            "accessibility": "No preview img, alternative text, preview status, or metadata terms appear."
+          }
+        },
+        {
+          "id": "avatar-actions",
+          "status": "evidence-backed",
+          "summary": "Edit/crop, native removal, and persistent rejection recovery are independently enabled with ordinary named controls and no bundled editor.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar-upload/avatar-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "avatarEditAction",
+            "avatarRemoveAction",
+            "avatarRejectionRecovery"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": ["showEditAction", "showRemoveAction", "showRejectionRecovery"],
+            "enableWhen": "Enable only the edit, remove, and recovery surfaces the product owns."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "Disabled edit, remove, and recovery controls or status are absent.",
+            "behavior": "The native picker and selected File remain usable without crop or custom removal UI.",
+            "events": "Disabled edit and remove actions cannot invoke consumer callbacks.",
+            "accessibility": "No disabled action names or rejection live region appears."
+          }
+        },
+        {
+          "id": "consumer-server-lifecycle",
+          "status": "evidence-backed",
+          "summary": "Optional UploadProgress and retry render only consumer-supplied server lifecycle; core performs no upload, storage, replacement, or deletion.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar-upload/avatar-upload.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["avatarUploadProgress", "avatarRetryAction"],
+          "api": {
+            "kind": "prop",
+            "names": ["showUploadProgress", "showRetryAction"],
+            "enableWhen": "Enable lifecycle progress and retry independently around consumer status and callback data."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No progressbar, lifecycle message, or retry button is rendered.",
+            "behavior": "Upload status values remain inert and no network behavior exists.",
+            "events": "The retry callback cannot fire.",
+            "accessibility": "No progress semantics, announcement, or retry action appears."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "BasicAvatarUpload",
+          "enhancementControls": [
+            "avatarPreview",
+            "avatarImageMetadata",
+            "avatarEditAction",
+            "avatarRemoveAction",
+            "avatarRejectionRecovery",
+            "avatarUploadProgress",
+            "avatarRetryAction"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P4FileSystemsComponentProof.stories.tsx",
+          "exportName": "RecommendedAvatarUpload",
+          "enhancementControls": [
+            "avatarPreview",
+            "avatarImageMetadata",
+            "avatarEditAction",
+            "avatarRemoveAction",
+            "avatarRejectionRecovery",
+            "avatarUploadProgress",
+            "avatarRetryAction"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "tests/storybook/files-uploads-component-stories.test.tsx"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Native picker/form semantics, preview alternative text, metadata terms, named actions, progress, recovery, axe, narrow RTL, forced colors, reduced motion, and reset are automated; risk-class manual assistive-technology and real-device picker records remain absent.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar-upload/avatar-upload.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "verified",
+        "summary": "Focused tests cover initial default and external controlled FormData, native selection, replacement, removal, reset, type/size recovery, preview URL lifecycle, crop hook, progress/retry, touch, narrow RTL, and preferences.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/file-systems/file-systems.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Deterministic generation derives every package implementation byte from normalized canonical source and matches native and Shadcn payloads to the same consumer transform; the recorded exact-tarball Next.js and Vite package/source matrix passes.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "adapter-and-manual-evidence-missing",
+          "summary": "Crop/server adapter fixtures and risk-class manual assistive-technology evidence remain unrecorded.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar-upload/avatar-upload.status.json"
+            },
+            {
+              "kind": "repository-file",
+              "location": "registry/source/components/avatar-upload/avatar-upload.contract.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/components/avatar-upload/avatar-upload.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

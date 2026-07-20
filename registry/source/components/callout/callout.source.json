@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./callout.css", "react"],
+  "entryPath": "registry/source/components/callout/callout.tsx",
+  "id": "callout",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

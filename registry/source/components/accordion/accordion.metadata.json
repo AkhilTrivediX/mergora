@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "itemId": "accordion",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "hover",
+    "active",
+    "focus-visible",
+    "disabled",
+    "populated",
+    "partial"
+  ],
+  "slots": [
+    {
+      "name": "accordion",
+      "semanticElement": "div disclosure group",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    },
+    {
+      "name": "accordion-item",
+      "semanticElement": "div disclosure",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    },
+    {
+      "name": "accordion-header",
+      "semanticElement": "h1-h6",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "accordion-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": []
+    },
+    {
+      "name": "accordion-panel",
+      "semanticElement": "div region",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "accordion-accessibility", "version": "0.1.0" },
+  "passport": { "id": "accordion-quality-passport", "version": "0.0.0" }
+}

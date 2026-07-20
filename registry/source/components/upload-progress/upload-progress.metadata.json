@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "itemId": "upload-progress",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "queued",
+    "uploading",
+    "indeterminate",
+    "paused",
+    "retrying",
+    "complete",
+    "error",
+    "cancelled",
+    "file",
+    "aggregate",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "upload-progress",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["queued", "uploading", "paused", "retrying", "complete", "error", "cancelled"]
+    },
+    {
+      "name": "progress",
+      "semanticElement": "label containing native progress",
+      "refTarget": "none",
+      "states": ["determinate", "indeterminate", "complete"]
+    },
+    {
+      "name": "upload-progress-state",
+      "semanticElement": "visible status text",
+      "refTarget": "none",
+      "states": ["queued", "uploading", "paused", "retrying", "complete", "error", "cancelled"]
+    },
+    {
+      "name": "upload-progress-announcement",
+      "semanticElement": "polite live region",
+      "refTarget": "none",
+      "states": ["bucketed-progress", "terminal"]
+    }
+  ],
+  "contract": { "id": "upload-progress-accessibility", "version": "0.1.0" },
+  "passport": { "id": "upload-progress-quality-passport", "version": "0.0.0" }
+}

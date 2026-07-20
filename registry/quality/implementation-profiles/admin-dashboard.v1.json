@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "category": "admin-dashboard",
+  "auditPendingIds": [],
+  "profiles": [
+    {
+      "id": "admin-dashboard-shell",
+      "ordinaryShadcnBaseline": {
+        "comparison": "no-direct-equivalent",
+        "summary": "Shadcn does not provide an ordinary installable dashboard workflow combining responsive navigation, role-aware destinations, notifications, accessible chart fallback, dense data, and adapter-owned recovery.",
+        "references": [
+          {
+            "kind": "official-documentation",
+            "location": "https://ui.shadcn.com/docs/components"
+          }
+        ]
+      },
+      "mergoraAdvantage": {
+        "status": "evidence-backed",
+        "summary": "The kit composes public navigation, breadcrumb, chart, and table components around an abort-aware adapter while keeping role filtering, notification mutation, data fallback, and authorization boundaries explicit.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell-adapter.ts"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "enhancementIds": ["dashboard-operational-context"]
+      },
+      "visualSignature": {
+        "status": "evidence-backed",
+        "summary": "The Living Workbench shell uses literal white, Ink structure, a measured Green heading rail, Violet focus and selection, strong hierarchy, restrained corners, logical layout, and preference fallbacks shared with Mergora.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.css"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ],
+        "patternIds": [
+          "literal-white-surface",
+          "ink-structure",
+          "workbench-structure",
+          "strong-type-hierarchy",
+          "green-state-signal",
+          "violet-context-signal",
+          "distinctive-focus",
+          "purposeful-motion",
+          "touch-target-treatment",
+          "restrained-corners"
+        ],
+        "tokenReferences": [
+          "--mrg-semantic-color-background-canvas",
+          "--mrg-semantic-color-foreground-primary",
+          "--mrg-semantic-color-brand-action",
+          "--mrg-semantic-color-selection-background",
+          "--mrg-semantic-color-focus-ring",
+          "--mrg-semantic-radius-panel"
+        ]
+      },
+      "optionalEnhancements": [
+        {
+          "id": "dashboard-operational-context",
+          "status": "evidence-backed",
+          "summary": "Role-filtered navigation, role boundary context, notifications, chart interaction, visible chart data, and activity query tools are separate dashboard-specific controls.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": [
+            "permissionFilteredNavigation",
+            "showRoleContext",
+            "showNotifications",
+            "interactiveChart",
+            "showChartDataTable",
+            "showActivityQueryTools"
+          ],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "permissionFilteredNavigation",
+              "showRoleContext",
+              "showNotifications",
+              "interactiveChart",
+              "showChartDataTable",
+              "showActivityQueryTools"
+            ],
+            "enableWhen": "Each property is explicitly enabled independently."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No role note, filtered destination set, notification rail, chart point controls, visible chart table, search, pagination, or query summary is rendered.",
+            "behavior": "Responsive public navigation, a disclosure chart fallback, breadcrumb, readable chart, and activity table remain usable.",
+            "events": "No notification mutation, chart point, role-filter, search, pagination, or query-summary event runs.",
+            "accessibility": "No role context, notification landmark, notification actions, chart buttons, always-visible fallback table, or query controls enter the accessibility tree."
+          }
+        }
+      ],
+      "storybook": {
+        "basic": {
+          "status": "tested",
+          "mode": "basic-enhancements-disabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "BasicAdminDashboardShell",
+          "enhancementControls": [
+            "permissionFilteredNavigation",
+            "showRoleContext",
+            "showNotifications",
+            "interactiveChart",
+            "showChartDataTable",
+            "showActivityQueryTools"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        },
+        "enhanced": {
+          "status": "tested",
+          "mode": "recommended-enhancements-enabled",
+          "modulePath": "apps/storybook/src/P6WorkflowKits.stories.tsx",
+          "exportName": "RecommendedAdminDashboardShell",
+          "enhancementControls": [
+            "permissionFilteredNavigation",
+            "showRoleContext",
+            "showNotifications",
+            "interactiveChart",
+            "showChartDataTable",
+            "showActivityQueryTools"
+          ],
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/P6WorkflowKits.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+            }
+          ]
+        }
+      },
+      "accessibilityEvidence": {
+        "status": "partial",
+        "summary": "Landmarks, skip navigation, public navigation focus behavior, chart table fallback, status text, narrow/RTL/forced-colors CSS, and focused axe coverage exist; complete Risk Class 3 manual evidence is not recorded.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.contract.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "interactionEvidence": {
+        "status": "partial",
+        "summary": "Deterministic loading, role navigation, notification mutation, chart interaction, dense query controls, retry, offline, narrow, and preference paths have focused tests; full lifecycle and real failure matrices remain open.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.test.tsx"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/components/workflow-kits/workflow-kits.browser.spec.ts"
+          }
+        ]
+      },
+      "parityEvidence": {
+        "status": "verified",
+        "summary": "Package output is intentionally not planned by the catalog. Deterministic generation keeps canonical source, native registry, and Shadcn payloads on the same consumer transform, while the exact-tarball Next.js and Vite record verifies source mode and the source-only package boundary.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "tests/generation/generation.test.ts"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/source-transform-plan.json"
+          },
+          {
+            "kind": "repository-file",
+            "location": "tests/packed-consumers/evidence.json"
+          },
+          {
+            "kind": "generated-artifact",
+            "location": "registry/generated/catalog.json"
+          }
+        ]
+      },
+      "blockers": [
+        {
+          "code": "kit-evidence-incomplete",
+          "summary": "Dependency closure, clean-consumer lifecycle, full browser and dense-data evidence, current manual assistive technology, authorization/security/privacy/legal review, public dogfooding, and Passport approval remain open.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.status.json"
+            }
+          ]
+        }
+      ],
+      "maturityAssessment": {
+        "status": "not-ready",
+        "rationale": "Deterministic delivery parity is verified, but the remaining interaction, lifecycle, browser, accessibility, scale, security, or release evidence recorded for this item is still insufficient for promotion.",
+        "references": [
+          {
+            "kind": "repository-file",
+            "location": "registry/source/kits/admin-dashboard-shell/admin-dashboard-shell.status.json"
+          }
+        ]
+      }
+    }
+  ]
+}

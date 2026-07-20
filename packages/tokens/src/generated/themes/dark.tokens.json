@@ -1,0 +1,247 @@
+{
+  "$description": "Dark Living Workbench semantic color mapping. Surfaces stay neutral and brand hues gain lightness for dark-canvas contrast.",
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "accent": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.violet.300}"
+        },
+        "backgroundSubtle": {
+          "$value": "{primitive.color.violet.900}"
+        },
+        "border": {
+          "$value": "{primitive.color.violet.300}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.neutral.900}"
+        },
+        "foregroundOnSubtle": {
+          "$value": "{primitive.color.violet.100}"
+        }
+      },
+      "action": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.green.200}"
+        },
+        "backgroundHover": {
+          "$value": "{primitive.color.green.100}"
+        },
+        "backgroundPressed": {
+          "$value": "{primitive.color.green.300}"
+        },
+        "border": {
+          "$value": "{primitive.color.green.100}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.neutral.900}"
+        }
+      },
+      "background": {
+        "$type": "color",
+        "canvas": {
+          "$value": "{primitive.color.neutral.900}"
+        },
+        "inverse": {
+          "$value": "{primitive.color.neutral.50}"
+        },
+        "surface": {
+          "$value": "{primitive.color.neutral.800}"
+        },
+        "surfaceRaised": {
+          "$value": "{primitive.color.neutral.700}"
+        },
+        "surfaceSunken": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.145, 0.018, 150]
+          }
+        }
+      },
+      "border": {
+        "$type": "color",
+        "default": {
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "disabled": {
+          "$value": "{primitive.color.neutral.600}"
+        },
+        "interactive": {
+          "$value": "{primitive.color.neutral.300}"
+        },
+        "strong": {
+          "$value": "{primitive.color.neutral.400}"
+        }
+      },
+      "brand": {
+        "$type": "color",
+        "action": {
+          "$value": "{primitive.color.green.200}"
+        },
+        "living": {
+          "$value": "{primitive.color.green.300}"
+        },
+        "violet": {
+          "$value": "{primitive.color.violet.300}"
+        }
+      },
+      "code": {
+        "$type": "color",
+        "background": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [0.1, 0.018, 150]
+          }
+        },
+        "comment": {
+          "$value": "{primitive.color.neutral.300}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.neutral.50}"
+        },
+        "keyword": {
+          "$value": "{primitive.color.green.300}"
+        },
+        "literal": {
+          "$value": "{primitive.color.violet.300}"
+        }
+      },
+      "diff": {
+        "added": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.green.900}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.green.100}"
+          },
+          "marker": {
+            "$value": "{primitive.color.green.300}"
+          }
+        },
+        "changed": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.violet.900}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.violet.100}"
+          },
+          "marker": {
+            "$value": "{primitive.color.violet.300}"
+          }
+        },
+        "removed": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.red.900}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.red.100}"
+          },
+          "marker": {
+            "$value": "{primitive.color.red.300}"
+          }
+        }
+      },
+      "focus": {
+        "$type": "color",
+        "ring": {
+          "$value": "{primitive.color.green.300}"
+        },
+        "ringOnAction": {
+          "$value": "{primitive.color.neutral.900}"
+        }
+      },
+      "foreground": {
+        "$type": "color",
+        "disabled": {
+          "$value": "{primitive.color.neutral.400}"
+        },
+        "inverse": {
+          "$value": "{primitive.color.neutral.900}"
+        },
+        "muted": {
+          "$value": "{primitive.color.neutral.300}"
+        },
+        "primary": {
+          "$value": "{primitive.color.neutral.50}"
+        }
+      },
+      "overlay": {
+        "$type": "color",
+        "scrim": {
+          "$value": {
+            "alpha": 0.72,
+            "colorSpace": "oklch",
+            "components": [0.05, 0.01, 150]
+          }
+        }
+      },
+      "selection": {
+        "$type": "color",
+        "background": {
+          "$value": "{primitive.color.green.900}"
+        },
+        "border": {
+          "$value": "{primitive.color.green.300}"
+        },
+        "foreground": {
+          "$value": "{primitive.color.green.100}"
+        }
+      },
+      "status": {
+        "danger": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.red.900}"
+          },
+          "border": {
+            "$value": "{primitive.color.red.300}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.red.100}"
+          }
+        },
+        "info": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.blue.900}"
+          },
+          "border": {
+            "$value": "{primitive.color.blue.300}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.blue.100}"
+          }
+        },
+        "success": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.green.900}"
+          },
+          "border": {
+            "$value": "{primitive.color.green.300}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.green.100}"
+          }
+        },
+        "warning": {
+          "$type": "color",
+          "background": {
+            "$value": "{primitive.color.amber.900}"
+          },
+          "border": {
+            "$value": "{primitive.color.amber.300}"
+          },
+          "foreground": {
+            "$value": "{primitive.color.amber.100}"
+          }
+        }
+      }
+    }
+  }
+}

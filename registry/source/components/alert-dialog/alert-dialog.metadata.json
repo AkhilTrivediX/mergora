@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert-dialog",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["closed", "open", "destructive", "least-destructive", "long-consequence"],
+  "slots": [
+    {
+      "name": "alert-dialog-trigger",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-state"]
+    },
+    {
+      "name": "alert-dialog-overlay",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["data-state"]
+    },
+    {
+      "name": "alert-dialog-content",
+      "semanticElement": "section role=alertdialog",
+      "refTarget": "HTMLElement",
+      "states": ["data-state"]
+    },
+    {
+      "name": "alert-dialog-title",
+      "semanticElement": "heading",
+      "refTarget": "HTMLHeadingElement",
+      "states": []
+    },
+    {
+      "name": "alert-dialog-description",
+      "semanticElement": "p",
+      "refTarget": "HTMLParagraphElement",
+      "states": []
+    },
+    {
+      "name": "alert-dialog-close",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["data-intent"]
+    }
+  ],
+  "contract": { "id": "alert-dialog-accessibility", "version": "0.1.0" },
+  "passport": { "id": "alert-dialog-quality-passport", "version": "0.0.0" }
+}

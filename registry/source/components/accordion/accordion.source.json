@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./accordion.css", "react", "react-aria-components/DisclosureGroup"],
+  "entryPath": "registry/source/components/accordion/accordion.tsx",
+  "id": "accordion",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

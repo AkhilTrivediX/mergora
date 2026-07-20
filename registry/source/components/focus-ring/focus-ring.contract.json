@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "focus-ring",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "Exactly one consumer element; no wrapper or role is added.",
+    "refTarget": "The same concrete HTMLElement as the child.",
+    "namePolicy": "Child accessible-name attributes remain authoritative."
+  },
+  "focus": {
+    "modality": "The indicator uses focus-visible and does not equate focus with selection or hover.",
+    "standard": "A Deep Violet outline and one-pixel Canvas seam remain outside the target without changing layout.",
+    "strong": "The independently selected strong mode increases both seam and outline geometry for unpredictable surfaces; omitting contrast removes strong geometry without adding UI or accessibility output.",
+    "forcedColors": "Shadows are removed and a three-pixel Highlight outline is restored."
+  },
+  "consumerResponsibilities": [
+    "Do not clip the focused element or override outline and shadow selectors without equivalent verified treatment.",
+    "Verify custom focus tokens meet non-text contrast against every adjacent color.",
+    "Keep the child natively focusable or provide a documented composite focus model."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "slot-parity",
+      "focus-visible-css",
+      "standard-strong-opt-out",
+      "forced-colors-css",
+      "ssr",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-modality", "indicator-area", "contrast", "forced-colors", "zoom-400"],
+    "recordedEvidence": []
+  }
+}

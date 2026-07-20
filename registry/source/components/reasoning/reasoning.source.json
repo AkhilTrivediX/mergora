@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./reasoning.css", "react"],
+  "entryPath": "registry/source/components/reasoning/reasoning.tsx",
+  "id": "reasoning",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

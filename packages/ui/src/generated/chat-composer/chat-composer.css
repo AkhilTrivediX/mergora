@@ -1,0 +1,136 @@
+/* Generated from registry/source/components/chat-composer/chat-composer.css by @mergora-internal/source-transformer. Do not edit. */
+@layer mergora.components {
+  .mrg-chat-composer {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-chat-composer[data-status="offline"],
+  .mrg-chat-composer[data-status="error"] {
+    border-color: var(--mrg-semantic-color-status-danger-border);
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-field"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-chat-composer textarea {
+    min-block-size: calc(var(--mrg-semantic-density-row-height) * 2);
+    max-block-size: 40vh;
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-space-inset-md);
+    resize: block;
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-chat-composer textarea:focus-visible,
+  .mrg-chat-composer button:focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-budget"],
+  .mrg-chat-composer [data-slot="chat-composer-shortcut"] {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-budget"] {
+    justify-self: end;
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-attachments"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-attachments"] li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border-block: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-error"] {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-danger-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-danger-foreground);
+    background: var(--mrg-semantic-color-status-danger-background);
+  }
+
+  .mrg-chat-composer [data-slot="chat-composer-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-chat-composer button {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    padding-inline: var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-action-border);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-action-foreground);
+    background: var(--mrg-semantic-color-action-background);
+    font: inherit;
+  }
+
+  .mrg-chat-composer button:disabled,
+  .mrg-chat-composer textarea:disabled {
+    color: var(--mrg-semantic-color-foreground-disabled);
+    background: var(--mrg-semantic-color-background-disabled);
+    opacity: var(--mrg-semantic-opacity-disabled);
+  }
+
+  @media (pointer: coarse) {
+    .mrg-chat-composer button {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-chat-composer,
+    .mrg-chat-composer textarea,
+    .mrg-chat-composer [data-slot="chat-composer-error"] {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-chat-composer button {
+      border-color: ButtonText;
+      color: ButtonText;
+      background: ButtonFace;
+    }
+    .mrg-chat-composer textarea:focus-visible,
+    .mrg-chat-composer button:focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

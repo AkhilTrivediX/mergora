@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "itemId": "comment-thread",
+  "entryExport": "CommentThread",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned children",
+  "exports": [
+    { "kind": "type", "name": "CommentMentionSuggestion" },
+    { "kind": "value", "name": "CommentThread" },
+    { "kind": "type", "name": "CommentThreadComment" },
+    { "kind": "type", "name": "CommentThreadProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "resolved",
+      "controlled": "resolved",
+      "uncontrolled": "defaultResolved",
+      "callback": "onResolvedChange"
+    },
+    {
+      "state": "draft",
+      "controlled": "draft",
+      "uncontrolled": "defaultDraft",
+      "callback": "onDraftChange"
+    }
+  ],
+  "props": [
+    { "name": "optimisticReplies", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "mentionSuggestions",
+      "required": false,
+      "default": false,
+      "type": "false | readonly CommentMentionSuggestion[]"
+    }
+  ],
+  "compositionPolicy": {
+    "mutations": "Reply and resolution callbacks remain consumer-owned.",
+    "enhancements": "Optimistic recovery and mention suggestions are independent and absent by default."
+  }
+}

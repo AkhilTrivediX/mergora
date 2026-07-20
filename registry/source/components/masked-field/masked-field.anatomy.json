@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "itemId": "masked-field",
+  "root": {
+    "element": "input",
+    "ref": "HTMLInputElement",
+    "slot": "masked-field-input",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "type",
+      "inputmode",
+      "autocomplete",
+      "required",
+      "disabled",
+      "readonly",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "masked-field",
+      "element": "span",
+      "purpose": "Specialist formatted-input, serialization, and validation layout.",
+      "stability": "documented"
+    },
+    {
+      "slot": "masked-field-control",
+      "element": "span",
+      "purpose": "Visual boundary around the real native editable input.",
+      "stability": "documented"
+    },
+    {
+      "slot": "masked-field-serialized-input",
+      "element": "input type=hidden",
+      "purpose": "Optional form-owned raw or formatted serialization chosen explicitly by the consumer.",
+      "stability": "documented"
+    },
+    {
+      "slot": "masked-field-validation",
+      "element": "span",
+      "purpose": "Localized adapter validation and recovery text associated with the visible input.",
+      "stability": "documented"
+    }
+  ]
+}

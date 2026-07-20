@@ -1,0 +1,200 @@
+/* Generated from registry/source/components/banner/banner.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-banner {
+  --mrg-banner-signal: var(--mrg-semantic-color-status-info-border);
+  --mrg-banner-signal-background: var(--mrg-semantic-color-status-info-background);
+  --mrg-banner-signal-foreground: var(--mrg-semantic-color-status-info-foreground);
+  background: var(--mrg-semantic-color-background-canvas);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+  border-radius: var(--mrg-semantic-radius-status);
+  box-shadow: inset 0 var(--mrg-semantic-border-width-strong) 0 var(--mrg-banner-signal);
+  box-sizing: border-box;
+  color: var(--mrg-semantic-color-foreground-primary);
+  container-name: mrg-banner;
+  container-type: inline-size;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  padding: var(--mrg-semantic-density-panel-padding);
+  scroll-margin-block: var(--mrg-semantic-space-section);
+}
+
+.mrg-banner[hidden] {
+  display: none;
+}
+
+.mrg-banner[data-persistence-pending="true"] {
+  visibility: hidden;
+}
+
+.mrg-banner[data-variant="success"] {
+  --mrg-banner-signal: var(--mrg-semantic-color-status-success-border);
+  --mrg-banner-signal-background: var(--mrg-semantic-color-status-success-background);
+  --mrg-banner-signal-foreground: var(--mrg-semantic-color-status-success-foreground);
+}
+
+.mrg-banner[data-variant="warning"] {
+  --mrg-banner-signal: var(--mrg-semantic-color-status-warning-border);
+  --mrg-banner-signal-background: var(--mrg-semantic-color-status-warning-background);
+  --mrg-banner-signal-foreground: var(--mrg-semantic-color-status-warning-foreground);
+}
+
+.mrg-banner[data-variant="error"] {
+  --mrg-banner-signal: var(--mrg-semantic-color-status-danger-border);
+  --mrg-banner-signal-background: var(--mrg-semantic-color-status-danger-background);
+  --mrg-banner-signal-foreground: var(--mrg-semantic-color-status-danger-foreground);
+}
+
+.mrg-banner > [data-slot="banner-layout"] {
+  align-items: center;
+  display: grid;
+  gap: var(--mrg-semantic-space-inline-md);
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  min-inline-size: 0;
+}
+
+.mrg-banner [data-slot="banner-content"] {
+  display: grid;
+  gap: var(--mrg-semantic-space-stack-xs);
+  min-inline-size: 0;
+}
+
+.mrg-banner [data-slot="banner-variant-label"] {
+  color: var(--mrg-banner-signal-foreground);
+  font-size: var(--mrg-semantic-font-size-caption);
+  font-weight: var(--mrg-semantic-font-weight-strong);
+}
+
+.mrg-banner [data-slot="banner-title"] {
+  font-size: var(--mrg-semantic-font-size-heading-small);
+  font-weight: var(--mrg-semantic-font-weight-heading);
+  letter-spacing: var(--mrg-semantic-font-letter-spacing-heading);
+  line-height: var(--mrg-semantic-font-line-height-heading);
+  margin: 0;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.mrg-banner [data-slot="banner-description"] {
+  max-inline-size: var(--mrg-semantic-size-content-prose);
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.mrg-banner [data-slot="banner-actions"] {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--mrg-semantic-space-inline-sm);
+  min-inline-size: 0;
+}
+
+.mrg-banner [data-slot="banner-dismiss"] {
+  align-items: center;
+  background: var(--mrg-component-control-background);
+  border: var(--mrg-semantic-border-width-default) solid var(--mrg-component-control-border);
+  border-radius: var(--mrg-component-control-radius);
+  color: var(--mrg-component-control-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font: inherit;
+  inline-size: var(--mrg-semantic-size-target-preferred);
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  transition:
+    background var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    border-color var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard),
+    transform var(--mrg-semantic-motion-duration-feedback)
+      var(--mrg-semantic-motion-easing-standard);
+}
+
+.mrg-banner [data-slot="banner-dismiss"]:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+.mrg-banner [data-slot="banner-dismiss"]:hover {
+  background: var(--mrg-component-control-background-hover);
+  border-color: var(--mrg-component-control-border-hover);
+}
+
+.mrg-banner [data-slot="banner-dismiss"]:active {
+  background: var(--mrg-component-control-background-pressed);
+  border-color: var(--mrg-component-control-border-active);
+  box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-default)
+    var(--mrg-component-control-border-active);
+  transform: translateY(var(--mrg-semantic-border-width-default));
+}
+
+@container mrg-banner (inline-size < 32rem) {
+  .mrg-banner > [data-slot="banner-layout"] {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .mrg-banner [data-slot="banner-actions"] {
+    grid-column: 1 / -1;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (width < 32rem) {
+    .mrg-banner > [data-slot="banner-layout"] {
+      align-items: start;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .mrg-banner [data-slot="banner-actions"] {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
+@media (scripting: none) {
+  .mrg-banner[data-persistence-pending="true"] {
+    visibility: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-banner [data-slot="banner-dismiss"] {
+    transition-duration: var(--mrg-semantic-motion-duration-reduced);
+  }
+
+  .mrg-banner [data-slot="banner-dismiss"]:active {
+    transform: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-banner {
+    border-color: CanvasText;
+    box-shadow: inset 0 var(--mrg-semantic-border-width-strong) 0 CanvasText;
+  }
+
+  .mrg-banner [data-slot="banner-dismiss"] {
+    background: ButtonFace;
+    border-color: ButtonBorder;
+    color: ButtonText;
+  }
+
+  .mrg-banner [data-slot="banner-dismiss"]:focus-visible {
+    box-shadow: none;
+    outline: 3px solid Highlight;
+    outline-offset: 3px;
+  }
+
+  .mrg-banner [data-slot="banner-dismiss"]:hover {
+    background: Highlight;
+    color: HighlightText;
+  }
+
+  .mrg-banner [data-slot="banner-dismiss"]:active {
+    box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-default) CanvasText;
+  }
+}

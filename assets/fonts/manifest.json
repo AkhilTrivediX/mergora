@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "subsetter": {
+    "brotli": "1.2.0",
+    "fontTools": "4.62.1"
+  },
+  "siteSubsets": [
+    {
+      "asset": "schibsted-grotesk-site-basic-wght.woff2",
+      "bytes": 37980,
+      "display": "optional",
+      "preload": true,
+      "sha256": "dcbf3d18a5677584e924634fd7181291f6f6644f5ddef77291e4940fde62d92f",
+      "sourceAsset": "schibsted-grotesk-latin-ext-wght.woff2",
+      "unicodeRange": "U+0020-007E,U+00A0,U+00B7,U+00D7,U+2010-2027,U+2032-2033,U+2039-203A,U+20AC,U+2190-2199"
+    }
+  ],
+  "families": [
+    {
+      "family": "Schibsted Grotesk",
+      "asset": "schibsted-grotesk-latin-ext-wght.woff2",
+      "sha256": "34e6c5583165b9c809e2a6a3af4f33edf3fbdf7c0de5ad9e466bd636d316e52b",
+      "bytes": 64196,
+      "style": "normal",
+      "weight": "400 900",
+      "display": "swap",
+      "preload": true,
+      "license": "OFL-Schibsted-Grotesk.txt",
+      "licenseSha256": "851b03806ddbd92890a59a8512a883ff231587f9bef037895efa544a0f250432",
+      "licenseSpdx": "OFL-1.1",
+      "source": {
+        "repository": "google/fonts",
+        "commit": "8b0a1d0f5983c89bc2b93f1b5fb55f9e252744b5",
+        "path": "ofl/schibstedgrotesk/SchibstedGrotesk[wght].ttf",
+        "sha256": "6ceeadf6be8e1fd7687011c7fa38ed0edd1abe967a0b73d97caec183552e823d"
+      },
+      "unicodeRange": [
+        "U+0000-024F",
+        "U+0300-036F",
+        "U+1E00-1EFF",
+        "U+2000-206F",
+        "U+2070-209F",
+        "U+20A0-20CF",
+        "U+2100-214F",
+        "U+2190-21FF",
+        "U+2200-22FF",
+        "U+2300-23FF",
+        "U+25A0-25FF",
+        "U+2600-26FF",
+        "U+FB00-FB06"
+      ],
+      "coverage": ["Latin", "Latin Extended", "Vietnamese"],
+      "fallback": {
+        "family": "Schibsted Grotesk Fallback",
+        "local": "Arial",
+        "sizeAdjust": "101.6949%",
+        "ascentOverride": "96.0286%",
+        "descentOverride": "25.3516%",
+        "lineGapOverride": "0.0000%"
+      }
+    },
+    {
+      "family": "Commit Mono",
+      "asset": "commit-mono-latin-greek-wght.woff2",
+      "sha256": "d3544274757823e0c7e48622d441c95170be7d84b6a2e59fec7bead8984278ba",
+      "bytes": 43756,
+      "style": "normal",
+      "weight": "200 700",
+      "display": "swap",
+      "preload": false,
+      "license": "OFL-Commit-Mono.txt",
+      "licenseSha256": "005e08f22d472be5139dcaf876dbed7ce8f17a501cd180c3259ad2aaf27237fe",
+      "licenseSpdx": "OFL-1.1",
+      "source": {
+        "repository": "eigilnikolajsen/commit-mono",
+        "commit": "d407cd2bf8e01ca1db70544052fbbb9606406c3b",
+        "path": "src/fonts/fontlab/CommitMonoV143-VF.ttf",
+        "sha256": "98de9a901163a769812c3cf2f1b86d63a98a9ced6720d747aa6652688407c34f"
+      },
+      "normalization": {
+        "maxpMaxZones": {
+          "source": 0,
+          "output": 1,
+          "maxTwilightPoints": 0,
+          "reason": "OpenType maxp v1 requires one or two zones; this no-twilight font needs the glyph zone only."
+        }
+      },
+      "unicodeRange": [
+        "U+0000-024F",
+        "U+0300-03FF",
+        "U+1E00-1FFF",
+        "U+2000-206F",
+        "U+2070-209F",
+        "U+20A0-20CF",
+        "U+2100-214F",
+        "U+2190-21FF",
+        "U+2200-22FF",
+        "U+2300-23FF",
+        "U+25A0-25FF",
+        "U+2600-26FF",
+        "U+FFFD"
+      ],
+      "coverage": ["Latin", "Latin Extended", "Greek"],
+      "fallback": {
+        "family": "Commit Mono Fallback",
+        "local": "Consolas",
+        "sizeAdjust": "110.1514%",
+        "ascentOverride": "81.7057%",
+        "descentOverride": "18.1568%",
+        "lineGapOverride": "0.0000%"
+      }
+    }
+  ]
+}

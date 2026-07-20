@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "itemId": "breadcrumb",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": ["default", "hover", "active", "focus-visible", "populated", "partial"],
+  "slots": [
+    { "name": "breadcrumb", "semanticElement": "nav", "refTarget": "HTMLElement", "states": [] },
+    {
+      "name": "breadcrumb-list",
+      "semanticElement": "ol",
+      "refTarget": "HTMLOListElement",
+      "states": []
+    },
+    {
+      "name": "breadcrumb-link",
+      "semanticElement": "a",
+      "refTarget": "HTMLAnchorElement",
+      "states": []
+    },
+    {
+      "name": "breadcrumb-current",
+      "semanticElement": "span aria-current=page",
+      "refTarget": "HTMLSpanElement",
+      "states": []
+    },
+    {
+      "name": "breadcrumb-overflow",
+      "semanticElement": "details",
+      "refTarget": "HTMLDetailsElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "breadcrumb-accessibility", "version": "0.1.0" },
+  "passport": { "id": "breadcrumb-quality-passport", "version": "0.0.0" }
+}

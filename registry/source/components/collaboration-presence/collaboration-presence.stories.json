@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collaboration-presence",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicCollaborationPresence"
+    },
+    {
+      "id": "summary",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCollaborationPresence"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "stale",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCollaborationPresence"
+    },
+    { "id": "offline", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

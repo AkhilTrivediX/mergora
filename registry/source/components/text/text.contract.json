@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "text",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, virtualization, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "text: span | p | div | small | strong | em",
+    "rolePolicy": "The chosen native text element is preserved. Truncated values become focusable and expose their complete string as an accessible name, title, and focus/touch expansion.",
+    "refTarget": "HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "No managed focus model is introduced; native links or consumer descendants follow document order."
+    }
+  ],
+  "nonColor": "Meaning and structure do not depend on color.",
+  "responsive": "Logical properties, intrinsic minimums, wrapping, and component-owned overflow preserve content at 320 CSS pixels, 200% text, and 400% reflow; evidence remains unrecorded.",
+  "stableSelectors": {
+    "root": "[data-slot=text]",
+    "parts": [],
+    "attributes": ["data-size", "data-tone", "data-weight", "data-truncate"]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
+    "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
+    "Truncating non-text children requires fullValue; promotion still requires touch and screen-reader verification of the reveal path."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "copy",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-semantic-engines",
+      "keyboard-visual",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

@@ -1,0 +1,91 @@
+/* Generated from registry/source/components/drawer/drawer.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-drawer__overlay .mrg-drawer__content {
+  --mrg-drawer-swipe-offset: 0px;
+  background: var(--mrg-semantic-color-background-canvas);
+  border-color: var(--mrg-semantic-color-border-interactive);
+  max-block-size: min(88dvb, 48rem);
+  max-inline-size: min(100dvi, 40rem);
+}
+
+.mrg-drawer__overlay[data-side="bottom"] .mrg-drawer__content {
+  border-block-start-width: var(--mrg-semantic-border-width-strong);
+  border-radius: var(--mrg-semantic-radius-container) var(--mrg-semantic-radius-container) 0 0;
+  inline-size: min(100dvi, 40rem);
+  margin-inline: auto;
+  transform: translateY(var(--mrg-drawer-swipe-offset));
+}
+
+.mrg-drawer__overlay[data-side="start"] .mrg-drawer__content,
+.mrg-drawer__overlay[data-side="end"] .mrg-drawer__content {
+  border-inline-width: var(--mrg-semantic-border-width-strong);
+}
+
+.mrg-drawer__overlay[dir="ltr"][data-side="start"] .mrg-drawer__content,
+.mrg-drawer__overlay[dir="rtl"][data-side="end"] .mrg-drawer__content {
+  transform: translateX(calc(var(--mrg-drawer-swipe-offset) * -1));
+}
+
+.mrg-drawer__overlay[dir="rtl"][data-side="start"] .mrg-drawer__content,
+.mrg-drawer__overlay[dir="ltr"][data-side="end"] .mrg-drawer__content {
+  transform: translateX(var(--mrg-drawer-swipe-offset));
+}
+
+.mrg-drawer__swipe-handle {
+  align-items: center;
+  align-self: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--mrg-semantic-radius-control);
+  box-sizing: border-box;
+  cursor: grab;
+  display: flex;
+  justify-content: center;
+  min-block-size: var(--mrg-semantic-size-target-preferred);
+  min-inline-size: var(--mrg-semantic-size-target-preferred);
+  padding: var(--mrg-semantic-space-inline-sm);
+  touch-action: none;
+}
+
+.mrg-drawer__swipe-handle > span {
+  background: var(--mrg-semantic-color-border-interactive);
+  block-size: var(--mrg-semantic-border-width-strong);
+  border-radius: var(--mrg-semantic-radius-compact);
+  inline-size: 3.5rem;
+}
+
+.mrg-drawer__swipe-handle:hover > span,
+.mrg-drawer__swipe-handle:active > span {
+  background: var(--mrg-semantic-color-action-background);
+}
+
+.mrg-drawer__swipe-handle:focus-visible {
+  box-shadow: 0 0 0 var(--mrg-component-focus-indicator-width)
+    var(--mrg-component-focus-indicator-contrast-background);
+  outline: var(--mrg-component-focus-indicator-width) solid
+    var(--mrg-component-focus-indicator-color);
+  outline-offset: var(--mrg-component-focus-indicator-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mrg-drawer__content {
+    transform: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .mrg-drawer__overlay .mrg-drawer__content {
+    background: Canvas;
+    border-color: CanvasText;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+
+  .mrg-drawer__swipe-handle > span {
+    background: ButtonText;
+  }
+
+  .mrg-drawer__swipe-handle:focus-visible {
+    outline-color: Highlight;
+  }
+}

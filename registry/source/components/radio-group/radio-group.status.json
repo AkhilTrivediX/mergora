@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "radio-group",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify complete APG arrow, Home, End, disabled, and RTL sequences.",
+    "Verify native required validation, one-value submission, and reset.",
+    "Record card and plain layouts at narrow, zoom, and long labels.",
+    "Complete forced-colors, keyboard, speech, switch, and touch review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual screen-reader evidence and an approved Quality Passport."
+  ]
+}

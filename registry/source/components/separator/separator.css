@@ -1,0 +1,48 @@
+.mrg-separator {
+  background: var(--mrg-semantic-color-border-default);
+  border: 0;
+  flex: none;
+  margin: 0;
+}
+
+.mrg-separator[data-orientation="horizontal"] {
+  block-size: var(--mrg-semantic-border-width-default);
+  inline-size: 100%;
+}
+
+.mrg-separator[data-orientation="vertical"] {
+  align-self: stretch;
+  inline-size: var(--mrg-semantic-border-width-default);
+  min-block-size: var(--mrg-semantic-size-icon-sm);
+}
+
+.mrg-separator[data-orientation="horizontal"][data-spacing="sm"] {
+  margin-block: var(--mrg-semantic-space-stack-sm);
+}
+
+.mrg-separator[data-orientation="horizontal"][data-spacing="md"] {
+  margin-block: var(--mrg-semantic-space-stack-md);
+}
+
+.mrg-separator[data-orientation="horizontal"][data-spacing="lg"] {
+  margin-block: var(--mrg-semantic-space-stack-lg);
+}
+
+.mrg-separator[data-orientation="vertical"][data-spacing] {
+  margin-inline: var(--mrg-semantic-space-inline-sm);
+}
+
+.mrg-separator[data-orientation="vertical"][data-spacing="md"] {
+  margin-inline: var(--mrg-semantic-space-inline-md);
+}
+
+.mrg-separator[data-orientation="vertical"][data-spacing="lg"] {
+  margin-inline: var(--mrg-semantic-space-inline-lg);
+}
+
+@media (forced-colors: active) {
+  .mrg-separator {
+    background: CanvasText;
+    forced-color-adjust: auto;
+  }
+}

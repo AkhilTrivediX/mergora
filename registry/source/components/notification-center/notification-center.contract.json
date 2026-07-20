@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "notification-center",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete accessibility, package-parity, performance-scale, or publication claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Named section, filter button group, ordered notifications, article items, native checkboxes and buttons.",
+    "rolePolicy": "Queued updates and read announcements create live regions only when explicitly enabled.",
+    "refTarget": "HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through filters, selection, item and recovery controls in document order."
+    },
+    { "key": "Enter / Space", "behavior": "Activates focused native buttons and checkboxes." }
+  ],
+  "nonColor": "Unread count, mark-read labels, structural borders and text accompany the green unread mark.",
+  "responsive": "Actions wrap below content at narrow widths; logical properties preserve RTL and zoom order.",
+  "stableSelectors": {
+    "root": "[data-slot=notification-center]",
+    "parts": [
+      "[data-slot=notification-center-live-queue]",
+      "[data-slot=notification-center-bulk]",
+      "[data-slot=notification-center-groups]"
+    ],
+    "attributes": ["data-slot", "data-read", "aria-posinset", "aria-setsize"]
+  },
+  "consumerResponsibilities": [
+    "Persist read state, authorize bulk operations and own routing, transport, retention and notification privacy.",
+    "For virtualization, supply a window that preserves the active/focused item and verify large-data performance.",
+    "Localize visible/spoken text and retest screen readers, keyboard, touch, zoom, RTL and forced colors.",
+    "Do not claim Stable until every promotion delta has current evidence."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "keyboard",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "performance-scale",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-mobile-screen-reader",
+      "keyboard-only",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

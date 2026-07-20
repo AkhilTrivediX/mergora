@@ -1,0 +1,7 @@
+.mrg-button {
+  min-block-size: var(--mrg-semantic-size-control-lg);
+  border-radius: var(--mrg-semantic-radius-full);
+  background: var(--mrg-semantic-color-action-primary);
+  color: var(--mrg-semantic-color-text-on-action);
+  touch-action: manipulation;
+}

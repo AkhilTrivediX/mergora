@@ -1,0 +1,31 @@
+// Generated from registry/source/components/dialog/index.ts by @mergora-internal/source-transformer. Do not edit.
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+  type DialogCloseProps,
+  type DialogContentProps,
+  type DialogDescriptionProps,
+  type DialogFooterProps,
+  type DialogHeaderProps,
+  type DialogInitialFocus,
+  type DialogModality,
+  type DialogOverlayProps,
+  type DialogPartKind,
+  type DialogPlacement,
+  type DialogRootProps,
+  type DialogTitleProps,
+  type DialogTriggerProps,
+} from "./dialog.js";
+export type {
+  DialogDismissPolicy,
+  DialogOpenChangeDetails,
+  DialogOpenChangeReason,
+} from "./model.js";

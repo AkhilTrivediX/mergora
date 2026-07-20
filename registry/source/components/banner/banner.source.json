@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./banner.css", "react"],
+  "entryPath": "registry/source/components/banner/banner.tsx",
+  "id": "banner",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

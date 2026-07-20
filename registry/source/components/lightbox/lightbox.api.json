@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "itemId": "lightbox",
+  "entryExport": "Lightbox",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Lightbox"
+    },
+    {
+      "kind": "type",
+      "name": "LightboxChangeReason"
+    },
+    {
+      "kind": "type",
+      "name": "LightboxIndexChangeDetails"
+    },
+    {
+      "kind": "type",
+      "name": "LightboxItem"
+    },
+    {
+      "kind": "type",
+      "name": "LightboxProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showPositionSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "zoomControls",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "swipeNavigation",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Lightbox; optional output is additive and independently removable.",
+    "enhancement": "Position summary, zoom controls, and swipe navigation are separate booleans. Each false value removes its UI, state, handlers, events, and accessibility output independently."
+  }
+}

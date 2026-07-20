@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "itemId": "context-menu",
+  "entryExport": "ContextMenu",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "ContextMenu"
+    },
+    {
+      "kind": "type",
+      "name": "ContextMenuOpenChangeDetails"
+    },
+    {
+      "kind": "type",
+      "name": "ContextMenuOpenReason"
+    },
+    {
+      "kind": "type",
+      "name": "ContextMenuProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showInvocationHint",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "selectionSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "confirmDestructiveActions",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Context Menu; optional output is additive and independently removable.",
+    "enhancement": "The optional invocation guide adds visible and programmatic discovery of every supported invocation path. Disabling it removes the guide, aria-describedby relationship, and all enhancement output."
+  }
+}

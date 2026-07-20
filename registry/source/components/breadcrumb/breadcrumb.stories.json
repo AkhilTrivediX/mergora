@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "itemId": "breadcrumb",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "active",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Hierarchy ancestors are destinations and must remain links rather than disabled pseudo-links."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Navigation landmarks have no read-only state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Invalid hierarchy data is rejected rather than rendered as a state."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb navigation is not a required form value."
+      }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "The application owns route loading feedback separately from the location hierarchy."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An empty hierarchy is invalid usage rather than a supported state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "DisclosureNavigationWorkbench"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success does not alter location semantics."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require adjacent content and do not alter location semantics."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Route errors are owned by page feedback rather than breadcrumb styling."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Breadcrumb links navigate and do not perform destructive actions."
+      }
+    }
+  ]
+}

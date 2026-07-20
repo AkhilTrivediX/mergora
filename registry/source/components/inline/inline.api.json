@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline",
+  "entryExport": "Inline",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement>",
+  "exports": [
+    { "kind": "component", "name": "Inline" },
+    { "kind": "type", "name": "InlineProps" },
+    { "kind": "type", "name": "InlineGap" },
+    { "kind": "type", "name": "InlineAlign" },
+    { "kind": "type", "name": "InlineJustify" }
+  ],
+  "props": [
+    { "default": "sm", "name": "gap", "required": false, "type": "none | xs | sm | md | lg" },
+    {
+      "default": "center",
+      "name": "align",
+      "required": false,
+      "type": "stretch | start | center | end | baseline"
+    },
+    {
+      "default": "start",
+      "name": "justify",
+      "required": false,
+      "type": "start | center | end | between"
+    },
+    { "default": true, "name": "wrap", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "wrapping": "Wraps by default for resilient reflow; wrap=false opts into a deliberate single logical line.",
+    "enhancement": "Adaptive wrapping is independently disabled by wrap=false, which removes wrapping without adding scroll, events, or accessibility output.",
+    "semantics": "Always a neutral div; use a semantic parent for lists, toolbars, or navigation."
+  }
+}

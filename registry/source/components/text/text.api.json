@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "itemId": "text",
+  "entryExport": "Text",
+  "refTarget": "HTMLElement",
+  "nativeProps": "React.HTMLAttributes<HTMLElement>",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "Text"
+    },
+    {
+      "kind": "type",
+      "name": "TextProps"
+    },
+    {
+      "kind": "type",
+      "name": "TextElement"
+    },
+    {
+      "kind": "type",
+      "name": "TextSize"
+    },
+    {
+      "kind": "type",
+      "name": "TextTone"
+    },
+    {
+      "kind": "type",
+      "name": "TextWeight"
+    }
+  ],
+  "props": [
+    {
+      "name": "as",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "size",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "weight",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "tone",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "truncate",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    },
+    {
+      "name": "fullValue",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "The chosen native text element is preserved. Truncated values become focusable and expose their complete string as an accessible name, title, and focus/touch expansion.",
+    "escapeHatch": "className, style, data attributes, relevant native attributes, and the documented ref target remain available without overriding owned roles or state."
+  }
+}

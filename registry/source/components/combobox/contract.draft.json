@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "combobox-accessibility-contract-draft",
+  "itemId": "combobox",
+  "status": "draft-unverified",
+  "normativeBaseline": {
+    "wcag": "2.2-AA",
+    "aria": "1.2",
+    "apgPattern": "https://www.w3.org/WAI/ARIA/apg/patterns/combobox/"
+  },
+  "semantics": {
+    "inputRole": "combobox",
+    "popupRole": "listbox",
+    "focusModel": "aria-activedescendant",
+    "visibleLabelPreferred": true,
+    "interactiveItemDescendantsAllowed": false
+  },
+  "keyboard": [
+    { "key": "ArrowDown", "behavior": "Open the popup and virtually focus the next option." },
+    { "key": "ArrowUp", "behavior": "Open the popup and virtually focus the previous option." },
+    { "key": "Enter", "behavior": "Accept the virtually focused option." },
+    { "key": "Escape", "behavior": "Close without committing a newly navigated option." },
+    {
+      "key": "Home/End",
+      "behavior": "Preserve platform text editing while focus remains in the input."
+    },
+    { "key": "Tab", "behavior": "Leave the widget; popup descendants are not separate tab stops." }
+  ],
+  "consumerResponsibilities": [
+    "Provide a visible Label or an explicit accessible name.",
+    "When composing Clear, provide a localized non-empty label when the default English label is not appropriate.",
+    "Give each Item a unique string or number id and a stable textValue when its label is not plain text.",
+    "Do not place buttons, links, inputs, or other interactive descendants inside an Item.",
+    "Localize the trigger label, empty content, description, error message, and item text.",
+    "Keep remote filtering cancellable and expose loading, empty, error, and retry states outside this P1 tracer."
+  ],
+  "evidence": {
+    "automated": "pass",
+    "browser": "pass",
+    "manualAssistiveTechnology": "not-supplied",
+    "packageSourceParity": "not-tested"
+  },
+  "limitations": [
+    "P1 does not promise virtualization, multiple selection, remote loading orchestration, or rich interactive item descendants.",
+    "Clear is an optional compound part. Omitting it removes the action, its event path, and its accessible name without changing input, selection, form, or popup behavior."
+  ]
+}

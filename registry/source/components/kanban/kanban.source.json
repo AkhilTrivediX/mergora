@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./kanban.css", "react"],
+  "entryPath": "registry/source/components/kanban/kanban.tsx",
+  "id": "kanban",
+  "itemDependencies": [],
+  "outputRole": "system"
+}

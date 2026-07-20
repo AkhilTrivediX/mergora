@@ -1,0 +1,6 @@
+# Onboarding workflow
+Validate workspace and license
+Create account
+Invite team
+Review access
+Deploy workspace

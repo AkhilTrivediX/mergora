@@ -1,0 +1,19 @@
+{
+  "name": "@mergora-internal/token-compiler",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/compiler.mjs"
+  },
+  "scripts": {
+    "build": "node src/cli.mjs --check && tsc -p tsconfig.json",
+    "check": "node src/cli.mjs --check",
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "generate": "node src/cli.mjs --write",
+    "typecheck": "node src/cli.mjs --check && tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}

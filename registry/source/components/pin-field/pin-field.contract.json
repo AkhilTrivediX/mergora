@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "pin-field",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, password-manager-compatibility, authentication, security, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "one native input type=password in secure mode or type=text in visible mode",
+    "naming": "One persistent visible Field label, native label, aria-label, or aria-labelledby names the complete reusable-secret PIN; segments are hidden from accessibility APIs.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "HTMLInputElement"
+  },
+  "interaction": {
+    "keyboard": "The browser owns editing, selection, undo, composition, and caret movement. Paste remains native unless the consumer explicitly selects the block policy.",
+    "pointer": "The single visible native input is the only pointer-editing target.",
+    "touch": "The default numeric input mode and at least 44 CSS pixel control height support mobile entry without replacing the native keyboard.",
+    "speech": "The one visible full-field label remains the only voice target rather than exposing per-digit slots.",
+    "switchAccess": "One real input is one switch target with no roving focus or proxy controls."
+  },
+  "formBehavior": "Native name, value, form, required, disabled, autocomplete, pattern, validation, submission, and reset remain authoritative. Uncontrolled reset restores the normalized default and clears paste status; controlled value remains consumer-owned.",
+  "states": {
+    "attributes": [
+      "data-complete",
+      "data-composing",
+      "data-disabled",
+      "data-display-mode",
+      "data-empty",
+      "data-invalid",
+      "data-paste-policy",
+      "data-purpose",
+      "data-readonly"
+    ],
+    "synchronization": "Normalized input value, secure or visible display, paste policy status, reusable-secret purpose, Field relationships, and controlled or uncontrolled ownership remain explicit and synchronized."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=pin-field]",
+    "attributes": [
+      "data-complete",
+      "data-disabled",
+      "data-display-mode",
+      "data-empty",
+      "data-invalid",
+      "data-paste-policy",
+      "data-purpose",
+      "data-readonly"
+    ]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Purpose, paste status, invalidity, and display state never rely on color alone.",
+    "forcedColors": "Uses system colors, visible borders, decorative segment lines, and explicit focus indicators.",
+    "reducedMotion": "No essential information or interaction depends on animation."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "The single input, segment guides, labels, descriptions, errors, and paste status reflow without horizontal page overflow."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "purposeLabel",
+      "pasteBlockedMessage"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Composition is retained in the real native input and numeric normalization occurs only on composition end; no composition key is treated as a navigation command.",
+    "serialization": "NFKC-normalized ASCII digits are bounded to the declared length and submitted without decorative separators. Allow mode reads paste event text only for this bounded insertion and never logs, persists, or transmits it; block mode does not read clipboard data."
+  },
+  "consumerResponsibilities": [
+    "Use PinField only for a reusable secret and use OtpField for one-time codes.",
+    "Provide one persistent visible label and explain the PIN's real scope without disclosing the secret.",
+    "Choose a purpose-appropriate autocomplete policy after password-manager and authentication review; current-password is only the default hint.",
+    "Prefer native paste; select block only when a documented security policy outweighs password-manager and accessibility costs.",
+    "Provide attempt limits, lockout recovery, server validation, transport, storage, and audit behavior in the owning authentication workflow.",
+    "Never log, score, transmit, or persist PIN values from presentation callbacks.",
+    "Localize purpose, paste, and all consumer-authored authentication text."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "single-input-field-association",
+      "secure-visible-display",
+      "allow-and-block-paste-policy",
+      "composition-and-caret",
+      "mobile-input-hints",
+      "native-validation-submission-reset",
+      "controlled-uncontrolled",
+      "narrow-rtl-forced-colors",
+      "axe",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "password-manager-discovery-with-reviewed-autocomplete",
+      "paste-and-mobile-keyboard",
+      "keyboard-and-switch-entry",
+      "nvda-firefox",
+      "voiceover-safari",
+      "speech-input"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "The PIN field does not implement attempt limits, lockout, encryption, transport, storage, authentication, or server validation.",
+    "Block paste is available only as an explicit policy and can reduce accessibility and password-manager utility.",
+    "Native password rendering varies by platform; visible mode deliberately exposes the reusable secret on screen.",
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, current password-manager sessions, or current manual assistive-technology sessions."
+  ]
+}

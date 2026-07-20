@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./mention-field.css", "react"],
+  "entryPath": "registry/source/components/mention-field/mention-field.tsx",
+  "id": "mention-field",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

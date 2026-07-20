@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/theme-v1.schema.json",
+  "title": "Mergora DTCG theme preset v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "dtcgVersion",
+    "id",
+    "displayName",
+    "modes",
+    "densities",
+    "tokens",
+    "acknowledgedRuleIds"
+  ],
+  "properties": {
+    "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
+    "dtcgVersion": { "const": "2025.10" },
+    "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+    "displayName": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+    "modes": {
+      "type": "array",
+      "items": { "enum": ["light", "dark", "enhanced-contrast", "forced-colors"] },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 4
+    },
+    "densities": {
+      "type": "array",
+      "items": { "enum": ["comfortable", "compact", "touch"] },
+      "uniqueItems": true,
+      "minItems": 1,
+      "maxItems": 3
+    },
+    "tokens": {
+      "$ref": "#/$defs/tokenGroup"
+    },
+    "acknowledgedRuleIds": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "uniqueItems": true,
+      "maxItems": 128
+    },
+    "checksum": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+    "compatibleMergora": { "$ref": "common-v1.schema.json#/$defs/semverRange" }
+  },
+  "$defs": {
+    "tokenGroup": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+      "additionalProperties": {
+        "oneOf": [{ "$ref": "#/$defs/token" }, { "$ref": "#/$defs/tokenGroup" }]
+      }
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$type", "$value"],
+      "properties": {
+        "$type": {
+          "enum": [
+            "color",
+            "dimension",
+            "fontFamily",
+            "fontWeight",
+            "duration",
+            "cubicBezier",
+            "number",
+            "strokeStyle",
+            "border",
+            "shadow",
+            "gradient",
+            "typography"
+          ]
+        },
+        "$value": {
+          "oneOf": [
+            { "type": "string", "maxLength": 4096 },
+            { "type": "number" },
+            { "type": "boolean" },
+            { "type": "array", "maxItems": 64 },
+            { "type": "object", "maxProperties": 64 }
+          ]
+        },
+        "$description": { "type": "string", "maxLength": 1024 }
+      }
+    }
+  }
+}

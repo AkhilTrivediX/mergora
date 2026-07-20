@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "citation",
+  "root": {
+    "element": "span",
+    "ref": "HTMLSpanElement",
+    "slot": "citation",
+    "stableAttributes": ["data-slot", "data-safe-url"]
+  },
+  "parts": ["citation-source-detail"]
+}

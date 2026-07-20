@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "itemId": "collaboration-presence",
+  "entryExport": "CollaborationPresence",
+  "refTarget": "HTMLUListElement",
+  "nativeProps": "HTML ul attributes except owned children",
+  "exports": [
+    { "kind": "value", "name": "CollaborationPresence" },
+    { "kind": "type", "name": "CollaborationPresencePerson" },
+    { "kind": "type", "name": "CollaborationPresenceProps" },
+    { "kind": "type", "name": "CollaborationPresenceStatus" },
+    { "kind": "type", "name": "CollaborationStalePolicy" },
+    { "kind": "value", "name": "getCollaborationPresenceStatus" }
+  ],
+  "props": [
+    {
+      "name": "stalePolicy",
+      "required": false,
+      "default": false,
+      "type": "false | CollaborationStalePolicy"
+    },
+    { "name": "showSummary", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "baseline": "Every person has visible name and status text.",
+    "enhancements": "Deterministic stale derivation and aggregate summary are independent and absent when false."
+  }
+}

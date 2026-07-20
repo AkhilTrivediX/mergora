@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-time-field",
+  "root": {
+    "element": "input type=datetime-local",
+    "ref": "HTMLInputElement",
+    "slot": "date-time-field",
+    "stableAttributes": ["data-slot", "name", "form", "required", "disabled", "readOnly"]
+  },
+  "parts": [
+    {
+      "slot": "date-time-field",
+      "element": "input type=datetime-local",
+      "purpose": "native local wall-time editing and form value",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-field-zone",
+      "element": "optional described text",
+      "purpose": "explicit interpretation timezone",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-field-wall-time",
+      "element": "optional output",
+      "purpose": "resolved, ambiguous, nonexistent, or adapter-error status and recovery",
+      "stability": "documented"
+    },
+    {
+      "slot": "date-time-field-resolved-value",
+      "element": "optional hidden input",
+      "purpose": "consumer-named resolved instant serialization",
+      "stability": "documented"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "description-list",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, virtualization, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "description-list: dl; description-term: dt; description-details: dd",
+    "rolePolicy": "The public parts render only native dl, dt, and dd elements. CSS changes columns without reordering the DOM or fabricating table roles.",
+    "refTarget": "HTMLDListElement | HTMLElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "No managed focus model is introduced; native links or consumer descendants follow document order."
+    }
+  ],
+  "nonColor": "Meaning and structure do not depend on color.",
+  "responsive": "Logical properties, intrinsic minimums, wrapping, and component-owned overflow preserve content at 320 CSS pixels, 200% text, and 400% reflow; evidence remains unrecorded.",
+  "stableSelectors": {
+    "root": "[data-slot=description-list]",
+    "parts": ["[data-slot=description-term]", "[data-slot=description-details]"],
+    "attributes": ["data-layout", "data-density"]
+  },
+  "consumerResponsibilities": [
+    "Preserve native elements, owned roles, labels, relationships, state attributes, and DOM reading order when composing or styling this item.",
+    "Localize visible and spoken strings and retest long values, bidirectional content, focus, text spacing, zoom, and forced colors after overrides.",
+    "Consumers must preserve valid term/detail ordering and supply an appropriate surrounding heading when the list needs a visible title."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "ssr",
+      "semantic-structure",
+      "keyboard",
+      "copy",
+      "axe",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "desktop-semantic-engines",
+      "keyboard-visual",
+      "touch",
+      "windows-forced-colors",
+      "zoom-and-text"
+    ],
+    "recordedEvidence": []
+  }
+}

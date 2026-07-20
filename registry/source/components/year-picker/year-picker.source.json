@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../date-field/date-time-utils.js", "./year-picker.css", "react"],
+  "entryPath": "registry/source/components/year-picker/year-picker.tsx",
+  "id": "year-picker",
+  "itemDependencies": ["date-field"],
+  "outputRole": "system"
+}

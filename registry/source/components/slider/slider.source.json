@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "../field/index.js",
+    "../provider/index.js",
+    "./slider.css",
+    "react",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/Slider"
+  ],
+  "entryPath": "registry/source/components/slider/slider.tsx",
+  "id": "slider",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

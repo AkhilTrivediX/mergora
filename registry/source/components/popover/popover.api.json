@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "itemId": "popover",
+  "entryExport": "Popover",
+  "refTarget": "compound-part-dependent",
+  "exports": [
+    { "kind": "namespace", "name": "Popover" },
+    { "kind": "type", "name": "PopoverAlign" },
+    { "kind": "component", "name": "PopoverArrow" },
+    { "kind": "type", "name": "PopoverArrowProps" },
+    { "kind": "component", "name": "PopoverClose" },
+    { "kind": "type", "name": "PopoverCloseProps" },
+    { "kind": "component", "name": "PopoverContent" },
+    { "kind": "type", "name": "PopoverContentProps" },
+    { "kind": "component", "name": "PopoverDescription" },
+    { "kind": "type", "name": "PopoverDescriptionProps" },
+    { "kind": "type", "name": "PopoverInitialFocus" },
+    { "kind": "type", "name": "PopoverOpenChangeDetails" },
+    { "kind": "type", "name": "PopoverOpenChangeReason" },
+    { "kind": "type", "name": "PopoverPlacement" },
+    { "kind": "component", "name": "PopoverRoot" },
+    { "kind": "type", "name": "PopoverRootProps" },
+    { "kind": "component", "name": "PopoverTitle" },
+    { "kind": "type", "name": "PopoverTitleProps" },
+    { "kind": "component", "name": "PopoverTrigger" },
+    { "kind": "type", "name": "PopoverTriggerProps" },
+    { "kind": "function", "name": "resolvePopoverPlacement" }
+  ],
+  "controlledState": ["open"],
+  "nativePolicy": [
+    "React Aria owns anchored positioning, collision/flip, dismissal, focus scope, portal, and focus return.",
+    "Popover is explicitly non-modal and does not inert or trap the surrounding application.",
+    "Mergora maps logical placement to physical React Aria placement from provider direction while provider locale remains available for interaction.",
+    "LayerManager records the surface as non-dismissible and never competes for Escape.",
+    "anchorContext optionally preserves trigger context in the visible and accessible description; omission emits nothing."
+  ]
+}

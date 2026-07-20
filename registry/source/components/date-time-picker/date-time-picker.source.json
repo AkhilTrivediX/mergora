@@ -1,0 +1,12 @@
+{
+  "declaredImports": [
+    "../date-field/date-time-utils.js",
+    "../date-time-field/index.js",
+    "./date-time-picker.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/date-time-picker/date-time-picker.tsx",
+  "id": "date-time-picker",
+  "itemDependencies": ["date-field", "date-time-field"],
+  "outputRole": "system"
+}

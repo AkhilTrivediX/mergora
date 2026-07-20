@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "itemId": "segmented-control",
+  "states": [
+    {
+      "id": "default",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "BasicDefaults"
+    },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Action and selection controls do not expose a read-only state; use disabled only when interaction must be unavailable."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Validation ownership belongs to a field or workflow rather than this standalone action contract."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not own an asynchronous pending state."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "An empty or unnamed action is invalid usage rather than a supported presentation state."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "applicable"
+      },
+      "story": "ActionsWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component has no partial-selection or partial-data state."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Success belongs to persistent workflow feedback rather than a color-only control state."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings require adjacent explanation and are not encoded as a standalone control state."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Errors belong to the failed operation or field unless the component explicitly reports a clipboard rejection."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "This component does not expose a destructive intent; destructive workflows use Button or ActionMenu contracts."
+      }
+    }
+  ]
+}

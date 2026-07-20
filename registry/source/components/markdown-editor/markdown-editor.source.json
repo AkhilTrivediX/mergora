@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./markdown-editor.css", "react"],
+  "entryPath": "registry/source/components/markdown-editor/markdown-editor.tsx",
+  "id": "markdown-editor",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

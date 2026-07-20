@@ -1,0 +1,44 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/context-menu/**/*.ts",
+    "../../../registry/source/components/context-menu/**/*.tsx",
+    "../../../registry/source/components/dialog/**/*.ts",
+    "../../../registry/source/components/dialog/**/*.tsx",
+    "../../../registry/source/components/direction/**/*.ts",
+    "../../../registry/source/components/direction/**/*.tsx",
+    "../../../registry/source/components/drawer/**/*.ts",
+    "../../../registry/source/components/drawer/**/*.tsx",
+    "../../../registry/source/components/dropdown-menu/**/*.ts",
+    "../../../registry/source/components/dropdown-menu/**/*.tsx",
+    "../../../registry/source/components/hover-card/**/*.ts",
+    "../../../registry/source/components/hover-card/**/*.tsx",
+    "../../../registry/source/components/layer-manager/**/*.ts",
+    "../../../registry/source/components/layer-manager/**/*.tsx",
+    "../../../registry/source/components/lightbox/**/*.ts",
+    "../../../registry/source/components/lightbox/**/*.tsx",
+    "../../../registry/source/components/menubar/**/*.ts",
+    "../../../registry/source/components/menubar/**/*.tsx",
+    "../../../registry/source/components/provider/**/*.ts",
+    "../../../registry/source/components/provider/**/*.tsx",
+    "../../../registry/source/components/sheet/**/*.ts",
+    "../../../registry/source/components/sheet/**/*.tsx",
+    "../../../registry/source/components/slot/**/*.ts",
+    "../../../registry/source/components/slot/**/*.tsx",
+    "../../../registry/source/components/toast/**/*.ts",
+    "../../../registry/source/components/toast/**/*.tsx",
+    "../../../apps/storybook/src/P5OverlaySystems.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

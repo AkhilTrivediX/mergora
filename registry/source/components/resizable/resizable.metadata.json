@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "itemId": "resizable",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "controlled",
+    "uncontrolled",
+    "horizontal",
+    "vertical",
+    "collapsed",
+    "disabled",
+    "keyboard",
+    "pointer",
+    "touch-controls",
+    "separator-only",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "resizable-root",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["orientation", "expanded", "collapsed", "disabled", "step-controls"]
+    },
+    {
+      "name": "resizable-primary",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["expanded", "collapsed"]
+    },
+    {
+      "name": "resizable-handle",
+      "semanticElement": "div",
+      "refTarget": "internal wrapper",
+      "states": ["orientation"]
+    },
+    {
+      "name": "resizable-separator",
+      "semanticElement": "div role=separator",
+      "refTarget": "HTMLDivElement",
+      "states": ["value", "orientation", "disabled"]
+    },
+    {
+      "name": "resizable-secondary",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": []
+    }
+  ],
+  "contract": { "id": "resizable-accessibility", "version": "0.1.0" },
+  "passport": { "id": "resizable-quality-passport", "version": "0.0.0" }
+}

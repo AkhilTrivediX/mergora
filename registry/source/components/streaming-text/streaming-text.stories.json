@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "streaming-text",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicStreamingText" },
+    {
+      "id": "streaming",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedStreamingText"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

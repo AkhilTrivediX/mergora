@@ -1,0 +1,945 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/contract-v1.schema.json",
+  "title": "Mergora accessibility acceptance contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "contractVersion",
+    "component",
+    "claim",
+    "standards",
+    "semantics",
+    "naming",
+    "interaction",
+    "states",
+    "preferences",
+    "responsive",
+    "internationalization",
+    "consumerResponsibilities",
+    "tests",
+    "manualEvidence",
+    "limitations",
+    "issues",
+    "acceptance"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "contractVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "displayName",
+        "sourcePaths",
+        "releaseVersion",
+        "releaseCommit",
+        "sourceDigest",
+        "maturity",
+        "riskClass",
+        "owners"
+      ],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "displayName": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "sourcePaths": {
+          "type": "array",
+          "items": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "releaseVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+        "releaseCommit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+        "sourceDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "maturity": { "$ref": "common-v1.schema.json#/$defs/maturity" },
+        "riskClass": { "$ref": "common-v1.schema.json#/$defs/riskClass" },
+        "owners": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "uniqueItems": true,
+          "minItems": 1
+        }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publicStatement", "target", "isolatedComponentCertification", "lastReviewed"],
+      "properties": {
+        "publicStatement": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "target": { "const": "WCAG-2.2-AA" },
+        "isolatedComponentCertification": { "const": false },
+        "lastReviewed": { "type": "string", "format": "date" }
+      }
+    },
+    "standards": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wcag", "ariaVersion", "apgPatterns", "section508", "en301549", "aaaGoals"],
+      "properties": {
+        "wcag": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion", "level", "relationship", "behavior", "evidenceIds"],
+            "properties": {
+              "criterion": { "type": "string", "pattern": "^[1-4]\\.[0-9]+\\.[0-9]+$" },
+              "level": { "enum": ["A", "AA", "AAA"] },
+              "relationship": {
+                "enum": ["direct", "supporting", "consumer-dependent", "not-applicable"]
+              },
+              "behavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+              "evidenceIds": {
+                "type": "array",
+                "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "uniqueItems": true
+              },
+              "rationale": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": { "relationship": { "const": "not-applicable" } },
+                  "required": ["relationship"]
+                },
+                "then": { "required": ["rationale"] }
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "ariaVersion": { "const": "1.2" },
+        "apgPatterns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "url", "relationship", "departures"],
+            "properties": {
+              "name": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+              "url": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+              "relationship": { "enum": ["implements", "adapts", "not-applicable"] },
+              "departures": {
+                "type": "array",
+                "items": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                "maxItems": 64
+              }
+            }
+          }
+        },
+        "section508": { "$ref": "#/$defs/regulatoryMapping" },
+        "en301549": { "$ref": "#/$defs/regulatoryMapping" },
+        "aaaGoals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion", "status", "measurements"],
+            "properties": {
+              "criterion": { "enum": ["1.4.6", "2.3.3", "2.4.12", "2.4.13", "2.5.5"] },
+              "status": { "enum": ["met", "partially-met", "not-applicable"] },
+              "measurements": {
+                "type": "array",
+                "items": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+              },
+              "rationale": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+            }
+          }
+        }
+      }
+    },
+    "semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "nativeBasis",
+        "customRoleRationale",
+        "parts",
+        "relationships",
+        "readingOrder",
+        "liveRegions",
+        "prohibitedCompositions",
+        "requiredDeveloperWarnings"
+      ],
+      "properties": {
+        "nativeBasis": { "$ref": "#/$defs/stringList" },
+        "customRoleRationale": { "$ref": "#/$defs/stringList" },
+        "parts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "required",
+              "element",
+              "role",
+              "nameSource",
+              "descriptionSource",
+              "states",
+              "properties",
+              "owns",
+              "labelledBy",
+              "describedBy"
+            ],
+            "properties": {
+              "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+              "required": { "type": "boolean" },
+              "element": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "role": {
+                "oneOf": [{ "type": "string", "minLength": 1, "maxLength": 80 }, { "type": "null" }]
+              },
+              "nameSource": {
+                "oneOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 160 },
+                  { "type": "null" }
+                ]
+              },
+              "descriptionSource": {
+                "oneOf": [
+                  { "type": "string", "minLength": 1, "maxLength": 160 },
+                  { "type": "null" }
+                ]
+              },
+              "states": { "$ref": "#/$defs/stringList" },
+              "properties": { "$ref": "#/$defs/stringList" },
+              "owns": { "$ref": "#/$defs/idList" },
+              "labelledBy": { "$ref": "#/$defs/idList" },
+              "describedBy": { "$ref": "#/$defs/idList" }
+            }
+          },
+          "minItems": 1
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "relation", "to", "lifecycle"],
+            "properties": {
+              "from": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+              "relation": {
+                "enum": ["controls", "owns", "labels", "describes", "error-for", "member-of"]
+              },
+              "to": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+              "lifecycle": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+            }
+          }
+        },
+        "readingOrder": { "$ref": "#/$defs/idList" },
+        "liveRegions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "politeness", "atomic", "relevant", "messages", "throttling"],
+            "properties": {
+              "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+              "politeness": { "enum": ["polite", "assertive", "off"] },
+              "atomic": { "type": "boolean" },
+              "relevant": { "$ref": "#/$defs/stringList" },
+              "messages": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["event", "messageKey", "dedupe"],
+                  "properties": {
+                    "event": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                    "messageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                    "dedupe": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+                  }
+                }
+              },
+              "throttling": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+            }
+          }
+        },
+        "prohibitedCompositions": { "$ref": "#/$defs/rules" },
+        "requiredDeveloperWarnings": { "$ref": "#/$defs/rules" }
+      }
+    },
+    "naming": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "controlPart",
+          "source",
+          "visibleLabelInName",
+          "descriptionSources",
+          "localizationKeys",
+          "emptyNameBehavior"
+        ],
+        "properties": {
+          "controlPart": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "source": {
+            "enum": ["contents", "label", "labelledby", "consumer-required", "computed"]
+          },
+          "visibleLabelInName": { "type": "boolean" },
+          "descriptionSources": { "$ref": "#/$defs/stringList" },
+          "localizationKeys": { "$ref": "#/$defs/idList" },
+          "emptyNameBehavior": {
+            "enum": ["development-error", "development-warning", "impossible-by-api"]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "interaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modalities",
+        "keyboard",
+        "focus",
+        "pointer",
+        "touch",
+        "drag",
+        "speech",
+        "switchAccess"
+      ],
+      "properties": {
+        "modalities": { "$ref": "#/$defs/modalities" },
+        "keyboard": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "key",
+              "modifiers",
+              "context",
+              "action",
+              "directionEffect",
+              "preventDefault",
+              "repeatBehavior"
+            ],
+            "properties": {
+              "key": { "type": "string", "minLength": 1, "maxLength": 80 },
+              "modifiers": {
+                "type": "array",
+                "items": { "enum": ["Alt", "Control", "Meta", "Shift"] },
+                "uniqueItems": true
+              },
+              "context": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+              "action": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+              "directionEffect": { "enum": ["same", "mirror", "locale-dependent"] },
+              "preventDefault": { "type": "boolean" },
+              "repeatBehavior": { "enum": ["allow", "ignore", "accelerate"] }
+            }
+          },
+          "minItems": 1
+        },
+        "focus": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "entry",
+            "initial",
+            "internalModel",
+            "movement",
+            "exit",
+            "restoration",
+            "triggerRemovedFallback",
+            "deletionFallback",
+            "obscurationProtection",
+            "virtualizationStrategy"
+          ],
+          "properties": {
+            "entry": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "initial": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "internalModel": {
+              "enum": ["native", "roving-tabindex", "aria-activedescendant", "managed-direct"]
+            },
+            "movement": { "$ref": "#/$defs/stringList" },
+            "exit": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "restoration": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "triggerRemovedFallback": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "deletionFallback": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "obscurationProtection": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "virtualizationStrategy": {
+              "oneOf": [
+                { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        "pointer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "minimumTargetCssPx",
+            "cancellation",
+            "hoverAlternative",
+            "pathGestureAlternatives",
+            "motionActuationAlternative"
+          ],
+          "properties": {
+            "minimumTargetCssPx": { "enum": [24, 44] },
+            "cancellation": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "hoverAlternative": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "pathGestureAlternatives": { "$ref": "#/$defs/stringList" },
+            "motionActuationAlternative": {
+              "oneOf": [
+                { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        "touch": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "targetCssPx",
+            "explorationOrder",
+            "longPressAlternative",
+            "virtualKeyboardBehavior"
+          ],
+          "properties": {
+            "targetCssPx": { "type": "number", "minimum": 24 },
+            "explorationOrder": { "$ref": "#/$defs/idList" },
+            "longPressAlternative": {
+              "oneOf": [
+                { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                { "type": "null" }
+              ]
+            },
+            "virtualKeyboardBehavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+          }
+        },
+        "drag": {
+          "oneOf": [
+            { "type": "null" },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "draggableParts",
+                "keyboardAlternative",
+                "nonDragPointerAlternative",
+                "pickupMessageKey",
+                "moveMessageKey",
+                "invalidMessageKey",
+                "dropMessageKey",
+                "cancelMessageKey",
+                "undo",
+                "rtlBehavior"
+              ],
+              "properties": {
+                "draggableParts": { "$ref": "#/$defs/idList" },
+                "keyboardAlternative": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                "nonDragPointerAlternative": {
+                  "$ref": "common-v1.schema.json#/$defs/nonEmptyString"
+                },
+                "pickupMessageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "moveMessageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "invalidMessageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "dropMessageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "cancelMessageKey": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+                "undo": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                "rtlBehavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+              }
+            }
+          ]
+        },
+        "speech": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["visibleLabels", "duplicateLabelDisambiguation", "voiceCommandsTested"],
+          "properties": {
+            "visibleLabels": { "$ref": "#/$defs/stringList" },
+            "duplicateLabelDisambiguation": {
+              "$ref": "common-v1.schema.json#/$defs/nonEmptyString"
+            },
+            "voiceCommandsTested": { "$ref": "#/$defs/stringList" }
+          }
+        },
+        "switchAccess": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scanOrder", "groupStrategy", "duplicateStopsProhibited", "primaryTask"],
+          "properties": {
+            "scanOrder": { "$ref": "#/$defs/idList" },
+            "groupStrategy": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+            "duplicateStopsProhibited": { "const": true },
+            "primaryTask": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+          }
+        }
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "trigger",
+          "visual",
+          "programmatic",
+          "announcement",
+          "focusBehavior",
+          "recovery",
+          "requiredStories"
+        ],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "trigger": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "visual": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "programmatic": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "announcement": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }, { "type": "null" }]
+          },
+          "focusBehavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+          "recovery": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }, { "type": "null" }]
+          },
+          "requiredStories": { "$ref": "#/$defs/idList" }
+        }
+      },
+      "minItems": 1
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "themes",
+        "reducedMotion",
+        "reducedTransparency",
+        "forcedColors",
+        "enhancedContrast",
+        "textSpacing",
+        "colorScheme"
+      ],
+      "properties": {
+        "themes": {
+          "type": "array",
+          "items": { "enum": ["light", "dark", "enhanced-contrast", "forced-colors"] },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "reducedMotion": { "$ref": "#/$defs/preferenceBehavior" },
+        "reducedTransparency": { "$ref": "#/$defs/preferenceBehavior" },
+        "forcedColors": { "$ref": "#/$defs/preferenceBehavior" },
+        "enhancedContrast": { "$ref": "#/$defs/preferenceBehavior" },
+        "textSpacing": { "$ref": "#/$defs/preferenceBehavior" },
+        "colorScheme": { "$ref": "#/$defs/preferenceBehavior" }
+      }
+    },
+    "responsive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "minimumInlineSizeCssPx",
+        "supports400PercentZoom",
+        "supports200PercentText",
+        "supportsTextSpacingOverride",
+        "orientationIndependent",
+        "containerQueries",
+        "adaptations",
+        "essentialTwoDimensionalRegions",
+        "stickyFocusProtection",
+        "virtualKeyboardBehavior"
+      ],
+      "properties": {
+        "minimumInlineSizeCssPx": { "const": 320 },
+        "supports400PercentZoom": { "type": "boolean" },
+        "supports200PercentText": { "type": "boolean" },
+        "supportsTextSpacingOverride": { "type": "boolean" },
+        "orientationIndependent": { "type": "boolean" },
+        "containerQueries": { "type": "boolean" },
+        "adaptations": { "type": "array", "items": { "$ref": "#/$defs/responsiveAdaptation" } },
+        "essentialTwoDimensionalRegions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/essentialRegion" }
+        },
+        "stickyFocusProtection": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "virtualKeyboardBehavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+      }
+    },
+    "internationalization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directions",
+        "requiredLocales",
+        "pseudoLocales",
+        "timeZones",
+        "messageKeys",
+        "formatters",
+        "imeScenarios",
+        "bidiIsolation",
+        "serialization"
+      ],
+      "properties": {
+        "directions": {
+          "type": "array",
+          "items": { "enum": ["ltr", "rtl"] },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "requiredLocales": { "const": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN"] },
+        "pseudoLocales": { "const": ["en-XA", "ar-XB"] },
+        "timeZones": {
+          "type": "array",
+          "items": { "enum": ["UTC", "America/New_York", "Europe/Berlin", "Asia/Kolkata"] },
+          "uniqueItems": true
+        },
+        "messageKeys": { "$ref": "#/$defs/idList" },
+        "formatters": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "Collator",
+              "DateTimeFormat",
+              "DisplayNames",
+              "ListFormat",
+              "NumberFormat",
+              "PluralRules",
+              "RelativeTimeFormat",
+              "Segmenter"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "imeScenarios": { "type": "array", "items": { "$ref": "#/$defs/scenario" } },
+        "bidiIsolation": { "type": "array", "items": { "$ref": "#/$defs/scenario" } },
+        "serialization": { "type": "array", "items": { "$ref": "#/$defs/scenario" } }
+      }
+    },
+    "consumerResponsibilities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rule" },
+      "minItems": 1
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unit",
+        "interaction",
+        "browser",
+        "axe",
+        "visual",
+        "responsive",
+        "locale",
+        "packedConsumer"
+      ],
+      "properties": {
+        "unit": { "$ref": "#/$defs/testReferences" },
+        "interaction": { "$ref": "#/$defs/testReferences" },
+        "browser": { "$ref": "#/$defs/testReferences" },
+        "axe": { "$ref": "#/$defs/testReferences" },
+        "visual": { "$ref": "#/$defs/testReferences" },
+        "responsive": { "$ref": "#/$defs/testReferences" },
+        "locale": { "$ref": "#/$defs/testReferences" },
+        "packedConsumer": { "$ref": "#/$defs/testReferences" }
+      }
+    },
+    "manualEvidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "performedAt",
+          "componentDigest",
+          "contractVersion",
+          "tester",
+          "platform",
+          "assistiveTechnology",
+          "browser",
+          "modalities",
+          "locale",
+          "direction",
+          "theme",
+          "viewport",
+          "zoomPercent",
+          "tasks",
+          "result",
+          "recordingOrTranscript",
+          "evidenceDigest",
+          "carriedFromRelease"
+        ],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "performedAt": { "type": "string", "format": "date" },
+          "componentDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "contractVersion": { "$ref": "common-v1.schema.json#/$defs/semver" },
+          "tester": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "platform": { "$ref": "#/$defs/namedVersion" },
+          "assistiveTechnology": {
+            "oneOf": [{ "$ref": "#/$defs/namedVersion" }, { "type": "null" }]
+          },
+          "browser": { "$ref": "#/$defs/namedVersion" },
+          "modalities": { "$ref": "#/$defs/modalities" },
+          "locale": { "type": "string", "minLength": 2, "maxLength": 40 },
+          "direction": { "enum": ["ltr", "rtl"] },
+          "theme": { "enum": ["light", "dark", "enhanced-contrast", "forced-colors"] },
+          "viewport": { "type": "string", "minLength": 1, "maxLength": 80 },
+          "zoomPercent": { "type": "number", "minimum": 100, "maximum": 400 },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "result", "notes", "issueIds"],
+              "properties": {
+                "name": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+                "result": { "$ref": "common-v1.schema.json#/$defs/contractEvidenceState" },
+                "notes": { "type": "string", "maxLength": 4096 },
+                "issueIds": { "$ref": "#/$defs/idList" }
+              }
+            },
+            "minItems": 1
+          },
+          "result": { "$ref": "common-v1.schema.json#/$defs/contractEvidenceState" },
+          "recordingOrTranscript": {
+            "oneOf": [
+              { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+              { "type": "null" }
+            ]
+          },
+          "evidenceDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+          "carriedFromRelease": {
+            "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/semver" }, { "type": "null" }]
+          }
+        }
+      }
+    },
+    "limitations": { "type": "array", "items": { "$ref": "#/$defs/limitation" } },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "url", "severity", "status", "regressionTestIds"],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "url": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+          "severity": { "enum": ["A0", "A1", "A2", "A3"] },
+          "status": { "enum": ["open", "fixed", "upstream"] },
+          "regressionTestIds": { "$ref": "#/$defs/idList" }
+        }
+      }
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automatedPassed",
+        "requiredManualRowsPassed",
+        "noOpenA0A1A2ForStable",
+        "consumerDocsPublished",
+        "evidenceDigest",
+        "acceptedBy",
+        "acceptedAt"
+      ],
+      "properties": {
+        "automatedPassed": { "type": "boolean" },
+        "requiredManualRowsPassed": { "type": "boolean" },
+        "noOpenA0A1A2ForStable": { "type": "boolean" },
+        "consumerDocsPublished": { "type": "boolean" },
+        "evidenceDigest": { "$ref": "common-v1.schema.json#/$defs/sha256" },
+        "acceptedBy": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 160 },
+          "uniqueItems": true
+        },
+        "acceptedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+      "maxItems": 1024
+    },
+    "idList": {
+      "type": "array",
+      "items": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+      "uniqueItems": true,
+      "maxItems": 1024
+    },
+    "modalities": {
+      "type": "array",
+      "items": { "enum": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"] },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "regulatoryMapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "supportsEvaluationOnly", "clauses", "evidenceIds"],
+      "properties": {
+        "statement": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "supportsEvaluationOnly": { "const": true },
+        "clauses": { "$ref": "#/$defs/stringList" },
+        "evidenceIds": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "requirement", "failureImpact", "documentationAnchor", "testGuidance"],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "requirement": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "failureImpact": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "documentationAnchor": { "type": "string", "pattern": "^#[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "testGuidance": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+      }
+    },
+    "rules": { "type": "array", "items": { "$ref": "#/$defs/rule" }, "maxItems": 1024 },
+    "preferenceBehavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detection", "adaptation", "requiredTests"],
+      "properties": {
+        "detection": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "adaptation": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "requiredTests": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "responsiveAdaptation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "condition",
+        "anatomyChange",
+        "readingOrder",
+        "focusOrder",
+        "capabilityPreserved",
+        "tests"
+      ],
+      "properties": {
+        "condition": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "anatomyChange": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "readingOrder": { "$ref": "#/$defs/idList" },
+        "focusOrder": { "$ref": "#/$defs/idList" },
+        "capabilityPreserved": { "$ref": "#/$defs/stringList" },
+        "tests": { "$ref": "#/$defs/idList" }
+      }
+    },
+    "essentialRegion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "part",
+        "reasonTwoDimensionalIsEssential",
+        "scrollAffordance",
+        "keyboardAccess",
+        "alternativeRepresentation"
+      ],
+      "properties": {
+        "part": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "reasonTwoDimensionalIsEssential": {
+          "$ref": "common-v1.schema.json#/$defs/nonEmptyString"
+        },
+        "scrollAffordance": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "keyboardAccess": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "alternativeRepresentation": {
+          "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }, { "type": "null" }]
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context", "operation", "expected"],
+      "properties": {
+        "context": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "operation": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "expected": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }
+      }
+    },
+    "testReferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "path",
+          "command",
+          "scenarios",
+          "browsers",
+          "result",
+          "artifact",
+          "digest"
+        ],
+        "properties": {
+          "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+          "path": { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" },
+          "command": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "description": "Documentation only; never registry-executable."
+          },
+          "scenarios": { "$ref": "#/$defs/idList" },
+          "browsers": { "$ref": "#/$defs/stringList" },
+          "result": { "$ref": "common-v1.schema.json#/$defs/contractEvidenceState" },
+          "artifact": {
+            "oneOf": [
+              { "$ref": "common-v1.schema.json#/$defs/immutableUrl" },
+              { "$ref": "common-v1.schema.json#/$defs/projectRelativePath" }
+            ]
+          },
+          "digest": { "$ref": "common-v1.schema.json#/$defs/sha256" }
+        }
+      }
+    },
+    "namedVersion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "version": { "type": "string", "minLength": 1, "maxLength": 120 }
+      }
+    },
+    "limitation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "environment",
+        "behavior",
+        "userImpact",
+        "wcagCriteria",
+        "workaround",
+        "upstreamIssue",
+        "publicIssue",
+        "severity",
+        "expiresByRelease"
+      ],
+      "properties": {
+        "id": { "$ref": "common-v1.schema.json#/$defs/catalogId" },
+        "environment": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "behavior": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "userImpact": { "$ref": "common-v1.schema.json#/$defs/nonEmptyString" },
+        "wcagCriteria": { "$ref": "#/$defs/stringList" },
+        "workaround": {
+          "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/nonEmptyString" }, { "type": "null" }]
+        },
+        "upstreamIssue": {
+          "oneOf": [{ "$ref": "common-v1.schema.json#/$defs/httpsUrl" }, { "type": "null" }]
+        },
+        "publicIssue": { "$ref": "common-v1.schema.json#/$defs/httpsUrl" },
+        "severity": { "enum": ["A2", "A3"] },
+        "expiresByRelease": { "$ref": "common-v1.schema.json#/$defs/semver" }
+      }
+    }
+  }
+}

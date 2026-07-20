@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "textarea",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "native textarea",
+    "naming": "A visible Field label, native label, aria-label, or aria-labelledby names the textarea.",
+    "roleOverride": "Consumer role overrides are outside the supported contract.",
+    "refTarget": "documented in anatomy and API records"
+  },
+  "interaction": {
+    "keyboard": "The browser owns multiline editing, composition, selection, undo, paste, and validation.",
+    "pointer": "Native pointer activation and cancellation remain authoritative for interactive descendants.",
+    "touch": "Coarse-pointer presentation preserves at least a 44 CSS pixel preferred target where the item is interactive.",
+    "speech": "Visible labels remain available for voice targeting.",
+    "switchAccess": "No duplicate proxy focus target is introduced."
+  },
+  "formBehavior": "Native name, value, maxlength, required, disabled, and reset semantics remain authoritative. maxGraphemes uses non-destructive native custom validity, synchronizes visual and ARIA invalid state after committed input, and clears validity after correction or reset.",
+  "states": {
+    "attributes": [
+      "data-autogrow",
+      "data-disabled",
+      "data-invalid",
+      "data-count-unit",
+      "id",
+      "name",
+      "maxlength",
+      "required",
+      "disabled",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ],
+    "synchronization": "Visible, programmatic, and native form states are kept synchronized without hidden behavior engines."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=textarea-root]",
+    "attributes": ["data-autogrow", "data-disabled", "data-invalid", "data-count-unit"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens.",
+    "enhancedContrast": "Uses semantic theme tokens and non-color state cues.",
+    "forcedColors": "Uses system colors, visible borders, and system-color focus indicators.",
+    "reducedMotion": "No essential information depends on motion; Switch removes its thumb transition."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels and messages wrap without clipping; form values retain native scrolling where applicable."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "field-label",
+      "field-description",
+      "field-error",
+      "textarea.count",
+      "textarea.countWithMaximum",
+      "textarea.graphemeLimit",
+      "formatCount",
+      "placeholder"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "Native editing and maxLength retain browser composition behavior. maxGraphemes freezes count and validity during composition, then evaluates the committed value without truncation.",
+    "serialization": "Serialized names and values remain consumer-owned machine data and are never localized by the component."
+  },
+  "consumerResponsibilities": [
+    "Provide a persistent visible label.",
+    "Override provider count keys or formatCount when English fallbacks are unsuitable.",
+    "Provide Intl.Segmenter or a standards-conformant polyfill when using maxGraphemes in an unsupported legacy runtime.",
+    "Do not add JavaScript truncation or submission transforms that corrupt composition."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr-hydration",
+      "composition",
+      "native-maxlength",
+      "grapheme-segmentation-validity",
+      "autogrow-cap",
+      "count-reset",
+      "submission",
+      "narrow-rtl-forced-colors",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "japanese-ime",
+      "mobile-virtual-keyboard",
+      "dictation-paste-undo",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include immutable generated artifacts, packed-consumer evidence, package/source parity, or current manual assistive-technology sessions."
+  ]
+}

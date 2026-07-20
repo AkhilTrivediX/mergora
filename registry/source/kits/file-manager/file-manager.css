@@ -1,0 +1,313 @@
+@layer mergora.components {
+  .mrg-file-manager {
+    display: grid;
+    grid-template-columns: minmax(13rem, 18rem) minmax(0, 1fr);
+    max-inline-size: var(--mrg-semantic-size-content-wide);
+    overflow: clip;
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-file-manager h1,
+  .mrg-file-manager h2,
+  .mrg-file-manager h3,
+  .mrg-file-manager p {
+    margin-block: 0;
+  }
+
+  .mrg-file-manager h1 {
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-file-manager h2 {
+    font-size: var(--mrg-semantic-font-size-heading-small);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-header"] {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-header"] p,
+  .mrg-file-manager [data-slot="file-manager-section-heading"] p,
+  .mrg-file-manager [data-slot="file-manager-file-copy"] span {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-caption);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-view"],
+  .mrg-file-manager [data-slot="file-manager-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-folders"] {
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-inline-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-folders"] h2 {
+    margin-block-end: var(--mrg-semantic-space-stack-sm);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-content"] {
+    display: grid;
+    align-content: start;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.45fr);
+    gap: 0;
+    min-inline-size: 0;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-files"],
+  .mrg-file-manager [data-slot="file-manager-preview"],
+  .mrg-file-manager [data-slot="file-manager-uploads"],
+  .mrg-file-manager [data-slot="file-manager-conflicts"],
+  .mrg-file-manager [data-slot="file-manager-storage"] {
+    min-inline-size: 0;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-preview"] {
+    border-inline-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-uploads"],
+  .mrg-file-manager [data-slot="file-manager-conflicts"] {
+    grid-column: 1 / -1;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-section-heading"] {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    margin-block-end: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-list"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-list"][data-view="grid"] {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-list"] button {
+    display: flex;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    inline-size: 100%;
+    min-block-size: var(--mrg-semantic-size-target-preferred);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-default);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: inherit;
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-list"] button[aria-pressed="true"] {
+    border-color: var(--mrg-semantic-color-selection-border);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-mark"] {
+    flex: none;
+    min-inline-size: 2.5rem;
+    padding: var(--mrg-semantic-space-inset-xs);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+    font-family: var(--mrg-semantic-font-family-machine);
+    font-size: var(--mrg-semantic-font-size-caption);
+    text-align: center;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-copy"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    min-inline-size: 0;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-file-copy"] strong {
+    overflow-wrap: anywhere;
+    font-weight: var(--mrg-semantic-font-weight-strong);
+  }
+
+  .mrg-file-manager [data-status="conflict"] {
+    border-color: var(--mrg-semantic-color-status-warning-border);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-preview-content"] dl,
+  .mrg-file-manager [data-slot="file-manager-conflicts"] dl {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-sm);
+    margin-block: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-file-manager dl div {
+    display: grid;
+    grid-template-columns: minmax(5rem, auto) minmax(0, 1fr);
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-file-manager dt {
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-file-manager dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mrg-file-manager form {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+    margin-block-start: var(--mrg-semantic-space-stack-md);
+  }
+
+  .mrg-file-manager :is(input, select) {
+    min-block-size: var(--mrg-semantic-density-control-height);
+    padding: var(--mrg-semantic-density-control-padding-block)
+      var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-file-manager [data-slot="file-manager-offline"],
+  .mrg-file-manager [data-slot="file-manager-error"],
+  .mrg-file-manager [data-slot="file-manager-recovery"] {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-sm) var(--mrg-semantic-density-panel-padding);
+    border-block-end: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-warning-border);
+    color: var(--mrg-semantic-color-status-warning-foreground);
+    background: var(--mrg-semantic-color-status-warning-background);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-recovery"] {
+    position: sticky;
+    inset-block-end: 0;
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-success-border);
+    border-block-end: 0;
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+
+  .mrg-file-manager meter {
+    inline-size: 100%;
+    block-size: var(--mrg-semantic-space-inset-sm);
+    accent-color: var(--mrg-semantic-color-brand-living);
+  }
+
+  .mrg-file-manager :is(button, input, select):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  .mrg-file-manager [data-slot="file-manager-announcer"] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 52rem) {
+    .mrg-file-manager {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-file-manager [data-slot="file-manager-folders"] {
+      border-inline-end: 0;
+      border-block-end: var(--mrg-semantic-border-width-default) solid
+        var(--mrg-semantic-color-border-default);
+    }
+
+    .mrg-file-manager [data-slot="file-manager-content"] {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mrg-file-manager [data-slot="file-manager-preview"] {
+      border-inline-start: 0;
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .mrg-file-manager [data-slot="file-manager-header"],
+    .mrg-file-manager [data-slot="file-manager-section-heading"],
+    .mrg-file-manager [data-slot="file-manager-recovery"] {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-file-manager *,
+    .mrg-file-manager *::before,
+    .mrg-file-manager *::after {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+      animation-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-file-manager,
+    .mrg-file-manager [data-slot="file-manager-file-list"] button,
+    .mrg-file-manager :is(input, select) {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+      forced-color-adjust: auto;
+    }
+
+    .mrg-file-manager [data-slot="file-manager-file-list"] button[aria-pressed="true"] {
+      border-color: Highlight;
+      color: HighlightText;
+      background: Highlight;
+    }
+  }
+}

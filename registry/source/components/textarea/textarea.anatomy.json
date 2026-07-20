@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "textarea",
+  "root": {
+    "element": "textarea",
+    "ref": "HTMLTextAreaElement",
+    "slot": "textarea",
+    "stableAttributes": [
+      "data-slot",
+      "id",
+      "name",
+      "required",
+      "disabled",
+      "maxlength",
+      "aria-describedby",
+      "aria-errormessage",
+      "aria-invalid"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "textarea-root",
+      "element": "span",
+      "purpose": "Visual border, autogrow, and count layout.",
+      "stability": "documented"
+    },
+    {
+      "slot": "textarea-count",
+      "element": "output",
+      "purpose": "Non-live localized UTF-16 code-unit or grapheme-cluster count, matching the selected limit mode.",
+      "stability": "documented"
+    }
+  ]
+}

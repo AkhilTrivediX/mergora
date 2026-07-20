@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Verify BasicDefaults and RecommendedMergora enhancement-off/on stories and selective controls in generated Storybook evidence.",
+    "Generate and verify source/package/registry/docs outputs and subpath exports.",
+    "Record 320 CSS pixel and 400% zoom wrapping for long German, Arabic, and unbreakable content.",
+    "Verify focus order and logical start/end alignment in LTR and RTL browsers.",
+    "Pass packed Next.js and Vite consumers plus package/source parity.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Complete current keyboard reading-order, touch reflow, and forced-colors manual evidence.",
+    "Publish an approved Quality Passport and dogfood the generated output on the public site."
+  ]
+}

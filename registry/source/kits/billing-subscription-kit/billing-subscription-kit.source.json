@@ -1,0 +1,11 @@
+{
+  "declaredImports": [
+    "../../components/button/button.js",
+    "./billing-subscription-kit.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/billing-subscription-kit/billing-subscription-kit.tsx",
+  "id": "billing-subscription-kit",
+  "itemDependencies": ["button"],
+  "outputRole": "kit"
+}

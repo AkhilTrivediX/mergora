@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "itemId": "date-picker",
+  "entryExport": "DatePicker",
+  "refTarget": "HTMLDivElement",
+  "nativeProps": "HTML div attributes except owned value and change fields",
+  "exports": [
+    { "kind": "component", "name": "DatePicker" },
+    { "kind": "type", "name": "DatePickerPreset" },
+    { "kind": "type", "name": "DatePickerProps" }
+  ],
+  "controlledState": [
+    {
+      "state": "date",
+      "controlled": "value",
+      "uncontrolled": "defaultValue",
+      "callback": "onValueChange"
+    }
+  ],
+  "props": [
+    {
+      "name": "presets",
+      "required": false,
+      "default": false,
+      "type": "false | readonly DatePickerPreset[]"
+    },
+    { "name": "onPresetSelect", "required": false, "type": "(preset) => void" },
+    { "name": "showDateContext", "required": false, "default": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "native": "DateField retains native form, mobile picker, validation, and reset behavior.",
+    "presets": "Preset buttons are rendered only for a non-empty presets collection and preserve consumer-controlled ownership.",
+    "events": "onPresetSelect can fire only from a rendered preset button."
+  }
+}

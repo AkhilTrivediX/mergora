@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "itemId": "separator",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    {
+      "id": "hover",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator owns no hover interaction."
+      }
+    },
+    {
+      "id": "active",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator owns no activation state."
+      }
+    },
+    {
+      "id": "focus-visible",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator is deliberately not focusable."
+      }
+    },
+    {
+      "id": "disabled",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator is not a disableable control."
+      }
+    },
+    {
+      "id": "read-only",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator does not own editable state."
+      }
+    },
+    {
+      "id": "invalid",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator has no validation state."
+      }
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "not-applicable", "reason": "Separator is not a form control." }
+    },
+    {
+      "id": "loading",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Loading semantics belong to composed content."
+      }
+    },
+    {
+      "id": "empty",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator accepts no children or data collection."
+      }
+    },
+    {
+      "id": "populated",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator accepts no children or data collection."
+      }
+    },
+    {
+      "id": "partial",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator has no partial data model."
+      }
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator does not encode status by color."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator does not encode status by color."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator does not encode status by color."
+      }
+    },
+    {
+      "id": "destructive",
+      "applicability": { "status": "not-applicable", "reason": "Separator has no action intent." }
+    },
+    {
+      "id": "forced-colors",
+      "applicability": { "status": "applicable" },
+      "story": "SeparatorModes"
+    },
+    { "id": "narrow-320", "applicability": { "status": "applicable" }, "story": "SeparatorModes" },
+    {
+      "id": "reduced-motion",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Separator defines no animation or transition."
+      }
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "RightToLeft" },
+    {
+      "id": "semantic-horizontal",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "semantic-vertical",
+      "applicability": { "status": "applicable" },
+      "story": "SeparatorModes"
+    },
+    { "id": "zoom-400", "applicability": { "status": "applicable" }, "story": "SeparatorModes" }
+  ]
+}

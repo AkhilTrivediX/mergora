@@ -1,0 +1,183 @@
+@layer mergora.components {
+  .mrg-crud-data-workspace {
+    display: grid;
+    align-content: start;
+    gap: var(--mrg-semantic-space-stack-md);
+    max-inline-size: var(--mrg-semantic-container-wide);
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-heading"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding-block-end: var(--mrg-semantic-space-inset-md);
+    border-block-end: var(--mrg-semantic-border-width-emphasis) solid
+      var(--mrg-semantic-color-brand-action);
+  }
+
+  .mrg-crud-data-workspace h1 {
+    margin: 0;
+    font-size: var(--mrg-semantic-font-size-heading-medium);
+    font-weight: var(--mrg-semantic-font-weight-heading);
+    line-height: var(--mrg-semantic-font-line-height-heading);
+    text-wrap: balance;
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-heading"] p {
+    max-inline-size: var(--mrg-semantic-size-content-prose);
+    margin-block: var(--mrg-semantic-space-stack-xs) 0;
+    color: var(--mrg-semantic-color-foreground-muted);
+    line-height: var(--mrg-semantic-font-line-height-body);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border-block: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    background: var(--mrg-semantic-color-background-surface);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"] label,
+  .mrg-crud-data-workspace form label {
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"] select,
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"] input,
+  .mrg-crud-data-workspace form :is(input, select) {
+    min-block-size: var(--mrg-semantic-density-control-height);
+    padding: var(--mrg-semantic-density-control-padding-block)
+      var(--mrg-semantic-density-control-padding-inline);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-interactive);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: inherit;
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-save-view"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--mrg-semantic-space-inline-sm);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-bulk-actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-sm);
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-selection-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-selection-foreground);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-mutation-timeline"] {
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-success-foreground);
+    background: var(--mrg-semantic-color-status-success-background);
+    font-size: var(--mrg-semantic-font-size-label);
+    font-weight: var(--mrg-semantic-font-weight-label);
+  }
+
+  .mrg-crud-data-workspace__row-actions,
+  .mrg-crud-data-workspace__confirm-actions {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-loading"] {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    padding: var(--mrg-semantic-space-section);
+  }
+
+  .mrg-crud-data-workspace [data-slot="crud-data-workspace-permission-note"] {
+    margin: 0;
+    padding: var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-accent-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-accent-foreground-on-subtle);
+    background: var(--mrg-semantic-color-accent-background-subtle);
+  }
+
+  .mrg-crud-data-workspace form {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-xs);
+  }
+
+  .mrg-crud-data-workspace form [role="alert"] {
+    color: var(--mrg-semantic-color-status-danger-foreground);
+  }
+
+  .mrg-crud-data-workspace :focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+
+  @media (max-width: 48rem) {
+    .mrg-crud-data-workspace {
+      padding: var(--mrg-semantic-space-inset-md);
+    }
+
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"],
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-save-view"] {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  @media (pointer: coarse) {
+    .mrg-crud-data-workspace button,
+    .mrg-crud-data-workspace input,
+    .mrg-crud-data-workspace select {
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mrg-crud-data-workspace * {
+      scroll-behavior: auto;
+      transition-duration: var(--mrg-semantic-motion-duration-reduced);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .mrg-crud-data-workspace,
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-heading"],
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-tools"],
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-bulk-actions"],
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-mutation-timeline"],
+    .mrg-crud-data-workspace [data-slot="crud-data-workspace-permission-note"] {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+
+    .mrg-crud-data-workspace :focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

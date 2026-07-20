@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "segmented-control",
+  "root": {
+    "slot": "segmented-control",
+    "element": "fieldset",
+    "ref": "HTMLFieldSetElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "segmented-control-label",
+      "element": "legend",
+      "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-scroll",
+      "element": "div",
+      "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-item",
+      "element": "label",
+      "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-input",
+      "element": "input type=radio",
+      "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-text",
+      "element": "span",
+      "stability": "documented"
+    },
+    {
+      "slot": "segmented-control-summary",
+      "element": "output aria-live=polite",
+      "stability": "documented"
+    }
+  ]
+}

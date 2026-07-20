@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "upload-progress",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, package-parity, live transport, or recorded manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "A visible label names a native progress element; explicit visible state text remains present, while an independently disableable polite atomic region can communicate lifecycle changes.",
+    "naming": "A non-empty visible label is mandatory; progress value text combines locale-formatted percentage and optional uploaded/total bytes.",
+    "roleOverride": "Progress and live-region roles are owned and cannot be replaced by consumer children.",
+    "refTarget": "HTMLDivElement stable upload-progress root"
+  },
+  "interaction": {
+    "keyboard": "The display is non-interactive; retry, pause, cancel, and remove actions belong to adjacent named buttons in FileUpload.",
+    "pointer": "No pointer-only action is embedded in progress presentation.",
+    "touch": "The display reflows without introducing gesture controls.",
+    "speech": "Visible file or aggregate labels and adjacent action labels remain separate voice targets.",
+    "switchAccess": "The display adds no unnecessary focus stop."
+  },
+  "formBehavior": "UploadProgress is status presentation only and does not serialize, submit, or trigger transport.",
+  "states": {
+    "attributes": ["data-scope", "data-status"],
+    "synchronization": "Native progress, visible percentage/bytes, lifecycle text, status color, and the optional bucketed live announcement derive from the same value/status props; disabling announcements removes the live region."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=upload-progress]",
+    "attributes": ["data-scope", "data-status"]
+  },
+  "preferences": {
+    "dark": "Uses semantic theme tokens through Progress and status text.",
+    "enhancedContrast": "Lifecycle words remain visible and do not depend on the progress fill color.",
+    "forcedColors": "Uses CanvasText, Highlight, and Mark while retaining native progress semantics.",
+    "reducedMotion": "Indeterminate animation is removed and state remains understandable through text."
+  },
+  "responsive": {
+    "minimumInlineSizeCssPx": 320,
+    "supports400PercentZoom": true,
+    "supports200PercentText": true,
+    "logicalProperties": true,
+    "overflowPolicy": "Labels, byte values, lifecycle state, and recovery message wrap without clipping."
+  },
+  "internationalization": {
+    "consumerStrings": [
+      "label",
+      "message",
+      "upload.cancelled",
+      "upload.complete",
+      "upload.error",
+      "upload.paused",
+      "upload.queued",
+      "upload.retrying",
+      "upload.uploading"
+    ],
+    "directions": ["ltr", "rtl"],
+    "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+    "imePolicy": "The component contains no text editing path.",
+    "serialization": "Percent and IEC byte units are locale-formatted for display only; transport state remains numeric consumer data."
+  },
+  "consumerResponsibilities": [
+    "Provide a stable file name or aggregate label and persistent recovery message for error or paused states.",
+    "Place explicit retry, pause, cancel, and remove buttons adjacent to the progress display; do not make the bar clickable.",
+    "Choose an announcement step that reports meaningful progress without flooding assistive technology.",
+    "Keep transport truth authoritative and do not report complete before server or workflow policy confirms it."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "native-progress-semantics",
+      "determinate-indeterminate-terminal-states",
+      "locale-percent-and-byte-formatting",
+      "bucketed-live-announcements",
+      "file-and-aggregate-scopes",
+      "rtl-narrow-forced-colors-reduced-motion",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "screen-reader-progress-announcement-cadence",
+      "keyboard-adjacent-actions",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech-and-switch"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include live transport, package/source parity, packed-consumer, or manual assistive-technology evidence.",
+    "UploadProgress is presentation only; queue ownership, transport adapters, retry/cancel state machines, and persistence belong to FileUpload."
+  ]
+}

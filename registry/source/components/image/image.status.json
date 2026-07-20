@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Record informative/decorative output with supported desktop and mobile screen readers.",
+    "Run real load, decode failure, privacy/source-policy, narrow, zoom, forced-color, packed-consumer, and package/source parity evidence.",
+    "Generate all package, source, native registry, Shadcn, and documentation surfaces."
+  ]
+}

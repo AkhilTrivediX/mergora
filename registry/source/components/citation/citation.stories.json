@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "citation",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicCitation" },
+    {
+      "id": "source-detail",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedCitation"
+    },
+    { "id": "unsafe-url", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "evidenceId": "manual-at-review",
+  "context": "passport",
+  "state": "not-tested",
+  "aggregateState": "unknown",
+  "summary": "No manual assistive-technology evidence was supplied for this test fixture.",
+  "references": []
+}

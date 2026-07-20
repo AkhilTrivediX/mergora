@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "slot",
+  "root": {
+    "element": "consumer element",
+    "ref": "HTMLElement",
+    "slot": "child slot or slot",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": []
+}

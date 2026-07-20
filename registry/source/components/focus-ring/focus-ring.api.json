@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "itemId": "focus-ring",
+  "entryExport": "FocusRing",
+  "refTarget": "HTMLElement",
+  "nativeProps": "Omit<SlotProps, data-slot>",
+  "exports": [
+    { "kind": "component", "name": "FocusRing" },
+    { "kind": "type", "name": "FocusRingProps" }
+  ],
+  "props": [
+    { "default": "standard", "name": "contrast", "required": false, "type": "standard | strong" },
+    { "name": "children", "required": true, "type": "one concrete ReactElement" }
+  ],
+  "compositionPolicy": {
+    "semantics": "The child remains the only rendered semantic element.",
+    "modality": "The CSS strategy uses focus-visible and never suppresses the browser outline without replacement.",
+    "familySignature": "Deep Violet remains distinct from green selection through an explicit Canvas seam; strong mode increases both layers independently.",
+    "advantage": "A two-cue Deep Violet and Canvas treatment remains distinct from green selection and maps explicitly to system Highlight.",
+    "forcedColors": "System Highlight supplies an explicit outline and the Canvas seam is removed.",
+    "enhancementOptOut": "Leaving contrast unset selects standard geometry; no strong-mode UI, behavior, event, motion, or accessibility output remains."
+  }
+}

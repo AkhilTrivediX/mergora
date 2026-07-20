@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "itemId": "kanban",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "beta",
+    "controlled",
+    "uncontrolled",
+    "disabled",
+    "grabbed",
+    "cancelled",
+    "wip-limit",
+    "pending",
+    "error",
+    "retry",
+    "undo",
+    "virtualized",
+    "mobile-list",
+    "rtl",
+    "narrow",
+    "forced-colors",
+    "reduced-motion"
+  ],
+  "slots": [
+    {
+      "name": "kanban",
+      "semanticElement": "div role=region containing labelled column sections",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "beta", "controlled", "uncontrolled", "pending", "mobile-list"]
+    },
+    {
+      "name": "kanban-card",
+      "semanticElement": "li",
+      "refTarget": "HTMLLIElement",
+      "states": ["default", "disabled", "grabbed"]
+    },
+    {
+      "name": "kanban-wip-status",
+      "semanticElement": "optional visible text",
+      "refTarget": "none",
+      "states": ["default", "wip-limit"]
+    },
+    {
+      "name": "kanban-announcer",
+      "semanticElement": "optional status",
+      "refTarget": "none",
+      "states": ["grabbed", "cancelled", "error", "retry", "undo"]
+    }
+  ],
+  "contract": { "id": "kanban-accessibility", "version": "0.1.0" },
+  "passport": { "id": "kanban-quality-passport", "version": "0.0.0" }
+}

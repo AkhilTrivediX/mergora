@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "itemId": "listbox",
+  "root": {
+    "element": "div role=listbox",
+    "ref": "HTMLDivElement",
+    "slot": "listbox",
+    "stableAttributes": [
+      "data-slot",
+      "data-virtualized",
+      "aria-labelledby",
+      "aria-describedby",
+      "aria-multiselectable",
+      "aria-required",
+      "aria-readonly",
+      "aria-disabled",
+      "aria-invalid",
+      "aria-busy"
+    ]
+  },
+  "parts": [
+    {
+      "slot": "listbox-field",
+      "element": "div",
+      "purpose": "Keeps the visible label, description, semantic listbox, form controls, and persistent recovery state together.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "listbox-label",
+      "element": "span",
+      "purpose": "Provides the persistent visible and programmatic listbox name.",
+      "stability": "documented"
+    },
+    {
+      "slot": "listbox-section",
+      "element": "section role=group",
+      "purpose": "Groups options under one visible section heading without changing global key identity.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "listbox-item",
+      "element": "div role=option",
+      "purpose": "Exposes direct managed focus, selection, disabled state, typeahead text, position, and set size.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "listbox-item-check",
+      "element": "aria-hidden span",
+      "purpose": "Adds a non-color selected cue while aria-selected remains authoritative.",
+      "stability": "documented"
+    },
+    {
+      "slot": "listbox-selection-summary",
+      "element": "visually hidden span",
+      "purpose": "Keeps bounded selected option text in the accessibility tree when selected rows are outside a virtual window.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "listbox-load-more",
+      "element": "button",
+      "purpose": "Provides an explicit keyboard, touch, speech, and switch pagination action.",
+      "stability": "behavioral"
+    }
+  ]
+}

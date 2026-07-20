@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "breadcrumb",
+  "contractStatus": "source-present-evidence-incomplete",
+  "claim": "No Stable, release, conformance, or manual assistive-technology claim is made by this source contract.",
+  "riskClass": 2,
+  "summary": "A localized navigation landmark with ordered hierarchy, a final current page, safe ancestor links, and lossless responsive collapse.",
+  "semantics": [
+    "A non-empty accessible name identifies the nav; an ordered list preserves hierarchy and exactly the final item receives aria-current=page.",
+    "Every ancestor is a real non-empty safe href; ids are unique and empty labels or impossible current placement are rejected.",
+    "At narrow widths the first item, visible tail, current page, and all hidden ancestors remain available through a named native details disclosure.",
+    "Provider keys breadcrumb.label and breadcrumb.showHidden localize the landmark and pluralized disclosure name; explicit props win."
+  ],
+  "preferences": {
+    "forcedColors": "Native links, disclosure, and system focus remain perceivable.",
+    "reducedMotion": "No hierarchy or disclosure information depends on motion.",
+    "rtl": "Logical layout mirrors and bdi isolates item labels."
+  },
+  "responsive": {
+    "minimumTargetCssPx": 44,
+    "narrowWidthCssPx": 320,
+    "overflowPolicy": "Container-query collapse preserves the complete hierarchy rather than visually or accessibly deleting it."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "unit-state",
+      "ssr",
+      "schema",
+      "browser-keyboard-focus",
+      "axe",
+      "responsive-geometry",
+      "visual-preferences",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "speech",
+      "switch",
+      "touch",
+      "windows-forced-colors",
+      "nvda-firefox",
+      "voiceover-safari"
+    ],
+    "recordedEvidence": []
+  }
+}

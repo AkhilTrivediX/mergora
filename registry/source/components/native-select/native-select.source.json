@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "./native-select.css", "react"],
+  "entryPath": "registry/source/components/native-select/native-select.tsx",
+  "id": "native-select",
+  "itemDependencies": ["field"],
+  "outputRole": "component"
+}

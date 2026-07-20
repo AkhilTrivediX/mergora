@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "itemId": "file-upload",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "file-upload",
+    "stableAttributes": ["data-slot", "data-disabled", "data-readonly"]
+  },
+  "parts": [
+    {
+      "slot": "dropzone",
+      "element": "Mergora Dropzone",
+      "purpose": "Provides bounded picker, paste, and drop intake without beginning transfer.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "file-upload-queue",
+      "element": "labelled section and ordered list",
+      "purpose": "Preserves meaningful queue order, empty state, file identity, and lifecycle context.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "upload-progress",
+      "element": "optional Mergora UploadProgress",
+      "purpose": "Renders consumer-owned transfer state only when progress enhancement is enabled.",
+      "stability": "documented"
+    },
+    {
+      "slot": "file-upload-actions",
+      "element": "optional button group",
+      "purpose": "Provides keyboard and touch alternatives for reorder, retry, cancel, and removal.",
+      "stability": "documented"
+    },
+    {
+      "slot": "file-upload-rejections",
+      "element": "optional polite recovery section",
+      "purpose": "Keeps per-file rejection names and reasons visible after intake.",
+      "stability": "documented"
+    }
+  ]
+}

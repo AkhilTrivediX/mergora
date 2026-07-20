@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "itemId": "listbox",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "SelectionWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "SelectionWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    { "id": "invalid", "applicability": { "status": "applicable" }, "story": "AdverseStateMatrix" },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "AdverseStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndPagination"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "AdverseStateMatrix" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "SelectionWorkbench"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndPagination"
+    },
+    {
+      "id": "success",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Persistence success belongs to the workflow that consumes the selected keys."
+      }
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to persistent workflow guidance rather than collection selection mechanics."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndPagination"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Selecting an option does not itself perform an irreversible action."
+      }
+    }
+  ]
+}

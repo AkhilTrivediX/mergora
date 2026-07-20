@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./carousel.css", "react"],
+  "entryPath": "registry/source/components/carousel/carousel.tsx",
+  "id": "carousel",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

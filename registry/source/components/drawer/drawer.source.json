@@ -1,0 +1,14 @@
+{
+  "declaredImports": [
+    "../dialog/dialog.js",
+    "../dialog/model.js",
+    "../direction/index.js",
+    "../sheet/sheet.js",
+    "./drawer.css",
+    "react"
+  ],
+  "entryPath": "registry/source/components/drawer/drawer.tsx",
+  "id": "drawer",
+  "itemDependencies": ["dialog", "direction", "sheet"],
+  "outputRole": "component"
+}

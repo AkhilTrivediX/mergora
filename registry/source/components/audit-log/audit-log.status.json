@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "itemId": "audit-log",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Regenerate and verify every distribution surface.",
+    "Pass large-data, CSV security, filtering, packed-consumer, browser, privacy, visual and accessibility gates.",
+    "Record screen-reader virtualization, keyboard, touch, RTL, forced-colors and security-review evidence.",
+    "Approve an immutable Quality Passport."
+  ]
+}

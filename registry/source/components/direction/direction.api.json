@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "direction",
+  "entryExport": "Direction",
+  "refTarget": "HTMLDivElement for Boundary",
+  "nativeProps": "React.HTMLAttributes<HTMLDivElement> for Boundary",
+  "exports": [
+    { "kind": "namespace", "name": "Direction" },
+    { "kind": "component", "name": "DirectionBoundary" },
+    { "kind": "component", "name": "DirectionProvider" },
+    { "kind": "function", "name": "resolveLogicalSide" },
+    { "kind": "hook", "name": "useDirection" },
+    { "kind": "type", "name": "DirectionBoundaryProps" },
+    { "kind": "type", "name": "DirectionProviderProps" },
+    { "kind": "type", "name": "DirectionValue" },
+    { "kind": "type", "name": "LogicalSide" },
+    { "kind": "type", "name": "PhysicalSide" }
+  ],
+  "props": [
+    { "name": "direction", "required": true, "type": "ltr | rtl" },
+    { "default": false, "name": "Boundary.isolate", "required": false, "type": "boolean" }
+  ],
+  "compositionPolicy": {
+    "provider": "Context follows React descendants and portals without adding DOM.",
+    "boundary": "Boundary writes the native dir attribute and context together.",
+    "sides": "Public placement APIs use start/end; resolveLogicalSide is reserved for physical-coordinate integrations.",
+    "advantage": "Native dir and React context change atomically, including a deterministic logical-to-physical side helper.",
+    "enhancementOptOut": "With isolate=false the isolation attribute and unicode-bidi behavior are absent; direction context and native dir remain."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "switch",
+  "entryExport": "Switch",
+  "refTarget": "HTMLButtonElement",
+  "nativeProps": "React.ButtonHTMLAttributes<HTMLButtonElement> with role, type, name, value, and aria-checked reserved",
+  "exports": [
+    { "kind": "component", "name": "Switch" },
+    { "kind": "type", "name": "SwitchProps" }
+  ],
+  "props": [
+    { "name": "children", "required": true, "type": "ReactNode visible setting label" },
+    { "name": "value", "required": false, "type": "boolean" },
+    { "name": "defaultValue", "required": false, "default": false, "type": "boolean" },
+    { "name": "name", "required": false, "type": "string; emits explicit hidden form value" },
+    { "name": "onValue", "required": false, "default": "on", "type": "string" },
+    { "name": "offValue", "required": false, "default": "off", "type": "string" },
+    {
+      "name": "onLabel",
+      "required": false,
+      "default": "switch.on provider key with English fallback",
+      "type": "ReactNode"
+    },
+    {
+      "name": "offLabel",
+      "required": false,
+      "default": "switch.off provider key with English fallback",
+      "type": "ReactNode"
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "A native button exposes role=switch and aria-checked; it is never a submit button.",
+    "serialization": "When named, one hidden successful control always serializes distinct explicit on or off values; localization never changes them.",
+    "required": "Required-on validation is intentionally unsupported because a hidden input cannot model the switch constraint."
+  }
+}

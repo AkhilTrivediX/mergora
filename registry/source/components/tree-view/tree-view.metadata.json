@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "itemId": "tree-view",
+  "riskClass": 3,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "selected",
+    "expanded",
+    "loading",
+    "error",
+    "editing",
+    "virtualized",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "tree-view",
+      "semanticElement": "div role=tree",
+      "refTarget": "HTMLDivElement",
+      "states": ["default", "loading", "virtualized", "rtl"]
+    },
+    {
+      "name": "tree-view-item",
+      "semanticElement": "div role=treeitem",
+      "refTarget": "HTMLDivElement",
+      "states": ["focus-visible", "disabled", "selected", "expanded", "loading", "error", "editing"]
+    },
+    {
+      "name": "tree-view-move-actions",
+      "semanticElement": "optional button group",
+      "refTarget": "none",
+      "states": ["default", "focus-visible"]
+    }
+  ],
+  "contract": { "id": "tree-view-accessibility", "version": "0.1.0" },
+  "passport": { "id": "tree-view-quality-passport", "version": "0.0.0" }
+}

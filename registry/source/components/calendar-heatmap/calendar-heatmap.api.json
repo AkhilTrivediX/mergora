@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "itemId": "calendar-heatmap",
+  "entryExport": "CalendarHeatmap",
+  "refTarget": "See exported TypeScript declaration.",
+  "nativeProps": "See exported TypeScript declaration.",
+  "exports": [
+    {
+      "kind": "value",
+      "name": "CalendarHeatmap"
+    },
+    {
+      "kind": "type",
+      "name": "CalendarHeatmapEntry"
+    },
+    {
+      "kind": "type",
+      "name": "CalendarHeatmapProps"
+    }
+  ],
+  "props": [
+    {
+      "name": "showSummary",
+      "required": false,
+      "type": "See exported TypeScript declaration."
+    }
+  ],
+  "compositionPolicy": {
+    "semantics": "Preserve the native and ARIA semantics documented by Calendar Heatmap; enhancement output is additive and independently removable.",
+    "enhancement": "An optional aggregate and selection summary complements the always-available keyboard grid, non-color marks, legend, and table fallback. Omitting the enhancement API removes its UI, behavior, events, and accessibility output."
+  }
+}

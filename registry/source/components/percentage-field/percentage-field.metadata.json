@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "itemId": "percentage-field",
+  "riskClass": 2,
+  "serverBoundary": "client-island",
+  "directions": ["ltr", "rtl"],
+  "locales": ["en-US", "de-DE", "ar-EG", "he-IL", "ja-JP", "hi-IN", "en-XA", "ar-XB"],
+  "inputModalities": ["keyboard", "mouse", "touch", "screen-reader", "speech", "switch"],
+  "themes": ["light", "dark", "enhanced-contrast", "forced-colors"],
+  "densities": ["comfortable", "compact", "touch"],
+  "stateGroups": [
+    "default",
+    "focus-visible",
+    "disabled",
+    "read-only",
+    "invalid",
+    "required",
+    "empty",
+    "populated",
+    "canonical-preview",
+    "status-rail",
+    "rtl"
+  ],
+  "slots": [
+    {
+      "name": "percentage-field",
+      "semanticElement": "div",
+      "refTarget": "HTMLDivElement",
+      "states": ["fraction-scale", "disabled", "invalid", "read-only", "required"]
+    },
+    {
+      "name": "number-field-group",
+      "semanticElement": "div",
+      "refTarget": "none",
+      "states": ["focus-within", "disabled", "invalid"]
+    },
+    {
+      "name": "number-field-input",
+      "semanticElement": "input spinbutton",
+      "refTarget": "HTMLInputElement through inputRef",
+      "states": ["empty", "populated"]
+    },
+    {
+      "name": "number-field-decrement",
+      "semanticElement": "button",
+      "refTarget": "none",
+      "states": ["disabled", "pressed"]
+    },
+    {
+      "name": "number-field-increment",
+      "semanticElement": "button",
+      "refTarget": "none",
+      "states": ["disabled", "pressed"]
+    },
+    {
+      "name": "number-field-scrub",
+      "semanticElement": "button",
+      "refTarget": "none",
+      "states": ["disabled", "pressed"]
+    },
+    {
+      "name": "number-field-insights",
+      "semanticElement": "context rail",
+      "refTarget": "none",
+      "states": ["empty", "populated", "narrow"]
+    },
+    {
+      "name": "number-field-status",
+      "semanticElement": "descriptive percent-bound text",
+      "refTarget": "none",
+      "states": ["bounded", "unbounded"]
+    },
+    {
+      "name": "number-field-canonical-preview",
+      "semanticElement": "fractional text and data value",
+      "refTarget": "none",
+      "states": ["empty", "populated"]
+    }
+  ],
+  "contract": { "id": "percentage-field-accessibility", "version": "0.1.0" },
+  "passport": { "id": "percentage-field-quality-passport", "version": "0.0.0" }
+}

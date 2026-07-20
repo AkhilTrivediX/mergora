@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "citation",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, complete conformance, manual assistive-technology, or distribution parity claim is made.",
+  "riskClass": 2,
+  "semantics": {
+    "nativeBasis": "numbered native link with optional source note",
+    "rolePolicy": "Unsafe schemes become non-interactive unavailable text instead of a disabled link.",
+    "refTarget": "HTMLSpanElement"
+  },
+  "keyboard": [
+    { "key": "Tab / Shift+Tab", "behavior": "Reaches safe citation links in document order." },
+    {
+      "key": "Enter",
+      "behavior": "Activates the focused safe citation link with native browser behavior."
+    }
+  ],
+  "nonColor": "Unsafe citations receive an explicit unavailable accessible name; stable numbering remains visible.",
+  "responsive": "Source detail wraps and uses logical layout without clipping long titles or excerpts.",
+  "stableSelectors": {
+    "root": "[data-slot=citation]",
+    "parts": ["citation-source-detail"],
+    "attributes": ["data-safe-url"]
+  },
+  "security": "javascript, data, protocol-relative, malformed and credential-bearing URLs never become anchors. External links use noopener and noreferrer.",
+  "consumerResponsibilities": [
+    "Verify source trust, accuracy, licensing and retention.",
+    "Use stable positive numbering within the surrounding response.",
+    "Localize title and source detail.",
+    "Do not treat a safe URL scheme as proof that the destination is trustworthy."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "safe-url-policy",
+      "unsafe-no-anchor",
+      "stable-number",
+      "source-detail-off",
+      "external-rel",
+      "rtl",
+      "forced-colors",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard", "screen-reader-link-name", "speech", "switch", "touch", "zoom"],
+    "recordedEvidence": []
+  }
+}

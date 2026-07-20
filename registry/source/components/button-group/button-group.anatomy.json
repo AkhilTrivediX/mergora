@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button-group",
+  "root": {
+    "slot": "button-group",
+    "element": "div role=group or toolbar",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot"]
+  },
+  "parts": [
+    {
+      "slot": "button-group-keyboard-hint",
+      "element": "span",
+      "stability": "documented"
+    }
+  ]
+}

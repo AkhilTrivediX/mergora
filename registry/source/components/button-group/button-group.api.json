@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "itemId": "button-group",
+  "entryExport": "ButtonGroup",
+  "refTarget": "HTMLDivElement",
+  "exports": [
+    {
+      "kind": "component",
+      "name": "ButtonGroup"
+    },
+    {
+      "kind": "type",
+      "name": "ButtonGroupProps"
+    },
+    {
+      "kind": "type",
+      "name": "ButtonGroupMode"
+    },
+    {
+      "kind": "type",
+      "name": "ButtonGroupOrientation"
+    },
+    {
+      "kind": "function",
+      "name": "markButtonGroupAction"
+    },
+    {
+      "kind": "function",
+      "name": "resolveToolbarIndex"
+    }
+  ],
+  "controlledState": [],
+  "props": [
+    { "default": "group", "name": "mode", "required": false, "type": "group | toolbar" },
+    {
+      "default": "not rendered",
+      "name": "keyboardHint",
+      "required": false,
+      "type": "string"
+    }
+  ],
+  "nativePolicy": [
+    "Group mode preserves each child action as a native tab stop.",
+    "Toolbar mode implements Home, End, orientation arrows, disabled skipping, and RTL spatial arrows.",
+    "Toolbar items are direct native or Mergora actions with exactly one focusable root; custom router/action components opt in with markButtonGroupAction only when they forward toolbar props to one native action root.",
+    "Separators remain unmanaged and unsupported action subtrees are inert with a development diagnostic.",
+    "No button or link semantics are rewritten by the group."
+  ],
+  "compositionPolicy": {
+    "familySignature": "A flush Ink workbench rail groups actions without flattening their native semantics.",
+    "enhancement": "toolbar enables one-tab-stop spatial focus and keyboardHint adds visible discovery text; group mode with no hint removes both behaviors and output."
+  }
+}

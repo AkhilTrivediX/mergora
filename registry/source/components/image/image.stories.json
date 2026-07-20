@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "itemId": "image",
+  "states": [
+    { "id": "default", "applicability": { "status": "applicable" }, "story": "BasicDefaults" },
+    { "id": "loading", "applicability": { "status": "applicable" }, "story": "RecommendedMergora" },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "StateMatrix" },
+    { "id": "forced-colors", "applicability": { "status": "applicable" }, "story": "NarrowRtl" },
+    { "id": "long-content", "applicability": { "status": "applicable" }, "story": "NarrowRtl" },
+    { "id": "narrow-320", "applicability": { "status": "applicable" }, "story": "NarrowRtl" },
+    { "id": "reduced-motion", "applicability": { "status": "applicable" }, "story": "NarrowRtl" },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtl" }
+  ]
+}

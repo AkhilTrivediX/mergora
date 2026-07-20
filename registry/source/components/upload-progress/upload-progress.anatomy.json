@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "itemId": "upload-progress",
+  "root": {
+    "element": "div",
+    "ref": "HTMLDivElement",
+    "slot": "upload-progress",
+    "stableAttributes": ["data-slot", "data-scope", "data-status"]
+  },
+  "parts": [
+    {
+      "slot": "progress",
+      "element": "Mergora Progress with native progress",
+      "purpose": "Exposes the visible label and determinate or indeterminate progress value.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "upload-progress-state",
+      "element": "visible status text",
+      "purpose": "Communicates queued, uploading, paused, retrying, complete, error, or cancelled without color dependence.",
+      "stability": "behavioral"
+    },
+    {
+      "slot": "upload-progress-message",
+      "element": "persistent descriptive text",
+      "purpose": "Carries recovery or transport detail without transient-only feedback.",
+      "stability": "documented"
+    },
+    {
+      "slot": "upload-progress-announcement",
+      "element": "visually hidden polite atomic live region",
+      "purpose": "Announces lifecycle changes and bucketed progress without per-byte noise.",
+      "stability": "behavioral"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "itemId": "ai-chat-workspace",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicAiChatWorkspace"
+    },
+    {
+      "id": "recommended",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedAiChatWorkspace"
+    },
+    { "id": "empty", "applicability": { "status": "applicable" }, "story": "EmptyAiChatWorkspace" },
+    {
+      "id": "offline",
+      "applicability": { "status": "applicable" },
+      "story": "OfflineAiChatWorkspace"
+    },
+    { "id": "error", "applicability": { "status": "applicable" }, "story": "ErrorAiChatWorkspace" },
+    {
+      "id": "narrow",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    },
+    { "id": "rtl", "applicability": { "status": "applicable" }, "story": "NarrowRtlPreferences" },
+    {
+      "id": "reduced-motion",
+      "applicability": { "status": "applicable" },
+      "story": "NarrowRtlPreferences"
+    }
+  ]
+}

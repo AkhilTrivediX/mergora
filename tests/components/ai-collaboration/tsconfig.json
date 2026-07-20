@@ -1,0 +1,43 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "paths": {
+      "react": ["../../../apps/storybook/node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["../../../apps/storybook/node_modules/@types/react/jsx-runtime.d.ts"],
+      "react-dom": ["../../../apps/storybook/node_modules/@types/react-dom/index.d.ts"],
+      "react-dom/server": ["../../../apps/storybook/node_modules/@types/react-dom/server.d.ts"]
+    },
+    "skipLibCheck": true
+  },
+  "include": [
+    "../../../registry/source/components/audit-log/**/*.ts",
+    "../../../registry/source/components/audit-log/**/*.tsx",
+    "../../../registry/source/components/chat-composer/**/*.ts",
+    "../../../registry/source/components/chat-composer/**/*.tsx",
+    "../../../registry/source/components/citation/**/*.ts",
+    "../../../registry/source/components/citation/**/*.tsx",
+    "../../../registry/source/components/collaboration-presence/**/*.ts",
+    "../../../registry/source/components/collaboration-presence/**/*.tsx",
+    "../../../registry/source/components/comment-thread/**/*.ts",
+    "../../../registry/source/components/comment-thread/**/*.tsx",
+    "../../../registry/source/components/message/**/*.ts",
+    "../../../registry/source/components/message/**/*.tsx",
+    "../../../registry/source/components/message-list/**/*.ts",
+    "../../../registry/source/components/message-list/**/*.tsx",
+    "../../../registry/source/components/prompt-suggestions/**/*.ts",
+    "../../../registry/source/components/prompt-suggestions/**/*.tsx",
+    "../../../registry/source/components/reasoning/**/*.ts",
+    "../../../registry/source/components/reasoning/**/*.tsx",
+    "../../../registry/source/components/streaming-text/**/*.ts",
+    "../../../registry/source/components/streaming-text/**/*.tsx",
+    "../../../registry/source/components/tool-call/**/*.ts",
+    "../../../registry/source/components/tool-call/**/*.tsx",
+    "../../../registry/source/kits/ai-chat-workspace/**/*.ts",
+    "../../../registry/source/kits/ai-chat-workspace/**/*.tsx",
+    "../../../apps/storybook/src/P5AiCollaboration.stories.tsx",
+    "./*.ts",
+    "./*.tsx"
+  ]
+}

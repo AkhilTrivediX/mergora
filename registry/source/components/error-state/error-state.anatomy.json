@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "itemId": "error-state",
+  "root": {
+    "slot": "error-state",
+    "element": "named section; never a live region",
+    "ref": "HTMLElement",
+    "stableAttributes": ["data-slot", "data-live", "data-recoverable"]
+  },
+  "parts": [
+    { "slot": "error-state-icon", "element": "span aria-hidden", "stability": "documented" },
+    { "slot": "error-state-label", "element": "span", "stability": "documented" },
+    { "slot": "error-state-title", "element": "h1-h6", "stability": "documented" },
+    { "slot": "error-state-description", "element": "div", "stability": "documented" },
+    {
+      "slot": "error-state-actions",
+      "element": "div outside provider-owned live roots",
+      "stability": "documented"
+    },
+    { "slot": "error-state-retry", "element": "optional native button", "stability": "documented" },
+    {
+      "slot": "error-state-details",
+      "element": "optional details outside provider-owned live roots",
+      "stability": "documented"
+    }
+  ]
+}

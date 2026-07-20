@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "itemId": "presence",
+  "root": {
+    "element": "consumer element",
+    "ref": "HTMLElement through child",
+    "slot": "presence",
+    "stableAttributes": ["data-slot", "data-presence"]
+  },
+  "parts": []
+}

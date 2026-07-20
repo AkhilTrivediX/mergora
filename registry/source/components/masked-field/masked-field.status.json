@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "masked-field",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify trusted deterministic adapter behavior, raw and formatted value disclosure, serialization choice, and bounded output.",
+    "Verify controlled and uncontrolled validation, submission, external form ownership, native reset, and invalid recovery.",
+    "Verify caret mapping through insertion, deletion, replacement, bounded paste, mobile input modes, and IME composition.",
+    "Record narrow, 400 percent reflow, RTL, long localized labels, forced-colors, enhanced-contrast, and reduced-motion review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual assistive-technology evidence and an approved Quality Passport."
+  ]
+}

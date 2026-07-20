@@ -1,0 +1,44 @@
+/* Generated from registry/source/components/aspect-ratio/aspect-ratio.css by @mergora-internal/source-transformer. Do not edit. */
+.mrg-aspect-ratio {
+  align-self: start;
+  aspect-ratio: var(--mrg-aspect-ratio);
+  display: grid;
+  inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.mrg-aspect-ratio > * {
+  grid-area: 1 / 1;
+  max-inline-size: 100%;
+  min-block-size: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.mrg-aspect-ratio[data-fit] {
+  background: var(--mrg-semantic-color-background-surface-sunken);
+}
+
+.mrg-aspect-ratio[data-fit] > :is(img, video, canvas, svg) {
+  block-size: 100%;
+  inline-size: 100%;
+  object-fit: var(--mrg-aspect-ratio-fit);
+}
+
+.mrg-aspect-ratio[data-fit="contain"] {
+  --mrg-aspect-ratio-fit: contain;
+}
+
+.mrg-aspect-ratio[data-fit="cover"] {
+  --mrg-aspect-ratio-fit: cover;
+}
+
+@supports not (aspect-ratio: 1) {
+  .mrg-aspect-ratio::before {
+    content: "";
+    display: block;
+    grid-area: 1 / 1;
+    padding-block-start: var(--mrg-aspect-ratio-fallback);
+  }
+}

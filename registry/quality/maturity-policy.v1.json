@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "stable": {
+    "requiredArtifacts": [
+      "metadata",
+      "canonical-source",
+      "package-export",
+      "native-registry",
+      "compatible-registry",
+      "stories",
+      "unit-fixtures",
+      "browser-fixtures",
+      "component-contract",
+      "contract-fixtures",
+      "accessibility-fixtures",
+      "visual-fixtures",
+      "documentation",
+      "quality-passport",
+      "updater-fixtures",
+      "package-source-parity"
+    ],
+    "requiredPositiveEvidenceContexts": ["contract", "measurement", "passport", "release-gate"],
+    "disallowedAggregateStates": ["failed", "blocked", "stale", "unknown"],
+    "blockingOpenDefectSeverities": ["A0", "A1", "A2"],
+    "conditionalEvidenceRequiresCurrentA3Limitation": true,
+    "applicableEvidenceRequiresSourceDigestDatesAndReference": true,
+    "requiredArtifactsMustPassValidation": true,
+    "initialStableDisallowsCarryForward": true,
+    "invalidatingBehaviorChangesDisallowCarryForward": true,
+    "class3BehavioralReleaseCandidateDisallowsCarryForward": true
+  }
+}

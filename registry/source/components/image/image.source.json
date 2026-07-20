@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./image.css", "react"],
+  "entryPath": "registry/source/components/image/image.tsx",
+  "id": "image",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

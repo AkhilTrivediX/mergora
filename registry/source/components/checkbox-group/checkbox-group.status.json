@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "itemId": "checkbox-group",
+  "implementationStatus": "source-present-unreleased",
+  "distributionStatus": "not-generated",
+  "releaseStatus": "unreleased",
+  "evidenceStatus": "incomplete",
+  "recordedEvidence": [],
+  "promotionDelta": [
+    "Generate and verify package, registry, docs, and public subpath outputs.",
+    "Pass packed consumers and package/source parity.",
+    "Verify native group naming, min/max validity, and invalid focus.",
+    "Verify repeated same-name FormData entries and reset.",
+    "Record responsive layouts, narrow, zoom, and long labels.",
+    "Complete RTL, forced-colors, keyboard, speech, switch, and touch review.",
+    "Add Semantic Sync update, conflict, rollback, and removal fixtures.",
+    "Publish current manual screen-reader evidence and an approved Quality Passport."
+  ]
+}

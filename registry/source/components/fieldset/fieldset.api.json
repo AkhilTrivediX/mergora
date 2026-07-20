@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "itemId": "fieldset",
+  "entryExport": "Fieldset",
+  "refTarget": "HTMLFieldSetElement",
+  "nativeProps": "React.FieldsetHTMLAttributes<HTMLFieldSetElement> with children reserved",
+  "exports": [
+    { "kind": "component", "name": "Fieldset" },
+    { "kind": "type", "name": "FieldsetLayout" },
+    { "kind": "type", "name": "FieldsetProps" }
+  ],
+  "props": [
+    { "name": "legend", "required": true, "type": "ReactNode" },
+    { "name": "description", "required": false, "type": "ReactNode" },
+    { "name": "error", "required": false, "type": "ReactNode" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    {
+      "name": "layout",
+      "required": false,
+      "default": "stacked",
+      "type": "stacked | columns | inline"
+    },
+    { "name": "selectionSummary", "required": false, "type": "ReactNode" }
+  ],
+  "compositionPolicy": {
+    "semantics": "Always emits a native fieldset with its legend as the first child.",
+    "disabled": "Native fieldset disabled propagation owns descendant successful-control and activation behavior.",
+    "enhancement": "selectionSummary adds persistent group context to aria-describedby; omitting it removes the rail and ID reference."
+  }
+}

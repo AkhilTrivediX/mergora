@@ -1,0 +1,52 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "content/**"
+github-actions:
+  - changed-files:
+      - any-glob-to-any-file: ".github/workflows/**"
+accessibility:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/quality/**"
+          - "**/*.a11y.*"
+registry:
+  - changed-files:
+      - any-glob-to-any-file: "registry/**"
+cli:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/cli/**"
+          - "packages/registry/**"
+          - "tooling/registry-builder/**"
+site:
+  - changed-files:
+      - any-glob-to-any-file: "apps/web/**"
+components:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "registry/source/**"
+          - "packages/ui/**"
+tokens:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/tokens/**"
+          - "registry/source/themes/**"
+schema:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/schema/**"
+          - "**/*.schema.json"
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "tests/**"
+          - "fixtures/**"
+          - "**/*.test.*"
+          - "**/*.spec.*"
+packages:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "packages/**"
+          - "pnpm-lock.yaml"

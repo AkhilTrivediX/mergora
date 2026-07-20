@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../field/index.js", "../provider/index.js", "./phone-field.css", "react"],
+  "entryPath": "registry/source/components/phone-field/phone-field.tsx",
+  "id": "phone-field",
+  "itemDependencies": ["field", "provider"],
+  "outputRole": "component"
+}

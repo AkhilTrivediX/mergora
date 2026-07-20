@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "itemId": "alert",
+  "root": {
+    "slot": "alert",
+    "element": "static div with an optional external shared-announcer effect",
+    "ref": "HTMLDivElement",
+    "stableAttributes": ["data-slot", "data-variant", "data-live"]
+  },
+  "parts": [
+    { "slot": "alert-icon", "element": "span aria-hidden", "stability": "documented" },
+    { "slot": "alert-variant-label", "element": "span", "stability": "documented" },
+    { "slot": "alert-title", "element": "h1-h6", "stability": "documented" },
+    { "slot": "alert-description", "element": "div", "stability": "documented" },
+    { "slot": "alert-body", "element": "div", "stability": "documented" },
+    { "slot": "alert-actions", "element": "div", "stability": "documented" }
+  ]
+}

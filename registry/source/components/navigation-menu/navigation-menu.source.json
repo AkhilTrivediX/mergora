@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./navigation-menu.css", "react"],
+  "entryPath": "registry/source/components/navigation-menu/navigation-menu.tsx",
+  "id": "navigation-menu",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

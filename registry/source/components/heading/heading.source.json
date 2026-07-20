@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["./heading.css", "react"],
+  "entryPath": "registry/source/components/heading/heading.tsx",
+  "id": "heading",
+  "itemDependencies": [],
+  "outputRole": "component"
+}

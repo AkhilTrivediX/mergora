@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "tree-view",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, performance-scale, release, package-parity, or recorded manual assistive-technology claim is made.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "A named role=tree owns roving role=treeitem descendants with level, position, set size, expansion, disabled, busy, and optional selection state.",
+    "multiselect": "Multiple mode exposes aria-multiselectable and modifier-free selection; none mode emits no selected semantics.",
+    "refTarget": "HTMLDivElement tree"
+  },
+  "interaction": {
+    "keyboard": "Up, Down, Home, End, mirrored logical expansion/collapse, parent/child movement, star sibling expansion, typeahead, Space/Enter selection, Ctrl+A multiselect, and optional F2 rename are supported.",
+    "lazy": "Expanding an unresolved child may call the consumer loader and exposes bounded busy/error recovery state.",
+    "virtualization": "A consumer-controlled window preserves real set positions and requests a new window when active focus crosses it.",
+    "touch": "Expansion and optional non-drag move actions have explicit target-sized controls."
+  },
+  "enhancementIsolation": {
+    "moveActionsFalse": "No move group, buttons, names, callback, or move event path exists.",
+    "renameOmitted": "F2 is not prevented and no input or rename callback exists.",
+    "loaderOmitted": "No load callback, busy status, error status, or load announcement exists.",
+    "virtualFalse": "All visible treeitems render and no spacers or range callback exist."
+  },
+  "preferences": {
+    "forcedColors": "Tree boundary, selection, active seam, errors, controls, and focus use system colors.",
+    "reducedMotion": "No meaning requires animation.",
+    "rtl": "Expansion and collapse keys mirror with logical indentation."
+  },
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "apg-keyboard",
+      "lazy-error",
+      "multiselect",
+      "rename",
+      "virtual-window",
+      "non-drag-actions",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "nvda-firefox",
+      "nvda-chromium",
+      "voiceover-safari-ios",
+      "speech",
+      "switch",
+      "touch-device"
+    ],
+    "recordedEvidence": []
+  },
+  "limitations": [
+    "Source-present-unreleased records do not include generated parity, packed consumers, performance-scale proof, or manual assistive-technology evidence.",
+    "Virtual window ownership, durable lazy data, move authorization, and persistence remain consumer responsibilities."
+  ]
+}

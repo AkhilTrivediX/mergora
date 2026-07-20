@@ -1,0 +1,7 @@
+{
+  "declaredImports": ["../provider/index.js", "./kbd.css", "react"],
+  "entryPath": "registry/source/components/kbd/kbd.tsx",
+  "id": "kbd",
+  "itemDependencies": ["provider"],
+  "outputRole": "component"
+}

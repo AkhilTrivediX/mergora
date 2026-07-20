@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "inline",
+  "contractStatus": "source-present-unreleased",
+  "claim": "No Stable, release, conformance, manual assistive-technology, package-parity, or publication claim is made by this source contract.",
+  "riskClass": 1,
+  "semantics": {
+    "nativeBasis": "div",
+    "rolePolicy": "No group, toolbar, list, or navigation semantics are inferred from visual alignment.",
+    "refTarget": "HTMLDivElement"
+  },
+  "layout": {
+    "intrinsic": "A one-dimensional flex row uses semantic inline gaps and wraps by default.",
+    "logicalDirection": "start and end follow the computed inline direction.",
+    "overflow": "wrap=false deliberately removes adaptive wrapping; the root still adds no clipping or synthetic scroll behavior."
+  },
+  "stableSelectors": {
+    "root": "[data-slot=inline]",
+    "attributes": ["data-gap", "data-align", "data-justify"]
+  },
+  "consumerResponsibilities": [
+    "Add the correct semantic parent or role when content is a list, toolbar, or navigation region.",
+    "Do not use CSS order to diverge visual and reading order.",
+    "Ensure intrinsically unbreakable child content has its own accessible overflow or wrapping policy."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "ssr",
+      "wrapping",
+      "narrow-320",
+      "zoom-400",
+      "rtl",
+      "packed-consumer",
+      "package-source-parity"
+    ],
+    "manual": ["keyboard-reading-order", "touch-reflow", "forced-colors"],
+    "recordedEvidence": []
+  }
+}

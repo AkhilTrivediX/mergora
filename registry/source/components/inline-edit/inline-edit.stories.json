@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "itemId": "inline-edit",
+  "states": [
+    {
+      "id": "default",
+      "applicability": { "status": "applicable" },
+      "story": "BasicDefaults"
+    },
+    { "id": "hover", "applicability": { "status": "applicable" }, "story": "InlineEditWorkbench" },
+    { "id": "active", "applicability": { "status": "applicable" }, "story": "InlineEditWorkbench" },
+    {
+      "id": "focus-visible",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditWorkbench"
+    },
+    {
+      "id": "disabled",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditStateMatrix"
+    },
+    {
+      "id": "read-only",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditStateMatrix"
+    },
+    {
+      "id": "invalid",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditStateMatrix"
+    },
+    {
+      "id": "required",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditStateMatrix"
+    },
+    {
+      "id": "loading",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndRecovery"
+    },
+    {
+      "id": "empty",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditStateMatrix"
+    },
+    {
+      "id": "populated",
+      "applicability": { "status": "applicable" },
+      "story": "RecommendedMergora"
+    },
+    {
+      "id": "partial",
+      "applicability": { "status": "applicable" },
+      "story": "InlineEditWorkbench"
+    },
+    {
+      "id": "success",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndRecovery"
+    },
+    {
+      "id": "warning",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Warnings belong to the persistent description or owning workflow rather than an implicit Inline Edit state."
+      }
+    },
+    {
+      "id": "error",
+      "applicability": { "status": "applicable" },
+      "story": "AsyncFailureAndRecovery"
+    },
+    {
+      "id": "destructive",
+      "applicability": {
+        "status": "not-applicable",
+        "reason": "Inline Edit does not perform an irreversible action; destructive persistence requires an owning confirmation workflow."
+      }
+    }
+  ]
+}

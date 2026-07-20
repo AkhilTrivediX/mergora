@@ -1,0 +1,13 @@
+{
+  "declaredImports": [
+    "../../components/button/button.js",
+    "../../components/field/field.js",
+    "../../components/input/input.js",
+    "./settings-workspace.css",
+    "react"
+  ],
+  "entryPath": "registry/source/kits/settings-workspace/settings-workspace.tsx",
+  "id": "settings-workspace",
+  "itemDependencies": ["button", "field", "input"],
+  "outputRole": "kit"
+}

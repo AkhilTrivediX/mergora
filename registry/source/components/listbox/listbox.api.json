@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "itemId": "listbox",
+  "entryExport": "Listbox",
+  "refTarget": "HTMLDivElement role=listbox",
+  "nativeProps": "Curated semantic listbox attributes; collection focus, selection, virtualization, and form projection remain owned by Listbox",
+  "exports": [
+    { "kind": "component", "name": "Listbox" },
+    { "kind": "function", "name": "assertCollectionAsyncState" },
+    { "kind": "function", "name": "assertCollectionEntries" },
+    { "kind": "function", "name": "collectionValueFromKeys" },
+    { "kind": "function", "name": "flattenCollection" },
+    { "kind": "function", "name": "formatCollectionSelectionSummary" },
+    { "kind": "function", "name": "normalizeCollectionValue" },
+    { "kind": "function", "name": "serializeCollectionKey" },
+    { "kind": "function", "name": "useCollectionLoader" },
+    { "kind": "type", "name": "CollectionAsyncState" },
+    { "kind": "type", "name": "CollectionAsyncStatus" },
+    { "kind": "type", "name": "CollectionChangeValue" },
+    { "kind": "type", "name": "CollectionEntry" },
+    { "kind": "type", "name": "CollectionItem" },
+    { "kind": "type", "name": "CollectionKey" },
+    { "kind": "type", "name": "CollectionLoadContext" },
+    { "kind": "type", "name": "CollectionLoaderResult" },
+    { "kind": "type", "name": "CollectionLoadReason" },
+    { "kind": "type", "name": "CollectionMessages" },
+    { "kind": "type", "name": "CollectionPage" },
+    { "kind": "type", "name": "CollectionSection" },
+    { "kind": "type", "name": "CollectionSelectionMode" },
+    { "kind": "type", "name": "CollectionSelectionSummaryContext" },
+    { "kind": "type", "name": "CollectionValue" },
+    { "kind": "type", "name": "CollectionVirtualizationOptions" },
+    { "kind": "type", "name": "ListboxComponent" },
+    { "kind": "type", "name": "ListboxProps" },
+    { "kind": "type", "name": "UseCollectionLoaderOptions" }
+  ],
+  "controlledState": ["value"],
+  "props": [
+    {
+      "name": "entries",
+      "required": true,
+      "type": "readonly CollectionEntry<T>[] with globally unique stable keys"
+    },
+    { "name": "label", "required": true, "type": "ReactNode persistent visible label" },
+    {
+      "name": "selectionMode",
+      "required": false,
+      "default": "single",
+      "type": "single | multiple"
+    },
+    { "name": "value", "required": false, "type": "CollectionValue<M>" },
+    { "name": "defaultValue", "required": false, "type": "CollectionValue<M>" },
+    {
+      "name": "onValueChange",
+      "required": false,
+      "type": "(value: CollectionChangeValue<M>) => void"
+    },
+    { "name": "required", "required": false, "default": false, "type": "boolean" },
+    { "name": "disabled", "required": false, "default": false, "type": "boolean" },
+    { "name": "readOnly", "required": false, "default": false, "type": "boolean" },
+    { "name": "name", "required": false, "type": "non-empty form field name" },
+    { "name": "form", "required": false, "type": "external form id" },
+    {
+      "name": "asyncState",
+      "required": false,
+      "type": "validated loading/error/retry/pagination state"
+    },
+    { "name": "virtualization", "required": false, "type": "measured ListLayout estimates" },
+    {
+      "name": "formatSelectionSummary",
+      "required": false,
+      "default": "locale-driven bounded formatter",
+      "type": "false | bounded localized accessibility summary formatter"
+    }
+  ],
+  "compositionPolicy": {
+    "collection": "Flat items and labelled sections share one strict global key space; string and numeric keys may not collide after canonical form serialization.",
+    "selection": "One conditional controlled/uncontrolled API covers single and multiple Listbox selection. A bounded cache retains selected records and initial defaults across page/filter churn; never-observed selected keys fail closed. Select consumes the same model only in single mode.",
+    "virtualization": "React Aria ListLayout optionally windows DOM rows, retains the focused row, and supplies virtualized option position/set-size semantics. It is independently selectable from the bounded persistent selected-text summary.",
+    "enhancementDisabling": "Omitting virtualization renders the ordinary collection directly. formatSelectionSummary=false removes summary calculation, formatter calls, summary markup, ids, and aria-describedby contribution.",
+    "async": "useCollectionLoader aborts superseded work, rejects stale completions by request id, validates appended pages, and exposes explicit retry/load-more controls.",
+    "forms": "Selected canonical keys project to one hidden successful control per key. Retained dynamic selections keep the same FormData until explicitly replaced; uncontrolled reset restores the original default unless reset is prevented. Required is an ARIA/application validation contract, not a fabricated native constraint."
+  }
+}

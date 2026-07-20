@@ -1,0 +1,16 @@
+{
+  "declaredImports": [
+    "../direction/index.js",
+    "../layer-manager/index.js",
+    "../provider/index.js",
+    "./dropdown-menu.css",
+    "react",
+    "react-aria-components/Button",
+    "react-aria-components/I18nProvider",
+    "react-aria-components/Menu"
+  ],
+  "entryPath": "registry/source/components/dropdown-menu/dropdown-menu.tsx",
+  "id": "dropdown-menu",
+  "itemDependencies": ["direction", "layer-manager", "provider"],
+  "outputRole": "component"
+}

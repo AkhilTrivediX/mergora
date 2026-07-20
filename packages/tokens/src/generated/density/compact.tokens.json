@@ -1,0 +1,32 @@
+{
+  "$description": "Compact density for data-heavy pointer interfaces. It is not the default for touch-only controls.",
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "density": {
+      "controlGap": {
+        "$type": "dimension",
+        "$value": "{primitive.space.1}"
+      },
+      "controlHeight": {
+        "$type": "dimension",
+        "$value": "{primitive.size.8}"
+      },
+      "controlPaddingBlock": {
+        "$type": "dimension",
+        "$value": "{primitive.space.1}"
+      },
+      "controlPaddingInline": {
+        "$type": "dimension",
+        "$value": "{primitive.space.2}"
+      },
+      "panelPadding": {
+        "$type": "dimension",
+        "$value": "{primitive.space.3}"
+      },
+      "rowHeight": {
+        "$type": "dimension",
+        "$value": "{primitive.size.8}"
+      }
+    }
+  }
+}

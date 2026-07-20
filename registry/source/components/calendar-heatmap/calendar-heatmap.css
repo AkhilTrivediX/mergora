@@ -1,0 +1,133 @@
+@layer mergora.components {
+  .mrg-heatmap {
+    display: grid;
+    gap: var(--mrg-semantic-space-stack-md);
+    max-inline-size: 100%;
+    padding: var(--mrg-semantic-density-panel-padding);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-panel);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font-family: var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-heatmap__legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--mrg-semantic-space-inline-xs);
+    color: var(--mrg-semantic-color-foreground-muted);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  .mrg-heatmap__legend [data-level] {
+    display: grid;
+    place-items: center;
+    inline-size: var(--mrg-semantic-size-icon-sm);
+    block-size: var(--mrg-semantic-size-icon-sm);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-foreground-primary);
+  }
+  .mrg-heatmap__grid {
+    display: grid;
+    gap: var(--mrg-semantic-space-inline-xs);
+    overflow-x: auto;
+  }
+  .mrg-heatmap__row {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(var(--mrg-semantic-size-target-minimum), 1fr));
+    gap: var(--mrg-semantic-space-inline-xs);
+  }
+  .mrg-heatmap__grid button {
+    min-inline-size: var(--mrg-semantic-size-target-minimum);
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    border: var(--mrg-semantic-border-width-default) solid var(--mrg-semantic-color-border-strong);
+    border-radius: var(--mrg-semantic-radius-control);
+    color: var(--mrg-semantic-color-foreground-primary);
+    background: var(--mrg-semantic-color-background-canvas);
+    font: var(--mrg-semantic-font-weight-strong) var(--mrg-semantic-font-size-label) / 1
+      var(--mrg-semantic-font-family-prose);
+  }
+  .mrg-heatmap [data-level="1"] {
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+  .mrg-heatmap [data-level="2"] {
+    border-color: var(--mrg-semantic-color-status-success-border);
+    background: var(--mrg-semantic-color-status-success-background);
+  }
+  .mrg-heatmap [data-level="3"] {
+    border-color: var(--mrg-semantic-color-brand-action);
+    color: var(--mrg-semantic-color-brand-action);
+    background: var(--mrg-semantic-color-selection-background);
+  }
+  .mrg-heatmap [data-level="4"] {
+    border-color: var(--mrg-semantic-color-brand-action);
+    color: var(--mrg-semantic-color-action-foreground);
+    background: var(--mrg-semantic-color-brand-action);
+  }
+  .mrg-heatmap__grid button[aria-selected="true"] {
+    box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-strong)
+      var(--mrg-semantic-color-brand-violet);
+  }
+  .mrg-heatmap :is(button, summary):focus-visible {
+    box-shadow: 0 0 0 var(--mrg-semantic-focus-width)
+      var(--mrg-semantic-color-focus-contrast-background);
+    outline: var(--mrg-semantic-focus-width) solid var(--mrg-semantic-color-focus-ring);
+    outline-offset: var(--mrg-semantic-focus-offset);
+  }
+  .mrg-heatmap__fallback {
+    overflow: auto;
+  }
+  .mrg-heatmap__fallback summary {
+    min-block-size: var(--mrg-semantic-size-target-minimum);
+    font-weight: var(--mrg-semantic-font-weight-label);
+    cursor: pointer;
+  }
+  .mrg-heatmap table {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+  .mrg-heatmap th,
+  .mrg-heatmap td {
+    padding: var(--mrg-semantic-space-inset-sm);
+    border-block-start: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-border-default);
+    text-align: start;
+  }
+  .mrg-heatmap__summary {
+    display: block;
+    padding: var(--mrg-semantic-space-inset-xs) var(--mrg-semantic-space-inset-sm);
+    border: var(--mrg-semantic-border-width-default) solid
+      var(--mrg-semantic-color-status-info-border);
+    border-radius: var(--mrg-semantic-radius-compact);
+    color: var(--mrg-semantic-color-status-info-foreground);
+    background: var(--mrg-semantic-color-status-info-background);
+    font-size: var(--mrg-semantic-font-size-label);
+  }
+  @media (pointer: coarse) {
+    .mrg-heatmap__row {
+      grid-template-columns: repeat(7, minmax(var(--mrg-semantic-size-target-preferred), 1fr));
+    }
+    .mrg-heatmap__grid button,
+    .mrg-heatmap__fallback summary {
+      min-inline-size: var(--mrg-semantic-size-target-preferred);
+      min-block-size: var(--mrg-semantic-size-target-preferred);
+    }
+  }
+  @media (forced-colors: active) {
+    .mrg-heatmap,
+    .mrg-heatmap__grid button,
+    .mrg-heatmap__legend [data-level],
+    .mrg-heatmap__summary {
+      border-color: CanvasText;
+      color: CanvasText;
+      background: Canvas;
+    }
+    .mrg-heatmap__grid button[aria-selected="true"] {
+      box-shadow: inset 0 0 0 var(--mrg-semantic-border-width-strong) Highlight;
+    }
+    .mrg-heatmap :is(button, summary):focus-visible {
+      box-shadow: none;
+      outline-color: Highlight;
+    }
+  }
+}

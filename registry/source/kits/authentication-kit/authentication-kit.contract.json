@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "0.1.0",
+  "itemId": "authentication-kit",
+  "contractStatus": "source-present-unreleased",
+  "claim": "This source kit is not an identity provider, authentication backend, authorization boundary, credential store, security audit, Stable release, or distribution-parity claim.",
+  "riskClass": 3,
+  "semantics": {
+    "nativeBasis": "Native forms and autocomplete tokens composed with canonical Mergora fields, password, OTP, and button controls.",
+    "rolePolicy": "Submission failures are alerts, successful results are statuses, and rate-limit countdown output is opt-in.",
+    "refTarget": "HTMLDivElement"
+  },
+  "keyboard": [
+    {
+      "key": "Tab / Shift+Tab",
+      "behavior": "Moves through enabled flow choices, native fields, reveal actions, and form actions in document order."
+    },
+    {
+      "key": "Enter",
+      "behavior": "Submits the current valid native form without intercepting IME composition."
+    },
+    {
+      "key": "Native reset",
+      "behavior": "Restores uncontrolled native values and clears component-owned result state when mutable; read-only mode disables and cancels reset without mutation."
+    }
+  ],
+  "nonColor": "Current flow, success, error, rate-limit, disabled, and pending states use text and native state in addition to green or violet signals.",
+  "responsive": "Navigation becomes a labelled horizontal strip on narrow screens; fields remain a single readable column with logical RTL geometry.",
+  "stableSelectors": {
+    "root": "[data-slot=authentication-kit]",
+    "parts": [
+      "authentication-flow-navigation",
+      "authentication-result",
+      "authentication-rate-limit-recovery",
+      "authentication-security-context"
+    ],
+    "attributes": ["data-flow", "aria-current", "aria-busy"]
+  },
+  "consumerResponsibilities": [
+    "Keep credentials and provider secrets off the client and use secured, origin-bound server endpoints.",
+    "Authorize every flow, configure rate limits, session policy, passkey policy, recovery, logging, privacy, and incident response.",
+    "Localize every visible and spoken string and complete security, threat-model, browser, device, password-manager, and assistive-technology review."
+  ],
+  "evidenceRequirements": {
+    "automated": [
+      "strict-types",
+      "schema",
+      "native-form",
+      "autocomplete",
+      "controlled-uncontrolled",
+      "reset",
+      "read-only-reset",
+      "async-abort",
+      "rate-limit-disabled-path",
+      "keyboard",
+      "axe",
+      "narrow",
+      "rtl",
+      "forced-colors",
+      "reduced-motion",
+      "package-source-parity"
+    ],
+    "manual": [
+      "keyboard",
+      "desktop-mobile-screen-reader",
+      "speech",
+      "switch",
+      "touch",
+      "mobile-keyboard",
+      "password-manager",
+      "passkey-device-matrix",
+      "zoom",
+      "security-threat-review"
+    ],
+    "recordedEvidence": []
+  }
+}
