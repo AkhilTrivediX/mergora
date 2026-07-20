@@ -1,9 +1,9 @@
 # Current evidence index
 
-- Updated: 2026-07-20T07:47:46Z
-- Branch: `feature/foundation`
-- Committed checkpoint: `58d6de0` plus the active safe-CSV integration worktree
-- Evidence scope: the committed checkpoint plus the active, uncommitted integration worktree
+- Updated: 2026-07-20T18:20:13Z
+- Merged checkpoint: `4a1ef67` (PR #7)
+- Candidate checkpoint: `28a2eb6` (PR #9)
+- Evidence scope: merged `main` plus the exact in-flight PR #9 candidate; it is not release evidence
 - Publication state: `blocked-unreleased`
 
 This index gives the execution records a compact vocabulary for current repository evidence. It is
@@ -28,8 +28,8 @@ No Definition of Done assertion is currently `complete` under the exact-release 
 ### E-REPOSITORY
 
 - Public repository: <https://github.com/AkhilTrivediX/mergora>
-- Active branch and PR: `feature/foundation`, draft
-  [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)
+- Current candidate: `feature/data-grid-large-data`,
+  [PR #9](https://github.com/AkhilTrivediX/mergora/pull/9)
 - Package identity: [`../../config/public-packages.json`](../../config/public-packages.json) and
   [`PACKAGE_IDENTITY.md`](PACKAGE_IDENTITY.md)
 - Architecture decisions: [`../adr/`](../adr/)
@@ -37,9 +37,10 @@ No Definition of Done assertion is currently `complete` under the exact-release 
 - Privacy boundaries: [`.gitignore`](../../.gitignore) excludes private plan/run material; the
   private plan directory is absent from public history.
 
-The latest pushed CI run for `44a7829` is stale: foundation/build, browser/accessibility/visual,
-CodeQL, and dependency review passed, while packed consumers failed only because their generated
-evidence had changed. A current-worktree push and exact-commit rerun remain required.
+PR #9 refreshes the changed packed-consumer evidence with a full WRITE and immediate NO-WRITE
+replay. Its repository quality, packed consumers, site, CodeQL, dependency-audit, and
+dependency-review checks are green; the browser/accessibility/visual lane remains the only
+in-progress required check. This is candidate evidence only and does not satisfy release gates.
 
 ### E-TOKENS
 

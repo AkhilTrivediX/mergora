@@ -1,9 +1,9 @@
 # Release readiness
 
 - Updated: 2026-07-20
-- Branch: `feature/foundation`
-- Committed checkpoint: `58d6de0` plus the active safe-CSV integration worktree
-- Current scope: checkpoint plus active integration worktree
+- Merged checkpoint: `4a1ef67` (PR #7)
+- Candidate checkpoint: `28a2eb6` ([PR #9](https://github.com/AkhilTrivediX/mergora/pull/9))
+- Current scope: merged Pages-probe checkpoint plus the in-flight Data Grid candidate
 - Release state: no prerelease or Stable release
 
 This record reports phase gates, not a completion percentage. Later-phase source can exist while an
@@ -59,10 +59,9 @@ See [`CATALOG_STATUS.md`](CATALOG_STATUS.md) for the full breakdown.
 ## Current GitHub and publication facts
 
 - Repository: <https://github.com/AkhilTrivediX/mergora>
-- Draft PR: [#2](https://github.com/AkhilTrivediX/mergora/pull/2)
-- Latest pushed checkpoint: `44a7829`
-- Latest pushed CI: stale failure limited to older packed evidence drift; foundation/build,
-  browser/accessibility/visual, security analysis, and dependency review passed.
+- Latest candidate: [PR #9](https://github.com/AkhilTrivediX/mergora/pull/9) at `28a2eb6`.
+- Candidate CI: repository quality, packed Next/Vite consumers, Storybook/site/performance,
+  dependency review/audit, and CodeQL are green; browser/accessibility/visual is still running.
 - Package map: approved unscoped names in `config/public-packages.json`; availability observations
   are time-bound.
 - Current npm authentication: `npm whoami` succeeds; package ownership, trusted publishing, and
