@@ -476,7 +476,7 @@ function DelayedControlledMaskWorkbench() {
   const [pending, setPending] = useState(false);
   return (
     <Field
-      description="The parent applies each valid formatted value after 60 ms; the adapter caret map remains pending until that exact value renders."
+      description="The parent applies each valid formatted value after 240 ms; the adapter caret map remains pending until that exact value renders."
       label="Delayed inventory code"
     >
       <div>
@@ -489,7 +489,7 @@ function DelayedControlledMaskWorkbench() {
             setTimeout(() => {
               setInput(next.formattedValue);
               setPending(false);
-            }, 60);
+            }, 240);
           }}
           value={input}
         />
