@@ -91,6 +91,11 @@ try {
       reviewedAt: new Date().toISOString(),
       reviewBundleDigest: sha256(bundleBytes),
     },
+    limitations: (manifest.limitations ?? []).filter(
+      (limitation) =>
+        limitation !==
+        "The bootstrap reference is provisional until a rendered cross-commit diff receives explicit review.",
+    ),
   };
   const temporary = `${manifestPath}.tmp`;
   writeFileSync(temporary, `${JSON.stringify(updated, null, 2)}\n`, "utf8");

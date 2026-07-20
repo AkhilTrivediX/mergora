@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "mergora-cross-commit-visual-baseline",
   "suiteId": "p1-browser-evidence-workbench",
-  "acceptedCommit": "44a78292339b46ff2a388a4bc0658d689424e853",
+  "acceptedCommit": "2ebc3a73d03a0b3fde2c2ec5bbbf97514ec5fc5d",
   "source": {
     "fixture": "tests/browser/fixture/src/main.tsx",
     "spec": "tests/browser/visual.spec.ts"
@@ -54,21 +54,20 @@
     }
   ],
   "review": {
-    "status": "provisional",
+    "status": "approved",
     "requiredLabel": "visual-change",
-    "explanation": "Bootstrap the immutable cross-commit reference for the existing P1 browser evidence workbench without treating same-run captures as reviewed baselines.",
+    "explanation": "Reviewed intentional Mergora typography, token, focus, contrast, and component styling changes across the canonical P1 workbench; no clipping or forced-colors regression was observed.",
     "affectedStories": [
       "Components/Button",
+      "Components/Dialog",
       "Components/Combobox",
-      "Components/DataGrid",
-      "Components/Dialog"
+      "Components/DataGrid"
     ],
-    "reviewer": null,
-    "reviewedAt": null,
-    "reviewBundleDigest": null
+    "reviewer": "Codex root agent",
+    "reviewedAt": "2026-07-20T06:13:58.602Z",
+    "reviewBundleDigest": "sha256:7c5bb866f66085e9ecb82eacf74a109fe55ffd64ff830189af648f6c78b407c4"
   },
   "limitations": [
-    "The bootstrap reference is provisional until a rendered cross-commit diff receives explicit review.",
     "This suite covers the canonical Button, Dialog, Combobox, and Data Grid workbench; it does not claim catalog-wide Storybook visual coverage.",
     "Windows and macOS runs are useful diagnostics but are not release-eligible pinned visual evidence.",
     "Both source revisions are rendered with the candidate checkout's pinned browser and dependency toolchain so the comparison isolates committed source drift rather than historical runtime drift.",

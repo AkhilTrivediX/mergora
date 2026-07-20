@@ -4,7 +4,10 @@ import { resolve } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { evaluateBaselineChangePolicy } from "../../scripts/visual-baseline-lib.mjs";
+import {
+  evaluateBaselineChangePolicy,
+  hasCompleteApprovedReview,
+} from "../../scripts/visual-baseline-lib.mjs";
 
 const workspaceRoot = resolve(import.meta.dirname, "../..");
 const baselinePath = resolve(import.meta.dirname, "baseline.v1.json");
@@ -32,6 +35,7 @@ interface VisualManifest {
     readonly reviewer: null | string;
     readonly status: "approved" | "provisional";
   };
+  readonly limitations: readonly string[];
 }
 
 const baseline = JSON.parse(readFileSync(baselinePath, "utf8")) as VisualManifest;
@@ -93,8 +97,18 @@ const completeApprovedReview = {
   status: "approved",
 } as const;
 
+const provisionalReview = {
+  affectedStories: ["Components/Button"],
+  explanation: "Bootstrap a reference without claiming that it has completed visual review.",
+  requiredLabel: "visual-change",
+  reviewBundleDigest: null,
+  reviewedAt: null,
+  reviewer: null,
+  status: "provisional",
+} as const;
+
 describe("cross-commit visual baseline policy", () => {
-  it("pins an immutable source and keeps the bootstrap review status honest", () => {
+  it("pins an immutable source and records a structurally complete approved review", () => {
     expect(baseline.acceptedCommit).toMatch(/^[a-f0-9]{40}$/u);
     expect(baseline.environmentPolicy).toMatchObject({
       ciRunner: "ubuntu-24.04",
@@ -102,7 +116,10 @@ describe("cross-commit visual baseline policy", () => {
       acceptedFontDigest: expect.stringMatching(/^sha256:[a-f0-9]{64}$/u),
     });
     expect(baseline.comparison).toEqual({ threshold: 0, maxDiffPixels: 0, masks: [] });
-    expect(baseline.review.status).toBe("provisional");
+    expect(hasCompleteApprovedReview(baseline.review)).toBe(true);
+    expect(baseline.limitations).not.toContain(
+      "The bootstrap reference is provisional until a rendered cross-commit diff receives explicit review.",
+    );
   });
 
   it("plans two source renders followed by a real comparison", () => {
@@ -119,7 +136,7 @@ describe("cross-commit visual baseline policy", () => {
       "compare and persist diffs",
     ]);
     expect(plan.expectedComparisons).toBe(16);
-    expect(plan.reviewStatus).toBe("provisional");
+    expect(plan.reviewStatus).toBe("approved");
   });
 
   it("records baseline-change authority without a pull-request-only summary field", () => {
@@ -146,12 +163,12 @@ describe("cross-commit visual baseline policy", () => {
     expect(accepted.status, accepted.stderr).toBe(0);
     expect(JSON.parse(accepted.stdout)).toEqual({
       changed: true,
-      bootstrap: true,
+      bootstrap: false,
       authorization: "pull-request-label",
     });
   });
 
-  it("permits only an exact-base provisional bootstrap on an authorized direct feature push", () => {
+  it("uses approved review authority for an authorized direct feature push", () => {
     const accepted = node(["--input-type=module", "--eval", policySource], {
       GITHUB_ACTIONS: "true",
       GITHUB_EVENT_NAME: "push",
@@ -163,6 +180,29 @@ describe("cross-commit visual baseline policy", () => {
     expect(accepted.status, accepted.stderr).toBe(0);
     expect(JSON.parse(accepted.stdout)).toEqual({
       changed: true,
+      bootstrap: false,
+      authorization: "direct-feature-push-review-record",
+    });
+  });
+
+  it("permits only an exact-base provisional bootstrap before a previous manifest exists", () => {
+    const provisionalManifest = {
+      ...baseline,
+      acceptedCommit: "a".repeat(40),
+      review: provisionalReview,
+    };
+
+    expect(
+      evaluateBaselineChangePolicy(
+        policyInput({
+          baseCommit: provisionalManifest.acceptedCommit,
+          directFeaturePushAuthority: true,
+          hasPreviousManifest: false,
+          manifest: provisionalManifest,
+        }),
+      ),
+    ).toEqual({
+      changed: true,
       bootstrap: true,
       authorization: "direct-feature-push-bootstrap",
     });
@@ -172,6 +212,8 @@ describe("cross-commit visual baseline policy", () => {
         policyInput({
           baseCommit: "b".repeat(40),
           directFeaturePushAuthority: true,
+          hasPreviousManifest: false,
+          manifest: provisionalManifest,
         }),
       ),
     ).toThrow(/exact comparison base/u);
@@ -269,7 +311,11 @@ describe("cross-commit visual baseline policy", () => {
 
     expect(() =>
       evaluateBaselineChangePolicy(
-        policyInput({ directFeaturePushAuthority: true, hasPreviousManifest: true }),
+        policyInput({
+          directFeaturePushAuthority: true,
+          hasPreviousManifest: true,
+          manifest: { ...baseline, review: provisionalReview },
+        }),
       ),
     ).toThrow(/after bootstrap must contain an approved review record/u);
   });

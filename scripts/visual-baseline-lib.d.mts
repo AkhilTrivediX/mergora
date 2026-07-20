@@ -33,6 +33,8 @@ export interface BaselineChangePolicyResult {
   readonly changed: boolean;
 }
 
+export function hasCompleteApprovedReview(review: unknown): boolean;
+
 export function evaluateBaselineChangePolicy(
   input: BaselineChangePolicyInput,
 ): BaselineChangePolicyResult;
