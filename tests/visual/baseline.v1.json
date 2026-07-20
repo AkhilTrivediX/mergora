@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "kind": "mergora-cross-commit-visual-baseline",
   "suiteId": "p1-browser-evidence-workbench",
-  "acceptedCommit": "5c2fb9379856f7d6fc87922848cc61a352229dff",
+  "acceptedCommit": "30f2fd8704c9fcecf3458dda75cdc41938404d26",
   "source": {
     "fixture": "tests/browser/fixture/src/main.tsx",
     "spec": "tests/browser/visual.spec.ts"
