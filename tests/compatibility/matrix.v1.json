@@ -21,7 +21,8 @@
     },
     "frameworks": {
       "next": {
-        "primary": "16.2.10"
+        "primary": "16.2.10",
+        "react18Compatibility": "15.5.9"
       },
       "vite": {
         "previousProbe": "7.3.6",
@@ -39,9 +40,9 @@
   },
   "frameworkProfiles": [
     {
-      "id": "next-r18-ts59",
+      "id": "next15-r18-ts59",
       "framework": "next",
-      "frameworkVersion": "16.2.10",
+      "frameworkVersion": "15.5.9",
       "reactVersion": "18.3.1",
       "reactTypesVersion": "18.3.27",
       "reactDomTypesVersion": "18.3.7",
@@ -50,9 +51,9 @@
       "managerVersion": "11.17.0"
     },
     {
-      "id": "next-r18-ts60",
+      "id": "next15-r18-ts60",
       "framework": "next",
-      "frameworkVersion": "16.2.10",
+      "frameworkVersion": "15.5.9",
       "reactVersion": "18.3.1",
       "reactTypesVersion": "18.3.27",
       "reactDomTypesVersion": "18.3.7",
@@ -61,7 +62,7 @@
       "managerVersion": "11.17.0"
     },
     {
-      "id": "next-r19-ts59",
+      "id": "next16-r19-ts59",
       "framework": "next",
       "frameworkVersion": "16.2.10",
       "reactVersion": "19.2.7",
@@ -72,7 +73,7 @@
       "managerVersion": "11.17.0"
     },
     {
-      "id": "next-r19-ts60",
+      "id": "next16-r19-ts60",
       "framework": "next",
       "frameworkVersion": "16.2.10",
       "reactVersion": "19.2.7",
