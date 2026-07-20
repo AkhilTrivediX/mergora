@@ -71,7 +71,7 @@ jobs:
       - name: Probe deployed static routes
         shell: bash
         env:
-          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PAGE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
         run: |
           set -euo pipefail
           root="${PAGE_URL%/}/"
