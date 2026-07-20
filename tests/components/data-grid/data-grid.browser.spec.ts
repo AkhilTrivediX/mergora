@@ -91,6 +91,7 @@ test("Storybook controls enable independent enhancements without creating illega
     [
       "filteringEnabled:true",
       "columnVisibilityEnabled:true",
+      "columnVisibilityPersistenceEnabled:true",
       "csvExportEnabled:true",
       "formSerializationEnabled:true",
       "operationMode:manual",
@@ -217,6 +218,19 @@ test("controlled column visibility reports native checkbox changes without orpha
   await expect(page.locator("[data-story-controlled-column-visibility]")).toHaveText(
     "owner:visible",
   );
+});
+
+test("column visibility adapter restores once and persists only committed checkbox changes", async ({
+  page,
+}) => {
+  await openStory(page, "column-visibility-adapter-hydration");
+  const evidence = page.locator("[data-story-column-visibility-adapter]");
+  await expect(evidence).toContainText("1 hydration read");
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toHaveCount(0);
+  await page.getByText("Visible fields", { exact: true }).click();
+  await page.getByRole("checkbox", { name: "Owner" }).check();
+  await expect(page.getByRole("columnheader", { name: "Owner" })).toBeVisible();
+  await expect(evidence).toContainText('[["title",true],["state",true],["owner",true]]');
 });
 
 test("manual page mode never slices consumer-owned rows and delegates page changes", async ({

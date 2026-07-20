@@ -63,6 +63,7 @@ const rows: readonly LibraryRecord[] = [
 interface LibraryGridStoryArgs {
   readonly caption: string;
   readonly columnVisibilityEnabled: boolean;
+  readonly columnVisibilityPersistenceEnabled: boolean;
   readonly csvExportEnabled: boolean;
   readonly rows: readonly LibraryRecord[];
   readonly selectionMode: "none" | "single";
@@ -103,6 +104,7 @@ function selectionProps(
 function LibraryGrid({
   caption,
   columnVisibilityEnabled,
+  columnVisibilityPersistenceEnabled,
   csvExportEnabled,
   rows: storyRows,
   selectionMode,
@@ -119,6 +121,16 @@ function LibraryGrid({
   const [csvPreview, setCsvPreview] = useState("CSV not prepared");
   const [formData, setFormData] = useState("Not inspected");
   const [retryRequests, setRetryRequests] = useState(0);
+  const columnVisibilityAdapter = useMemo(
+    () =>
+      columnVisibilityPersistenceEnabled
+        ? {
+            read: () => '[["title",true],["state",true],["owner",false]]',
+            write: () => undefined,
+          }
+        : false,
+    [columnVisibilityPersistenceEnabled],
+  );
   const operationStatus: false | DataGridOperationStatus =
     operationStatusState === "off"
       ? false
@@ -133,7 +145,9 @@ function LibraryGrid({
       caption={caption}
       columnVisibility={
         columnVisibilityEnabled
-          ? { defaultVisibility: { owner: false }, label: "Visible fields" }
+          ? columnVisibilityPersistenceEnabled
+            ? { adapter: columnVisibilityAdapter, label: "Visible fields" }
+            : { defaultVisibility: { owner: false }, label: "Visible fields" }
           : false
       }
       columns={columns}
@@ -261,6 +275,39 @@ function ControlledColumnVisibilityExample(): ReactElement {
       />
       <output aria-live="polite" data-story-controlled-column-visibility="">
         {lastChange}
+      </output>
+    </div>
+  );
+}
+
+function ColumnVisibilityAdapterHydrationExample(): ReactElement {
+  const [reads, setReads] = useState(0);
+  const [write, setWrite] = useState("no persisted changes");
+  const adapter = useMemo(
+    () => ({
+      read: () => {
+        setReads((current) => current + 1);
+        return '[["title",true],["state",true],["owner",false]]';
+      },
+      write: (_visibility: DataGridColumnVisibility, detail: { readonly serialized: string }) => {
+        setWrite(detail.serialized);
+      },
+    }),
+    [],
+  );
+  return (
+    <div style={{ display: "grid", gap: "0.75rem" }}>
+      <StrictMode>
+        <DataGrid<LibraryRecord>
+          caption="Persisted visible library fields"
+          columnVisibility={{ adapter, label: "Visible fields" }}
+          columns={columns}
+          getRowId={(row) => row.id}
+          rows={rows}
+        />
+      </StrictMode>
+      <output aria-live="polite" data-story-column-visibility-adapter="">
+        {reads} hydration {reads === 1 ? "read" : "reads"} · {write}
       </output>
     </div>
   );
@@ -503,6 +550,7 @@ const meta = {
   argTypes: {
     caption: { control: "text" },
     columnVisibilityEnabled: { control: "boolean" },
+    columnVisibilityPersistenceEnabled: { control: "boolean" },
     csvExportEnabled: { control: "boolean" },
     filteringEnabled: { control: "boolean" },
     formSerializationEnabled: { control: "boolean" },
@@ -521,6 +569,7 @@ const meta = {
   args: {
     caption: "Library records",
     columnVisibilityEnabled: false,
+    columnVisibilityPersistenceEnabled: false,
     csvExportEnabled: false,
     filteringEnabled: false,
     formSerializationEnabled: false,
@@ -548,6 +597,7 @@ export const BasicDefaults: Story = {
 export const RecommendedMergora: Story = {
   args: {
     columnVisibilityEnabled: true,
+    columnVisibilityPersistenceEnabled: true,
     csvExportEnabled: true,
     filteringEnabled: true,
     paginationEnabled: true,
@@ -565,6 +615,10 @@ export const ControlledSelection: Story = {
 
 export const ControlledColumnVisibility: Story = {
   render: () => <ControlledColumnVisibilityExample />,
+};
+
+export const ColumnVisibilityAdapterHydration: Story = {
+  render: () => <ColumnVisibilityAdapterHydrationExample />,
 };
 
 export const SemanticTable: Story = {
@@ -625,6 +679,7 @@ export const NarrowAndRtl: Story = {
       <LibraryGrid
         caption="Library records"
         columnVisibilityEnabled
+        columnVisibilityPersistenceEnabled={false}
         csvExportEnabled={false}
         filteringEnabled
         formSerializationEnabled={false}

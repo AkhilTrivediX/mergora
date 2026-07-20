@@ -3,11 +3,11 @@
   "contractVersion": "0.2.0",
   "itemId": "data-grid",
   "contractStatus": "source-present-unreleased",
-  "claim": "This Experimental source contract covers the semantic-table tracer, optional native column visibility and query-operation layers, and the side-effect-free safe CSV serializer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
+  "claim": "This Experimental source contract covers the semantic-table tracer, optional controlled or adapter-persisted native column visibility and query-operation layers, and the side-effect-free safe CSV serializer only. It makes no Stable, complete Risk Class 3, interactive-grid, publication, or manual assistive-technology claim.",
   "riskClass": 3,
   "semantics": {
     "nativeBasis": "A labelled overflow region contains a native table with a caption, scoped column headers, native buttons for sorting and pagination, native inputs for filtering and selection, and native hidden inputs for optional form serialization.",
-    "rolePolicy": "Semantic Table mode remains the default. Optional native column-visibility disclosure, filter, pagination, summary, status, retry, selection, and form outputs are absent when their corresponding APIs are disabled; this phase does not expose an ARIA grid role.",
+    "rolePolicy": "Semantic Table mode remains the default. Optional native column-visibility disclosure and its independently optional persistence adapter, filter, pagination, summary, status, retry, selection, and form outputs are absent when their corresponding APIs are disabled; this phase does not expose an ARIA grid role.",
     "refTarget": "The public ref targets the labelled HTMLDivElement region."
   },
   "keyboard": [
@@ -64,7 +64,7 @@
     "In manual mode, apply remote filtering, sorting, and pagination outside the component and return rows and cursor boundaries that match the controlled query.",
     "Keep query adapters deterministic and side-effect safe; transport, routing, persistence, authorization, and retry effects remain consumer-owned.",
     "Supply the exact row model and explicit typed columns for CSV serialization; downloads, storage, network behavior, and any decision to disable default spreadsheet-formula protection remain consumer-owned.",
-    "Supply localized column visibility labels where stable IDs are not suitable for user-facing checkbox text; controlled visibility maps must retain at least one known column.",
+    "Supply localized column visibility labels where stable IDs are not suitable for user-facing checkbox text; controlled visibility maps must retain at least one known column, and persistence adapters must remain consumer-owned and deterministic.",
     "Preserve native table structure and retest long content, 320px reflow, 400% zoom, RTL, touch, forced colors, reduced motion, and supported assistive technology.",
     "Do not claim Stable or complete Data Grid conformance until the recorded completion delta and Risk Class 3 manual matrix are closed."
   ],
@@ -78,6 +78,7 @@
       "client-operation-order",
       "manual-operation-isolation",
       "form-serialization-reset",
+      "column-visibility-adapter",
       "formula-injection-safe-csv",
       "keyboard",
       "focus-restoration",

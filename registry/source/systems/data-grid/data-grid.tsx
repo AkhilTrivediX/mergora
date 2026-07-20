@@ -204,8 +204,22 @@ export type DataGridColumnVisibility = Readonly<{
 export interface DataGridColumnVisibilityChangeDetail {
   /** Identifies the column whose visibility a native checkbox changed. */
   readonly columnId: string;
+  /** Identifies the native checkbox as the committed visibility-change cause. */
+  readonly reason: "native-checkbox";
+  /** Deterministic canonical serialization of the complete next visibility map. */
+  readonly serialized: string;
   /** Reports the requested next visible state for that column. */
   readonly visible: boolean;
+}
+
+export interface DataGridColumnVisibilityAdapter {
+  /** Restores an initial uncontrolled visibility map after hydration. */
+  readonly read?: () => DataGridColumnVisibility | string | null | undefined;
+  /** Persists each committed checkbox change; omission means no persistence I/O. */
+  readonly write: (
+    visibility: DataGridColumnVisibility,
+    detail: DataGridColumnVisibilityChangeDetail,
+  ) => void;
 }
 
 export interface DataGridColumnVisibilityOptions {
@@ -218,6 +232,8 @@ export interface DataGridColumnVisibilityOptions {
     visibility: DataGridColumnVisibility,
     detail: DataGridColumnVisibilityChangeDetail,
   ) => void;
+  /** Restores and persists uncontrolled visibility; false removes all adapter I/O. */
+  readonly adapter?: false | DataGridColumnVisibilityAdapter;
   /** Names the optional native disclosure that contains visibility checkboxes. */
   readonly label?: string;
 }
@@ -660,6 +676,45 @@ function resolveColumnVisibility<TData extends object>(
   return Object.fromEntries(columns.map((column) => [column.id, requested?.[column.id] ?? true]));
 }
 
+/** Serializes declared column visibility in declaration order for deterministic persistence adapters. */
+export function serializeDataGridColumnVisibility<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  visibility: DataGridColumnVisibility,
+): string {
+  return JSON.stringify(columns.map((column) => [column.id, visibility[column.id] ?? true]));
+}
+
+/** Parses a deterministic column-visibility adapter value without performing any I/O. */
+export function parseDataGridColumnVisibility(serialized: string): DataGridColumnVisibility {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(serialized);
+  } catch {
+    throw new Error("Mergora DataGrid columnVisibility.adapter.read() returned invalid JSON.");
+  }
+  if (!Array.isArray(parsed)) {
+    throw new TypeError(
+      "Mergora DataGrid columnVisibility.adapter.read() JSON must be an array of [columnId, visible] pairs.",
+    );
+  }
+  const visibility: Record<string, boolean> = {};
+  for (const entry of parsed) {
+    if (
+      !Array.isArray(entry) ||
+      entry.length !== 2 ||
+      typeof entry[0] !== "string" ||
+      typeof entry[1] !== "boolean" ||
+      hasDefinedOwn(visibility, entry[0])
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnVisibility.adapter.read() JSON must contain unique [columnId, visible] pairs.",
+      );
+    }
+    visibility[entry[0]] = entry[1];
+  }
+  return visibility;
+}
+
 function assertColumnVisibility<TData extends object>(
   columns: readonly DataGridColumn<TData>[],
   requested: DataGridColumnVisibility | undefined,
@@ -805,6 +860,34 @@ export function assertDataGridConfiguration(props: Readonly<Record<string, unkno
       throw new TypeError(
         "Mergora DataGrid columnVisibility.onVisibilityChange must be a function when supplied.",
       );
+    }
+    if (
+      columnVisibility.adapter !== undefined &&
+      columnVisibility.adapter !== false &&
+      !isPlainObject(columnVisibility.adapter)
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnVisibility.adapter must be false or an adapter object.",
+      );
+    }
+    if (isPlainObject(columnVisibility.adapter)) {
+      const adapter = columnVisibility.adapter;
+      if (typeof adapter.write !== "function") {
+        throw new TypeError("Mergora DataGrid columnVisibility.adapter.write must be a function.");
+      }
+      if (adapter.read !== undefined && typeof adapter.read !== "function") {
+        throw new TypeError(
+          "Mergora DataGrid columnVisibility.adapter.read must be a function when supplied.",
+        );
+      }
+      if (
+        hasDefinedOwn(columnVisibility, "visibility") ||
+        hasDefinedOwn(columnVisibility, "defaultVisibility")
+      ) {
+        throw new Error(
+          "Mergora DataGrid columnVisibility.adapter owns uncontrolled restoration and cannot be combined with visibility or defaultVisibility.",
+        );
+      }
     }
     if (
       columnVisibility.label !== undefined &&
@@ -1190,6 +1273,7 @@ function DataGridInner<TData extends object>(
   }
   const adapterReadRef = useRef(false);
   const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
+  const columnVisibilityAdapterReadRef = useRef(false);
   const initialColumnVisibilityRef = useRef<DataGridColumnVisibility | null>(null);
   if (initialColumnVisibilityRef.current === null) {
     initialColumnVisibilityRef.current = resolveColumnVisibility(
@@ -1252,6 +1336,46 @@ function DataGridInner<TData extends object>(
     paginationMode,
     queryAdapter,
   ]);
+
+  useEffect(() => {
+    const adapter = columnVisibilityOptions?.adapter;
+    if (
+      columnVisibilityAdapterReadRef.current ||
+      adapter === undefined ||
+      adapter === false ||
+      adapter.read === undefined
+    ) {
+      return;
+    }
+    columnVisibilityAdapterReadRef.current = true;
+    const adapterInitialValue = adapter.read();
+    if (isPlainObject(adapterInitialValue)) {
+      assertColumnVisibility(
+        columns,
+        adapterInitialValue,
+        "columnVisibility.adapter.read() result",
+      );
+    } else if (
+      adapterInitialValue !== undefined &&
+      adapterInitialValue !== null &&
+      typeof adapterInitialValue !== "string"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnVisibility.adapter.read() must return a plain visibility object, string, null, or undefined.",
+      );
+    }
+    const restoredVisibility = resolveColumnVisibility(
+      columns,
+      typeof adapterInitialValue === "string"
+        ? parseDataGridColumnVisibility(adapterInitialValue)
+        : (adapterInitialValue ?? undefined),
+    );
+    assertColumnVisibility(columns, restoredVisibility, "columnVisibility.adapter.read() result");
+    initialColumnVisibilityRef.current = restoredVisibility;
+    setUncontrolledColumnVisibility((current) =>
+      sameColumnVisibility(current, restoredVisibility) ? current : restoredVisibility,
+    );
+  }, [columnVisibilityOptions?.adapter, columns]);
 
   const currentSelection = selectedRowId === undefined ? uncontrolledSelection : selectedRowId;
   const currentColumnVisibility = resolveColumnVisibility(
@@ -1365,10 +1489,19 @@ function DataGridInner<TData extends object>(
         (column) => currentColumnVisibility[column.id] !== next[column.id],
       );
       if (changedColumn !== undefined) {
-        columnVisibilityOptions.onVisibilityChange?.(next, {
+        const detail = {
           columnId: changedColumn.id,
+          reason: "native-checkbox",
+          serialized: serializeDataGridColumnVisibility(columns, next),
           visible: next[changedColumn.id]!,
-        });
+        } as const;
+        columnVisibilityOptions.onVisibilityChange?.(next, detail);
+        if (
+          columnVisibilityOptions.adapter !== undefined &&
+          columnVisibilityOptions.adapter !== false
+        ) {
+          columnVisibilityOptions.adapter.write(next, detail);
+        }
       }
     },
   });

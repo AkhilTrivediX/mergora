@@ -47,6 +47,30 @@ visible checkbox is disabled instead. Toggling a field removes its scoped header
 cell together, while the caption, native table semantics, sorting, selection, query state, and form
 behavior remain intact. Native form reset restores uncontrolled defaults without callbacks.
 
+For a persisted uncontrolled preference, use the narrow adapter instead of coupling the grid to
+storage or routing. It reads once after hydration, accepts the canonical `serializeDataGridColumnVisibility`
+format or a plain visibility map, and writes only committed native checkbox changes. It cannot be
+combined with a controlled map or `defaultVisibility`, and reset restores the adapter-derived initial
+value without a write:
+
+```tsx
+<DataGrid
+  {...props}
+  columnVisibility={{
+    label: "Visible fields",
+    adapter: {
+      read: () => window.sessionStorage.getItem("grid-columns"),
+      write: (_visibility, detail) =>
+        window.sessionStorage.setItem("grid-columns", detail.serialized),
+    },
+  }}
+/>
+```
+
+Pass `adapter: false` (or omit `adapter`) to remove all preference reads and writes while retaining
+the independently optional native disclosure. Consumers own persistence, transport, authorization,
+and any storage error handling.
+
 Set `columnVisibility={false}` or omit it to remove the disclosure, checkboxes, visibility state,
 callbacks, and all related accessibility output. Give a column a localized `visibilityLabel` when
 its stable ID is not suitable for checkbox text.

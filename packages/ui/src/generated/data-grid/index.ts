@@ -4,6 +4,7 @@ export {
   type DataGridColumn,
   type DataGridColumnAlignment,
   type DataGridColumnVisibility,
+  type DataGridColumnVisibilityAdapter,
   type DataGridColumnVisibilityChangeDetail,
   type DataGridColumnVisibilityOptions,
   type DataGridCursorPaginationOptions,
@@ -30,7 +31,9 @@ export {
   type DataGridSortingChangeDetail,
   type DataGridSortingProps,
   normalizeDataGridQuery,
+  parseDataGridColumnVisibility,
   parseDataGridQuery,
+  serializeDataGridColumnVisibility,
   serializeDataGridQuery,
 } from "./data-grid.js";
 

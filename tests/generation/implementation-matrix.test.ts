@@ -282,6 +282,7 @@ describe("catalog implementation matrix", () => {
 
     const expectedControls = [
       "columnVisibilityEnabled",
+      "columnVisibilityPersistenceEnabled",
       "csvExportEnabled",
       "filteringEnabled",
       "formSerializationEnabled",

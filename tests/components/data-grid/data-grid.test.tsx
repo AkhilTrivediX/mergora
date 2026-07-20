@@ -10,7 +10,9 @@ import {
   DataGrid,
   assertDataGridConfiguration,
   normalizeDataGridQuery,
+  parseDataGridColumnVisibility,
   parseDataGridQuery,
+  serializeDataGridColumnVisibility,
   serializeDataGridQuery,
   type DataGridColumn,
   type DataGridProps,
@@ -309,6 +311,28 @@ describe("Data Grid Experimental canonical source", () => {
     expect(enhanced).toContain(">score<");
     expect(enhanced).toContain(">Asha<");
     expect(enhanced).not.toContain(">9<");
+  });
+
+  it("serializes visibility in declared-column order and rejects malformed adapter input", () => {
+    expect(serializeDataGridColumnVisibility(columns, { name: false, score: true })).toBe(
+      '[["name",false],["score",true]]',
+    );
+    expect(parseDataGridColumnVisibility('[["score",false],["name",true]]')).toEqual({
+      name: true,
+      score: false,
+    });
+    expect(() => parseDataGridColumnVisibility('[["score",false],["score",true]]')).toThrow(
+      /unique/u,
+    );
+    expect(() => parseDataGridColumnVisibility("not-json")).toThrow(/invalid JSON/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        columnVisibility: {
+          adapter: { write: () => undefined },
+          defaultVisibility: { score: false },
+        },
+      }),
+    ).toThrow(/adapter owns uncontrolled restoration/u);
   });
 
   it("removes disabled and empty optional selection-summary output from SSR", () => {

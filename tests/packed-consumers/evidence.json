@@ -6,7 +6,7 @@
       "file": "mergora-0.0.0.tgz",
       "name": "mergora",
       "role": "cli",
-      "sha256": "869f4f187b3e31ae7bb1f6dbc1703b6d304d134275e8c4a8c9ed26657852b6bf",
+      "sha256": "88fb8d65343bc5e2f476a26972224514ece186b54e783363ec2b7155a586fdb9",
       "version": "0.0.0"
     },
     {
@@ -48,7 +48,7 @@
       "file": "mergora-ui-0.0.0.tgz",
       "name": "mergora-ui",
       "role": "ui",
-      "sha256": "ef5156f0240a47252221473fd866d61c65dc17060b38b8eef27aa83965004a49",
+      "sha256": "612364029948a3c5d03eddfeb414cb0123450bb6712599a9221cce73eebb240f",
       "version": "0.0.0"
     }
   ],
@@ -154,7 +154,7 @@
       "sourceInstall": {
         "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox date-picker file-upload data-grid admin-dashboard-shell --root . --target src/components --yes --non-interactive --json",
         "files": 109,
-        "sourceTreeSha256": "1071418c58354ccaf360347be3f4d28f680c59a7f690cd8ac130088b22112ea2"
+        "sourceTreeSha256": "bfe286c3d2bc79d9437503eeac125a588d8b44bf2bf88fdca67da55abb16ffa7"
       },
       "sourceLifecycle": {
         "diff": "reported",
@@ -234,7 +234,7 @@
       "sourceInstall": {
         "command": "node node_modules/mergora/dist/bin.js init --cwd . --yes --non-interactive --json && node node_modules/mergora/dist/bin.js add button dialog combobox date-picker file-upload data-grid admin-dashboard-shell --root . --target src/components --yes --non-interactive --json",
         "files": 109,
-        "sourceTreeSha256": "b38527eb29bb3ab69f08f22b974cbc4b1c641351ee2c2987c5c001dffd566e2c"
+        "sourceTreeSha256": "3840a288f011e2b0f6a1bebf8aeb12f967a47f251bce29ffbe40e95c2538bef4"
       },
       "sourceLifecycle": {
         "diff": "reported",

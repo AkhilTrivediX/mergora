@@ -17,7 +17,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or uncontrolled native column visibility with a last-column safeguard, adapter persistence, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
+        "summary": "Mergora owns a typed native semantic-table surface plus deterministic aggregate query state, client filter-sort-page processing, manual page and cursor delegation, controlled or adapter-persisted native column visibility with a last-column safeguard, native form/reset behavior, recoverable async status, optional live query and selection context, and formula-injection-safe deterministic CSV serialization without exposing TanStack types.",
         "references": [
           {
             "kind": "repository-file",
@@ -51,7 +51,8 @@
           "native-single-selection",
           "selection-summary",
           "safe-csv-export",
-          "column-visibility"
+          "column-visibility",
+          "column-visibility-persistence"
         ]
       },
       "visualSignature": {
@@ -421,7 +422,7 @@
         {
           "id": "column-visibility",
           "status": "evidence-backed",
-          "summary": "Consumers can independently enable a controlled or uncontrolled native disclosure of localized column checkboxes; hidden columns remove their scoped headers and cells atomically, and the last visible data column remains protected.",
+          "summary": "Consumers can independently enable controlled, uncontrolled, or once-hydrated adapter-persisted native localized column checkboxes; hidden columns remove scoped headers and cells atomically, the last visible data column remains protected, and reset never writes persistence.",
           "references": [
             {
               "kind": "repository-file",
@@ -443,15 +444,61 @@
           "storybookControlNames": ["columnVisibilityEnabled"],
           "api": {
             "kind": "prop",
-            "names": ["columnVisibility", "visibilityLabel"],
-            "enableWhen": "Provide columnVisibility options; omit it or pass false to retain the plain table."
+            "names": [
+              "columnVisibility",
+              "visibilityLabel",
+              "adapter",
+              "serializeDataGridColumnVisibility",
+              "parseDataGridColumnVisibility"
+            ],
+            "enableWhen": "Provide columnVisibility options; use its adapter only for once-hydrated uncontrolled restoration and committed writes. Omit it or pass false to retain the plain table."
           },
           "defaultEnabled": false,
           "disabledBehavior": {
             "ui": "No disclosure, summary, checkbox, or visibility label is rendered.",
-            "behavior": "All declared columns remain visible; no visibility state transition or native reset handling occurs.",
-            "events": "No visibility callback can fire.",
+            "behavior": "All declared columns remain visible; no visibility state transition, adapter read/write, or native reset handling occurs.",
+            "events": "No visibility callback or adapter write can fire.",
             "accessibility": "No column-visibility disclosure or checkbox is exposed."
+          }
+        },
+        {
+          "id": "column-visibility-persistence",
+          "status": "evidence-backed",
+          "summary": "Consumers can independently add once-hydrated, deterministic persistence to the native column-visibility disclosure without coupling the table to a storage or routing runtime.",
+          "references": [
+            {
+              "kind": "repository-file",
+              "location": "registry/source/systems/data-grid/data-grid.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "apps/storybook/src/DataGrid.stories.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.test.tsx"
+            },
+            {
+              "kind": "repository-file",
+              "location": "tests/components/data-grid/data-grid.browser.spec.ts"
+            }
+          ],
+          "storybookControlNames": ["columnVisibilityPersistenceEnabled"],
+          "api": {
+            "kind": "prop",
+            "names": [
+              "columnVisibility.adapter",
+              "serializeDataGridColumnVisibility",
+              "parseDataGridColumnVisibility"
+            ],
+            "enableWhen": "Provide columnVisibility.adapter for an otherwise uncontrolled visibility disclosure."
+          },
+          "defaultEnabled": false,
+          "disabledBehavior": {
+            "ui": "No adapter-specific control, status text, or preference indicator is rendered.",
+            "behavior": "The visibility disclosure remains local to the component and performs no preference read or write.",
+            "events": "No adapter read or write can occur.",
+            "accessibility": "No adapter-derived accessibility output is exposed."
           }
         }
       ],
@@ -472,7 +519,8 @@
             "selectionMode",
             "showSelectionSummary",
             "csvExportEnabled",
-            "columnVisibilityEnabled"
+            "columnVisibilityEnabled",
+            "columnVisibilityPersistenceEnabled"
           ],
           "references": [
             {
@@ -501,7 +549,8 @@
             "selectionMode",
             "showSelectionSummary",
             "csvExportEnabled",
-            "columnVisibilityEnabled"
+            "columnVisibilityEnabled",
+            "columnVisibilityPersistenceEnabled"
           ],
           "references": [
             {
