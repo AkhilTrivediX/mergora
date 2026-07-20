@@ -341,7 +341,7 @@ test("provider locale drives Hebrew RTL action-menu typeahead", async ({ browser
   expect(
     violations.filter((violation) => {
       const candidate = violation as { readonly id?: unknown };
-      return browserName === "webkit" && candidate.id === "color-contrast";
+      return !(browserName === "webkit" && candidate.id === "color-contrast");
     }),
   ).toEqual([]);
 });
