@@ -36,7 +36,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `corepack pnpm@11.14.0 --filter mergora-tokens build && corepack pnpm@11.14.0 --filter @mergora/storybook build && corepack pnpm@11.14.0 --filter @mergora/web build && node ../../scripts/assemble-quality-lab.mjs && node static-server.mjs`,
+    command: `corepack pnpm@11.14.0 --filter mergora-tokens build && corepack pnpm@11.14.0 --filter mergora-ui build && corepack pnpm@11.14.0 --filter @mergora/storybook build && corepack pnpm@11.14.0 --filter @mergora/web build && node ../../scripts/assemble-quality-lab.mjs && node static-server.mjs`,
     env: {
       MERGORA_BASE_PATH: "",
       MERGORA_SITE_ORIGIN: "https://mergora.dev",

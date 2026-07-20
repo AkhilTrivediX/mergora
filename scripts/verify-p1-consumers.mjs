@@ -2066,6 +2066,10 @@ async function withProductionServer(consumer, consumerDirectory, callback) {
     await callback(`http://127.0.0.1:${String(address.port)}/mergora-p1/`);
   } finally {
     await new Promise((resolvePromise, reject) => {
+      // Playwright may keep an HTTP connection alive until its context closes,
+      // while server.close waits for that same connection to finish. Close it
+      // explicitly so source-consumer runtime evidence cannot deadlock in CI.
+      server.closeAllConnections();
       server.close((error) => (error === undefined ? resolvePromise() : reject(error)));
     });
   }

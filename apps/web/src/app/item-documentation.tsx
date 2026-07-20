@@ -7,13 +7,13 @@ import documentationContracts from "../../../../registry/generated/documentation
 import implementationMatrix from "../../../../registry/generated/implementation-matrix.v1.json";
 import { DeferredApiReference } from "./deferred-api-reference";
 import { InstallBasketButton } from "./install-basket-button";
-import { DeferredSpecimenFrame } from "./deferred-specimen-frame";
 import {
   createInstallBasketCliPlan,
   CURRENT_INSTALL_BASKET_CLI_CONTEXT,
   DEFAULT_INSTALL_BASKET_OPTIONS,
 } from "./install-basket";
-import { DeferredStateLab } from "./deferred-state-lab";
+import { SpecimenFrame } from "./specimen-frame";
+import { StateLab } from "./state-lab";
 import { buildStateLabModel, type DocumentationContractItem } from "./state-lab-model";
 
 interface EvidenceReference {
@@ -290,7 +290,7 @@ export function ItemDocumentation({
             enhancedStory.modulePath !== undefined &&
             enhancedStory.exportName !== null &&
             enhancedStory.exportName !== undefined ? (
-              <DeferredSpecimenFrame
+              <SpecimenFrame
                 basic={{
                   exportName: basicStory.exportName,
                   modulePath: basicStory.modulePath,
@@ -407,7 +407,7 @@ export function ItemDocumentation({
               </p>
             </section>
           ) : (
-            <DeferredStateLab model={buildStateLabModel(documentationContract)} />
+            <StateLab model={buildStateLabModel(documentationContract)} />
           )}
 
           <section id="usage">
