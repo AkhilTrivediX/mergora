@@ -179,6 +179,64 @@ test("duration, unavailable-span, wall-time, and year-window adapters recover cl
   await expect(page.locator('select[name="archive-year"] option[value="2035"]')).toHaveCount(1);
 });
 
+test("bounded consumer-owned timezone fixtures hydrate without runtime failures and stay clean when disabled", async ({
+  page,
+}) => {
+  await openStory(page, "temporal-boundary-hydration");
+  await expect(page.getByTestId("temporal-boundary-hydration-note")).toContainText(
+    "not a time-zone database",
+  );
+
+  const validFixtures = [
+    { id: "utc-valid", instant: "2026-01-15T12:00:00Z" },
+    { id: "kolkata-valid", instant: "2026-08-04T03:30:00Z" },
+  ];
+  for (const fixture of validFixtures) {
+    const specimen = page.getByTestId(`temporal-boundary-${fixture.id}`);
+    await expect(specimen.locator('[data-slot="date-time-field-wall-time"]')).toContainText(
+      `Resolved instant: ${fixture.instant}`,
+    );
+    await expect(
+      specimen.locator(`input[name="temporal-boundary-${fixture.id}-instant"]`),
+    ).toHaveValue(fixture.instant);
+  }
+
+  const ambiguousFixtures = [
+    { id: "new-york-ambiguity", instant: "2026-11-01T06:30:00Z" },
+    { id: "berlin-ambiguity", instant: "2026-10-25T01:30:00Z" },
+  ];
+  for (const fixture of ambiguousFixtures) {
+    const specimen = page.getByTestId(`temporal-boundary-${fixture.id}`);
+    await expect(specimen.locator('[data-slot="date-time-field-wall-time"]')).toContainText(
+      "later occurrence",
+    );
+    await expect(
+      specimen.locator(`input[name="temporal-boundary-${fixture.id}-instant"]`),
+    ).toHaveValue(fixture.instant);
+  }
+
+  for (const id of ["new-york-gap", "berlin-gap"]) {
+    const specimen = page.getByTestId(`temporal-boundary-${id}`);
+    await expect(specimen.locator('input[type="datetime-local"]')).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    await expect(specimen.locator('[data-slot="date-time-field-wall-time"]')).toContainText(
+      "does not exist",
+    );
+    await expect(specimen.locator(`input[name="temporal-boundary-${id}-instant"]`)).toHaveCount(0);
+  }
+
+  const disabled = page.getByTestId("temporal-boundary-adapter-off");
+  await expect(disabled.locator('[data-slot="date-time-field-wall-time"]')).toHaveCount(0);
+  await expect(disabled.locator('[data-slot="date-time-field-resolved-value"]')).toHaveCount(0);
+  await expect(disabled.locator('input[type="datetime-local"]')).not.toHaveAttribute(
+    "aria-invalid",
+    "true",
+  );
+  expect(await axeViolations(page)).toEqual([]);
+});
+
 test("calendar supports roving keyboard navigation, selection, and explained unavailable dates", async ({
   page,
 }) => {

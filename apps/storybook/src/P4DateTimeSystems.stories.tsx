@@ -128,6 +128,82 @@ const WALL_TIME_ADAPTER: DateTimeWallTimeAdapter = {
   },
 };
 
+/**
+ * Deterministic, consumer-owned boundary fixtures for Storybook and browser evidence.
+ * They intentionally model only the named examples; Mergora does not bundle or own a
+ * time-zone database.
+ */
+const TEMPORAL_BOUNDARY_FIXTURES = [
+  {
+    id: "utc-valid",
+    instant: "2026-01-15T12:00:00Z",
+    kind: "valid",
+    label: "UTC valid local time",
+    localValue: "2026-01-15T12:00",
+    timeZone: "UTC",
+  },
+  {
+    id: "new-york-gap",
+    kind: "nonexistent",
+    label: "America/New_York skipped local time",
+    localValue: "2026-03-08T02:30",
+    timeZone: "America/New_York",
+  },
+  {
+    earlierInstant: "2026-11-01T05:30:00Z",
+    id: "new-york-ambiguity",
+    kind: "ambiguous",
+    label: "America/New_York repeated local time",
+    laterInstant: "2026-11-01T06:30:00Z",
+    localValue: "2026-11-01T01:30",
+    timeZone: "America/New_York",
+  },
+  {
+    id: "berlin-gap",
+    kind: "nonexistent",
+    label: "Europe/Berlin skipped local time",
+    localValue: "2026-03-29T02:30",
+    timeZone: "Europe/Berlin",
+  },
+  {
+    earlierInstant: "2026-10-25T00:30:00Z",
+    id: "berlin-ambiguity",
+    kind: "ambiguous",
+    label: "Europe/Berlin repeated local time",
+    laterInstant: "2026-10-25T01:30:00Z",
+    localValue: "2026-10-25T02:30",
+    timeZone: "Europe/Berlin",
+  },
+  {
+    id: "kolkata-valid",
+    instant: "2026-08-04T03:30:00Z",
+    kind: "valid",
+    label: "Asia/Kolkata valid local time",
+    localValue: "2026-08-04T09:00",
+    timeZone: "Asia/Kolkata",
+  },
+] as const;
+
+const TEMPORAL_BOUNDARY_ADAPTER: DateTimeWallTimeAdapter = {
+  resolveLocalWallTime: ({ localValue, timeZone }) => {
+    const fixture = TEMPORAL_BOUNDARY_FIXTURES.find(
+      (candidate) => candidate.localValue === localValue && candidate.timeZone === timeZone,
+    );
+    if (fixture === undefined) {
+      throw new RangeError(
+        "This bounded consumer fixture has no result for the supplied local time.",
+      );
+    }
+    if (fixture.kind === "valid") return { instant: fixture.instant, kind: "valid" };
+    if (fixture.kind === "nonexistent") return { kind: "nonexistent" };
+    return {
+      earlierInstant: fixture.earlierInstant,
+      kind: "ambiguous",
+      laterInstant: fixture.laterInstant,
+    };
+  },
+};
+
 function Canvas({
   children,
   direction = "ltr",
@@ -446,6 +522,59 @@ function FormExample() {
   );
 }
 
+function TemporalBoundaryHydrationExample() {
+  return (
+    <Canvas>
+      <header>
+        <h1 style={{ margin: 0 }}>Temporal boundary hydration evidence</h1>
+        <p data-testid="temporal-boundary-hydration-note" style={{ marginBlockEnd: 0 }}>
+          The consumer-owned adapter uses fixed inputs and outputs so server and client evaluate the
+          same boundary evidence. It is not a time-zone database.
+        </p>
+      </header>
+      <div style={matrixStyle}>
+        {TEMPORAL_BOUNDARY_FIXTURES.map((fixture) => (
+          <section
+            data-testid={`temporal-boundary-${fixture.id}`}
+            key={fixture.id}
+            style={specimenStyle}
+          >
+            <h2 style={{ margin: 0 }}>{fixture.label}</h2>
+            <label style={labelStyle}>
+              Local value ({fixture.timeZone})
+              <DateTimeField
+                defaultValue={fixture.localValue}
+                name={`temporal-boundary-${fixture.id}`}
+                resolvedName={`temporal-boundary-${fixture.id}-instant`}
+                timeZone={fixture.timeZone}
+                wallTimeAdapter={TEMPORAL_BOUNDARY_ADAPTER}
+                {...(fixture.kind === "ambiguous" ? { ambiguityPolicy: "later" } : {})}
+              />
+            </label>
+          </section>
+        ))}
+        <section data-testid="temporal-boundary-adapter-off" style={specimenStyle}>
+          <h2 style={{ margin: 0 }}>Adapter disabled</h2>
+          <p style={{ margin: 0 }}>
+            No resolver, validation message, hidden instant, callback, or resolution accessibility
+            output is rendered.
+          </p>
+          <label style={labelStyle}>
+            Native local value (America/New_York)
+            <DateTimeField
+              defaultValue="2026-03-08T02:30"
+              name="temporal-boundary-adapter-off"
+              resolvedName="temporal-boundary-adapter-off-instant"
+              timeZone="America/New_York"
+              wallTimeAdapter={false}
+            />
+          </label>
+        </section>
+      </div>
+    </Canvas>
+  );
+}
+
 const meta = {
   args: {
     availabilityExplanations: true,
@@ -510,6 +639,10 @@ export const RecommendedMergora: Story = {
 export const ControlledAndUncontrolled: Story = { render: () => <ControlledRangeExample /> };
 
 export const FormLifecycle: Story = { render: () => <FormExample /> };
+
+export const TemporalBoundaryHydration: Story = {
+  render: () => <TemporalBoundaryHydrationExample />,
+};
 
 export const KeyboardWorkbench: Story = {
   render: () => (

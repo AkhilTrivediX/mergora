@@ -67,6 +67,7 @@
       "timezone-off-path",
       "wall-time-adapter-off-path",
       "repeated-and-nonexistent-wall-time-recovery",
+      "consumer-owned-timezone-boundary-hydration",
       "resolved-instant-form-serialization",
       "packed-consumer",
       "package-source-parity"
@@ -85,6 +86,6 @@
   "limitations": [
     "Generated package, editable source, native registry, Shadcn, and packed-consumer parity have not yet been recorded for this source checkpoint.",
     "Current manual desktop/mobile screen-reader, speech, switch, and real-device records are missing.",
-    "The default local date-time value remains unzoned; consumers enabling wallTimeAdapter must supply authoritative, current timezone data and validate the resulting instant at a trusted boundary."
+    "The default local date-time value remains unzoned; consumers enabling wallTimeAdapter must supply authoritative, current timezone data and validate the resulting instant at a trusted boundary. Mergora does not bundle or own a time-zone database."
   ]
 }

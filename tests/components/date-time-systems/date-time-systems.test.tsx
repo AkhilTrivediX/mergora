@@ -22,7 +22,10 @@ import {
 } from "../../../registry/source/components/date-field/date-time-utils.ts";
 import { DatePicker } from "../../../registry/source/components/date-picker/date-picker.tsx";
 import { DateRangePicker } from "../../../registry/source/components/date-range-picker/date-range-picker.tsx";
-import { DateTimeField } from "../../../registry/source/components/date-time-field/date-time-field.tsx";
+import {
+  DateTimeField,
+  type DateTimeWallTimeAdapter,
+} from "../../../registry/source/components/date-time-field/date-time-field.tsx";
 import { DateTimePicker } from "../../../registry/source/components/date-time-picker/date-time-picker.tsx";
 import { MonthPicker } from "../../../registry/source/components/month-picker/month-picker.tsx";
 import { RangeCalendar } from "../../../registry/source/components/range-calendar/range-calendar.tsx";
@@ -58,6 +61,67 @@ const expectedDependencies = {
   "time-picker": ["date-field", "time-field"],
   "year-picker": ["date-field"],
 } satisfies Record<(typeof itemIds)[number], readonly string[]>;
+
+const temporalBoundaryFixtures = [
+  {
+    id: "utc-valid",
+    instant: "2026-01-15T12:00:00Z",
+    kind: "valid",
+    localValue: "2026-01-15T12:00",
+    timeZone: "UTC",
+  },
+  {
+    id: "new-york-gap",
+    kind: "nonexistent",
+    localValue: "2026-03-08T02:30",
+    timeZone: "America/New_York",
+  },
+  {
+    earlierInstant: "2026-11-01T05:30:00Z",
+    id: "new-york-ambiguity",
+    kind: "ambiguous",
+    laterInstant: "2026-11-01T06:30:00Z",
+    localValue: "2026-11-01T01:30",
+    timeZone: "America/New_York",
+  },
+  {
+    id: "berlin-gap",
+    kind: "nonexistent",
+    localValue: "2026-03-29T02:30",
+    timeZone: "Europe/Berlin",
+  },
+  {
+    earlierInstant: "2026-10-25T00:30:00Z",
+    id: "berlin-ambiguity",
+    kind: "ambiguous",
+    laterInstant: "2026-10-25T01:30:00Z",
+    localValue: "2026-10-25T02:30",
+    timeZone: "Europe/Berlin",
+  },
+  {
+    id: "kolkata-valid",
+    instant: "2026-08-04T03:30:00Z",
+    kind: "valid",
+    localValue: "2026-08-04T09:00",
+    timeZone: "Asia/Kolkata",
+  },
+] as const;
+
+const temporalBoundaryAdapter: DateTimeWallTimeAdapter = {
+  resolveLocalWallTime: ({ localValue, timeZone }) => {
+    const fixture = temporalBoundaryFixtures.find(
+      (candidate) => candidate.localValue === localValue && candidate.timeZone === timeZone,
+    );
+    if (fixture === undefined) throw new RangeError("Unknown bounded consumer fixture.");
+    if (fixture.kind === "valid") return { instant: fixture.instant, kind: "valid" };
+    if (fixture.kind === "nonexistent") return { kind: "nonexistent" };
+    return {
+      earlierInstant: fixture.earlierInstant,
+      kind: "ambiguous",
+      laterInstant: fixture.laterInstant,
+    };
+  },
+};
 
 function readItem(itemId: string, filename: string): string {
   return readFileSync(resolve(componentsRoot, itemId, filename), "utf8");
@@ -345,6 +409,33 @@ describe("independently disableable Mergora date-time enhancements", () => {
     );
     expect(resolved).toContain("later occurrence");
     expect(resolved).toContain('value="2026-10-25T01:30:00Z"');
+  });
+
+  it("keeps bounded consumer-owned timezone boundary evidence deterministic without timezone-db ownership", () => {
+    for (const fixture of temporalBoundaryFixtures) {
+      const markup = renderToStaticMarkup(
+        <DateTimeField
+          defaultValue={fixture.localValue}
+          resolvedName={`${fixture.id}-instant`}
+          timeZone={fixture.timeZone}
+          wallTimeAdapter={temporalBoundaryAdapter}
+          {...(fixture.kind === "ambiguous" ? { ambiguityPolicy: "later" } : {})}
+        />,
+      );
+      expect(markup).toContain(`value="${fixture.localValue}"`);
+      expect(markup).toContain(`data-wall-time="${fixture.kind}"`);
+
+      if (fixture.kind === "nonexistent") {
+        expect(markup).toContain('aria-invalid="true"');
+        expect(markup).toContain(`does not exist in ${fixture.timeZone}`);
+        expect(markup).not.toContain(`name="${fixture.id}-instant"`);
+        continue;
+      }
+
+      const instant = fixture.kind === "ambiguous" ? fixture.laterInstant : fixture.instant;
+      expect(markup).toContain(`name="${fixture.id}-instant"`);
+      expect(markup).toContain(`value="${instant}"`);
+    }
   });
 
   it("enforces optional date-range duration bounds with native constraints and recovery copy", () => {

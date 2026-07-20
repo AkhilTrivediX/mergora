@@ -982,7 +982,7 @@
       },
       "mergoraAdvantage": {
         "status": "evidence-backed",
-        "summary": "Mergora preserves the native unzoned local wall-time value while optionally making timezone interpretation explicit and resolving repeated or nonexistent wall times through a consumer-supplied adapter and explicit ambiguity policy.",
+        "summary": "Mergora preserves the native unzoned local wall-time value while optionally making timezone interpretation explicit and resolving repeated or nonexistent wall times through a consumer-supplied adapter and explicit ambiguity policy; deterministic UTC, New York, Berlin, and Kolkata boundary fixtures prove the seam without claiming time-zone database ownership.",
         "references": [
           {
             "kind": "repository-file",
@@ -1067,7 +1067,7 @@
         {
           "id": "wall-time-adapter",
           "status": "evidence-backed",
-          "summary": "A synchronous consumer adapter classifies valid, repeated, and nonexistent local times; reject is the safe default while earlier/later selection, recoverable native validity, and optional resolved-instant form data remain explicit.",
+          "summary": "A synchronous consumer adapter classifies valid, repeated, and nonexistent local times; reject is the safe default while earlier/later selection, recoverable native validity, optional resolved-instant form data, and deterministic server/client boundary hydration remain explicit. The adapter remains consumer-owned; Mergora does not bundle a time-zone database.",
           "references": [
             {
               "kind": "repository-file",
@@ -1154,7 +1154,7 @@
       },
       "accessibilityEvidence": {
         "status": "partial",
-        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
+        "summary": "Native semantics, labels, keyboard models, an emulated coarse-pointer context with 44 CSS-pixel day geometry, preferred navigation heights, and a real tap, narrow reflow, RTL, forced-colors, reduced-motion, wall-time recovery, and automated axe targets are present; current manual desktop/mobile screen-reader, speech, switch, and real-device evidence is missing.",
         "references": [
           {
             "kind": "repository-file",
@@ -1172,7 +1172,7 @@
       },
       "interactionEvidence": {
         "status": "partial",
-        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
+        "summary": "Focused unit and browser targets cover canonical values, clean enhancement removal, keyboard/pointer selection, native form lifecycle, deterministic UTC/New York/Berlin/Kolkata wall-time boundary hydration, responsive layout, RTL, and preference modes; the full manager/framework/engine matrix has not yet run.",
         "references": [
           {
             "kind": "repository-file",
