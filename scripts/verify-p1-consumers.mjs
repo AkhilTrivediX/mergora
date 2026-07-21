@@ -462,12 +462,12 @@ function validatePackageSources() {
       `${definition.directory} has an unexpected package name.`,
     );
     assert(
-      manifest.version === "0.0.0",
-      `${definition.name} must use the bounded P1 version 0.0.0.`,
+      manifest.version === "1.0.0",
+      `${definition.name} must use the bounded version 1.0.0.`,
     );
     assert(
-      manifest.private === true,
-      `${definition.name} must remain visibly unreleased during P1.`,
+      manifest.private === false,
+      `${definition.name} must be public for the 1.0.0 release.`,
     );
     for (const lifecycle of ["preinstall", "install", "postinstall"]) {
       assert(
