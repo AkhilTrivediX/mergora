@@ -979,7 +979,7 @@ test("catalog filtering and install basket remain understandable", async ({ page
   await page.getByLabel("Package manager").selectOption("npm");
   await page.getByLabel("Framework profile").selectOption("vite-react");
   await expect(page.locator(".catalog-browser__plan-command code")).toContainText(
-    "npx --yes mergora@0.0.0",
+    "npx --yes mergora@1.0.0",
   );
   await expect(page.locator(".catalog-browser__plan-command code")).toContainText(
     "--mode source --package-manager npm --plan",

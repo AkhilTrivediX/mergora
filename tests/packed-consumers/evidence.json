@@ -3,53 +3,53 @@
   "artifactKind": "p1-packed-consumer-evidence",
   "artifacts": [
     {
-      "file": "mergora-0.0.0.tgz",
+      "file": "mergora-1.0.0.tgz",
       "name": "mergora",
       "role": "cli",
       "sha256": "9c285d5f11fb8ba2fb6f66b1c98be20e278db439798a25bce0fa3159cecb7ba2",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-contracts-0.0.0.tgz",
+      "file": "mergora-contracts-1.0.0.tgz",
       "name": "mergora-contracts",
       "role": "contracts",
       "sha256": "106c54c9bf305d45a06ead289a585f8a45937f7b03d0663776783b6c25d4984e",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-mcp-0.0.0.tgz",
+      "file": "mergora-mcp-1.0.0.tgz",
       "name": "mergora-mcp",
       "role": "mcp",
       "sha256": "ed1090884fc09048002f6bf3e9f814c42eafa93d8dfa09d230b6045a71f9ec11",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-registry-0.0.0.tgz",
+      "file": "mergora-registry-1.0.0.tgz",
       "name": "mergora-registry",
       "role": "registry",
       "sha256": "7bcdb19cf574347bc73c756bda3d8594287678df8503415f8a13cfdef2ccbce3",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-schema-0.0.0.tgz",
+      "file": "mergora-schema-1.0.0.tgz",
       "name": "mergora-schema",
       "role": "schema",
       "sha256": "f36e293d81fac687cff05a9967097af68657c140f7f3656f5e466516c261b19c",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-tokens-0.0.0.tgz",
+      "file": "mergora-tokens-1.0.0.tgz",
       "name": "mergora-tokens",
       "role": "tokens",
       "sha256": "3d1283d7b9240a3739d396cc7146300bb363918d7b8aba641650a3257e717fbc",
-      "version": "0.0.0"
+      "version": "1.0.0"
     },
     {
-      "file": "mergora-ui-0.0.0.tgz",
+      "file": "mergora-ui-1.0.0.tgz",
       "name": "mergora-ui",
       "role": "ui",
       "sha256": "8a9739f561e8961cf55cb62fb68916eff263857c0138d7cb0d6c218ea1cde693",
-      "version": "0.0.0"
+      "version": "1.0.0"
     }
   ],
   "consumers": [

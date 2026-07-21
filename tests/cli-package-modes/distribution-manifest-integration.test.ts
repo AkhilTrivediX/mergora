@@ -60,7 +60,7 @@ function applyOptions(
     reviewedPlanDigest,
     proposedManifestBytes: fixture.proposedManifest,
     ...fixture.materialization,
-    cliVersion: "0.0.0",
+    cliVersion: "1.0.0",
     projectRoot: root,
     packageManager: "npm",
     noInstall: true,
@@ -77,7 +77,7 @@ function planOptions(
     migration: fixture.migration,
     proposedManifestBytes: fixture.proposedManifest,
     ...fixture.materialization,
-    cliVersion: "0.0.0",
+    cliVersion: "1.0.0",
     ...overrides,
   };
 }

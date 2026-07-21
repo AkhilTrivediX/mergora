@@ -233,7 +233,7 @@ beforeAll(() => {
     `${JSON.stringify(
       {
         name: "mergora-packed-browser-audit-consumer",
-        version: "0.0.0",
+        version: "1.0.0",
         private: true,
         type: "module",
         packageManager: "pnpm@11.14.0",
@@ -259,7 +259,7 @@ beforeAll(() => {
       "",
     ].join("\n"),
   );
-  const installed = pnpm(["install", "--offline", "--frozen-lockfile=false"], externalRoot);
+  const installed = pnpm(["install", "--prefer-offline", "--frozen-lockfile=false"], externalRoot);
   if (installed.status !== 0) {
     throw new Error(
       `Packed browser audit consumer install failed:\n${installed.stdout}\n${installed.stderr}`,

@@ -67,7 +67,7 @@ describe("checked install-basket state", () => {
     expect(result).toMatchObject({
       argv: ["add", "button", "slider", "--mode", "source", "--package-manager", "npm", "--plan"],
       command:
-        "npx --yes mergora@0.0.0 add button slider --mode source --package-manager npm --plan",
+        "npx --yes mergora@1.0.0 add button slider --mode source --package-manager npm --plan",
       frameworkBinding: "initialized-project",
       releaseFile: null,
       status: "ready",

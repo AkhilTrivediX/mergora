@@ -90,7 +90,7 @@ import {
   type ValidatedDistributionProvenance,
 } from "./distribution-provenance.js";
 
-const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
+const UNRELEASED_VERSION = "1.0.0-unreleased" as const;
 export const MANIFEST_PATH = ".mergora/manifest.json" as const;
 const CONTRACT_DIRECTORY = ".mergora/contracts" as const;
 
@@ -2272,7 +2272,7 @@ function operationPlan(
   return finalizeOperationPlan({
     schemaVersion: 1,
     command,
-    cliVersion: "0.0.0",
+    cliVersion: "1.0.0",
     projectRoot: ".",
     configDigest: context.configDigest,
     manifestPreconditionDigest: context.manifestDigest,
@@ -2845,7 +2845,7 @@ function addInternal(
     contractChanges: blockedByConflict ? [] : contractChanges,
     warnings: [
       acquired === undefined
-        ? "The bundled source payloads are unreleased; provenance records their exact digest and provisional 0.0.0-unreleased identity without claiming Stable evidence."
+        ? "The bundled source payloads are unreleased; provenance records their exact digest and provisional 1.0.0-unreleased identity without claiming Stable evidence."
         : `The native ${acquired.release.release} release was acquired from ${acquired.release.artifactSources.join(", ")} evidence and every payload remains bound to its exact release digest.`,
       ...packageExecutionWarnings(
         options,

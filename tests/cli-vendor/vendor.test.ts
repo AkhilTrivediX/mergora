@@ -261,7 +261,7 @@ describe("offline vendoring", () => {
       readonly omissions: { readonly contracts: readonly string[] };
     };
     expect(manifest.contracts).toEqual([
-      expect.objectContaining({ item: "official:button", contractVersion: "0.0.0-unreleased" }),
+      expect.objectContaining({ item: "official:button", contractVersion: "1.0.0-unreleased" }),
     ]);
     expect(manifest.omissions.contracts).toEqual([]);
     expect(verifyVendor({ projectRoot: project.root }).state).toBe("valid");

@@ -452,7 +452,7 @@ describe("Semantic Sync update planning and apply", () => {
       ({ files }) => {
         files[0]!.content += "// changed under a reused immutable version\n";
       },
-      "0.0.0-unreleased",
+      "1.0.0-unreleased",
     );
     expect(() =>
       planSemanticUpdate({ projectRoot: reusedVersion.root, release: mismatched, noInstall: true }),

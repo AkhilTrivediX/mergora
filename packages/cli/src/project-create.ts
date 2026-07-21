@@ -50,7 +50,7 @@ import {
 export type ProjectCreateTemplate = "next" | "vite";
 export type ProjectCreatePreset = "minimal" | "application" | "none";
 
-export const PROJECT_CREATE_TEMPLATE_VERSION = "0.0.0" as const;
+export const PROJECT_CREATE_TEMPLATE_VERSION = "1.0.0" as const;
 export const PROJECT_CREATE_PUBLICATION_STATUS = "unreleased" as const;
 export const PROJECT_CREATE_IGNORED_OS_METADATA = [
   ".DS_Store",
@@ -162,7 +162,7 @@ dist/
 .mergora/.lock
 `;
 
-const FOUNDATION_TOKENS = `/* Mergora workbench foundation 0.0.0 (unreleased). */
+const FOUNDATION_TOKENS = `/* Mergora workbench foundation 1.0.0 (unreleased). */
 :root {
   color-scheme: light;
   --mrg-semantic-color-background-canvas: oklch(100% 0 0);
@@ -340,7 +340,7 @@ function packageJsonText(
     template === "next"
       ? {
           name: projectName,
-          version: "0.0.0",
+          version: "1.0.0",
           private: true,
           packageManager: `${packageManager}@${MANAGER_VERSIONS[packageManager]}`,
           engines: { node: ">=24.12.0 <25" },
@@ -355,7 +355,7 @@ function packageJsonText(
         }
       : {
           name: projectName,
-          version: "0.0.0",
+          version: "1.0.0",
           private: true,
           type: "module",
           packageManager: `${packageManager}@${MANAGER_VERSIONS[packageManager]}`,
@@ -440,7 +440,7 @@ import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Mergora application",
-  description: "Created from the Mergora 0.0.0 unreleased minimal template.",
+  description: "Created from the Mergora 1.0.0 unreleased minimal template.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
@@ -494,7 +494,7 @@ function viteTemplate(preset: ProjectCreatePreset): Readonly<Record<string, stri
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Created from the Mergora 0.0.0 unreleased minimal template." />
+    <meta name="description" content="Created from the Mergora 1.0.0 unreleased minimal template." />
     <title>Mergora application</title>
   </head>
   <body>
@@ -634,7 +634,7 @@ function initFiles(
       toolchain: {
         cli: CLI_VERSION,
         schema: "1.0.0",
-        transformer: "0.0.0",
+        transformer: "1.0.0",
         formatter: "mergora@1",
       },
       items: {},
@@ -1020,7 +1020,7 @@ function internalProjectCreatePlan(options: ProjectCreateOptions): InternalProje
       `Destination ${resolved.targetName} begins ${snapshot.state}; precondition ${snapshot.preconditionDigest}; ignored metadata ${PROJECT_CREATE_IGNORED_OS_METADATA.join(", ")}.`,
       `Template ${options.template}@${PROJECT_CREATE_TEMPLATE_VERSION} (${PROJECT_CREATE_PUBLICATION_STATUS}) digest ${templateDigest}; preset ${options.preset}.`,
       `Package manager ${options.packageManager}@${MANAGER_VERSIONS[options.packageManager]}${options.noInstall === true ? "; install skipped" : `; fixed install ${install.executable} ${install.arguments.join(" ")}; cwd .; shell false`}.`,
-      "The bundled template and Mergora packages are 0.0.0/unreleased; this is not release evidence.",
+      "The bundled template and Mergora packages are 1.0.0/unreleased; this is not release evidence.",
       ...(options.noInstall === true
         ? [
             "Dependency installation was explicitly disabled; no lockfile or dependency tree is claimed.",

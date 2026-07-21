@@ -50,7 +50,7 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "@mergora/test-utils": ">=0.0.0 <1",
+    "@mergora/test-utils": ">=1.0.0 <2",
     "@playwright/test": ">=1.61.1 <2"
   },
   "peerDependenciesMeta": {

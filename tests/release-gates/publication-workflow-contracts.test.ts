@@ -314,7 +314,11 @@ describe("publication evidence and package contracts", () => {
     const currentManifests = Object.fromEntries(
       ["contracts", "registry", "schema", "tokens", "ui", "cli", "mcp"].map((directory) => [
         `packages/${directory}`,
-        JSON.parse(text(`packages/${directory}/package.json`)) as JsonRecord,
+        {
+          ...(JSON.parse(text(`packages/${directory}/package.json`)) as JsonRecord),
+          version: "0.0.0",
+          private: true,
+        },
       ]),
     );
     expect(() =>

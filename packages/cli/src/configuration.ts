@@ -681,7 +681,7 @@ function manifestText(configText: string): string {
     $schema: MANIFEST_SCHEMA,
     schemaVersion: 1,
     projectId: sha256(configText),
-    toolchain: { cli: "0.0.0", schema: "1.0.0", transformer: "0.0.0", formatter: "mergora@1" },
+    toolchain: { cli: "1.0.0", schema: "1.0.0", transformer: "1.0.0", formatter: "mergora@1" },
     items: {},
     sharedTargets: {},
     dependencyOwners: {},

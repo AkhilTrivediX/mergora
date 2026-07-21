@@ -158,7 +158,7 @@ describe("enrolled shadcn-v1 adoption", () => {
     expect(validateSchemaDocument("manifest", manifest).errors).toEqual([]);
     expect(adopted).toMatchObject({
       payload: { url: `${origin}/registry.json` },
-      contractVersion: "0.0.0-not-supplied",
+      contractVersion: "1.0.0-not-supplied",
       lastMigration: "shadcn-v1-adapter",
     });
     expect(adopted.files[0]).toMatchObject({
