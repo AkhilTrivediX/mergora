@@ -239,6 +239,29 @@ export interface DataGridColumnSizingOptions {
   ) => void;
 }
 
+export type DataGridColumnOrder = readonly string[];
+
+export interface DataGridColumnOrderingChangeDetail {
+  /** Identifies the column whose native ordering button requested the change. */
+  readonly columnId: string;
+  /** Identifies the native button as the committed ordering-change cause. */
+  readonly reason: "native-button";
+  /** Reports whether the column moved toward the table start or end. */
+  readonly direction: "previous" | "next";
+}
+
+export interface DataGridColumnOrderingOptions {
+  /** Controls the complete declared-column order by stable column ID. */
+  readonly order?: DataGridColumnOrder;
+  /** Initializes the complete uncontrolled declared-column order by stable column ID. */
+  readonly defaultOrder?: DataGridColumnOrder;
+  /** Reports each native ordering request with the complete next canonical column-ID order. */
+  readonly onOrderChange?: (
+    order: DataGridColumnOrder,
+    detail: DataGridColumnOrderingChangeDetail,
+  ) => void;
+}
+
 export type DataGridExpandedRowIds = readonly string[];
 
 export interface DataGridDetailRowsChangeDetail {
@@ -378,6 +401,8 @@ interface DataGridCommonProps<TData extends object> extends Omit<
   readonly columnVisibility?: false | DataGridColumnVisibilityOptions;
   /** Enables optional controlled or uncontrolled native column-width controls. */
   readonly columnSizing?: false | DataGridColumnSizingOptions;
+  /** Enables optional controlled or uncontrolled native column-ordering controls. */
+  readonly columnOrdering?: false | DataGridColumnOrderingOptions;
   /** Enables optional controlled or uncontrolled semantic detail rows. */
   readonly detailRows?: false | DataGridDetailRowsOptions<TData>;
   /** Adds bounded fixed-row rendering for large result sets; false preserves the complete table. */
@@ -816,6 +841,51 @@ function sameColumnWidths(left: DataGridColumnWidths, right: DataGridColumnWidth
   );
 }
 
+function resolveColumnOrder<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnOrder | undefined,
+): DataGridColumnOrder {
+  return requested ?? columns.map((column) => column.id);
+}
+
+function sameColumnOrder(left: DataGridColumnOrder, right: DataGridColumnOrder): boolean {
+  return left.length === right.length && left.every((columnId, index) => columnId === right[index]);
+}
+
+function orderColumns<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  order: DataGridColumnOrder,
+): readonly DataGridColumn<TData>[] {
+  const columnsById = new Map(columns.map((column) => [column.id, column] as const));
+  return order.map((columnId) => columnsById.get(columnId)!);
+}
+
+function assertColumnOrder<TData extends object>(
+  columns: readonly DataGridColumn<TData>[],
+  requested: DataGridColumnOrder | undefined,
+  label: string,
+): void {
+  if (requested === undefined) return;
+  if (requested.length !== columns.length) {
+    throw new Error(`Mergora DataGrid ${label} must contain every declared column exactly once.`);
+  }
+  const knownColumnIds = new Set(columns.map((column) => column.id));
+  const uniqueColumnIds = new Set<string>();
+  for (const columnId of requested) {
+    if (
+      typeof columnId !== "string" ||
+      columnId.trim().length === 0 ||
+      !knownColumnIds.has(columnId) ||
+      uniqueColumnIds.has(columnId)
+    ) {
+      throw new Error(
+        `Mergora DataGrid ${label} must contain every declared non-empty column ID exactly once.`,
+      );
+    }
+    uniqueColumnIds.add(columnId);
+  }
+}
+
 function resolveExpandedRowIds(
   rowIds: readonly string[],
   requested: DataGridExpandedRowIds | undefined,
@@ -1125,6 +1195,35 @@ export function assertDataGridConfiguration(props: Readonly<Record<string, unkno
     ) {
       throw new TypeError(
         "Mergora DataGrid columnSizing.onWidthsChange must be a function when supplied.",
+      );
+    }
+  }
+  if (
+    props.columnOrdering !== undefined &&
+    props.columnOrdering !== false &&
+    !isPlainObject(props.columnOrdering)
+  ) {
+    throw new TypeError("Mergora DataGrid columnOrdering must be false or an options object.");
+  }
+  if (isPlainObject(props.columnOrdering)) {
+    const columnOrdering = props.columnOrdering;
+    if (columnOrdering.order !== undefined && !Array.isArray(columnOrdering.order)) {
+      throw new TypeError("Mergora DataGrid columnOrdering.order must be an array.");
+    }
+    if (columnOrdering.defaultOrder !== undefined && !Array.isArray(columnOrdering.defaultOrder)) {
+      throw new TypeError("Mergora DataGrid columnOrdering.defaultOrder must be an array.");
+    }
+    if (hasDefinedOwn(columnOrdering, "order") && hasDefinedOwn(columnOrdering, "defaultOrder")) {
+      throw new Error(
+        "Mergora DataGrid controlled column ordering cannot be combined with defaultOrder.",
+      );
+    }
+    if (
+      columnOrdering.onOrderChange !== undefined &&
+      typeof columnOrdering.onOrderChange !== "function"
+    ) {
+      throw new TypeError(
+        "Mergora DataGrid columnOrdering.onOrderChange must be a function when supplied.",
       );
     }
   }
@@ -1511,6 +1610,14 @@ function validateIdentityAndOperations<TData extends object>(
       "columnSizing.defaultWidths",
     );
   }
+  if (props.columnOrdering !== undefined && props.columnOrdering !== false) {
+    assertColumnOrder(props.columns, props.columnOrdering.order, "columnOrdering.order");
+    assertColumnOrder(
+      props.columns,
+      props.columnOrdering.defaultOrder,
+      "columnOrdering.defaultOrder",
+    );
+  }
   const rowIds = props.rows.map((row) => props.getRowId(row));
   const uniqueRowIds = new Set<string>();
   for (const rowId of rowIds) {
@@ -1623,6 +1730,7 @@ function DataGridInner<TData extends object>(
     regionLabel,
     columnVisibility = false,
     columnSizing = false,
+    columnOrdering = false,
     detailRows = false,
     virtualization = false,
     selectionMode = "none",
@@ -1667,6 +1775,7 @@ function DataGridInner<TData extends object>(
   const adapterReadRef = useRef(false);
   const columnVisibilityOptions = columnVisibility === false ? null : columnVisibility;
   const columnSizingOptions = columnSizing === false ? null : columnSizing;
+  const columnOrderingOptions = columnOrdering === false ? null : columnOrdering;
   const detailRowsOptions = detailRows === false ? null : detailRows;
   const virtualizationOptions = virtualization === false ? null : virtualization;
   const columnVisibilityAdapterReadRef = useRef(false);
@@ -1683,6 +1792,13 @@ function DataGridInner<TData extends object>(
       columnSizingOptions === null
         ? {}
         : resolveColumnWidths(columns, columnSizingOptions.defaultWidths);
+  }
+  const initialColumnOrderRef = useRef<DataGridColumnOrder | null>(null);
+  if (initialColumnOrderRef.current === null) {
+    initialColumnOrderRef.current =
+      columnOrderingOptions === null
+        ? columns.map((column) => column.id)
+        : resolveColumnOrder(columns, columnOrderingOptions.defaultOrder);
   }
   const initialExpandedRowIdsRef = useRef<DataGridExpandedRowIds | null>(null);
   if (initialExpandedRowIdsRef.current === null) {
@@ -1708,6 +1824,9 @@ function DataGridInner<TData extends object>(
     useState<DataGridColumnVisibility>(initialColumnVisibilityRef.current);
   const [uncontrolledColumnWidths, setUncontrolledColumnWidths] = useState<DataGridColumnWidths>(
     initialColumnWidthsRef.current,
+  );
+  const [uncontrolledColumnOrder, setUncontrolledColumnOrder] = useState<DataGridColumnOrder>(
+    initialColumnOrderRef.current,
   );
   const [uncontrolledExpandedRowIds, setUncontrolledExpandedRowIds] =
     useState<DataGridExpandedRowIds>(initialExpandedRowIdsRef.current);
@@ -1808,6 +1927,11 @@ function DataGridInner<TData extends object>(
     columnSizingOptions === null
       ? {}
       : resolveColumnWidths(columns, columnSizingOptions.widths ?? uncontrolledColumnWidths);
+  const currentColumnOrder =
+    columnOrderingOptions === null
+      ? columns.map((column) => column.id)
+      : resolveColumnOrder(columns, columnOrderingOptions.order ?? uncontrolledColumnOrder);
+  const orderedColumns = orderColumns(columns, currentColumnOrder);
   const currentExpandedRowIds =
     detailRowsOptions === null
       ? []
@@ -1864,7 +1988,7 @@ function DataGridInner<TData extends object>(
 
   const columnDefinitions = useMemo<ColumnDef<TData, unknown>[]>(
     () =>
-      columns.map((column) => ({
+      orderedColumns.map((column) => ({
         id: column.id,
         accessorFn: column.accessor,
         header: () => column.header,
@@ -1882,7 +2006,7 @@ function DataGridInner<TData extends object>(
           sizing: column.sizing,
         },
       })),
-    [columnSizingOptions, columns, currentColumnWidths],
+    [columnSizingOptions, currentColumnWidths, orderedColumns],
   );
 
   const commitQuery = (nextValue: DataGridQuery, reason: DataGridOperationReason): void => {
@@ -2077,6 +2201,9 @@ function DataGridInner<TData extends object>(
         if (columnSizingOptions !== null && columnSizingOptions.widths === undefined) {
           setUncontrolledColumnWidths(initialColumnWidthsRef.current!);
         }
+        if (columnOrderingOptions !== null && columnOrderingOptions.order === undefined) {
+          setUncontrolledColumnOrder(initialColumnOrderRef.current!);
+        }
         if (detailRowsOptions !== null && detailRowsOptions.expandedRowIds === undefined) {
           setUncontrolledExpandedRowIds(initialExpandedRowIdsRef.current!);
         }
@@ -2094,6 +2221,7 @@ function DataGridInner<TData extends object>(
     defaultSorting,
     columnVisibilityOptions?.visibility,
     columnSizingOptions?.widths,
+    columnOrderingOptions?.order,
     detailRowsOptions?.expandedRowIds,
     selectedRowId,
     selectionMode,
@@ -2140,6 +2268,26 @@ function DataGridInner<TData extends object>(
       columnId,
       reason: "native-range",
       width,
+    });
+  };
+
+  const moveColumn = (
+    columnId: string,
+    targetColumnId: string | undefined,
+    direction: "previous" | "next",
+  ): void => {
+    if (columnOrderingOptions === null || targetColumnId === undefined) return;
+    const sourceIndex = currentColumnOrder.indexOf(columnId);
+    const targetIndex = currentColumnOrder.indexOf(targetColumnId);
+    if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return;
+    const next = [...currentColumnOrder];
+    [next[sourceIndex], next[targetIndex]] = [next[targetIndex]!, next[sourceIndex]!];
+    if (sameColumnOrder(currentColumnOrder, next)) return;
+    if (columnOrderingOptions.order === undefined) setUncontrolledColumnOrder(next);
+    columnOrderingOptions.onOrderChange?.(next, {
+      columnId,
+      direction,
+      reason: "native-button",
     });
   };
 
@@ -2300,7 +2448,7 @@ function DataGridInner<TData extends object>(
                     </span>
                   </th>
                 ) : null}
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, headerIndex) => {
                   const sorted = header.column.getIsSorted();
                   const meta = header.column.columnDef.meta as
                     | {
@@ -2312,6 +2460,11 @@ function DataGridInner<TData extends object>(
                   const sizingControlEnabled =
                     columnSizingOptions !== null && meta?.sizing !== undefined;
                   const sizing = meta?.sizing;
+                  const previousColumnId = headerGroup.headers[headerIndex - 1]?.column.id;
+                  const nextColumnId = headerGroup.headers[headerIndex + 1]?.column.id;
+                  const orderingLabel =
+                    orderedColumns.find((column) => column.id === header.column.id)
+                      ?.visibilityLabel ?? header.column.id;
                   return (
                     <th
                       key={header.id}
@@ -2375,6 +2528,44 @@ function DataGridInner<TData extends object>(
                             }
                           />
                         </label>
+                      ) : null}
+                      {columnOrderingOptions !== null ? (
+                        <span
+                          aria-label={`Move ${orderingLabel}`}
+                          className="mrg-data-grid__column-ordering-controls"
+                          data-slot="data-grid-column-ordering-controls"
+                          data-column-id={header.column.id}
+                          role="group"
+                        >
+                          <button
+                            aria-label={`Move ${orderingLabel} earlier`}
+                            data-slot="data-grid-column-ordering-previous"
+                            disabled={isLoading || previousColumnId === undefined}
+                            style={{
+                              minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                              minInlineSize: "var(--mrg-semantic-size-target-preferred)",
+                            }}
+                            type="button"
+                            onClick={() =>
+                              moveColumn(header.column.id, previousColumnId, "previous")
+                            }
+                          >
+                            Earlier
+                          </button>
+                          <button
+                            aria-label={`Move ${orderingLabel} later`}
+                            data-slot="data-grid-column-ordering-next"
+                            disabled={isLoading || nextColumnId === undefined}
+                            style={{
+                              minBlockSize: "var(--mrg-semantic-size-target-preferred)",
+                              minInlineSize: "var(--mrg-semantic-size-target-preferred)",
+                            }}
+                            type="button"
+                            onClick={() => moveColumn(header.column.id, nextColumnId, "next")}
+                          >
+                            Later
+                          </button>
+                        </span>
                       ) : null}
                     </th>
                   );

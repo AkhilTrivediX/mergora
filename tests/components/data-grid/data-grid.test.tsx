@@ -426,6 +426,55 @@ describe("Data Grid Experimental canonical source", () => {
     ).toThrow(/from 100 to 220/u);
   });
 
+  it("keeps optional native column ordering explicit, canonical, and absent when disabled", () => {
+    const basic = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(basic).not.toContain("data-grid-column-ordering-controls");
+    expect(basic).not.toContain("Move name earlier");
+
+    const enhanced = renderToStaticMarkup(
+      <DataGrid
+        caption="Scores"
+        columnOrdering={{ defaultOrder: ["score", "name"] }}
+        columns={columns}
+        getRowId={(row) => row.id}
+        rows={[{ id: "a", name: "Asha", score: 9 }]}
+      />,
+    );
+    expect(enhanced).toContain('data-slot="data-grid-column-ordering-controls"');
+    expect(enhanced).toContain('aria-label="Move score later"');
+    expect(enhanced.indexOf(">Score<")).toBeLessThan(enhanced.indexOf(">Name<"));
+
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columnOrdering={{ defaultOrder: ["name", "name"] }}
+          columns={columns}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/every declared non-empty column ID exactly once/u);
+    expect(() =>
+      renderToStaticMarkup(
+        <DataGrid
+          caption="Scores"
+          columnOrdering={{ defaultOrder: ["name"] }}
+          columns={columns}
+          getRowId={(row) => row.id}
+          rows={[{ id: "a", name: "Asha", score: 9 }]}
+        />,
+      ),
+    ).toThrow(/must contain every declared column exactly once/u);
+  });
+
   it("keeps optional detail rows semantic, controlled by row IDs, and absent when disabled", () => {
     const basic = renderToStaticMarkup(
       <DataGrid
@@ -726,6 +775,11 @@ describe("Data Grid Experimental canonical source", () => {
         columnSizing: { defaultWidths: { score: 120 }, widths: { score: 120 } },
       }),
     ).toThrow(/controlled column sizing cannot be combined/u);
+    expect(() =>
+      assertDataGridConfiguration({
+        columnOrdering: { defaultOrder: ["name", "score"], order: ["name", "score"] },
+      }),
+    ).toThrow(/controlled column ordering cannot be combined/u);
     expect(() =>
       assertDataGridConfiguration({
         detailRows: {

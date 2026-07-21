@@ -16,6 +16,7 @@
     "loading",
     "error",
     "form-reset",
+    "column-ordering",
     "large-data",
     "manual-operations",
     "narrow",
@@ -70,6 +71,24 @@
       "name": "data-grid-column-sizing-input",
       "semanticElement": "input type=range",
       "refTarget": "HTMLInputElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-ordering-controls",
+      "semanticElement": "span role=group",
+      "refTarget": "HTMLSpanElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-ordering-previous",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
+      "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
+    },
+    {
+      "name": "data-grid-column-ordering-next",
+      "semanticElement": "button",
+      "refTarget": "HTMLButtonElement",
       "states": ["enhancement-enabled", "form-reset", "narrow", "rtl"]
     },
     {
