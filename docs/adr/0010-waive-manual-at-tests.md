@@ -11,7 +11,7 @@ Executing this manually requires extensive human intervention, hardware variety 
 
 ## Decision
 
-We will waive the requirement for manual Assistive Technology (AT) and risk class evidence for the v1 stable launch. Components will be promoted to `Stable` maturity relying strictly on our automated accessibility test suites (which use `axe-core`, Playwright, and DOM snapshots) alongside visual regression testing. 
+We will waive the requirement for manual Assistive Technology (AT) and risk class evidence for the v1 stable launch. Components will be promoted to `Stable` maturity relying strictly on our automated accessibility test suites (which use `axe-core`, Playwright, and DOM snapshots) alongside visual regression testing.
 
 ## Consequences
 
