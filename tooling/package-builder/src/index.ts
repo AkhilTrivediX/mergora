@@ -70,8 +70,8 @@ export interface PackageExportPlan {
 
 export interface UiPackageManifest {
   readonly name: string;
-  readonly version: "0.0.0";
-  readonly private: true;
+  readonly version: "1.0.0";
+  readonly private: false;
   readonly description: string;
   readonly license: "MIT";
   readonly repository: {
@@ -279,8 +279,8 @@ export function buildUiPackageManifest(
 
   return {
     name: packageMap.public.ui,
-    version: "0.0.0",
-    private: true,
+    version: "1.0.0",
+    private: false,
     description: "Generated Mergora React components from the canonical source registry",
     license: "MIT",
     repository: {

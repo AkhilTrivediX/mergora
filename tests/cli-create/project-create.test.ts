@@ -72,7 +72,7 @@ describe("deterministic project creation planning", () => {
       expect.arrayContaining([
         expect.stringContaining(`Destination application begins absent; precondition sha256:`),
         expect.stringContaining(PROJECT_CREATE_IGNORED_OS_METADATA.join(", ")),
-        expect.stringContaining("Template next@0.0.0 (unreleased)"),
+        expect.stringContaining("Template next@1.0.0 (unreleased)"),
         expect.stringContaining("Package manager pnpm@11.14.0; install skipped"),
       ]),
     );
@@ -147,7 +147,7 @@ describe("transactional project creation apply", () => {
       projectRoot: ".",
       directoryName: "application",
       template: "next",
-      templateVersion: "0.0.0",
+      templateVersion: "1.0.0",
       publicationStatus: "unreleased",
       preset: "minimal",
       packageManager: "pnpm",

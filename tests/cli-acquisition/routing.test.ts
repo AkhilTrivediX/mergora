@@ -91,11 +91,11 @@ function compatibility() {
   return {
     cli: ">=1.0.0 <2.0.0",
     node: ">=22.14.0 <25.0.0",
-    react: ">=18.3.0 <20.0.0",
+    react: ">=18.3.0 <21.0.0",
     typescript: ">=5.9.0 <8.0.0",
     tailwind: ">=4.0.0 <5.0.0",
     frameworks: { next: ">=15.0.0 <17.0.0", vite: ">=7.0.0 <9.0.0" },
-    packageManagers: { npm: ">=10.0.0 <12.0.0", pnpm: ">=10.0.0 <12.0.0" },
+    packageManagers: { npm: ">=11.0.0 <12.0.0", pnpm: ">=11.0.0 <12.0.0" },
     browserCapabilities: ["css-custom-properties"],
   };
 }

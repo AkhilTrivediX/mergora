@@ -432,7 +432,7 @@ describe("packed command parser and output contract", () => {
     expect(diffHelp).toMatchObject({ status: 0, stderr: "" });
     expect(diffHelp.stdout).toContain("--format <unified|side-by-side|json>");
     expect(diffHelp.stdout).toContain("--context <0-1000>");
-    expect(version).toMatchObject({ status: 0, stdout: "0.0.0\n", stderr: "" });
+    expect(version).toMatchObject({ status: 0, stdout: "1.0.0\n", stderr: "" });
   });
 
   it("supports global flags before commands and emits deterministic JSON", () => {
@@ -1495,7 +1495,7 @@ describe("packed project commands", () => {
     );
     expect(missing.status).toBe(4);
     expect(json(missing)).toMatchObject({ errors: [{ code: "REGISTRY_EVIDENCE_MISSING" }] });
-    expect(missing.stdout).not.toContain("0.0.0-unreleased");
+    expect(missing.stdout).not.toContain("1.0.0-unreleased");
   });
 
   it("plans, requires narrow consent, applies, and then no-ops in a path with spaces", () => {
@@ -1812,7 +1812,7 @@ describe("packed project commands", () => {
       readFileSync(resolve(project.root, ".mergora/manifest.json"), "utf8"),
     ) as { items: Record<string, { contractVersion: string; lastMigration: string }> };
     expect(manifest.items["partner:demo"]).toMatchObject({
-      contractVersion: "0.0.0-not-supplied",
+      contractVersion: "1.0.0-not-supplied",
       lastMigration: "shadcn-v1-adapter",
     });
   });

@@ -1,7 +1,7 @@
 {
   "name": "mergora-schema",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Versioned Mergora schemas, TypeScript contracts, and bounded runtime validators",
   "license": "MIT",
   "repository": {

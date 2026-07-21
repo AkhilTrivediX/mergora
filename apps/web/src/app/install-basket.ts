@@ -267,10 +267,10 @@ export function createInstallBasketCliPlan(
     };
   }
   const runner: Record<InstallBasketPackageManager, string> = {
-    bun: "bunx mergora@0.0.0",
-    npm: "npx --yes mergora@0.0.0",
-    pnpm: "pnpm dlx mergora@0.0.0",
-    yarn: "yarn dlx mergora@0.0.0",
+    bun: "bunx mergora@1.0.0",
+    npm: "npx --yes mergora@1.0.0",
+    pnpm: "pnpm dlx mergora@1.0.0",
+    yarn: "yarn dlx mergora@1.0.0",
   };
   const argv = [
     "add",

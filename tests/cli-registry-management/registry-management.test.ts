@@ -123,7 +123,7 @@ function compatibility() {
     typescript: ">=5.8.0",
     tailwind: "^4.0.0",
     frameworks: { vite: ">=6.0.0" },
-    packageManagers: { pnpm: ">=10.0.0" },
+    packageManagers: { pnpm: ">=11.0.0" },
     browserCapabilities: ["css-variables"],
   };
 }
@@ -639,9 +639,9 @@ describe("registry enrollment and removal plans", () => {
         schemaVersion: 1,
         projectId: `sha256:${"1".repeat(64)}`,
         toolchain: {
-          cli: "0.0.0",
+          cli: "1.0.0",
           schema: "1.0.0",
-          transformer: "0.0.0",
+          transformer: "1.0.0",
           formatter: "mergora@1",
         },
         items: {

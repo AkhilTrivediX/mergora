@@ -1,7 +1,7 @@
 {
   "name": "mergora-ui",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Generated Mergora React components from the canonical source registry",
   "license": "MIT",
   "repository": {

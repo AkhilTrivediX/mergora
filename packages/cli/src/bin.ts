@@ -2729,7 +2729,7 @@ async function main(arguments_: readonly string[]): Promise<void> {
     return;
   }
   if (arguments_[0] === "--version" || arguments_[0] === "-v") {
-    process.stdout.write("0.0.0\n");
+    process.stdout.write("1.0.0\n");
     return;
   }
   let parsed: ParsedArguments;

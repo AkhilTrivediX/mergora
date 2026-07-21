@@ -3144,7 +3144,7 @@ export function planRecovery(options: RecoveryOptions): RecoveryPlan {
     const plan = finalizeOperationPlan({
       schemaVersion: 1,
       command: "recover",
-      cliVersion: "0.0.0",
+      cliVersion: "1.0.0",
       projectRoot: ".",
       configDigest: config,
       manifestPreconditionDigest: canonicalProjectJsonDigest(

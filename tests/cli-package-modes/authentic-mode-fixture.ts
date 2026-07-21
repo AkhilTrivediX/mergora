@@ -123,7 +123,7 @@ export function manifestForAuthenticState(
     configDigest: state.configDigest,
     defaultMode: state.defaultMode,
     packageName: state.packageName,
-    toolchain: { cli: "0.0.0", schema: "1.0.0", transformer: "0.0.0", formatter: "mergora@1" },
+    toolchain: { cli: "1.0.0", schema: "1.0.0", transformer: "1.0.0", formatter: "mergora@1" },
     releases: state.releases,
     items,
     ...ownershipViews(state),

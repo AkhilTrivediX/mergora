@@ -9,7 +9,7 @@ import {
   type JsonResultStatus,
 } from "./command-contract.js";
 
-export const CLI_VERSION = "0.0.0" as const;
+export const CLI_VERSION = "1.0.0" as const;
 export const JSON_SCHEMA_VERSION = 1 as const;
 
 export type StableExitCode = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;

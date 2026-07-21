@@ -69,7 +69,7 @@ const MANIFEST_SCHEMA =
   "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json" as const;
 const VENDOR_FORMAT = "mergora-vendor-v1" as const;
 const GRAPH_FORMAT = "mergora-vendor-dependency-graph-v1" as const;
-const UNRELEASED_VERSION = "0.0.0-unreleased" as const;
+const UNRELEASED_VERSION = "1.0.0-unreleased" as const;
 const LICENSE_SPDX = "MIT" as const;
 
 const MAX_JSON_BYTES = 4 * 1024 * 1024;

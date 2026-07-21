@@ -1093,7 +1093,7 @@ async function internalPlan(options: ShadcnAdoptionOptions): Promise<InternalSha
       registryDependencies: item.registryDependencies.map((id) => `${registryId}:${id}`).sort(),
       dependencies,
       structuredPatches: [],
-      contractVersion: "0.0.0-not-supplied",
+      contractVersion: "1.0.0-not-supplied",
       lastMigration: "shadcn-v1-adapter",
     };
     adoptedOwners.push(owner);

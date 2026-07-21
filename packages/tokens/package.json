@@ -1,7 +1,7 @@
 {
   "name": "mergora-tokens",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Mergora DTCG 2025.10 tokens and generated CSS, Tailwind, TypeScript, and design-tool artifacts",
   "license": "MIT",
   "repository": {

@@ -1,7 +1,7 @@
 {
   "name": "mergora",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Deterministic Mergora project discovery, initialization, and bundled source CLI",
   "license": "MIT",
   "repository": {
@@ -50,7 +50,7 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "@mergora/test-utils": ">=0.0.0 <1",
+    "@mergora/test-utils": ">=1.0.0 <2",
     "@playwright/test": ">=1.61.1 <2"
   },
   "peerDependenciesMeta": {
