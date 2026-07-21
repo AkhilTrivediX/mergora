@@ -1,7 +1,7 @@
 {
   "name": "mergora-mcp",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Deterministic read-only and plan-only MCP core for Mergora projects",
   "license": "MIT",
   "repository": {

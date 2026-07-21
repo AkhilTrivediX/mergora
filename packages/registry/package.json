@@ -1,7 +1,7 @@
 {
   "name": "mergora-registry",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Private scaffold for the Mergora registry SDK",
   "license": "MIT",
   "repository": {

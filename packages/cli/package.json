@@ -1,7 +1,7 @@
 {
   "name": "mergora",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Deterministic Mergora project discovery, initialization, and bundled source CLI",
   "license": "MIT",
   "repository": {

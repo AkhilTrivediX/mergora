@@ -1,7 +1,7 @@
 {
   "name": "mergora-contracts",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "private": false,
   "description": "Versioned declarative Mergora quality contracts and deterministic audit runtime",
   "license": "MIT",
   "repository": {
