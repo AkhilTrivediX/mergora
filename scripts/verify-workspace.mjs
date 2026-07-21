@@ -155,13 +155,14 @@ async function verifyScaffold() {
     }
   }
 
+  const publicDirs = new Set(["packages/cli", ...Object.values(publicPackageDirectories)]);
   for (const directory of architecturePackages) {
     if (!(await exists(`${directory}/package.json`))) {
       fail(`${directory}/package.json is missing`);
       continue;
     }
     const workspacePackage = await readJson(`${directory}/package.json`);
-    if (workspacePackage.private !== true) {
+    if (workspacePackage.private !== true && !publicDirs.has(directory)) {
       fail(`${directory} must remain private while it is a P0 scaffold`);
     }
   }
