@@ -15,7 +15,7 @@ const nullableNavigationItem = {
 export function GET() {
   return Response.json({
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: "https://akhiltrivedix.github.io/mergora/m/v1/schemas/docs-page.schema.json",
+    $id: "https://mergora.vercel.app/m/v1/schemas/docs-page.schema.json",
     title: "Mergora machine documentation page",
     type: "object",
     additionalProperties: false,

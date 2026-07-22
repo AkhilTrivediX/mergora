@@ -11,8 +11,8 @@ import {
   sha256,
 } from "./contracts.js";
 
-export const OFFICIAL_REGISTRY_ORIGIN = "https://akhiltrivedix.github.io/mergora/r/v1" as const;
-export const DOCUMENTATION_ORIGIN = "https://akhiltrivedix.github.io/mergora" as const;
+export const OFFICIAL_REGISTRY_ORIGIN = "https://mergora.vercel.app/r/v1" as const;
+export const DOCUMENTATION_ORIGIN = "https://mergora.vercel.app" as const;
 
 const ITEM_ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 const MAX_JSON_BYTES = 4 * 1024 * 1024;

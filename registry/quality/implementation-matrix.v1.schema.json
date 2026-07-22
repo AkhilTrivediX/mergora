@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/schemas/implementation-matrix-v1.schema.json",
+  "$id": "https://mergora.vercel.app/schemas/implementation-matrix-v1.schema.json",
   "title": "Mergora catalog implementation matrix",
   "type": "object",
   "additionalProperties": false,

@@ -65,8 +65,7 @@ const VENDOR_MANIFEST = `${VENDOR_ROOT}/vendor-manifest.json` as const;
 const VENDOR_SUMS = `${VENDOR_ROOT}/SHA256SUMS` as const;
 const PROJECT_MANIFEST = ".mergora/manifest.json" as const;
 const PROJECT_CONFIG = "mergora.json" as const;
-const MANIFEST_SCHEMA =
-  "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json" as const;
+const MANIFEST_SCHEMA = "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json" as const;
 const VENDOR_FORMAT = "mergora-vendor-v1" as const;
 const GRAPH_FORMAT = "mergora-vendor-dependency-graph-v1" as const;
 const UNRELEASED_VERSION = "1.0.0-unreleased" as const;

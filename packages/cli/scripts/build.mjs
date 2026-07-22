@@ -306,7 +306,7 @@ for (const name of schemaNames) {
     typeof schema !== "object" ||
     schema.$schema !== "https://json-schema.org/draft/2020-12/schema" ||
     typeof schema.$id !== "string" ||
-    !schema.$id.startsWith("https://akhiltrivedix.github.io/mergora/r/v1/schemas/") ||
+    !schema.$id.startsWith("https://mergora.vercel.app/r/v1/schemas/") ||
     schemaIds.has(schema.$id)
   ) {
     throw new Error(`Registry schema ${name} failed identity validation.`);

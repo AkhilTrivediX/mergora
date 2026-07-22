@@ -664,8 +664,7 @@ export function validateManifestDocument(raw: unknown): ProvenanceManifest {
     typeof manifest.$schema !== "string" ||
     !manifest.$schema.endsWith("/manifest-v1.schema.json") ||
     (distributionFields.length === DISTRIBUTION_MANIFEST_KEYS.length &&
-      manifest.$schema !==
-        "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json") ||
+      manifest.$schema !== "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json") ||
     typeof manifest.projectId !== "string" ||
     !/^sha256:[a-f0-9]{64}$/u.test(manifest.projectId)
   ) {

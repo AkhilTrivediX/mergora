@@ -79,7 +79,7 @@ export interface UiPackageManifest {
     readonly url: "git+https://github.com/AkhilTrivediX/mergora.git";
     readonly directory: "packages/ui";
   };
-  readonly homepage: "https://akhiltrivedix.github.io/mergora/";
+  readonly homepage: "https://mergora.vercel.app/";
   readonly bugs: "https://github.com/AkhilTrivediX/mergora/issues";
   readonly type: "module";
   readonly sideEffects: readonly ["**/*.css"];
@@ -288,7 +288,7 @@ export function buildUiPackageManifest(
       url: "git+https://github.com/AkhilTrivediX/mergora.git",
       directory: "packages/ui",
     },
-    homepage: "https://akhiltrivedix.github.io/mergora/",
+    homepage: "https://mergora.vercel.app/",
     bugs: "https://github.com/AkhilTrivediX/mergora/issues",
     type: "module",
     sideEffects: ["**/*.css"],

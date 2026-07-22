@@ -117,7 +117,7 @@ export function manifestForAuthenticState(
     ]),
   ) as Record<string, ManifestItem>;
   return {
-    $schema: "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json",
+    $schema: "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json",
     schemaVersion: 1,
     projectId: state.projectId,
     configDigest: state.configDigest,

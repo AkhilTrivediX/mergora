@@ -9,7 +9,7 @@
     "url": "git+https://github.com/AkhilTrivediX/mergora.git",
     "directory": "packages/schema"
   },
-  "homepage": "https://akhiltrivedix.github.io/mergora/",
+  "homepage": "https://mergora.vercel.app/",
   "bugs": "https://github.com/AkhilTrivediX/mergora/issues",
   "type": "module",
   "sideEffects": false,

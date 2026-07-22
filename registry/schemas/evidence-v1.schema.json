@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/evidence-v1.schema.json",
+  "$id": "https://mergora.vercel.app/r/v1/schemas/evidence-v1.schema.json",
   "title": "Mergora context-specific evidence record v1",
   "type": "object",
   "additionalProperties": false,

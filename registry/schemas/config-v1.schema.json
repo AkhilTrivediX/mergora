@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json",
+  "$id": "https://mergora.vercel.app/r/v1/schemas/config-v1.schema.json",
   "title": "mergora.json v1",
   "type": "object",
   "additionalProperties": false,
@@ -18,7 +18,7 @@
   ],
   "properties": {
     "$schema": {
-      "const": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json"
+      "const": "https://mergora.vercel.app/r/v1/schemas/config-v1.schema.json"
     },
     "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
     "project": {

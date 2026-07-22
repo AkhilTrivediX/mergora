@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
   "projectId": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
-  "configDigest": "sha256:a467c4c90be4a7fe53434574ab06ddbec617f18433278d1b3fe6aa00cde9a0da",
+  "configDigest": "sha256:f8353c22db829341e4ec63f44a80d3757c7da317811a86794809a5f1b228b8d5",
   "defaultMode": "hybrid",
   "packageName": "mergora-ui",
   "releases": {
     "official@1.2.3": {
       "registryId": "official",
-      "origin": "https://akhiltrivedix.github.io/mergora/r/v1",
+      "origin": "https://mergora.vercel.app/r/v1",
       "trust": "official",
-      "identityDigest": "sha256:b9b3c786aa83813a49c3d51eac8ce7a92b9822d658e0bdbe3c87b232c4604920",
+      "identityDigest": "sha256:a57690ad5e2aab7447f6bd55fc82f42243d6ea6a74e78d4135e9d0c2d06925fc",
       "release": "1.2.3",
-      "manifestUrl": "https://akhiltrivedix.github.io/mergora/r/v1/releases/1.2.3/manifest.json",
+      "manifestUrl": "https://mergora.vercel.app/r/v1/releases/1.2.3/manifest.json",
       "manifestDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
       "packages": {
         "mergora-tokens": {
@@ -36,7 +36,7 @@
       "resolved": "1.2.3",
       "releaseRef": "official@1.2.3",
       "payload": {
-        "url": "https://akhiltrivedix.github.io/mergora/r/v1/releases/1.2.3/items/button.json",
+        "url": "https://mergora.vercel.app/r/v1/releases/1.2.3/items/button.json",
         "digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777"
       },
       "mode": "source",
@@ -81,7 +81,7 @@
       "resolved": "1.2.3",
       "releaseRef": "official@1.2.3",
       "payload": {
-        "url": "https://akhiltrivedix.github.io/mergora/r/v1/releases/1.2.3/items/dialog.json",
+        "url": "https://mergora.vercel.app/r/v1/releases/1.2.3/items/dialog.json",
         "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
       },
       "mode": "package",

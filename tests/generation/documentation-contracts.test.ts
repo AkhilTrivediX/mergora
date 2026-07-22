@@ -23,8 +23,7 @@ import { buildRegistryPlans } from "../../tooling/registry-builder/src/model.ts"
 import { createSourceTransformationSnapshot } from "../../tooling/source-transformer/src/index.ts";
 
 const workspaceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const targetPassportSchema =
-  "https://akhiltrivedix.github.io/mergora/r/v1/schemas/passport-v1.schema.json";
+const targetPassportSchema = "https://mergora.vercel.app/r/v1/schemas/passport-v1.schema.json";
 const schemaContracts = {
   catalogMetadata: "https://example.invalid/catalog-metadata.schema.json",
   registryIndex: "https://example.invalid/registry-index.schema.json",

@@ -90,6 +90,9 @@ const packageDefinitions = [
   { directory: "packages/tokens", name: selectedPackages.tokens, role: "tokens" },
   { directory: "packages/ui", name: selectedPackages.ui, role: "ui" },
 ];
+const expectedPackedCliVersion = readJson(
+  join(workspaceRoot, "packages", "cli", "package.json"),
+).version;
 const generatedNativeSourceDirectory = join(
   workspaceRoot,
   "registry",
@@ -2166,7 +2169,10 @@ async function verifyConsumer(
     consumerDirectory,
     temporaryRoot,
   ).trim();
-  assert(cliVersion === "0.0.0", `${consumer.id} did not execute the packed P1 CLI.`);
+  assert(
+    cliVersion === expectedPackedCliVersion,
+    `${consumer.id} did not execute the packed P1 CLI ${expectedPackedCliVersion}.`,
+  );
 
   let sourceInstall = null;
   let sourceLifecycle = null;

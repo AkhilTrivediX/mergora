@@ -898,7 +898,7 @@ function safeStudioOrigin(input: string): URL {
 
 export function previewTheme(
   preset: ThemePreset,
-  studioOrigin = "https://akhiltrivedix.github.io/mergora/studio/",
+  studioOrigin = "https://mergora.vercel.app/studio/",
 ): ThemePreviewResult {
   const validation = validateTheme(preset);
   const origin = safeStudioOrigin(studioOrigin);

@@ -1851,8 +1851,7 @@ function assertStructuredView(
       ...presentDistributionKeys,
     ]) ||
     manifest.schemaVersion !== 1 ||
-    manifest.$schema !==
-      "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json" ||
+    manifest.$schema !== "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json" ||
     !isDigest(manifest.projectId)
   ) {
     throw new CliError("The transaction provenance manifest post-state is invalid.", {
