@@ -1,5 +1,5 @@
 {
-  "$schema": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json",
+  "$schema": "https://mergora.vercel.app/r/v1/schemas/config-v1.schema.json",
   "schemaVersion": 1,
   "project": {
     "framework": "next-app",
@@ -42,7 +42,7 @@
   "registries": {
     "official": {
       "protocol": "mergora-v1",
-      "origin": "https://akhiltrivedix.github.io/mergora/r/v1",
+      "origin": "https://mergora.vercel.app/r/v1",
       "trust": "official"
     }
   },

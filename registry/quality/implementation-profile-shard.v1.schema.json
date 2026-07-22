@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/schemas/implementation-profile-shard-v1.schema.json",
+  "$id": "https://mergora.vercel.app/schemas/implementation-profile-shard-v1.schema.json",
   "title": "Mergora implementation profile shard",
   "type": "object",
   "additionalProperties": false,

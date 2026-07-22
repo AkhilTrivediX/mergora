@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { extractSitemapUrls, isExcludedSitemapUrl } from "../../scripts/static-export-lib.mjs";
 
-const origin = "https://akhiltrivedix.github.io/mergora";
+const origin = "https://mergora.vercel.app";
 
 describe("static export sitemap policy", () => {
   it("checks URL locations without treating the XML declaration as a query", () => {

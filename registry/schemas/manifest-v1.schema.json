@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json",
+  "$id": "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json",
   "title": "Mergora portable provenance manifest v1",
   "$defs": {
     "distributionPackageArtifact": {
@@ -110,7 +110,7 @@
   ],
   "properties": {
     "$schema": {
-      "const": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json"
+      "const": "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json"
     },
     "schemaVersion": { "$ref": "common-v1.schema.json#/$defs/schemaVersion" },
     "projectId": { "$ref": "common-v1.schema.json#/$defs/sha256" },

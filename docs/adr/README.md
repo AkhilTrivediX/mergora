@@ -8,7 +8,7 @@ ADRs record consequential implementation decisions and approved deviations. They
 | [0002](0002-native-html-and-react-aria.md)     | Native HTML plus React Aria behavior boundary               | Accepted                                 |
 | [0003](0003-canonical-source-generation.md)    | Canonical source with deterministic generation              | Accepted                                 |
 | [0004](0004-dual-distribution.md)              | Source, package, and mixed distribution                     | Accepted                                 |
-| [0005](0005-static-github-pages.md)            | Static Next.js site on GitHub Pages                         | Accepted                                 |
+| [0005](0005-static-vercel.md)                  | Static Next.js site on Vercel                               | Accepted; Pages superseded               |
 | [0006](0006-public-package-resolution.md)      | Deterministic public package resolution                     | Accepted; approved unscoped map selected |
 | [0007](0007-strictest-quality-thresholds.md)   | Apply the strictest compatible quality threshold            | Accepted                                 |
 | [0008](0008-canonical-catalog-identity.md)     | Preserve every catalog contract with unique identities      | Accepted                                 |

@@ -92,7 +92,7 @@ export interface CompatibilityDocumentV1 {
 }
 
 export interface MergoraConfigV1 {
-  readonly $schema: "https://akhiltrivedix.github.io/mergora/r/v1/schemas/config-v1.schema.json";
+  readonly $schema: "https://mergora.vercel.app/r/v1/schemas/config-v1.schema.json";
   readonly schemaVersion: 1;
   readonly project: {
     readonly framework: "next-app" | "next-pages" | "vite-react" | "react";
@@ -367,7 +367,7 @@ export interface VersionedId {
 }
 
 export interface ProvenanceManifestV1 {
-  readonly $schema: "https://akhiltrivedix.github.io/mergora/r/v1/schemas/manifest-v1.schema.json";
+  readonly $schema: "https://mergora.vercel.app/r/v1/schemas/manifest-v1.schema.json";
   readonly schemaVersion: 1;
   readonly projectId: Sha256;
   /** Present as a complete set after the explicit legacy-to-distribution migration. */

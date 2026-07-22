@@ -402,7 +402,7 @@ function presetMain(preset: ProjectCreatePreset): string {
         <p>Mergora minimal preset</p>
         <h1>Build the interface your product actually needs.</h1>
         <p>A small, typed starting point with explicit styling and accessibility foundations.</p>
-        <a className="mrg-create-action" href="https://akhiltrivedix.github.io/mergora/">
+        <a className="mrg-create-action" href="https://mergora.vercel.app/">
           Read the documentation
         </a>
       </section>

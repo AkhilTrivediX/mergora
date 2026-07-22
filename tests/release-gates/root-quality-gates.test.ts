@@ -141,7 +141,7 @@ describe("root quality gates", () => {
       expect.objectContaining({
         runner: "node",
         args: ["scripts/verify-site-performance.mjs"],
-        env: { MERGORA_BASE_PATH: "/mergora" },
+        env: {},
       }),
     ]);
   });

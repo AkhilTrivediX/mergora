@@ -31,7 +31,7 @@
   description: CLI, transaction, provenance, or Semantic Sync
 - name: site
   color: fbca04
-  description: Documentation site, Studio, Lens, search, or Pages
+  description: Documentation site, Studio, Lens, search, or Vercel
 - name: components
   color: 1d76db
   description: Canonical component, system, or kit implementation

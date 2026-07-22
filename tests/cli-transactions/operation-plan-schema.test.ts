@@ -188,7 +188,7 @@ function recomputedPlan(semantic: Record<string, unknown>): OperationPlan {
 describe("canonical operation-plan v1 schema boundary", () => {
   it("uses the published closed schema and preserves the exact semantic digest", () => {
     expect(operationPlanSchema).toMatchObject({
-      $id: "https://akhiltrivedix.github.io/mergora/r/v1/schemas/plan-v1.schema.json",
+      $id: "https://mergora.vercel.app/r/v1/schemas/plan-v1.schema.json",
       additionalProperties: false,
     });
     const input = canonicalInput();

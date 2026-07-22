@@ -6,8 +6,7 @@ import { extractSitemapUrls, isExcludedSitemapUrl } from "./static-export-lib.mj
 
 const outputRoot = resolve("apps/web/out");
 const expectedBasePath = process.env.MERGORA_BASE_PATH ?? "";
-const expectedSiteOrigin =
-  process.env.MERGORA_SITE_ORIGIN ?? "https://akhiltrivedix.github.io/mergora";
+const expectedSiteOrigin = process.env.MERGORA_SITE_ORIGIN ?? "https://mergora.vercel.app";
 const expectedOriginPath = new URL(expectedSiteOrigin).pathname.replace(/\/$/u, "");
 const textExtensions = new Set([
   ".css",

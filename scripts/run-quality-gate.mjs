@@ -231,9 +231,6 @@ const gateDefinitions = {
     node(
       "production route JavaScript and Lighthouse mobile budgets",
       "scripts/verify-site-performance.mjs",
-      {
-        MERGORA_BASE_PATH: "/mergora",
-      },
     ),
   ],
   compat: [
@@ -262,13 +259,11 @@ const gateDefinitions = {
     pnpm("root and workspace type safety", "run", "typecheck"),
     pnpm("unit, schema, registry, CLI, transaction, and security suites", "run", "test"),
     pnpm("production workspace build", "run", "build", {
-      MERGORA_BASE_PATH: "/mergora",
-      MERGORA_SITE_ORIGIN: "https://akhiltrivedix.github.io/mergora",
+      MERGORA_SITE_ORIGIN: "https://mergora.vercel.app",
     }),
     node("Quality Lab assembly into the static site artifact", "scripts/assemble-quality-lab.mjs"),
-    node("Pages-style static export integrity", "scripts/verify-static-export.mjs", {
-      MERGORA_BASE_PATH: "/mergora",
-      MERGORA_SITE_ORIGIN: "https://akhiltrivedix.github.io/mergora",
+    node("Vercel static export integrity", "scripts/verify-static-export.mjs", {
+      MERGORA_SITE_ORIGIN: "https://mergora.vercel.app",
     }),
     pnpm("production route and Lighthouse performance budgets", "run", "test:performance"),
     pnpm(

@@ -133,7 +133,7 @@ describe("bundled registry discovery", () => {
     });
     expect(docs.canonical).toBe("visually-hidden");
     expect(docs.opened).toBe(false);
-    expect(docs.url).toBe("https://akhiltrivedix.github.io/mergora/components/visually-hidden/");
+    expect(docs.url).toBe("https://mergora.vercel.app/components/visually-hidden/");
   });
 });
 

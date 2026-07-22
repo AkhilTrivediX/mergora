@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/catalog-metadata-v1.schema.json",
+  "$id": "https://mergora.vercel.app/r/v1/schemas/catalog-metadata-v1.schema.json",
   "title": "Mergora catalog metadata v1",
   "type": "object",
   "additionalProperties": false,

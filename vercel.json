@@ -1,0 +1,5 @@
+{
+  "buildCommand": "node scripts/vercel-build.mjs",
+  "outputDirectory": "apps/web/out",
+  "installCommand": "corepack enable && corepack prepare pnpm@11.14.0 --activate && pnpm install --frozen-lockfile"
+}

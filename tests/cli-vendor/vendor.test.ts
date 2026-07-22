@@ -243,7 +243,7 @@ describe("offline vendoring", () => {
               target: { kind: "owned-file", logicalPath: installed.files[0]!.logicalPath },
               expectedBehavior: "The installed source target exists.",
               severity: "S1",
-              remediationUrl: "https://akhiltrivedix.github.io/mergora/components/button/",
+              remediationUrl: "https://mergora.vercel.app/components/button/",
               adapter: { kind: "file-exists", version: "1.0.0" },
             },
           ],

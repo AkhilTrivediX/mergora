@@ -16,7 +16,7 @@ import {
 const workspaceRoot = resolve(import.meta.dirname, "..");
 const outputRoot = resolve(workspaceRoot, "apps/web/out");
 const evidenceRoot = resolve(workspaceRoot, "artifacts/performance/lighthouse");
-const basePath = (process.env.MERGORA_BASE_PATH ?? "/mergora").replace(/\/$/u, "");
+const basePath = (process.env.MERGORA_BASE_PATH ?? "").replace(/\/$/u, "");
 const lighthouseCli = resolve(workspaceRoot, "node_modules/lighthouse/cli/index.js");
 
 const routes = [

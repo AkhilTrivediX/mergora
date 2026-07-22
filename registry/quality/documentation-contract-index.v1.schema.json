@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/schemas/documentation-contract-index-v1.schema.json",
+  "$id": "https://mergora.vercel.app/schemas/documentation-contract-index-v1.schema.json",
   "title": "Mergora documentation contract index",
   "type": "object",
   "additionalProperties": false,

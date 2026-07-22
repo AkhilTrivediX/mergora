@@ -51,7 +51,7 @@ describe("package and hybrid distribution provenance", () => {
     expect(first.state.releases["official@1.2.3"]).toMatchObject({
       release: "1.2.3",
       manifestDigest: `sha256:${"4".repeat(64)}`,
-      identityDigest: "sha256:b9b3c786aa83813a49c3d51eac8ce7a92b9822d658e0bdbe3c87b232c4604920",
+      identityDigest: "sha256:a57690ad5e2aab7447f6bd55fc82f42243d6ea6a74e78d4135e9d0c2d06925fc",
     });
     expect(first.state.items["official:dialog"]).toMatchObject({
       mode: "package",
@@ -85,10 +85,7 @@ describe("package and hybrid distribution provenance", () => {
     const enrolled = JSON.parse(
       JSON.stringify(fixture())
         .replaceAll("official", "partner")
-        .replaceAll(
-          "https://akhiltrivedix.github.io/mergora/r/v1",
-          "https://registry.example.test/r/v1",
-        ),
+        .replaceAll("https://mergora.vercel.app/r/v1", "https://registry.example.test/r/v1"),
     ) as Record<string, unknown>;
     const release = objectAt(objectAt(enrolled, "releases"), "partner@1.2.3");
     release.trust = "enrolled";

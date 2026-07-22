@@ -1928,7 +1928,7 @@ describe("packed project commands", () => {
           target: { kind: "owned-file", logicalPath: source.logicalPath },
           expectedBehavior: "Button source exports the public component.",
           severity: "S1",
-          remediationUrl: "https://akhiltrivedix.github.io/mergora/components/button",
+          remediationUrl: "https://mergora.vercel.app/components/button",
           adapter: { kind: "text-includes", version: "1.0.0", value: "export const Button" },
         },
       ],

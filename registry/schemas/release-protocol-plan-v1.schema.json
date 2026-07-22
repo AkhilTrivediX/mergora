@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://akhiltrivedix.github.io/mergora/r/v1/schemas/release-protocol-plan-v1.schema.json",
+  "$id": "https://mergora.vercel.app/r/v1/schemas/release-protocol-plan-v1.schema.json",
   "title": "Mergora blocked release-protocol generation plan v1",
   "type": "object",
   "additionalProperties": false,

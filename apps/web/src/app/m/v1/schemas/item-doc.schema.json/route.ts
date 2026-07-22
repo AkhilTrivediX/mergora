@@ -20,7 +20,7 @@ const storySpecimen = {
 export function GET() {
   return Response.json({
     $schema: "https://json-schema.org/draft/2020-12/schema",
-    $id: "https://akhiltrivedix.github.io/mergora/m/v1/schemas/item-doc.schema.json",
+    $id: "https://mergora.vercel.app/m/v1/schemas/item-doc.schema.json",
     title: "Mergora machine item documentation",
     type: "object",
     additionalProperties: false,
