@@ -10,7 +10,7 @@ Private reports enter through the repository's GitHub Security Advisory form. Ac
 2. Classify whether credentials, source files, publication identity, confidentiality, integrity, or user completion are at risk.
 3. Preserve relevant sanitized logs and provenance without collecting unrelated user data.
 4. Identify the last known good commit and public artifact.
-5. Freeze publication or Pages only when their integrity is uncertain.
+5. Freeze publication or website deployment only when their integrity is uncertain.
 
 ## Remediation
 

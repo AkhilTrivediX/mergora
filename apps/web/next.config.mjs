@@ -10,16 +10,12 @@ if (
   );
 }
 
-const isVercel = process.env.VERCEL === "1";
-
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   basePath: requestedBasePath,
   env: { NEXT_PUBLIC_MERGORA_BASE_PATH: requestedBasePath },
   images: { unoptimized: true },
-  // Use static export for non-Vercel environments (GitHub Pages etc.)
-  // On Vercel, let it handle SSR/ISR natively
-  ...(isVercel ? {} : { output: "export" }),
+  output: "export",
   reactStrictMode: true,
   trailingSlash: true,
 };

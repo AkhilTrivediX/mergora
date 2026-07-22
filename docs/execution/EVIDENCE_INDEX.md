@@ -235,8 +235,9 @@ pass locally. The forced 21-workspace build at `/mergora` produces the productio
 text artifacts. The sitemap verifier now handles the XML declaration correctly and has six passing
 regression tests. The coordinated website suite passes 46 of 48 cases with two documented
 platform-policy skips, and all six Lighthouse routes score 95-96 for performance and 100 for
-accessibility, best practices, and SEO. Exact-commit CI, manual review, and deployment remain open.
-None of this local implementation is immutable release or public deployment evidence.
+accessibility, best practices, and SEO. `https://mergora.vercel.app/` and
+`https://mergora.vercel.app/quality-lab/index.html` return 200 as of 2026-07-22. Exact-commit CI,
+manual review, full post-deploy route probes, and release binding remain open.
 
 ### E-MANUAL
 
@@ -264,35 +265,30 @@ Beta, RC, Stable GitHub Release, completion manifest, or protected publication r
 ### E-PUBLIC
 
 - npm package map: [`../../config/public-packages.json`](../../config/public-packages.json)
-- Intended production origin: <https://akhiltrivedix.github.io/mergora/>
+- Canonical demo origin: <https://mergora.vercel.app/>
 
-No Mergora package has been published by this run and npm `latest` does not identify a coherent
-Mergora release. The Pages API reports an Actions workflow source, but the intended
-`github.io/mergora/` URL currently redirects via the `CNAME` in the separate
-`AkhilTrivediX.github.io` repository to `akhiltrivedi.me`, and that domain does not resolve. A
-validated current-worktree Pages deployment and public registry probe are also absent. The current
-npm session passes `npm whoami`. That identity check does not establish ownership of the
-planned package names, trusted-publishing authority, provenance, or release readiness. Authenticated
-read-only `npm view` refreshes on 2026-07-20 returned exact `E404` for all seven selected names:
-`mergora`, `mergora-ui`, `mergora-tokens`, `mergora-schema`, `mergora-registry`,
-`mergora-contracts`, and `mergora-mcp`. That result is time-bound availability evidence only, not an
-ownership, trusted-publishing, legal-clearance, or publication claim. The release checks remain
-required immediately before any first publish, and no publication was attempted.
+All seven selected public package names are visible on npm at `1.0.0` on the `latest` dist-tag as of
+2026-07-22: `mergora`, `mergora-ui`, `mergora-tokens`, `mergora-schema`, `mergora-registry`,
+`mergora-contracts`, and `mergora-mcp`. The observed publisher is `akhilx`; the CLI package tarball
+is `https://registry.npmjs.org/mergora/-/mergora-1.0.0.tgz`. This confirms registry visibility, but
+it does not complete the release gate because the publication was not yet bound to protected trusted
+publishing/provenance evidence, a GitHub Release, clean-room public install proof, manual
+accessibility evidence, or an all-green exact-commit CI run. The canonical website target is Vercel;
+the former GitHub Pages path is superseded.
 
 ## Blocking IDs
 
-| ID                     | Meaning                                                                                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `BLK-CI-001`           | The current worktree has no fresh pushed all-green CI run; PR #2 is stale red on older packed evidence drift.                                                            |
-| `BLK-MATURITY-001`     | All 178 entries are unpublished and profile-incomplete; Stable/manual promotion evidence is absent.                                                                      |
-| `BLK-A11Y-001`         | The 3,253-session/4,124-task manual campaign and independent Risk Class 3 review remain wholly not run.                                                                  |
-| `BLK-CLI-001`          | Local routing/lifecycle passes; exact-commit CI and real release-time official-mirror verification remain.                                                               |
-| `BLK-COMPAT-001`       | Compatibility lanes are scheduled but lack exact-commit CI evidence.                                                                                                     |
-| `BLK-VISUAL-001`       | The approved visual baseline is limited to four representative stories and lacks strict exact-commit Linux and catalog-wide evidence.                                    |
-| `BLK-SITE-001`         | Integrated site, complete API descriptions, website browser, and performance gates pass locally; exact-commit CI, manual review, deployment, and release binding remain. |
-| `BLK-PAGES-001`        | Pages Actions source is enabled; exact deployment and post-deploy probes remain absent.                                                                                  |
-| `EXT-PAGES-DOMAIN-001` | The configured Pages URL redirects to an unresolved domain controlled outside this repository.                                                                           |
-| `BLK-NPM-001`          | npm identity succeeds; package ownership, trusted publishing, provenance, and release authority remain unproved.                                                         |
-| `BLK-RELEASE-001`      | No exact release candidate, release evidence bundle, completion manifest, or sign-off exists.                                                                            |
-| `BLK-PUBLIC-001`       | No public Alpha/Beta/RC/Stable npm, registry, Pages, or GitHub Release artifacts exist.                                                                                  |
-| `BLK-SIGN-001`         | Required evidence reviews and independent clean-room sign-offs have not occurred.                                                                                        |
+| ID                 | Meaning                                                                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-CI-001`       | Main is red on Prettier drift plus the superseded Pages probe; the Vercel migration checkpoint still needs a fresh pushed all-green CI run.                                      |
+| `BLK-MATURITY-001` | All 178 entries are unpublished and profile-incomplete; Stable/manual promotion evidence is absent.                                                                              |
+| `BLK-A11Y-001`     | The 3,253-session/4,124-task manual campaign and independent Risk Class 3 review remain wholly not run.                                                                          |
+| `BLK-CLI-001`      | Local routing/lifecycle passes; exact-commit CI and real release-time official-mirror verification remain.                                                                       |
+| `BLK-COMPAT-001`   | Compatibility lanes are scheduled but lack exact-commit CI evidence.                                                                                                             |
+| `BLK-VISUAL-001`   | The approved visual baseline is limited to four representative stories and lacks strict exact-commit Linux and catalog-wide evidence.                                            |
+| `BLK-SITE-001`     | Integrated site, complete API descriptions, website browser, and performance gates pass locally; exact-commit CI, manual review, full Vercel probes, and release binding remain. |
+| `BLK-VERCEL-001`   | Vercel root and Quality Lab respond, but exact-checkpoint deployment evidence and complete route probes are not yet recorded.                                                    |
+| `BLK-NPM-001`      | npm packages are public at `1.0.0`, but trusted publishing, provenance, release authority, and clean-room public install proof remain unproved.                                  |
+| `BLK-RELEASE-001`  | No exact release candidate, release evidence bundle, completion manifest, or sign-off exists.                                                                                    |
+| `BLK-PUBLIC-001`   | Public npm packages and Vercel demo exist; GitHub Release, provenance, clean-room public proof, and release-bound evidence remain incomplete.                                    |
+| `BLK-SIGN-001`     | Required evidence reviews and independent clean-room sign-offs have not occurred.                                                                                                |

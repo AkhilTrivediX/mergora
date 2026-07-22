@@ -16,7 +16,6 @@ import {
 const workspaceRoot = resolve(import.meta.dirname, "../..");
 const workflowPaths = [
   ".github/workflows/changesets.yml",
-  ".github/workflows/pages.yml",
   ".github/workflows/publish-next.yml",
   ".github/workflows/publish-production.yml",
 ] as const;
@@ -44,9 +43,6 @@ const reviewedActionPins = new Map([
   ["actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0", "v7.0.0"],
   ["actions/setup-node@820762786026740c76f36085b0efc47a31fe5020", "v7.0.0"],
   ["actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", "v8.0.1"],
-  ["actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d", "v6.0.0"],
-  ["actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9", "v5.0.0"],
-  ["actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128", "v5.0.0"],
   ["changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d", "v1.9.0"],
 ]);
 
@@ -156,7 +152,7 @@ describe("publication and deployment workflow contracts", () => {
     );
   });
 
-  it("keeps Changesets version-only and Pages write authority isolated to deploy", () => {
+  it("keeps Changesets version-only and Vercel deployment outside GitHub Pages authority", () => {
     const changesets = workflows[".github/workflows/changesets.yml"];
     expect(changesets).toContain("if: github.repository == 'AkhilTrivediX/mergora'");
     expect(changesets).toContain("contents: write");
@@ -164,14 +160,19 @@ describe("publication and deployment workflow contracts", () => {
     expect(changesets).not.toContain("id-token: write");
     expect(changesets).not.toMatch(/^\s*publish:/mu);
 
-    const pages = workflows[".github/workflows/pages.yml"];
-    expect(pages).toContain("github.ref == 'refs/heads/main' && github.ref_protected");
-    expect(pages).toContain("cancel-in-progress: false");
-    expect(occurrences(pages, "pages: write")).toBe(1);
-    expect(occurrences(pages, "id-token: write")).toBe(1);
-    expect(pages).toContain("uses: actions/upload-pages-artifact@");
-    expect(pages).toContain("uses: actions/deploy-pages@");
-    expect(pages).toContain("node scripts/verify-static-export.mjs");
+    const vercel = JSON.parse(text("vercel.json")) as {
+      readonly buildCommand?: string;
+      readonly installCommand?: string;
+      readonly outputDirectory?: string;
+    };
+    expect(vercel).toMatchObject({
+      buildCommand: "node scripts/vercel-build.mjs",
+      outputDirectory: "apps/web/out",
+    });
+    expect(vercel.installCommand).toContain("pnpm install --frozen-lockfile");
+    expect(allWorkflows).not.toContain("pages: write");
+    expect(allWorkflows).not.toContain("actions/deploy-pages");
+    expect(allWorkflows).not.toContain("actions/upload-pages-artifact");
   });
 
   it("binds both npm channels to exact protected refs and prior immutable verification runs", () => {

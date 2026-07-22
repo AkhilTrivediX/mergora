@@ -91,8 +91,9 @@ not published maturity.
 - The reviewed visual baseline covers only Button, Dialog, Combobox, and Data Grid; catalog-wide
   and release-eligible Linux visual evidence remains open.
 - Quality Passports are unreleased skeletons, not immutable public release Passports.
-- Stable promotion, npm publication, registry release, Pages deployment, and public clean-room
-  verification have not occurred.
+- Stable promotion, GitHub Release, trusted-publishing/provenance proof, Vercel release binding, and
+  public clean-room verification have not occurred. The npm package names are public at `1.0.0`, but
+  component maturity remains unpublished.
 
 The exact evidence and blocker vocabulary is maintained in
 [`EVIDENCE_INDEX.md`](EVIDENCE_INDEX.md). Counts must continue to separate maturity, trust, layers,

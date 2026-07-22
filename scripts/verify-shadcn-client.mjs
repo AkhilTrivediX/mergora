@@ -147,7 +147,7 @@ try {
   writeJson(resolve(sourceRegistry, "registry.json"), {
     $schema: "https://ui.shadcn.com/schema/registry.json",
     name: "mergora-pinned-client-fixture",
-    homepage: "https://akhiltrivedix.github.io/mergora/",
+    homepage: "https://mergora.vercel.app/",
     items: [{ ...item, files: materializedFiles }],
   });
 

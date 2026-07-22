@@ -5,6 +5,7 @@ coverage/
 dist/
 out/
 storybook-static/
+apps/web/public/quality-lab/
 playwright-report/
 test-results/
 artifacts/
@@ -14,6 +15,7 @@ credentials.json
 credentials.*.json
 *.credentials.json
 .npmrc.local
+scripts/autonomous-publish.mjs
 .secrets/
 *.tsbuildinfo
 
@@ -23,3 +25,5 @@ credentials.*.json
 
 .DS_Store
 Thumbs.db
+
+.vercel

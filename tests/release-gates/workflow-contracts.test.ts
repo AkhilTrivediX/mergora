@@ -13,7 +13,6 @@ const workflowPaths = [
 ] as const;
 const publicationWorkflowPaths = [
   ".github/workflows/changesets.yml",
-  ".github/workflows/pages.yml",
   ".github/workflows/publish-next.yml",
   ".github/workflows/publish-production.yml",
 ] as const;
@@ -136,7 +135,6 @@ describe("GitHub workflow contracts", () => {
   it("builds and assembles ignored static outputs before fresh-checkout consumers", () => {
     const ciSite = job(workflows[".github/workflows/ci.yml"], "site-contracts");
     expectInOrder(ciSite, [
-      "MERGORA_BASE_PATH: /mergora",
       "run: pnpm build",
       "run: node scripts/assemble-quality-lab.mjs",
       "run: node scripts/verify-static-export.mjs",
@@ -148,7 +146,6 @@ describe("GitHub workflow contracts", () => {
       "policy-security-performance",
     );
     expectInOrder(nightlyPolicy, [
-      "MERGORA_BASE_PATH: /mergora",
       "run: pnpm build",
       "run: node scripts/assemble-quality-lab.mjs",
       "run: pnpm test:performance",

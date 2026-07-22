@@ -6,7 +6,7 @@ Do not move `latest` until the complete coherent package set has published and p
 
 ## Detection and containment
 
-1. Stop subsequent publication and canonical Pages/registry promotion.
+1. Stop subsequent publication and canonical website/registry promotion.
 2. Capture the verified candidate manifest, packages successfully published, current dist tags, provenance state, workflow IDs, and failure.
 3. Determine whether any package is unsafe or merely incomplete.
 4. Keep newly published safe versions under no Stable tag or under `next` while repairing.
@@ -17,7 +17,8 @@ Do not move `latest` until the complete coherent package set has published and p
 - **Partial `latest` movement:** restore prior known-good tags where safe, publish an incident notice, and release a coherent patch.
 - **Unsafe artifact:** deprecate it with actionable remediation and publish a corrected patch. Use unpublish only for a genuine security/legal emergency under npm policy.
 - **Missing provenance:** do not promote the version. Correct the trusted-publishing path and publish a newly attested version.
-- **Incorrect Pages/registry data with sound packages:** restore the last known-good Pages artifact or deploy a corrected site. Keep immutable npm/GitHub Release mirrors available.
+- **Incorrect website/registry data with sound packages:** restore the last known-good website
+  artifact or deploy a corrected site. Keep immutable npm/GitHub Release mirrors available.
 - **GitHub Release assembly failure:** leave package state unchanged, rebuild the release record from verified artifacts, and do not claim a complete release until all required assets agree.
 
 ## Verification

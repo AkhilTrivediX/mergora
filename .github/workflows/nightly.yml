@@ -111,8 +111,6 @@ jobs:
       - name: Validate documentation and local links
         run: pnpm docs:validate
       - name: Build production static site and Quality Lab
-        env:
-          MERGORA_BASE_PATH: /mergora
         run: pnpm build
       - name: Assemble precompiled Quality Lab specimens
         run: node scripts/assemble-quality-lab.mjs

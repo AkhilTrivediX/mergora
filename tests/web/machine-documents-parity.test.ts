@@ -139,7 +139,7 @@ describe("machine documentation parity", () => {
         ["recommended", document.specimens.recommended.url],
       ] as const) {
         const parsed = new URL(url);
-        expect(parsed.pathname, item.id).toBe(`/mergora${item.route}`);
+        expect(parsed.pathname, item.id).toBe(item.route);
         expect(parsed.hash).toBe("#state-lab");
         expect(parsed.searchParams.get("labItem")).toBe(item.id);
         expect(parsed.searchParams.get("labStory")).toBe(story);
@@ -198,9 +198,7 @@ describe("machine documentation parity", () => {
   it("keeps full documentation navigation deterministic without replacing catalog authority", () => {
     const navigation = documentationNavigationDocument();
     expect(navigation.generatedDigest).toBe(contentDigest(withoutDigest(navigation)));
-    expect(navigation.catalogAuthority).toBe(
-      "https://akhiltrivedix.github.io/mergora/m/v1/navigation.json",
-    );
+    expect(navigation.catalogAuthority).toBe("https://mergora.vercel.app/m/v1/navigation.json");
     expect(navigation.global.map(({ label }) => label)).toEqual([
       "Components",
       "Systems",
@@ -226,7 +224,7 @@ describe("machine documentation parity", () => {
     );
     for (const link of [...navigation.global, ...navigation.footer]) {
       expect(layout).toContain(link.label);
-      expect(layout).toContain(new URL(link.url).pathname.replace("/mergora", ""));
+      expect(layout).toContain(new URL(link.url).pathname);
     }
 
     for (const slug of docsMachineSlugs) {
@@ -264,27 +262,21 @@ describe("machine documentation parity", () => {
     expect(html).not.toMatch(/softwareVersion|Stable|"version"/u);
 
     const policy = robots();
-    expect(policy.host).toBe("https://akhiltrivedix.github.io");
+    expect(policy.host).toBe("https://mergora.vercel.app");
     expect(policy.rules).toMatchObject({
-      disallow: [
-        "/mergora/m/",
-        "/mergora/r/",
-        "/mergora/quality-lab/",
-        "/mergora/search-index.json",
-        "/mergora/*?*",
-      ],
+      disallow: ["/m/", "/r/", "/quality-lab/", "/search-index.json", "/*?*"],
     });
     const webManifest = manifest();
     expect(webManifest).toMatchObject({
-      id: "/mergora/",
-      scope: "/mergora/",
-      start_url: "/mergora/",
+      id: "/",
+      scope: "/",
+      start_url: "/",
     });
     expect(webManifest).not.toHaveProperty("version");
     const sitemapUrls = sitemap().map(({ url }) => url);
     expect(sitemapUrls.every((url) => !url.includes("/m/") && !url.includes("?"))).toBe(true);
     for (const item of docsIndex.items) {
-      expect(sitemapUrls).toContain(`https://akhiltrivedix.github.io/mergora${item.route}`);
+      expect(sitemapUrls).toContain(`https://mergora.vercel.app${item.route}`);
     }
   });
 });

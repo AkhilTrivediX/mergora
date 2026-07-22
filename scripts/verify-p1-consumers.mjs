@@ -461,14 +461,8 @@ function validatePackageSources() {
       manifest.name === definition.name,
       `${definition.directory} has an unexpected package name.`,
     );
-    assert(
-      manifest.version === "1.0.0",
-      `${definition.name} must use the bounded version 1.0.0.`,
-    );
-    assert(
-      manifest.private === false,
-      `${definition.name} must be public for the 1.0.0 release.`,
-    );
+    assert(manifest.version === "1.0.0", `${definition.name} must use the bounded version 1.0.0.`);
+    assert(manifest.private === false, `${definition.name} must be public for the 1.0.0 release.`);
     for (const lifecycle of ["preinstall", "install", "postinstall"]) {
       assert(
         manifest.scripts?.[lifecycle] === undefined,
@@ -1419,7 +1413,7 @@ function verifyStaticContractAudit(consumerDirectory, packedCli, temporaryRoot) 
         target: { kind: "owned-file", logicalPath: source.logicalPath },
         expectedBehavior: "Button source exports the public component.",
         severity: "S1",
-        remediationUrl: "https://akhiltrivedix.github.io/mergora/components/button",
+        remediationUrl: "https://mergora.vercel.app/components/button",
         adapter: { kind: "text-includes", version: "1.0.0", value: "export const Button" },
       },
     ],

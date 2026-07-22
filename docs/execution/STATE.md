@@ -1,10 +1,10 @@
 # Execution state
 
-- Updated: 2026-07-20T12:20:00Z
-- Commit: `329b58e`
-- Branch: `feature/foundation`
-- Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
-- Phase result: locally green checkpoint awaiting an exact pushed CI run
+- Updated: 2026-07-22T10:05:00Z
+- Commit: `cc0b0d0` plus active Vercel migration worktree
+- Branch: `feature/vercel-deployment`
+- Active phase: P7/P11 release wiring, with P3/P9 evidence gates still open
+- Phase result: public packages and Vercel demo exist; exact CI, provenance, manual evidence, and release bundle remain open
 
 ## Completed since previous update
 
@@ -107,63 +107,73 @@
 - Preserved the privacy boundary: private plan/run material remains ignored and absent from public
   history; no private plan content was copied into these public records beyond stable identifiers
   and high-level scope references.
+- Verified the manual npm publication state on 2026-07-22: `mergora`, `mergora-ui`,
+  `mergora-tokens`, `mergora-schema`, `mergora-registry`, `mergora-contracts`, and `mergora-mcp`
+  are visible on npm at `1.0.0` on `latest`. This resolves registry visibility, but not trusted
+  publishing/provenance, clean-room public install, GitHub Release, or release evidence gates.
+- Verified the Vercel project `mergora` is ready at `https://mergora.vercel.app/`; the root page and
+  `/quality-lab/index.html` return 200. The GitHub Pages workflow is superseded and removed from the
+  active Vercel migration branch.
+- Rechecked latest main CI at `f5a5cc2`: Repository quality fails on Prettier drift in
+  `scripts/verify-p1-consumers.mjs`, and the old Pages workflow fails while probing the stale
+  `akhiltrivedi.me` redirect.
 
 ## Next atomic batch
 
-1. Monitor the fresh `329b58e` GitHub Actions run; repair any reproducible exact-commit failure
-   without waiting for PR review, and record the all-green result when it exists.
-2. Continue the next dependency-ordered hardening batch: Data Grid's remaining Stable-target
+1. Complete the Vercel migration checkpoint: format the CI-drifted file, remove the Pages workflow,
+   validate the Vercel static export, deploy the exact pushed commit, and monitor Actions.
+2. Run clean public install checks against the `1.0.0` npm packages and record what is proven versus
+   what remains non-provenance/manual.
+3. Continue the next dependency-ordered hardening batch: Data Grid's remaining Stable-target
    contract (large-data/virtualization, Interactive Grid only where justified, grouping/aggregation,
    edit/recovery, saved views, and narrow-screen alternative), then temporal/upload/package-shape
    evidence without weakening experimental maturity claims.
-3. Refresh the P3 security/data-loss review and public evidence records against the exact checkpoint.
-   Verify the official mirror only when a real release payload exists.
-4. Execute the required manual AT, touch/mobile, RTL, forced-colors, reduced-motion, and independent
+4. Refresh the P3 security/data-loss review and public evidence records against the exact checkpoint.
+5. Execute the required manual AT, touch/mobile, RTL, forced-colors, reduced-motion, and independent
    Risk Class 3 campaign without promoting an incomplete entry.
 
 ## Active failures
 
-| ID               | Severity                   | Reproduction command                                                    | Owner/path                           | Next action                                                                                                                                   |
-| ---------------- | -------------------------- | ----------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `P0-F-CI`        | S2 gate                    | Inspect [PR #2 checks](https://github.com/AkhilTrivediX/mergora/pull/2) | `.github/workflows/`, current branch | Push the coherent current checkpoint and fix any reproducible fresh failure.                                                                  |
-| `P2-F-MATURITY`  | promotion gate             | Inspect `registry/generated/implementation-matrix.v1.json`              | component families and evidence      | Close each profile's interaction, accessibility, manual, visual, lifecycle, and release blockers before maturity promotion.                   |
-| `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                 | CLI/registry/packed consumers        | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.          |
-| `P7-F-SITE`      | S2 gate                    | `pnpm test:site` and `pnpm test:performance`                            | `apps/web`, generated docs           | Bind the locally green web/static/browser/performance result to the pushed exact commit and a validated deployment.                           |
-| `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                              | manual evidence campaign             | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                          |
-| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                      | Pass the accepted comparison in exact-commit Linux CI and extend coverage beyond the reviewed four-story baseline.                            |
-| `P10-F-PUBLIC`   | release gate               | Inspect `registry/generated/release-protocol/plan.json`                 | release/publication                  | Keep blocked until all earlier gates pass, package ownership and trusted publishing are verified, and a protected prerelease can be verified. |
+| ID               | Severity                   | Reproduction command                                                                  | Owner/path                           | Next action                                                                                                                               |
+| ---------------- | -------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `P0-F-CI`        | S2 gate                    | Inspect [main CI](https://github.com/AkhilTrivediX/mergora/actions/runs/29854163723)  | `.github/workflows/`, current branch | Push the Vercel migration checkpoint and fix any reproducible fresh failure.                                                              |
+| `P2-F-MATURITY`  | promotion gate             | Inspect `registry/generated/implementation-matrix.v1.json`                            | component families and evidence      | Close each profile's interaction, accessibility, manual, visual, lifecycle, and release blockers before maturity promotion.               |
+| `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                               | CLI/registry/packed consumers        | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.      |
+| `P7-F-SITE`      | S2 gate                    | `pnpm test:site`, `pnpm test:performance`, and Vercel route probes                    | `apps/web`, generated docs           | Bind the locally green web/static/browser/performance result to the pushed exact commit and validated Vercel deployment.                  |
+| `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                                            | manual evidence campaign             | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                      |
+| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                                    | `tests/visual/`                      | Pass the accepted comparison in exact-commit Linux CI and extend coverage beyond the reviewed four-story baseline.                        |
+| `P10-F-PUBLIC`   | release gate               | npm package views, Vercel probes, and `registry/generated/release-protocol/plan.json` | release/publication                  | Verify public packages cleanly and keep blocked until provenance, CI, manual evidence, GitHub Release, and protected evidence gates pass. |
 
 ## External blockers
 
-| ID                     | Exact blocked action                                                  | Independent work remaining                                                                                                     | Required authority                                                                                                                | Verification                                                                                                              |
-| ---------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `EXT-PAGES-DOMAIN-001` | Make the configured public Pages origin reachable for release probes. | Build/deploy verification, CI, documentation, manual evidence, npm preparation, and all non-public maturity work can continue. | Change the `CNAME` in `AkhilTrivediX.github.io` or configure DNS for `akhiltrivedi.me`; both are outside this repository's scope. | The `github.io/mergora/` route either stays reachable or redirects to a resolving domain that serves the validated build. |
-
-The phase is not marked externally blocked because substantial independent work remains.
+None currently active. The former Pages-domain blocker is superseded by the approved Vercel
+deployment path. The phase remains active because substantial CI, provenance, public clean-room, and
+manual evidence work remains.
 
 ## Latest evidence
 
-| Gate                      | Command/run                                       | Commit          | Result                                                                                    | Artifact                                                  |
-| ------------------------- | ------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| Catalog authority         | generated matrix inspection                       | active worktree | 178/178 source-present; 0 published maturity                                              | `registry/generated/catalog.json`                         |
-| Mergora product standard  | generated matrix inspection                       | active worktree | 178 advantages, 178 signatures, 256 enhancements, 178 Basic and 178 Recommended stories   | `registry/generated/implementation-matrix.v1.json`        |
-| Generation                | latest generator output and manifest inspection   | active worktree | 1,051 outputs including manifest; authoritative docs contract and all delivery surfaces   | `registry/generated/artifact-manifest.json`               |
-| Public API                | `pnpm api:check`                                  | active worktree | 178 entries; 547 groups; 3,517/3,517 props described; 807 runtime defaults                | `content/generated/api-index.json`                        |
-| Local quality             | `pnpm check`                                      | active worktree | 200 files; 1,540 passed; 1 intentional skip; serial official browser audit 5/5            | `tests/`                                                  |
-| Full browser matrix       | `pnpm test:browser`                               | active worktree | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip)  | `tests/browser/`, `tests/components/`, `tests/web/`       |
-| Accessibility             | `pnpm test:a11y`                                  | active worktree | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                           | `tests/browser/`                                          |
-| Compatibility             | `pnpm test:compat`                                | active worktree | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                                | `tests/compatibility/`                                    |
-| Documentation             | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree | 1,929 links across 243 files; docs 9/9; evidence 45/45                                    | `docs/`, `tests/harness/`                                 |
-| Component cross-browser   | complete component Playwright aggregate           | active worktree | 909 total: 907 passed, 2 intentional platform skips, 0 failures                           | `tests/components/`                                       |
-| Exact packed consumers    | WRITE plus immediate NO-WRITE replay              | active worktree | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay       | `tests/packed-consumers/evidence.json`                    |
-| Website implementation    | generated contract and site model inspection      | active worktree | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented     | `registry/generated/documentation-contract-index.v1.json` |
-| Production build/export   | forced 21-workspace `/mergora` build and verifier | active worktree | Storybook and 956 pages built; Quality Lab assembled; 4,259 text artifacts verified       | `apps/web/out/`, `apps/web/public/quality-lab/`           |
-| Website browser           | `pnpm test:web-browser`                           | active worktree | 46 passed; 2 documented forced-colors policy skips; 0 failures across three engines       | `tests/web/`                                              |
-| Website performance       | `pnpm test:performance`                           | active worktree | 6/6 routes; performance 95-96; accessibility/best practices/SEO 100                       | `scripts/verify-site-performance.mjs`                     |
-| Manual preparation        | `node scripts/prepare-manual-evidence.mjs --plan` | active worktree | 178 items; 3,253 sessions; 4,124 tasks; all NOT RUN; zero claims                          | `docs/quality/manual/CAMPAIGN.md`                         |
-| Security and licenses     | production/high audits and license gate           | active worktree | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains            | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
-| npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved     | local npm session, `config/public-packages.json`          |
-| Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                 | `tests/compatibility/matrix.v1.json`                      |
-| Visual                    | reviewed cross-commit baseline                    | `5c2fb93`       | 16/16 accepted replay comparisons; two expected engine-policy skips; scope remains narrow | `tests/visual/baseline.v1.json`                           |
-| GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                  | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
-| Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                         | `registry/generated/release-protocol/plan.json`           |
+| Gate                     | Command/run                                       | Commit            | Result                                                                                      | Artifact                                                  |
+| ------------------------ | ------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Catalog authority        | generated matrix inspection                       | active worktree   | 178/178 source-present; 0 published maturity                                                | `registry/generated/catalog.json`                         |
+| Mergora product standard | generated matrix inspection                       | active worktree   | 178 advantages, 178 signatures, 256 enhancements, 178 Basic and 178 Recommended stories     | `registry/generated/implementation-matrix.v1.json`        |
+| Generation               | latest generator output and manifest inspection   | active worktree   | 1,051 outputs including manifest; authoritative docs contract and all delivery surfaces     | `registry/generated/artifact-manifest.json`               |
+| Public API               | `pnpm api:check`                                  | active worktree   | 178 entries; 547 groups; 3,517/3,517 props described; 807 runtime defaults                  | `content/generated/api-index.json`                        |
+| Local quality            | `pnpm check`                                      | active worktree   | 200 files; 1,540 passed; 1 intentional skip; serial official browser audit 5/5              | `tests/`                                                  |
+| Full browser matrix      | `pnpm test:browser`                               | active worktree   | root 36/34/2; components 909/907/2; diagnostics 1/1/0; web 48/46/2 (scheduled/pass/skip)    | `tests/browser/`, `tests/components/`, `tests/web/`       |
+| Accessibility            | `pnpm test:a11y`                                  | active worktree   | 12/12 across Chromium, Firefox, and WebKit; no waivers or skips                             | `tests/browser/`                                          |
+| Compatibility            | `pnpm test:compat`                                | active worktree   | 3/3 checks; all 178 items valid under pinned Shadcn 4.13.0                                  | `tests/compatibility/`                                    |
+| Documentation            | `pnpm docs:validate` and `pnpm test:evidence`     | active worktree   | 1,929 links across 243 files; docs 9/9; evidence 45/45                                      | `docs/`, `tests/harness/`                                 |
+| Component cross-browser  | complete component Playwright aggregate           | active worktree   | 909 total: 907 passed, 2 intentional platform skips, 0 failures                             | `tests/components/`                                       |
+| Exact packed consumers   | WRITE plus immediate NO-WRITE replay              | active worktree   | seven tarballs; four lanes; full bounded public CLI lifecycle; deterministic replay         | `tests/packed-consumers/evidence.json`                    |
+| Website implementation   | generated contract and site model inspection      | active worktree   | 2,806 State Lab rows; 178 blocked Passports; homepage/Studio/machine docs implemented       | `registry/generated/documentation-contract-index.v1.json` |
+| Production build/export  | forced 21-workspace `/mergora` build and verifier | active worktree   | Storybook and 956 pages built; Quality Lab assembled; 4,259 text artifacts verified         | `apps/web/out/`, `apps/web/public/quality-lab/`           |
+| Vercel public demo       | `Invoke-WebRequest` and `vercel inspect`          | public deployment | `https://mergora.vercel.app/` and `/quality-lab/index.html` return 200; deployment is Ready | Vercel project `mergora`                                  |
+| Website browser          | `pnpm test:web-browser`                           | active worktree   | 46 passed; 2 documented forced-colors policy skips; 0 failures across three engines         | `tests/web/`                                              |
+| Website performance      | `pnpm test:performance`                           | active worktree   | 6/6 routes; performance 95-96; accessibility/best practices/SEO 100                         | `scripts/verify-site-performance.mjs`                     |
+| Manual preparation       | `node scripts/prepare-manual-evidence.mjs --plan` | active worktree   | 178 items; 3,253 sessions; 4,124 tasks; all NOT RUN; zero claims                            | `docs/quality/manual/CAMPAIGN.md`                         |
+| Security and licenses    | production/high audits and license gate           | active worktree   | production clean; 1 moderate dev-only advisory; licenses pass; S2 work remains              | `docs/quality/P3_SECURITY_DATA_LOSS_AUDIT.md`             |
+| npm public packages      | `npm view` across selected package map            | public registry   | all seven selected packages are public at `1.0.0` on `latest`; provenance remains unproved  | npm registry                                              |
+| Compatibility            | scheduled matrix                                  | active worktree   | nine framework, five manager, and Node/OS lanes defined; exact CI not run                   | `tests/compatibility/matrix.v1.json`                      |
+| Visual                   | reviewed cross-commit baseline                    | `5c2fb93`         | 16/16 accepted replay comparisons; two expected engine-policy skips; scope remains narrow   | `tests/visual/baseline.v1.json`                           |
+| GitHub CI                | Actions runs `29854163723` and `29854163904`      | `f5a5cc2`         | red on Prettier drift and retired Pages probe                                               | GitHub Actions                                            |
+| Publication              | release protocol plan                             | active worktree   | `blocked-unreleased`; no emitted release artifact                                           | `registry/generated/release-protocol/plan.json`           |

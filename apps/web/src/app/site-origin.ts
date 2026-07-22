@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const DEFAULT_SITE_ORIGIN = "https://akhiltrivedix.github.io/mergora";
+const DEFAULT_SITE_ORIGIN = "https://mergora.vercel.app";
 
 function validateOrigin(value: string): string {
   let url: URL;

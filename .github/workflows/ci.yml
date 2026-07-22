@@ -71,14 +71,10 @@ jobs:
       - name: Install Chromium for Lighthouse
         run: pnpm exec playwright install --with-deps chromium
       - name: Build every workspace project
-        env:
-          MERGORA_BASE_PATH: /mergora
         run: pnpm build
       - name: Assemble precompiled Quality Lab specimens
         run: node scripts/assemble-quality-lab.mjs
-      - name: Verify the Pages-style static export
-        env:
-          MERGORA_BASE_PATH: /mergora
+      - name: Verify the Vercel static export
         run: node scripts/verify-static-export.mjs
       - name: Verify production route and Lighthouse budgets
         run: pnpm test:performance
