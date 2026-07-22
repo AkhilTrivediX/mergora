@@ -1,9 +1,9 @@
 # Current evidence index
 
-- Updated: 2026-07-20T07:47:46Z
-- Branch: `feature/foundation`
-- Committed checkpoint: `58d6de0` plus the active safe-CSV integration worktree
-- Evidence scope: the committed checkpoint plus the active, uncommitted integration worktree
+- Updated: 2026-07-20T18:20:13Z
+- Merged checkpoint: `e03524f` (PR #9)
+- Previous merged checkpoint: `4a1ef67` (PR #7)
+- Evidence scope: merged `main` plus PR #9's exact all-green candidate; it is not release evidence
 - Publication state: `blocked-unreleased`
 
 This index gives the execution records a compact vocabulary for current repository evidence. It is
@@ -28,8 +28,8 @@ No Definition of Done assertion is currently `complete` under the exact-release 
 ### E-REPOSITORY
 
 - Public repository: <https://github.com/AkhilTrivediX/mergora>
-- Active branch and PR: `feature/foundation`, draft
-  [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)
+- Latest merged PR: [#9](https://github.com/AkhilTrivediX/mergora/pull/9),
+  squash-merged as `e03524f`
 - Package identity: [`../../config/public-packages.json`](../../config/public-packages.json) and
   [`PACKAGE_IDENTITY.md`](PACKAGE_IDENTITY.md)
 - Architecture decisions: [`../adr/`](../adr/)
@@ -37,9 +37,9 @@ No Definition of Done assertion is currently `complete` under the exact-release 
 - Privacy boundaries: [`.gitignore`](../../.gitignore) excludes private plan/run material; the
   private plan directory is absent from public history.
 
-The latest pushed CI run for `44a7829` is stale: foundation/build, browser/accessibility/visual,
-CodeQL, and dependency review passed, while packed consumers failed only because their generated
-evidence had changed. A current-worktree push and exact-commit rerun remain required.
+PR #9 refreshes the changed packed-consumer evidence with a full WRITE and immediate NO-WRITE
+replay. Every required PR CI lane passed, including browser/accessibility/visual, before it
+squash-merged. This is implementation evidence only and does not satisfy release gates.
 
 ### E-TOKENS
 

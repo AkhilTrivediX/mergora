@@ -1,12 +1,23 @@
 # Execution state
 
-- Updated: 2026-07-20T12:20:00Z
-- Commit: `329b58e`
-- Branch: `feature/foundation`
+- Updated: 2026-07-20T18:20:13Z
+- Merged checkpoint: `e03524f` (PR #9)
+- Previous merged checkpoint: `4a1ef67` (PR #7)
 - Active phase: P3 — registry, CLI, provenance, and safe synchronization, with P5/P8/P9 hardening in parallel
 - Phase result: locally green checkpoint awaiting an exact pushed CI run
 
 ## Completed since previous update
+
+- Merged PR #2 into protected `main` at `30f2fd8`, then merged the canonical Pages-probe repair
+  as PR #7 at `4a1ef67` after their required CI lanes passed.
+- Added opt-in Data Grid fixed-row large-data virtualization with controlled or uncontrolled native
+  scroll offset and independently removable range status. The ordinary semantic table remains the
+  default and its Experimental maturity claim remains unchanged.
+- Removed duplicate feature-branch push CI runs so a pull request has one authoritative CI and
+  security run; explicit workflow dispatch remains available for a feature checkpoint.
+- Refreshed exact packed-consumer evidence after the generated Data Grid package changed, then
+  passed the full WRITE run and immediate NO-WRITE replay locally for PR #9. Its full GitHub CI,
+  including the cross-browser/accessibility/visual lane, passed before the squash merge.
 
 - Reconciled the execution records with the current generated catalog and removed the obsolete
   92-source/86-missing/571-artifact status.
@@ -110,8 +121,8 @@
 
 ## Next atomic batch
 
-1. Monitor the fresh `329b58e` GitHub Actions run; repair any reproducible exact-commit failure
-   without waiting for PR review, and record the all-green result when it exists.
+1. Monitor the post-merge `e03524f` GitHub Actions and Pages deployment runs; repair any
+   reproducible exact-commit failure without waiting for review, then record the deployment result.
 2. Continue the next dependency-ordered hardening batch: Data Grid's remaining Stable-target
    contract (large-data/virtualization, Interactive Grid only where justified, grouping/aggregation,
    edit/recovery, saved views, and narrow-screen alternative), then temporal/upload/package-shape
@@ -123,15 +134,15 @@
 
 ## Active failures
 
-| ID               | Severity                   | Reproduction command                                                    | Owner/path                           | Next action                                                                                                                                   |
-| ---------------- | -------------------------- | ----------------------------------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| `P0-F-CI`        | S2 gate                    | Inspect [PR #2 checks](https://github.com/AkhilTrivediX/mergora/pull/2) | `.github/workflows/`, current branch | Push the coherent current checkpoint and fix any reproducible fresh failure.                                                                  |
-| `P2-F-MATURITY`  | promotion gate             | Inspect `registry/generated/implementation-matrix.v1.json`              | component families and evidence      | Close each profile's interaction, accessibility, manual, visual, lifecycle, and release blockers before maturity promotion.                   |
-| `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                 | CLI/registry/packed consumers        | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.          |
-| `P7-F-SITE`      | S2 gate                    | `pnpm test:site` and `pnpm test:performance`                            | `apps/web`, generated docs           | Bind the locally green web/static/browser/performance result to the pushed exact commit and a validated deployment.                           |
-| `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                              | manual evidence campaign             | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                          |
-| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                      | Pass the accepted comparison in exact-commit Linux CI and extend coverage beyond the reviewed four-story baseline.                            |
-| `P10-F-PUBLIC`   | release gate               | Inspect `registry/generated/release-protocol/plan.json`                 | release/publication                  | Keep blocked until all earlier gates pass, package ownership and trusted publishing are verified, and a protected prerelease can be verified. |
+| ID               | Severity                   | Reproduction command                                                    | Owner/path                      | Next action                                                                                                                                   |
+| ---------------- | -------------------------- | ----------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `P0-F-CI`        | S2 gate                    | Inspect [PR #9 checks](https://github.com/AkhilTrivediX/mergora/pull/9) | `.github/workflows/`, `main`    | Retain the all-green PR evidence and monitor the post-merge `main` run; do not weaken exact-commit checks.                                    |
+| `P2-F-MATURITY`  | promotion gate             | Inspect `registry/generated/implementation-matrix.v1.json`              | component families and evidence | Close each profile's interaction, accessibility, manual, visual, lifecycle, and release blockers before maturity promotion.                   |
+| `P3-F-LIFECYCLE` | S2 gate                    | `pnpm test:consumer` plus P3 CLI suites                                 | CLI/registry/packed consumers   | Retain the locally green routing and lifecycle result in exact-commit CI; verify the official mirror against a real release payload.          |
+| `P7-F-SITE`      | S2 gate                    | `pnpm test:site` and `pnpm test:performance`                            | `apps/web`, generated docs      | Bind the locally green web/static/browser/performance result to the pushed exact commit and a validated deployment.                           |
+| `P9-F-MANUAL`    | accessibility release gate | `pnpm test:manual:prepare`                                              | manual evidence campaign        | Perform exact-version AT, voice, switch, touch, zoom, locale, RTL, and forced-colors sessions; do not infer results.                          |
+| `P9-F-VISUAL`    | visual release gate        | `pnpm test:visual`                                                      | `tests/visual/`                 | Pass the accepted comparison in exact-commit Linux CI and extend coverage beyond the reviewed four-story baseline.                            |
+| `P10-F-PUBLIC`   | release gate               | Inspect `registry/generated/release-protocol/plan.json`                 | release/publication             | Keep blocked until all earlier gates pass, package ownership and trusted publishing are verified, and a protected prerelease can be verified. |
 
 ## External blockers
 
@@ -165,5 +176,5 @@ The phase is not marked externally blocked because substantial independent work 
 | npm identity/availability | `npm whoami` and authenticated read-only views    | active worktree | authenticated; all 7 selected names return E404; ownership/publishing remain unproved     | local npm session, `config/public-packages.json`          |
 | Compatibility             | scheduled matrix                                  | active worktree | nine framework, five manager, and Node/OS lanes defined; exact CI not run                 | `tests/compatibility/matrix.v1.json`                      |
 | Visual                    | reviewed cross-commit baseline                    | `5c2fb93`       | 16/16 accepted replay comparisons; two expected engine-policy skips; scope remains narrow | `tests/visual/baseline.v1.json`                           |
-| GitHub CI                 | Actions run `29678616797`                         | `44a7829`       | stale red only on older packed evidence drift; other listed lanes passed                  | [PR #2](https://github.com/AkhilTrivediX/mergora/pull/2)  |
+| GitHub CI                 | Actions run `29766805962`                         | `28a2eb6`       | all required PR lanes passed before merge; post-merge `main` monitoring remains           | [PR #9](https://github.com/AkhilTrivediX/mergora/pull/9)  |
 | Publication               | release protocol plan                             | active worktree | `blocked-unreleased`; no emitted release artifact                                         | `registry/generated/release-protocol/plan.json`           |
