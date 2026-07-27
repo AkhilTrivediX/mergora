@@ -33,7 +33,7 @@ catalog:
   "@vitejs/plugin-react": 6.0.3
   "@vitest/browser-playwright": 4.1.10
   axe-core: 4.12.1
-  eslint: 10.7.0
+  eslint: 10.8.0
   lighthouse: 13.4.0
   next: 16.2.10
   postcss: 8.5.19
